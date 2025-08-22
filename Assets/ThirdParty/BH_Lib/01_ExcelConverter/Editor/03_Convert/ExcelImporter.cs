@@ -16,7 +16,6 @@ namespace BH_Lib.ExcelConverter.Convert
     /// 제네릭 타입의 ScriptableObject를 위한 엑셀 임포터
     /// </summary>
     /// <typeparam name="T">ScriptableObject 타입</typeparam>
-    [Register(typeof(IExcelImporter<>), LifetimeScope.Transient)]
     public class ExcelImporter<T> : IExcelImporter<T> where T : ScriptableObject
     {
         #region Private Variables

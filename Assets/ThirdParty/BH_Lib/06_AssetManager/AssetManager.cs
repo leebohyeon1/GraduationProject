@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BH_Lib.DI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -11,6 +12,7 @@ namespace BH_Lib.AssetManager
     /// <summary>
     /// Addressable Asset System을 사용하는 에셋 관리 싱글톤 클래스
     /// </summary>
+    [Register(LifetimeScope.Singleton)]
     public class AssetManager : MonoBehaviour
     {
         private static AssetManager _instance;
