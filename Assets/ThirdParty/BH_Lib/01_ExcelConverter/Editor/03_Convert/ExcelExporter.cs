@@ -19,7 +19,6 @@ namespace BH_Lib.ExcelConverter.Convert
     /// 제네릭 타입의 ScriptableObject를 엑셀 파일로 내보내는 클래스
     /// </summary>
     /// <typeparam name="T">ScriptableObject 타입</typeparam>
-    [Register(typeof(IExcelExporter<>), LifetimeScope.Transient)]
     public class ExcelExporter<T> : IExcelExporter<T> where T : ScriptableObject
     {
         #region Private Variables

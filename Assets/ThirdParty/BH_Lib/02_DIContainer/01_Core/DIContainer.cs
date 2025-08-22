@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,13 +18,21 @@ namespace BH_Lib.DI
     {
         #region Singleton
         private static DIContainer _instance;
+        private static readonly object _lock = new object();
+        
         public static DIContainer Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new DIContainer();
+                    lock (_lock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new DIContainer();
+                        }
+                    }
                 }
                 return _instance;
             }
@@ -30,20 +40,22 @@ namespace BH_Lib.DI
         #endregion
 
         #region Private Variables
-        // 타입별 등록 정보를 저장하는 딕셔너리
-        private readonly Dictionary<Type, ServiceRegistration> _registrations = new Dictionary<Type, ServiceRegistration>();
+        // Thread-safe 컬렉션으로 변경
+        private readonly ConcurrentDictionary<Type, ServiceRegistration> _registrations = new ConcurrentDictionary<Type, ServiceRegistration>();
+        private readonly ConcurrentDictionary<string, ServiceRegistration> _namedRegistrations = new ConcurrentDictionary<string, ServiceRegistration>();
+        private readonly ConcurrentDictionary<Type, object> _singletonInstances = new ConcurrentDictionary<Type, object>();
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, object>> _sceneInstances = new ConcurrentDictionary<string, ConcurrentDictionary<Type, object>>();
         
-        // 특정 ID를 가진 등록 정보를 저장하는 딕셔너리
-        private readonly Dictionary<string, ServiceRegistration> _namedRegistrations = new Dictionary<string, ServiceRegistration>();
-        
-        // 싱글톤 인스턴스를 저장하는 딕셔너리
-        private readonly Dictionary<Type, object> _singletonInstances = new Dictionary<Type, object>();
-        
-        // 씬별 인스턴스를 저장하는 딕셔너리
-        private readonly Dictionary<string, Dictionary<Type, object>> _sceneInstances = new Dictionary<string, Dictionary<Type, object>>();
-        
-        // 현재 활성 씬 이름
+        // 현재 활성 씬 이름 (thread-safe 접근을 위한 lock)
         private string _currentSceneName;
+        private readonly ReaderWriterLockSlim _sceneNameLock = new ReaderWriterLockSlim();
+        
+        // 순환 의존성 감지를 위한 ThreadLocal 스택
+        private readonly ThreadLocal<HashSet<Type>> _resolvingTypes = new ThreadLocal<HashSet<Type>>(() => new HashSet<Type>());
+        
+        // 리플렉션 캐시
+        private readonly ReflectionCache _reflectionCache = new ReflectionCache();
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, object>> _sceneMonoBehaviourCache = new ConcurrentDictionary<string, ConcurrentDictionary<Type, object>>();
         #endregion
 
         #region Public Methods
@@ -53,24 +65,47 @@ namespace BH_Lib.DI
         /// </summary>
         public void ResetContainer()
         {
+            // Thread-safe clear operations
             _registrations.Clear();
             _namedRegistrations.Clear();
             _singletonInstances.Clear();
             
-            // 씬 관련 인스턴스 정리
-            foreach (var sceneDict in _sceneInstances.Values)
+            // 씬 관련 인스턴스 정리 (thread-safe)
+            var sceneKeys = _sceneInstances.Keys.ToList();
+            foreach (var sceneKey in sceneKeys)
             {
-                // IDisposable 인스턴스 정리
-                foreach (var instance in sceneDict.Values)
+                if (_sceneInstances.TryRemove(sceneKey, out var sceneDict))
                 {
-                    if (instance is IDisposable disposable)
+                    // IDisposable 인스턴스 정리
+                    var instances = sceneDict.Values.ToList();
+                    foreach (var instance in instances)
                     {
-                        disposable.Dispose();
+                        if (instance is IDisposable disposable)
+                        {
+                            try
+                            {
+                                disposable.Dispose();
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.PrintErr($"Error disposing instance: {ex.Message}");
+                            }
+                        }
                     }
+                    sceneDict.Clear();
                 }
-                sceneDict.Clear();
             }
-            _sceneInstances.Clear();
+            
+            // 씬 이름 초기화
+            _sceneNameLock.EnterWriteLock();
+            try
+            {
+                _currentSceneName = null;
+            }
+            finally
+            {
+                _sceneNameLock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -95,6 +130,16 @@ namespace BH_Lib.DI
         /// <param name="id">선택적 ID</param>
         public void Register(Type serviceType, Type implementationType, LifetimeScope lifetime = LifetimeScope.Singleton, string id = null)
         {
+            // 입력 유효성 검사
+            if (serviceType == null)
+                throw new ArgumentNullException(nameof(serviceType), "Service type cannot be null");
+            if (implementationType == null)
+                throw new ArgumentNullException(nameof(implementationType), "Implementation type cannot be null");
+            if (!serviceType.IsAssignableFrom(implementationType))
+                throw new ArgumentException($"Implementation type '{implementationType.FullName}' does not implement service type '{serviceType.FullName}'", nameof(implementationType));
+            if (implementationType.IsAbstract || implementationType.IsInterface)
+                throw new ArgumentException($"Implementation type '{implementationType.FullName}' cannot be abstract or interface", nameof(implementationType));
+
             var registration = new ServiceRegistration
             {
                 ServiceType = serviceType,
@@ -174,18 +219,34 @@ namespace BH_Lib.DI
         /// <returns>서비스 인스턴스</returns>
         public object Resolve(Type serviceType)
         {
-            if (!_registrations.TryGetValue(serviceType, out var registration))
+            // 순환 의존성 검사
+            if (_resolvingTypes.Value.Contains(serviceType))
             {
-                throw new Exception($"No registration found for {serviceType.Name}");
+                var circularPath = string.Join(" -> ", _resolvingTypes.Value.Select(t => t.Name));
+                throw new InvalidOperationException($"Circular dependency detected: {circularPath} -> {serviceType.Name}");
             }
 
-            var instance = CreateInstance(registration);
-            if (instance == null && registration.Lifetime == LifetimeScope.Scene)
+            if (!_registrations.TryGetValue(serviceType, out var registration))
             {
-                // 씬 제약 조건에 의해 생성되지 않은 경우에 대한 처리
-                Debug.Log($"Service {serviceType.Name} was not created due to scene constraints");
+                throw new InvalidOperationException($"No registration found for type '{serviceType.FullName}'. Please ensure the type is registered in the DI container.");
             }
-            return instance;
+
+            // 의존성 해결 시작
+            _resolvingTypes.Value.Add(serviceType);
+            try
+            {
+                var instance = CreateInstance(registration);
+                if (instance == null && registration.Lifetime == LifetimeScope.Scene)
+                {
+                    Log.Print($"Service '{serviceType.Name}' was not created due to scene constraints");
+                }
+                return instance;
+            }
+            finally
+            {
+                // 해결 완료 후 스택에서 제거
+                _resolvingTypes.Value.Remove(serviceType);
+            }
         }
 
         /// <summary>
@@ -197,10 +258,11 @@ namespace BH_Lib.DI
         {
             if (!_namedRegistrations.TryGetValue(id, out var registration))
             {
-                throw new Exception($"No registration found for ID: {id}");
+                throw new InvalidOperationException($"No registration found for ID '{id}'. Please ensure the service is registered with this ID.");
             }
 
-            return CreateInstance(registration);
+            // ID 기반 해결도 동일한 순환 의존성 검사 적용
+            return Resolve(registration.ServiceType);
         }
 
         /// <summary>
@@ -214,69 +276,96 @@ namespace BH_Lib.DI
 
             var type = instance.GetType();
 
-            // 필드 주입
-            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            // 캐시된 필드 정보로 필드 주입
+            var fields = _reflectionCache.GetFields(type);
+            
+            foreach (var field in fields)
             {
                 var injectAttribute = field.GetCustomAttribute<InjectAttribute>();
                 if (injectAttribute != null)
                 {
-                    object dependency;
-                    if (string.IsNullOrEmpty(injectAttribute.Id))
+                    try
                     {
-                        dependency = Resolve(field.FieldType);
+                        object dependency;
+                        if (string.IsNullOrEmpty(injectAttribute.Id))
+                        {
+                            dependency = Resolve(field.FieldType);
+                        }
+                        else
+                        {
+                            dependency = ResolveById(injectAttribute.Id);
+                        }
+                        field.SetValue(instance, dependency);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        dependency = ResolveById(injectAttribute.Id);
+                        Log.PrintErr($"Failed to inject field '{field.Name}' in type '{type.Name}': {ex.Message}");
                     }
-                    field.SetValue(instance, dependency);
                 }
             }
 
-            // 프로퍼티 주입
-            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            // 캐시된 프로퍼티 정보로 프로퍼티 주입
+            var properties = _reflectionCache.GetProperties(type);
+            
+            foreach (var property in properties)
             {
                 var injectAttribute = property.GetCustomAttribute<InjectAttribute>();
                 if (injectAttribute != null && property.CanWrite)
                 {
-                    object dependency;
-                    if (string.IsNullOrEmpty(injectAttribute.Id))
+                    try
                     {
-                        dependency = Resolve(property.PropertyType);
+                        object dependency;
+                        if (string.IsNullOrEmpty(injectAttribute.Id))
+                        {
+                            dependency = Resolve(property.PropertyType);
+                        }
+                        else
+                        {
+                            dependency = ResolveById(injectAttribute.Id);
+                        }
+                        property.SetValue(instance, dependency);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        dependency = ResolveById(injectAttribute.Id);
+                        Log.PrintErr($"Failed to inject property '{property.Name}' in type '{type.Name}': {ex.Message}");
                     }
-                    property.SetValue(instance, dependency);
                 }
             }
 
-            // 메소드 주입
-            foreach (var method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            // 캐시된 메소드 정보로 메소드 주입
+            var methods = _reflectionCache.GetMethods(type);
+            
+            foreach (var method in methods)
             {
                 var injectAttribute = method.GetCustomAttribute<InjectAttribute>();
                 if (injectAttribute != null)
                 {
-                    var parameters = method.GetParameters();
-                    var args = new object[parameters.Length];
-
-                    for (int i = 0; i < parameters.Length; i++)
+                    try
                     {
-                        var paramInfo = parameters[i];
-                        var paramInjectAttr = paramInfo.GetCustomAttribute<InjectAttribute>();
-                        
-                        if (paramInjectAttr != null && !string.IsNullOrEmpty(paramInjectAttr.Id))
-                        {
-                            args[i] = ResolveById(paramInjectAttr.Id);
-                        }
-                        else
-                        {
-                            args[i] = Resolve(paramInfo.ParameterType);
-                        }
-                    }
+                        var parameters = method.GetParameters();
+                        var args = new object[parameters.Length];
 
-                    method.Invoke(instance, args);
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                            var paramInfo = parameters[i];
+                            var paramInjectAttr = paramInfo.GetCustomAttribute<InjectAttribute>();
+                            
+                            if (paramInjectAttr != null && !string.IsNullOrEmpty(paramInjectAttr.Id))
+                            {
+                                args[i] = ResolveById(paramInjectAttr.Id);
+                            }
+                            else
+                            {
+                                args[i] = Resolve(paramInfo.ParameterType);
+                            }
+                        }
+
+                        method.Invoke(instance, args);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.PrintErr($"Failed to inject method '{method.Name}' in type '{type.Name}': {ex.Message}");
+                    }
                 }
             }
         }
@@ -361,7 +450,7 @@ namespace BH_Lib.DI
             _currentSceneName = sceneName;
             if (!_sceneInstances.ContainsKey(sceneName))
             {
-                _sceneInstances[sceneName] = new Dictionary<Type, object>();
+                _sceneInstances[sceneName] = new ConcurrentDictionary<Type, object>();
             }
         }
 
@@ -371,25 +460,57 @@ namespace BH_Lib.DI
         /// <param name="sceneName">씬 이름</param>
         public void CleanupSceneContainer(string sceneName)
         {
-            if (_sceneInstances.TryGetValue(sceneName, out var instances))
+            if (_sceneInstances.TryRemove(sceneName, out var instances))
             {
-                // IDisposable 인스턴스 정리
-                foreach (var instance in instances.Values)
+                // IDisposable 인스턴스 정리 (thread-safe)
+                var instanceValues = instances.Values.ToList();
+                foreach (var instance in instanceValues)
                 {
-                    if (instance is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
+                    DisposeInstance(instance);
                 }
                 
                 instances.Clear();
-                _sceneInstances.Remove(sceneName);
                 
-                // 만약 현재 씬이 삭제된 씬이라면 현재 씬 캐싱 초기화
-                if (_currentSceneName == sceneName)
+                // 현재 씬 캐싱 초기화 (thread-safe)
+                _sceneNameLock.EnterWriteLock();
+                try
                 {
-                    _currentSceneName = null;
+                    if (_currentSceneName == sceneName)
+                    {
+                        _currentSceneName = null;
+                    }
                 }
+                finally
+                {
+                    _sceneNameLock.ExitWriteLock();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 인스턴스를 안전하게 해제합니다.
+        /// </summary>
+        /// <param name="instance">해제할 인스턴스</param>
+        private void DisposeInstance(object instance)
+        {
+            if (instance == null) return;
+            
+            try
+            {
+                // MonoBehaviour는 Unity에서 관리하므로 Destroy 호출
+                if (instance is MonoBehaviour monoBehaviour && monoBehaviour != null)
+                {
+                    UnityEngine.Object.Destroy(monoBehaviour.gameObject);
+                }
+                // 일반 IDisposable 객체
+                else if (instance is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.PrintErr($"Error disposing instance of type {instance.GetType().Name}: {ex.Message}");
             }
         }
         
@@ -399,11 +520,36 @@ namespace BH_Lib.DI
         /// <returns>현재 씬 이름</returns>
         private string GetCurrentSceneName()
         {
-            if (string.IsNullOrEmpty(_currentSceneName))
+            _sceneNameLock.EnterReadLock();
+            try
             {
-                _currentSceneName = SceneManager.GetActiveScene().name;
+                if (string.IsNullOrEmpty(_currentSceneName))
+                {
+                    _sceneNameLock.ExitReadLock();
+                    _sceneNameLock.EnterWriteLock();
+                    try
+                    {
+                        // Double-checked locking
+                        if (string.IsNullOrEmpty(_currentSceneName))
+                        {
+                            _currentSceneName = SceneManager.GetActiveScene().name;
+                        }
+                        return _currentSceneName;
+                    }
+                    finally
+                    {
+                        _sceneNameLock.ExitWriteLock();
+                    }
+                }
+                return _currentSceneName;
             }
-            return _currentSceneName;
+            finally
+            {
+                if (_sceneNameLock.IsReadLockHeld)
+                {
+                    _sceneNameLock.ExitReadLock();
+                }
+            }
         }
         
         /// <summary>
@@ -523,12 +669,8 @@ namespace BH_Lib.DI
                 }
             }
             
-            // 씬 딕셔너리 확인 또는 생성
-            if (!_sceneInstances.TryGetValue(sceneName, out var sceneDict))
-            {
-                sceneDict = new Dictionary<Type, object>();
-                _sceneInstances[sceneName] = sceneDict;
-            }
+            // 씬 딕셔너리 확인 또는 생성 (thread-safe)
+            var sceneDict = _sceneInstances.GetOrAdd(sceneName, _ => new ConcurrentDictionary<Type, object>());
             
             // 기존 인스턴스 있으면 반환
             if (sceneDict.TryGetValue(registration.ServiceType, out var instance))
@@ -536,11 +678,11 @@ namespace BH_Lib.DI
                 return instance;
             }
             
-            // 새 인스턴스 생성
+            // 새 인스턴스 생성 (thread-safe)
             instance = CreateAndInjectInstance(registration.ImplementationType);
             if (instance != null)
             {
-                sceneDict[registration.ServiceType] = instance;
+                sceneDict.TryAdd(registration.ServiceType, instance);
             }
             
             return instance;
@@ -551,23 +693,60 @@ namespace BH_Lib.DI
             // MonoBehaviour 타입 체크
             if (typeof(MonoBehaviour).IsAssignableFrom(type))
             {
-                // 이미 씬에 존재하는지 확인
-                var existing = GameObject.FindFirstObjectByType(type) as MonoBehaviour;
-                if (existing != null)
-                {
-                    InjectInto(existing);
-                    return existing;
-                }
-
-                // 없으면 새 GameObject 생성하고 컴포넌트 추가
-                var gameObject = new GameObject(type.Name);
-                var component = gameObject.AddComponent(type) as MonoBehaviour;
-                InjectInto(component);
-                return component;
+                return CreateMonoBehaviourInstance(type);
             }
 
-            // 생성자 선택 - [Inject] 어트리뷰트가 있는 생성자 또는 매개변수가 가장 많은 생성자
-            var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return CreateRegularInstance(type);
+        }
+        
+        /// <summary>
+        /// MonoBehaviour 인스턴스를 생성합니다 (캐싱 적용).
+        /// </summary>
+        private object CreateMonoBehaviourInstance(Type type)
+        {
+            string sceneName = GetCurrentSceneName();
+            var sceneCache = _sceneMonoBehaviourCache.GetOrAdd(sceneName, _ => new ConcurrentDictionary<Type, object>());
+            
+            // 캐시에서 확인
+            if (sceneCache.TryGetValue(type, out var cachedInstance))
+            {
+                var cachedMono = cachedInstance as MonoBehaviour;
+                if (cachedMono != null && cachedMono.gameObject != null)
+                {
+                    return cachedInstance;
+                }
+                else
+                {
+                    // 캐시된 객체가 파괴되었으면 제거
+                    sceneCache.TryRemove(type, out _);
+                }
+            }
+            
+            // 씬에서 기존 객체 찾기 (한 번만 수행)
+            var existing = GameObject.FindFirstObjectByType(type) as MonoBehaviour;
+            if (existing != null)
+            {
+                sceneCache.TryAdd(type, existing);
+                InjectInto(existing);
+                return existing;
+            }
+
+            // 새 GameObject 생성
+            var gameObject = new GameObject(type.Name);
+            var component = gameObject.AddComponent(type) as MonoBehaviour;
+            sceneCache.TryAdd(type, component);
+            InjectInto(component);
+            return component;
+        }
+        
+        /// <summary>
+        /// 일반 클래스 인스턴스를 생성합니다 (캐시된 리플렉션 사용).
+        /// </summary>
+        private object CreateRegularInstance(Type type)
+        {
+            // 캐시된 생성자 정보 사용
+            var constructors = _reflectionCache.GetConstructors(type);
+            
             ConstructorInfo targetConstructor = null;
             
             // 먼저 [Inject] 어트리뷰트가 있는 생성자 검색
