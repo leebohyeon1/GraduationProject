@@ -23,7 +23,7 @@ public class PlayerMovement : DIMonoBehaviour, IMovable
     private Vector3 _velocity;
     private bool _isGrounded;
     
-    public float MoveSpeed => _playerStats != null ? _playerStats.moveSpeed : 5f;
+    public float MoveSpeed => _playerStats != null ? _playerStats.MoveSpeed : 5f;
 
     protected override void Awake()
     {

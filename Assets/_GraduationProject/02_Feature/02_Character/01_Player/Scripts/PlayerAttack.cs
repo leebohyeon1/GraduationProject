@@ -20,8 +20,8 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
     private bool _canAttack = true;
     
     // IAttacker 인터페이스 구현
-    public float AttackDamage => _playerStats != null ? _playerStats.attackDamage : 10f;
-    public float AttackSpeed => _playerStats != null ? _playerStats.attackSpeed : 1f;
+    public float AttackDamage => _playerStats != null ? _playerStats.AttackDamage : 10f;
+    public float AttackSpeed => _playerStats != null ? _playerStats.AttackSpeed : 1f;
     
     protected override void Awake()
     {
@@ -46,7 +46,7 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
         
         // 공격 범위 내의 적들을 찾기
-        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _playerStats.attackRadius, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _playerStats.AttackRadius, _enemyLayerMask);
         
         foreach (Collider enemy in hitEnemies)
         {
@@ -87,12 +87,12 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
         if (_attackPoint != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_attackPoint.position, _playerStats.attackRadius);
+            Gizmos.DrawWireSphere(_attackPoint.position, _playerStats.AttackRadius);
         }
     }
     
     // 공개 프로퍼티들
     public bool CanAttack => _canAttack;
-    public float AttackRadius => _playerStats.attackRadius;
+    public float AttackRadius => _playerStats.AttackRadius;
     public Transform AttackPoint => _attackPoint;
 }

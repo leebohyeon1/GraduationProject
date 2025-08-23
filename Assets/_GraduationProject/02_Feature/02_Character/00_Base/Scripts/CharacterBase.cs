@@ -15,7 +15,7 @@ public class CharacterBase : DIMonoBehaviour, IDamageable
     [SerializeField] protected float _currentHealth;
     
     public float Health => _currentHealth;
-    public float MaxHealth => _stats.maxHealth;
+    public float MaxHealth => _stats.MaxHealth;
     public bool IsDead => _currentHealth <= 0;
     
     public event Action<float, float> OnHealthChanged;
@@ -24,10 +24,10 @@ public class CharacterBase : DIMonoBehaviour, IDamageable
     protected override void Awake()
     {
         base.Awake();
-        
+
         if (_stats != null)
         {
-            _currentHealth = _stats.maxHealth;
+            _currentHealth = _stats.MaxHealth;
         }
     }
     
@@ -56,7 +56,7 @@ public class CharacterBase : DIMonoBehaviour, IDamageable
         if (IsDead) return;
         
         float previousHealth = _currentHealth;
-        _currentHealth = Mathf.Min(_stats.maxHealth, _currentHealth + healAmount);
+        _currentHealth = Mathf.Min(_stats.MaxHealth, _currentHealth + healAmount);
         
         OnHealthChanged?.Invoke(previousHealth, _currentHealth);
     }

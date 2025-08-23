@@ -8,11 +8,11 @@ using UnityEngine;
 public class PlayerStats : CharacterStats
 {
     [Header("Player Combat")]
-    public float attackDamage = 10f;
-    public float attackSpeed = 1f;
-    public float attackRadius = 2f;
+    public float AttackDamage = 10f;
+    public float AttackSpeed = 1f;
+    public float AttackRadius = 2f;
     
     [Header("Player Special")]
-    public float dodgeSpeed = 8f;
-    public float dodgeCooldown = 2f;
+    public float DodgeSpeed = 8f;
+    public float DodgeCooldown = 2f;
 }
