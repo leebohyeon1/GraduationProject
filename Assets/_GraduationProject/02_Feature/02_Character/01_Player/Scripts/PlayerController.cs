@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using BH_Lib.AssetManager;
 using BH_Lib.DI;
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Dependencies")]
     [SerializeField] private string _inputReaderKey = "InputReader";
+    [Inject] private AssetManager _assetManager { get; set; }        
 
     private InputReader _inputReader;
     private IMovable _movable;
@@ -31,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     private async Task LoadInputReaderAsync()
     {
-        _inputReader = await AssetManager.Instance.LoadAssetAsync<InputReader>(_inputReaderKey, gameObject);
+        _inputReader = await _assetManager.LoadAssetAsync<InputReader>(_inputReaderKey, gameObject);
         
         if (_inputReader != null)
         {

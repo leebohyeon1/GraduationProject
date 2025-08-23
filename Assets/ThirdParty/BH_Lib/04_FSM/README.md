@@ -1,267 +1,114 @@
-# BH_Lib FSM (Finite State Machine)
+# FSM (Finite State Machine)
 
-Unity용 유한 상태 머신 라이브러리입니다. 게임 캐릭터, AI, UI 등의 상태 관리에 활용할 수 있습니다.
+Unity 프로젝트를 위한 유연하고 강력한 유한 상태 머신(FSM) 라이브러리입니다. 제네릭 기반으로 설계되어 타입 안정성을 보장하며, 게임 캐릭터 AI, UI 상태, 게임 시스템 로직 등 다양한 곳에 적용할 수 있습니다.
 
-## 📁 구조
+## 주요 기능
+
+- **타입-안전(Type-Safe) 상태 관리**: 제네릭을 사용하여 컴파일 타임에 상태 타입을 검증합니다.
+- **자동 상태 전환**: 조건(Predicate)을 기반으로 한 유연한 자동 상태 전환 시스템을 제공합니다.
+- **상태 히스토리**: `RevertToPreviousState()` 메서드로 이전 상태로 쉽게 돌아갈 수 있습니다.
+- **Unity 라이프사이클 통합**: `Update` 및 `FixedUpdate`를 지원하여 MonoBehaviour와 자연스럽게 연동됩니다.
+- **이벤트 기반 알림**: `OnStateChanged` 이벤트를 통해 상태 변경 시점에 원하는 로직을 실행할 수 있습니다.
+
+## 구조
 
 ```
 04_FSM/
-├── IState.cs              # 상태 인터페이스
-├── BaseState.cs           # 기본 상태 추상 클래스
-├── StateMachine.cs        # 상태 머신 핵심 클래스
-├── StateTransition.cs     # 상태 전환 규칙 클래스
-└── README.md             # 이 파일
+├── IState.cs           // 모든 상태가 구현해야 하는 기본 인터페이스
+├── BaseState.cs        // 상태 구현을 돕는 편리한 추상 클래스
+├── StateMachine.cs     // 상태를 관리하고 전환을 처리하는 핵심 클래스
+├── StateTransition.cs  // 상태 전환의 규칙과 조건을 정의하는 클래스
+└── README.md          // 현재 문서
 ```
 
-## 🎯 주요 기능
+## 사용 방법
 
-- **상태 관리**: 상태 추가, 전환, 제거
-- **자동 전환**: 조건부 상태 자동 전환 시스템
-- **상태 히스토리**: 이전 상태로 복귀 기능 (최대 10개)
-- **타입 안전성**: 제네릭을 활용한 컴파일 타임 타입 검사
-- **Unity 통합**: Update/FixedUpdate 라이프사이클 지원
-- **이벤트 시스템**: 상태 변경 알림
+### 1. 상태 머신 설정
 
-## 🚀 사용 방법
-
-### 1. 기본 설정
+상태를 관리할 주체(Context)가 되는 클래스(예: `Player`, `UIManager`)에서 `StateMachine`을 생성하고 초기화합니다.
 
 ```csharp
 using BH_Lib.FSM;
 
-// 컨텍스트 클래스 (상태가 작동할 대상)
 public class Player : MonoBehaviour
 {
-    private StateMachine<Player> stateMachine;
+    public StateMachine<Player> StateMachine { get; private set; }
     
-    void Start()
+    void Awake()
     {
-        // 상태 머신 생성
-        stateMachine = new StateMachine<Player>(this);
+        // 1. 상태 머신 생성 (컨텍스트는 Player 자신)
+        StateMachine = new StateMachine<Player>(this);
         
-        // 상태들 추가
-        stateMachine.AddState(new IdleState(this, stateMachine));
-        stateMachine.AddState(new MoveState(this, stateMachine));
-        stateMachine.AddState(new AttackState(this, stateMachine));
+        // 2. 상태들 추가
+        StateMachine.AddState(new IdleState(this, StateMachine));
+        StateMachine.AddState(new MoveState(this, StateMachine));
+        StateMachine.AddState(new AttackState(this, StateMachine));
         
-        // 초기 상태 설정
-        stateMachine.ChangeState<IdleState>();
+        // 3. 초기 상태 설정
+        StateMachine.ChangeState<IdleState>();
     }
     
     void Update()
     {
-        stateMachine.Update(); // 매 프레임 업데이트
-    }
-    
-    void FixedUpdate()
-    {
-        stateMachine.FixedUpdate(); // 물리 업데이트
+        // 4. 매 프레임 상태 머신 업데이트
+        StateMachine.Update();
     }
 }
 ```
 
-### 2. 상태 구현
+### 2. 상태 클래스 구현
 
-#### 방법 1: BaseState 상속 (권장)
+`BaseState<T>`를 상속받아 각 상태의 구체적인 로직을 구현합니다.
+
 ```csharp
 public class IdleState : BaseState<Player>
 {
-    public IdleState(Player context, StateMachine<Player> stateMachine) 
-        : base(context, stateMachine) { }
+    // 생성자에서 context와 stateMachine을 부모 클래스로 전달
+    public IdleState(Player context, StateMachine<Player> stateMachine) : base(context, stateMachine) { }
     
     public override void OnEnter()
     {
-        Debug.Log("Idle 상태 진입");
-        // 애니메이션 설정 등
+        // p_context를 통해 Player 클래스의 멤버에 접근 가능
+        Debug.Log($"{p_context.name} Idle 상태 진입");
     }
     
     public override void OnUpdate()
     {
-        // 입력 처리
+        // 특정 조건 만족 시 p_stateMachine을 통해 상태 전환
         if (Input.GetAxis("Horizontal") != 0)
         {
-            stateMachine.ChangeState<MoveState>();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            stateMachine.ChangeState<AttackState>();
-        }
-    }
-    
-    public override void OnExit()
-    {
-        Debug.Log("Idle 상태 종료");
-    }
-}
-```
-
-#### 방법 2: IState 직접 구현
-```csharp
-public class MoveState : IState
-{
-    private Player player;
-    private StateMachine<Player> stateMachine;
-    
-    public MoveState(Player player, StateMachine<Player> stateMachine)
-    {
-        this.player = player;
-        this.stateMachine = stateMachine;
-    }
-    
-    public void OnEnter()
-    {
-        Debug.Log("Move 상태 진입");
-    }
-    
-    public void OnUpdate()
-    {
-        float input = Input.GetAxis("Horizontal");
-        if (input == 0)
-        {
-            stateMachine.ChangeState<IdleState>();
-            return;
-        }
-        
-        // 이동 처리
-        player.transform.Translate(Vector3.right * input * Time.deltaTime * 5f);
-    }
-    
-    public void OnFixedUpdate() { }
-    public void OnExit() { }
-}
-```
-
-### 3. 자동 상태 전환
-
-```csharp
-void Start()
-{
-    stateMachine = new StateMachine<Player>(this);
-    
-    // 상태 추가
-    stateMachine.AddState(new IdleState(this, stateMachine));
-    stateMachine.AddState(new MoveState(this, stateMachine));
-    stateMachine.AddState(new DeadState(this, stateMachine));
-    
-    // 조건부 자동 전환 설정
-    // Idle에서 Move로: 입력이 있을 때
-    stateMachine.AddTransition<IdleState, MoveState>(() => Input.GetAxis("Horizontal") != 0);
-    
-    // Move에서 Idle로: 입력이 없을 때
-    stateMachine.AddTransition<MoveState, IdleState>(() => Input.GetAxis("Horizontal") == 0);
-    
-    // 모든 상태에서 Dead로: HP가 0 이하일 때
-    stateMachine.AddAnyTransition<DeadState>(() => hp <= 0);
-    
-    stateMachine.ChangeState<IdleState>();
-}
-```
-
-### 4. 이벤트 처리
-
-```csharp
-void Start()
-{
-    stateMachine = new StateMachine<Player>(this);
-    
-    // 상태 변경 이벤트 구독
-    stateMachine.OnStateChanged += OnStateChanged;
-}
-
-private void OnStateChanged(Type from, Type to)
-{
-    Debug.Log($"상태 변경: {from.Name} → {to.Name}");
-    
-    // UI 업데이트, 사운드 재생 등
-    if (to == typeof(AttackState))
-    {
-        PlayAttackSound();
-    }
-}
-```
-
-### 5. 상태 히스토리 활용
-
-```csharp
-public class PauseState : BaseState<GameManager>
-{
-    public override void OnUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            // 이전 상태로 복귀
-            stateMachine.RevertToPreviousState();
+            p_stateMachine.ChangeState<MoveState>();
         }
     }
 }
 ```
 
-## 📝 활용 예시
+### 3. 자동 상태 전환 설정
 
-### 캐릭터 AI
+`Update` 내에서 직접 상태를 전환하는 대신, 조건부 자동 전환을 설정하여 코드를 더 깔끔하게 관리할 수 있습니다.
+
 ```csharp
-// AI 상태들
-public class PatrolState : BaseState<Enemy> { ... }
-public class ChaseState : BaseState<Enemy> { ... }
-public class AttackState : BaseState<Enemy> { ... }
-
-// 자동 전환 설정
-stateMachine.AddTransition<PatrolState, ChaseState>(() => 
-    Vector3.Distance(context.transform.position, player.position) < detectionRange);
-    
-stateMachine.AddTransition<ChaseState, AttackState>(() => 
-    Vector3.Distance(context.transform.position, player.position) < attackRange);
-```
-
-### UI 상태 관리
-```csharp
-public class MainMenuState : BaseState<UIManager> { ... }
-public class InGameState : BaseState<UIManager> { ... }
-public class PauseState : BaseState<UIManager> { ... }
-public class GameOverState : BaseState<UIManager> { ... }
-```
-
-### 게임 시스템
-```csharp
-public class LoadingState : BaseState<GameManager> { ... }
-public class PlayingState : BaseState<GameManager> { ... }
-public class PausedState : BaseState<GameManager> { ... }
-public class EndState : BaseState<GameManager> { ... }
-```
-
-## 🎛️ 고급 기능
-
-### 상태 확인
-```csharp
-// 현재 상태가 특정 타입인지 확인
-if (stateMachine.IsInState<AttackState>())
+void Awake()
 {
-    Debug.Log("현재 공격 중");
+    StateMachine = new StateMachine<Player>(this);
+    
+    StateMachine.AddState(new IdleState(this, StateMachine));
+    StateMachine.AddState(new MoveState(this, StateMachine));
+    StateMachine.AddState(new DeadState(this, StateMachine));
+    
+    // Idle -> Move 전환 조건: 입력이 있을 때
+    StateMachine.AddTransition<IdleState, MoveState>(() => Input.GetAxis("Horizontal") != 0);
+    
+    // Move -> Idle 전환 조건: 입력이 없을 때
+    StateMachine.AddTransition<MoveState, IdleState>(() => Input.GetAxis("Horizontal") == 0);
+    
+    // 모든 상태에서 Dead로 전환 조건: HP가 0 이하일 때
+    StateMachine.AddAnyTransition<DeadState>(() => p_context.HP <= 0);
+    
+    StateMachine.ChangeState<IdleState>();
 }
-
-// 현재 상태 타입 가져오기
-Type currentStateType = stateMachine.CurrentStateType;
 ```
 
-### 컨텍스트 접근
-```csharp
-// 상태에서 컨텍스트 접근
-Player player = stateMachine.GetContext();
-```
+## 의존성
 
-## ⚠️ 주의사항
-
-1. **상태 등록**: `ChangeState()` 호출 전에 반드시 `AddState()`로 상태를 등록해야 합니다.
-2. **Update 호출**: MonoBehaviour에서 `stateMachine.Update()`와 `stateMachine.FixedUpdate()`를 호출해야 합니다.
-3. **메모리 관리**: 상태 객체들은 한 번만 생성하여 재사용됩니다.
-4. **전환 조건**: 자동 전환 조건은 매 프레임 확인되므로 성능을 고려해 작성하세요.
-
-## 🔧 의존성
-
-- Unity Engine
-- BH_Lib.Log (로그 출력용)
-
-## 📄 라이선스
-
-BH_Lib 라이브러리의 일부입니다.
+- **BH_Lib.Log**: 로그 출력을 위해 사용됩니다. (선택적)

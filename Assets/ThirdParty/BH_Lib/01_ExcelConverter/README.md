@@ -1,109 +1,66 @@
-# Excel Converter 라이브러리
+# Excel Converter
 
-## 개요
-Excel Converter는 유니티의 ScriptableObject와 엑셀 파일 간의 양방향 데이터 동기화를 위한 라이브러리입니다. 이 라이브러리를 사용하면 게임 데이터를 엑셀에서 편집하고 유니티로 가져오거나, 유니티에서 수정한 데이터를 엑셀로 내보낼 수 있습니다.
+Unity의 ScriptableObject와 Excel 파일을 양방향으로 손쉽게 동기화하는 에디터 확장 라이브러리입니다. `BH_Lib.DI` 시스템을 기반으로 동작하여, 설정과 실제 변환 로직이 분리된 유연한 구조를 가집니다.
+
+데이터를 Excel에서 편리하게 관리하고, Unity에서는 ScriptableObject로 안전하게 사용하세요.
 
 ## 주요 기능
-- ScriptableObject ↔ Excel 간 양방향 데이터 동기화
-- 자동 타입 변환 지원 (int, float, bool, Vector2, Vector3, Color 등)
-- 배열 및 리스트 동기화 지원
-- 중첩 클래스 구조 지원
-- 자동 동기화 설정 기능
 
-## 구조
-
-### 코어 모듈
-- **IDataConverter**: 다양한 데이터 타입 간 변환 인터페이스
-- **DataConverter**: 데이터 타입 변환 구현체
-
-### 설정 모듈
-- **ISettingsProvider**: 엑셀 동기화 설정 제공 인터페이스
-- **ExcelSyncSettingsSO**: 동기화 설정을 관리하는 ScriptableObject
-- **SyncSettingItem**: 동기화 설정 항목 클래스
-
-### 변환 모듈
-- **IExcelImporter**: 엑셀에서 ScriptableObject로 가져오기 인터페이스
-- **ExcelImporter**: 엑셀 데이터를 ScriptableObject로 가져오는 구현체
-- **IExcelExporter**: ScriptableObject에서 엑셀로 내보내기 인터페이스
-- **ExcelExporter**: ScriptableObject 데이터를 엑셀로 내보내는 구현체
+- **강력한 양방향 동기화**: ScriptableObject ↔ Excel 간 데이터 동기화
+- **에디터 통합**: 메뉴와 인스펙터를 통해 코딩 없이 동기화 설정 및 실행 가능
+- **자동 동기화**: ScriptableObject 또는 Excel 파일 변경 시 자동으로 동기화 실행
+- **폭넓은 타입 지원**: 기본 타입, Unity 타입(Vector, Color 등), Enum, 배열, 리스트, 중첩 클래스 등 대부분의 데이터 구조 지원
+- **파일 잠금 감지**: Excel 파일이 열려있을 경우, 안전한 동기화를 위한 알림 및 처리 기능 제공
 
 ## 사용 방법
 
-### 1. 라이브러리 초기화
-라이브러리는 유니티 에디터 시작 시 자동으로 초기화됩니다. 필요한 경우 수동으로 초기화할 수도 있습니다:
+### 1. 동기화 설정 (코딩 불필요)
+
+가장 일반적인 사용법은 에디터 메뉴를 이용하는 것입니다.
+
+1.  상단 메뉴에서 `BH_Lib > 엑셀 동기화 설정 관리`를 선택하여 설정 창을 엽니다.
+2.  '새 항목 추가' 섹션에서 동기화할 ScriptableObject와 Excel 파일의 경로를 지정하고 '추가' 버튼을 누릅니다.
+    -   `…` 버튼을 눌러 파일 탐색기로 쉽게 경로를 지정할 수 있습니다.
+
+### 2. 동기화 실행
+
+- **자동 동기화 (기본)**: 설정된 ScriptableObject나 Excel 파일을 저장하면, 변경 사항이 자동으로 감지되어 동기화가 실행됩니다.
+- **수동 동기화**: 
+  - `엑셀 동기화 설정` 창의 '일괄 동기화' 버튼으로 모든 항목을 한 번에 동기화할 수 있습니다.
+  - 동기화할 ScriptableObject를 선택하고, 인스펙터 창에 나타나는 `Excel Tool Window`에서 'Excel로 내보내기' 또는 'Excel에서 가져오기' 버튼을 눌러 개별적으로 동기화할 수 있습니다.
+
+### 3. 스크립트를 통한 제어 (고급)
+
+필요한 경우, 스크립트를 통해 동기화 유틸리티를 직접 호출할 수 있습니다.
 
 ```csharp
-ExcelConverterInitializer.Initialize();
-```
+[Inject] private ISyncUtility _syncUtility;
 
-### 2. 동기화 설정 추가
-
-```csharp
-// 설정 프로바이더 가져오기
-var settings = ExcelSyncSettingsSO.Instance;
-
-// 새 설정 항목 추가
-settings.AddSyncItem(
-    "ItemDatabase",              // 이름
-    "Data/ItemDatabase.asset",   // ScriptableObject 경로
-    "ExcelData/Items.xlsx",      // 엑셀 파일 경로
-    true                         // 자동 동기화 여부
-);
-```
-
-### 3. 엑셀 파일에서 데이터 가져오기
-
-```csharp
-// ScriptableObject 인스턴스
-var myData = AssetDatabase.LoadAssetAtPath<MyScriptableObject>("Assets/Data/MyData.asset");
-
-// 엑셀 파일 경로
-string excelPath = Path.GetFullPath(Path.Combine(Application.dataPath, "ExcelData/MyData.xlsx"));
-
-// 임포터 생성 및 데이터 가져오기
-var importer = new ExcelImporter<MyScriptableObject>(myData, excelPath);
-bool success = importer.Import();
-
-if (success)
+public void SyncMyData()
 {
-    EditorUtility.SetDirty(myData);
-    AssetDatabase.SaveAssets();
+    // 이름으로 동기화 실행
+    _syncUtility.ExportSOToExcel("MyDataName");
+    _syncUtility.ImportExcelToSO("MyDataName");
+
+    // ScriptableObject 인스턴스로 직접 실행
+    var mySo = AssetDatabase.LoadAssetAtPath<MyScriptableObject>("Assets/Path/To/MySO.asset");
+    _syncUtility.ExportSOToExcel(mySo);
 }
 ```
 
-### 4. ScriptableObject에서 엑셀 파일로 데이터 내보내기
+## 내부 동작
 
-```csharp
-// ScriptableObject 인스턴스
-var myData = AssetDatabase.LoadAssetAtPath<MyScriptableObject>("Assets/Data/MyData.asset");
-
-// 엑셀 파일 경로
-string excelPath = Path.GetFullPath(Path.Combine(Application.dataPath, "ExcelData/MyData.xlsx"));
-
-// 익스포터 생성 및 데이터 내보내기
-var exporter = new ExcelExporter<MyScriptableObject>(myData, excelPath);
-bool success = exporter.Export();
-```
+- **`ExcelSyncSettingsSO`**: 모든 동기화 설정을 담고 있는 ScriptableObject입니다. 이 설정은 DI 컨테이너에 `ISettingsProvider`로 등록됩니다.
+- **`SyncUtility`**: 실제 동기화 로직을 수행하는 핵심 클래스입니다. `IExcelExporter`, `IExcelImporter`를 내부적으로 사용하여 변환을 처리하며, `ISyncUtility` 인터페이스로 DI 컨테이너에 등록됩니다.
+- **`ExcelSyncPostprocessor`**: Unity 에디터의 에셋 변경을 감지하여 `SyncUtility`를 통해 자동 동기화를 트리거합니다.
 
 ## 지원하는 데이터 타입
 
-### 기본 타입
-- int, float, double, bool, string
-- DateTime
-- Enum 타입
-- Unity 타입 (Vector2, Vector3, Color)
-
-### 복합 타입
-- 배열 (예: `int[]`, `string[]`)
-- 리스트 (예: `List<int>`, `List<string>`)
-- 사용자 정의 클래스
-- 중첩된 클래스 구조
-
-## 주의사항
-1. 엑셀 파일을 편집할 때 헤더 행(첫 번째 행)은 수정하지 마세요.
-2. 엑셀 파일을 열고 있는 상태에서 동기화를 시도하면 충돌 해결 대화 상자가 표시됩니다.
-3. 복잡한 배열이나 리스트 구조는 각각 별도의 시트로 처리됩니다.
+- **기본 타입**: `int`, `float`, `double`, `bool`, `string`, `DateTime`, `Enum`
+- **Unity 타입**: `Vector2`, `Vector3`, `Color`
+- **복합 타입**: 배열(`int[]`), 리스트(`List<string>`), 그리고 사용자가 정의한 클래스를 포함한 리스트(`List<MyClass>`) 및 중첩 클래스
 
 ## 의존성
-- ClosedXML 라이브러리 (Excel 파일 조작)
-- BH_Lib.DI (의존성 주입 시스템)
+
+- **BH_Lib.DI**: 필수. 모든 내부 구성요소가 의존성 주입으로 연결됩니다.
+- **ClosedXML**: Excel(.xlsx) 파일 처리를 위해 내장되어 있습니다.

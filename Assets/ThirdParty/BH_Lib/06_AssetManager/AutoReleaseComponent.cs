@@ -1,70 +1,54 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 
 namespace BH_Lib.AssetManager
 {
     /// <summary>
-    /// 게임오브젝트가 파괴될 때 연결된 에셋들을 자동으로 해제하는 컴포넌트
+    /// 게임오브젝트가 파괴될 때 연결된 에셋과 씬을 자동으로 해제하는 컴포넌트
     /// </summary>
     public class AutoReleaseComponent : MonoBehaviour
     {
         private AssetManager _assetManager;
-        private readonly HashSet<string> _managedAssets = new HashSet<string>();
+        
+        // Owner 방식으로 관리되는 에셋 키 (참조 카운팅)
+        private readonly HashSet<string> _managedAssetKeys = new HashSet<string>();
+        // Handle 방식으로 관리되는 인스턴스 (InstantiateAsync)
+        private readonly HashSet<AsyncOperationHandle> _managedInstanceHandles = new HashSet<AsyncOperationHandle>();
+        // Handle 방식으로 관리되는 씬
+        private readonly HashSet<AsyncOperationHandle<SceneInstance>> _managedSceneHandles = new HashSet<AsyncOperationHandle<SceneInstance>>();
 
-        /// <summary>
-        /// AssetManager 참조 초기화
-        /// </summary>
-        /// <param name="assetManager">에셋 관리자</param>
-        public void Initialize(AssetManager assetManager)
+        internal void Initialize(AssetManager assetManager)
         {
             _assetManager = assetManager;
         }
 
-        /// <summary>
-        /// 관리할 에셋 키 등록
-        /// </summary>
-        /// <param name="key">에셋 키</param>
-        public void RegisterAsset(string key)
+        // Owner 방식: 참조 카운팅 에셋 등록
+        internal void RegisterAssetKey(string key)
         {
-            _managedAssets.Add(key);
+            _managedAssetKeys.Add(key);
         }
 
-        /// <summary>
-        /// 특정 에셋 해제 및 관리 목록에서 제거
-        /// </summary>
-        /// <param name="key">해제할 에셋 키</param>
-        public void ReleaseAsset(string key)
+        // Handle 방식: 인스턴스 핸들 등록
+        internal void RegisterInstanceHandle(AsyncOperationHandle handle)
         {
-            if (_managedAssets.Contains(key) && _assetManager != null)
-            {
-                _assetManager.ReleaseAsset(key);
-                _managedAssets.Remove(key);
-            }
+            _managedInstanceHandles.Add(handle);
         }
 
-        /// <summary>
-        /// 관리 중인 모든 에셋 해제
-        /// </summary>
-        public void ReleaseAllAssets()
+        // Handle 방식: 씬 핸들 등록
+        internal void RegisterSceneHandle(AsyncOperationHandle<SceneInstance> sceneHandle)
         {
-            if (_assetManager != null)
-            {
-                foreach (var key in _managedAssets)
-                {
-                    _assetManager.ReleaseAsset(key);
-                }
-            }
-            _managedAssets.Clear();
+            _managedSceneHandles.Add(sceneHandle);
         }
 
-        /// <summary>
-        /// 컴포넌트가 파괴될 때 자동으로 모든 에셋 해제
-        /// </summary>
         private void OnDestroy()
         {
             if (_assetManager != null)
             {
-                _assetManager.OnComponentDestroyed(this);
+                // 자신의 파괴를 AssetManager에게 알려 리소스 해제를 위임
+                _assetManager.OnComponentDestroyed(_managedAssetKeys, _managedInstanceHandles, _managedSceneHandles);
             }
         }
     }
