@@ -4,9 +4,9 @@ using UnityEngine;
 public class CharacterStats : ScriptableObject
 {
     [Header("Health")]
-    public float maxHealth = 100f;
+    public float MaxHealth = 100f;
 
     [Header("Movement")]
-    public float moveSpeed = 5f;
+    public float MoveSpeed = 5f;
 
 }

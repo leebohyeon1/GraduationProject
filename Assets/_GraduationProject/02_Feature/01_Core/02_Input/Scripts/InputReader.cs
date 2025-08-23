@@ -13,6 +13,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction AttackEvent = delegate { };
     // 공격 이벤트 (종료)
     public event UnityAction AttackCancelledEvent = delegate { };
+    // 회피 이벤트
+    public event UnityAction DodgeEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -53,5 +55,12 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     
     // 나머지 인터페이스 멤버들 (필요시 구현)
     public void OnInteract(InputAction.CallbackContext context) { }
-    public void OnDodge(InputAction.CallbackContext context) { }
+    
+    public void OnDodge(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            DodgeEvent.Invoke();
+        }
+    }
 }
