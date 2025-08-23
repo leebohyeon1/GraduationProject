@@ -6,33 +6,23 @@ using BH_Lib.DI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 
 namespace BH_Lib.AssetManager
 {
+    using BH_Lib.Log;
     /// <summary>
-    /// Addressable Asset System을 사용하는 에셋 관리 싱글톤 클래스
+    /// Addressable Asset System을 사용하는 에셋 및 씬 관리 클래스
     /// </summary>
     [Register(LifetimeScope.Singleton)]
     public class AssetManager : MonoBehaviour
     {
-        private static AssetManager _instance;
-        public static AssetManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    GameObject go = new GameObject(name: "@AssetManager");
-                    _instance = go.AddComponent<AssetManager>();
-                    DontDestroyOnLoad(go);
-                }
-                return _instance;
-            }
-        }
-
         private readonly Dictionary<string, AsyncOperationHandle> _assetHandles = new Dictionary<string, AsyncOperationHandle>();
         private readonly Dictionary<string, int> _referenceCount = new Dictionary<string, int>();
         private readonly Dictionary<AutoReleaseComponent, HashSet<string>> _componentAssets = new Dictionary<AutoReleaseComponent, HashSet<string>>();
+
+        #region Asset Management
 
         /// <summary>
         /// 주소(key)를 이용해 에셋을 비동기적으로 로드합니다.
@@ -73,7 +63,7 @@ namespace BH_Lib.AssetManager
                         else if (existingHandle.Status == AsyncOperationStatus.Failed)
                         {
                             // 실패한 핸들 제거
-                            Debug.LogWarning($"기존 핸들이 실패 상태입니다. 다시 로드합니다: {key}");
+                            Log.PrintWarning($"기존 핸들이 실패 상태입니다. 다시 로드합니다: {key}");
                             Addressables.Release(existingHandle);
                             _assetHandles.Remove(key);
                         }
@@ -94,14 +84,14 @@ namespace BH_Lib.AssetManager
                     catch (System.InvalidOperationException)
                     {
                         // 핸들이 무효한 상태가 되었을 경우
-                        Debug.LogWarning($"핸들이 무효한 상태입니다. 다시 로드합니다: {key}");
+                        Log.PrintWarning($"핸들이 무효한 상태입니다. 다시 로드합니다: {key}");
                         _assetHandles.Remove(key);
                     }
                 }
                 else
                 {
                     // 무효한 핸들 제거
-                    Debug.LogWarning($"무효한 핸들을 제거합니다: {key}");
+                    Log.PrintWarning($"무효한 핸들을 제거합니다: {key}");
                     _assetHandles.Remove(key);
                 }
             }
@@ -117,12 +107,12 @@ namespace BH_Lib.AssetManager
                 {
                     RegisterAssetToComponent(key, owner);
                 }
-                Debug.Log($"에셋 로드 성공: {key}");
+                Log.Print($"에셋 로드 성공: {key}");
                 return asyncOperationHandle.Result;
             }
             else
             {
-                Debug.LogError($"에셋 로드 실패: {key}, 에러: {asyncOperationHandle.OperationException}");
+                Log.PrintErr($"에셋 로드 실패: {key}, 에러: {asyncOperationHandle.OperationException}");
                 _assetHandles.Remove(key);
                 _referenceCount.Remove(key);
                 
@@ -171,7 +161,7 @@ namespace BH_Lib.AssetManager
             }
             else
             {
-                Debug.LogError($"프리팹 인스턴스화 실패: {key}, 에러: {asyncOperationHandle.OperationException}");
+                Log.PrintErr($"프리팹 인스턴스화 실패: {key}, 에러: {asyncOperationHandle.OperationException}");
                 _referenceCount.Remove(key);
                 return null;
             }
@@ -200,12 +190,12 @@ namespace BH_Lib.AssetManager
                     }
                     
                     _referenceCount.Remove(key);
-                    Debug.Log($"에셋 해제됨: {key}");
+                    Log.Print($"에셋 해제됨: {key}");
                 }
             }
             else
             {
-                Debug.LogWarning($"해제할 에셋을 찾을 수 없음: {key}");
+                Log.PrintWarning($"해제할 에셋을 찾을 수 없음: {key}");
             }
         }
         
@@ -217,7 +207,7 @@ namespace BH_Lib.AssetManager
         {
             if (gameObjectToRelease == null)
             {
-                Debug.LogWarning("해제할 게임오브젝트가 null입니다.");
+                Log.PrintWarning("해제할 게임오브젝트가 null입니다.");
                 return;
             }
             
@@ -225,10 +215,60 @@ namespace BH_Lib.AssetManager
             {
                 // Addressable로 생성된 인스턴스가 아닐 경우 GameObject.Destroy 사용
                 Destroy(gameObjectToRelease);
-                Debug.LogWarning($"'{gameObjectToRelease.name}'은 Addressable로 생성된 인스턴스가 아니므로 Destroy()로 제거합니다.");
+                Log.PrintWarning($"'{gameObjectToRelease.name}'은 Addressable로 생성된 인스턴스가 아니므로 Destroy()로 제거합니다.");
             }
         }
 
+        #endregion
+
+        #region Scene Management
+
+        /// <summary>
+        /// 주소(key)를 이용해 씬을 비동기적으로 로드합니다.
+        /// </summary>
+        /// <param name="key">씬의 Addressable 주소</param>
+        /// <param name="loadMode">씬 로드 모드</param>
+        /// <param name="activateOnLoad">로드 시 자동 활성화 여부</param>
+        /// <returns>로드된 씬 인스턴스</returns>
+        public async Task<SceneInstance> LoadSceneAsync(string key, LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            var asyncOperationHandle = Addressables.LoadSceneAsync(key, loadMode, activateOnLoad);
+            await asyncOperationHandle.Task;
+
+            if (asyncOperationHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                Log.Print($"씬 로드 성공: {key}");
+                return asyncOperationHandle.Result;
+            }
+            else
+            {
+                Log.PrintErr($"씬 로드 실패: {key}, 에러: {asyncOperationHandle.OperationException}");
+                return default;
+            }
+        }
+
+        /// <summary>
+        /// 로드된 씬을 해제합니다.
+        /// </summary>
+        /// <param name="sceneInstance">해제할 씬 인스턴스</param>
+        public async Task UnloadSceneAsync(SceneInstance sceneInstance)
+        {
+            var asyncOperationHandle = Addressables.UnloadSceneAsync(sceneInstance);
+            await asyncOperationHandle.Task;
+
+            if (asyncOperationHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                Log.Print($"씬 해제 성공");
+            }
+            else
+            {
+                Log.PrintErr($"씬 해제 실패: {asyncOperationHandle.OperationException}");
+            }
+        }
+
+        #endregion
+
+        #region Auto Release Management
 
         /// <summary>
         /// 컴포넌트에 에셋 등록
@@ -269,6 +309,8 @@ namespace BH_Lib.AssetManager
             }
         }
 
+        #endregion
+
         private void OnDestroy()
         {
             foreach (var handle in _assetHandles.Values)
@@ -281,8 +323,6 @@ namespace BH_Lib.AssetManager
             _assetHandles.Clear();
             _referenceCount.Clear();
             _componentAssets.Clear();
-            
-            _instance = null;
         }
     }
 }
