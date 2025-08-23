@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using BH_Lib.DI;
+using BH_Lib.FSM;
 using UnityEngine;
 
 /// <summary>
@@ -8,24 +10,58 @@ using UnityEngine;
 /// </summary>
 
 [Register(LifetimeScope.Transient)]
+[RequireComponent(typeof(PlayerHealth), typeof(PlayerController))]
+[RequireComponent(typeof(PlayerMovement), typeof(PlayerAttack))]
 public class Player : CharacterBase
 {
     [Header("Player Components")]
+    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
+
+    // 상태 머신
+    private StateMachine<Player> _stateMachine;
 
     protected override void Awake()
     {
         base.Awake();
 
-        // PlayerStats가 설정되지 않았다면 CharacterStats를 PlayerStats로 캐스팅 시도
-        if (_stats == null && base._stats is PlayerStats playerStats)
+        InitializeComponents();
+    }
+
+    private void Start()
+    {
+        InitializeStateMachine();
+    }
+
+    private void Update()
+    {
+        PlayerMovement.Tick(); // 이동 처리
+
+        // 상태 머신 업데이트
+        _stateMachine?.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        // 상태 머신 고정 업데이트
+        _stateMachine?.FixedUpdate();
+    }
+
+    private void LateUpdate()
+    {
+        PlayerController.LateTick(); // 입력 상태 리셋
+    }
+
+    private void InitializeComponents()
+    {
+        if (_playerHealth == null)
         {
-            _stats = playerStats;
+            _playerHealth = GetComponent<PlayerHealth>();
         }
 
-        // 컴포넌트 자동 할당
         if (_playerMovement == null)
         {
             _playerMovement = GetComponent<PlayerMovement>();
@@ -40,37 +76,69 @@ public class Player : CharacterBase
         {
             _playerAttack = GetComponent<PlayerAttack>();
         }
+
+        _playerHealth.Initialize(this);
+        _playerMovement.Initialize(this);
+        _playerController.Initialize(this);
+        _playerAttack.Initialize(this);
     }
 
-    protected override void Die()
+    private void InitializeStateMachine()
     {
-        base.Die();
+        _stateMachine = new StateMachine<Player>(this);
 
-        // 플레이어 사망 시 추가 로직
-        Debug.Log("플레이어가 사망했습니다!");
+        // 상태들 추가
+        _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
 
-        // 각 시스템 비활성화
-        if (_playerController != null)
-            _playerController.enabled = false;
+        // 상태 전환 조건 설정
+        SetupStateTransitions();
 
-        if (_playerMovement != null)
-            _playerMovement.enabled = false;
-
-        if (_playerAttack != null)
-            _playerAttack.SetAttackEnabled(false);
+        // 초기 상태를 Idle로 설정
+        _stateMachine.ChangeState<PlayerIdleState>();
     }
 
-    public void TryAttack()
+    private void SetupStateTransitions()
     {
-        if (IsDead || _playerAttack == null) return;
+        // 모든 상태에서 회피로 전환 가능 (최우선 조건)
+        _stateMachine.AddAnyTransition<PlayerDodgeState>(() =>
+            PlayerController.DodgeInput && PlayerMovement.CanDodge());
 
-        _playerAttack.TryAttack();
+        // Idle 상태에서의 전환
+        _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() => PlayerController.MoveInput != Vector2.zero);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(() => PlayerController.AttackInput);
+
+        // Move 상태에서의 전환
+        _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() => PlayerController.MoveInput == Vector2.zero);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(() => PlayerController.AttackInput);
+
+        // Attack 상태에서의 전환은 상태 내부에서 시간 기반으로 처리
+        // (공격 지속시간이 끝나면 자동으로 전환)
+
+        // Dodge 상태에서의 전환도 상태 내부에서 시간 기반으로 처리
+        // (회피 지속시간이 끝나면 자동으로 전환)
     }
 
     // 공개 프로퍼티들
-    public PlayerStats PlayerStats => _stats as PlayerStats;
+    public PlayerStats PlayerStats => _playerStats;
+    public PlayerHealth PlayerHealth => _playerHealth;
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;
     public PlayerAttack PlayerAttack => _playerAttack;
-    public bool IsAlive => !IsDead;
+
+    // 현재 상태 정보 (디버깅용)
+    public IState CurrentState => _stateMachine?.CurrentState;
+    public System.Type CurrentStateType => _stateMachine?.CurrentStateType;
+    
+    // 디버깅을 위한 Gizmos
+    private void OnDrawGizmosSelected()
+    {
+        if (PlayerAttack.AttackPoint != null && _playerStats != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(PlayerAttack.AttackPoint.position, _playerStats.AttackRadius);
+        }
+    }
 }

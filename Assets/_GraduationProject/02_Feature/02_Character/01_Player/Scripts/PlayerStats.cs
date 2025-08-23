@@ -7,12 +7,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "Stats/Player Stats")]
 public class PlayerStats : CharacterStats
 {
+    public float RoateSpeed = 5f;
+
     [Header("Player Combat")]
     public float AttackDamage = 10f;
     public float AttackSpeed = 1f;
     public float AttackRadius = 2f;
     
-    [Header("Player Special")]
+    [Header("Player Dodge")]
     public float DodgeSpeed = 8f;
     public float DodgeCooldown = 2f;
 }

@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 2749328514354769832}
   - component: {fileID: 7441739536260645651}
   - component: {fileID: 8116724454973645695}
+  - component: {fileID: 2230114329495976877}
   - component: {fileID: -1505228149830478914}
   - component: {fileID: 7654633763182632646}
   - component: {fileID: 6336187397475929223}
@@ -299,11 +300,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edbe5479883266f408d7e6a7896f4aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _stats: {fileID: 11400000, guid: 746bd298e14507240b16175ef7ec1017, type: 2}
-  _currentHealth: 0
+  _playerStats: {fileID: 11400000, guid: 746bd298e14507240b16175ef7ec1017, type: 2}
+  _playerHealth: {fileID: 2230114329495976877}
   _playerMovement: {fileID: 7654633763182632646}
   _playerController: {fileID: -1505228149830478914}
   _playerAttack: {fileID: 6336187397475929223}
+--- !u!114 &2230114329495976877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6062515237610339562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6129066cb19b7524c85fab302821be54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  _currentHealth: 0
 --- !u!114 &-1505228149830478914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,8 +331,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
-  _playerMovement: {fileID: 7654633763182632646}
-  _player: {fileID: 8116724454973645695}
 --- !u!114 &7654633763182632646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,7 +343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b858338d5aa6b145bd43e3b0f7bd8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  _playerStats: {fileID: 11400000, guid: 746bd298e14507240b16175ef7ec1017, type: 2}
   _characterController: {fileID: 7441739536260645651}
   _transform: {fileID: 1790907537557772639}
   _gravity: -9.81
@@ -351,9 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39eae6b05c769df4297249554830fde1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  _playerStats: {fileID: 11400000, guid: 746bd298e14507240b16175ef7ec1017, type: 2}
   _attackPoint: {fileID: 4279495856545814801}
-  _attackRadius: 1
   _enemyLayerMask:
     serializedVersion: 2
     m_Bits: 256

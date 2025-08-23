@@ -7,11 +7,8 @@ using UnityEngine;
 /// 플레이어의 공격 시스템을 담당하는 클래스
 /// IAttacker 인터페이스를 구현하여 공격 기능을 제공
 /// </summary>
-public class PlayerAttack : DIMonoBehaviour, IAttacker
+public class PlayerAttack : PlayerComponent, IAttacker
 {
-    [Header("Attack Settings")]
-    [SerializeField] private PlayerStats _playerStats;
-    
     [Header("Combat")]
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
@@ -20,20 +17,24 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
     private bool _canAttack = true;
     
     // IAttacker 인터페이스 구현
-    public float AttackDamage => _playerStats != null ? _playerStats.AttackDamage : 10f;
-    public float AttackSpeed => _playerStats != null ? _playerStats.AttackSpeed : 1f;
+    public float AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10f;
+    public float AttackSpeed => p_playerStats != null ? p_playerStats.AttackSpeed : 1f;
     
-    protected override void Awake()
+    public override void Initialize(Player player)
     {
+        base.Initialize(player);
+        
         // Attack Point가 없으면 플레이어 위치를 사용
         if (_attackPoint == null)
+        {
             _attackPoint = transform;
+        }
     }
     
     public void TryAttack()
     {
         if (!_canAttack) return;
-        
+
         if (Time.time - _lastAttackTime >= 1f / AttackSpeed)
         {
             PerformAttack();
@@ -46,7 +47,7 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
         
         // 공격 범위 내의 적들을 찾기
-        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _playerStats.AttackRadius, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, p_playerStats.AttackRadius, _enemyLayerMask);
         
         foreach (Collider enemy in hitEnemies)
         {
@@ -81,18 +82,10 @@ public class PlayerAttack : DIMonoBehaviour, IAttacker
         _canAttack = enabled;
     }
     
-    // 디버깅을 위한 Gizmos
-    private void OnDrawGizmosSelected()
-    {
-        if (_attackPoint != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_attackPoint.position, _playerStats.AttackRadius);
-        }
-    }
+
     
     // 공개 프로퍼티들
     public bool CanAttack => _canAttack;
-    public float AttackRadius => _playerStats.AttackRadius;
+    public float AttackRadius => p_playerStats.AttackRadius;
     public Transform AttackPoint => _attackPoint;
 }
