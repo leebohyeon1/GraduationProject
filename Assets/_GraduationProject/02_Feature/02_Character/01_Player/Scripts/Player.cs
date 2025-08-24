@@ -1,17 +1,18 @@
+using System;
 using System.Collections.Generic;
 using BH_Lib.DI;
 using BH_Lib.FSM;
 using UnityEngine;
 
 /// <summary>
-/// 플레이어 캐릭터의 메인 클래스
-/// CharacterBase를 상속받아 기본 체력 시스템을 구현하고
-/// 각 기능 모듈들을 연결하는 역할
+/// 플레이어 캐릭터의 기본 클래스
+/// 역할: 각 기능 모듈을 연결하고, 외부에서 접근할 수 있는 진입점 제공.
 /// </summary>
 
 [Register(LifetimeScope.Transient)]
 [RequireComponent(typeof(PlayerHealth), typeof(PlayerController))]
 [RequireComponent(typeof(PlayerMovement), typeof(PlayerAttack))]
+[RequireComponent(typeof(CapsuleCollider), typeof(CharacterController), typeof(Animator))]
 public class Player : CharacterBase
 {
     [Header("Player Components")]
@@ -20,6 +21,10 @@ public class Player : CharacterBase
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
+
+    // 입력 기기 감지기
+    [Inject] private IInputDeviceDetector _inputDeviceDetector;
+    [Inject] private IAttackDirectionProvider _attackDirectionProvider;
 
     // 상태 머신
     private StateMachine<Player> _stateMachine;
@@ -127,6 +132,10 @@ public class Player : CharacterBase
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;
     public PlayerAttack PlayerAttack => _playerAttack;
+
+    // 현재 입력 기기 정보
+    public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+    public IAttackDirectionProvider AttackDirectionProvider => _attackDirectionProvider;
 
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;

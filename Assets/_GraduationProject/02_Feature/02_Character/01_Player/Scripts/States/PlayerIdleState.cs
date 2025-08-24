@@ -7,9 +7,12 @@ using UnityEngine;
 /// </summary>
 public class PlayerIdleState : BaseState<Player>
 {
+    private PlayerMovement _playerMovement;
+
     public PlayerIdleState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine)
     {
+        _playerMovement = context.PlayerMovement;
     }
 
     public override void OnEnter()
@@ -20,8 +23,8 @@ public class PlayerIdleState : BaseState<Player>
 
     public override void OnUpdate()
     {
-        // 상태 전환은 StateMachine의 조건부 전환으로 자동 처리됨
-        // 필요한 경우 여기서 Idle 상태 특유의 로직 구현
+        // Idle 상태에서도 중력 적용 (이동 입력 없이)
+        _playerMovement?.Move(Vector3.zero, 0f);
     }
 
     public override void OnExit()
