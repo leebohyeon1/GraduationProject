@@ -18,12 +18,12 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction DodgeEvent = delegate { };
     // 시선/조준 이벤트
     public event UnityAction<Vector2> LookEvent = delegate { };
+    // 마우스 위치 이벤트
+    public event UnityAction<Vector2> MousePositionEvent = delegate { };
     // 입력 기기 변경 이벤트
     public event UnityAction<InputDeviceType> InputDeviceChangedEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
-
-    private IInputDeviceDetector _inputDeviceDetector;
 
     private void OnEnable()
     {
@@ -33,31 +33,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
             _inputActions.Player.SetCallbacks(this);
         }
         EnablePlayerActions();
-
-        _inputDeviceDetector = DIContainer.Instance.Resolve<IInputDeviceDetector>();
-        // 의존성 주입이 완료된 후 입력 기기 감지 이벤트 등록
-        if (_inputDeviceDetector != null)
-        {
-            _inputDeviceDetector.OnInputDeviceChanged.AddListener(OnInputDeviceChanged);
-        }
-    }
-
-    private void OnDisable()
-    {
-        // 입력 기기 감지 이벤트 해제
-        if (_inputDeviceDetector != null)
-        {
-            _inputDeviceDetector.OnInputDeviceChanged.RemoveListener(OnInputDeviceChanged);
-        }
-    }
-
-    /// <summary>
-    /// 입력 기기 변경 이벤트 처리
-    /// </summary>
-    /// <param name="deviceType">변경된 입력 기기 타입</param>
-    private void OnInputDeviceChanged(InputDeviceType deviceType)
-    {
-        InputDeviceChangedEvent?.Invoke(deviceType);
     }
 
     public void EnablePlayerActions()
@@ -70,7 +45,11 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         MoveEvent.Invoke(context.ReadValue<Vector2>());
     }
 
-    public void OnLook(InputAction.CallbackContext context) { /* 필요시 구현 */ }
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        Vector2 lookValue = context.ReadValue<Vector2>();
+        LookEvent.Invoke(lookValue);
+    }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
@@ -94,34 +73,18 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
             DodgeEvent.Invoke();
         }
     }
-
-    #region Input Device Checkers
-    /// <summary>
-    /// 현재 입력 기기 타입을 가져오는 함수
-    /// </summary>
-    /// <returns>현재 활성화된 입력 기기 타입</returns>
-    public InputDeviceType GetCurrentInputDevice()
+    public void OnMousePosition(InputAction.CallbackContext context)
     {
-        return _inputDeviceDetector?.CurrentInputDevice ?? InputDeviceType.KeyboardMouse;
+        Vector2 mousePosition = context.ReadValue<Vector2>();
+        MousePositionEvent.Invoke(mousePosition);
     }
 
     /// <summary>
-    /// 현재 입력 기기가 키보드와 마우스인지 확인하는 함수
+    /// 외부에서 입력 기기 변경을 알릴 때 사용하는 함수
     /// </summary>
-    /// <returns>키보드와 마우스 사용 여부</returns>
-    public bool IsKeyboardMouse()
+    /// <param name="deviceType">변경된 입력 기기 타입</param>
+    public void NotifyInputDeviceChanged(InputDeviceType deviceType)
     {
-        return _inputDeviceDetector?.IsKeyboardMouse() ?? true;
+        InputDeviceChangedEvent?.Invoke(deviceType);
     }
-
-    /// <summary>
-    /// 현재 입력 기기가 게임패드인지 확인하는 함수
-    /// </summary>
-    /// <returns>게임패드 사용 여부</returns>
-    public bool IsGamepad()
-    {
-        return _inputDeviceDetector?.IsGamepad() ?? false;
-    }
-    
-    #endregion
 }

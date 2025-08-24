@@ -16,19 +16,24 @@ public class PlayerAttack : PlayerComponent, IAttacker
     private float _lastAttackTime;
     private bool _canAttack = true;
     
+    private IAttackDirectionProvider _attackDirectionProvider;
+    
     // IAttacker 인터페이스 구현
     public float AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10f;
     public float AttackSpeed => p_playerStats != null ? p_playerStats.AttackSpeed : 1f;
-    
+
     public override void Initialize(Player player)
     {
         base.Initialize(player);
-        
+
         // Attack Point가 없으면 플레이어 위치를 사용
         if (_attackPoint == null)
         {
             _attackPoint = transform;
         }
+        
+        // 공격 방향 제공자 설정
+        _attackDirectionProvider = player.AttackDirectionProvider;
     }
     
     public void TryAttack()
@@ -37,8 +42,29 @@ public class PlayerAttack : PlayerComponent, IAttacker
 
         if (Time.time - _lastAttackTime >= 1f / AttackSpeed)
         {
+            SetAttackDirection();   
             PerformAttack();
             _lastAttackTime = Time.time;
+        }
+    }
+    
+    /// <summary>
+    /// 현재 입력 기기에 따라 공격 방향을 설정하는 함수
+    /// </summary>
+    private void SetAttackDirection()
+    {
+        if (_attackDirectionProvider != null)
+        {
+            Vector3 attackDirection = _attackDirectionProvider.CurrentAttackDirection;
+            
+            // 공격 방향으로 플레이어 즉시 회전
+            if (attackDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(attackDirection, Vector3.up);
+                transform.rotation = targetRotation;
+                
+                Log.Print($"공격 방향 설정: {attackDirection}");
+            }
         }
     }
     

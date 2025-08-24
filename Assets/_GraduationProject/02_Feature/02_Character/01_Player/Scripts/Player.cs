@@ -22,6 +22,7 @@ public class Player : CharacterBase
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
+    [Inject] private IAttackDirectionProvider _attackDirectionProvider;
 
     // 상태 머신
     private StateMachine<Player> _stateMachine;
@@ -131,7 +132,8 @@ public class Player : CharacterBase
     public PlayerAttack PlayerAttack => _playerAttack;
 
     // 현재 입력 기기 정보
-    public InputDeviceType CurrentInputDevice => _inputDeviceDetector.CurrentInputDevice;
+    public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+    public IAttackDirectionProvider AttackDirectionProvider => _attackDirectionProvider;
 
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;

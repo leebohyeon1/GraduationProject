@@ -9,9 +9,6 @@ using BH_Lib.DI;
 [Register(typeof(IInputDeviceDetector), LifetimeScope.Singleton)]
 public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
 {
-    [Header("디버그 설정")]
-    [SerializeField] private bool _enableDebugLog = true;
-
     private InputDeviceType _currentInputDevice = InputDeviceType.KeyboardMouse;
     private bool _isDetectionActive = false;
 
@@ -57,8 +54,6 @@ public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
         // Input System 이벤트 등록
         InputSystem.onActionChange += OnActionChange;
 
-        if (_enableDebugLog)
-            Debug.Log("[InputDeviceDetector] 입력 기기 감지 시작");
     }
 
     /// <summary>
@@ -72,9 +67,6 @@ public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
 
         // Input System 이벤트 해제
         InputSystem.onActionChange -= OnActionChange;
-
-        if (_enableDebugLog)
-            Debug.Log("[InputDeviceDetector] 입력 기기 감지 중지");
     }
 
     /// <summary>
@@ -165,12 +157,6 @@ public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
         {
             _currentInputDevice = deviceType;
             OnInputDeviceChanged?.Invoke(_currentInputDevice);
-
-            if (_enableDebugLog)
-            {
-                string deviceName = _currentInputDevice == InputDeviceType.KeyboardMouse ? "키보드&마우스" : "게임패드";
-                Debug.Log($"[InputDeviceDetector] 입력 기기 변경: {deviceName}");
-            }
         }
     }
     
