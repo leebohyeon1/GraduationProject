@@ -21,6 +21,8 @@ public class Player : CharacterBase
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
+    [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
+
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
@@ -82,10 +84,16 @@ public class Player : CharacterBase
             _playerAttack = GetComponent<PlayerAttack>();
         }
 
+        if (_playerAnimationEventHandler == null)
+        {
+            _playerAnimationEventHandler = GetComponent<PlayerAnimationEventHandler>();
+        }
+
         _playerHealth.Initialize(this);
         _playerMovement.Initialize(this);
         _playerController.Initialize(this);
         _playerAttack.Initialize(this);
+        _playerAnimationEventHandler.Initialize(this);
     }
 
     private void InitializeStateMachine()
