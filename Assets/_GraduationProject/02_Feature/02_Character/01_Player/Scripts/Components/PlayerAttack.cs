@@ -13,11 +13,9 @@ public class PlayerAttack : PlayerComponent, IAttacker
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
     
-    private IAttackDirectionProvider _attackDirectionProvider;
-    
     // IAttacker 인터페이스 구현
     public int AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10;
-    public float AttackSpeed => p_playerStats != null ? p_playerStats.AttackSpeed : 1f;
+    public float AttackSpeed => 1f;
 
     public override void Initialize(Player player)
     {
@@ -28,32 +26,11 @@ public class PlayerAttack : PlayerComponent, IAttacker
         {
             _attackPoint = transform;
         }
-        
-        // 공격 방향 제공자 설정
-        _attackDirectionProvider = player.AttackDirectionProvider;
     }
-    
+
     public void TryAttack()
     {
-        SetAttackDirection();   
-    }
-    
-    /// <summary>
-    /// 현재 입력 기기에 따라 공격 방향을 설정하는 함수
-    /// </summary>
-    private void SetAttackDirection()
-    {
-        if (_attackDirectionProvider != null)
-        {
-            Vector3 attackDirection = _attackDirectionProvider.CurrentAttackDirection;
-            
-            // 공격 방향으로 플레이어 즉시 회전
-            if (attackDirection != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(attackDirection, Vector3.up);
-                transform.rotation = targetRotation;
-            }
-        }
+        SetAttackDirection();
     }
     
     public void PerformAttack()
@@ -75,11 +52,73 @@ public class PlayerAttack : PlayerComponent, IAttacker
     
     public void Attack(IDamageable target)
     {
-        if (target == null || target.IsDead) return;
+        if (target == null || target.IsDead)
+        {
+            return;
+        }
         
         target.TakeDamage(AttackDamage, this);
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
+
+    private void SetAttackDirection()
+    {
+        if (p_player.InputDeviceDetector == null)
+        {
+            return;
+        }
+
+        if (p_player.InputDeviceDetector.CurrentInputDevice == InputDeviceType.KeyboardMouse)
+        {
+            Vector2 mousePosition = p_player.PlayerController.MousePosition;
+            RotatePlayerWithMouse(mousePosition);
+        }
+        else // Gamepad
+        {
+            Vector2 lookInput = p_player.PlayerController.LookInput;
+            RotatePlayerWithGamepad(lookInput);
+        }
+    }    
+
+    private void RotatePlayerWithGamepad(Vector2 lookInput)
+    {
+        if (lookInput.sqrMagnitude < 0.1f) return;
+
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 lookDirection = (cameraRight * lookInput.x + cameraForward * lookInput.y).normalized;
+
+        if (lookDirection.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+            transform.rotation = targetRotation;
+        }
+    }
+
+    private void RotatePlayerWithMouse(Vector2 mousePosition)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, transform.position.y);
+
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            Vector3 worldMousePosition = ray.GetPoint(distance);
+            Vector3 direction = (worldMousePosition - transform.position).normalized;
+            direction.y = 0;
+
+            if (direction.sqrMagnitude > 0.1f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.rotation = targetRotation;
+            }
+        }
+    }
+    
 
     public float AttackRadius => p_playerStats.AttackRadius;
     public Transform AttackPoint => _attackPoint;
