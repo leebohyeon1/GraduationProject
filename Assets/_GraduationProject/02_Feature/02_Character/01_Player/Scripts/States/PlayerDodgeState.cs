@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
@@ -30,17 +31,20 @@ public class PlayerDodgeState : BaseState<Player>
         _dodgeTimer = 0f;
         _isInvincible = true;
 
-        // 현재 이동 방향으로 회피, 입력이 없으면 뒤쪽으로 회피
+        // 현재 이동 방향으로 회피, 입력이 없으면 앞쪽으로 회피
         if (_playerController.MoveInput != Vector2.zero)
         {
-            _dodgeDirection = new Vector3(_playerController.MoveInput.x, 0, _playerController.MoveInput.y).normalized;
+            // PlayerMovement.Move()가 카메라 기준으로 변환하므로 입력 그대로 전달
+            _dodgeDirection = new Vector3(_playerController.MoveInput.x, 0, _playerController.MoveInput.y);
         }
         else
         {
-            // 입력이 없으면 현재 바라보는 방향의 반대로 회피
-            _dodgeDirection = p_context.transform.forward;
+            // 입력이 없으면 앞쪽 방향
+            _dodgeDirection = new Vector3(p_context.transform.forward.x, 0, p_context.transform.forward.z);
         }
 
+        _playerMovement.RotateImmediately(_dodgeDirection);
+        
         // TODO: 무적 상태 활성화 (IDamageable 인터페이스 확장 필요)
         // SetInvincible(true);
     }
@@ -52,8 +56,7 @@ public class PlayerDodgeState : BaseState<Player>
         // 회피 이동 실행
         if (_playerMovement != null)
         {
-            float dodgeSpeed = _stats.DodgeSpeed; // PlayerStats에서 가져와야 함
-            _playerMovement.Move(_dodgeDirection * dodgeSpeed);
+            _playerMovement.Move(_dodgeDirection, _playerMovement.DodgeSpeed);
         }
 
         // 회피 완료 시 상태 전환

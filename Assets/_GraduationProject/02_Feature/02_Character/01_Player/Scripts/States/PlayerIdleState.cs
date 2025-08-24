@@ -24,7 +24,7 @@ public class PlayerIdleState : BaseState<Player>
     public override void OnUpdate()
     {
         // Idle 상태에서도 중력 적용 (이동 입력 없이)
-        _playerMovement?.Move(Vector3.zero);
+        _playerMovement?.Move(Vector3.zero, 0f);
     }
 
     public override void OnExit()

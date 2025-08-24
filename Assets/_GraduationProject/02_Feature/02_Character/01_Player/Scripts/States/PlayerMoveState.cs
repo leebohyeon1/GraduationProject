@@ -34,7 +34,7 @@ public class PlayerMoveState : BaseState<Player>
         {
             // 2D 입력을 3D 월드 좌표로 변환
             Vector3 moveDirection = new Vector3(_playerController.MoveInput.x, 0, _playerController.MoveInput.y);
-            _playerMovement.Move(moveDirection);
+            _playerMovement.Move(moveDirection, _playerMovement.MoveSpeed);
         }
     }
 

@@ -22,7 +22,7 @@ public class PlayerMovement : PlayerComponent, IMovable
     private bool _canDodge;
 
     // 회피 쿨다운
-    private float _lastDodgeTime = 0f;
+    private float _lastDodgeTime = -999f;
     private float _dodgeCooldown => p_playerStats.DodgeCooldown;
 
     public void Tick()
@@ -48,7 +48,7 @@ public class PlayerMovement : PlayerComponent, IMovable
         _mainCamera = Camera.main;
     }
 
-    public void Move(Vector3 direction)
+    public void Move(Vector3 direction, float speed, float speedMultiplier = 1f)
     {
         if (_characterController == null || _mainCamera == null)
         {
@@ -76,7 +76,7 @@ public class PlayerMovement : PlayerComponent, IMovable
             moveVector.Normalize();
         }
 
-        Vector3 movement = moveVector * MoveSpeed * Time.deltaTime;
+        Vector3 movement = moveVector * speed * speedMultiplier * Time.deltaTime;
 
         // 중력 적용
         movement.y = _velocity.y * Time.deltaTime;
@@ -87,13 +87,32 @@ public class PlayerMovement : PlayerComponent, IMovable
         // 회전 (이동 방향으로)
         if (moveVector.sqrMagnitude > 0.1f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveVector); 
+            Quaternion targetRotation = Quaternion.LookRotation(moveVector);
             _transform.rotation = Quaternion.Slerp(
                 _transform.rotation,
                 targetRotation,
                 p_playerStats.RoateSpeed * Time.fixedDeltaTime
             );
         }
+    }
+
+    public void RotateImmediately(Vector3 direction)
+    {
+        if (_transform == null) return;
+
+        // 카메라 기준으로 방향 변환
+        Vector3 cameraForward = _mainCamera.transform.forward;
+        Vector3 cameraRight = _mainCamera.transform.right;
+
+        // Y축 제거 (수평면 이동만)
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+
+        // 정규화
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        _transform.rotation = Quaternion.LookRotation(cameraForward * direction.z + cameraRight * direction.x);
     }
 
     public bool CanDodge()
@@ -125,7 +144,7 @@ public class PlayerMovement : PlayerComponent, IMovable
         {
             _velocity.y += _gravity * Time.deltaTime;
         }
-        
+
         // 최대 낙하 속도 제한
         if (_velocity.y < -30f)
         {
@@ -136,5 +155,6 @@ public class PlayerMovement : PlayerComponent, IMovable
     public bool IsGrounded => _isGrounded;
     public Vector3 Velocity => _velocity;
     public float MoveSpeed => p_playerStats.MoveSpeed;
+    public float DodgeSpeed => p_playerStats.DodgeSpeed;
 
 }
