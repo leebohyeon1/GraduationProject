@@ -53,7 +53,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         }
     }
     
-    // 나머지 인터페이스 멤버들 (필요시 구현)
     public void OnInteract(InputAction.CallbackContext context) { }
     
     public void OnDodge(InputAction.CallbackContext context)
