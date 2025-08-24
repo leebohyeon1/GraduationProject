@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BH_Lib.DI;
 using BH_Lib.FSM;
@@ -11,6 +12,7 @@ using UnityEngine;
 [Register(LifetimeScope.Transient)]
 [RequireComponent(typeof(PlayerHealth), typeof(PlayerController))]
 [RequireComponent(typeof(PlayerMovement), typeof(PlayerAttack))]
+[RequireComponent(typeof(CapsuleCollider), typeof(CharacterController), typeof(Animator))]
 public class Player : CharacterBase
 {
     [Header("Player Components")]
