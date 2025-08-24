@@ -96,6 +96,22 @@ public class PlayerMovement : PlayerComponent, IMovable
         }
     }
 
+    public void Dodge(Vector3 direction, bool hasInput)
+    {
+        if (hasInput)
+        {
+            Move(direction, DodgeSpeed);
+        }
+        else
+        {
+            // 캐릭터 전진 이동
+            Vector3 moveVector = transform.forward;
+            Vector3 movement = moveVector * DodgeSpeed * Time.deltaTime;
+            movement.y = _velocity.y * Time.deltaTime;
+            _characterController.Move(movement);
+        }
+    }
+
     public void RotateImmediately(Vector3 direction)
     {
         if (_transform == null) return;

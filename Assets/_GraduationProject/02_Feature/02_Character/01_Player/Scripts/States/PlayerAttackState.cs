@@ -40,8 +40,8 @@ public class PlayerAttackState : BaseState<Player>
     {
         _attackTimer += Time.deltaTime;
 
-        // 공격 상태에서도 중력 적용
-        _playerMovement?.Move(p_context.transform.forward, 2f);
+        // 공격 상태에서는 이동 및 회전 방지
+        _playerMovement?.Move(Vector3.zero, 0);
 
         // 공격이 완료되면 상태 전환 확인
         if (_attackTimer >= _attackDuration)

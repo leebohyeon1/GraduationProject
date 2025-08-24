@@ -36,14 +36,13 @@ public class PlayerDodgeState : BaseState<Player>
         {
             // PlayerMovement.Move()가 카메라 기준으로 변환하므로 입력 그대로 전달
             _dodgeDirection = new Vector3(_playerController.MoveInput.x, 0, _playerController.MoveInput.y);
+            _playerMovement.RotateImmediately(_dodgeDirection);
         }
         else
         {
-            // 입력이 없으면 앞쪽 방향
-            _dodgeDirection = new Vector3(p_context.transform.forward.x, 0, p_context.transform.forward.z);
+            // 입력이 없으면 Dodge 함수에서 직접 처리하므로 방향 설정 필요 없음
+            _dodgeDirection = Vector3.zero;
         }
-
-        _playerMovement.RotateImmediately(_dodgeDirection);
         
         // TODO: 무적 상태 활성화 (IDamageable 인터페이스 확장 필요)
         // SetInvincible(true);
@@ -56,7 +55,8 @@ public class PlayerDodgeState : BaseState<Player>
         // 회피 이동 실행
         if (_playerMovement != null)
         {
-            _playerMovement.Move(_dodgeDirection, _playerMovement.DodgeSpeed);
+            bool hasInput = _playerController.MoveInput != Vector2.zero;
+            _playerMovement.Dodge(_dodgeDirection, hasInput);
         }
 
         // 회피 완료 시 상태 전환
