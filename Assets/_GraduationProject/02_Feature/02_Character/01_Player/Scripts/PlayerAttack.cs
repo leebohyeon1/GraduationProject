@@ -19,7 +19,7 @@ public class PlayerAttack : PlayerComponent, IAttacker
     private IAttackDirectionProvider _attackDirectionProvider;
     
     // IAttacker 인터페이스 구현
-    public float AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10f;
+    public int AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10;
     public float AttackSpeed => p_playerStats != null ? p_playerStats.AttackSpeed : 1f;
 
     public override void Initialize(Player player)
@@ -92,7 +92,7 @@ public class PlayerAttack : PlayerComponent, IAttacker
     {
         if (target == null || target.IsDead) return;
         
-        target.TakeDamage(AttackDamage, gameObject);
+        target.TakeDamage(AttackDamage, this);
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
     
