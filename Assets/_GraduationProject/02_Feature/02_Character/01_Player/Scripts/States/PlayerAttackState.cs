@@ -9,6 +9,7 @@ public class PlayerAttackState : BaseState<Player>
 {
     private PlayerAttack _playerAttack;
     private PlayerController _playerController;
+    private PlayerMovement _playerMovement;
     private float _attackDuration = 0.5f; // 공격 지속 시간
     private float _attackTimer = 0f;
     private bool _attackExecuted = false;
@@ -18,6 +19,7 @@ public class PlayerAttackState : BaseState<Player>
     {
         _playerAttack = context.PlayerAttack;
         _playerController = context.PlayerController;
+        _playerMovement = context.PlayerMovement;
     }
 
     public override void OnEnter()
@@ -37,6 +39,9 @@ public class PlayerAttackState : BaseState<Player>
     public override void OnUpdate()
     {
         _attackTimer += Time.deltaTime;
+
+        // 공격 상태에서도 중력 적용
+        _playerMovement?.Move(Vector3.zero);
 
         // 공격이 완료되면 상태 전환 확인
         if (_attackTimer >= _attackDuration)

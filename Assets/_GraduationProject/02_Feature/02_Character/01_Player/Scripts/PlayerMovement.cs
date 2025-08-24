@@ -110,19 +110,26 @@ public class PlayerMovement : PlayerComponent, IMovable
 
     private void CheckGrounded()
     {
-        _isGrounded = Physics.Raycast(_transform.position, Vector3.down,
-            _characterController.height / 2f + _groundCheckDistance, _groundLayerMask);
+        // CharacterController의 아래쪽 경계에서 체크
+        Vector3 rayOrigin = _transform.position - new Vector3(0, _characterController.height / 2f, 0);
+        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, _groundCheckDistance, _groundLayerMask);
     }
 
     private void ApplyGravity()
     {
         if (_isGrounded && _velocity.y < 0)
         {
-            _velocity.y = -2f; // 약간의 하향력 유지
+            _velocity.y = -2f; // 약간의 하향력 유지하여 지면에 붙어있도록
         }
         else
         {
             _velocity.y += _gravity * Time.deltaTime;
+        }
+        
+        // 최대 낙하 속도 제한
+        if (_velocity.y < -30f)
+        {
+            _velocity.y = -30f;
         }
     }
 
