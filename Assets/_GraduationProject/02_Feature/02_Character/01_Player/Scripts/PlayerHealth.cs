@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerHealth : PlayerComponent, IDamageable, IHealable
 {
     [Header("Runtime Stats")]
-    [SerializeField] protected float _currentHealth;
+    [SerializeField] protected int _currentHealth;
 
-    public float Health => _currentHealth;
-    public float MaxHealth => p_playerStats.MaxHealth;
+    public int Health => _currentHealth;
+    public int MaxHealth => p_playerStats.MaxHealth;
     public bool IsDead => _currentHealth <= 0;
     public bool IsAlive => !IsDead;
 
-    public event Action<float, float> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDeath;
 
     public override void Initialize(Player player)
@@ -25,11 +25,11 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
         }
     }
 
-    public void TakeDamage(float damageAmount, GameObject damageSource)
+    public void TakeDamage(int damageAmount, IAttacker attacker)
     {
         if (IsDead) return;
 
-        float previousHealth = _currentHealth;
+        int previousHealth = _currentHealth;
         _currentHealth = Mathf.Max(0, _currentHealth - damageAmount);
 
         OnHealthChanged?.Invoke(previousHealth, _currentHealth);
@@ -63,11 +63,11 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
         }
     }
 
-    public virtual void Heal(float healAmount)
+    public virtual void Heal(int healAmount)
     {
         if (IsDead) return;
 
-        float previousHealth = _currentHealth;
+        int previousHealth = _currentHealth;
         _currentHealth = Mathf.Min(p_playerStats.MaxHealth, _currentHealth + healAmount);
 
         OnHealthChanged?.Invoke(previousHealth, _currentHealth);
