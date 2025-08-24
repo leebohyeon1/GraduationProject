@@ -14,6 +14,6 @@ public interface IKnockbackable
     /// 오브젝트에 넉백을 적용합니다.
     /// </summary>
     /// <param name="knockbackForce">넉백의 힘(크기)입니다.</param>
-    /// <param name="sourcePosition">넉백이 시작된 위치(공격자의 위치)입니다.</param>
-    public void ApplyKnockback(float knockbackForce, Vector3 sourcePosition);
+    /// <param name="direction">넉백 방향.</param>
+    public void ApplyKnockback(float knockbackForce, Vector3 direction);
 }

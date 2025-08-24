@@ -5,7 +5,7 @@ public interface IAttacker
     /// <summary>
     /// 공격력
     /// </summary>
-    public float AttackDamage { get; }
+    public int AttackDamage { get; }
 
     /// <summary>
     /// 공격 속도

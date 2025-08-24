@@ -10,7 +10,7 @@ public class PlayerStats : CharacterStats
     public float RoateSpeed = 5f;
 
     [Header("Player Combat")]
-    public float AttackDamage = 10f;
+    public int AttackDamage = 10;
     public float AttackSpeed = 1f;
     public float AttackRadius = 2f;
     
