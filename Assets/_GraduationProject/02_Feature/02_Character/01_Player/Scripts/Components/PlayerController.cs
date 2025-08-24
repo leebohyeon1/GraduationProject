@@ -12,8 +12,10 @@ public class PlayerController : PlayerComponent
     [Header("Input")]
     [Tooltip("입력 이벤트를 제공하는 InputReader ScriptableObject입니다.")]
     [SerializeField] private InputReader _inputReader;
+    [Header("Character Control")]
+    [SerializeField] private float _rotationSpeed = 15f;
+
     private IInputDeviceDetector _inputDeviceDetector;
-    private IAttackDirectionProvider _attackDirectionProvider;
 
     /// <summary>
     /// 현재 이동 입력 값입니다. (x, y)
@@ -34,13 +36,12 @@ public class PlayerController : PlayerComponent
     /// 현재 조준/시선 입력 값입니다.
     /// </summary>
     private Vector2 _lookInput;
+    private Vector2 _mousePosition;
     
     public override void Initialize(Player player)
     {
         base.Initialize(player);
         
-        // AttackDirectionProvider 설정
-        _attackDirectionProvider = player.AttackDirectionProvider;
         _inputDeviceDetector = player.InputDeviceDetector;
 
         // InputDeviceDetector 이벤트 구독
@@ -61,8 +62,6 @@ public class PlayerController : PlayerComponent
         {
             _inputReader.NotifyInputDeviceChanged(deviceType);
         }
-        
-        Log.Print($"[PlayerController] 입력 기기 변경됨: {deviceType}");
     }
 
     /// <summary>
@@ -139,12 +138,6 @@ public class PlayerController : PlayerComponent
     private void OnLook(Vector2 lookInput)
     {
         _lookInput = lookInput;
-
-        // 게임패드 입력으로 공격 방향 업데이트
-        if (_attackDirectionProvider != null)
-        {
-            _attackDirectionProvider.UpdateAttackDirection(lookInput, InputDeviceType.Gamepad, transform, Camera.main);
-        }
     }
     
     /// <summary>
@@ -153,13 +146,9 @@ public class PlayerController : PlayerComponent
     /// <param name="mousePosition">마우스 스크린 위치입니다.</param>
     private void OnMousePosition(Vector2 mousePosition)
     {
-        // 마우스 위치로 공격 방향 업데이트
-        if (_attackDirectionProvider != null)
-        {
-            _attackDirectionProvider.UpdateAttackDirection(mousePosition, InputDeviceType.KeyboardMouse, transform, Camera.main);
-        }
+        _mousePosition = mousePosition;
     }
-    
+
     /// <summary>
     /// 매 프레임의 마지막에 호출되어, 한 번만 처리해야 하는 입력 상태를 리셋합니다.
     /// </summary>
@@ -183,5 +172,6 @@ public class PlayerController : PlayerComponent
     public bool AttackInput => _attackInput;
     public bool DodgeInput => _dodgeInput;
     public Vector2 LookInput => _lookInput;
+    public Vector2 MousePosition => _mousePosition;
 
 }

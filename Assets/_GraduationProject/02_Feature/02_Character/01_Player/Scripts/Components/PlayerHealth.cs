@@ -59,7 +59,7 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
 
         if (p_player.PlayerAttack != null)
         {
-            p_player.PlayerAttack.SetAttackEnabled(false);
+            p_player.PlayerAttack.enabled = false;
         }
     }
 

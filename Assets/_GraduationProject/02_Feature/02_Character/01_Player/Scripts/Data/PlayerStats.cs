@@ -11,7 +11,6 @@ public class PlayerStats : CharacterStats
 
     [Header("Player Combat")]
     public int AttackDamage = 10;
-    public float AttackSpeed = 1f;
     public float AttackRadius = 2f;
     
     [Header("Player Dodge")]

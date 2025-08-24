@@ -7,18 +7,13 @@ using UnityEngine;
 /// </summary>
 public class PlayerMoveState : BaseState<Player>
 {
-    private PlayerMovement _playerMovement;
-    private PlayerController _playerController;
-
     public PlayerMoveState(Player context, StateMachine<Player> stateMachine)
-        : base(context, stateMachine)
-    {
-        _playerMovement = context.PlayerMovement;
-        _playerController = context.PlayerController;
-    }
+        : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
+        p_context.PlayerAnimator.SetBool("IsMoving", true);
+
         Debug.Log("Player entered Move state");
     }
 
@@ -30,16 +25,18 @@ public class PlayerMoveState : BaseState<Player>
 
     private void HandleMovement()
     {
-        if (_playerMovement != null && _playerController.MoveInput != Vector2.zero)
+        if (p_context.PlayerMovement != null && p_context.PlayerController.MoveInput != Vector2.zero)
         {
             // 2D 입력을 3D 월드 좌표로 변환
-            Vector3 moveDirection = new Vector3(_playerController.MoveInput.x, 0, _playerController.MoveInput.y);
-            _playerMovement.Move(moveDirection, _playerMovement.MoveSpeed);
+            Vector3 moveDirection = new Vector3(p_context.PlayerController.MoveInput.x, 0, p_context.PlayerController.MoveInput.y);
+            p_context.PlayerMovement.Move(moveDirection, p_context.PlayerMovement.MoveSpeed);
         }
     }
 
     public override void OnExit()
     {
+        p_context.PlayerAnimator.SetBool("IsMoving", false);
+
         Debug.Log("Player exited Move state");
     }
 }

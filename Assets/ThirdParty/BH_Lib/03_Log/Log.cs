@@ -8,7 +8,7 @@ namespace BH_Lib.Log
     {
         public static bool LogOn = true;
      
-        public static void ColorLog(Color color, params object[] args)
+        public static void PrintColor(Color color, params object[] args)
         {
             if (!LogOn) 
             {
