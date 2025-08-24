@@ -22,7 +22,7 @@ public class Player : CharacterBase
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
     [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
-
+    [SerializeField] private Animator _animator;
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
@@ -89,6 +89,11 @@ public class Player : CharacterBase
             _playerAnimationEventHandler = GetComponent<PlayerAnimationEventHandler>();
         }
 
+        if (_animator == null)
+        {
+            _animator = GetComponent<Animator>();
+        }
+
         _playerHealth.Initialize(this);
         _playerMovement.Initialize(this);
         _playerController.Initialize(this);
@@ -103,7 +108,8 @@ public class Player : CharacterBase
         // 상태들 추가
         _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
         _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
 
         // 상태 전환 조건 설정
@@ -115,18 +121,18 @@ public class Player : CharacterBase
 
     private void SetupStateTransitions()
     {
-        // 모든 상태에서 회피로 전환 가능 (최우선 조건)
-        _stateMachine.AddAnyTransition<PlayerDodgeState>(() =>
-            PlayerController.DodgeInput && PlayerMovement.CanDodge());
-
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() => PlayerController.MoveInput != Vector2.zero);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(() => PlayerController.AttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(() => PlayerController.AttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() =>
+            PlayerController.DodgeInput && PlayerMovement.CanDodge());
 
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() => PlayerController.MoveInput == Vector2.zero);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(() => PlayerController.AttackInput);
-
+        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(() => PlayerController.AttackInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() =>
+            PlayerController.DodgeInput && PlayerMovement.CanDodge());
+            
         // Attack 상태에서의 전환은 상태 내부에서 시간 기반으로 처리
         // (공격 지속시간이 끝나면 자동으로 전환)
 
@@ -140,6 +146,8 @@ public class Player : CharacterBase
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;
     public PlayerAttack PlayerAttack => _playerAttack;
+    public PlayerAnimationEventHandler PlayerAnimationEventHandler => _playerAnimationEventHandler;
+    public Animator PlayerAnimator => _animator;
 
     // 현재 입력 기기 정보
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
@@ -147,7 +155,7 @@ public class Player : CharacterBase
 
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
-    public System.Type CurrentStateType => _stateMachine?.CurrentStateType;
+    public Type CurrentStateType => _stateMachine?.CurrentStateType;
     
     // 디버깅을 위한 Gizmos
     private void OnDrawGizmosSelected()

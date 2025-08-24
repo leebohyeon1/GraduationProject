@@ -8,11 +8,6 @@ public interface IAttacker
     public int AttackDamage { get; }
 
     /// <summary>
-    /// 공격 속도
-    /// </summary>
-    public float AttackSpeed { get; }
-
-    /// <summary>
     /// 대상을 공격하는 함수
     /// </summary>
     /// <param name="target">공격할 대상</param>

@@ -110,6 +110,9 @@ public class PlayerMovement : PlayerComponent, IMovable
             movement.y = _velocity.y * Time.deltaTime;
             _characterController.Move(movement);
         }
+
+        _lastDodgeTime = Time.time;
+
     }
 
     public void RotateImmediately(Vector3 direction)
@@ -135,7 +138,6 @@ public class PlayerMovement : PlayerComponent, IMovable
     {
         if (Time.time - _lastDodgeTime >= _dodgeCooldown)
         {
-            _lastDodgeTime = Time.time;
 
             return true;
         }

@@ -7,16 +7,12 @@ using UnityEngine;
 /// </summary>
 public class PlayerIdleState : BaseState<Player>
 {
-    private PlayerMovement _playerMovement;
-
     public PlayerIdleState(Player context, StateMachine<Player> stateMachine) 
-        : base(context, stateMachine)
-    {
-        _playerMovement = context.PlayerMovement;
-    }
+        : base(context, stateMachine) {}
 
     public override void OnEnter()
     {
+        p_context.PlayerAnimator.SetBool("IsIdle", true);  
         // 대기 상태 진입 시 처리
         Debug.Log("Player entered Idle state");
     }
@@ -24,11 +20,12 @@ public class PlayerIdleState : BaseState<Player>
     public override void OnUpdate()
     {
         // Idle 상태에서도 중력 적용 (이동 입력 없이)
-        _playerMovement?.Move(Vector3.zero, 0f);
+        p_context.PlayerMovement?.Move(Vector3.zero, 0f);
     }
 
     public override void OnExit()
     {
+        p_context.PlayerAnimator.SetBool("IsIdle", false); 
         Debug.Log("Player exited Idle state");
     }
 }

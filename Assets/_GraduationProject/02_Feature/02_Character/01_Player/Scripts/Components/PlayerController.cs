@@ -61,8 +61,6 @@ public class PlayerController : PlayerComponent
         {
             _inputReader.NotifyInputDeviceChanged(deviceType);
         }
-        
-        Log.Print($"[PlayerController] 입력 기기 변경됨: {deviceType}");
     }
 
     /// <summary>

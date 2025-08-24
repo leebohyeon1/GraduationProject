@@ -13,9 +13,6 @@ public class PlayerAttack : PlayerComponent, IAttacker
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
     
-    private float _lastAttackTime;
-    private bool _canAttack = true;
-    
     private IAttackDirectionProvider _attackDirectionProvider;
     
     // IAttacker 인터페이스 구현
@@ -38,14 +35,7 @@ public class PlayerAttack : PlayerComponent, IAttacker
     
     public void TryAttack()
     {
-        if (!_canAttack) return;
-
-        if (Time.time - _lastAttackTime >= 1f / AttackSpeed)
-        {
-            SetAttackDirection();   
-            PerformAttack();
-            _lastAttackTime = Time.time;
-        }
+        SetAttackDirection();   
     }
     
     /// <summary>
@@ -62,13 +52,11 @@ public class PlayerAttack : PlayerComponent, IAttacker
             {
                 Quaternion targetRotation = Quaternion.LookRotation(attackDirection, Vector3.up);
                 transform.rotation = targetRotation;
-                
-                Log.Print($"공격 방향 설정: {attackDirection}");
             }
         }
     }
     
-    private void PerformAttack()
+    public void PerformAttack()
     {
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
         
@@ -83,9 +71,6 @@ public class PlayerAttack : PlayerComponent, IAttacker
                 Attack(damageable);
             }
         }
-        
-        // 공격 애니메이션이나 이펙트를 여기서 실행할 수 있습니다
-        StartCoroutine(AttackCooldown());
     }
     
     public void Attack(IDamageable target)
@@ -95,22 +80,7 @@ public class PlayerAttack : PlayerComponent, IAttacker
         target.TakeDamage(AttackDamage, this);
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
-    
-    private IEnumerator AttackCooldown()
-    {
-        _canAttack = false;
-        yield return new WaitForSeconds(0.1f); // 짧은 쿨다운으로 연타 방지
-        _canAttack = true;
-    }
-    
-    public void SetAttackEnabled(bool enabled)
-    {
-        _canAttack = enabled;
-    }
-    
-    
-    // 공개 프로퍼티들
-    public bool CanAttack => _canAttack;
+
     public float AttackRadius => p_playerStats.AttackRadius;
     public Transform AttackPoint => _attackPoint;
 }

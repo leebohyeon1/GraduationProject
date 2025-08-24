@@ -1044,6 +1044,7 @@ GameObject:
   - component: {fileID: 4938809235773409437}
   - component: {fileID: 8893940094820771554}
   - component: {fileID: -9201113629592276691}
+  - component: {fileID: 6967620050765185270}
   - component: {fileID: 8114380554140145969}
   - component: {fileID: 5971060970724869790}
   - component: {fileID: 891048499526723208}
@@ -1131,7 +1132,7 @@ Animator:
   m_GameObject: {fileID: 5946781216381830389}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0803021fc98ce2b469e83a66e8532dea, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1143,6 +1144,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6967620050765185270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5946781216381830389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6a3d171defedf74abeb3e3518863627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationEventHandler
 --- !u!114 &8114380554140145969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1221,6 +1234,8 @@ MonoBehaviour:
   _playerMovement: {fileID: 891048499526723208}
   _playerController: {fileID: 5971060970724869790}
   _playerAttack: {fileID: 1353785049818484005}
+  _playerAnimationEventHandler: {fileID: 6967620050765185270}
+  _animator: {fileID: -9201113629592276691}
 --- !u!1 &6181016998679115209
 GameObject:
   m_ObjectHideFlags: 0
