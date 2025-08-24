@@ -20,6 +20,9 @@ public class Player : CharacterBase
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
 
+    // 입력 기기 감지기
+    [Inject] private IInputDeviceDetector _inputDeviceDetector;
+
     // 상태 머신
     private StateMachine<Player> _stateMachine;
 
@@ -126,6 +129,9 @@ public class Player : CharacterBase
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;
     public PlayerAttack PlayerAttack => _playerAttack;
+
+    // 현재 입력 기기 정보
+    public InputDeviceType CurrentInputDevice => _inputDeviceDetector.CurrentInputDevice;
 
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
