@@ -1,3 +1,4 @@
+using System.Collections;
 using BH_Lib.DI;
 using UnityEngine;
 
@@ -167,6 +168,28 @@ public class PlayerMovement : PlayerComponent, IMovable
         if (_velocity.y < -30f)
         {
             _velocity.y = -30f;
+        }
+    }
+
+    public IEnumerator MoveForwardWithCurve(float distance, float duration, AnimationCurve curve)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPosition = _transform.position;
+        Vector3 moveDirection = _transform.forward * distance;
+
+        while (elapsedTime < duration)
+        {
+            float normalizedTime = elapsedTime / duration;
+            float curveValue = curve.Evaluate(normalizedTime);
+
+            Vector3 targetPosition = startPosition + moveDirection * curveValue;
+            Vector3 movement = (targetPosition - _transform.position);
+            movement.y = _velocity.y * Time.deltaTime;
+            
+            _characterController.Move(movement);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 

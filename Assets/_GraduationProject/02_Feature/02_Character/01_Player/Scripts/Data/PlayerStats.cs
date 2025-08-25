@@ -9,9 +9,8 @@ public class PlayerStats : CharacterStats
 {
     public float RoateSpeed = 5f;
 
-    [Header("Player Combat")]
-    public int AttackDamage = 10;
-    public float AttackRadius = 2f;
+    [Header("Player Attack Data")]
+    public PlayerAttackData[] AttackData;
     
     [Header("Player Dodge")]
     public float DodgeSpeed = 8f;

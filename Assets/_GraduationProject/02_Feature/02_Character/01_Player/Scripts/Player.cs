@@ -155,13 +155,5 @@ public class Player : CharacterBase
     public IState CurrentState => _stateMachine?.CurrentState;
     public Type CurrentStateType => _stateMachine?.CurrentStateType;
     
-    // 디버깅을 위한 Gizmos
-    private void OnDrawGizmosSelected()
-    {
-        if (PlayerAttack.AttackPoint != null && _playerStats != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(PlayerAttack.AttackPoint.position, _playerStats.AttackRadius);
-        }
-    }
+
 }

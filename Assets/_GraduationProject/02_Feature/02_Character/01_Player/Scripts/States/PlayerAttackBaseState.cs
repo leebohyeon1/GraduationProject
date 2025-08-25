@@ -9,6 +9,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 {
     private Type _nextState; // 다음 상태를 저장할 변수
     protected bool p_canInput = false; // 입력 허용 플래그  
+    private Coroutine _attackMoveCoroutine; // 공격 이동 코루틴 참조
 
     protected abstract string p_animationTrigger { get; }   // 애니메이션 트리거 이름    
     protected abstract Type p_nextAttackState { get; }  // 다음 공격 상태 타입
@@ -44,6 +45,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_context.PlayerAttack.TryAttack();
         }
+        
+        // 공격 시 전진 이동 실행
+        StartAttackMovement();
     }
 
     public override void OnUpdate()
@@ -62,6 +66,18 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         p_context.PlayerAnimationEventHandler.OnAttackFinished -= OnAttackFinishedAnimationEvent;
         p_context.PlayerAnimationEventHandler.OnAttack -= p_context.PlayerAttack.PerformAttack;
 
+        // 공격 이동 코루틴 정리
+        if (_attackMoveCoroutine != null)
+        {
+            p_context.StopCoroutine(_attackMoveCoroutine);
+            _attackMoveCoroutine = null;
+        }
+
+        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerAttackBaseState)))
+        {
+            p_context.PlayerAttack.ResetComboCount();
+        }
+
         _nextState = null;
         Debug.Log("Player exited Attack state");
     }
@@ -79,18 +95,21 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             if (p_nextAttackState != null && p_context.PlayerController.AttackInput)
             {
                 _nextState = p_nextAttackState;
-                Log.PrintColor(Color.red, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
+               
             }
             else if (p_context.PlayerController.DodgeInput && p_context.PlayerMovement.CanDodge())
             {
                 _nextState = typeof(PlayerDodgeState);
-                Log.PrintColor(Color.red, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
             }
 
-
+            if (_nextState != null)
+            {
+                Log.PrintColor(Color.red, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
+            }
+            
         }
     }
-
+    
     /// <summary>
     /// 공격 애니메이션 이벤트 핸들러
     /// 공격 시작 시점에 호출되어 입력을 허용
@@ -120,6 +139,8 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         yield return new WaitForSeconds(0.05f);
 
+
+        
         // 저장된 다음 상태로 전환
         if (_nextState != null)
         {
@@ -127,8 +148,22 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         }
         else
         {
+            
             // 아무 입력이 없었으면 Idle 상태로
             p_stateMachine.ChangeState<PlayerIdleState>();
         }
+    }
+    
+    /// <summary>
+    /// 공격 시 전진 이동 시작
+    /// </summary>
+    private void StartAttackMovement()
+    {
+        if (p_context.PlayerStats?.AttackData == null || p_context.PlayerStats.AttackData.Length == 0) return;
+        
+        var attackData = p_context.PlayerStats.AttackData[p_context.PlayerAttack.ComboCount];
+        if (attackData.AttackMoveDistance <= 0) return;
+        
+        _attackMoveCoroutine = p_context.StartCoroutine(p_context.PlayerMovement.MoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }

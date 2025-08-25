@@ -12,9 +12,11 @@ public class PlayerAttack : PlayerComponent, IAttacker
     [Header("Combat")]
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
-    
+
+    private int _comboCount = 0;
+
     // IAttacker 인터페이스 구현
-    public int AttackDamage => p_playerStats != null ? p_playerStats.AttackDamage : 10;
+    public int AttackDamage => p_playerStats != null ? p_playerStats.AttackData[_comboCount].AttackDamage : 10;
     public float AttackSpeed => 1f;
 
     public override void Initialize(Player player)
@@ -32,14 +34,14 @@ public class PlayerAttack : PlayerComponent, IAttacker
     {
         SetAttackDirection();
     }
-    
+
     public void PerformAttack()
     {
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
-        
+
         // 공격 범위 내의 적들을 찾기
-        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, p_playerStats.AttackRadius, _enemyLayerMask);
-        
+        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, p_playerStats.AttackData[_comboCount].AttackRadius, _enemyLayerMask);
+
         foreach (Collider enemy in hitEnemies)
         {
             IDamageable damageable = enemy.GetComponent<IDamageable>();
@@ -48,15 +50,21 @@ public class PlayerAttack : PlayerComponent, IAttacker
                 Attack(damageable);
             }
         }
+
+        _comboCount++;
+        if (_comboCount >= p_playerStats.AttackData.Length)
+        {
+            _comboCount = 0;
+        }
     }
-    
+
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)
         {
             return;
         }
-        
+
         target.TakeDamage(AttackDamage, this);
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
@@ -78,7 +86,7 @@ public class PlayerAttack : PlayerComponent, IAttacker
             Vector2 lookInput = p_player.PlayerController.LookInput;
             RotatePlayerWithGamepad(lookInput);
         }
-    }    
+    }
 
     private void RotatePlayerWithGamepad(Vector2 lookInput)
     {
@@ -118,8 +126,24 @@ public class PlayerAttack : PlayerComponent, IAttacker
             }
         }
     }
-    
 
-    public float AttackRadius => p_playerStats.AttackRadius;
+
+    public void ResetComboCount()
+    {
+        _comboCount = 0;
+    }
+
+    public float AttackRadius => p_playerStats.AttackData[_comboCount].AttackRadius;
     public Transform AttackPoint => _attackPoint;
+    public int ComboCount => _comboCount;
+    
+    // 디버깅을 위한 Gizmos
+    private void OnDrawGizmosSelected()
+    {
+        if (AttackPoint != null && p_playerStats != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_attackPoint.position, p_playerStats.AttackData[_comboCount].AttackRadius);
+        }
+    }
 }
