@@ -35,9 +35,19 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         EnablePlayerActions();
     }
 
+    private void OnDisable()
+    {
+        DisablePlayerActions();
+    }
+
     public void EnablePlayerActions()
     {
         _inputActions.Player.Enable();
+    }
+
+    public void DisablePlayerActions()
+    {
+        _inputActions?.Player.Disable();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -86,5 +96,15 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public void NotifyInputDeviceChanged(InputDeviceType deviceType)
     {
         InputDeviceChangedEvent?.Invoke(deviceType);
+    }
+
+    /// <summary>
+    /// 입력 시스템 리소스를 정리합니다
+    /// </summary>
+    public void Dispose()
+    {
+        DisablePlayerActions();
+        _inputActions?.Dispose();
+        _inputActions = null;
     }
 }

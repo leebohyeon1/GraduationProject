@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   MaxHealth: 100
   MoveSpeed: 5
-  RoateSpeed: 5
+  RotateSpeed: 5
+  Gravity: -9.81
+  GroundCheckDistance: 0.1
   AttackData:
   - AttackMoveDistance: 2
     AttackMoveDuration: 0.15
@@ -46,7 +48,7 @@ MonoBehaviour:
     AttackRadius: 2
     AttackCooldown: 0
     ComboInputWindow: 0
-  - AttackMoveDistance: 2
+  - AttackMoveDistance: 10
     AttackMoveDuration: 0.2
     AttackMoveCurve:
       serializedVersion: 2
