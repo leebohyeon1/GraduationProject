@@ -37,7 +37,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         p_context.PlayerAnimationEventHandler.OnAttackFinished += OnAttackFinishedAnimationEvent;
         p_context.PlayerAnimationEventHandler.OnAttack += p_context.PlayerAttack.PerformAttack;
 
-        Debug.Log("Player entered Attack state");
+        Log.Print("Player entered Attack state");
         p_context.PlayerAnimator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         // 공격 실행
@@ -82,7 +82,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         }
 
         _nextState = null;
-        Debug.Log("Player exited Attack state");
+        Log.Print("Player exited Attack state");
     }
 
     /// <summary>

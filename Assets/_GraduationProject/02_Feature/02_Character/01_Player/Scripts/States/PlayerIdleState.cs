@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
@@ -14,7 +15,7 @@ public class PlayerIdleState : BaseState<Player>
     {
         p_context.PlayerAnimator.SetBool("IsIdle", true);  
         // 대기 상태 진입 시 처리
-        Debug.Log("Player entered Idle state");
+        Log.Print("Player entered Idle state");
     }
 
     public override void OnUpdate()
@@ -26,6 +27,6 @@ public class PlayerIdleState : BaseState<Player>
     public override void OnExit()
     {
         p_context.PlayerAnimator.SetBool("IsIdle", false); 
-        Debug.Log("Player exited Idle state");
+        Log.Print("Player exited Idle state");
     }
 }
