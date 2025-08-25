@@ -7,7 +7,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "Stats/Player Stats")]
 public class PlayerStats : CharacterStats
 {
-    public float RoateSpeed = 5f;
+    [Header("Movement")]
+    public float RotateSpeed = 5f;
+    
+    [Header("Physics")]
+    public float Gravity = -9.81f;
+    public float GroundCheckDistance = 0.1f;
 
     [Header("Player Attack Data")]
     public PlayerAttackData[] AttackData;
