@@ -15,7 +15,7 @@ public class PlayerComponent : MonoBehaviour
     /// <summary>
     /// 플레이어의 스탯(능력치) 데이터입니다.
     /// </summary>
-    protected PlayerStats p_playerStats;
+    protected PlayerStatsSO p_playerStats;
 
     /// <summary>
     /// 컴포넌트를 초기화합니다. Player 객체에 의해 호출됩니다.

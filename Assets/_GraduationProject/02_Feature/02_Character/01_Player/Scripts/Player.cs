@@ -16,7 +16,7 @@ using UnityEngine;
 public class Player : CharacterBase
 {
     [Header("Player Components")]
-    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private PlayerStatsSO _playerStats;
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
@@ -110,6 +110,7 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
 
         // 상태 전환 조건 설정
         SetupStateTransitions();
@@ -120,6 +121,10 @@ public class Player : CharacterBase
 
     private void SetupStateTransitions()
     {
+        // Hit 상태로의 전환 (모든 상태에서 가능)
+        _stateMachine.AddAnyTransition<PlayerHitState>(() =>
+            PlayerHealth.IsAlive && PlayerHealth.IsHit);
+
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() => PlayerController.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(() => PlayerController.AttackInput);
@@ -140,7 +145,7 @@ public class Player : CharacterBase
     }
 
     // 공개 프로퍼티들
-    public PlayerStats PlayerStats => _playerStats;
+    public PlayerStatsSO PlayerStats => _playerStats;
     public PlayerHealth PlayerHealth => _playerHealth;
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;
@@ -153,15 +158,6 @@ public class Player : CharacterBase
     
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
-    public Type CurrentStateType => _stateMachine?.CurrentStateType;
-    
-    // 디버깅을 위한 Gizmos
-    private void OnDrawGizmosSelected()
-    {
-        if (PlayerAttack.AttackPoint != null && _playerStats != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(PlayerAttack.AttackPoint.position, _playerStats.AttackRadius);
-        }
-    }
+    public Type CurrentStateType => _stateMachine?.CurrentStateType;    
+
 }

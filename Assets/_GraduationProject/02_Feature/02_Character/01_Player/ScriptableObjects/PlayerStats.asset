@@ -14,8 +14,69 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   MaxHealth: 100
   MoveSpeed: 5
-  RoateSpeed: 5
-  AttackDamage: 10
-  AttackRadius: 1.5
+  RotateSpeed: 5
+  Gravity: -9.81
+  GroundCheckDistance: 0.1
+  AttackData:
+  - AttackMoveDistance: 2
+    AttackMoveDuration: 0.15
+    AttackMoveCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    AttackDamage: 10
+    AttackRadius: 2
+    AttackCooldown: 0
+    ComboInputWindow: 0
+  - AttackMoveDistance: 10
+    AttackMoveDuration: 0.2
+    AttackMoveCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    AttackDamage: 10
+    AttackRadius: 2
+    AttackCooldown: 0
+    ComboInputWindow: 0
   DodgeSpeed: 10
   DodgeCooldown: 1

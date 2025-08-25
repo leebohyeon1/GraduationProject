@@ -1,3 +1,4 @@
+using System.Collections;
 using BH_Lib.DI;
 using UnityEngine;
 
@@ -13,8 +14,6 @@ public class PlayerMovement : PlayerComponent, IMovable
     private Camera _mainCamera;
 
     [Header("Physics")]
-    [SerializeField] private float _gravity = -9.81f;
-    [SerializeField] private float _groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask _groundLayerMask = 1 << 3;
 
     private Vector3 _velocity;
@@ -91,7 +90,7 @@ public class PlayerMovement : PlayerComponent, IMovable
             _transform.rotation = Quaternion.Slerp(
                 _transform.rotation,
                 targetRotation,
-                p_playerStats.RoateSpeed * Time.fixedDeltaTime
+                p_playerStats.RotateSpeed * Time.fixedDeltaTime
             );
         }
     }
@@ -149,7 +148,7 @@ public class PlayerMovement : PlayerComponent, IMovable
     {
         // CharacterController의 아래쪽 경계에서 체크
         Vector3 rayOrigin = _transform.position - new Vector3(0, _characterController.height / 2f, 0);
-        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, _groundCheckDistance, _groundLayerMask);
+        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, p_playerStats.GroundCheckDistance, _groundLayerMask);
     }
 
     private void ApplyGravity()
@@ -160,7 +159,7 @@ public class PlayerMovement : PlayerComponent, IMovable
         }
         else
         {
-            _velocity.y += _gravity * Time.deltaTime;
+            _velocity.y += p_playerStats.Gravity * Time.deltaTime;
         }
 
         // 최대 낙하 속도 제한
@@ -170,9 +169,31 @@ public class PlayerMovement : PlayerComponent, IMovable
         }
     }
 
+    public IEnumerator CoMoveForwardWithCurve(float distance, float duration, AnimationCurve curve)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPosition = _transform.position;
+        Vector3 moveDirection = _transform.forward * distance;
+
+        while (elapsedTime < duration)
+        {
+            float normalizedTime = elapsedTime / duration;
+            float curveValue = curve.Evaluate(normalizedTime);
+
+            Vector3 targetPosition = startPosition + moveDirection * curveValue;
+            Vector3 movement = (targetPosition - _transform.position);
+
+            _characterController.Move(movement);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     public bool IsGrounded => _isGrounded;
     public Vector3 Velocity => _velocity;
     public float MoveSpeed => p_playerStats.MoveSpeed;
     public float DodgeSpeed => p_playerStats.DodgeSpeed;
 
 }
+

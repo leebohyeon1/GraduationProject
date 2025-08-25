@@ -12,9 +12,6 @@ public class PlayerController : PlayerComponent
     [Header("Input")]
     [Tooltip("입력 이벤트를 제공하는 InputReader ScriptableObject입니다.")]
     [SerializeField] private InputReader _inputReader;
-    [Header("Character Control")]
-    [SerializeField] private float _rotationSpeed = 15f;
-
     private IInputDeviceDetector _inputDeviceDetector;
 
     /// <summary>

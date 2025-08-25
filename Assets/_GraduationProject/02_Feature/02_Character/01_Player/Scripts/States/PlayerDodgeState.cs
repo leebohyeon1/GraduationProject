@@ -19,7 +19,7 @@ public class PlayerDodgeState : BaseState<Player>
         base.OnEnter();
         p_context.PlayerAnimationEventHandler.OnDodgeEnd += OnDodgeEndEvent;
         
-        Debug.Log("Player entered Dodge state");
+        Log.Print("Player entered Dodge state");
 
         p_context.PlayerAnimator.SetTrigger("Dodge");
         _isInvincible = true;
@@ -55,7 +55,7 @@ public class PlayerDodgeState : BaseState<Player>
     {
         p_context.PlayerAnimationEventHandler.OnDodgeEnd -= OnDodgeEndEvent;
 
-        Debug.Log("Player exited Dodge state");
+        Log.Print("Player exited Dodge state");
         _isInvincible = false;
 
         // TODO: 무적 상태 비활성화

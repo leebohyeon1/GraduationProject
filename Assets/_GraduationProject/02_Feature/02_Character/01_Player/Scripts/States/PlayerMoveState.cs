@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
@@ -14,7 +15,7 @@ public class PlayerMoveState : BaseState<Player>
     {
         p_context.PlayerAnimator.SetBool("IsMoving", true);
 
-        Debug.Log("Player entered Move state");
+        Log.Print("Player entered Move state");
     }
 
     public override void OnUpdate()
@@ -37,6 +38,6 @@ public class PlayerMoveState : BaseState<Player>
     {
         p_context.PlayerAnimator.SetBool("IsMoving", false);
 
-        Debug.Log("Player exited Move state");
+        Log.Print("Player exited Move state");
     }
 }
