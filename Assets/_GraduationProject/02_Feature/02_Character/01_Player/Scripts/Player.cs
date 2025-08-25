@@ -16,7 +16,7 @@ using UnityEngine;
 public class Player : CharacterBase
 {
     [Header("Player Components")]
-    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private PlayerStatsSO _playerStats;
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
@@ -140,7 +140,7 @@ public class Player : CharacterBase
     }
 
     // 공개 프로퍼티들
-    public PlayerStats PlayerStats => _playerStats;
+    public PlayerStatsSO PlayerStats => _playerStats;
     public PlayerHealth PlayerHealth => _playerHealth;
     public PlayerMovement PlayerMovement => _playerMovement;
     public PlayerController PlayerController => _playerController;

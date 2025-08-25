@@ -169,7 +169,7 @@ public class PlayerMovement : PlayerComponent, IMovable
         }
     }
 
-    public IEnumerator MoveForwardWithCurve(float distance, float duration, AnimationCurve curve)
+    public IEnumerator CoMoveForwardWithCurve(float distance, float duration, AnimationCurve curve)
     {
         float elapsedTime = 0f;
         Vector3 startPosition = _transform.position;

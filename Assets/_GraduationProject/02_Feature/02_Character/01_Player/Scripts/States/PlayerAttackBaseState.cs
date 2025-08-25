@@ -127,14 +127,14 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     protected virtual void OnAttackFinishedAnimationEvent()
     {
-       p_context.StartCoroutine(ChangeNextState());
+       p_context.StartCoroutine(CoChangeNextState());
     }
     
     /// <summary>
     /// 다음 상태로 전환하는 코루틴
     /// </summary>
     /// <returns></returns>
-    private IEnumerator ChangeNextState()
+    private IEnumerator CoChangeNextState()
     {
         yield return new WaitForSeconds(0.15f); // 약간의 딜레이 후에 상태 전환
 
@@ -142,8 +142,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         yield return new WaitForSeconds(0.05f);
 
-
-        
         // 저장된 다음 상태로 전환
         if (_nextState != null)
         {
@@ -167,6 +165,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         var attackData = p_context.PlayerStats.AttackData[p_context.PlayerAttack.ComboCount];
         if (attackData.AttackMoveDistance <= 0) return;
         
-        _attackMoveCoroutine = p_context.StartCoroutine(p_context.PlayerMovement.MoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
+        _attackMoveCoroutine = p_context.StartCoroutine(p_context.PlayerMovement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }

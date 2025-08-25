@@ -5,7 +5,7 @@ using UnityEngine;
 /// CharacterStats를 상속받아 플레이어만의 고유한 능력치를 추가
 /// </summary>
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "Stats/Player Stats")]
-public class PlayerStats : CharacterStats
+public class PlayerStatsSO : CharacterStatsSO
 {
     [Header("Movement")]
     public float RotateSpeed = 5f;
