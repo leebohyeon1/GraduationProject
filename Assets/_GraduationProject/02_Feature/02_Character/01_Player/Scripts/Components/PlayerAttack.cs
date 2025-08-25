@@ -30,9 +30,9 @@ public class PlayerAttack : PlayerComponent, IAttacker
         }
     }
 
-    public void TryAttack()
+    public void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
     {
-        SetAttackDirection();
+        SetAttackDirection(deviceType, lookInput, mousePosition);
     }
 
     public void PerformAttack()
@@ -69,21 +69,14 @@ public class PlayerAttack : PlayerComponent, IAttacker
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
 
-    private void SetAttackDirection()
+    private void SetAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
     {
-        if (p_player.InputDeviceDetector == null)
+        if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            return;
-        }
-
-        if (p_player.InputDeviceDetector.CurrentInputDevice == InputDeviceType.KeyboardMouse)
-        {
-            Vector2 mousePosition = p_player.PlayerController.MousePosition;
             RotatePlayerWithMouse(mousePosition);
         }
         else // Gamepad
         {
-            Vector2 lookInput = p_player.PlayerController.LookInput;
             RotatePlayerWithGamepad(lookInput);
         }
     }

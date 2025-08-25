@@ -43,7 +43,10 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 공격 실행
         if (p_context.PlayerAttack != null)
         {
-            p_context.PlayerAttack.TryAttack();
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var lookInput = p_context.PlayerController.LookInput;
+            var mousePosition = p_context.PlayerController.MousePosition;
+            p_context.PlayerAttack.TryAttack(deviceType, lookInput, mousePosition);
         }
         
         // 공격 시 전진 이동 실행
