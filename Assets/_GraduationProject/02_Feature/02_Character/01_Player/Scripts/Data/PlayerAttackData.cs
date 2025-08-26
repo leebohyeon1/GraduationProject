@@ -25,9 +25,7 @@ public class PlayerAttackData
     public float AttackRadius = 2f;
     
     [Header("Attack Timing")]
-    [Tooltip("공격 쿨다운 시간")]
-    public float AttackCooldown = 0.5f;
+    [Tooltip("공격후 딜레이 시간")]
+    public float AttackDelay = 0.2f;
     
-    [Tooltip("콤보 입력 허용 시간")]
-    public float ComboInputWindow = 0.6f;
 }

@@ -8,6 +8,6 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    public PlayerSecondAttackState(Player context, StateMachine<Player> stateMachine)
+    public PlayerSecondAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
 }

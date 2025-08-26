@@ -5,7 +5,7 @@ using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class PlayerAttackBaseState : BaseState<Player>
+public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
 {
     private Type _nextState; // 다음 상태를 저장할 변수
     protected bool p_canInput = false; // 입력 허용 플래그  
@@ -17,10 +17,8 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// <summary>
     /// 플레이어 공격 기본 상태 생성자
     /// </summary>
-    protected PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
-        : base(context, stateMachine)
-    {
-    }
+    public PlayerAttackBaseState (PlayerContext context, StateMachine<PlayerContext> stateMachine) 
+        : base(context, stateMachine) {}
 
     /// <summary>
     /// 공격 상태 진입 시 호출
@@ -33,20 +31,20 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         _nextState = null; // 다음 상태 초기화
         p_canInput = true;    // 콤보 상태 초기화
 
-        p_context.PlayerAnimationEventHandler.OnAllowAttackInput += OnAttackAnimationEvent;
-        p_context.PlayerAnimationEventHandler.OnAttackFinished += OnAttackFinishedAnimationEvent;
-        p_context.PlayerAnimationEventHandler.OnAttack += p_context.PlayerAttack.PerformAttack;
+        p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
+        p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
+        p_context.EventBus.OnAttack += p_context.Attack.PerformAttack;
 
         Log.Print("Player entered Attack state");
-        p_context.PlayerAnimator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+        p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         // 공격 실행
-        if (p_context.PlayerAttack != null)
+        if (p_context.Attack != null)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var lookInput = p_context.PlayerController.LookInput;
-            var mousePosition = p_context.PlayerController.MousePosition;
-            p_context.PlayerAttack.TryAttack(deviceType, lookInput, mousePosition);
+            var lookInput = p_context.Controller.LookInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Attack.TryAttack(deviceType, lookInput, mousePosition);
         }
         
         // 공격 시 전진 이동 실행
@@ -63,11 +61,11 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     public override void OnExit()
     {
         base.OnExit();
-        p_context.PlayerAnimator.ResetTrigger(p_animationTrigger);
+        p_context.Animator.ResetTrigger(p_animationTrigger);
 
-        p_context.PlayerAnimationEventHandler.OnAllowAttackInput -= OnAttackAnimationEvent;
-        p_context.PlayerAnimationEventHandler.OnAttackFinished -= OnAttackFinishedAnimationEvent;
-        p_context.PlayerAnimationEventHandler.OnAttack -= p_context.PlayerAttack.PerformAttack;
+        p_context.EventBus.OnAllowAttackInput -= OnAttackAnimationEvent;
+        p_context.EventBus.OnAttackFinished -= OnAttackFinishedAnimationEvent;
+        p_context.EventBus.OnAttack -= p_context.Attack.PerformAttack;
 
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)
@@ -78,7 +76,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerAttackBaseState)))
         {
-            p_context.PlayerAttack.ResetComboCount();
+            p_context.Attack.ResetComboCount();
         }
 
         _nextState = null;
@@ -95,12 +93,12 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         if (p_canInput)
         {
             // 공격 중 입력 감지하여 다음 상태 저장
-            if (p_nextAttackState != null && p_context.PlayerController.AttackInput)
+            if (p_nextAttackState != null && p_context.Controller.AttackInput)
             {
                 _nextState = p_nextAttackState;
                
             }
-            else if (p_context.PlayerController.DodgeInput && p_context.PlayerMovement.CanDodge())
+            else if (p_context.Controller.DodgeInput && p_context.Movement.CanDodge())
             {
                 _nextState = typeof(PlayerDodgeState);
             }
@@ -127,7 +125,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     protected virtual void OnAttackFinishedAnimationEvent()
     {
-       p_context.StartCoroutine(CoChangeNextState());
+        p_context.StartCoroutine(CoChangeNextState());
     }
     
     /// <summary>
@@ -136,11 +134,12 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// <returns></returns>
     private IEnumerator CoChangeNextState()
     {
-        yield return new WaitForSeconds(0.15f); // 약간의 딜레이 후에 상태 전환
+        yield return new WaitForSeconds( p_context.Stats
+            .AttackData[p_context.Attack.ComboCount]
+            .AttackDelay ); // 약간의 딜레이 후에 상태 전환
 
         p_canInput = false;
 
-        yield return new WaitForSeconds(0.05f);
 
         // 저장된 다음 상태로 전환
         if (_nextState != null)
@@ -160,11 +159,11 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     private void StartAttackMovement()
     {
-        if (p_context.PlayerStats?.AttackData == null || p_context.PlayerStats.AttackData.Length == 0) return;
+        if (p_context.Stats?.AttackData == null || p_context.Stats.AttackData.Length == 0) return;
         
-        var attackData = p_context.PlayerStats.AttackData[p_context.PlayerAttack.ComboCount];
+        var attackData = p_context.Stats.AttackData[p_context.Attack.ComboCount];
         if (attackData.AttackMoveDistance <= 0) return;
         
-        _attackMoveCoroutine = p_context.StartCoroutine(p_context.PlayerMovement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
+        _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }
