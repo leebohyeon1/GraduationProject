@@ -70,7 +70,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)
         {
-            // p_context.StopCoroutine(_attackMoveCoroutine);
+            p_context.StopCoroutine(_attackMoveCoroutine);
             _attackMoveCoroutine = null;
         }
 
@@ -125,7 +125,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     /// </summary>
     protected virtual void OnAttackFinishedAnimationEvent()
     {
-       // p_context.StartCoroutine(CoChangeNextState());
+        p_context.StartCoroutine(CoChangeNextState());
     }
     
     /// <summary>
@@ -163,6 +163,6 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
         var attackData = p_context.Stats.AttackData[p_context.Attack.ComboCount];
         if (attackData.AttackMoveDistance <= 0) return;
         
-        // _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
+        _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }

@@ -74,7 +74,7 @@ public class Player : CharacterBase
             _playerController = GetComponent<PlayerController>();
         }
 
-        Context = new PlayerContext(_playerMovement, _playerAttack, _playerHealth,
+        Context = new PlayerContext(this, _playerMovement, _playerAttack, _playerHealth,
             _playerController, _playerStats, _animator, _inputDeviceDetector);
 
         if (_playerHealth == null)

@@ -1,7 +1,9 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerContext
 {
+    public MonoBehaviour Owner { get; private set; }
     public IPlayerMovement Movement { get; private set; }
     public IPlayerAttack Attack { get; private set; }
     public IPlayerHealth Health { get; private set; }
@@ -12,8 +14,9 @@ public class PlayerContext
     public IInputDeviceDetector InputDeviceDetector { get; private set; }
 
 
-    public PlayerContext(IPlayerMovement movement, IPlayerAttack attack, IPlayerHealth health, IPlayerController controller, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
+    public PlayerContext(MonoBehaviour owner, IPlayerMovement movement, IPlayerAttack attack, IPlayerHealth health, IPlayerController controller, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
     {
+        Owner = owner;
         Movement = movement;
         Attack = attack;
         Health = health;
@@ -24,4 +27,7 @@ public class PlayerContext
         
         EventBus = new PlayerEventBus();
     }
+
+    public Coroutine StartCoroutine(IEnumerator routine) => Owner.StartCoroutine(routine);
+    public void StopCoroutine(Coroutine routine) => Owner.StopCoroutine(routine);
 }
