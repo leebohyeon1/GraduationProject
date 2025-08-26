@@ -12,7 +12,7 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerSecondAttackState);
 
-    public PlayerFirstAttackState(Player context, StateMachine<Player> stateMachine)
-        : base(context, stateMachine) { }
+    public PlayerFirstAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine) 
+        : base(context, stateMachine) {}
     
 }

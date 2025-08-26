@@ -2,14 +2,16 @@ using System;
 using BH_Lib.Log;
 using UnityEngine;
 
-public class PlayerHealth : PlayerComponent, IDamageable, IHealable
+public class PlayerHealth : MonoBehaviour, IPlayerHealth
 {
     [Header("Runtime Stats")]
     [SerializeField] protected int _currentHealth;
     private bool _isHit = false;
 
+    private PlayerContext _context;
+
     public int Health => _currentHealth;
-    public int MaxHealth => p_playerStats.MaxHealth;
+    public int MaxHealth => _context.Stats.MaxHealth;
     public bool IsDead => _currentHealth <= 0;
     public bool IsAlive => !IsDead;
     public bool IsHit => _isHit;
@@ -27,14 +29,17 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
         _isHit = false;
     }
 
-    public override void Initialize(Player player)
+    public void Initialize(PlayerContext context)
     {
-        base.Initialize(player);
-        
-        if (p_playerStats != null)
+        _context = context;
+
+        if (_context.Stats != null)
         {
-            _currentHealth = p_playerStats.MaxHealth;
+            _currentHealth = _context.Stats.MaxHealth;
         }
+        
+        _context.EventBus.OnHealthChanged += OnHealthChanged;
+        _context.EventBus.OnPlayerDied += OnDeath;
     }
 
     public void TakeDamage(int damageAmount, IAttacker attacker)
@@ -44,7 +49,7 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
         int previousHealth = _currentHealth;
         _currentHealth = Mathf.Max(0, _currentHealth - damageAmount);
 
-        OnHealthChanged?.Invoke(previousHealth, _currentHealth);
+        _context.EventBus.PublishHealthChanged(previousHealth, _currentHealth);
 
         if (IsDead)
         {
@@ -58,26 +63,12 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
     }
 
     protected virtual void Die()
-    {
-        OnDeath?.Invoke();
+    {   
+        _context.EventBus.PublishPlayerDied();
 
         Log.Print("플레이어 사망!");
 
         // 각 시스템 비활성화
-        if (p_player.PlayerController != null)
-        {
-            p_player.PlayerController.enabled = false;
-        }
-
-        if (p_player.PlayerMovement != null)
-        {
-            p_player.PlayerMovement.enabled = false;
-        }
-
-        if (p_player.PlayerAttack != null)
-        {
-            p_player.PlayerAttack.enabled = false;
-        }
     }
 
     public virtual void Heal(int healAmount)
@@ -85,7 +76,7 @@ public class PlayerHealth : PlayerComponent, IDamageable, IHealable
         if (IsDead) return;
 
         int previousHealth = _currentHealth;
-        _currentHealth = Mathf.Min(p_playerStats.MaxHealth, _currentHealth + healAmount);
+        _currentHealth = Mathf.Min(_context.Stats.MaxHealth, _currentHealth + healAmount);
 
         OnHealthChanged?.Invoke(previousHealth, _currentHealth);
     }

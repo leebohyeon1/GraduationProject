@@ -4,9 +4,8 @@ using UnityEngine;
 
 /// <summary>
 /// 플레이어의 이동을 담당하는 클래스
-/// IMovable 인터페이스를 구현하여 이동 기능을 제공
 /// </summary>
-public class PlayerMovement : PlayerComponent, IMovable
+public class PlayerMovement : MonoBehaviour, IPlayerMovement
 {
     [Header("Components")]
     [SerializeField] private CharacterController _characterController;
@@ -18,11 +17,12 @@ public class PlayerMovement : PlayerComponent, IMovable
 
     private Vector3 _velocity;
     private bool _isGrounded;
-    private bool _canDodge;
 
     // 회피 쿨다운
     private float _lastDodgeTime = -999f;
-    private float _dodgeCooldown => p_playerStats.DodgeCooldown;
+    private float _dodgeCooldown => _context.Stats.DodgeCooldown;
+
+    private PlayerContext _context;
 
     public void Tick()
     {
@@ -30,9 +30,9 @@ public class PlayerMovement : PlayerComponent, IMovable
         ApplyGravity();
     }
 
-    public override void Initialize(Player player)
+    public void Initialize(PlayerContext context)
     {
-        base.Initialize(player);
+        _context = context;
 
         if (_characterController == null)
         {
@@ -90,7 +90,7 @@ public class PlayerMovement : PlayerComponent, IMovable
             _transform.rotation = Quaternion.Slerp(
                 _transform.rotation,
                 targetRotation,
-                p_playerStats.RotateSpeed * Time.fixedDeltaTime
+                _context.Stats.RotateSpeed * Time.fixedDeltaTime
             );
         }
     }
@@ -148,7 +148,7 @@ public class PlayerMovement : PlayerComponent, IMovable
     {
         // CharacterController의 아래쪽 경계에서 체크
         Vector3 rayOrigin = _transform.position - new Vector3(0, _characterController.height / 2f, 0);
-        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, p_playerStats.GroundCheckDistance, _groundLayerMask);
+        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, _context.Stats.GroundCheckDistance, _groundLayerMask);
     }
 
     private void ApplyGravity()
@@ -159,7 +159,7 @@ public class PlayerMovement : PlayerComponent, IMovable
         }
         else
         {
-            _velocity.y += p_playerStats.Gravity * Time.deltaTime;
+            _velocity.y += _context.Stats.Gravity * Time.deltaTime;
         }
 
         // 최대 낙하 속도 제한
@@ -192,8 +192,8 @@ public class PlayerMovement : PlayerComponent, IMovable
 
     public bool IsGrounded => _isGrounded;
     public Vector3 Velocity => _velocity;
-    public float MoveSpeed => p_playerStats.MoveSpeed;
-    public float DodgeSpeed => p_playerStats.DodgeSpeed;
+    public float MoveSpeed => _context.Stats.MoveSpeed;
+    public float DodgeSpeed => _context.Stats.DodgeSpeed;
 
 }
 
