@@ -134,11 +134,12 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     /// <returns></returns>
     private IEnumerator CoChangeNextState()
     {
-        yield return new WaitForSeconds(0.15f); // 약간의 딜레이 후에 상태 전환
+        yield return new WaitForSeconds( p_context.Stats
+            .AttackData[p_context.Attack.ComboCount]
+            .AttackDelay ); // 약간의 딜레이 후에 상태 전환
 
         p_canInput = false;
 
-        yield return new WaitForSeconds(0.05f);
 
         // 저장된 다음 상태로 전환
         if (_nextState != null)
