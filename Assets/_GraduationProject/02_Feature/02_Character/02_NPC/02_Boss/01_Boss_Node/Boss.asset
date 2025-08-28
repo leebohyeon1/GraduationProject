@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: 
-  position: {x: 1536, y: 2177}
+  position: {x: 1532, y: 2189}
   animationName: Attack2
   damage: 13
   damageRadius: 3
@@ -460,8 +460,8 @@ MonoBehaviour:
   m_Name: Rush Until Wall
   m_EditorClassIdentifier: 
   position: {x: 1651, y: 83}
-  rushSpeed: 15
-  wallDetectionDistance: 1.5
+  rushSpeed: 25
+  wallDetectionDistance: 8
   timeout: 4
 --- !u!114 &-969074244421140549
 MonoBehaviour:
@@ -554,8 +554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: 
-  position: {x: 2111, y: 452}
-  animationName: Do_Stun
+  position: {x: 2111, y: 451}
+  animationName: Wall_Stun
 --- !u!114 &1010951623386978792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21e8eba7b7b2e1843b0fc7763ac6a67c, type: 3}
   m_Name: Apply Stun
   m_EditorClassIdentifier: 
-  position: {x: 2111, y: 375}
+  position: {x: 2111, y: 374}
   stunDuration: 2
 --- !u!114 &4748238847309724425
 MonoBehaviour:
@@ -868,7 +868,7 @@ MonoBehaviour:
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: 
   position: {x: 1651, y: 21}
-  minDistance: 6
+  minDistance: 3
   maxDistance: 15
 --- !u!114 &5989257383442766034
 MonoBehaviour:
@@ -898,8 +898,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Chase
   m_EditorClassIdentifier: 
-  position: {x: 1269, y: 2345}
+  position: {x: 1207, y: 2344}
   nodes:
+  - {fileID: 8226922912651581165}
   - {fileID: -4441147655356379160}
   - {fileID: 8440268503078126261}
 --- !u!114 &6155040913135111019
@@ -971,9 +972,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Rush
   m_EditorClassIdentifier: 
-  position: {x: 1255, y: 188}
+  position: {x: 1172, y: 160}
   nodes:
-  - {fileID: -6543944489639121609}
   - {fileID: 8708334900734234045}
   - {fileID: -7749817735690652975}
   - {fileID: -1918328049007975533}
@@ -1068,6 +1068,19 @@ MonoBehaviour:
   checkName: Ran_Beam
   cooldownDuration: 5
   successChance: 30
+--- !u!114 &8226922912651581165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1532, y: 2344}
 --- !u!114 &8279442782930596588
 MonoBehaviour:
   m_ObjectHideFlags: 0
