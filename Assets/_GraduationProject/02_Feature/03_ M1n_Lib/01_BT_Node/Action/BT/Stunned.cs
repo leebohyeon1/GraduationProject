@@ -15,7 +15,7 @@ public class Stunned : Node
     }
     protected override NodeState OnUpdate()
     {
-        if (Time.time < runner.StunExitTime)
+        if (!runner.IsActionFinished)
         {
             runner.Movement.StopMovement();
             return NodeState.RUNNING;

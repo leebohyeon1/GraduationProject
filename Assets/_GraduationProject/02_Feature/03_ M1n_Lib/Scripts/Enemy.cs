@@ -88,9 +88,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         Movement = new EnemyMovement(this);
 
-        Debug.LogWarning(player.name);
-
-
     }
     void Update()
     {

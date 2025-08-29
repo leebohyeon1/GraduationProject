@@ -17,7 +17,7 @@ public class RushUntilWall : Node
     {
         runner.SetState(Enemy.EnemyState.Rush); // 상태를 Rush로 설정
         runner.AnimationEvent("Do_Rush");
-        _startTime = Time.time;
+        _startTime = 0;
     }
 
     protected override NodeState OnUpdate()
@@ -27,33 +27,37 @@ public class RushUntilWall : Node
         {
             Debug.Log("<color=magenta>--WALL RUSH--: OnEnter</color>");
             _startTime = Time.time;
+            runner.SetState(Enemy.EnemyState.Rush);
             runner.Movement.StartWallRush(rushSpeed);
             runner.GetComponent<Animator>().SetBool("Rush_Running", true);
             runner.AnimationEvent_CloseHitWindow();
-            _isRushing = true;
+            Debug.Log("작동/.");
+        }
+        
+
+        // Rigidbody의 속도가 거의 0이 되면, 어딘가에 부딪혔다고 간주합니다.
+        var rb = runner.GetComponent<Rigidbody>();
+        if (rb != null && runner.GetLastRushHitObject() != null)
+        {
+            Debug.Log($"--RUSH--: Collision confirmed with {runner.GetLastRushHitObject().name}. SUCCESS.");
+            return NodeState.SUCCESS;
         }
         if (Time.time - _startTime > timeout)
         {
+            if (_startTime == 0)
+            {
+                return NodeState.RUNNING; // 아직 시작하지 않았다면 계속 실행
+            }
             Debug.LogWarning("--RUSH--: Timeout!");
             // 타임아웃도 '돌진 종료'이므로 SUCCESS를 반환하여 다음 판단으로 넘깁니다.
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);   
             return NodeState.SUCCESS;
         }
 
-        if (_isRushing && runner.GetLastRushHitObject() != null)
-        {
-            Debug.Log($"--RUSH--: Collision confirmed with {runner.GetLastRushHitObject().name}. SUCCESS.");
-            return NodeState.SUCCESS;
-        }
-
         return NodeState.RUNNING;
     }
 
-    public override void OnExit()
-    {
-        _isRushing = false;
-        runner.Movement.StopMovement();
-    }
+
 
     public override Node Clone()
     {
