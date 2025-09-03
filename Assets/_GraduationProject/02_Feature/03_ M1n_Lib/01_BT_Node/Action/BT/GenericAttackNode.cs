@@ -41,6 +41,7 @@ public class GenericAttackNode : Node
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {
+                
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
 

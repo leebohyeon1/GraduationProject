@@ -4,7 +4,7 @@ using System;
 using BH_Lib.AssetManager;
 using System.Threading.Tasks;
 using System.Collections;
-
+using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
@@ -41,13 +41,16 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
     //특수 공격이 공유하는 쿨타임 연속 특수 기술 방지용
-    [Header("Beam Attack Assets")]
-    [SerializeField] GameObject _beamWarningEffect;
-    [SerializeField] GameObject _beamAttackEffect;
+    // [Header("Beam Attack Assets")]
+    // [SerializeField] GameObject _beamWarningEffect;
+    // [SerializeField] GameObject _beamAttackEffect;
 
-    GameObject _currentBeamWarning;
-    GameObject _currentBeamAttack;
-    public EnemyMovement Movement{ get; private set; }
+    // GameObject _currentBeamWarning;
+    // GameObject _currentBeamAttack;
+    EnemyHeat enemyHeat;
+    [SerializeField]private HeatDataBase heatDataBase;
+    [SerializeField]private TierStatDatabase tierStatDatabase;
+    public EnemyMovement Movement { get; private set; }
 
     event Action<int, int> IDamageable.OnHealthChanged
     {
@@ -75,6 +78,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
+        enemyHeat = GetComponent<EnemyHeat>();
+
+        StatCalculator.Initialize(tierStatDatabase);
 
     }
 
@@ -91,7 +97,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     }
     void Update()
     {
-
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+        {
+            HeatData data = heatDataBase.GetHeatData("sss", ActorType.Monster, 1);
+            CalculationResult finalStats = StatCalculator.CalculateStats(data, 10);
+            Debug.Log($"Final Damage: {finalStats.finalDamage}, Anim Speed: {finalStats.finalAnimSpeed}, Range: {finalStats.finalRange}");
+            TakeDamage(finalStats.finalDamage);
+        }
     }
 
     public virtual void parryied()
@@ -205,6 +217,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public int MaxHealth => 100;
 
     public bool IsDead => CurrentHealth <= 0;
+
+    public int maxHeat => throw new NotImplementedException();
+
+    public int currentHeat => throw new NotImplementedException();
 
     public void SetState(EnemyState state)
     {
@@ -326,10 +342,15 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
 #endif
     }
-
+    
     public void Attack(IDamageable target)
     {
-        throw new NotImplementedException();
+        if (target == null || target.IsDead)
+        {
+            return;
+        }
+
+        target.TakeDamage(AttackDamage, this);
     }
 
 
