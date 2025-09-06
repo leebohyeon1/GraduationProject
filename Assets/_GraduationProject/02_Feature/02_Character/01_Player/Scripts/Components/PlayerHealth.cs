@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour, IPlayerHealth
 {
     [Header("Runtime Stats")]
-    [SerializeField] protected int _currentHealth;
+    [SerializeField] protected int p_currentHealth;
     
     /// <summary>피격 상태 플래그 (상태 머신에서 Hit 상태 전환용)</summary>
     private bool _isHit = false;
@@ -18,13 +18,13 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     private PlayerContext _context;
 
     /// <summary>현재 체력</summary>
-    public int Health => _currentHealth;
+    public int Health => p_currentHealth;
     
     /// <summary>최대 체력</summary>
     public int MaxHealth => _context.Stats.MaxHealth;
     
     /// <summary>사망 여부</summary>
-    public bool IsDead => _currentHealth <= 0;
+    public bool IsDead => p_currentHealth <= 0;
     
     /// <summary>생존 여부</summary>
     public bool IsAlive => !IsDead;
@@ -59,7 +59,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         // 최대 체력으로 초기화
         if (_context.Stats != null)
         {
-            _currentHealth = _context.Stats.MaxHealth;
+            p_currentHealth = _context.Stats.MaxHealth;
         }
         
         // 이벤트 버스 구독
@@ -76,11 +76,11 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     {
         if (IsDead) return;
 
-        int previousHealth = _currentHealth;
-        _currentHealth = Mathf.Max(0, _currentHealth - damageAmount);
+        int previousHealth = p_currentHealth;
+        p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
         // 체력 변경 이벤트 발행
-        _context.EventBus.PublishHealthChanged(previousHealth, _currentHealth);
+        _context.EventBus.PublishHealthChanged(previousHealth, p_currentHealth);
 
         if (IsDead)
         {
@@ -114,10 +114,10 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     {
         if (IsDead) return;
 
-        int previousHealth = _currentHealth;
-        _currentHealth = Mathf.Min(_context.Stats.MaxHealth, _currentHealth + healAmount);
+        int previousHealth = p_currentHealth;
+        p_currentHealth = Mathf.Min(_context.Stats.MaxHealth, p_currentHealth + healAmount);
 
         // 체력 변경 이벤트 발생
-        OnHealthChanged?.Invoke(previousHealth, _currentHealth);
+        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
     }
 }

@@ -132,7 +132,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     // 디버깅을 위한 Gizmos
     private void OnDrawGizmosSelected()
     {
-        if (AttackPoint != null && _context.Stats != null)
+        if (AttackPoint != null && _context != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(_attackPoint.position, _context.Stats.AttackData[_comboCount].AttackRadius);

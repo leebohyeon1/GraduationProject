@@ -21,6 +21,8 @@ public class PlayerContext
     
     /// <summary>플레이어 입력 컨트롤러 인터페이스</summary>
     public IPlayerController Controller { get; private set; }
+
+    public IHeatable Heat { get; private set; }
     
     /// <summary>플레이어 스탯 데이터 (ScriptableObject)</summary>
     public PlayerStatsSO Stats { get; private set; }
@@ -45,7 +47,9 @@ public class PlayerContext
     /// <param name="stats">플레이어 스탯 데이터</param>
     /// <param name="animator">애니메이터</param>
     /// <param name="inputDeviceDetector">입력 기기 감지기</param>
-    public PlayerContext(MonoBehaviour owner, IPlayerMovement movement, IPlayerAttack attack, IPlayerHealth health, IPlayerController controller, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
+    public PlayerContext(MonoBehaviour owner, IPlayerMovement movement,
+    IPlayerAttack attack, IPlayerHealth health, IPlayerController controller,
+    IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
     {
         Owner = owner;
         Movement = movement;
@@ -55,7 +59,7 @@ public class PlayerContext
         Stats = stats;
         Animator = animator;
         InputDeviceDetector = inputDeviceDetector;
-        
+        Heat = heat;
         EventBus = new PlayerEventBus();
     }
 
