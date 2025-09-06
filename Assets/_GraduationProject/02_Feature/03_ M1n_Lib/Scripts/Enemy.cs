@@ -48,8 +48,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     // GameObject _currentBeamWarning;
     // GameObject _currentBeamAttack;
     
-    [SerializeField] private HeatDataBase heatDataBase;
-    [SerializeField]private TierStatDatabase tierStatDatabase;
+    [SerializeField] private SourceMapDatabaseSO heatDataBase;
+    [SerializeField]private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
 
     event Action<int, int> IDamageable.OnHealthChanged

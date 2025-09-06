@@ -15,7 +15,7 @@ public class TierStatData
 }
 
 [CreateAssetMenu(fileName = "TierStatDatabase", menuName = "GameData/TierStatDatabase")]
-public class TierStatDatabase : ScriptableObject
+public class TierStatDatabaseSO : ScriptableObject
 {
     public List<TierStatData> TierStats;
     public TierStatData GetTierStat(int tierID = 0)

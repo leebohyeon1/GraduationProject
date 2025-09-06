@@ -6,8 +6,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
     [SerializeField] private int _currentHeat = 0;
-    [SerializeField] protected HeatDataBase p_heatDataBase;
-    [SerializeField] protected TierStatDatabase p_tierStatDatabase;
+    [SerializeField] protected SourceMapDatabaseSO p_heatDataBase;
+    [SerializeField] protected TierStatDatabaseSO p_tierStatDatabase;
 
     public event Action<int, int> OnHeatChanged;
     public event Action<int, int> OnTierChanged;
@@ -39,7 +39,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
 
     private CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
-        HeatData data = p_heatDataBase.GetHeatData(id, actorType, tier);
+        SourceMap data = p_heatDataBase.GetHeatData(id, actorType, tier);
         CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);
         return finalStats;
     }

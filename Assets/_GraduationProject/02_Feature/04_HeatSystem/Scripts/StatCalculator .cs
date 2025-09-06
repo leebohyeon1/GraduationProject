@@ -10,14 +10,14 @@ public struct CalculationResult
 }
 public static class StatCalculator
 {
-    private static TierStatDatabase _tierStatDatabase;
+    private static TierStatDatabaseSO _tierStatDatabase;
 
-    public static void Initialize(TierStatDatabase tierDb)
+    public static void Initialize(TierStatDatabaseSO tierDb)
     {
         _tierStatDatabase = tierDb;
     }
     
-    public static CalculationResult CalculateStats(HeatData data, int baseDamage)
+    public static CalculationResult CalculateStats(SourceMap data, int baseDamage)
     {
         CalculationResult result = new CalculationResult();
 
