@@ -1,3 +1,4 @@
+using System.Threading;
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
@@ -18,33 +19,35 @@ public class PlayerDefendState : BaseState<PlayerContext>
         Log.Print("Player entered Defend state");
         
         // 방어 상태 시작 시 체력 시스템에 알림
-        if (p_context.Health is IPlayerHealth playerHealth)
-        {
-            playerHealth.SetDefending(true);
-        }
+        p_context.Health.SetDefending(true);
     }
 
+    private float timer = 0;
     public override void OnUpdate()
     {
         // 방어 중에는 이동하지 않음 (중력만 적용)
         p_context.Movement?.Move(Vector3.zero, 0f);
-        
-        // 방어 키를 떼면 Idle 상태로 전환
-        if (!p_context.Controller.DefendInput)
+
+        timer += Time.deltaTime;
+        if (timer >= 3)
         {
-            p_stateMachine.ChangeState<PlayerIdleState>();
+            p_context.Health.TakeDamage(10);
+            timer = 0;
         }
+
+        // 방어 키를 떼면 Idle 상태로 전환
+            if (!p_context.Controller.DefendInput)
+            {
+                p_stateMachine.ChangeState<PlayerIdleState>();
+            }
     }
 
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsDefending", false);
         Log.Print("Player exited Defend state");
-        
+
         // 방어 상태 종료 시 체력 시스템에 알림
-        if (p_context.Health is IPlayerHealth playerHealth)
-        {
-            playerHealth.SetDefending(false);
-        }
+        p_context.Health.SetDefending(false);
     }
 }
