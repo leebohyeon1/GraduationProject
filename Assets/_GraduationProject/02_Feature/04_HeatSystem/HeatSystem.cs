@@ -1,17 +1,18 @@
+using Unity.Collections;
 using UnityEngine;
 
 public class HeatSystem : MonoBehaviour, IHeatable
 {
-    [SerializeField] private int _maxHeat = 100;
+    [SerializeField] protected int p_maxHeat = 100;
     [SerializeField] private int _currentHeat = 0;
     [SerializeField] protected HeatDataBase p_heatDataBase;
 
-    public int MaxHeat => _maxHeat;
+    public int MaxHeat => p_maxHeat;
     public int CurrentHeat => _currentHeat;
 
     public void ChangeHeat(int amount)
     {
-        _currentHeat = Mathf.Clamp(_currentHeat + amount, 0, _maxHeat);
+        _currentHeat = Mathf.Clamp(CurrentHeat + amount, 0, MaxHeat);
     }
     
     private CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)

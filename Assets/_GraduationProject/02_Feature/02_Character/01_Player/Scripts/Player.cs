@@ -21,6 +21,7 @@ public class Player : CharacterBase
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerAttack _playerAttack;
+    [SerializeField] private PlayerHeat _playerHeat;
     [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
     [SerializeField] private Animator _animator;
 
@@ -74,8 +75,6 @@ public class Player : CharacterBase
             _playerController = GetComponent<PlayerController>();
         }
 
-        Context = new PlayerContext(this, _playerMovement, _playerAttack, _playerHealth,
-            _playerController, _playerStats, _animator, _inputDeviceDetector);
 
         if (_playerHealth == null)
         {
@@ -92,6 +91,11 @@ public class Player : CharacterBase
             _playerAttack = GetComponent<PlayerAttack>();
         }
 
+        if (_playerHeat == null)
+        {
+            _playerHeat = GetComponent<PlayerHeat>();
+        }
+
         if (_playerAnimationEventHandler == null)
         {
             _playerAnimationEventHandler = GetComponent<PlayerAnimationEventHandler>();
@@ -102,6 +106,11 @@ public class Player : CharacterBase
         _playerController.Initialize(Context.InputDeviceDetector);
         _playerAttack.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.EventBus);
+        
+                
+        Context = new PlayerContext(this, _playerMovement, _playerAttack,
+        _playerHealth, _playerController, _playerHeat,
+        _playerStats, _animator, _inputDeviceDetector);
     }
 
     private void InitializeStateMachine()
