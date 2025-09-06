@@ -5,12 +5,14 @@ using UnityEngine;
 public class TierStatData
 {
     public int TierID;
+    public int HeatThrehold;
     public float SpeedMultiply;
     public float DamageMultiply;
     public float AnimSpeedMultiply;
     public float RangeMultiply;
-    public int HeatGauage;
+
 }
+
 [CreateAssetMenu(fileName = "TierStatDatabase", menuName = "GameData/TierStatDatabase")]
 public class TierStatDatabase : ScriptableObject
 {
