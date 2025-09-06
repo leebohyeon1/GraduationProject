@@ -16,6 +16,10 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction AttackCancelledEvent = delegate { };
     // 회피 이벤트
     public event UnityAction DodgeEvent = delegate { };
+    // 방어 이벤트 (시작)
+    public event UnityAction DefendEvent = delegate { };
+    // 방어 이벤트 (종료)
+    public event UnityAction DefendCancelledEvent = delegate { };
     // 시선/조준 이벤트
     public event UnityAction<Vector2> LookEvent = delegate { };
     // 마우스 위치 이벤트
@@ -81,6 +85,19 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         if (context.phase == InputActionPhase.Performed)
         {
             DodgeEvent.Invoke();
+        }
+    }
+
+    public void OnDefend(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                DefendEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                DefendCancelledEvent.Invoke();
+                break;
         }
     }
     public void OnMousePosition(InputAction.CallbackContext context)

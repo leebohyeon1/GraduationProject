@@ -82,6 +82,12 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             return;
         }
 
+        if(p_context.Controller.DefendInput)
+        {
+            p_stateMachine.ChangeState<PlayerDefendState>();
+            return;
+        }
+
         // 아무 입력이 없으면 Idle 상태로
         p_stateMachine.ChangeState<PlayerIdleState>();
     }

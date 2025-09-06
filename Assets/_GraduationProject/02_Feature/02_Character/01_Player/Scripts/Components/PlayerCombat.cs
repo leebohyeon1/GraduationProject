@@ -6,10 +6,11 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 공격 시스템을 담당하는 클래스
 /// </summary>
-public class PlayerAttack : MonoBehaviour, IPlayerAttack
+public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
 {
     [Header("Combat")]
-    [SerializeField] private Transform _attackPoint;
+    [SerializeField] private Transform _rangedAttackPoint;
+
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
 
     private int _comboCount = 0;
@@ -23,11 +24,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     {
         _context = context;
 
-        // Attack Point가 없으면 플레이어 위치를 사용
-        if (_attackPoint == null)
-        {
-            _attackPoint = transform;
-        }
+        _context.EventBus.OnParry += TryParry;
     }
 
     public void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
@@ -39,8 +36,11 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     {
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
 
+        // 공격 범위의 중심점을 플레이어 앞쪽으로 이동
+        Vector3 attackCenter = transform.position + transform.forward * (_context.Stats.AttackData[_comboCount].AttackRadius.z / 2);
+
         // 공격 범위 내의 적들을 찾기
-        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _context.Stats.AttackData[_comboCount].AttackRadius, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, _context.Stats.AttackData[_comboCount].AttackRadius, transform.rotation, _enemyLayerMask);
 
         foreach (Collider enemy in hitEnemies)
         {
@@ -125,17 +125,52 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
         _comboCount = 0;
     }
 
-    public float AttackRadius => _context.Stats.AttackData[_comboCount].AttackRadius;
-    public Transform AttackPoint => _attackPoint;
-    public int ComboCount => _comboCount;
-    
-    // 디버깅을 위한 Gizmos
-    private void OnDrawGizmosSelected()
-    {
-        if (AttackPoint != null && _context != null)
+    public void TryParry()
+    { 
+        Vector3 parryCenter = transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
+        // 공격 범위 내의 적들을 찾기
+        Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius, transform.rotation, _enemyLayerMask);
+
+        foreach (Collider enemy in hitEnemies)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_attackPoint.position, _context.Stats.AttackData[_comboCount].AttackRadius);
+            IParryable parryable = enemy.GetComponent<IParryable>();
+            if (parryable != null && parryable.IsParryable)
+            {
+                parryable.Parry(gameObject);
+            }
         }
     }
+
+    public Vector3 AttackRadius => _context.Stats.AttackData[_comboCount].AttackRadius;
+    public int ComboCount => _comboCount;
+
+    private void OnDestroy()
+    {
+        _context.EventBus.OnParry -= TryParry;
+    }
+
+#if UNITY_EDITOR
+    // 디버깅을 위한 Gizmos
+    private void OnDrawGizmos()
+    {
+        if (_context != null)
+        {
+            // 공격 범위의 중심점을 플레이어 앞쪽으로 이동
+            Vector3 attackCenter = transform.position + transform.forward * (_context.Stats.AttackData[_comboCount].AttackRadius.z / 2);
+
+            Gizmos.color = Color.red;
+            Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
+            Gizmos.DrawWireCube(Vector3.zero, _context.Stats.AttackData[_comboCount].AttackRadius);
+            Gizmos.matrix = Matrix4x4.identity;
+
+            Vector3 parryCenter = transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
+
+            Gizmos.color = Color.green;
+            Gizmos.matrix = Matrix4x4.TRS(parryCenter, transform.rotation, Vector3.one);
+            Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
+            Gizmos.matrix = Matrix4x4.identity;
+        }
+    }
+#endif
+
 }

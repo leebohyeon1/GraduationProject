@@ -34,4 +34,22 @@ public class PlayerEventBus
     /// <summary>회피 애니메이션 종료 이벤트 (애니메이션 이벤트에서 호출)</summary>
     public event Action OnDodgeEnd;
     public void PublishDodgeEnd() => OnDodgeEnd?.Invoke();
+
+    /// <summary>
+    /// 패링 이벤트
+    /// </summary>
+    public event Action OnParry;
+    public void PublishParry() => OnParry?.Invoke();
+
+    public void Dispose()
+    {
+        OnHealthChanged = null;
+        OnPlayerDied = null;
+        OnAllowAttackInput = null;
+        OnAttack = null;
+        OnAttackFinished = null;
+        OnFootstep = null;
+        OnDodgeEnd = null;
+        OnParry = null;
+    }
 }

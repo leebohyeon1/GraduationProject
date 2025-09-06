@@ -14,14 +14,15 @@ public class PlayerStatsSO : CharacterStatsSO
     public float Gravity = -9.81f;
     public float GroundCheckDistance = 0.1f;
 
-    [Header("Player Attack Data")]
+    [Header("Player Combat")]
     public PlayerAttackData[] AttackData;
+    public Vector3 ParryRadius;
 
     [Header("Player Dodge")]
     public float DodgeSpeed = 8f;
     public float DodgeCooldown = 2f;
 
     [Header("Player Damaged")]
+    public float DefendDamageReductionRate = 0.7f; // 방어 시 데미지 감소율
     public float HitStunDuration = 0.1f; // 피격 시 멈춤 시간
-    
 }

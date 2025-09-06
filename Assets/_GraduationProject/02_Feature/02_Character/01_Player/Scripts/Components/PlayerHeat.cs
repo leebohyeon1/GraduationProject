@@ -12,6 +12,6 @@ public class PlayerHeat : HeatSystem
     public void Initialize(PlayerContext context)
     {
         _context = context;
-
+        
     }
 }

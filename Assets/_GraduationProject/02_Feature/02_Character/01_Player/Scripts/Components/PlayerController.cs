@@ -30,6 +30,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _dodgeInput;
     
     /// <summary>
+    /// 현재 방어 입력 상태입니다.
+    /// </summary>
+    private bool _defendInput;
+    
+    /// <summary>
     /// 현재 조준/시선 입력 값입니다.
     /// </summary>
     private Vector2 _lookInput;
@@ -71,6 +76,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.AttackEvent += OnAttack;
             _inputReader.AttackCancelledEvent += OnAttackCancelled;
             _inputReader.DodgeEvent += OnDodge;
+            _inputReader.DefendEvent += OnDefend;
+            _inputReader.DefendCancelledEvent += OnDefendCancelled;
             _inputReader.LookEvent += OnLook;
             _inputReader.MousePositionEvent += OnMousePosition;
         }
@@ -88,6 +95,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.AttackEvent -= OnAttack;
             _inputReader.AttackCancelledEvent -= OnAttackCancelled;
             _inputReader.DodgeEvent -= OnDodge;
+            _inputReader.DefendEvent -= OnDefend;
+            _inputReader.DefendCancelledEvent -= OnDefendCancelled;
             _inputReader.LookEvent -= OnLook;
             _inputReader.MousePositionEvent -= OnMousePosition;
         }
@@ -124,6 +133,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void OnDodge()
     {
         _dodgeInput = true;
+    }
+    
+    /// <summary>
+    /// 방어 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnDefend()
+    {
+        _defendInput = true;
+    }
+    
+    /// <summary>
+    /// 방어 취소 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnDefendCancelled()
+    {
+        _defendInput = false;
     }
     
     /// <summary>
@@ -166,6 +191,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public Vector2 MoveInput => _moveInput;
     public bool AttackInput => _attackInput;
     public bool DodgeInput => _dodgeInput;
+    public bool DefendInput => _defendInput;
     public Vector2 LookInput => _lookInput;
     public Vector2 MousePosition => _mousePosition;
 

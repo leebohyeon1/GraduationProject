@@ -102,6 +102,10 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
             {
                 _nextState = typeof(PlayerDodgeState);
             }
+            else if (p_context.Controller.DefendInput)
+            {
+                _nextState = typeof(PlayerDefendState);
+            }
 
             if (_nextState != null)
             {

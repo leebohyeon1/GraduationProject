@@ -1,3 +1,4 @@
+using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
@@ -59,5 +60,13 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     public void TriggerDodgeEnd()
     {
         _eventBus.PublishDodgeEnd();
+    }
+
+    /// <summary>
+    /// 애니메이션 이벤트: 패링 시점
+    /// </summary>
+    public void TriggerParry()
+    {
+        _eventBus.PublishParry();
     }
 }

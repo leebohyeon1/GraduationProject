@@ -22,7 +22,7 @@ public class PlayerAttackData
     public int AttackDamage = 10;
     
     [Tooltip("공격 범위 반지름")]
-    public float AttackRadius = 2f;
+    public Vector3 AttackRadius = Vector3.one;
     
     [Header("Attack Timing")]
     [Tooltip("공격후 딜레이 시간")]
