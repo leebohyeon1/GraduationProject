@@ -13,10 +13,5 @@ public class PlayerHeat : HeatSystem
     {
         _context = context;
 
-        // 최대 체력으로 초기화
-        if (_context.Stats != null)
-        {
-            p_maxHeat = _context.Stats.MaxHealth;
-        }
     }
 }

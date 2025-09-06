@@ -20,7 +20,7 @@ public class HeatData
 }
 
 
-[CreateAssetMenu(fileName = "HeatData", menuName = "GameData/HeatData")]
+[CreateAssetMenu(fileName = "SourceMaps", menuName = "GameData/SourceMaps")]
 public class HeatDataBase : ScriptableObject
 {
     public List<HeatData> heatDataList;
