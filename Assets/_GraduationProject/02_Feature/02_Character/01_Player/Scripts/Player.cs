@@ -75,7 +75,6 @@ public class Player : CharacterBase
             _playerController = GetComponent<PlayerController>();
         }
 
-
         if (_playerHealth == null)
         {
             _playerHealth = GetComponent<PlayerHealth>();
@@ -100,6 +99,10 @@ public class Player : CharacterBase
         {
             _playerAnimationEventHandler = GetComponent<PlayerAnimationEventHandler>();
         }
+                    
+        Context = new PlayerContext(this, _playerMovement, _playerAttack,
+        _playerHealth, _playerController, _playerHeat,
+        _playerStats, _animator, _inputDeviceDetector);
 
         _playerHealth.Initialize(Context);
         _playerMovement.Initialize(Context);
@@ -107,10 +110,7 @@ public class Player : CharacterBase
         _playerAttack.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.EventBus);
         
-                
-        Context = new PlayerContext(this, _playerMovement, _playerAttack,
-        _playerHealth, _playerController, _playerHeat,
-        _playerStats, _animator, _inputDeviceDetector);
+
     }
 
     private void InitializeStateMachine()

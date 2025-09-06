@@ -19,9 +19,9 @@ public class HeatDataManagerEditor : Editor
 
         // HeatDataBases 리스트를 위한 Foldout
         heatDataBasesFoldout = EditorGUILayout.Foldout(heatDataBasesFoldout, "Heat DataBases Details", true, EditorStyles.foldoutHeader);
-        if (heatDataBasesFoldout && dataManager.HeatDataBases != null)
+        if (heatDataBasesFoldout && dataManager.SourceMapDataBases != null)
         {
-            DrawDatabaseList(dataManager.HeatDataBases);
+            DrawDatabaseList(dataManager.SourceMapDataBases);
         }
 
         EditorGUILayout.Space();
