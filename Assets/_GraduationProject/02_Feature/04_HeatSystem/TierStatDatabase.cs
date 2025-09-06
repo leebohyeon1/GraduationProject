@@ -14,9 +14,9 @@ public class TierStatData
 [CreateAssetMenu(fileName = "TierStatDatabase", menuName = "GameData/TierStatDatabase")]
 public class TierStatDatabase : ScriptableObject
 {
-    public List<TierStatData> tierStats;
+    public List<TierStatData> TierStats;
     public TierStatData GetTierStat(int tierID = 0)
     {
-        return tierStats.Find(data => data.TierID == tierID);
+        return TierStats.Find(data => data.TierID == tierID);
     }
 }

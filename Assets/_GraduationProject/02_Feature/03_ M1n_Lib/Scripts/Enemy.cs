@@ -47,8 +47,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     // GameObject _currentBeamWarning;
     // GameObject _currentBeamAttack;
-    EnemyHeat enemyHeat;
-    [SerializeField]private HeatDataBase heatDataBase;
+    
+    [SerializeField] private HeatDataBase heatDataBase;
     [SerializeField]private TierStatDatabase tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
 
@@ -78,7 +78,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
-        enemyHeat = GetComponent<EnemyHeat>();
 
         StatCalculator.Initialize(tierStatDatabase);
 

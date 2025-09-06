@@ -4,18 +4,19 @@ public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
     [SerializeField] private int _currentHeat = 0;
-    [SerializeField] private HeatDataBase _heatDataBase;
+    [SerializeField] protected HeatDataBase p_heatDataBase;
 
-    public int maxHeat => _maxHeat;
-    public int currentHeat => _currentHeat;
+    public int MaxHeat => _maxHeat;
+    public int CurrentHeat => _currentHeat;
 
     public void ChangeHeat(int amount)
     {
         _currentHeat = Mathf.Clamp(_currentHeat + amount, 0, _maxHeat);
     }
-    private CalculationResult heatdata(string interactorId, ActorType actorType, int tier,int baseDamage)
+    
+    private CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
-        HeatData data = _heatDataBase.GetHeatData(interactorId, actorType, tier);
+        HeatData data = p_heatDataBase.GetHeatData(id, actorType, tier);
         CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);
         return finalStats;
     }
