@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 이동을 담당하는 인터페이스입니다.
+/// </summary>
 public interface IMovable
 {
     /// <summary>
