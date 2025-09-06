@@ -1,10 +1,15 @@
+using System;
 using UnityEngine;
 
 public interface IHeatable
 {
     public int MaxHeat { get; }
     public int CurrentHeat { get; }
+    public int CurrentTier { get; }
+    public event Action<int, int> OnHeatChanged;
+    public event Action<int, int> OnTierChanged;
     public void ChangeHeat(int amount);
+    public int GetTier();
 }
 
 public interface IOverHeatable
