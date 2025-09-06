@@ -15,8 +15,8 @@ public class HeatData
     public ModeType ModeType;
     public int Heating;
     public int ManaCost;
-    public float Duration_s;
-    public float Tick_s;
+    public float DurationSecond;
+    public float TickSecond;
 }
 
 
