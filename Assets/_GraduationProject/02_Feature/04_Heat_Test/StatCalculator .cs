@@ -16,7 +16,7 @@ public static class StatCalculator
     {
         _tierStatDatabase = tierDb;
     }
-
+    
     public static CalculationResult CalculateStats(HeatData rule, int baseDamage)
     {
         CalculationResult result = new CalculationResult();

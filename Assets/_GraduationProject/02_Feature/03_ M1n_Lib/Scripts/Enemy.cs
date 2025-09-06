@@ -97,14 +97,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     }
     void Update()
     {
-        if (Keyboard.current.cKey.wasPressedThisFrame)
-        {
-            HeatData data = heatDataBase.GetHeatData("sss", ActorType.Monster, 1);
-            CalculationResult finalStats = StatCalculator.CalculateStats(data, 10);
-            Debug.Log($"Final Damage: {finalStats.finalDamage}, Anim Speed: {finalStats.finalAnimSpeed}, Range: {finalStats.finalRange}");
-            TakeDamage(finalStats.finalDamage);
-        }
     }
+
 
     public virtual void parryied()
     {
