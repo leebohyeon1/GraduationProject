@@ -25,9 +25,19 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _attackInput;
     
     /// <summary>
+    /// 현재 원거리 공격 입력 상태입니다.
+    /// </summary>
+    private bool _rangedAttackInput;
+    
+    /// <summary>
     /// 현재 회피 입력 상태입니다.
     /// </summary>
     private bool _dodgeInput;
+    
+    /// <summary>
+    /// 현재 방어 입력 상태입니다.
+    /// </summary>
+    private bool _defendInput;
     
     /// <summary>
     /// 현재 조준/시선 입력 값입니다.
@@ -70,7 +80,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.MoveEvent += OnMove;
             _inputReader.AttackEvent += OnAttack;
             _inputReader.AttackCancelledEvent += OnAttackCancelled;
+            _inputReader.RangedAttackEvent += OnRangedAttack;
+            _inputReader.RangedAttackCancelledEvent += OnRangedAttackCancelled;
             _inputReader.DodgeEvent += OnDodge;
+            _inputReader.DefendEvent += OnDefend;
+            _inputReader.DefendCancelledEvent += OnDefendCancelled;
             _inputReader.LookEvent += OnLook;
             _inputReader.MousePositionEvent += OnMousePosition;
         }
@@ -87,7 +101,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.MoveEvent -= OnMove;
             _inputReader.AttackEvent -= OnAttack;
             _inputReader.AttackCancelledEvent -= OnAttackCancelled;
+            _inputReader.RangedAttackEvent -= OnRangedAttack;
+            _inputReader.RangedAttackCancelledEvent -= OnRangedAttackCancelled;
             _inputReader.DodgeEvent -= OnDodge;
+            _inputReader.DefendEvent -= OnDefend;
+            _inputReader.DefendCancelledEvent -= OnDefendCancelled;
             _inputReader.LookEvent -= OnLook;
             _inputReader.MousePositionEvent -= OnMousePosition;
         }
@@ -119,11 +137,43 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
     
     /// <summary>
+    /// 원거리 공격 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnRangedAttack()
+    {
+        _rangedAttackInput = true;
+    }
+    
+    /// <summary>
+    /// 원거리 공격 취소 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnRangedAttackCancelled()
+    {
+        _rangedAttackInput = false;
+    }
+    
+    /// <summary>
     /// 회피 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
     /// </summary>
     private void OnDodge()
     {
         _dodgeInput = true;
+    }
+    
+    /// <summary>
+    /// 방어 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnDefend()
+    {
+        _defendInput = true;
+    }
+    
+    /// <summary>
+    /// 방어 취소 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnDefendCancelled()
+    {
+        _defendInput = false;
     }
     
     /// <summary>
@@ -165,7 +215,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // 다른 스크립트(주로 상태 클래스)에서 현재 입력 값을 참조하기 위한 프로퍼티들입니다.
     public Vector2 MoveInput => _moveInput;
     public bool AttackInput => _attackInput;
+    public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
+    public bool DefendInput => _defendInput;
     public Vector2 LookInput => _lookInput;
     public Vector2 MousePosition => _mousePosition;
 

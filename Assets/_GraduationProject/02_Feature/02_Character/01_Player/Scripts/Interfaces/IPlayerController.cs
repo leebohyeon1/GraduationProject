@@ -12,8 +12,14 @@ public interface IPlayerController
     /// <summary>공격 입력 (마우스 좌클릭 또는 버튼)</summary>
     bool AttackInput { get; }
     
+    /// <summary>원거리 공격 입력 (마우스 우클릭 홀드 또는 버튼)</summary>
+    bool RangedAttackInput { get; }
+    
     /// <summary>회피 입력 (스페이스바 또는 버튼)</summary>
     bool DodgeInput { get; }
+    
+    /// <summary>방어 입력 (마우스 우클릭 또는 버튼)</summary>
+    bool DefendInput { get; }
     
     /// <summary>조준 입력 (게임패드 우 스틱)</summary>
     Vector2 LookInput { get; }

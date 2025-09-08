@@ -5,19 +5,29 @@ using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
+/// <summary>
+/// 플레이어 근접 공격 상태의 기본 클래스
+/// 모든 근접 공격 상태(첫 번째 공격, 두 번째 공격 등)가 상속받는 추상 클래스입니다.
+/// 공격 애니메이션 실행, 콤보 입력 처리, 공격 전진 이동 등의 공통 로직을 제공합니다.
+/// </summary>
+public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 {
-    private Type _nextState; // 다음 상태를 저장할 변수
-    protected bool p_canInput = false; // 입력 허용 플래그  
-    private Coroutine _attackMoveCoroutine; // 공격 이동 코루틴 참조
+    /// <summary>다음 상태를 저장할 변수</summary>
+    private Type _nextState;
+    /// <summary>입력 허용 플래그</summary>  
+    protected bool p_canInput = false;
+    /// <summary>공격 이동 코루틴 참조</summary>
+    private Coroutine _attackMoveCoroutine;
 
-    protected abstract string p_animationTrigger { get; }   // 애니메이션 트리거 이름    
-    protected abstract Type p_nextAttackState { get; }  // 다음 공격 상태 타입
+    /// <summary>애니메이션 트리거 이름 (하위 클래스에서 구현)</summary>    
+    protected abstract string p_animationTrigger { get; }
+    /// <summary>다음 공격 상태 타입 (하위 클래스에서 구현)</summary>
+    protected abstract Type p_nextAttackState { get; }
 
     /// <summary>
     /// 플레이어 공격 기본 상태 생성자
     /// </summary>
-    public PlayerAttackBaseState (PlayerContext context, StateMachine<PlayerContext> stateMachine) 
+    public PlayerMeleeAttackBaseState (PlayerContext context, StateMachine<PlayerContext> stateMachine) 
         : base(context, stateMachine) {}
 
     /// <summary>
@@ -33,18 +43,18 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack += p_context.Attack.PerformAttack;
+        p_context.EventBus.OnAttack += p_context.MeleeAttack.PerformAttack;
 
         Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         // 공격 실행
-        if (p_context.Attack != null)
+        if (p_context.MeleeAttack != null)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var lookInput = p_context.Controller.LookInput;
             var mousePosition = p_context.Controller.MousePosition;
-            p_context.Attack.TryAttack(deviceType, lookInput, mousePosition);
+            p_context.MeleeAttack.TryAttack(deviceType, lookInput, mousePosition);
         }
         
         // 공격 시 전진 이동 실행
@@ -65,7 +75,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput -= OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished -= OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack -= p_context.Attack.PerformAttack;
+        p_context.EventBus.OnAttack -= p_context.MeleeAttack.PerformAttack;
 
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)
@@ -74,9 +84,9 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
             _attackMoveCoroutine = null;
         }
 
-        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerAttackBaseState)))
+        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerMeleeAttackBaseState)))
         {
-            p_context.Attack.ResetComboCount();
+            p_context.MeleeAttack.ResetComboCount();
         }
 
         _nextState = null;
@@ -102,6 +112,15 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
             {
                 _nextState = typeof(PlayerDodgeState);
             }
+            else if (p_context.Controller.DefendInput)
+            {
+                _nextState = typeof(PlayerDefendState);
+            }
+            else if(p_context.Controller.RangedAttackInput)
+            {
+                _nextState = typeof(PlayerRangedAttackChargeState);
+            }
+
 
             if (_nextState != null)
             {
@@ -135,7 +154,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     private IEnumerator CoChangeNextState()
     {
         yield return new WaitForSeconds( p_context.Stats
-            .AttackData[p_context.Attack.ComboCount]
+            .AttackData[p_context.MeleeAttack.ComboCount]
             .AttackDelay ); // 약간의 딜레이 후에 상태 전환
 
         p_canInput = false;
@@ -161,7 +180,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     {
         if (p_context.Stats?.AttackData == null || p_context.Stats.AttackData.Length == 0) return;
         
-        var attackData = p_context.Stats.AttackData[p_context.Attack.ComboCount];
+        var attackData = p_context.Stats.AttackData[p_context.MeleeAttack.ComboCount];
         if (attackData.AttackMoveDistance <= 0) return;
         
         _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));

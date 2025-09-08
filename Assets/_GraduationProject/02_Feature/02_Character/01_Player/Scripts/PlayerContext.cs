@@ -9,30 +9,34 @@ public class PlayerContext
 {
     /// <summary>플레이어 게임 오브젝트의 MonoBehaviour 컴포넌트</summary>
     public MonoBehaviour Owner { get; private set; }
-    
+
     /// <summary>플레이어 이동 인터페이스</summary>
     public IPlayerMovement Movement { get; private set; }
-    
+
     /// <summary>플레이어 공격 인터페이스</summary>
-    public IPlayerAttack Attack { get; private set; }
-    
+    public IPlayerMeleeAttack MeleeAttack { get; private set; }
+
+    /// <summary>플레이어 원거리 공격 인터페이스</summary>
+    public IPlayerRangedAttack RangedAttack { get; private set; }
+
     /// <summary>플레이어 체력 인터페이스</summary>
     public IPlayerHealth Health { get; private set; }
-    
+
     /// <summary>플레이어 입력 컨트롤러 인터페이스</summary>
     public IPlayerController Controller { get; private set; }
 
+    /// <summary>플레이어 열량 시스템 인터페이스</summary>
     public IHeatable Heat { get; private set; }
-    
+
     /// <summary>플레이어 스탯 데이터 (ScriptableObject)</summary>
     public PlayerStatsSO Stats { get; private set; }
-    
+
     /// <summary>플레이어 애니메이터 컴포넌트</summary>
     public Animator Animator { get; private set; }
-    
+
     /// <summary>플레이어 이벤트 버스 (상태 간 통신용)</summary>
     public PlayerEventBus EventBus { get; private set; }
-    
+
     /// <summary>입력 기기 감지기 (키보드/마우스, 게임패드 구분)</summary>
     public IInputDeviceDetector InputDeviceDetector { get; private set; }
 
@@ -41,19 +45,21 @@ public class PlayerContext
     /// </summary>
     /// <param name="owner">플레이어 게임 오브젝트</param>
     /// <param name="movement">이동 시스템</param>
-    /// <param name="attack">공격 시스템</param>
+    /// <param name="meleeAttack">공격 시스템</param>
+    /// <param name="rangeedAttack">원거리 공격 시스템</param>
     /// <param name="health">체력 시스템</param>
     /// <param name="controller">입력 컨트롤러</param>
     /// <param name="stats">플레이어 스탯 데이터</param>
     /// <param name="animator">애니메이터</param>
     /// <param name="inputDeviceDetector">입력 기기 감지기</param>
     public PlayerContext(MonoBehaviour owner, IPlayerMovement movement,
-    IPlayerAttack attack, IPlayerHealth health, IPlayerController controller,
+    IPlayerMeleeAttack meleeAttack, IPlayerRangedAttack rangeedAttack, IPlayerHealth health, IPlayerController controller,
     IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
     {
         Owner = owner;
         Movement = movement;
-        Attack = attack;
+        MeleeAttack = meleeAttack;
+        RangedAttack = rangeedAttack;
         Health = health;
         Controller = controller;
         Stats = stats;
@@ -65,7 +71,12 @@ public class PlayerContext
 
     /// <summary>코루틴 시작 (Owner의 StartCoroutine 호출)</summary>
     public Coroutine StartCoroutine(IEnumerator routine) => Owner.StartCoroutine(routine);
-    
+
     /// <summary>코루틴 중지 (Owner의 StopCoroutine 호출)</summary>
     public void StopCoroutine(Coroutine routine) => Owner.StopCoroutine(routine);
+    
+    public void Dispose()
+    {
+        EventBus.Dispose();
+    }
 }

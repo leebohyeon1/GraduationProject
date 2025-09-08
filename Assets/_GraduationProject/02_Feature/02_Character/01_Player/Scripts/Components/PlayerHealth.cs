@@ -10,32 +10,35 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 {
     [Header("Runtime Stats")]
     [SerializeField] protected int p_currentHealth;
-    
+
     /// <summary>피격 상태 플래그 (상태 머신에서 Hit 상태 전환용)</summary>
     private bool _isHit = false;
+
+    /// <summary>방어 상태 플래그 (방어 중일 때 데미지 감소)</summary>
+    private bool _isDefending = false;
 
     /// <summary>플레이어 컨텍스트 참조</summary>
     private PlayerContext _context;
 
     /// <summary>현재 체력</summary>
     public int Health => p_currentHealth;
-    
+
     /// <summary>최대 체력</summary>
     public int MaxHealth => _context.Stats.MaxHealth;
-    
+
     /// <summary>사망 여부</summary>
     public bool IsDead => p_currentHealth <= 0;
-    
+
     /// <summary>생존 여부</summary>
     public bool IsAlive => !IsDead;
-    
+
     /// <summary>피격 상태 여부 (Hit 상태 전환 조건)</summary>
     public bool IsHit => _isHit;
 
 
     /// <summary>체력 변경 이벤트</summary>
     public event Action<int, int> OnHealthChanged;
-    
+
     /// <summary>사망 이벤트</summary>
     public event Action OnDeath;
 
@@ -46,6 +49,16 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     public void ResetHitState()
     {
         _isHit = false;
+    }
+
+    /// <summary>
+    /// 방어 상태를 설정합니다
+    /// PlayerDefendState에서 호출
+    /// </summary>
+    /// <param name="isDefending">방어 상태 여부</param>
+    public void SetDefending(bool isDefending)
+    {
+        _isDefending = isDefending;
     }
 
     /// <summary>
@@ -61,10 +74,10 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         {
             p_currentHealth = _context.Stats.MaxHealth;
         }
-        
+
         // 이벤트 버스 구독
-        _context.EventBus.OnHealthChanged += OnHealthChanged;
-        _context.EventBus.OnPlayerDied += OnDeath;
+        OnHealthChanged += (previousHealth, currentHealth) => _context.EventBus.PublishHealthChanged(previousHealth, currentHealth);
+        OnDeath += _context.EventBus.PublishPlayerDied;
     }
 
     /// <summary>
@@ -76,11 +89,17 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     {
         if (IsDead) return;
 
+        // 방어 중이면 데미지 30%만 받음 (70% 감소)
+        if (_isDefending)
+        {
+            damageAmount = Mathf.RoundToInt(damageAmount * _context.Stats.DefendDamageReductionRate);
+        }
+
         int previousHealth = p_currentHealth;
         p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
         // 체력 변경 이벤트 발행
-        _context.EventBus.PublishHealthChanged(previousHealth, p_currentHealth);
+        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
 
         if (IsDead)
         {
@@ -97,7 +116,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// 사망 처리
     /// </summary>
     protected virtual void Die()
-    {   
+    {
         // 사망 이벤트 발행
         _context.EventBus.PublishPlayerDied();
 
@@ -119,5 +138,11 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
         // 체력 변경 이벤트 발생
         OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
+    }
+
+    private void OnDestroy()
+    {
+        OnHealthChanged -= _context.EventBus.PublishHealthChanged;
+        OnDeath -= _context.EventBus.PublishPlayerDied;
     }
 }

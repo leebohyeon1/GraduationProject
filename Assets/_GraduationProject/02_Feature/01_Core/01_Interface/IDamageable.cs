@@ -33,5 +33,5 @@ public interface IDamageable
     /// </summary>
     /// <param name="damageAmount">피해량</param>
     /// <param name="attacker">피해를 입힌 객체</param>
-    public void TakeDamage(int damageAmount, IAttacker attacker);
+    public void TakeDamage(int damageAmount, IAttacker attacker = null);
 }
