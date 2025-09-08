@@ -48,6 +48,12 @@ public class PlayerEventBus
     public void PublishRangedAttackEnd() => OnRangedAttackEnd?.Invoke();
 
     /// <summary>
+    /// 패링 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnParrySuccess;
+    public void PublishParrySuccess() => OnParrySuccess?.Invoke();
+
+    /// <summary>
     /// 회피 시작 이벤트
     /// </summary>
     public event Action OnDodgeStart;

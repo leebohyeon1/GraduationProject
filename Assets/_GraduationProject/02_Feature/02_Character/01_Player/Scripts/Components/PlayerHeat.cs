@@ -23,9 +23,13 @@ public class PlayerHeat : HeatSystem
         // TODO: 플레이어 ID로 열량 데이터 초기화
 
         _context.EventBus.OnAttack += AddHeatOnMeleeAttack;
+        _context.EventBus.OnParrySuccess += AddHeatOnParry;
     }
 
-
+    /// <summary>
+    /// 공격 시 열량 추가
+    /// </summary>
+    /// <param name="targets">충돌한 오브젝트들</param>
     private void AddHeatOnMeleeAttack(Collider[] targets)
     {
         foreach (Collider target in targets)
@@ -45,11 +49,22 @@ public class PlayerHeat : HeatSystem
         }
     }
 
+    /// <summary>
+    /// 패링 시 열량 추가
+    /// </summary>
+    private void AddHeatOnParry()
+    {
+        SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnParrySuccess", ActorType, CurrentTier);
+        int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+        ChangeHeat(deltaHeat);
+    }
+
     public void OnDestroy()
     {
         if (_context?.EventBus != null)
         {
             _context.EventBus.OnAttack -= AddHeatOnMeleeAttack;
+            _context.EventBus.OnParrySuccess -= AddHeatOnParry;
         }
     }
 }

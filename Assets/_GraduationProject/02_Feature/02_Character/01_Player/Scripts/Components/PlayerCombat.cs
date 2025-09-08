@@ -248,6 +248,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
             if (parryable != null && parryable.IsParryable)
             {
                 parryable.Parry(gameObject);
+                _context.EventBus.PublishParrySuccess();
             }
         }
     }
