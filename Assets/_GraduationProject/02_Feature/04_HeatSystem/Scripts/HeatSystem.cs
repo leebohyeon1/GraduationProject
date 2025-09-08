@@ -16,6 +16,9 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public int CurrentHeat => _currentHeat;
     public int CurrentTier => GetTier();
 
+    [field: SerializeField]
+    public ActorType ActorType { get; private set; }
+
     public void ChangeHeat(int amount)
     {
         if (amount == 0) return;
