@@ -1431,6 +1431,7 @@ GameObject:
   - component: {fileID: 1185445138}
   - component: {fileID: 1185445137}
   - component: {fileID: 1185445141}
+  - component: {fileID: 1185445142}
   m_Layer: 8
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -1544,7 +1545,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3870fabe7cb22a7448fa85737cca01c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
-  tierStatDatabase: {fileID: 0}
+--- !u!114 &1185445142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185445136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de0edd93acfdc054099c477967512369, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeatSystem
+  _maxHeat: 100
+  _currentHeat: 0
+  p_heatDataBase: {fileID: 0}
+  p_tierStatDatabase: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
+  <ActorType>k__BackingField: 1
 --- !u!1 &1279026154
 GameObject:
   m_ObjectHideFlags: 0

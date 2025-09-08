@@ -108,6 +108,7 @@ public class Player : CharacterBase
         _playerMovement.Initialize(Context);
         _playerController.Initialize(Context.InputDeviceDetector);
         _playerCombat.Initialize(Context);
+        _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.EventBus);
 
 
