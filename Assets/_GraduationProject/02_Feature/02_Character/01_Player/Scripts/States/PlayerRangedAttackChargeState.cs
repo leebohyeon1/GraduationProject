@@ -18,6 +18,10 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
     public PlayerRangedAttackChargeState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
 
+    /// <summary>
+    /// 차징 상태 진입 시 호출
+    /// 차징 애니메이션 시작 및 차징 시간 초기화
+    /// </summary>
     public override void OnEnter()
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", true);
@@ -26,6 +30,10 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         _chargeTime = 0f;
     }
 
+    /// <summary>
+    /// 차징 상태 업데이트
+    /// 차징 시간 누적, 에임 회전, 입력 상태에 따른 상태 전환 처리
+    /// </summary>
     public override void OnUpdate()
     {
         // 차징 중에는 이동하지 않음 (중력만 적용)
@@ -37,17 +45,17 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         var mousePosition = p_context.Controller.MousePosition;
         p_context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
 
-
-        // 원거리 공격 키를 떼면 Idle 상태로 전환
+        // 차징 시간 누적
         if (p_context.Controller.RangedAttackInput)
         {
             _chargeTime += Time.deltaTime;
         }
 
+        // 차징 완료 체크
         if (_chargeTime >= p_context.Stats.RangedAttackData.RangedAttackChargeTime)
         {
             Log.PrintColor(Color.brown, "차징 완료");
-            // 완전 차징 완료, Fire 상태로 전환 대기
+            // 완전 차징 완료 후 키를 떼면 Fire 상태로 전환
             if (!p_context.Controller.RangedAttackInput)
             {
                 p_stateMachine.ChangeState<PlayerRangedAttackFireState>();
@@ -55,6 +63,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         }
         else
         {
+            // 차징 미완료 상태에서 키를 떼면 Idle로 전환
             if (!p_context.Controller.RangedAttackInput)
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
@@ -62,6 +71,10 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         }
     }
 
+    /// <summary>
+    /// 차징 상태 종료 시 호출
+    /// 차징 애니메이션 중지
+    /// </summary>
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", false);

@@ -25,6 +25,7 @@ public class PlayerContext
     /// <summary>플레이어 입력 컨트롤러 인터페이스</summary>
     public IPlayerController Controller { get; private set; }
 
+    /// <summary>플레이어 열량 시스템 인터페이스</summary>
     public IHeatable Heat { get; private set; }
 
     /// <summary>플레이어 스탯 데이터 (ScriptableObject)</summary>

@@ -31,18 +31,22 @@ public class PlayerMeleeAttackData
 
 /// <summary>
 /// 플레이어 원거리 공격 관련 데이터
+/// 차징 시간, 투사체 속도, 데미지 등을 정의
 /// </summary>
 [System.Serializable]
 public class RangedAttackData
 {
     [Header("Charge Stats")]
+    [Tooltip("원거리 공격 차징 시간")]
     public float RangedAttackChargeTime;
 
     [Header("Attack Stats")]
+    [Tooltip("원거리 공격 데미지")]
     public int AttackDamage = 10;
 
     [Header("Projectile")]
+    [Tooltip("투사체 이동 속도")]
     public float ProjectileSpeed;
+    [Tooltip("투사체 이동 애니메이션 곡선 (현재 미사용)")]
     public AnimationCurve ProjectileMoveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-
 }

@@ -54,9 +54,7 @@ public class Projectile : MonoBehaviour, IAttacker
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == _owner) return;
-
-        Log.Print(other.gameObject.name);
-
+        
         int layer = 1 << other.gameObject.layer;
         if ((_targetLayerMask.value & layer) != 0)
         {

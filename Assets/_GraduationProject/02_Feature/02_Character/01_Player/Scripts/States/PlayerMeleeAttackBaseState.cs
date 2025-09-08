@@ -5,14 +5,24 @@ using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어 근접 공격 상태의 기본 클래스
+/// 모든 근접 공격 상태(첫 번째 공격, 두 번째 공격 등)가 상속받는 추상 클래스입니다.
+/// 공격 애니메이션 실행, 콤보 입력 처리, 공격 전진 이동 등의 공통 로직을 제공합니다.
+/// </summary>
 public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 {
-    private Type _nextState; // 다음 상태를 저장할 변수
-    protected bool p_canInput = false; // 입력 허용 플래그  
-    private Coroutine _attackMoveCoroutine; // 공격 이동 코루틴 참조
+    /// <summary>다음 상태를 저장할 변수</summary>
+    private Type _nextState;
+    /// <summary>입력 허용 플래그</summary>  
+    protected bool p_canInput = false;
+    /// <summary>공격 이동 코루틴 참조</summary>
+    private Coroutine _attackMoveCoroutine;
 
-    protected abstract string p_animationTrigger { get; }   // 애니메이션 트리거 이름    
-    protected abstract Type p_nextAttackState { get; }  // 다음 공격 상태 타입
+    /// <summary>애니메이션 트리거 이름 (하위 클래스에서 구현)</summary>    
+    protected abstract string p_animationTrigger { get; }
+    /// <summary>다음 공격 상태 타입 (하위 클래스에서 구현)</summary>
+    protected abstract Type p_nextAttackState { get; }
 
     /// <summary>
     /// 플레이어 공격 기본 상태 생성자
