@@ -42,8 +42,6 @@ public class PlayerHeat : HeatSystem
             {
                 Log.Print("열기 없음");
             }
-
-          
         }
     }
 

@@ -37,8 +37,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             _dodgeDirection = Vector3.zero;
         }
 
-        // TODO: 무적 상태 활성화 (IDamageable 인터페이스 확장 필요)
-        // SetInvincible(true);
+        p_context.EventBus.PublishDodgeStart();
     }
 
     public override void OnUpdate()

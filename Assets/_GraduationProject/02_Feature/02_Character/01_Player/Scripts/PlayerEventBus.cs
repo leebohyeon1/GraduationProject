@@ -46,6 +46,12 @@ public class PlayerEventBus
     /// </summary>
     public event Action OnRangedAttackEnd;
     public void PublishRangedAttackEnd() => OnRangedAttackEnd?.Invoke();
+
+    /// <summary>
+    /// 회피 시작 이벤트
+    /// </summary>
+    public event Action OnDodgeStart;
+    public void PublishDodgeStart() => OnDodgeStart?.Invoke();
     
     #region CallAnimtaion
 
