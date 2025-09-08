@@ -78,7 +78,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         // 공격 입력이 있으면 Attack 상태로
         if (p_context.Controller.AttackInput)
         {
-            p_stateMachine.ChangeState<PlayerFirstAttackState>();
+            p_stateMachine.ChangeState<PlayerFirstMeleeAttackState>();
             return;
         }
 
@@ -87,6 +87,13 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             p_stateMachine.ChangeState<PlayerDefendState>();
             return;
         }
+
+        if(p_context.Controller.RangedAttackInput)
+        {
+            p_stateMachine.ChangeState<PlayerRangedAttackChargeState>();
+            return;
+        }
+
 
         // 아무 입력이 없으면 Idle 상태로
         p_stateMachine.ChangeState<PlayerIdleState>();

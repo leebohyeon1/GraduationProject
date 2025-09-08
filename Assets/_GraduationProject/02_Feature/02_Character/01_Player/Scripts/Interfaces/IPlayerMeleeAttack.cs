@@ -15,9 +15,6 @@ public interface IPlayerMeleeAttack: IAttacker
     /// <summary>콤보 카운트 리셋</summary>
     void ResetComboCount();
     
-    /// <summary>공격 속도</summary>
-    float AttackSpeed { get; }
-    
     /// <summary>공격 범위 반지름</summary>
     Vector3 AttackRadius { get; }
     

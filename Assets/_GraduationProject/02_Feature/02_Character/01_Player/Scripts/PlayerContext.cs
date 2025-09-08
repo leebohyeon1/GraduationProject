@@ -14,7 +14,10 @@ public class PlayerContext
     public IPlayerMovement Movement { get; private set; }
 
     /// <summary>플레이어 공격 인터페이스</summary>
-    public IPlayerMeleeAttack Attack { get; private set; }
+    public IPlayerMeleeAttack MeleeAttack { get; private set; }
+
+    /// <summary>플레이어 원거리 공격 인터페이스</summary>
+    public IPlayerRangedAttack RangedAttack { get; private set; }
 
     /// <summary>플레이어 체력 인터페이스</summary>
     public IPlayerHealth Health { get; private set; }
@@ -41,19 +44,21 @@ public class PlayerContext
     /// </summary>
     /// <param name="owner">플레이어 게임 오브젝트</param>
     /// <param name="movement">이동 시스템</param>
-    /// <param name="attack">공격 시스템</param>
+    /// <param name="meleeAttack">공격 시스템</param>
+    /// <param name="rangeedAttack">원거리 공격 시스템</param>
     /// <param name="health">체력 시스템</param>
     /// <param name="controller">입력 컨트롤러</param>
     /// <param name="stats">플레이어 스탯 데이터</param>
     /// <param name="animator">애니메이터</param>
     /// <param name="inputDeviceDetector">입력 기기 감지기</param>
     public PlayerContext(MonoBehaviour owner, IPlayerMovement movement,
-    IPlayerMeleeAttack attack, IPlayerHealth health, IPlayerController controller,
+    IPlayerMeleeAttack meleeAttack, IPlayerRangedAttack rangeedAttack, IPlayerHealth health, IPlayerController controller,
     IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
     {
         Owner = owner;
         Movement = movement;
-        Attack = attack;
+        MeleeAttack = meleeAttack;
+        RangedAttack = rangeedAttack;
         Health = health;
         Controller = controller;
         Stats = stats;

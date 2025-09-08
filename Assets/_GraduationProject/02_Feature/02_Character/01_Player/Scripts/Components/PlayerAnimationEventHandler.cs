@@ -69,4 +69,9 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     {
         _eventBus.PublishParry();
     }
+
+    public void TriggerRangedAttackEnd()
+    {
+        _eventBus.PublishRangedAttackEnd();
+    }
 }

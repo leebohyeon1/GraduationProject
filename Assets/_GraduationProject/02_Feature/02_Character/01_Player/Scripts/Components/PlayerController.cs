@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _attackInput;
     
     /// <summary>
+    /// 현재 원거리 공격 입력 상태입니다.
+    /// </summary>
+    private bool _rangedAttackInput;
+    
+    /// <summary>
     /// 현재 회피 입력 상태입니다.
     /// </summary>
     private bool _dodgeInput;
@@ -75,6 +80,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.MoveEvent += OnMove;
             _inputReader.AttackEvent += OnAttack;
             _inputReader.AttackCancelledEvent += OnAttackCancelled;
+            _inputReader.RangedAttackEvent += OnRangedAttack;
+            _inputReader.RangedAttackCancelledEvent += OnRangedAttackCancelled;
             _inputReader.DodgeEvent += OnDodge;
             _inputReader.DefendEvent += OnDefend;
             _inputReader.DefendCancelledEvent += OnDefendCancelled;
@@ -94,6 +101,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.MoveEvent -= OnMove;
             _inputReader.AttackEvent -= OnAttack;
             _inputReader.AttackCancelledEvent -= OnAttackCancelled;
+            _inputReader.RangedAttackEvent -= OnRangedAttack;
+            _inputReader.RangedAttackCancelledEvent -= OnRangedAttackCancelled;
             _inputReader.DodgeEvent -= OnDodge;
             _inputReader.DefendEvent -= OnDefend;
             _inputReader.DefendCancelledEvent -= OnDefendCancelled;
@@ -125,6 +134,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void OnAttackCancelled()
     {
         _attackInput = false;
+    }
+    
+    /// <summary>
+    /// 원거리 공격 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnRangedAttack()
+    {
+        _rangedAttackInput = true;
+    }
+    
+    /// <summary>
+    /// 원거리 공격 취소 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnRangedAttackCancelled()
+    {
+        _rangedAttackInput = false;
     }
     
     /// <summary>
@@ -190,6 +215,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // 다른 스크립트(주로 상태 클래스)에서 현재 입력 값을 참조하기 위한 프로퍼티들입니다.
     public Vector2 MoveInput => _moveInput;
     public bool AttackInput => _attackInput;
+    public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
     public bool DefendInput => _defendInput;
     public Vector2 LookInput => _lookInput;

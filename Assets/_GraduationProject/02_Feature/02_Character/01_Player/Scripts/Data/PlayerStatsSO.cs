@@ -15,7 +15,8 @@ public class PlayerStatsSO : CharacterStatsSO
     public float GroundCheckDistance = 0.1f;
 
     [Header("Player Combat")]
-    public PlayerAttackData[] AttackData;
+    public PlayerMeleeAttackData[] AttackData;
+    public RangedAttackData RangedAttackData;
     public Vector3 ParryRadius;
 
     [Header("Player Dodge")]

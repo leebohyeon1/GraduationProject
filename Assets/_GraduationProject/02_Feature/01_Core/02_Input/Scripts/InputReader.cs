@@ -14,6 +14,10 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction AttackEvent = delegate { };
     // 공격 이벤트 (종료)
     public event UnityAction AttackCancelledEvent = delegate { };
+    // 원거리 공격 이벤트 (시작)
+    public event UnityAction RangedAttackEvent = delegate { };
+    // 원거리 공격 이벤트 (종료)
+    public event UnityAction RangedAttackCancelledEvent = delegate { };
     // 회피 이벤트
     public event UnityAction DodgeEvent = delegate { };
     // 방어 이벤트 (시작)
@@ -65,7 +69,7 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         LookEvent.Invoke(lookValue);
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
+    public void OnMeleeAttack(InputAction.CallbackContext context)
     {
         switch (context.phase)
         {
@@ -78,6 +82,19 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         }
     }
 
+    public void OnRangedAttack(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                RangedAttackEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                RangedAttackCancelledEvent.Invoke();
+                break;
+        }
+    }
+    
     public void OnInteract(InputAction.CallbackContext context) { }
 
     public void OnDodge(InputAction.CallbackContext context)

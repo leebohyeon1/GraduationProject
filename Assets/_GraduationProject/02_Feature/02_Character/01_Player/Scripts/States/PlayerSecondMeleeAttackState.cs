@@ -6,7 +6,7 @@ using UnityEngine;
 /// 플레이어 두 번째 공격 상태
 /// 콤보 공격의 마지막 단계로, 다음 공격 상태는 없습니다.
 /// </summary>
-public class PlayerSecondAttackState : PlayerAttackBaseState
+public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
 {
     /// <summary>두 번째 공격 애니메이션 트리거</summary>
     protected override string p_animationTrigger => "SecondAttack";
@@ -17,6 +17,6 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
     /// <summary>
     /// 두 번째 공격 상태 생성자
     /// </summary>
-    public PlayerSecondAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
+    public PlayerSecondMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
 }

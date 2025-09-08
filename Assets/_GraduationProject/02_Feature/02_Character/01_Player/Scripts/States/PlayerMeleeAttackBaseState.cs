@@ -5,7 +5,7 @@ using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
+public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 {
     private Type _nextState; // 다음 상태를 저장할 변수
     protected bool p_canInput = false; // 입력 허용 플래그  
@@ -17,7 +17,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     /// <summary>
     /// 플레이어 공격 기본 상태 생성자
     /// </summary>
-    public PlayerAttackBaseState (PlayerContext context, StateMachine<PlayerContext> stateMachine) 
+    public PlayerMeleeAttackBaseState (PlayerContext context, StateMachine<PlayerContext> stateMachine) 
         : base(context, stateMachine) {}
 
     /// <summary>
@@ -33,18 +33,18 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack += p_context.Attack.PerformAttack;
+        p_context.EventBus.OnAttack += p_context.MeleeAttack.PerformAttack;
 
         Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         // 공격 실행
-        if (p_context.Attack != null)
+        if (p_context.MeleeAttack != null)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var lookInput = p_context.Controller.LookInput;
             var mousePosition = p_context.Controller.MousePosition;
-            p_context.Attack.TryAttack(deviceType, lookInput, mousePosition);
+            p_context.MeleeAttack.TryAttack(deviceType, lookInput, mousePosition);
         }
         
         // 공격 시 전진 이동 실행
@@ -65,7 +65,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput -= OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished -= OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack -= p_context.Attack.PerformAttack;
+        p_context.EventBus.OnAttack -= p_context.MeleeAttack.PerformAttack;
 
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)
@@ -74,9 +74,9 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
             _attackMoveCoroutine = null;
         }
 
-        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerAttackBaseState)))
+        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerMeleeAttackBaseState)))
         {
-            p_context.Attack.ResetComboCount();
+            p_context.MeleeAttack.ResetComboCount();
         }
 
         _nextState = null;
@@ -106,6 +106,11 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
             {
                 _nextState = typeof(PlayerDefendState);
             }
+            else if(p_context.Controller.RangedAttackInput)
+            {
+                _nextState = typeof(PlayerRangedAttackChargeState);
+            }
+
 
             if (_nextState != null)
             {
@@ -139,7 +144,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     private IEnumerator CoChangeNextState()
     {
         yield return new WaitForSeconds( p_context.Stats
-            .AttackData[p_context.Attack.ComboCount]
+            .AttackData[p_context.MeleeAttack.ComboCount]
             .AttackDelay ); // 약간의 딜레이 후에 상태 전환
 
         p_canInput = false;
@@ -165,7 +170,7 @@ public abstract class PlayerAttackBaseState : BaseState<PlayerContext>
     {
         if (p_context.Stats?.AttackData == null || p_context.Stats.AttackData.Length == 0) return;
         
-        var attackData = p_context.Stats.AttackData[p_context.Attack.ComboCount];
+        var attackData = p_context.Stats.AttackData[p_context.MeleeAttack.ComboCount];
         if (attackData.AttackMoveDistance <= 0) return;
         
         _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));

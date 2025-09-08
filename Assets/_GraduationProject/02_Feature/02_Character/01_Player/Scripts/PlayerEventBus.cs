@@ -1,4 +1,5 @@
 using System;
+using Unity.Profiling;
 
 /// <summary>
 /// 플레이어 이벤트 버스 클래스
@@ -41,6 +42,16 @@ public class PlayerEventBus
     public event Action OnParry;
     public void PublishParry() => OnParry?.Invoke();
 
+    /// <summary>원거리 공격 시작 이벤트</summary>
+    public event Action OnRangedAttackStart;
+    public void PublishRangedAttackStart() => OnRangedAttackStart?.Invoke();
+
+    /// <summary>원거리 공격 종료 이벤트</summary>
+    public event Action OnRangedAttackEnd;
+    public void PublishRangedAttackEnd() => OnRangedAttackEnd?.Invoke();
+
+
+
     public void Dispose()
     {
         OnHealthChanged = null;
@@ -51,5 +62,9 @@ public class PlayerEventBus
         OnFootstep = null;
         OnDodgeEnd = null;
         OnParry = null;
+        OnRangedAttackStart = null;
+        OnRangedAttackEnd = null;
     }
+
+
 }

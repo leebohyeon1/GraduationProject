@@ -1,4 +1,3 @@
-using System.Collections;
 using BH_Lib.DI;
 using BH_Lib.Log;
 using UnityEngine;
@@ -6,25 +5,32 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 공격 시스템을 담당하는 클래스
 /// </summary>
-public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
+public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAttack
 {
-    [Header("Combat")]
+    [Header("Combat Settings")]
     [SerializeField] private Transform _rangedAttackPoint;
+    [SerializeField] private LayerMask _enemyLayerMask = 1 << 8;
+    [SerializeField] private GameObject _projectilePrefab;
 
-    [SerializeField] private LayerMask _enemyLayerMask = 1 << 8; // Enemy 레이어
 
     private int _comboCount = 0;
     private PlayerContext _context;
 
-    // IAttacker 인터페이스 구현
-    public int AttackDamage => _context.Stats != null ? _context.Stats.AttackData[_comboCount].AttackDamage : 10;
-    public float AttackSpeed => 1f;
+    public int AttackDamage => _context?.Stats?.AttackData?[_comboCount].AttackDamage ?? 10;
+    public Vector3 AttackRadius => _context?.Stats?.AttackData?[_comboCount].AttackRadius ?? Vector3.one;
+    public int ComboCount => _comboCount;
+
+    public int RangedAttackDamage => _context?.Stats?.RangedAttackData.AttackDamage ?? 10;
+    public float RangedAttackChargeTime => _context?.Stats?.RangedAttackData.RangedAttackChargeTime ?? 3.0f;
+    public float ProjectileSpeed => _context?.Stats?.RangedAttackData.ProjectileSpeed ?? 100.0f;
+
+
 
     public void Initialize(PlayerContext context)
     {
         _context = context;
-
         _context.EventBus.OnParry += TryParry;
+        _context.EventBus.OnRangedAttackStart += FireProjectile;
     }
 
     public void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
@@ -34,36 +40,20 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
 
     public void PerformAttack()
     {
+        if (_context?.Stats == null) return;
+
         Log.Print($"플레이어가 공격을 시도합니다! 공격력: {AttackDamage}");
 
-        // 공격 범위의 중심점을 플레이어 앞쪽으로 이동
-        Vector3 attackCenter = transform.position + transform.forward * (_context.Stats.AttackData[_comboCount].AttackRadius.z / 2);
+        Vector3 attackCenter = GetAttackCenter();
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, AttackRadius, transform.rotation, _enemyLayerMask);
 
-        // 공격 범위 내의 적들을 찾기
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, _context.Stats.AttackData[_comboCount].AttackRadius, transform.rotation, _enemyLayerMask);
-
-        foreach (Collider enemy in hitEnemies)
-        {
-            IDamageable damageable = enemy.GetComponent<IDamageable>();
-            if (damageable != null && !damageable.IsDead)
-            {
-                Attack(damageable);
-            }
-        }
-
-        _comboCount++;
-        if (_comboCount >= _context.Stats.AttackData.Length)
-        {
-            _comboCount = 0;
-        }
+        ProcessHitEnemies(hitEnemies);
+        UpdateComboCount();
     }
 
     public void Attack(IDamageable target)
     {
-        if (target == null || target.IsDead)
-        {
-            return;
-        }
+        if (target == null || target.IsDead) return;
 
         target.TakeDamage(AttackDamage, this);
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
@@ -83,39 +73,28 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
 
     private void RotatePlayerWithGamepad(Vector2 lookInput)
     {
-        if (lookInput.sqrMagnitude < 0.1f) return;
+        if (lookInput.sqrMagnitude < 0.1f || Camera.main == null) return;
 
-        Vector3 cameraForward = Camera.main.transform.forward;
-        Vector3 cameraRight = Camera.main.transform.right;
-        cameraForward.y = 0;
-        cameraRight.y = 0;
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-        Vector3 lookDirection = (cameraRight * lookInput.x + cameraForward * lookInput.y).normalized;
-
+        Vector3 lookDirection = CalculateLookDirection(lookInput);
         if (lookDirection.sqrMagnitude > 0.1f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            transform.rotation = targetRotation;
+            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
 
     private void RotatePlayerWithMouse(Vector2 mousePosition)
     {
+        if (Camera.main == null) return;
+
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Plane groundPlane = new Plane(Vector3.up, transform.position.y);
 
         if (groundPlane.Raycast(ray, out float distance))
         {
-            Vector3 worldMousePosition = ray.GetPoint(distance);
-            Vector3 direction = (worldMousePosition - transform.position).normalized;
-            direction.y = 0;
-
+            Vector3 direction = GetMouseDirection(ray.GetPoint(distance));
             if (direction.sqrMagnitude > 0.1f)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-                transform.rotation = targetRotation;
+                transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
             }
         }
     }
@@ -125,12 +104,65 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
         _comboCount = 0;
     }
 
+    public void RotateTowardsAimDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
+    {
+        SetAttackDirection(deviceType, lookInput, mousePosition);
+    }
+
+    public void FireProjectile()
+    {
+        if (_projectilePrefab == null || _rangedAttackPoint == null)
+        {
+            Log.Print("투사체 프리팹 또는 발사 지점이 설정되지 않았습니다!");
+            return;
+        }
+
+        Log.Print($"투사체 발사! 데미지: {RangedAttackDamage}, 속도: {ProjectileSpeed}");
+
+        GameObject projectileObj = Instantiate(_projectilePrefab, _rangedAttackPoint.position, _rangedAttackPoint.rotation);
+        
+        Projectile projectile = projectileObj.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            projectile.Initialize(RangedAttackDamage, ProjectileSpeed, gameObject, _enemyLayerMask);
+        }
+    }
+
     public void TryParry()
-    { 
-        Vector3 parryCenter = transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
-        // 공격 범위 내의 적들을 찾기
+    {
+        if (_context?.Stats == null) return;
+
+        Vector3 parryCenter = GetParryCenter();
         Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius, transform.rotation, _enemyLayerMask);
 
+        ProcessParryableEnemies(hitEnemies);
+    }
+
+
+    private Vector3 GetAttackCenter()
+    {
+        return transform.position + transform.forward * (AttackRadius.z / 2);
+    }
+
+    private Vector3 GetParryCenter()
+    {
+        return transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
+    }
+
+    private void ProcessHitEnemies(Collider[] hitEnemies)
+    {
+        foreach (Collider enemy in hitEnemies)
+        {
+            IDamageable damageable = enemy.GetComponent<IDamageable>();
+            if (damageable != null && !damageable.IsDead)
+            {
+                Attack(damageable);
+            }
+        }
+    }
+
+    private void ProcessParryableEnemies(Collider[] hitEnemies)
+    {
         foreach (Collider enemy in hitEnemies)
         {
             IParryable parryable = enemy.GetComponent<IParryable>();
@@ -141,35 +173,68 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack
         }
     }
 
-    public Vector3 AttackRadius => _context.Stats.AttackData[_comboCount].AttackRadius;
-    public int ComboCount => _comboCount;
+    private void UpdateComboCount()
+    {
+        _comboCount++;
+        if (_comboCount >= _context.Stats.AttackData.Length)
+        {
+            _comboCount = 0;
+        }
+    }
+
+    private Vector3 CalculateLookDirection(Vector2 lookInput)
+    {
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        return (cameraRight * lookInput.x + cameraForward * lookInput.y).normalized;
+    }
+
+    private Vector3 GetMouseDirection(Vector3 worldMousePosition)
+    {
+        Vector3 direction = (worldMousePosition - transform.position).normalized;
+        direction.y = 0;
+        return direction;
+    }
 
     private void OnDestroy()
     {
-        _context.EventBus.OnParry -= TryParry;
+        if (_context?.EventBus != null)
+        {
+            _context.EventBus.OnParry -= TryParry;
+            _context.EventBus.OnRangedAttackStart -= FireProjectile;
+        }
     }
 
 #if UNITY_EDITOR
-    // 디버깅을 위한 Gizmos
     private void OnDrawGizmos()
     {
-        if (_context != null)
-        {
-            // 공격 범위의 중심점을 플레이어 앞쪽으로 이동
-            Vector3 attackCenter = transform.position + transform.forward * (_context.Stats.AttackData[_comboCount].AttackRadius.z / 2);
+        if (_context?.Stats == null) return;
 
-            Gizmos.color = Color.red;
-            Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
-            Gizmos.DrawWireCube(Vector3.zero, _context.Stats.AttackData[_comboCount].AttackRadius);
-            Gizmos.matrix = Matrix4x4.identity;
+        DrawAttackGizmo();
+        DrawParryGizmo();
+    }
 
-            Vector3 parryCenter = transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
+    private void DrawAttackGizmo()
+    {
+        Vector3 attackCenter = GetAttackCenter();
+        Gizmos.color = Color.red;
+        Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, AttackRadius);
+        Gizmos.matrix = Matrix4x4.identity;
+    }
 
-            Gizmos.color = Color.green;
-            Gizmos.matrix = Matrix4x4.TRS(parryCenter, transform.rotation, Vector3.one);
-            Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
-            Gizmos.matrix = Matrix4x4.identity;
-        }
+    private void DrawParryGizmo()
+    {
+        Vector3 parryCenter = GetParryCenter();
+        Gizmos.color = Color.green;
+        Gizmos.matrix = Matrix4x4.TRS(parryCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
+        Gizmos.matrix = Matrix4x4.identity;
     }
 #endif
 
