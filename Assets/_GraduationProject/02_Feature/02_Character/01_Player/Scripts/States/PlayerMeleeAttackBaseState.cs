@@ -43,7 +43,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack += p_context.MeleeAttack.PerformAttack;
+
 
         Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
@@ -75,7 +75,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 
         p_context.EventBus.OnAllowAttackInput -= OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished -= OnAttackFinishedAnimationEvent;
-        p_context.EventBus.OnAttack -= p_context.MeleeAttack.PerformAttack;
+
 
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)

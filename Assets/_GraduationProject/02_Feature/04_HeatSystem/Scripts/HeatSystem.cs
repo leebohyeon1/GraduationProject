@@ -40,7 +40,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
         }
     }
 
-    private CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
+    protected CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
         SourceMap data = p_heatDataBase.GetSourceMap(id, actorType, tier);
         CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);

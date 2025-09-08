@@ -47,6 +47,8 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         _context.EventBus.OnParry += TryParry;
         _context.EventBus.OnRangedAttackStart += FireProjectile;
         _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
+        _context.EventBus.OnAttackStart += PerformAttack;
+        _context.EventBus.OnAttack += ProcessHitEnemies;
     }
 
     /// <summary>
@@ -76,7 +78,8 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, AttackRadius, transform.rotation, _enemyLayerMask);
 
         // 감지된 적들에게 피해 적용
-        ProcessHitEnemies(hitEnemies);
+        _context.EventBus.PublishAttack(hitEnemies);
+
         // 콤보 카운트 증가
         UpdateComboCount();
     }
@@ -219,12 +222,13 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     /// <summary>
     /// 공격 범위 내 감지된 적들에게 피해 적용
     /// </summary>
-    /// <param name="hitEnemies">감지된 적들의 Collider 배열</param>
-    private void ProcessHitEnemies(Collider[] hitEnemies)
+    /// <param name="hiyObjects">감지된 적들의 Collider 배열</param>
+    private void ProcessHitEnemies(Collider[] hiyObjects)
     {
-        foreach (Collider enemy in hitEnemies)
+        foreach (Collider obj in hiyObjects)
         {
-            IDamageable damageable = enemy.GetComponent<IDamageable>();
+            IDamageable damageable = obj.GetComponent<IDamageable>();
+
             if (damageable != null && !damageable.IsDead)
             {
                 Attack(damageable);
@@ -295,7 +299,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         {
             _context.EventBus.OnParry -= TryParry;
             _context.EventBus.OnRangedAttackStart -= FireProjectile;
-            _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
+            _context.EventBus.OnRotateToAttackDirection -= RotateToAttackDirection;
+            _context.EventBus.OnAttackStart -= PerformAttack;
+            _context.EventBus.OnAttack -= ProcessHitEnemies;
         }
     }
 

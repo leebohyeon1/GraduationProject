@@ -17,8 +17,33 @@ public class PlayerHeat : HeatSystem
     public void Initialize(PlayerContext context)
     {
         _context = context;
-        
+
         // TODO: 열량 시스템 이벤트 구독
         // TODO: 플레이어 ID로 열량 데이터 초기화
+
+        _context.EventBus.OnAttack += AddHeatOnMeleeAttack;
+    }
+
+
+    private void AddHeatOnMeleeAttack(Collider[] targets)
+    {
+        foreach (Collider target in targets)
+        {
+            IHeatable heatable = target.GetComponent<IHeatable>();
+            if (heatable != null)
+            {
+                SourceMap sourceMap = p_heatDataBase.GetSourceMap("MeleeHit", heatable.ActorType, CurrentTier);
+                int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+                heatable.ChangeHeat(deltaHeat);
+            }
+        }
+    }
+
+    public void Oestroy()
+    {
+        if (_context?.EventBus != null)
+        {
+            _context.EventBus.OnAttack -= AddHeatOnMeleeAttack;
+        }
     }
 }
