@@ -31,11 +31,12 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         _context = context;
         _context.EventBus.OnParry += TryParry;
         _context.EventBus.OnRangedAttackStart += FireProjectile;
+        _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
     }
 
     public void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
     {
-        SetAttackDirection(deviceType, lookInput, mousePosition);
+       _context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
     }
 
     public void PerformAttack()
@@ -59,7 +60,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
 
-    private void SetAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
+    private void RotateToAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
     {
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
@@ -102,11 +103,6 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     public void ResetComboCount()
     {
         _comboCount = 0;
-    }
-
-    public void RotateTowardsAimDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
-    {
-        SetAttackDirection(deviceType, lookInput, mousePosition);
     }
 
     public void FireProjectile()
@@ -207,6 +203,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         {
             _context.EventBus.OnParry -= TryParry;
             _context.EventBus.OnRangedAttackStart -= FireProjectile;
+            _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
         }
     }
 

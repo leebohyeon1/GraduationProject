@@ -2,9 +2,19 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어 원거리 공격 차징 상태
+/// 원거리 공격 키를 누르고 있을 때 활성화되며, 일정 시간 차징 후 발사할 수 있습니다.
+/// 차징 중에는 이동이 불가능하고, 에임 방향으로 회전합니다.
+/// </summary>
 public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
 {
+    /// <summary>현재 차징 시간</summary>
     private float _chargeTime = 0f;
+    
+    /// <summary>
+    /// 원거리 공격 차징 상태 생성자
+    /// </summary>
     public PlayerRangedAttackChargeState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
 
@@ -25,7 +35,8 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var lookInput = p_context.Controller.LookInput;
         var mousePosition = p_context.Controller.MousePosition;
-        p_context.RangedAttack.RotateTowardsAimDirection(deviceType, lookInput, mousePosition);
+        p_context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
+
 
         // 원거리 공격 키를 떼면 Idle 상태로 전환
         if (p_context.Controller.RangedAttackInput)

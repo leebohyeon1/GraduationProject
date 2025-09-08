@@ -76,8 +76,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        _context.EventBus.OnHealthChanged += OnHealthChanged;
-        _context.EventBus.OnPlayerDied += OnDeath;
+        OnHealthChanged += (previousHealth, currentHealth) => _context.EventBus.PublishHealthChanged(previousHealth, currentHealth);
+        OnDeath += _context.EventBus.PublishPlayerDied;
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
         // 체력 변경 이벤트 발행
-        _context.EventBus.PublishHealthChanged(previousHealth, p_currentHealth);
+        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
 
         if (IsDead)
         {
@@ -142,7 +142,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
     private void OnDestroy()
     {
-        _context.EventBus.OnHealthChanged -= OnHealthChanged;
-        _context.EventBus.OnPlayerDied -= OnDeath;
+        OnHealthChanged -= _context.EventBus.PublishHealthChanged;
+        OnDeath -= _context.EventBus.PublishPlayerDied;
     }
 }
