@@ -34,21 +34,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public int CurrentHealth { get; set; }
     Rigidbody rb;
 
-    public bool CanParry { get; private set; } // 적이 플레이어의 공격을 막을 수 있는지 여부
+    // public bool CanParry { get; private set; } // 적이 플레이어의 공격을 막을 수 있는지 여부
     bool _isStunned = false;
     float _stunExitTime = -Mathf.Infinity;
     public float StunExitTime => _stunExitTime;
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
-    //특수 공격이 공유하는 쿨타임 연속 특수 기술 방지용
-    // [Header("Beam Attack Assets")]
-    // [SerializeField] GameObject _beamWarningEffect;
-    // [SerializeField] GameObject _beamAttackEffect;
 
-    // GameObject _currentBeamWarning;
-    // GameObject _currentBeamAttack;
-    
-    [SerializeField] private SourceMapDatabaseSO heatDataBase;
     [SerializeField]private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
 
@@ -94,15 +86,12 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Movement = new EnemyMovement(this);
 
     }
-    void Update()
-    {
-    }
 
 
-    public virtual void parryied()
-    {
-        // player.IncreaseGauge(3);
-    }
+    // public virtual void parryied()
+    // {
+    //     // player.IncreaseGauge(3);
+    // }
 
     #region Behavior Tree Conditions
 
@@ -177,14 +166,14 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     }
     //  스킬 쿨타임을 시작시키는 함수
 
-    public void Parryenable()
-    {
-        CanParry = true;
-    }
-    public void Parrydisable()
-    {
-        CanParry = false;
-    }
+    // public void Parryenable()
+    // {
+    //     CanParry = true;
+    // }
+    // public void Parrydisable()
+    // {
+    //     CanParry = false;
+    // }
     #endregion
     #region Enemy State Management
     public enum EnemyState
@@ -351,6 +340,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 }
 
     #region Beam Warning
+        //특수 공격이 공유하는 쿨타임 연속 특수 기술 방지용
+    // [Header("Beam Attack Assets")]
+    // [SerializeField] GameObject _beamWarningEffect;
+    // [SerializeField] GameObject _beamAttackEffect;
+
+    // GameObject _currentBeamWarning;
+    // GameObject _currentBeamAttack;
     // public void ToggleBeamWarning(bool isActive, float beamLength)
     // {
     //     if (_beamWarningEffect == null) return;

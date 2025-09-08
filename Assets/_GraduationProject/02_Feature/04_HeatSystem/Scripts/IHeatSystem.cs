@@ -3,6 +3,7 @@ using UnityEngine;
 
 public interface IHeatable
 {
+    public ActorType ActorType{ get; }
     public int MaxHeat { get; }
     public int CurrentHeat { get; }
     public int CurrentTier { get; }
