@@ -32,7 +32,7 @@ public class PlayerHeat : HeatSystem
             IHeatable heatable = target.GetComponent<IHeatable>();
             if (heatable != null)
             {
-                SourceMap sourceMap = p_heatDataBase.GetSourceMap("MeleeHit", heatable.ActorType, CurrentTier);
+                SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, CurrentTier);
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                 heatable.ChangeHeat(deltaHeat);
             }
