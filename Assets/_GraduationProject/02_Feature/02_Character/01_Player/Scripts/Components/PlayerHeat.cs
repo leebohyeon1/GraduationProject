@@ -40,11 +40,7 @@ public class PlayerHeat : HeatSystem
                 SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, CurrentTier);
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                 heatable.ChangeHeat(deltaHeat);
-                 Log.Print($"target: {target.gameObject.name}, 변화량: {deltaHeat}");
-            }
-            else
-            {
-                Log.Print("열기 없음");
+                Log.PrintColor(Color.red, $"target: {target.gameObject.name}, 열기 변화량: {deltaHeat}");
             }
         }
     }
@@ -57,6 +53,8 @@ public class PlayerHeat : HeatSystem
         SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnParrySuccess", ActorType, CurrentTier);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
         ChangeHeat(deltaHeat);
+
+        Log.PrintColor(Color.red, $"패링, 열기 변화량: {deltaHeat}");
     }
 
     public void OnDestroy()

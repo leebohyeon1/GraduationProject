@@ -9,8 +9,6 @@ using UnityEngine;
 public class PlayerDodgeState : BaseState<PlayerContext>
 {
     private Vector3 _dodgeDirection;
-    private bool _isInvincible = false;
-
     public PlayerDodgeState(PlayerContext context, StateMachine<PlayerContext> stateMachine) 
         : base(context, stateMachine) {}
 
@@ -22,7 +20,6 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         Log.Print("Player entered Dodge state");
 
         p_context.Animator.SetTrigger("Dodge");
-        _isInvincible = true;
 
         // 현재 이동 방향으로 회피, 입력이 없으면 앞쪽으로 회피
         if (p_context.Controller.MoveInput != Vector2.zero)
@@ -55,10 +52,6 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         p_context.EventBus.OnDodgeEnd -= OnDodgeEndEvent;
 
         Log.Print("Player exited Dodge state");
-        _isInvincible = false;
-
-        // TODO: 무적 상태 비활성화
-        // SetInvincible(false);
     }
     
     /// <summary>
