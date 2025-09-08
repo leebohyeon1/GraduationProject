@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Profiling;
 using UnityEngine;
 
@@ -20,6 +21,12 @@ public class PlayerEventBus
     /// </summary>
     public event Action OnPlayerDied;
     public void PublishPlayerDied() => OnPlayerDied?.Invoke();
+
+    /// <summary>
+    /// 공격 실행 이벤트
+    /// </summary>
+    public event Action<Collider[]> OnAttack;
+    public void PublishAttack(Collider[] targets) => OnAttack?.Invoke(targets);
 
     /// <summary>
     /// 공격 방향으로 회전 이벤트
@@ -51,8 +58,10 @@ public class PlayerEventBus
     /// <summary>
     /// 공격 실행 이벤트 (애니메이션 이벤트에서 호출)
     /// </summary>
-    public event Action OnAttack;
-    public void PublishAttack() => OnAttack?.Invoke();
+    public event Action OnAttackStart;
+    public void PublishAttackStart() => OnAttackStart?.Invoke();
+
+
 
     /// <summary>
     /// 공격 완료 이벤트 (애니메이션 이벤트에서 호출)
@@ -85,7 +94,7 @@ public class PlayerEventBus
         OnHealthChanged = null;
         OnPlayerDied = null;
         OnAllowAttackInput = null;
-        OnAttack = null;
+        OnAttackStart = null;
         OnAttackFinished = null;
         OnFootstep = null;
         OnDodgeEnd = null;

@@ -30,6 +30,7 @@ public class SourceMapDatabaseSO : ScriptableObject
         data.DeltaHeat *= (int)data.HeatChangeType;
         return data;
     }
+    
     //몹,오브젝트에 따른 데미지를 위해 ↑위에 내용 안쓰고 이것만 사용하는 편이 버그가 없을꺼같아보임(위에 껄 쓰면 데미지가 똑같을 때)
     public SourceMap GetSourceMap(string ruleID, ActorType targetType, int tierID = 0)
     {

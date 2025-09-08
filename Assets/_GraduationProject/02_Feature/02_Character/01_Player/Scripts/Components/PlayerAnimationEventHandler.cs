@@ -35,7 +35,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerAttack()
     {
-        _eventBus.PublishAttack();
+        _eventBus.PublishAttackStart();
     }
 
     /// <summary>
