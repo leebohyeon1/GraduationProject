@@ -1,3 +1,4 @@
+using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
@@ -35,11 +36,18 @@ public class PlayerHeat : HeatSystem
                 SourceMap sourceMap = p_heatDataBase.GetSourceMap("MeleeHit", heatable.ActorType, CurrentTier);
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                 heatable.ChangeHeat(deltaHeat);
+                 Log.Print($"target: {target.gameObject.name}, 변화량: {deltaHeat}");
             }
+            else
+            {
+                Log.Print("열기 없음");
+            }
+
+          
         }
     }
 
-    public void Oestroy()
+    public void OnDestroy()
     {
         if (_context?.EventBus != null)
         {

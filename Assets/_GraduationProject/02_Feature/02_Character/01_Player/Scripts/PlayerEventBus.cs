@@ -95,6 +95,8 @@ public class PlayerEventBus
         OnPlayerDied = null;
         OnAllowAttackInput = null;
         OnAttackStart = null;
+        OnAttack = null;
+        OnRotateToAttackDirection = null;
         OnAttackFinished = null;
         OnFootstep = null;
         OnDodgeEnd = null;

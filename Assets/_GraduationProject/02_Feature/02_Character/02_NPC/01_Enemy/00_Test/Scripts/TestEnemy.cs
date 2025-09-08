@@ -16,12 +16,9 @@ public class TestEnemy : MonoBehaviour, IDamageable
 
     public event Action<int, int> OnHealthChanged;
     public event Action OnDeath;
-    [SerializeField]private TierStatDatabaseSO tierStatDatabase;
 
     void Start()
     {
-        StatCalculator.Initialize(tierStatDatabase);
-
         _meshRenderer = GetComponent<MeshRenderer>();
         OnHealthChanged += (current, max) =>
         {
