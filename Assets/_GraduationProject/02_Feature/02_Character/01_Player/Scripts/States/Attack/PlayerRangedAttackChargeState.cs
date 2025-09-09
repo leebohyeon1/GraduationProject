@@ -1,3 +1,4 @@
+using System;
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
@@ -11,7 +12,8 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
 {
     /// <summary>현재 차징 시간</summary>
     private float _chargeTime = 0f;
-    
+    protected Type _nextState;
+
     /// <summary>
     /// 원거리 공격 차징 상태 생성자
     /// </summary>

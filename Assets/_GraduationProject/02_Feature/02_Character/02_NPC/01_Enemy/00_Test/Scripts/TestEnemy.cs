@@ -3,7 +3,7 @@ using System.Collections;
 using BH_Lib.Log;
 using UnityEngine;
 
-public class TestEnemy : MonoBehaviour, IDamageable
+public class TestEnemy : CharacterBase, IDamageable
 {
     private MeshRenderer _meshRenderer;
 
@@ -41,6 +41,8 @@ public class TestEnemy : MonoBehaviour, IDamageable
 
         _currentHealth -= damageAmount;
         OnHealthChanged?.Invoke(_currentHealth, MaxHealth);
+
+        PlayFeedback("Damaged", transform.position);
 
         if (_currentHealth < 0)
         {
