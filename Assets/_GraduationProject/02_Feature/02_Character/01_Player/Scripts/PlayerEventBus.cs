@@ -34,6 +34,19 @@ public class PlayerEventBus
     public event Action<InputDeviceType, Vector2, Vector2> OnRotateToAttackDirection;
     public void PublishRotateToAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition) => OnRotateToAttackDirection?.Invoke(deviceType, lookInput, mousePosition);
 
+    /// <summary>
+    /// 근거리 공격 차징 시작 이벤트
+    /// </summary>
+    public event Action OnMeleeAttackChargeStart;
+    public void PublishMeleeAttackChargeStart() => OnMeleeAttackChargeStart?.Invoke();
+
+  
+
+    /// <summary>
+    /// 근거리 공격 차징 이벤트 
+    /// </summary>
+    public event Action OnMeleeAttackCharging;
+    public void PublishMeleeAttackCharging() => OnMeleeAttackCharging?.Invoke();
 
     /// <summary>
     /// 원거리 공격 시작 이벤트
@@ -73,13 +86,17 @@ public class PlayerEventBus
     public event Action OnAttackStart;
     public void PublishAttackStart() => OnAttackStart?.Invoke();
 
-
-
     /// <summary>
     /// 공격 완료 이벤트 (애니메이션 이벤트에서 호출)
     /// </summary>
     public event Action OnAttackFinished;
     public void PublishAttackFinished() => OnAttackFinished?.Invoke();
+
+    /// <summary>
+    /// 차징 공격 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnChargeMeleeAttack;
+    public void PublishChargeAttack() => OnChargeMeleeAttack?.Invoke();
 
     /// <summary>
     /// 패링 이벤트 (애니메이션 이벤트에서 호출)

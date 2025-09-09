@@ -23,6 +23,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
     /// 현재 공격 입력 상태입니다.
     /// </summary>
     private bool _attackInput;
+
+    /// <summary>
+    /// 현재 공격 홀드 입력 상태입니다.
+    /// </summary>
+    private bool _attackHeldInput;
     
     /// <summary>
     /// 현재 원거리 공격 입력 상태입니다.
@@ -79,6 +84,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             _inputReader.MoveEvent += OnMove;
             _inputReader.AttackEvent += OnAttack;
+            _inputReader.AttackHoldEvent += OnAttackHold;
             _inputReader.AttackCancelledEvent += OnAttackCancelled;
             _inputReader.RangedAttackEvent += OnRangedAttack;
             _inputReader.RangedAttackCancelledEvent += OnRangedAttackCancelled;
@@ -100,6 +106,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             _inputReader.MoveEvent -= OnMove;
             _inputReader.AttackEvent -= OnAttack;
+            _inputReader.AttackHoldEvent -= OnAttackHold;
             _inputReader.AttackCancelledEvent -= OnAttackCancelled;
             _inputReader.RangedAttackEvent -= OnRangedAttack;
             _inputReader.RangedAttackCancelledEvent -= OnRangedAttackCancelled;
@@ -127,13 +134,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         _attackInput = true;
     }
-    
+
+    /// <summary>
+    /// 공격 홀드 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnAttackHold()
+    {
+        _attackHeldInput = true;
+    }
+
     /// <summary>
     /// 공격 취소 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
     /// </summary>
     private void OnAttackCancelled()
     {
         _attackInput = false;
+        _attackHeldInput = false;
     }
     
     /// <summary>
@@ -215,6 +231,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // 다른 스크립트(주로 상태 클래스)에서 현재 입력 값을 참조하기 위한 프로퍼티들입니다.
     public Vector2 MoveInput => _moveInput;
     public bool AttackInput => _attackInput;
+    public bool AttackHeldInput => _attackHeldInput;
     public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
     public bool DefendInput => _defendInput;

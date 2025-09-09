@@ -70,8 +70,19 @@ public class PlayerAnimationEventHandler : MonoBehaviour
         _eventBus.PublishParry();
     }
 
+    /// <summary>
+    /// 애니메이션 이벤트: 원거리 공격 종료 시점
+    /// </summary>
     public void TriggerRangedAttackEnd()
     {
         _eventBus.PublishRangedAttackEnd();
+    }
+
+    /// <summary>
+    /// 애니메이션 이벤트: 근거리 차징 공격 시작 시점
+    /// </summary>
+    public void TriggerChargingMeleeAttack()
+    {
+        _eventBus.PublishChargeAttack();
     }
 }

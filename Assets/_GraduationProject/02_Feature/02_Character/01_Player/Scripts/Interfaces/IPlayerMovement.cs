@@ -7,7 +7,7 @@ using UnityEngine;
 public interface IPlayerMovement: IMovable
 {
     /// <summary>회피 이동 실행</summary>
-    void Dodge(Vector3 direction, bool hasInput);
+    void Dodge(Vector3 direction);
     
     /// <summary>지정된 방향으로 즉시 회전</summary>
     void RotateImmediately(Vector3 direction);

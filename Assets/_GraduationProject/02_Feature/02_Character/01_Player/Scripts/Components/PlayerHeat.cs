@@ -8,8 +8,12 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeat : HeatSystem
 {
-    /// <summary>플레이어 컨텍스트 참조</summary>
+    /// <summary>
+    /// 플레이어 컨텍스트 참조
+    /// </summary>
     private PlayerContext _context;
+
+    private float _lastMeleeAttackChargingTime = 0;
 
     /// <summary>
     /// 플레이어 열량 시스템 초기화
@@ -24,6 +28,8 @@ public class PlayerHeat : HeatSystem
 
         _context.EventBus.OnAttack += AddHeatOnMeleeAttack;
         _context.EventBus.OnParrySuccess += AddHeatOnParry;
+        _context.EventBus.OnMeleeAttackChargeStart += ChargeStart;
+        _context.EventBus.OnMeleeAttackCharging += AddHeatOnMeleeAttackCharging;
     }
 
     /// <summary>
@@ -57,12 +63,36 @@ public class PlayerHeat : HeatSystem
         Log.PrintColor(Color.red, $"패링, 열기 변화량: {deltaHeat}");
     }
 
+    private void ChargeStart()
+    {
+        _lastMeleeAttackChargingTime = Time.time;
+    }
+
+    /// <summary>
+    /// 근거리 공격 차징 시 열량 추가
+    /// </summary>
+    private void AddHeatOnMeleeAttackCharging()
+    {
+        SourceMap sourceMap;
+        sourceMap = p_heatDataBase.GetSourceMap("OnCharge", ActorType, -1);
+
+        if (Time.time - _lastMeleeAttackChargingTime >= sourceMap.TickSecond)
+        {
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            ChangeHeat(deltaHeat);
+
+            _lastMeleeAttackChargingTime = Time.time;
+        }
+    }
+
     public void OnDestroy()
     {
         if (_context?.EventBus != null)
         {
             _context.EventBus.OnAttack -= AddHeatOnMeleeAttack;
             _context.EventBus.OnParrySuccess -= AddHeatOnParry;
+            _context.EventBus.OnMeleeAttackChargeStart -= ChargeStart;
+            _context.EventBus.OnMeleeAttackCharging -= AddHeatOnMeleeAttackCharging;
         }
     }
 }

@@ -17,21 +17,41 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
 
     /// <summary>현재 콤보 카운트 (0부터 시작)</summary>
     private int _comboCount = 0;
+    /// <summary>차지 근접 공격 수행 여부</summary>
+    private bool _isPerformingChargeAttack = false;
     /// <summary>플레이어 컨텍스트 참조</summary>
     private PlayerContext _context;
 
-    /// <summary>현재 콤보에 따른 공격 데미지</summary>
-    public int AttackDamage => _context?.Stats?.AttackData?[_comboCount].AttackDamage ?? 10;
-    /// <summary>현재 콤보에 따른 공격 범위</summary>
-    public Vector3 AttackRadius => _context?.Stats?.AttackData?[_comboCount].AttackRadius ?? Vector3.one;
-    /// <summary>현재 콤보 카운트</summary>
+    /// <summary>
+    /// 근거리 공격 데이터
+    /// </summary>
+    public PlayerMeleeAttackData MeleeAttackData =>
+        _isPerformingChargeAttack
+            ? _context?.Stats?.ChargeMeleeAttackData
+            : _context?.Stats?.AttackData?[_comboCount];
+
+    /// <summary>
+    /// 현재 콤보 또는 차지 상태에 따른 공격 데미지
+    /// </summary>
+    public int AttackDamage => MeleeAttackData.AttackDamage;
+   
+    /// <summary>
+    /// 현재 콤보 카운트
+    /// </summary>
     public int ComboCount => _comboCount;
 
-    /// <summary>원거리 공격 데미지</summary>
+    /// <summary>
+    /// 원거리 공격 데미지
+    /// </summary>
     public int RangedAttackDamage => _context?.Stats?.RangedAttackData.AttackDamage ?? 10;
-    /// <summary>원거리 공격 차징 시간</summary>
+    /// <summary>
+    /// 원거리 공격 차징 시간
+    /// </summary>
     public float RangedAttackChargeTime => _context?.Stats?.RangedAttackData.RangedAttackChargeTime ?? 3.0f;
-    /// <summary>투사체 속도</summary>
+    /// <summary>
+    /// 투사체 속도
+    /// 
+    /// </summary>
     public float ProjectileSpeed => _context?.Stats?.RangedAttackData.ProjectileSpeed ?? 100.0f;
 
 
@@ -49,6 +69,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
         _context.EventBus.OnAttackStart += PerformAttack;
         _context.EventBus.OnAttack += ProcessHitEnemies;
+        _context.EventBus.OnMeleeAttackChargeStart += PerformChargeMeleeAttack;
     }
 
     /// <summary>
@@ -75,13 +96,37 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         // 공격 중심점 계산
         Vector3 attackCenter = GetAttackCenter();
         // 공격 범위 내 적 감지
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, AttackRadius, transform.rotation, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, MeleeAttackData.AttackRadius, transform.rotation, _enemyLayerMask);
 
         // 감지된 적들에게 피해 적용
         _context.EventBus.PublishAttack(hitEnemies);
 
         // 콤보 카운트 증가
         UpdateComboCount();
+    }
+
+    /// <summary>
+    /// 실제 차지 공격 실행 (Physics.OverlapBox로 범위 내 적 감지 및 피해 적용)
+    /// 애니메이션 이벤트에서 호출됩니다.
+    /// </summary>
+    public void PerformChargeMeleeAttack()
+    {
+        if (_context?.Stats == null) return;
+
+        _isPerformingChargeAttack = true;
+
+        Log.Print($"플레이어가 차지 공격을 시도합니다! 공격력: {AttackDamage}");
+
+
+        // 공격 중심점 계산
+        Vector3 attackCenter = GetAttackCenter();
+        // 공격 범위 내 적 감지
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter,  MeleeAttackData.AttackRadius, transform.rotation, _enemyLayerMask);
+
+        // 감지된 적들에게 피해 적용
+        _context.EventBus.PublishAttack(hitEnemies);
+
+        _isPerformingChargeAttack = false;
     }
 
     /// <summary>
@@ -93,7 +138,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         if (target == null || target.IsDead) return;
 
         target.TakeDamage(AttackDamage, this);
-        Log.Print($"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
+        Log.PrintColor(Color.red, $"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
     }
 
     /// <summary>
@@ -173,11 +218,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
             return;
         }
 
-        Log.Print($"투사체 발사! 데미지: {RangedAttackDamage}, 속도: {ProjectileSpeed}");
+        Log.PrintColor(Color.red, $"투사체 발사! 데미지: {RangedAttackDamage}, 속도: {ProjectileSpeed}");
 
         // 투사체 생성
         GameObject projectileObj = Instantiate(_projectilePrefab, _rangedAttackPoint.position, _rangedAttackPoint.rotation);
-        
+
         // 투사체 초기화
         Projectile projectile = projectileObj.GetComponent<Projectile>();
         if (projectile != null)
@@ -207,7 +252,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     /// <returns>공격 범위 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter()
     {
-        return transform.position + transform.forward * (AttackRadius.z / 2);
+        return transform.position + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
     }
 
     /// <summary>
@@ -320,7 +365,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         Vector3 attackCenter = GetAttackCenter();
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, AttackRadius);
+        Gizmos.DrawWireCube(Vector3.zero,  MeleeAttackData.AttackRadius);
         Gizmos.matrix = Matrix4x4.identity;
     }
 

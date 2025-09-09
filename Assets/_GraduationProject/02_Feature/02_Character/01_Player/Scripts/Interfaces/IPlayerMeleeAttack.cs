@@ -6,18 +6,28 @@ using UnityEngine;
 /// </summary>
 public interface IPlayerMeleeAttack: IAttacker
 {
-    /// <summary>입력 기기에 따른 공격 시도 (방향 설정 포함)</summary>
+    /// <summary>
+    /// 입력 기기에 따른 공격 시도 (방향 설정 포함)
+    /// </summary>
     void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition);
     
-    /// <summary>실제 공격 실행 (피해 계산 및 적용)</summary>
+    /// <summary>
+    /// 실제 공격 실행 (피해 계산 및 적용)
+    /// </summary>
     void PerformAttack();
     
-    /// <summary>콤보 카운트 리셋</summary>
+    /// <summary>
+    /// 콤보 카운트 리셋
+    /// </summary>
     void ResetComboCount();
     
-    /// <summary>공격 범위 반지름</summary>
-    Vector3 AttackRadius { get; }
+    /// <summary>
+    /// 근거리 공격 데이터
+    /// </summary>
+    PlayerMeleeAttackData MeleeAttackData { get; }
     
-    /// <summary>현재 콤보 카운트</summary>
+    /// <summary>
+    /// 현재 콤보 카운트
+    /// </summary>
     int ComboCount { get; }
 }

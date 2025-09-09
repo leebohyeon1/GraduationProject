@@ -128,6 +128,7 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerDodgeState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(Context, _stateMachine));
+        _stateMachine.AddState(new PlayerMeleeAttackChargeState(Context, _stateMachine));
 
         // 상태 전환 조건 설정
         SetupStateTransitions();
@@ -145,6 +146,7 @@ public class Player : CharacterBase
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() => Context.Controller.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstMeleeAttackState>(() => Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerMeleeAttackChargeState>(() => Context.Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() =>
             Context.Controller.DodgeInput && Context.Movement.CanDodge());
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() => Context.Controller.DefendInput);
@@ -153,6 +155,7 @@ public class Player : CharacterBase
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() => Context.Controller.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstMeleeAttackState>(() => Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerMeleeAttackChargeState>(() => Context.Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() =>
             Context.Controller.DodgeInput && Context.Movement.CanDodge());
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() => Context.Controller.DefendInput);

@@ -21,6 +21,11 @@ public class PlayerStatsSO : CharacterStatsSO
     [Header("Player Combat")]
     [Tooltip("근접 공격 데이터 배열 (콤보별 설정)")]
     public PlayerMeleeAttackData[] AttackData;
+
+    [Tooltip("근거리 공격 차징 데이터")]
+    public PlayerMeleeAttackData ChargeMeleeAttackData;
+    public float MinChargeTime;
+
     [Tooltip("원거리 공격 데이터")]
     public RangedAttackData RangedAttackData;
     [Tooltip("패링 범위 (Box Collider 크기)")]

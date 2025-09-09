@@ -69,9 +69,22 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
         {
             _nextState = typeof(PlayerDefendState);
         }
+        else if (p_context.Controller.AttackHeldInput)
+        {
+            _nextState = typeof(PlayerMeleeAttackChargeState);
+        }
         else if (p_context.Controller.AttackInput)
         {
             _nextState = typeof(PlayerFirstMeleeAttackState);
+        }
+        else if(p_context.Controller.MoveInput != Vector2.zero)
+        {
+            _nextState = typeof(PlayerMoveState);
+        }
+
+        if (_nextState != null)
+        {
+            Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
         }
     }
     

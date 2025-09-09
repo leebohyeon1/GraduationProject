@@ -13,7 +13,7 @@ using UnityEngine;
 public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
 {
     /// <summary>다음 상태를 저장할 변수</summary>
-    private Type _nextState;
+    protected Type p_nextState;
     /// <summary>입력 허용 플래그</summary>  
     protected bool p_canInput = false;
     /// <summary>공격 이동 코루틴 참조</summary>
@@ -38,7 +38,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     {
         base.OnEnter();
 
-        _nextState = null; // 다음 상태 초기화
+        p_nextState = null; // 다음 상태 초기화
         p_canInput = true;    // 콤보 상태 초기화
 
         p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
@@ -84,12 +84,12 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
             _attackMoveCoroutine = null;
         }
 
-        if (_nextState == null || !_nextState.IsSubclassOf(typeof(PlayerMeleeAttackBaseState)))
+        if (p_nextState == null || !p_nextState.IsSubclassOf(typeof(PlayerMeleeAttackBaseState)))
         {
             p_context.MeleeAttack.ResetComboCount();
         }
 
-        _nextState = null;
+        p_nextState = null;
         Log.Print("Player exited Attack state");
     }
 
@@ -97,7 +97,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     /// 입력 처리
     /// 공격 중 입력을 감지하여 다음 상태를 결정
     /// </summary>
-    private void HandleInput()
+    protected virtual void HandleInput()
     {
         // 다음 상태가 아직 결정되지 않았고 입력이 허용된 경우
         if (p_canInput)
@@ -105,26 +105,29 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
             // 공격 중 입력 감지하여 다음 상태 저장
             if (p_nextAttackState != null && p_context.Controller.AttackInput)
             {
-                _nextState = p_nextAttackState;
-               
+                p_nextState = p_nextAttackState;
             }
             else if (p_context.Controller.DodgeInput && p_context.Movement.CanDodge())
             {
-                _nextState = typeof(PlayerDodgeState);
+                p_nextState = typeof(PlayerDodgeState);
             }
             else if (p_context.Controller.DefendInput)
             {
-                _nextState = typeof(PlayerDefendState);
+                p_nextState = typeof(PlayerDefendState);
             }
-            else if(p_context.Controller.RangedAttackInput)
+            else if (p_context.Controller.AttackHeldInput)
             {
-                _nextState = typeof(PlayerRangedAttackChargeState);
+                p_nextState = typeof(PlayerMeleeAttackChargeState);
+            }
+            else if (p_context.Controller.RangedAttackInput)
+            {
+                p_nextState = typeof(PlayerRangedAttackChargeState);
             }
 
 
-            if (_nextState != null)
+            if (p_nextState != null)
             {
-                Log.PrintColor(Color.red, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
+                Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] 다음 상태: {p_nextState}");
             }
             
         }
@@ -153,21 +156,19 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     /// <returns></returns>
     private IEnumerator CoChangeNextState()
     {
-        yield return new WaitForSeconds( p_context.Stats
-            .AttackData[p_context.MeleeAttack.ComboCount]
+        yield return new WaitForSeconds( p_context.MeleeAttack.MeleeAttackData
             .AttackDelay ); // 약간의 딜레이 후에 상태 전환
 
         p_canInput = false;
 
 
         // 저장된 다음 상태로 전환
-        if (_nextState != null)
+        if (p_nextState != null)
         {
-            p_stateMachine.ChangeState(_nextState);
+            p_stateMachine.ChangeState(p_nextState);
         }
         else
         {
-            
             // 아무 입력이 없었으면 Idle 상태로
             p_stateMachine.ChangeState<PlayerIdleState>();
         }
@@ -178,9 +179,9 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     /// </summary>
     private void StartAttackMovement()
     {
-        if (p_context.Stats?.AttackData == null || p_context.Stats.AttackData.Length == 0) return;
+        if (p_context.MeleeAttack?.MeleeAttackData == null) return;
         
-        var attackData = p_context.Stats.AttackData[p_context.MeleeAttack.ComboCount];
+        var attackData = p_context.MeleeAttack.MeleeAttackData;
         if (attackData.AttackMoveDistance <= 0) return;
         
         _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));

@@ -126,6 +126,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         int previousHealth = p_currentHealth;
         p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
+        Log.PrintColor(Color.red, $"플레이어 받은 데미지: {damageAmount}");
         // 체력 변경 이벤트 발행
         OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
 
