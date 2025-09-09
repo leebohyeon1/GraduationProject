@@ -98,8 +98,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
 
         // 공격 중심점 계산
         Vector3 attackCenter = GetAttackCenter();
-        // 공격 범위 내 적 감지
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, MeleeAttackData.AttackRadius, transform.rotation, _enemyLayerMask);
+        // 공격 범위 내 적 감지 (AttackRadius를 halfExtents로 사용하므로 2로 나누기)
+        Vector3 halfExtents = MeleeAttackData.AttackRadius / 2f;
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _enemyLayerMask);
 
         // 감지된 적들에게 피해 적용
         _context.EventBus.PublishAttack(hitEnemies);
@@ -117,13 +118,13 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         if (_context?.Stats == null) return;
 
         Log.Print($"플레이어가 차지 공격을 시도합니다! 공격력: {AttackDamage}");
-
-
+        
         // 공격 중심점 계산
         Vector3 attackCenter = GetAttackCenter();
-        // 공격 범위 내 적 감지
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter,  MeleeAttackData.AttackRadius, transform.rotation, _enemyLayerMask);
-
+        
+        // 공격 범위 내 적 감지 (AttackRadius를 halfExtents로 사용하므로 2로 나누기)
+        Vector3 halfExtents = MeleeAttackData.AttackRadius / 2f;
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _enemyLayerMask);
         // 감지된 적들에게 피해 적용
         _context.EventBus.PublishAttack(hitEnemies);
     }
@@ -368,7 +369,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     {
         if (_context?.Stats == null) return;
 
-       //  DrawAttackGizmo();
+        DrawAttackGizmo();
         DrawChargeAttackGizmo();
         DrawParryGizmo();
     }
@@ -383,7 +384,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     }
     private void DrawChargeAttackGizmo()
     {
-        Vector3 attackCenter = GetAttackCenter();
+        Vector3 attackCenter =transform.position + transform.forward * ( _context.Stats.ChargeMeleeAttackData.AttackRadius.z / 2);
         Gizmos.color = Color.darkRed;
 
         Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
