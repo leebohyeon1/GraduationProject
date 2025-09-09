@@ -126,9 +126,9 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     /// </summary>
     /// <param name="direction">회피 방향</param>
     /// <param name="hasInput">입력 방향 존재 여부</param>
-    public void Dodge(Vector3 direction, bool hasInput)
+    public void Dodge(Vector3 direction)
     {
-        if (hasInput)
+        if (direction != Vector3.zero)
         {
             // 입력 방향으로 회피 (카메라 기준 변환 포함)
             Move(direction, DodgeSpeed);

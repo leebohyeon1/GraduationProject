@@ -1,3 +1,4 @@
+using System;
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
@@ -9,20 +10,19 @@ using UnityEngine;
 public class PlayerDodgeState : BaseState<PlayerContext>
 {
     private Vector3 _dodgeDirection;
-    private bool _isInvincible = false;
+    private Type _nextState;
 
-    public PlayerDodgeState(PlayerContext context, StateMachine<PlayerContext> stateMachine) 
-        : base(context, stateMachine) {}
+    public PlayerDodgeState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
+        : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
         base.OnEnter();
         p_context.EventBus.OnDodgeEnd += OnDodgeEndEvent;
-        
+
         Log.Print("Player entered Dodge state");
 
         p_context.Animator.SetTrigger("Dodge");
-        _isInvincible = true;
 
         // 현재 이동 방향으로 회피, 입력이 없으면 앞쪽으로 회피
         if (p_context.Controller.MoveInput != Vector2.zero)
@@ -37,8 +37,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             _dodgeDirection = Vector3.zero;
         }
 
-        // TODO: 무적 상태 활성화 (IDamageable 인터페이스 확장 필요)
-        // SetInvincible(true);
+        p_context.EventBus.PublishDodgeStart();
     }
 
     public override void OnUpdate()
@@ -46,9 +45,10 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         // 회피 이동 실행
         if (p_context.Movement != null)
         {
-            bool hasInput = p_context.Controller.MoveInput != Vector2.zero;
-            p_context.Movement.Dodge(_dodgeDirection, hasInput);
+            p_context.Movement.Dodge(_dodgeDirection);
         }
+
+        HandleInput();
     }
 
     public override void OnExit()
@@ -56,46 +56,60 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         p_context.EventBus.OnDodgeEnd -= OnDodgeEndEvent;
 
         Log.Print("Player exited Dodge state");
-        _isInvincible = false;
-
-        // TODO: 무적 상태 비활성화
-        // SetInvincible(false);
     }
-    
+
     /// <summary>
     /// 회피 애니메이션 종료 이벤트 핸들러
     /// </summary>
     public virtual void OnDodgeEndEvent()
     {
-        // 회피 완료 시 상태 전환
-        // 이동 입력이 있으면 Move 상태로
-        if (p_context.Controller.MoveInput != Vector2.zero)
+        // 저장된 다음 상태로 전환
+        if (_nextState != null)
         {
-            p_stateMachine.ChangeState<PlayerMoveState>();
-            return;
+            p_stateMachine.ChangeState(_nextState);
         }
-
-        // 공격 입력이 있으면 Attack 상태로
-        if (p_context.Controller.AttackInput)
+        else
         {
-            p_stateMachine.ChangeState<PlayerFirstMeleeAttackState>();
-            return;
+            // 아무 입력이 없었으면 Idle 상태로
+            p_stateMachine.ChangeState<PlayerIdleState>();
         }
-
-        if(p_context.Controller.DefendInput)
-        {
-            p_stateMachine.ChangeState<PlayerDefendState>();
-            return;
-        }
-
-        if(p_context.Controller.RangedAttackInput)
-        {
-            p_stateMachine.ChangeState<PlayerRangedAttackChargeState>();
-            return;
-        }
-
-
-        // 아무 입력이 없으면 Idle 상태로
-        p_stateMachine.ChangeState<PlayerIdleState>();
     }
+
+    /// <summary>
+    /// 입력 처리
+    /// 회피 중 입력을 감지하여 다음 상태를 결정
+    /// </summary>
+    public void HandleInput()
+    {
+        if (p_context.Controller.DodgeInput && p_context.Movement.CanDodge())
+        {
+            _nextState = typeof(PlayerDodgeState);
+        }
+        else if (p_context.Controller.DefendInput)
+        {
+            _nextState = typeof(PlayerDefendState);
+        }
+        else if (p_context.Controller.AttackHeldInput)
+        {
+            _nextState = typeof(PlayerMeleeAttackChargeState);
+        }
+        else if (p_context.Controller.AttackInput)
+        {
+            _nextState = typeof(PlayerFirstMeleeAttackState);
+        }
+        else if (p_context.Controller.RangedAttackInput)
+        {
+            _nextState = typeof(PlayerRangedAttackChargeState);
+        }
+        else if (p_context.Controller.MoveInput != Vector2.zero)
+        {
+            _nextState = typeof(PlayerMoveState);
+        }
+
+        if (_nextState != null)
+        {
+            Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] 다음 상태: {_nextState}");
+        }
+    }
+    
 }

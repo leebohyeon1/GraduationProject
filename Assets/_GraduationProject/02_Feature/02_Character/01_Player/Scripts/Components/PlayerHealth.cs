@@ -11,35 +11,60 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     [Header("Runtime Stats")]
     [SerializeField] protected int p_currentHealth;
 
-    /// <summary>피격 상태 플래그 (상태 머신에서 Hit 상태 전환용)</summary>
+    /// <summary>
+    /// 피격 상태 플래그 (상태 머신에서 Hit 상태 전환용)
+    /// </summary>
     private bool _isHit = false;
 
-    /// <summary>방어 상태 플래그 (방어 중일 때 데미지 감소)</summary>
+    /// <summary>
+    /// 방어 상태 플래그 (방어 중일 때 데미지 감소)
+    /// </summary>
     private bool _isDefending = false;
 
-    /// <summary>플레이어 컨텍스트 참조</summary>
+    /// <summary>
+    /// 무적 상태 여부
+    /// </summary>
+    private bool _isInvincible = false;
+
+    /// <summary>
+    /// 플레이어 컨텍스트 참조
+    /// </summary>
     private PlayerContext _context;
 
-    /// <summary>현재 체력</summary>
+    /// <summary>
+    /// 현재 체력
+    /// </summary>
     public int Health => p_currentHealth;
 
-    /// <summary>최대 체력</summary>
+    /// <summary>
+    /// 최대 체력
+    /// </summary>
     public int MaxHealth => _context.Stats.MaxHealth;
 
-    /// <summary>사망 여부</summary>
+    /// <summary>
+    /// 사망 여부
+    /// </summary>
     public bool IsDead => p_currentHealth <= 0;
 
-    /// <summary>생존 여부</summary>
+    /// <summary>
+    /// 생존 여부
+    /// </summary>
     public bool IsAlive => !IsDead;
 
-    /// <summary>피격 상태 여부 (Hit 상태 전환 조건)</summary>
+    /// <summary>
+    /// 피격 상태 여부 (Hit 상태 전환 조건)
+    /// </summary>
     public bool IsHit => _isHit;
 
 
-    /// <summary>체력 변경 이벤트</summary>
+    /// <summary>
+    /// 체력 변경 이벤트
+    /// </summary>
     public event Action<int, int> OnHealthChanged;
 
-    /// <summary>사망 이벤트</summary>
+    /// <summary>
+    /// 사망 이벤트
+    /// </summary>
     public event Action OnDeath;
 
     /// <summary>
@@ -78,6 +103,9 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         // 이벤트 버스 구독
         OnHealthChanged += (previousHealth, currentHealth) => _context.EventBus.PublishHealthChanged(previousHealth, currentHealth);
         OnDeath += _context.EventBus.PublishPlayerDied;
+        _context.EventBus.OnDodgeStart += ()=> { SetInvisible(true); };
+        _context.EventBus.OnDodgeEnd += ()=> { SetInvisible(false); };
+
     }
 
     /// <summary>
@@ -87,7 +115,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// <param name="attacker">공격자</param>
     public void TakeDamage(int damageAmount, IAttacker attacker)
     {
-        if (IsDead) return;
+        if (IsDead || _isInvincible) return;
 
         // 방어 중이면 데미지 30%만 받음 (70% 감소)
         if (_isDefending)
@@ -98,6 +126,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         int previousHealth = p_currentHealth;
         p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
+        Log.PrintColor(Color.red, $"플레이어 받은 데미지: {damageAmount}");
         // 체력 변경 이벤트 발행
         OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
 
@@ -140,9 +169,18 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
     }
 
+    private void SetInvisible(bool isInvisible)
+    {
+        _isInvincible = isInvisible;
+
+        Log.PrintColor(Color.yellow, $"무적: {isInvisible}");
+    }
+
     private void OnDestroy()
     {
         OnHealthChanged -= _context.EventBus.PublishHealthChanged;
         OnDeath -= _context.EventBus.PublishPlayerDied;
+        _context.EventBus.OnDodgeStart -= ()=> { SetInvisible(true); };
+        _context.EventBus.OnDodgeEnd -= ()=> { SetInvisible(false); };
     }
 }

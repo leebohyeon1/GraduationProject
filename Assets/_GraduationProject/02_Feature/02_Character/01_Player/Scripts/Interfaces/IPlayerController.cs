@@ -6,27 +6,48 @@ using UnityEngine;
 /// </summary>
 public interface IPlayerController
 {
-    /// <summary>이동 입력 (WASD 또는 좌 스틱)</summary>
+    /// <summary>
+    /// 이동 입력 (WASD 또는 좌 스틱)
+    /// </summary>
     Vector2 MoveInput { get; }
     
-    /// <summary>공격 입력 (마우스 좌클릭 또는 버튼)</summary>
+    /// <summary>
+    /// 공격 입력 (마우스 좌클릭 또는 버튼)
+    /// </summary>
     bool AttackInput { get; }
+
+    /// <summary>
+    /// 공격 홀드 입력 (마우스 좌클릭 홀드 또는 버튼)
+    /// </summary>
+    bool AttackHeldInput { get; }
     
-    /// <summary>원거리 공격 입력 (마우스 우클릭 홀드 또는 버튼)</summary>
+    /// <summary>
+    /// 원거리 공격 입력 (마우스 우클릭 홀드 또는 버튼)
+    /// </summary>
     bool RangedAttackInput { get; }
     
-    /// <summary>회피 입력 (스페이스바 또는 버튼)</summary>
+    /// <summary>
+    /// 회피 입력 (스페이스바 또는 버튼)
+    /// </summary>
     bool DodgeInput { get; }
     
-    /// <summary>방어 입력 (마우스 우클릭 또는 버튼)</summary>
+    /// <summary>
+    /// 방어 입력 (마우스 우클릭 또는 버튼)
+    /// </summary>
     bool DefendInput { get; }
     
-    /// <summary>조준 입력 (게임패드 우 스틱)</summary>
+    /// <summary>
+    /// 조준 입력 (게임패드 우 스틱)
+    /// </summary>
     Vector2 LookInput { get; }
     
-    /// <summary>마우스 스크린 위치</summary>
+    /// <summary>
+    /// 마우스 스크린 위치
+    /// </summary>
     Vector2 MousePosition { get; }
     
-    /// <summary>프레임 종료 시 호출되어 일회성 입력 상태를 리셋</summary>
+    /// <summary>
+    /// 프레임 종료 시 호출되어 일회성 입력 상태를 리셋
+    /// </summary>
     void LateTick();
 }

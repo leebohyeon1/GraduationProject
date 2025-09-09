@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using BH_Lib.DI;
+using UnityEngine.InputSystem.Interactions;
+using BH_Lib.Log;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
@@ -12,6 +14,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction<Vector2> MoveEvent = delegate { };
     // 공격 이벤트 (시작)
     public event UnityAction AttackEvent = delegate { };
+    // 공격 홀드 이벤트 
+    public event UnityAction AttackHoldEvent = delegate { };
     // 공격 이벤트 (종료)
     public event UnityAction AttackCancelledEvent = delegate { };
     // 원거리 공격 이벤트 (시작)
@@ -73,8 +77,18 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     {
         switch (context.phase)
         {
+            case InputActionPhase.Started:
+                
+                break;
             case InputActionPhase.Performed:
-                AttackEvent.Invoke();
+                if (context.interaction is HoldInteraction)
+                {
+                    AttackHoldEvent.Invoke();
+                }
+                else
+                {
+                    AttackEvent.Invoke();
+                }
                 break;
             case InputActionPhase.Canceled:
                 AttackCancelledEvent.Invoke();
