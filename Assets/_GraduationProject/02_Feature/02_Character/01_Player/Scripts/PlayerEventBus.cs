@@ -10,6 +10,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerEventBus
 {
+    #region Health
     /// <summary>
     /// 체력 변경 이벤트 (이전 체력, 현재 체력)
     /// </summary>
@@ -21,13 +22,11 @@ public class PlayerEventBus
     /// </summary>
     public event Action OnPlayerDied;
     public void PublishPlayerDied() => OnPlayerDied?.Invoke();
+    #endregion
 
-    /// <summary>
-    /// 공격 실행 이벤트
-    /// </summary>
-    public event Action<Collider[]> OnAttack;
-    public void PublishAttack(Collider[] targets) => OnAttack?.Invoke(targets);
+    #region Combat
 
+    #region MeleeAttack
     /// <summary>
     /// 공격 방향으로 회전 이벤트
     /// </summary>
@@ -35,18 +34,53 @@ public class PlayerEventBus
     public void PublishRotateToAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition) => OnRotateToAttackDirection?.Invoke(deviceType, lookInput, mousePosition);
 
     /// <summary>
+    /// 공격 입력 허용 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnAllowAttackInput;
+    public void PublishAllowAttackInput() => OnAllowAttackInput?.Invoke();
+
+    /// <summary>
+    /// 공격 완료 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnAttackFinished;
+    public void PublishAttackFinished() => OnAttackFinished?.Invoke();
+
+
+    /// <summary>
+    /// 공격 실행 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnPerformAttack;
+    public void PublishAttackStart() => OnPerformAttack?.Invoke();
+
+    /// <summary>
+    /// 공격 실행 이벤트
+    /// </summary>
+    public event Action<Collider[]> OnAttack;
+    public void PublishAttack(Collider[] targets) => OnAttack?.Invoke(targets);
+
+
+    #region ChargeMeleeAttack
+    /// <summary>
     /// 근거리 공격 차징 시작 이벤트
     /// </summary>
     public event Action OnMeleeAttackChargeStart;
     public void PublishMeleeAttackChargeStart() => OnMeleeAttackChargeStart?.Invoke();
-
-  
 
     /// <summary>
     /// 근거리 공격 차징 이벤트 
     /// </summary>
     public event Action OnMeleeAttackCharging;
     public void PublishMeleeAttackCharging() => OnMeleeAttackCharging?.Invoke();
+
+    /// <summary>
+    /// 차징 공격 이벤트 (애니메이션 이벤트에서 호출)
+    /// </summary>
+    public event Action OnPerformChargeMeleeAttack;
+    public void PublishChargeAttack() => OnPerformChargeMeleeAttack?.Invoke();
+
+    #endregion
+    #region RangedAttack
+    #endregion
 
     /// <summary>
     /// 원거리 공격 시작 이벤트
@@ -59,12 +93,16 @@ public class PlayerEventBus
     /// </summary>
     public event Action OnRangedAttackEnd;
     public void PublishRangedAttackEnd() => OnRangedAttackEnd?.Invoke();
+    #endregion
 
+    #region Parry
     /// <summary>
     /// 패링 이벤트 (애니메이션 이벤트에서 호출)
     /// </summary>
     public event Action OnParrySuccess;
     public void PublishParrySuccess() => OnParrySuccess?.Invoke();
+    #endregion
+    #endregion
 
     /// <summary>
     /// 회피 시작 이벤트
@@ -72,31 +110,8 @@ public class PlayerEventBus
     public event Action OnDodgeStart;
     public void PublishDodgeStart() => OnDodgeStart?.Invoke();
     
-    #region CallAnimtaion
+#region CallAnimtaion
 
-    /// <summary>
-    /// 공격 입력 허용 이벤트 (애니메이션 이벤트에서 호출)
-    /// </summary>
-    public event Action OnAllowAttackInput;
-    public void PublishAllowAttackInput() => OnAllowAttackInput?.Invoke();
-
-    /// <summary>
-    /// 공격 실행 이벤트 (애니메이션 이벤트에서 호출)
-    /// </summary>
-    public event Action OnAttackStart;
-    public void PublishAttackStart() => OnAttackStart?.Invoke();
-
-    /// <summary>
-    /// 공격 완료 이벤트 (애니메이션 이벤트에서 호출)
-    /// </summary>
-    public event Action OnAttackFinished;
-    public void PublishAttackFinished() => OnAttackFinished?.Invoke();
-
-    /// <summary>
-    /// 차징 공격 이벤트 (애니메이션 이벤트에서 호출)
-    /// </summary>
-    public event Action OnChargeMeleeAttack;
-    public void PublishChargeAttack() => OnChargeMeleeAttack?.Invoke();
 
     /// <summary>
     /// 패링 이벤트 (애니메이션 이벤트에서 호출)
@@ -123,7 +138,7 @@ public class PlayerEventBus
         OnHealthChanged = null;
         OnPlayerDied = null;
         OnAllowAttackInput = null;
-        OnAttackStart = null;
+        OnPerformAttack = null;
         OnAttack = null;
         OnRotateToAttackDirection = null;
         OnAttackFinished = null;
@@ -132,6 +147,11 @@ public class PlayerEventBus
         OnParry = null;
         OnRangedAttackStart = null;
         OnRangedAttackEnd = null;
+        OnDodgeStart = null;
+        OnParrySuccess = null;
+        OnMeleeAttackChargeStart = null;
+        OnMeleeAttackCharging = null;
+        OnPerformChargeMeleeAttack = null;
     }
 
 
