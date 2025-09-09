@@ -28,10 +28,10 @@ public class PlayerDefendState : BaseState<PlayerContext>
         p_context.Movement?.Move(Vector3.zero, 0f);
 
         // 방어 키를 떼면 Idle 상태로 전환
-            if (!p_context.Controller.DefendInput)
-            {
-                p_stateMachine.ChangeState<PlayerIdleState>();
-            }
+        if (!p_context.Controller.DefendInput)
+        {
+            p_stateMachine.ChangeState<PlayerIdleState>();
+        }
     }
 
     public override void OnExit()

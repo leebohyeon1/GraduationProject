@@ -8,7 +8,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeMeleeAttack";
 
-    protected override Type p_nextAttackState => typeof(PlayerFirstMeleeAttackState);
+    protected override Type p_nextAttackState => null;
 
     public PlayerChargeMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
     : base(context, stateMachine) { }
@@ -32,11 +32,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         if (p_canInput)
         {
             // 공격 중 입력 감지하여 다음 상태 저장
-            if (p_nextAttackState != null && p_context.Controller.AttackInput)
-            {
-                p_nextState = p_nextAttackState;
-            }
-            else if (p_context.Controller.DodgeInput && p_context.Movement.CanDodge())
+            if (p_context.Controller.DodgeInput && p_context.Movement.CanDodge())
             {
                 p_nextState = typeof(PlayerDodgeState);
             }
