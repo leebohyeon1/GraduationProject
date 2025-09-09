@@ -44,6 +44,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
         p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
         p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
 
+        p_context.MeleeAttack.SetAttackCenter();
 
         Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
@@ -56,9 +57,10 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
             var mousePosition = p_context.Controller.MousePosition;
             p_context.MeleeAttack.TryAttack(deviceType, lookInput, mousePosition);
         }
-        
+
         // 공격 시 전진 이동 실행
         StartAttackMovement();
+
     }
 
     public override void OnUpdate()

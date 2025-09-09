@@ -69,11 +69,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         _context.EventBus.OnRangedAttackStart += FireProjectile;
         _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
         _context.EventBus.OnAttackStart += PerformAttack;
-        _context.EventBus.OnAllowAttackInput += SetAttackCenter;
         _context.EventBus.OnAttack += ProcessHitEnemies;
         _context.EventBus.OnChargeMeleeAttack += PerformChargeMeleeAttack;
         _context.EventBus.OnMeleeAttackChargeStart += () => { SetIsPerformingChargeAttack(true); };
-        _context.EventBus.OnMeleeAttackChargeStart += SetAttackCenter;
         _context.EventBus.OnAttackFinished += () => { SetIsPerformingChargeAttack(false); };
     }
 
@@ -257,12 +255,12 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     /// <returns>공격 범위 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter()
     {
-        return AttackCenter + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
+        return AttackCenter;
     }
 
     public void SetAttackCenter()
     {
-        _attackCenter = transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
+        _attackCenter = transform.position + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
     }
 
     /// <summary>
@@ -357,11 +355,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
             _context.EventBus.OnRangedAttackStart -= FireProjectile;
             _context.EventBus.OnRotateToAttackDirection -= RotateToAttackDirection;
             _context.EventBus.OnAttackStart -= PerformAttack;
-            _context.EventBus.OnAllowAttackInput -= SetAttackCenter;
             _context.EventBus.OnAttack -= ProcessHitEnemies;
             _context.EventBus.OnChargeMeleeAttack -= PerformChargeMeleeAttack;
             _context.EventBus.OnMeleeAttackChargeStart -= () => { SetIsPerformingChargeAttack(true); };
-            _context.EventBus.OnMeleeAttackChargeStart -= SetAttackCenter;
             _context.EventBus.OnAttackFinished -= () => { SetIsPerformingChargeAttack(false); };
 
         }
@@ -372,7 +368,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     {
         if (_context?.Stats == null) return;
 
-        DrawAttackGizmo();
+       //  DrawAttackGizmo();
         DrawChargeAttackGizmo();
         DrawParryGizmo();
     }
@@ -387,7 +383,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     }
     private void DrawChargeAttackGizmo()
     {
-        Vector3 attackCenter = transform.position + transform.forward * ( _context.Stats.ChargeMeleeAttackData.AttackRadius.z / 2);
+        Vector3 attackCenter = GetAttackCenter();
         Gizmos.color = Color.darkRed;
 
         Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);

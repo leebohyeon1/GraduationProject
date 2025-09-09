@@ -39,7 +39,12 @@ public class PlayerMeleeAttackChargeState : BaseState<PlayerContext>
             }
 
         }
-       
+        
+        // 에임 방향으로 회전
+        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+        var lookInput = p_context.Controller.LookInput;
+        var mousePosition = p_context.Controller.MousePosition;
+        p_context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
         p_context.EventBus.PublishMeleeAttackCharging();
     }
 

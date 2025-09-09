@@ -22,6 +22,11 @@ public interface IPlayerMeleeAttack: IAttacker
     void ResetComboCount();
     
     /// <summary>
+    /// 공격 범위의 중심점 계산
+    /// </summary>
+    void SetAttackCenter();
+
+    /// <summary>
     /// 근거리 공격 데이터
     /// </summary>
     PlayerMeleeAttackData MeleeAttackData { get; }
