@@ -26,6 +26,8 @@ public interface IPlayerMeleeAttack: IAttacker
     /// </summary>
     PlayerMeleeAttackData MeleeAttackData { get; }
     
+    Vector3 AttackCenter { get; }
+    
     /// <summary>
     /// 현재 콤보 카운트
     /// </summary>

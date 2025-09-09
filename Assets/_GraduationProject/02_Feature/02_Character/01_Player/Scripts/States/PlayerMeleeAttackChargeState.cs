@@ -29,7 +29,7 @@ public class PlayerMeleeAttackChargeState : BaseState<PlayerContext>
         {
             if (_timer >= p_context.Stats.MinChargeTime)
             {
-                p_stateMachine.ChangeState<PlayerMeleeAttackBaseState>();
+                p_stateMachine.ChangeState<PlayerChargeMeleeAttackState>();
                 return;
             }
             else

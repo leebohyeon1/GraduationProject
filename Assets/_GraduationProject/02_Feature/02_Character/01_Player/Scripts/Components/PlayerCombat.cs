@@ -15,6 +15,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     [Tooltip("원거리 공격에 사용할 투사체 프리팹")]
     [SerializeField] private GameObject _projectilePrefab;
 
+    private Vector3 _attackCenter;
     /// <summary>현재 콤보 카운트 (0부터 시작)</summary>
     private int _comboCount = 0;
     /// <summary>차지 근접 공격 수행 여부</summary>
@@ -54,7 +55,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     /// </summary>
     public float ProjectileSpeed => _context?.Stats?.RangedAttackData.ProjectileSpeed ?? 100.0f;
 
-
+    public Vector3 AttackCenter => _attackCenter;
 
     /// <summary>
     /// 플레이어 전투 시스템 초기화
@@ -68,8 +69,12 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         _context.EventBus.OnRangedAttackStart += FireProjectile;
         _context.EventBus.OnRotateToAttackDirection += RotateToAttackDirection;
         _context.EventBus.OnAttackStart += PerformAttack;
+        _context.EventBus.OnAllowAttackInput += SetAttackCenter;
         _context.EventBus.OnAttack += ProcessHitEnemies;
-        _context.EventBus.OnMeleeAttackChargeStart += PerformChargeMeleeAttack;
+        _context.EventBus.OnChargeMeleeAttack += PerformChargeMeleeAttack;
+        _context.EventBus.OnMeleeAttackChargeStart += () => { SetIsPerformingChargeAttack(true); };
+        _context.EventBus.OnMeleeAttackChargeStart += SetAttackCenter;
+        _context.EventBus.OnAttackFinished += () => { SetIsPerformingChargeAttack(false); };
     }
 
     /// <summary>
@@ -113,8 +118,6 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     {
         if (_context?.Stats == null) return;
 
-        _isPerformingChargeAttack = true;
-
         Log.Print($"플레이어가 차지 공격을 시도합니다! 공격력: {AttackDamage}");
 
 
@@ -125,10 +128,12 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
 
         // 감지된 적들에게 피해 적용
         _context.EventBus.PublishAttack(hitEnemies);
-
-        _isPerformingChargeAttack = false;
     }
 
+    private void SetIsPerformingChargeAttack(bool value)
+    {
+        _isPerformingChargeAttack = value;    
+    }
     /// <summary>
     /// 특정 대상에게 공격 실행
     /// </summary>
@@ -252,7 +257,12 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
     /// <returns>공격 범위 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter()
     {
-        return transform.position + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
+        return AttackCenter + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
+    }
+
+    public void SetAttackCenter()
+    {
+        _attackCenter = transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
     }
 
     /// <summary>
@@ -347,7 +357,13 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
             _context.EventBus.OnRangedAttackStart -= FireProjectile;
             _context.EventBus.OnRotateToAttackDirection -= RotateToAttackDirection;
             _context.EventBus.OnAttackStart -= PerformAttack;
+            _context.EventBus.OnAllowAttackInput -= SetAttackCenter;
             _context.EventBus.OnAttack -= ProcessHitEnemies;
+            _context.EventBus.OnChargeMeleeAttack -= PerformChargeMeleeAttack;
+            _context.EventBus.OnMeleeAttackChargeStart -= () => { SetIsPerformingChargeAttack(true); };
+            _context.EventBus.OnMeleeAttackChargeStart -= SetAttackCenter;
+            _context.EventBus.OnAttackFinished -= () => { SetIsPerformingChargeAttack(false); };
+
         }
     }
 
@@ -357,18 +373,27 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         if (_context?.Stats == null) return;
 
         DrawAttackGizmo();
+        DrawChargeAttackGizmo();
         DrawParryGizmo();
     }
 
     private void DrawAttackGizmo()
     {
-        Vector3 attackCenter = GetAttackCenter();
+        Vector3 attackCenter =  transform.position + transform.forward * ( MeleeAttackData.AttackRadius.z / 2);
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero,  MeleeAttackData.AttackRadius);
         Gizmos.matrix = Matrix4x4.identity;
     }
+    private void DrawChargeAttackGizmo()
+    {
+        Vector3 attackCenter = transform.position + transform.forward * ( _context.Stats.ChargeMeleeAttackData.AttackRadius.z / 2);
+        Gizmos.color = Color.darkRed;
 
+        Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero,  _context.Stats.ChargeMeleeAttackData.AttackRadius);
+        Gizmos.matrix = Matrix4x4.identity;
+    }
     private void DrawParryGizmo()
     {
         Vector3 parryCenter = GetParryCenter();

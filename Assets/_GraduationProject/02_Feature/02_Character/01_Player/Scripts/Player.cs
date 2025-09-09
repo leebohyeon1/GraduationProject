@@ -129,6 +129,8 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerDefendState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerMeleeAttackChargeState(Context, _stateMachine));
+        _stateMachine.AddState(new PlayerChargeMeleeAttackState(Context, _stateMachine));
+
 
         // 상태 전환 조건 설정
         SetupStateTransitions();
