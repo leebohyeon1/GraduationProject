@@ -276,7 +276,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerMeleeAttack, IPlayerRangedAtta
         if (_context?.Stats == null) return;
 
         Vector3 parryCenter = GetParryCenter();
-        Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius, transform.rotation, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius / 2, transform.rotation, _enemyLayerMask);
 
         ProcessParryableEnemies(hitEnemies);
     }

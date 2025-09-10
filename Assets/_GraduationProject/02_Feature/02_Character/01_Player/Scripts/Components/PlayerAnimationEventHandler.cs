@@ -67,6 +67,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerParry()
     {
+        Log.PrintColor(Color.aliceBlue, "플레이어 패링!");
         _eventBus.PublishParry();
     }
 
