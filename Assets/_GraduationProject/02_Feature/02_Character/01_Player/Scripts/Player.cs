@@ -111,6 +111,13 @@ public class Player : CharacterBase
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.EventBus);
 
+        Context.EventBus.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
+        Context.EventBus.OnDodgeEnd += () => { PlayFeedbackSound("DodgeEnd"); };
+        Context.EventBus.OnPerformAttack += () => { PlayFeedbackSound("MeleeAttack"); };
+        Context.EventBus.OnRangedAttackStart += () => { PlayFeedbackSound("RangedAttack"); };
+        Context.EventBus.OnMeleeAttackCharging += () => { PlayFeedbackSound("Charge"); };
+        Context.EventBus.OnPerformChargeMeleeAttack += () => { PlayFeedbackSound("ChargeAttack"); };
+        Context.EventBus.OnParrySuccess += () => { PlayFeedbackSound("Parry"); };
 
     }
 
