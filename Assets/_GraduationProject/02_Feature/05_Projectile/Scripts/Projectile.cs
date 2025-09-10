@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour, IAttacker
     
     public int AttackDamage => _damage;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         if (_rigidbody == null)
