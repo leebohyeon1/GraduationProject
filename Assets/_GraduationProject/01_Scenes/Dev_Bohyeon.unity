@@ -1649,6 +1649,37 @@ MonoBehaviour:
         MoveToScaleMax: {x: 2, y: 2, z: 2}
         BumpScaleMin: {x: 20, y: 20, z: 20}
         BumpScaleMax: {x: 30, y: 30, z: 30}
+--- !u!1 &1044833257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1044833258}
+  m_Layer: 8
+  m_Name: RangedAttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1044833258
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044833257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0.39, z: 0.91}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1185445140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1185445136
 GameObject:
   m_ObjectHideFlags: 0
@@ -1663,6 +1694,7 @@ GameObject:
   - component: {fileID: 1185445137}
   - component: {fileID: 1185445141}
   - component: {fileID: 1185445142}
+  - component: {fileID: 1185445143}
   m_Layer: 8
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -1757,14 +1789,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185445136}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 8.5, y: -0.16, z: -9.54}
   m_LocalScale: {x: 1.672408, y: 1.672408, z: 1.672408}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1021423491}
+  - {fileID: 1044833258}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!114 &1185445141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1797,6 +1830,26 @@ MonoBehaviour:
   p_heatDataBase: {fileID: 0}
   p_tierStatDatabase: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
   <ActorType>k__BackingField: 1
+--- !u!114 &1185445143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185445136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb5f34f42f6fb28439b36ce7b0dcc271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestEnemyAttack
+  _rangedAttackPoint: {fileID: 1044833258}
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _projectilePrefab: {fileID: 6533854965469155050, guid: e76bcaee14ace434a936debd22d0f371, type: 3}
+  ProjectileSpeed: 30
+  _attackDamage: 10
+  _rangedAttackChargeTime: 3
 --- !u!1 &1279026154
 GameObject:
   m_ObjectHideFlags: 0
