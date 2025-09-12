@@ -42,6 +42,7 @@ public class AiBrain
             case Enemy.EnemyState.Die:
             case Enemy.EnemyState.Beam:
             case Enemy.EnemyState.Noise:
+            case Enemy.EnemyState.Hit:
                 return true; // 이 상태에서는 행동을 중단할 수 없습니다.
             default:
                 return false; // Idle, Patrol 등은 행동을 중단할 수 있습니다.

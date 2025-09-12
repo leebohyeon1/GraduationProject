@@ -186,7 +186,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Noise,
         Die,
         Stunned, // 스턴 상태 추가
-        Rush
+        Rush,
+        Hit
     }
     public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
@@ -207,7 +208,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void SetState(EnemyState state)
     {
         CurrentState = state;
-
     }
     #endregion
 
@@ -220,6 +220,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetTrigger(eventName);
+        }
+    }
+    public void AnimationBool(string boolName, bool value)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(boolName, value);
         }
     }
     private void OnEnemyDeath()
@@ -242,15 +249,16 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public void Die()
     {
+        animator.SetBool("Die", true);
         SetState(EnemyState.Die);
     }
 
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
-        if (_aiController.IsActionable())
+        if (!_aiController.IsActionable())
         {
-            AnimationEvent("Hit");
+            _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
