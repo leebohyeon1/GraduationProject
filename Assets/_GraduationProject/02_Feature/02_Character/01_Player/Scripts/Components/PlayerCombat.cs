@@ -1,4 +1,5 @@
 using System.Collections;
+using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private EventManager _event;
     [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     private bool _canCounterAttack;
+    private Vector3 _attackCenter;
     private Coroutine _counterAttackCoroutine;
 
 
@@ -22,6 +24,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         // 전투 관련 이벤트 버스 구독
         _event.Player.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
         _event.Player.Parry.OnAffect += (collider) => EnterCounterAttackStance();
+
+        _event.Player.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
+        _event.Player.CounterAttack.OnPerform += TryCounterAttack;
     }
 
     #region Parry
@@ -73,6 +78,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     /// </summary>
     public void EnterCounterAttackStance()
     {
+
         if (_counterAttackCoroutine != null)
         {
             StopCoroutine(_counterAttackCoroutine);
@@ -108,9 +114,37 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     /// </summary>
     public void TryCounterAttack()
     {
+        Vector3 attackCenter = GetAttackCenter();
         
+        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, MeleeAttackData.AttackRadius.x, _attackLayerMask);
+
+        ProcessHitEnemies(hitEnemies);
     }
 
+    private void ProcessHitEnemies(Collider[] hitObjects)
+    {
+        SetCanCounterAttack(false);
+        
+        foreach (Collider obj in hitObjects)
+        {
+            IDamageable damageable = obj.GetComponent<IDamageable>();
+            if (damageable != null && !damageable.IsDead)
+            {
+                damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
+                _event.Player.CounterAttack.PublishAffect(obj);
+            }
+        }
+    }
+
+    private void SetAttackCenter(Vector3 position)
+    {
+        _attackCenter = position;
+    }
+
+    private Vector3 GetAttackCenter()
+    {
+        return _attackCenter;
+    }
     #endregion
 
 #if UNITY_EDITOR
@@ -119,6 +153,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         if (_context?.Stats == null) return;
 
         DrawParryGizmo();
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, MeleeAttackData.AttackRadius.x);
     }
     private void DrawParryGizmo()
     {

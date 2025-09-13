@@ -67,6 +67,10 @@ public class PlayerEventChannel
     /// 플레이어 원거리 공격 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> RangedAttack;
+    /// <summary>
+    /// 플레이어 카운터 공격 액션 관련 이벤트입니다.
+    /// </summary>
+    public PlayerActionEvents<Collider> CounterAttack;
 
 
     #region Public Methods

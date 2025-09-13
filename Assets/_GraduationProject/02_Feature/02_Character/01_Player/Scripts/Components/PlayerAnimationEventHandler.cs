@@ -93,4 +93,23 @@ public class PlayerAnimationEventHandler : MonoBehaviour
         _eventManager.Player.ChargeMeleeAttack.PublishFinished();
     }
     #endregion
+
+    #region CounterAttack
+    /// <summary>
+    /// 애니메이션 이벤트: 카운터 공격 시점
+    /// </summary>
+    public void TriggerCounterAttack()
+    {
+        _eventManager.Player.CounterAttack.PublishPerform();
+    }
+
+    /// <summary>
+    /// 애니메이션 이벤트: 카운터 공격 종료 시점
+    /// </summary>
+    public void TriggerCounterAttackFinished()
+    {
+        _eventManager.Player.CounterAttack.PublishFinished();
+    }
+
+    #endregion
 }

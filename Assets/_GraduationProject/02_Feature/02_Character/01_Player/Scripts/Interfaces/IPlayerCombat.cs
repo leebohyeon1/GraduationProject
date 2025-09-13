@@ -5,6 +5,8 @@ using UnityEngine;
 /// </summary>
 public interface IPlayerCombat
 {
+    public bool CanCounterAttack { get; }
+
     public void TryParry();
 
     public void TryCounterAttack();
