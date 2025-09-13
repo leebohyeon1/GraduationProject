@@ -2,23 +2,6 @@ using System;
 using BH_Lib.DI;
 using UnityEngine;
 
-
-// 이벤트 우선순위 정의
-public enum EventPriority
-{
-    Low = 0,
-    Normal = 1,
-    High = 2,
-    Critical = 3  // 전투 중 즉시 반응이 필요한 이벤트
-}
-
-// 기본 이벤트 인터페이스
-public interface IGameEvent
-{
-    EventPriority Priority { get; }
-    float TimeStamp { get; }
-}
-
 [Register(LifetimeScope.Singleton)]
 public class EventManager : MonoBehaviour
 {
@@ -88,7 +71,7 @@ public class PlayerEventChannel
 
 
 [Serializable]
-public struct HealthChangeEventData : IGameEvent
+public struct HealthChangeEventData
 {
     public int PreviousHealth { get; set; }
     public int CurrentHealth { get; set; }
@@ -96,9 +79,6 @@ public struct HealthChangeEventData : IGameEvent
     public bool IsDamage => CurrentHealth < PreviousHealth;
     public bool IsHeal => CurrentHealth > PreviousHealth;
     public float HealthPercent => (float)CurrentHealth / MaxHealth;
-
-    public EventPriority Priority => EventPriority.Critical;
-    public float TimeStamp { get; set; }
 }
 
 public struct PlayerActionEvents<T>

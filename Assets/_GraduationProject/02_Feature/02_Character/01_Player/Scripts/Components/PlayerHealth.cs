@@ -126,7 +126,6 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
             PreviousHealth = previousHealth,
             CurrentHealth = p_currentHealth,
             MaxHealth = MaxHealth,
-            TimeStamp = Time.time
         };
         
         _event.Player.PublishHealthChanged(newHealthData);
