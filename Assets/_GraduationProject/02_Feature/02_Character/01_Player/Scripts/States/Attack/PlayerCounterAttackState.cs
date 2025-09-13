@@ -25,8 +25,8 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
         base.OnEnter();
 
         Log.Print("Player entered CounterAttack state");
-        p_context.Event.Player.CounterAttack.OnFinished += AttackFinished;
-        p_context.Event.Player.CounterAttack.PublishStart();
+        p_context.Event.CounterAttack.OnFinished += AttackFinished;
+        p_context.Event.CounterAttack.PublishStart();
     }
 
     public override void OnExit()
@@ -34,6 +34,6 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         Log.Print("Player exited CounterAttack state");
-        p_context.Event.Player.CounterAttack.OnFinished -= AttackFinished;
+        p_context.Event.CounterAttack.OnFinished -= AttackFinished;
     }
 }

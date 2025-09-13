@@ -24,4 +24,11 @@ public interface IDamageable
     /// <param name="damageAmount">피해량</param>
     /// <param name="attacker">피해를 입힌 객체</param>
     public void TakeDamage(int damageAmount, IAttacker attacker = null);
+
+    /// <summary>
+    /// 체력 변경 이벤트
+    /// </summary>
+    public event Action<HealthChangeEventData> OnHealthChanged;
+
+    public event Action OnDied;
 }

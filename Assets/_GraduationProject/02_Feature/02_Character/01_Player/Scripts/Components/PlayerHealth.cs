@@ -34,7 +34,10 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// <summary>
     /// 이벤트 버스 참조
     /// </summary>
-    private EventManager _event;
+    private PlayerEventChannel _event;
+
+    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action OnDied;
 
     /// <summary>
     /// 현재 체력
@@ -96,9 +99,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        _context.Event.Player.Dodge.OnStart += ()=> { SetInvisible(true); };
-        _context.Event.Player.Dodge.OnFinished += ()=> { SetInvisible(false); };
-
+        _event.Dodge.OnStart += ()=> { SetInvisible(true); };
+        _event.Dodge.OnFinished += ()=> { SetInvisible(false); };
     }
 
     /// <summary>
@@ -128,7 +130,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
             MaxHealth = MaxHealth,
         };
         
-        _event.Player.PublishHealthChanged(newHealthData);
+        OnHealthChanged?.Invoke(newHealthData);
 
         if (IsDead)
         {
@@ -147,7 +149,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     protected virtual void Die()
     {
         // 사망 이벤트 발행
-        _context.Event.Player.PublishPlayerDied();
+        OnDied?.Invoke();
 
         Log.Print("플레이어 사망!");
 
@@ -175,7 +177,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
     private void OnDestroy()
     {
-        _context.Event.Player.Dodge.OnStart -= ()=> { SetInvisible(true); };
-        _context.Event.Player.Dodge.OnFinished -= ()=> { SetInvisible(false); };
+        _event.Dodge.OnStart -= ()=> { SetInvisible(true); };
+        _event.Dodge.OnFinished -= ()=> { SetInvisible(false); };
     }
 }

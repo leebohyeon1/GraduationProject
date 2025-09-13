@@ -32,7 +32,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// <summary>플레이어 컨텍스트 참조 (스탯, 이벤트버스 등에 액세스)</summary>
     private PlayerContext _context;
 
-    private EventManager _event;
+    private PlayerEventChannel _event;
     #endregion
 
     #region Properties
@@ -78,13 +78,13 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         _context = context;
         _event = _context.Event;
 
-        _event.Player.MeleeAttack.OnStart += SetAttackCenter;
-        _event.Player.MeleeAttack.OnPerform += PerformAttack;              // 일반 공격 수행 이벤트
+        _event.MeleeAttack.OnStart += SetAttackCenter;
+        _event.MeleeAttack.OnPerform += PerformAttack;              // 일반 공격 수행 이벤트
        
-        _event.Player.ChargeMeleeAttack.OnStart += () => SetIsPerformingChargeAttack(true);  // 차지 시작
-        _event.Player.ChargeMeleeAttack.OnStart += SetAttackCenter;
-        _event.Player.ChargeMeleeAttack.OnPerform += PerformChargeMeleeAttack; // 차지 공격 수행 이벤트
-        _event.Player.ChargeMeleeAttack.OnFinished += () => SetIsPerformingChargeAttack(false);  // 공격 종료
+        _event.ChargeMeleeAttack.OnStart += () => SetIsPerformingChargeAttack(true);  // 차지 시작
+        _event.ChargeMeleeAttack.OnStart += SetAttackCenter;
+        _event.ChargeMeleeAttack.OnPerform += PerformChargeMeleeAttack; // 차지 공격 수행 이벤트
+        _event.ChargeMeleeAttack.OnFinished += () => SetIsPerformingChargeAttack(false);  // 공격 종료
     }
 
     /// <summary>
@@ -183,11 +183,11 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
                 // 감지된 적들에게 피해 적용 이벤트 발생
                 if (_isPerformingChargeAttack)
                 {
-                    _event.Player.ChargeMeleeAttack.PublishAffect(obj);
+                    _event.ChargeMeleeAttack.PublishAffect(obj);
                 }
                 else
                 {
-                    _event.Player.MeleeAttack.PublishAffect(obj);
+                    _event.MeleeAttack.PublishAffect(obj);
                 }
             }
         }

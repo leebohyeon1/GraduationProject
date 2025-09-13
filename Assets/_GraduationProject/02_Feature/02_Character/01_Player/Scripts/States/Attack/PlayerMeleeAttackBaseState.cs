@@ -50,7 +50,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var lookInput = p_context.Controller.LookInput;
             var mousePosition = p_context.Controller.MousePosition;
-            p_context.Event.Player.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
+            p_context.Event.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
         }
 
         // 공격 시 전진 이동 실행

@@ -58,9 +58,9 @@ public class PlayerContext
     public Animator Animator { get; private set; }
 
     /// <summary>
-    /// 플레이어 이벤트 버스
+    /// 플레이어 이벤트
     /// </summary>
-    public EventManager Event { get; private set; }
+    public PlayerEventChannel Event { get; private set; }
 
     /// <summary>
     /// 입력 기기 감지기 (키보드/마우스, 게임패드 구분)
@@ -81,7 +81,7 @@ public class PlayerContext
     /// <param name="inputDeviceDetector">입력 기기 감지기</param>
     public PlayerContext(MonoBehaviour owner, IPlayerMovement movement, IPlayerMeleeAttack meleeAttack,
     IPlayerRangedAttack rangeedAttack, IPlayerCombat combat,IPlayerHealth health, IPlayerController controller,
-    IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector, EventManager eventManager)
+    IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
     {
         Owner = owner;
         Movement = movement;
@@ -94,7 +94,7 @@ public class PlayerContext
         Animator = animator;
         InputDeviceDetector = inputDeviceDetector;
         Heat = heat;
-        Event = eventManager;
+        Event = new PlayerEventChannel();
     }
 
     /// <summary>

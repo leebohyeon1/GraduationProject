@@ -32,6 +32,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public int Maxhealth { get; set; }
     public int CurrentHealth { get; set; }
+    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action OnDied;
+
     Rigidbody rb;
 
     // public bool CanParry { get; private set; } // 적이 플레이어의 공격을 막을 수 있는지 여부

@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 
 [Register(LifetimeScope.Transient)]
-[RequireComponent(typeof(CapsuleCollider), typeof(CharacterController), typeof(Animator))]
+[RequireComponent(typeof(CharacterController), typeof(Animator))]
 public class Player : CharacterBase
 {
     [Header("Player Components")]
@@ -27,7 +27,6 @@ public class Player : CharacterBase
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
-    [Inject] private EventManager _event;
 
     public PlayerContext Context { get; private set; }
     // 상태 머신
@@ -114,7 +113,7 @@ public class Player : CharacterBase
 
         Context = new PlayerContext(this, _playerMovement, _playerMeleeAttack, _playerRangedAttack,
         _playerCombat, _playerHealth, _playerController, _playerHeat,
-        _playerStats, _animator, _inputDeviceDetector, Event);
+        _playerStats, _animator, _inputDeviceDetector);
 
         _playerHealth.Initialize(Context);
         _playerMovement.Initialize(Context);
@@ -125,13 +124,13 @@ public class Player : CharacterBase
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.Event);
 
-        Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
-        Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
-        Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
-        Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
-        Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
-        Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
-        Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
+        // Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
+        // Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
+        // Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
+        // Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
+        // Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
+        // Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
+        // Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
 
     }
 
@@ -200,10 +199,10 @@ public class Player : CharacterBase
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
     public Type CurrentStateType => _stateMachine?.CurrentStateType;
-    public EventManager Event => _event;
+    public PlayerEventChannel PlayerEvent => Context.Event;
 
     private void OnDestroy()
     {
-        Event.Player.Dispose();
+        PlayerEvent.Dispose();
     }
 }

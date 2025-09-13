@@ -24,14 +24,14 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnEnter();
 
-        p_context.Event.Player.MeleeAttack.OnFinished += AttackFinished;
-        p_context.Event.Player.MeleeAttack.PublishStart();
+        p_context.Event.MeleeAttack.OnFinished += AttackFinished;
+        p_context.Event.MeleeAttack.PublishStart();
     }
 
     public override void OnExit()
     {
         base.OnExit();
 
-        p_context.Event.Player.MeleeAttack.OnFinished -= AttackFinished;
+        p_context.Event.MeleeAttack.OnFinished -= AttackFinished;
     }
 }

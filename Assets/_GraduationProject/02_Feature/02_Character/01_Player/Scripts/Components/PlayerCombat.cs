@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour, IPlayerCombat
 {   
     private PlayerContext _context;
-    private EventManager _event;
+    private PlayerEventChannel _event;
     [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     private bool _canCounterAttack;
     private Vector3 _attackCenter;
@@ -22,11 +22,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.Player.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
-        _event.Player.Parry.OnAffect += (collider) => EnterCounterAttackStance();
+        _event.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
+        _event.Parry.OnAffect += (collider) => EnterCounterAttackStance();
 
-        _event.Player.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
-        _event.Player.CounterAttack.OnPerform += TryCounterAttack;
+        _event.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
+        _event.CounterAttack.OnPerform += TryCounterAttack;
     }
 
     #region Parry
@@ -65,7 +65,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
             if (parryable != null && parryable.IsParryable)
             {
                 parryable.Parry(gameObject);
-                _event.Player.Parry.PublishAffect(enemy);
+                _event.Parry.PublishAffect(enemy);
             }
         }
     }
@@ -131,7 +131,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
             if (damageable != null && !damageable.IsDead)
             {
                 damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
-                _event.Player.CounterAttack.PublishAffect(obj);
+                _event.CounterAttack.PublishAffect(obj);
             }
         }
     }

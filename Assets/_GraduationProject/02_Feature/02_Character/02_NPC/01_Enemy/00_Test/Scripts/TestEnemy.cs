@@ -8,6 +8,10 @@ public class TestEnemy : CharacterBase, IDamageable
     private MeshRenderer _meshRenderer;
 
     private int _currentHealth = 100;
+
+    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action OnDied;
+
     public int Health => _currentHealth;
 
     public int MaxHealth => 200;
@@ -17,16 +21,7 @@ public class TestEnemy : CharacterBase, IDamageable
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        // OnHealthChanged += (current, max) =>
-        // {
-        //     float healthRatio = (float)current / max;
-        //     _meshRenderer.material.color = Color.Lerp(Color.black, Color.green, healthRatio);
-        //     if (IsDead)
-        //     {
-        //         Die();
-        //     }
-        // };
-        // OnDeath += Die;
+        OnDied += Die;
 
         _currentHealth = MaxHealth;
     }
@@ -39,9 +34,10 @@ public class TestEnemy : CharacterBase, IDamageable
 
         PlayFeedback("Damaged", transform.position);
 
-        if (_currentHealth < 0)
+        if (IsDead)
         {
             _currentHealth = 0;
+            OnDied?.Invoke();
         }
     }
 
