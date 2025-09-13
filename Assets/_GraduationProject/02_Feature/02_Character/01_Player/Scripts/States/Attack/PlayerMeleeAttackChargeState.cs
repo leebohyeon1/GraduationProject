@@ -16,8 +16,7 @@ public class PlayerMeleeAttackChargeState : BaseState<PlayerContext>
 
         p_context.Animator.SetBool("isMeleeAttackCharge", true);
 
-        p_context.EventBus.PublishAllowAttackInput();
-        p_context.EventBus.PublishMeleeAttackChargeStart();
+        p_context.Event.Player.ChargeMeleeAttack.PublishStart();
     }
 
     public override void OnUpdate()
@@ -44,8 +43,8 @@ public class PlayerMeleeAttackChargeState : BaseState<PlayerContext>
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var lookInput = p_context.Controller.LookInput;
         var mousePosition = p_context.Controller.MousePosition;
-        p_context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
-        p_context.EventBus.PublishMeleeAttackCharging();
+        p_context.Event.Player.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
+        p_context.Event.Player.ChargeMeleeAttack.PublishCharge();
     }
 
     public override void OnExit()

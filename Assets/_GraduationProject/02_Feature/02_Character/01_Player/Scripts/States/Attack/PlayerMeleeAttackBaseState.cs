@@ -41,11 +41,6 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
         p_nextState = null; // 다음 상태 초기화
         p_canInput = true;    // 콤보 상태 초기화
 
-        p_context.EventBus.OnAllowAttackInput += OnAttackAnimationEvent;
-        p_context.EventBus.OnAttackFinished += OnAttackFinishedAnimationEvent;
-
-        p_context.MeleeAttack.SetAttackCenter();
-
         Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
@@ -55,12 +50,11 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var lookInput = p_context.Controller.LookInput;
             var mousePosition = p_context.Controller.MousePosition;
-            p_context.MeleeAttack.TryAttack(deviceType, lookInput, mousePosition);
+            p_context.Event.Player.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
         }
 
         // 공격 시 전진 이동 실행
         StartAttackMovement();
-
     }
 
     public override void OnUpdate()
@@ -74,10 +68,6 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     {
         base.OnExit();
         p_context.Animator.ResetTrigger(p_animationTrigger);
-
-        p_context.EventBus.OnAllowAttackInput -= OnAttackAnimationEvent;
-        p_context.EventBus.OnAttackFinished -= OnAttackFinishedAnimationEvent;
-
 
         // 공격 이동 코루틴 정리
         if (_attackMoveCoroutine != null)
@@ -137,17 +127,9 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     
     /// <summary>
     /// 공격 애니메이션 이벤트 핸들러
-    /// 공격 시작 시점에 호출되어 입력을 허용
-    /// </summary>
-    protected virtual void OnAttackAnimationEvent()
-    {
-    }
-
-    /// <summary>
-    /// 공격 애니메이션 이벤트 핸들러
     /// 공격이 완료되면 다른 상태로 전환
     /// </summary>
-    protected virtual void OnAttackFinishedAnimationEvent()
+    protected virtual void AttackFinished()
     {
         p_context.StartCoroutine(CoChangeNextState());
     }

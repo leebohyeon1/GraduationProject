@@ -45,7 +45,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var lookInput = p_context.Controller.LookInput;
         var mousePosition = p_context.Controller.MousePosition;
-        p_context.EventBus.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
+       p_context.Event.Player.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
 
         // 차징 시간 누적
         if (p_context.Controller.RangedAttackInput)

@@ -19,4 +19,19 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     /// </summary>
     public PlayerSecondMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        p_context.Event.Player.MeleeAttack.OnFinished += AttackFinished;
+        p_context.Event.Player.MeleeAttack.PublishStart();
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+
+        p_context.Event.Player.MeleeAttack.OnFinished -= AttackFinished;
+    }
 }
