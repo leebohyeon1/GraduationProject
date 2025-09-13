@@ -23,14 +23,14 @@ public class TestEnemyAttack : MonoBehaviour, IPlayerRangedAttack
         _timer += Time.deltaTime;
         if(_timer >= RangedAttackChargeTime)
         {
-            FireProjectile();
             _timer = 0f;
+            FireProjectile();   
         }
     }
 
     public void FireProjectile()
     {
-        if (ProjectilePrefab == null || ProjectilePrefab == null)
+        if (ProjectilePrefab == null)
         {
             return;
         }

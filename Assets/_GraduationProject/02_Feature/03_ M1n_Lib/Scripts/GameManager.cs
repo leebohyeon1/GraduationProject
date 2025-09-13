@@ -5,7 +5,7 @@ using BH_Lib.DI;
 [DefaultExecutionOrder(-100)]
 public class GameManager : MonoBehaviour
 {
-    public EventManager EventManager { get; private set; }
+    // public EventManager EventManager { get; private set; }
     public enum GameState { Title, Playing, Paused, GameOver }
     public GameState CurrentState { get; private set; } = GameState.Title;
 
@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        EventManager = new EventManager();
+        // EventManager = new EventManager();
         // container = new DIContainer();
         
         // container.Register(soundManager);

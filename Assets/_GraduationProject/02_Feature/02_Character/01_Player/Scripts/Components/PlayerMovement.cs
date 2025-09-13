@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     /// <summary>
     /// 이벤트 매니저 참조
     /// </summary>
-    private EventManager _event;
+    private PlayerEventChannel _event;
 
     /// <summary>
     /// 물리 업데이트 (매 프레임 호출)
@@ -77,7 +77,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
 
         _mainCamera = Camera.main;
 
-        _event.Player.OnRotateToAttackDirection += RotateToAttackDirection;
+        _event.OnRotateToAttackDirection += RotateToAttackDirection;
     }
 
     /// <summary>

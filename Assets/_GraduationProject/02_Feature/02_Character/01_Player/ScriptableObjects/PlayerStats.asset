@@ -106,11 +106,11 @@ MonoBehaviour:
     AttackDamage: 50
     AttackRadius: {x: 3.26, y: 1, z: 17}
     AttackDelay: 0.2
-  MinChargeTime: 0
+  MinChargeTime: 1
   RangedAttackData:
     RangedAttackChargeTime: 1
     AttackDamage: 10
-    ProjectileSpeed: 40
+    ProjectileSpeed: 10
     ProjectileMoveCurve:
       serializedVersion: 2
       m_Curve:
@@ -136,6 +136,37 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   ParryRadius: {x: 4, y: 1.5, z: 4}
+  CounterAttackData:
+    AttackMoveDistance: 5
+    AttackMoveDuration: 0.3
+    AttackMoveCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    AttackDamage: 10
+    AttackRadius: {x: 5, y: 1, z: 1}
+    AttackDelay: 0.2
+  ParryCounterWindow: 1
   DodgeSpeed: 10
   DodgeCooldown: 1
   DefendDamageReductionRate: 0.7

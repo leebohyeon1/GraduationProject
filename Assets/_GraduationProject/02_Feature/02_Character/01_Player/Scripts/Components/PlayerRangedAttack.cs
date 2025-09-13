@@ -15,7 +15,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
     [SerializeField] private Transform _rangedAttackPoint;
     
     [Tooltip("적 레이어 마스크 (공격 대상 감지용)")]
-    [SerializeField] private LayerMask _enemyLayerMask = 1 << 8;
+    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     
     [Tooltip("원거리 공격에 사용할 투사체 프리팹")]
     [SerializeField] private GameObject _projectilePrefab;
@@ -26,7 +26,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
     /// <summary>플레이어 컨텍스트 참조 (스탯, 이벤트버스 등에 액세스)</summary>
     private PlayerContext _context;
 
-    private EventManager _event;
+    private PlayerEventChannel _event;
     #endregion
 
     #region Properties
@@ -59,7 +59,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.Player.RangedAttack.OnPerform += FireProjectile;         // 원거리 공격 시작 이벤트
+        _event.RangedAttack.OnPerform += FireProjectile;         // 원거리 공격 시작 이벤트
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
         Projectile projectile = projectileObj.GetComponent<Projectile>();
         if (projectile != null)
         {
-            projectile.Initialize(RangedAttackDamage, ProjectileSpeed, gameObject, _enemyLayerMask);
+            projectile.Initialize(RangedAttackDamage, ProjectileSpeed, gameObject, _attackLayerMask);
         }
     }
 

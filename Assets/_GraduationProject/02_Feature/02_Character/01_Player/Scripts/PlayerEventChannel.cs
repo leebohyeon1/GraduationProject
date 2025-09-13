@@ -3,38 +3,10 @@ using BH_Lib.DI;
 using UnityEngine;
 
 /// <summary>
-/// 게임 내 모든 이벤트를 관리하는 싱글톤 클래스입니다.
-/// 다양한 이벤트 채널을 소유하고 초기화합니다.
-/// </summary>
-[Register(LifetimeScope.Singleton)]
-public class EventManager : MonoBehaviour
-{
-    /// <summary>
-    /// 플레이어 관련 이벤트를 관리하는 채널입니다.
-    /// </summary>
-    public PlayerEventChannel Player { get; private set; }
-
-    private void Awake()
-    {
-        Player = new PlayerEventChannel();
-    }
-}
-
-/// <summary>
 /// 플레이어와 관련된 모든 이벤트를 정의하고 관리하는 클래스입니다.
 /// </summary>
 public class PlayerEventChannel
 {
-    // 플레이어 체력 관련 이벤트
-    /// <summary>
-    /// 플레이어의 체력이 변경될 때 발생하는 이벤트입니다.
-    /// </summary>
-    public event Action<HealthChangeEventData> OnHealthChanged;
-    /// <summary>
-    /// 플레이어가 사망했을 때 발생하는 이벤트입니다.
-    /// </summary>
-    public event Action OnDied;
-
     // 플레이어 움직임 관련 이벤트
     /// <summary>
     /// 플레이어가 공격 방향으로 회전할 때 발생하는 이벤트입니다.
@@ -67,25 +39,13 @@ public class PlayerEventChannel
     /// 플레이어 원거리 공격 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> RangedAttack;
+    /// <summary>
+    /// 플레이어 카운터 공격 액션 관련 이벤트입니다.
+    /// </summary>
+    public PlayerActionEvents<Collider> CounterAttack;
 
 
     #region Public Methods
-    /// <summary>
-    /// 체력 변경 이벤트를 발생시킵니다.
-    /// </summary>
-    /// <param name="healthEvent">체력 변경 데이터</param>
-    public void PublishHealthChanged(HealthChangeEventData healthEvent)
-    {
-        OnHealthChanged?.Invoke(healthEvent);
-    }
-
-    /// <summary>
-    /// 플레이어 사망 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishPlayerDied()
-    {
-        OnDied?.Invoke();
-    }
 
     /// <summary>
     /// 공격 방향으로 회전 이벤트를 발생시킵니다.
@@ -111,8 +71,6 @@ public class PlayerEventChannel
     /// </summary>
     public void Dispose()
     {
-        OnHealthChanged = null;
-        OnDied = null;
         OnRotateToAttackDirection = null;
         OnFootstep = null;
         Dodge.Dispose();
@@ -120,42 +78,10 @@ public class PlayerEventChannel
         MeleeAttack.Dispose();
         RangedAttack.Dispose();
         ChargeMeleeAttack.Dispose();
+        CounterAttack.Dispose();
     }
-    
+
     #endregion
-}
-
-
-/// <summary>
-/// 체력 변경 이벤트에 사용되는 데이터 구조체입니다.
-/// </summary>
-[Serializable]
-public struct HealthChangeEventData
-{
-    /// <summary>
-    /// 이전 체력
-    /// </summary>
-    public int PreviousHealth { get; set; }
-    /// <summary>
-    /// 현재 체력
-    /// </summary>
-    public int CurrentHealth { get; set; }
-    /// <summary>
-    /// 최대 체력
-    /// </summary>
-    public int MaxHealth { get; set; }
-    /// <summary>
-    /// 데미지를 입었는지 여부
-    /// </summary>
-    public bool IsDamage => CurrentHealth < PreviousHealth;
-    /// <summary>
-    /// 치유되었는지 여부
-    /// </summary>
-    public bool IsHeal => CurrentHealth > PreviousHealth;
-    /// <summary>
-    /// 현재 체력 비율
-    /// </summary>
-    public float HealthPercent => (float)CurrentHealth / MaxHealth;
 }
 
 /// <summary>

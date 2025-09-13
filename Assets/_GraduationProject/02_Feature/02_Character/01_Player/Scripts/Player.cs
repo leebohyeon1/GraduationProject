@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 
 [Register(LifetimeScope.Transient)]
-[RequireComponent(typeof(CapsuleCollider), typeof(CharacterController), typeof(Animator))]
+[RequireComponent(typeof(CharacterController), typeof(Animator))]
 public class Player : CharacterBase
 {
     [Header("Player Components")]
@@ -20,13 +20,13 @@ public class Player : CharacterBase
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerMeleeAttack _playerMeleeAttack;
     [SerializeField] private PlayerRangedAttack _playerRangedAttack;
+    [SerializeField] private PlayerCombat _playerCombat;
     [SerializeField] private PlayerHeat _playerHeat;
     [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
     [SerializeField] private Animator _animator;
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
-    [Inject] private EventManager _event;
 
     public PlayerContext Context { get; private set; }
     // 상태 머신
@@ -96,6 +96,11 @@ public class Player : CharacterBase
             _playerRangedAttack = GetComponent<PlayerRangedAttack>();
         }
 
+        if(_playerCombat == null)
+        {
+            _playerCombat = GetComponent<PlayerCombat>();
+        }
+
         if (_playerHeat == null)
         {
             _playerHeat = GetComponent<PlayerHeat>();
@@ -107,24 +112,25 @@ public class Player : CharacterBase
         }
 
         Context = new PlayerContext(this, _playerMovement, _playerMeleeAttack, _playerRangedAttack,
-        _playerHealth, _playerController, _playerHeat,
-        _playerStats, _animator, _inputDeviceDetector, Event);
+        _playerCombat, _playerHealth, _playerController, _playerHeat,
+        _playerStats, _animator, _inputDeviceDetector);
 
         _playerHealth.Initialize(Context);
         _playerMovement.Initialize(Context);
         _playerController.Initialize(Context.InputDeviceDetector);
         _playerMeleeAttack.Initialize(Context);
         _playerRangedAttack.Initialize(Context);
+        _playerCombat.Initialize(Context);
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.Event);
 
-        Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
-        Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
-        Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
-        Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
-        Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
-        Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
-        Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
+        // Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
+        // Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
+        // Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
+        // Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
+        // Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
+        // Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
+        // Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
 
     }
 
@@ -144,6 +150,7 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerHitState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerMeleeAttackChargeState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerChargeMeleeAttackState(Context, _stateMachine));
+        _stateMachine.AddState(new PlayerCounterAttackState(Context, _stateMachine));
 
 
         // 상태 전환 조건 설정
@@ -161,21 +168,29 @@ public class Player : CharacterBase
 
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() => Context.Controller.MoveInput != Vector2.zero);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstMeleeAttackState>(() => Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstMeleeAttackState>(() => !Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerMeleeAttackChargeState>(() => Context.Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() =>
             Context.Controller.DodgeInput && Context.Movement.CanDodge());
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() => Context.Controller.DefendInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedAttackChargeState>(() => Context.Controller.RangedAttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerCounterAttackState>(() =>
+            Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
 
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() => Context.Controller.MoveInput == Vector2.zero);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstMeleeAttackState>(() => Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstMeleeAttackState>(() => !Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerMeleeAttackChargeState>(() => Context.Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() =>
             Context.Controller.DodgeInput && Context.Movement.CanDodge());
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() => Context.Controller.DefendInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedAttackChargeState>(() => Context.Controller.RangedAttackInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerCounterAttackState>(() =>
+            Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
+
+        _stateMachine.AddTransition<PlayerDefendState, PlayerCounterAttackState>(() =>
+            Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
+
 
 
         // Attack, Dodge 상태에서의 전환은 각 상태 클래스 내부에서 처리됩니다.
@@ -184,10 +199,10 @@ public class Player : CharacterBase
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
     public Type CurrentStateType => _stateMachine?.CurrentStateType;
-    public EventManager Event => _event;
+    public PlayerEventChannel PlayerEvent => Context.Event;
 
     private void OnDestroy()
     {
-        Event.Player.Dispose();
+        PlayerEvent.Dispose();
     }
 }
