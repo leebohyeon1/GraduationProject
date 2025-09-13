@@ -7,11 +7,6 @@ using UnityEngine;
 public interface IPlayerMeleeAttack: IAttacker
 {
     /// <summary>
-    /// 입력 기기에 따른 공격 시도 (방향 설정 포함)
-    /// </summary>
-    void TryAttack(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition);
-    
-    /// <summary>
     /// 실제 공격 실행 (피해 계산 및 적용)
     /// </summary>
     void PerformAttack();

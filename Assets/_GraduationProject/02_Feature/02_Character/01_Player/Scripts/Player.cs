@@ -10,8 +10,6 @@ using UnityEngine;
 /// </summary>
 
 [Register(LifetimeScope.Transient)]
-[RequireComponent(typeof(PlayerHealth), typeof(PlayerController))]
-[RequireComponent(typeof(PlayerMovement), typeof(PlayerCombat))]
 [RequireComponent(typeof(CapsuleCollider), typeof(CharacterController), typeof(Animator))]
 public class Player : CharacterBase
 {
@@ -20,13 +18,15 @@ public class Player : CharacterBase
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerController _playerController;
-    [SerializeField] private PlayerCombat _playerCombat;
+    [SerializeField] private PlayerMeleeAttack _playerMeleeAttack;
+    [SerializeField] private PlayerRangedAttack _playerRangedAttack;
     [SerializeField] private PlayerHeat _playerHeat;
     [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
     [SerializeField] private Animator _animator;
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
+    [Inject] private EventManager _event;
 
     public PlayerContext Context { get; private set; }
     // 상태 머신
@@ -35,12 +35,13 @@ public class Player : CharacterBase
     protected override void Awake()
     {
         base.Awake();
-
+        
         InitializeComponents();
     }
 
     private void Start()
     {
+
         InitializeStateMachine();
     }
 
@@ -85,9 +86,14 @@ public class Player : CharacterBase
             _playerMovement = GetComponent<PlayerMovement>();
         }
 
-        if (_playerCombat == null)
+        if (_playerMeleeAttack == null)
         {
-            _playerCombat = GetComponent<PlayerCombat>();
+            _playerMeleeAttack = GetComponent<PlayerMeleeAttack>();
+        }
+
+        if (_playerRangedAttack == null)
+        {
+            _playerRangedAttack = GetComponent<PlayerRangedAttack>();
         }
 
         if (_playerHeat == null)
@@ -100,24 +106,25 @@ public class Player : CharacterBase
             _playerAnimationEventHandler = GetComponent<PlayerAnimationEventHandler>();
         }
 
-        Context = new PlayerContext(this, _playerMovement, _playerCombat, _playerCombat,
+        Context = new PlayerContext(this, _playerMovement, _playerMeleeAttack, _playerRangedAttack,
         _playerHealth, _playerController, _playerHeat,
-        _playerStats, _animator, _inputDeviceDetector);
+        _playerStats, _animator, _inputDeviceDetector, Event);
 
         _playerHealth.Initialize(Context);
         _playerMovement.Initialize(Context);
         _playerController.Initialize(Context.InputDeviceDetector);
-        _playerCombat.Initialize(Context);
+        _playerMeleeAttack.Initialize(Context);
+        _playerRangedAttack.Initialize(Context);
         _playerHeat.Initialize(Context);
-        _playerAnimationEventHandler.Initialize(Context.EventBus);
+        _playerAnimationEventHandler.Initialize(Context.Event);
 
-        Context.EventBus.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
-        Context.EventBus.OnDodgeEnd += () => { PlayFeedbackSound("DodgeEnd"); };
-        Context.EventBus.OnPerformAttack += () => { PlayFeedbackSound("MeleeAttack"); };
-        Context.EventBus.OnRangedAttackStart += () => { PlayFeedbackSound("RangedAttack"); };
-        Context.EventBus.OnMeleeAttackCharging += () => { PlayFeedbackSound("Charge"); };
-        Context.EventBus.OnPerformChargeMeleeAttack += () => { PlayFeedbackSound("ChargeAttack"); };
-        Context.EventBus.OnParrySuccess += () => { PlayFeedbackSound("Parry"); };
+        Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
+        Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
+        Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
+        Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
+        Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
+        Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
+        Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
 
     }
 
@@ -177,9 +184,10 @@ public class Player : CharacterBase
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
     public Type CurrentStateType => _stateMachine?.CurrentStateType;
+    public EventManager Event => _event;
 
     private void OnDestroy()
     {
-        Context.Dispose();
+        Event.Player.Dispose();
     }
 }

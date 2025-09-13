@@ -16,7 +16,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
     public override void OnEnter()
     {
         base.OnEnter();
-
+         p_context.Event.Player.MeleeAttack.OnFinished += AttackFinished;
     }
 
     public override void OnExit()
@@ -24,6 +24,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         p_context.MeleeAttack.ResetComboCount();
+         p_context.Event.Player.MeleeAttack.OnFinished -= AttackFinished;
     }
 
     protected override void HandleInput()

@@ -32,6 +32,11 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     private PlayerContext _context;
 
     /// <summary>
+    /// 이벤트 버스 참조
+    /// </summary>
+    private EventManager _event;
+
+    /// <summary>
     /// 현재 체력
     /// </summary>
     public int Health => p_currentHealth;
@@ -55,17 +60,6 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// 피격 상태 여부 (Hit 상태 전환 조건)
     /// </summary>
     public bool IsHit => _isHit;
-
-
-    /// <summary>
-    /// 체력 변경 이벤트
-    /// </summary>
-    public event Action<int, int> OnHealthChanged;
-
-    /// <summary>
-    /// 사망 이벤트
-    /// </summary>
-    public event Action OnDeath;
 
     /// <summary>
     /// Hit 상태 플래그를 리셋합니다
@@ -93,6 +87,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     public void Initialize(PlayerContext context)
     {
         _context = context;
+        _event = _context.Event;
 
         // 최대 체력으로 초기화
         if (_context.Stats != null)
@@ -101,10 +96,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        OnHealthChanged += (previousHealth, currentHealth) => _context.EventBus.PublishHealthChanged(previousHealth, currentHealth);
-        OnDeath += _context.EventBus.PublishPlayerDied;
-        _context.EventBus.OnDodgeStart += ()=> { SetInvisible(true); };
-        _context.EventBus.OnDodgeEnd += ()=> { SetInvisible(false); };
+        _context.Event.Player.Dodge.OnStart += ()=> { SetInvisible(true); };
+        _context.Event.Player.Dodge.OnFinished += ()=> { SetInvisible(false); };
 
     }
 
@@ -127,8 +120,16 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         p_currentHealth = Mathf.Max(0, p_currentHealth - damageAmount);
 
         Log.PrintColor(Color.red, $"플레이어 받은 데미지: {damageAmount}");
-        // 체력 변경 이벤트 발행
-        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
+
+        HealthChangeEventData newHealthData = new HealthChangeEventData
+        {
+            PreviousHealth = previousHealth,
+            CurrentHealth = p_currentHealth,
+            MaxHealth = MaxHealth,
+            TimeStamp = Time.time
+        };
+        
+        _event.Player.PublishHealthChanged(newHealthData);
 
         if (IsDead)
         {
@@ -147,7 +148,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     protected virtual void Die()
     {
         // 사망 이벤트 발행
-        _context.EventBus.PublishPlayerDied();
+        _context.Event.Player.PublishPlayerDied();
 
         Log.Print("플레이어 사망!");
 
@@ -164,9 +165,6 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
         int previousHealth = p_currentHealth;
         p_currentHealth = Mathf.Min(_context.Stats.MaxHealth, p_currentHealth + healAmount);
-
-        // 체력 변경 이벤트 발생
-        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
     }
 
     private void SetInvisible(bool isInvisible)
@@ -178,9 +176,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
     private void OnDestroy()
     {
-        OnHealthChanged -= _context.EventBus.PublishHealthChanged;
-        OnDeath -= _context.EventBus.PublishPlayerDied;
-        _context.EventBus.OnDodgeStart -= ()=> { SetInvisible(true); };
-        _context.EventBus.OnDodgeEnd -= ()=> { SetInvisible(false); };
+        _context.Event.Player.Dodge.OnStart -= ()=> { SetInvisible(true); };
+        _context.Event.Player.Dodge.OnFinished -= ()=> { SetInvisible(false); };
     }
 }

@@ -34,8 +34,7 @@ public class PlayerContext
     /// <summary>플레이어 애니메이터 컴포넌트</summary>
     public Animator Animator { get; private set; }
 
-    /// <summary>플레이어 이벤트 버스 (상태 간 통신용)</summary>
-    public PlayerEventBus EventBus { get; private set; }
+    public EventManager Event { get; private set; }
 
     /// <summary>입력 기기 감지기 (키보드/마우스, 게임패드 구분)</summary>
     public IInputDeviceDetector InputDeviceDetector { get; private set; }
@@ -54,7 +53,7 @@ public class PlayerContext
     /// <param name="inputDeviceDetector">입력 기기 감지기</param>
     public PlayerContext(MonoBehaviour owner, IPlayerMovement movement,
     IPlayerMeleeAttack meleeAttack, IPlayerRangedAttack rangeedAttack, IPlayerHealth health, IPlayerController controller,
-    IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector)
+    IHeatable heat, PlayerStatsSO stats, Animator animator, IInputDeviceDetector inputDeviceDetector, EventManager eventManager)
     {
         Owner = owner;
         Movement = movement;
@@ -66,7 +65,7 @@ public class PlayerContext
         Animator = animator;
         InputDeviceDetector = inputDeviceDetector;
         Heat = heat;
-        EventBus = new PlayerEventBus();
+        Event = eventManager;
     }
 
     /// <summary>코루틴 시작 (Owner의 StartCoroutine 호출)</summary>
@@ -75,8 +74,4 @@ public class PlayerContext
     /// <summary>코루틴 중지 (Owner의 StopCoroutine 호출)</summary>
     public void StopCoroutine(Coroutine routine) => Owner.StopCoroutine(routine);
     
-    public void Dispose()
-    {
-        EventBus.Dispose();
-    }
 }

@@ -44,19 +44,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField]private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
 
-    event Action<int, int> IDamageable.OnHealthChanged
-    {
-        add
-        {
-            throw new NotImplementedException();
-        }
-
-        remove
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     protected override void Awake()
     {
         // health = new Health(100);
@@ -64,7 +51,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         base.Awake();
 
         // TODO: 적 데이터에서 최대 체력 가져오기
-        InitializeHealth(MaxHealth, OnEnemyDeath);
+        InitializeHealth(MaxHealth);
         player = GameObject.FindFirstObjectByType<Player>();
         rb = GetComponent<Rigidbody>();
 
@@ -233,11 +220,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
 
     // IHealth 인터페이스 구현
-    public void InitializeHealth(int maxHealth, Action OnDeathCallback)
+    public void InitializeHealth(int maxHealth)
     {
         Maxhealth = maxHealth;
         CurrentHealth = maxHealth;
-        OnDeath += OnDeathCallback;
     }
 
     public void Die()
@@ -290,10 +276,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [Header("Attack Range")]
     public float _currentAttackRadius;
     public Vector3 _currentAttackOffset;
-
-    public event Action<float, float> OnHealthChanged;
-    public event Action OnDeath;
-
     public void SetCurrentAttackData(float radius, Vector3 offset)
     {
         _currentAttackRadius = radius;
