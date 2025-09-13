@@ -1050,6 +1050,7 @@ GameObject:
   - component: {fileID: 891048499526723208}
   - component: {fileID: 1353785049818484005}
   - component: {fileID: 436592636884421132}
+  - component: {fileID: 6848209843536471115}
   - component: {fileID: 1625180892544397622}
   - component: {fileID: 7280531591997314535}
   m_Layer: 7
@@ -1198,7 +1199,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   _characterController: {fileID: 8893940094820771554}
-  _transform: {fileID: 3719675082685425691}
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1214,7 +1214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39eae6b05c769df4297249554830fde1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  _enemyLayerMask:
+  _attackLayerMask:
     serializedVersion: 2
     m_Bits: 256
 --- !u!114 &436592636884421132
@@ -1230,10 +1230,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRangedAttack
   _rangedAttackPoint: {fileID: 6004086788672938010}
-  _enemyLayerMask:
+  _attackLayerMask:
     serializedVersion: 2
     m_Bits: 256
   _projectilePrefab: {fileID: 8749592458861236631, guid: f22f61d0c376a484c89f60d85b6c5fa9, type: 3}
+--- !u!114 &6848209843536471115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5946781216381830389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28c235ccbad6a84391cfda28873ca9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  _attackLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &1625180892544397622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1292,6 +1307,7 @@ MonoBehaviour:
   _playerController: {fileID: 5971060970724869790}
   _playerMeleeAttack: {fileID: 1353785049818484005}
   _playerRangedAttack: {fileID: 436592636884421132}
+  _playerCombat: {fileID: 0}
   _playerHeat: {fileID: 1625180892544397622}
   _playerAnimationEventHandler: {fileID: 6967620050765185270}
   _animator: {fileID: -9201113629592276691}

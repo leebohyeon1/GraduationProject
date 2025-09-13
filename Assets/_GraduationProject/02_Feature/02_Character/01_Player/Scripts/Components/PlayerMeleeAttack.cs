@@ -12,7 +12,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
 
     [Header("Combat Settings")]
     [Tooltip("적 레이어 마스크 (공격 대상 감지용)")]
-    [SerializeField] private LayerMask _enemyLayerMask = 1 << 8;
+    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     
     #endregion
 
@@ -78,9 +78,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         _context = context;
         _event = _context.Event;
 
-        // 전투 관련 이벤트 버스 구독
-        _event.Player.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
-
         _event.Player.MeleeAttack.OnStart += SetAttackCenter;
         _event.Player.MeleeAttack.OnPerform += PerformAttack;              // 일반 공격 수행 이벤트
        
@@ -128,7 +125,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         Vector3 halfExtents = MeleeAttackData.AttackRadius / 2f;  // OverlapBox는 halfExtents를 사용
 
         // 박스 형태로 공격 범위 내 적 감지
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _enemyLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
 
         ProcessHitEnemies(hitEnemies);
     }
@@ -143,20 +140,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
 
         target.TakeDamage(AttackDamage, this);
         Log.PrintColor(Color.red, $"플레이어가 {target}에게 {AttackDamage} 피해를 입혔습니다!");
-    }
-
-    /// <summary>
-    /// 패링 시도 (패링 가능한 적의 공격을 반격)
-    /// 애니메이션 이벤트에서 호출됩니다.
-    /// </summary>
-    public void TryParry()
-    {
-        if (_context?.Stats == null) return;
-
-        Vector3 parryCenter = GetParryCenter();
-        Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius / 2, transform.rotation, _enemyLayerMask);
-
-        ProcessParryableEnemies(hitEnemies);
     }
 
     /// <summary>
@@ -182,15 +165,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     private Vector3 GetAttackCenter()
     {
         return _attackCenter;
-    }
-
-    /// <summary>
-    /// 패링 범위의 중심점 계산
-    /// </summary>
-    /// <returns>패링 범위 박스의 중심 위치</returns>
-    private Vector3 GetParryCenter()
-    {
-        return transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
     }
 
     /// <summary>
@@ -220,23 +194,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     }
 
     /// <summary>
-    /// 패링 범위 내 감지된 적들에게 패링 적용
-    /// </summary>
-    /// <param name="hitEnemies">감지된 적들의 Collider 배열</param>
-    private void ProcessParryableEnemies(Collider[] hitEnemies)
-    {
-        foreach (Collider enemy in hitEnemies)
-        {
-            IParryable parryable = enemy.GetComponent<IParryable>();
-            if (parryable != null && parryable.IsParryable)
-            {
-                parryable.Parry(gameObject);
-                _event.Player.Parry.PublishAffect(enemy);
-            }
-        }
-    }
-
-    /// <summary>
     /// 콤보 카운트 증가 및 순환 처리
     /// 최대 콤보 수에 도달하면 0으로 초기화하여 콤보를 순환시킵니다.
     /// </summary>
@@ -257,18 +214,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     }
     #endregion
 
-    #region Unity Lifecycle
-
-    private void OnDestroy()
-    {
-        if (_context?.Event != null)
-        {
-
-        }
-    }
-
-    #endregion
-
 #if UNITY_EDITOR
 
     #region Gizmos
@@ -279,7 +224,6 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
 
         DrawAttackGizmo();
         DrawChargeAttackGizmo();
-        DrawParryGizmo();
     }
 
     private void DrawAttackGizmo()
@@ -299,14 +243,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ChargeMeleeAttackData.AttackRadius);
         Gizmos.matrix = Matrix4x4.identity;
     }
-    private void DrawParryGizmo()
-    {
-        Vector3 parryCenter = GetParryCenter();
-        Gizmos.color = Color.green;
-        Gizmos.matrix = Matrix4x4.TRS(parryCenter, transform.rotation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
-        Gizmos.matrix = Matrix4x4.identity;
-    }
+
 
     #endregion
 

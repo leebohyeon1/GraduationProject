@@ -20,6 +20,7 @@ public class Player : CharacterBase
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private PlayerMeleeAttack _playerMeleeAttack;
     [SerializeField] private PlayerRangedAttack _playerRangedAttack;
+    [SerializeField] private PlayerCombat _playerCombat;
     [SerializeField] private PlayerHeat _playerHeat;
     [SerializeField] private PlayerAnimationEventHandler _playerAnimationEventHandler;
     [SerializeField] private Animator _animator;
@@ -96,6 +97,11 @@ public class Player : CharacterBase
             _playerRangedAttack = GetComponent<PlayerRangedAttack>();
         }
 
+        if(_playerCombat == null)
+        {
+            _playerCombat = GetComponent<PlayerCombat>();
+        }
+
         if (_playerHeat == null)
         {
             _playerHeat = GetComponent<PlayerHeat>();
@@ -107,7 +113,7 @@ public class Player : CharacterBase
         }
 
         Context = new PlayerContext(this, _playerMovement, _playerMeleeAttack, _playerRangedAttack,
-        _playerHealth, _playerController, _playerHeat,
+        _playerCombat, _playerHealth, _playerController, _playerHeat,
         _playerStats, _animator, _inputDeviceDetector, Event);
 
         _playerHealth.Initialize(Context);
@@ -115,6 +121,7 @@ public class Player : CharacterBase
         _playerController.Initialize(Context.InputDeviceDetector);
         _playerMeleeAttack.Initialize(Context);
         _playerRangedAttack.Initialize(Context);
+        _playerCombat.Initialize(Context);
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.Event);
 
