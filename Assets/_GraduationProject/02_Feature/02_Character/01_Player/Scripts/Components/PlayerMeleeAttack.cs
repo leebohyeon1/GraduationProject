@@ -93,7 +93,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// </summary>
     public void PerformAttack()
     {
-        ExecuteAttack(false);
+        ExecuteAttack();
         UpdateComboCount();
     }
 
@@ -103,7 +103,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// </summary>
     public void PerformChargeMeleeAttack()
     {
-        ExecuteAttack(true);
+        ExecuteAttack();
     }
 
     /// <summary>
@@ -111,20 +111,15 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// Physics.OverlapBox를 사용하여 박스 형태의 공격 범위에서 적을 감지합니다.
     /// </summary>
     /// <param name="isChargeAttack">차지 공격 여부 (차지 공격시 다른 데이터 사용)</param>
-    private void ExecuteAttack(bool isChargeAttack)
+    private void ExecuteAttack()
     {
         // 컨텍스트와 스탯 데이터 유효성 검사
         if (_context?.Stats == null) return;
-
-        // 공격 타입에 따른 로그 출력
-        string attackType = isChargeAttack ? "차지 공격" : "공격";
-        Log.Print($"플레이어가 {attackType}을 시도합니다! 공격력: {AttackDamage}");
 
         // 공격 중심점과 범위 설정
         Vector3 attackCenter = GetAttackCenter();
         Vector3 halfExtents = MeleeAttackData.AttackRadius / 2f;  // OverlapBox는 halfExtents를 사용
 
-        // 박스 형태로 공격 범위 내 적 감지
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
 
         ProcessHitEnemies(hitEnemies);
@@ -152,7 +147,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
 
     public void SetAttackCenter()
     {
-        _attackCenter = transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
+        _attackCenter = transform.position;
     }
     #endregion
     
@@ -163,8 +158,8 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// </summary>
     /// <returns>공격 범위 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter()
-    {
-        return _attackCenter;
+    { 
+        return _attackCenter + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
     }
 
     /// <summary>
