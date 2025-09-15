@@ -65,6 +65,11 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     public bool IsHit => _isHit;
 
     /// <summary>
+    /// 방어 상태 여부
+    /// </summary>
+    public bool IsDefending => _isDefending;
+
+    /// <summary>
     /// Hit 상태 플래그를 리셋합니다
     /// PlayerHitState에서 상태 종료 시 호출
     /// </summary>

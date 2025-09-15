@@ -31,6 +31,7 @@ public class PlayerDefendState : BaseState<PlayerContext>
         if (!p_context.Controller.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
+            p_context.Health.SetDefending(false);
         }
     }
 
@@ -40,6 +41,6 @@ public class PlayerDefendState : BaseState<PlayerContext>
         Log.Print("Player exited Defend state");
 
         // 방어 상태 종료 시 체력 시스템에 알림
-        p_context.Health.SetDefending(false);
+
     }
 }

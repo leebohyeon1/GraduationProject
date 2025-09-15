@@ -41,6 +41,10 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
             {
                 p_nextState = typeof(PlayerDefendState);
             }
+            else if(p_context.Controller.MoveInput != Vector2.zero)
+            {
+                p_nextState = typeof(PlayerMoveState);
+            }
             else if (p_context.Controller.RangedAttackInput)
             {
                 p_nextState = typeof(PlayerRangedAttackChargeState);
