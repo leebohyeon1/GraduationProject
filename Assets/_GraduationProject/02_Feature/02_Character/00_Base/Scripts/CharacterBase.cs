@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BH_Lib.DI;
+using BH_Lib.Log;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 
@@ -16,8 +17,8 @@ public class CharacterBase : DIMonoBehaviour
         public string name;
         public MMF_Player feedback;
     }
-    
-   protected override void Awake()
+
+    protected override void Awake()
     {
         base.Awake();
 
@@ -34,12 +35,17 @@ public class CharacterBase : DIMonoBehaviour
     {
         if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
         {
+            if( feedback == null)
+            {
+                Log.PrintWarning($"피드백이 null {feedbackName}");
+                return;
+            }
             feedback.PlayFeedbacks(position);
         }
         else
         {
-            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
-            Debug.Log(_feedbackDictionary.Count);
+            Log.PrintWarning($"피드백 등록안됨 {feedbackName}");
+            Log.Print(_feedbackDictionary.Count);
             foreach (var item in _feedbackDictionary)
             {
                 Debug.Log(item.Key);
@@ -50,11 +56,35 @@ public class CharacterBase : DIMonoBehaviour
     {
         if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
         {
+            if( feedback == null)
+            {
+                Log.PrintWarning($"피드백이 null {feedbackName}");
+                return;
+            }
+
             feedback.PlayFeedbacks(transform.position);
         }
         else
         {
-            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
+            Log.PrintWarning($"피드백 등록안됨 {feedbackName}");
+        }
+    }
+    
+    public void StopFeedback(string feedbackName)
+    {
+        if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
+        {
+            if( feedback == null)
+            {
+                Log.PrintWarning($"피드백이 null {feedbackName}");
+                return;
+            }
+            
+            feedback.StopFeedbacks();
+        }
+        else
+        {
+            Log.PrintWarning($"피드백 등록안됨 {feedbackName}");
         }
     }
 }

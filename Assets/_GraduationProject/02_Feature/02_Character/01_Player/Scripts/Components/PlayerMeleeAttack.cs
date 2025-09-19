@@ -81,7 +81,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         _event.MeleeAttack.OnStart += SetAttackCenter;
         _event.MeleeAttack.OnPerform += PerformAttack;              // 일반 공격 수행 이벤트
        
-        _event.ChargeMeleeAttack.OnStart += () => SetIsPerformingChargeAttack(true);  // 차지 시작
+        _event.MeleeAttackCharge.OnStart += () => SetIsPerformingChargeAttack(true);  // 차지 시작
         _event.ChargeMeleeAttack.OnStart += SetAttackCenter;
         _event.ChargeMeleeAttack.OnPerform += PerformChargeMeleeAttack; // 차지 공격 수행 이벤트
         _event.ChargeMeleeAttack.OnFinished += () => SetIsPerformingChargeAttack(false);  // 공격 종료
