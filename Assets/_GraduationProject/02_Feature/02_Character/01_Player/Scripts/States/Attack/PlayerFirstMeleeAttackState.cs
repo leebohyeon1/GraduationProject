@@ -12,7 +12,29 @@ public class PlayerFirstMeleeAttackState : PlayerMeleeAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerSecondMeleeAttackState);
 
+<<<<<<< Updated upstream
     public PlayerFirstMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine) 
         : base(context, stateMachine) {}
     
+=======
+    public PlayerFirstMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
+        : base(context, stateMachine) { }
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        p_context.Event.MeleeAttack.OnFinished += AttackFinished;
+
+        p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.PublishFirstMeleeAttackEffect();
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+
+        p_context.Event.MeleeAttack.OnFinished -= AttackFinished;
+    }
+>>>>>>> Stashed changes
 }

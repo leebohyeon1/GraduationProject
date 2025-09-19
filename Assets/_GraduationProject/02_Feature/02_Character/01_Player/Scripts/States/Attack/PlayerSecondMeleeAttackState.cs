@@ -19,4 +19,23 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     /// </summary>
     public PlayerSecondMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
         : base(context, stateMachine) { }
+<<<<<<< Updated upstream
+=======
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        p_context.Event.MeleeAttack.OnFinished += AttackFinished;
+        p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.PublishSecondMeleeAttackEffect();
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+
+        p_context.Event.MeleeAttack.OnFinished -= AttackFinished;
+    }
+>>>>>>> Stashed changes
 }

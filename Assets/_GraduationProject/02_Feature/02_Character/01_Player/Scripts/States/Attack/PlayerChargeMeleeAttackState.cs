@@ -17,6 +17,11 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnEnter();
 
+<<<<<<< Updated upstream
+=======
+        p_context.Event.ChargeMeleeAttack.PublishStart();
+        p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
+>>>>>>> Stashed changes
     }
 
     public override void OnExit()

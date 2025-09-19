@@ -121,6 +121,11 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         if (_isDefending)
         {
             damageAmount = Mathf.RoundToInt(damageAmount * _context.Stats.DefendDamageReductionRate);
+            _context.Event.PublishDefendHit();
+        }
+        else
+        {
+            _context.Event.PublishHit();
         }
 
         int previousHealth = p_currentHealth;

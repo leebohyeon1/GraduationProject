@@ -16,8 +16,8 @@ public class CharacterBase : DIMonoBehaviour
         public string name;
         public MMF_Player feedback;
     }
-    
-   protected override void Awake()
+
+    protected override void Awake()
     {
         base.Awake();
 
@@ -51,6 +51,18 @@ public class CharacterBase : DIMonoBehaviour
         if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
         {
             feedback.PlayFeedbacks(transform.position);
+        }
+        else
+        {
+            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
+        }
+    }
+    
+    public void StopFeedback(string feedbackName)
+    {
+        if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
+        {
+            feedback.StopFeedbacks();
         }
         else
         {
