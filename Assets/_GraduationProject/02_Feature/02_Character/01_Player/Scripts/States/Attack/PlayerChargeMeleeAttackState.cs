@@ -16,12 +16,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
     public override void OnEnter()
     {
         base.OnEnter();
-
-<<<<<<< Updated upstream
-=======
-        p_context.Event.ChargeMeleeAttack.PublishStart();
-        p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
->>>>>>> Stashed changes
+         p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
     }
 
     public override void OnExit()
@@ -29,6 +24,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         p_context.MeleeAttack.ResetComboCount();
+        p_context.Event.ChargeMeleeAttack.OnFinished -= AttackFinished;
     }
 
     protected override void HandleInput()
@@ -45,11 +41,14 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
             {
                 p_nextState = typeof(PlayerDefendState);
             }
+            else if(p_context.Controller.MoveInput != Vector2.zero)
+            {
+                p_nextState = typeof(PlayerMoveState);
+            }
             else if (p_context.Controller.RangedAttackInput)
             {
                 p_nextState = typeof(PlayerRangedAttackChargeState);
             }
-
 
             if (p_nextState != null)
             {

@@ -32,6 +32,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public int Maxhealth { get; set; }
     public int CurrentHealth { get; set; }
+    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action OnDied;
+
     Rigidbody rb;
 
     // public bool CanParry { get; private set; } // 적이 플레이어의 공격을 막을 수 있는지 여부
@@ -44,19 +47,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField]private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
 
-    event Action<int, int> IDamageable.OnHealthChanged
-    {
-        add
-        {
-            throw new NotImplementedException();
-        }
-
-        remove
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     protected override void Awake()
     {
         // health = new Health(100);
@@ -64,7 +54,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         base.Awake();
 
         // TODO: 적 데이터에서 최대 체력 가져오기
-        InitializeHealth(MaxHealth, OnEnemyDeath);
+        InitializeHealth(MaxHealth);
         player = GameObject.FindFirstObjectByType<Player>();
         rb = GetComponent<Rigidbody>();
 
@@ -186,7 +176,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Noise,
         Die,
         Stunned, // 스턴 상태 추가
-        Rush
+        Rush,
+        Hit
     }
     public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
@@ -207,7 +198,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void SetState(EnemyState state)
     {
         CurrentState = state;
-
     }
     #endregion
 
@@ -222,6 +212,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             animator.SetTrigger(eventName);
         }
     }
+    public void AnimationBool(string boolName, bool value)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(boolName, value);
+        }
+    }
     private void OnEnemyDeath()
     {
         // soundManager.PlaySFXAtPosition(deathSoundClip, transform.position);
@@ -233,24 +230,24 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
 
     // IHealth 인터페이스 구현
-    public void InitializeHealth(int maxHealth, Action OnDeathCallback)
+    public void InitializeHealth(int maxHealth)
     {
         Maxhealth = maxHealth;
         CurrentHealth = maxHealth;
-        OnDeath += OnDeathCallback;
     }
 
     public void Die()
     {
+        animator.SetBool("Die", true);
         SetState(EnemyState.Die);
     }
 
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
-        if (_aiController.IsActionable())
+        if (!_aiController.IsActionable())
         {
-            AnimationEvent("Hit");
+            _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
@@ -290,10 +287,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [Header("Attack Range")]
     public float _currentAttackRadius;
     public Vector3 _currentAttackOffset;
-
-    public event Action<float, float> OnHealthChanged;
-    public event Action OnDeath;
-
     public void SetCurrentAttackData(float radius, Vector3 offset)
     {
         _currentAttackRadius = radius;

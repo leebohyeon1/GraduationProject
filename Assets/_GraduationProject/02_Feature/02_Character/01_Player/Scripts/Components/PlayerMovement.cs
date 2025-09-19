@@ -11,27 +11,44 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     [Header("Components")]
     [Tooltip("플레이어 이동을 처리할 CharacterController")]
     [SerializeField] private CharacterController _characterController;
-    [Tooltip("플레이어 Transform (캐싱용)")]
-    [SerializeField] private Transform _transform;
-    /// <summary>메인 카메라 참조 (카메라 기준 이동용)</summary>
+
+    /// <summary>
+    /// 메인 카메라 참조 (카메라 기준 이동용)
+    /// </summary>
     private Camera _mainCamera;
 
     [Header("Physics")]
     [Tooltip("지면 체크용 레이어 마스크")]
     [SerializeField] private LayerMask _groundLayerMask = 1 << 3;
 
-    /// <summary>현재 속도 벡터 (중력 포함)</summary>
+    /// <summary>
+    /// 현재 속도 벡터 (중력 포함)
+    /// </summary>
     private Vector3 _velocity;
-    /// <summary>지면 접촉 상태</summary>
+    /// <summary>
+    /// 지면 접촉 상태
+    /// </summary>
     private bool _isGrounded;
 
-    /// <summary>마지막 회피 시간 (쿨다운 계산용)</summary>
+    /// <summary>
+    /// 마지막 회피 시간 (쿨다운 계산용)
+    /// </summary>
     private float _lastDodgeTime = -999f;
-    /// <summary>회피 쿨다운 시간</summary>
+
+    /// <summary>
+    /// 회피 쿨다운 시간
+    /// </summary>
     private float _dodgeCooldown => _context.Stats.DodgeCooldown;
 
-    /// <summary>플레이어 컨텍스트 참조</summary>
+    /// <summary>
+    /// 플레이어 컨텍스트 참조
+    /// </summary>
     private PlayerContext _context;
+
+    /// <summary>
+    /// 이벤트 매니저 참조
+    /// </summary>
+    private PlayerEventChannel _event;
 
     /// <summary>
     /// 물리 업데이트 (매 프레임 호출)
@@ -50,6 +67,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     public void Initialize(PlayerContext context)
     {
         _context = context;
+        _event = _context.Event;
 
         // 컴포넌트 참조 설정
         if (_characterController == null)
@@ -57,12 +75,9 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
             _characterController = GetComponent<CharacterController>();
         }
 
-        if (_transform == null)
-        {
-            _transform = transform;
-        }
-
         _mainCamera = Camera.main;
+
+        _event.OnRotateToAttackDirection += RotateToAttackDirection;
     }
 
     /// <summary>
@@ -112,8 +127,8 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
         if (moveVector.sqrMagnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveVector);
-            _transform.rotation = Quaternion.Slerp(
-                _transform.rotation,
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
                 targetRotation,
                 _context.Stats.RotateSpeed * Time.fixedDeltaTime
             );
@@ -153,7 +168,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     /// <param name="direction">회전할 방향</param>
     public void RotateImmediately(Vector3 direction)
     {
-        if (_transform == null) return;
+        if (transform == null) return;
 
         // 카메라 기준으로 방향 변환
         Vector3 cameraForward = _mainCamera.transform.forward;
@@ -168,7 +183,115 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
         cameraRight.Normalize();
 
         // 즉시 회전 적용
-        _transform.rotation = Quaternion.LookRotation(cameraForward * direction.z + cameraRight * direction.x);
+        transform.rotation = Quaternion.LookRotation(cameraForward * direction.z + cameraRight * direction.x);
+    }
+
+    /// <summary>
+    /// 입력 기기에 따라 공격 방햦으로 회전
+    /// 키보드/마우스는 마우스 위치, 게임패드는 우측 스틱 방향 사용
+    /// </summary>
+    /// <param name="deviceType">현재 사용 중인 입력 기기 타입</param>
+    /// <param name="lookInput">게임패드 우측 스틱 입력 벡터</param>
+    /// <param name="mousePosition">마우스 스크린 좌표 위치</param>
+    private void RotateToAttackDirection(InputDeviceType deviceType, Vector2 lookInput, Vector2 mousePosition)
+    {
+        if (deviceType == InputDeviceType.KeyboardMouse)
+        {
+            RotatePlayerWithMouse(mousePosition);    // 마우스 위치 기반 회전
+        }
+        else // Gamepad
+        {
+            RotatePlayerWithGamepad(lookInput);      // 게임패드 스틱 방향 기반 회전
+        }
+    }
+
+    /// <summary>
+    /// 게임패드 우측 스틱 입력으로 플레이어 회전
+    /// 카메라 방향을 기준으로 스틱 입력을 월드 방향으로 변환합니다.
+    /// </summary>
+    /// <param name="lookInput">게임패드 우측 스틱의 2D 입력 벡터</param>
+    private void RotatePlayerWithGamepad(Vector2 lookInput)
+    {
+        // 입력 강도가 최소 임계값 이하이거나 카메라가 없으면 무시
+        if (lookInput.sqrMagnitude < 0.1f || Camera.main == null) return;
+
+        // 스틱 입력을 카메라 기준 3D 방향으로 변환
+        Vector3 lookDirection = CalculateLookDirection(lookInput);
+        if (lookDirection.sqrMagnitude > 0.1f)
+        {
+            // 방향 벡터를 사용하여 즐시 회전 (수직 축은 고정)
+            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        }
+    }
+
+    /// <summary>
+    /// 마우스 스크린 좌표로 플레이어 회전
+    /// 마우스 스크린 위치를 월드 좌표로 변환하여 회전 방햦 계산
+    /// Ray를 사용하여 마우스 포인터의 3D 월드 좌표를 구합니다.
+    /// </summary>
+    /// <param name="mousePosition">마우스의 스크린 좌표 (pixels)</param>
+    private void RotatePlayerWithMouse(Vector2 mousePosition)
+    {
+        if (Camera.main == null) return;
+
+        // 스크린 좌표를 3D 공간의 레이로 변환
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        
+        // 플레이어와 같은 Y 높이의 수평 평면 생성 (지면 평면)
+        Plane groundPlane = new Plane(Vector3.up, transform.position.y);
+
+        // 레이가 지면 평면과 교차하는지 확인
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            // 교차점에서 플레이어로의 방햦 계산
+            Vector3 direction = GetMouseDirection(ray.GetPoint(distance));
+            if (direction.sqrMagnitude > 0.1f)  // 최소 방햦 강도 체크
+            {
+                // 계산된 방햦으로 즐시 회전
+                transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 게임패드 2D 스틱 입력을 카메라 기준 3D 월드 방향으로 변환
+    /// 카메라의 전후좌우 방햦을 기준으로 스틱 입력을 3D 공간에 매핑합니다.
+    /// </summary>
+    /// <param name="lookInput">게임패드 우측 스틱의 2D 입력 (x: 좌우, y: 전후)</param>
+    /// <returns>카메라 기준으로 정규화된 3D 방향 벡터</returns>
+    private Vector3 CalculateLookDirection(Vector2 lookInput)
+    {
+        // 카메라의 전진 및 우측 방햦 벡터 추출
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+        
+        // Y축(vertical) 성분 제거하여 수평 면만 고려
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        
+        // 벡터 정규화
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        // 스틱 입력을 카메라 기준 방햦으로 변환 및 정규화
+        return (cameraRight * lookInput.x + cameraForward * lookInput.y).normalized;
+    }
+
+    /// <summary>
+    /// 3D 월드 마우스 위치에서 플레이어로의 수평 방햦 계산
+    /// Y축을 제거하여 수평면에서만의 방햦을 계산합니다.
+    /// </summary>
+    /// <param name="worldMousePosition">Ray가 지면과 교차한 3D 월드 좌표</param>
+    /// <returns>플레이어에서 마우스 방햦으로의 정규화된 2D 방햦 벡터</returns>
+    private Vector3 GetMouseDirection(Vector3 worldMousePosition)
+    {
+        // 마우스 위치에서 플레이어 위치로의 벡터 계산
+        Vector3 direction = (worldMousePosition - transform.position).normalized;
+        
+        // Y축(수직) 성분 제거하여 수평 방햦만 사용
+        direction.y = 0;
+        
+        return direction;
     }
 
     /// <summary>
@@ -192,7 +315,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     private void CheckGrounded()
     {
         // CharacterController의 아래쪽 경계에서 체크
-        Vector3 rayOrigin = _transform.position - new Vector3(0, _characterController.height / 2f, 0);
+        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
         _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, _context.Stats.GroundCheckDistance, _groundLayerMask);
     }
 
@@ -229,8 +352,8 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     public IEnumerator CoMoveForwardWithCurve(float distance, float duration, AnimationCurve curve)
     {
         float elapsedTime = 0f;
-        Vector3 startPosition = _transform.position;
-        Vector3 moveDirection = _transform.forward * distance;
+        Vector3 startPosition = transform.position;
+        Vector3 moveDirection = transform.forward * distance;
 
         while (elapsedTime < duration)
         {
@@ -238,7 +361,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
             float curveValue = curve.Evaluate(normalizedTime);
 
             Vector3 targetPosition = startPosition + moveDirection * curveValue;
-            Vector3 movement = (targetPosition - _transform.position);
+            Vector3 movement = (targetPosition - transform.position);
 
             _characterController.Move(movement);
 

@@ -8,31 +8,22 @@ public class TestEnemy : CharacterBase, IDamageable
     private MeshRenderer _meshRenderer;
 
     private int _currentHealth = 100;
+
+    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action OnDied;
+
     public int Health => _currentHealth;
 
     public int MaxHealth => 200;
 
     public bool IsDead => _currentHealth <= 0;
 
-    public event Action<int, int> OnHealthChanged;
-    public event Action OnDeath;
-
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        OnHealthChanged += (current, max) =>
-        {
-            float healthRatio = (float)current / max;
-            _meshRenderer.material.color = Color.Lerp(Color.black, Color.green, healthRatio);
-            if (IsDead)
-            {
-                Die();
-            }
-        };
-        OnDeath += Die;
+        OnDied += Die;
 
         _currentHealth = MaxHealth;
-        OnHealthChanged?.Invoke(_currentHealth, MaxHealth);
     }
 
     public void TakeDamage(int damageAmount, IAttacker attacker)
@@ -40,14 +31,13 @@ public class TestEnemy : CharacterBase, IDamageable
         if (IsDead) return;
 
         _currentHealth -= damageAmount;
-        OnHealthChanged?.Invoke(_currentHealth, MaxHealth);
 
         PlayFeedback("Damaged", transform.position);
 
-        if (_currentHealth < 0)
+        if (IsDead)
         {
             _currentHealth = 0;
-            OnDeath?.Invoke();
+            OnDied?.Invoke();
         }
     }
 
@@ -66,7 +56,6 @@ public class TestEnemy : CharacterBase, IDamageable
         GetComponent<Collider>().enabled = true;   
 
         _currentHealth = MaxHealth;
-        OnHealthChanged?.Invoke(_currentHealth, MaxHealth);
     }
 
     

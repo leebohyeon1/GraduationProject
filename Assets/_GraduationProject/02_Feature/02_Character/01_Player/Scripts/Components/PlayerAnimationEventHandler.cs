@@ -1,4 +1,5 @@
 using BH_Lib.Log;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -10,48 +11,24 @@ using UnityEngine;
 public class PlayerAnimationEventHandler : MonoBehaviour
 {
     /// <summary>플레이어 이벤트 버스 참조</summary>
-    private PlayerEventBus _eventBus;
+    private PlayerEventChannel _event;
 
     /// <summary>
     /// 애니메이션 이벤트 핸들러 초기화
     /// </summary>
-    /// <param name="eventBus">플레이어 이벤트 버스</param>
-    public void Initialize(PlayerEventBus eventBus)
+    /// <param name="event">플레이어 이벤트 매니저</param>
+    public void Initialize(PlayerEventChannel @event)
     {
-        _eventBus = eventBus;
+        _event = @event;
     }
 
-    /// <summary>
-    /// 애니메이션 이벤트: 공격 입력 허용 시점
-    /// 공격 애니메이션 중 콤보 입력을 받을 수 있는 타이밍을 알려줍니다.
-    /// </summary>
-    public void TriggerAllowAttackStateInput()
-    {
-        _eventBus.PublishAllowAttackInput();
-    }
-
-    /// <summary>
-    /// 애니메이션 이벤트: 공격 시점
-    /// </summary>
-    public void TriggerAttack()
-    {
-        _eventBus.PublishAttackStart();
-    }
-
-    /// <summary>
-    /// 애니메이션 이벤트: 공격이 끝난 시점
-    /// </summary>
-    public void TriggerAttackFinished()
-    {
-        _eventBus.PublishAttackFinished();
-    }
 
     /// <summary>
     /// 애니메이션 이벤트: 발소리 시점
     /// </summary>
     public void TriggerFootstep()
     {
-        _eventBus.PublishFootstep();
+        _event.PublishFootstep();
     }
 
     /// <summary>
@@ -59,7 +36,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerDodgeEnd()
     {
-        _eventBus.PublishDodgeEnd();
+        _event.Dodge.PublishFinished();
     }
 
     /// <summary>
@@ -67,23 +44,72 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerParry()
     {
-        Log.PrintColor(Color.aliceBlue, "플레이어 패링!");
-        _eventBus.PublishParry();
+        _event.Parry.PublishPerform();
     }
 
+    #region MeleeAttack
+    /// <summary>
+    /// 애니메이션 이벤트: 공격 시점
+    /// </summary>
+    public void TriggerMeleeAttack()
+    {
+        _event.MeleeAttack.PublishPerform();
+    }
+
+    /// <summary>
+    /// 애니메이션 이벤트: 공격이 끝난 시점
+    /// </summary>
+    public void TriggerMeleeAttackFinished()
+    {
+        Log.PrintColor(Color.aliceBlue, "공격 종료!");
+        _event.MeleeAttack.PublishFinished();
+    }
+    #endregion
+
+    #region RangedAttack
     /// <summary>
     /// 애니메이션 이벤트: 원거리 공격 종료 시점
     /// </summary>
-    public void TriggerRangedAttackEnd()
+    public void TriggerRangedAttackFinished()
     {
-        _eventBus.PublishRangedAttackEnd();
+        _event.RangedAttack.PublishFinished();
+    }
+    #endregion
+
+    #region ChargeMeleeAttack
+    /// <summary>
+    /// 애니메이션 이벤트: 근거리 차징 공격 시점
+    /// </summary>
+    public void TriggerChargeMeleeAttack()
+    {
+        _event.ChargeMeleeAttack.PublishPerform();
     }
 
     /// <summary>
-    /// 애니메이션 이벤트: 근거리 차징 공격 시작 시점
-    /// </summary>
-    public void TriggerChargingMeleeAttack()
+    /// 애니메이션 이벤트: 근거리 차징 공격 종료 시점
+    /// </summary>    
+    public void TriggerChargeMeleeAttackFinished()
     {
-        _eventBus.PublishChargeAttack();
+        _event.ChargeMeleeAttack.PublishFinished();
     }
+    #endregion
+
+    #region CounterAttack
+    /// <summary>
+    /// 애니메이션 이벤트: 카운터 공격 시점
+    /// </summary>
+    public void TriggerCounterAttack()
+    {
+        _event.CounterAttack.PublishPerform();
+    }
+
+    /// <summary>
+    /// 애니메이션 이벤트: 카운터 공격 종료 시점
+    /// </summary>
+    public void TriggerCounterAttackFinished()
+    {
+        _event.CounterAttack.PublishFinished();
+    }
+
+    #endregion
 }

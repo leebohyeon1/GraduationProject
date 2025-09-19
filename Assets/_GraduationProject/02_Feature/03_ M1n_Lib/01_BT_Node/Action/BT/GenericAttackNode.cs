@@ -29,22 +29,19 @@ public class GenericAttackNode : Node
     protected override NodeState OnUpdate()
     {
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
-
         if (runner.IsSound)
         {
             runner.PlayFeedback(animationName, attackOrigin);
             runner.AnimationEvent_EndSound();
         }
-        // 공격 켜짐
         if (runner.IsHitWindowOpen)
         {
+            Debug.Log(":");
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {
-                
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
-
                     player.TakeDamage(damage, runner);
                     _didHitPlayer = true;
                     if (!maintainAtk)
@@ -68,6 +65,7 @@ public class GenericAttackNode : Node
     {
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         runner.ResetActionFlags();
+        runner.SetState(Enemy.EnemyState.Idle);
     }
 
     public override Node Clone()

@@ -79,7 +79,9 @@ public class EnemyMovement
             return;
         }
         if (aIPath == null) return;
-
+        if(_runner.CurrentState != EnemyState.Hit)
+        _runner.SetState(EnemyState.Chase);
+        _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
         aIPath.maxSpeed = speed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
         aIPath.destination = newTarget;
@@ -112,7 +114,9 @@ public class EnemyMovement
         {
             return;
         }
-        if (_runner != null) animator.ResetTrigger("Walk");
+        if (_runner != null) 
+        _runner.AnimationBool("Walk", false);
+        
 
         aIPath.isStopped = true;
         aIPath.SetPath(null);

@@ -24,35 +24,21 @@ public class PlayerEventChannel
     /// 플레이어 패링 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> Parry;
-    /// <summary>
-    /// 플레이어가 피격되었을 때 발생하는 이벤트입니다.
-    /// </summary>
-    public event Action OnHit;
-    /// <summary>
-    /// 플레이어가 방어에 성공했을 때 발생하는 이벤트입니다.
-    /// </summary>
-    public event Action OnDefendHit;
+
 
     // 플레이어 공격 관련 이벤트
     /// <summary>
     /// 플레이어 근접 공격 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> MeleeAttack;
-    public Action OnFirstMeleeAttackEffect;
-    public Action OnSecondMeleeAttackEffect;
-
     /// <summary>
     /// 플레이어 차지 근접 공격 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> ChargeMeleeAttack;
-    public PlayerChargeActionEvents MeleeAttackCharge;
-
     /// <summary>
     /// 플레이어 원거리 공격 액션 관련 이벤트입니다.
     /// </summary>
     public PlayerActionEvents<Collider> RangedAttack;
-    public PlayerChargeActionEvents RangedAttackCharge;
-
     /// <summary>
     /// 플레이어 카운터 공격 액션 관련 이벤트입니다.
     /// </summary>
@@ -81,60 +67,17 @@ public class PlayerEventChannel
     }
 
     /// <summary>
-    /// 피격 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishHit()
-    {
-        OnHit?.Invoke();
-    }
-    /// <summary>
-    /// 방어 성공 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishDefendHit()
-    {
-        OnDefendHit?.Invoke();
-    }
-
-    /// <summary>
-    /// 첫 번째 근접 공격 이펙트 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishFirstMeleeAttackEffect()
-    {
-        OnFirstMeleeAttackEffect?.Invoke();
-    }
-    /// <summary>
-    /// 두 번째 근접 공격 이펙트 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishSecondMeleeAttackEffect()
-    {
-        OnSecondMeleeAttackEffect?.Invoke();
-    }
-
-
-
-    /// <summary>
     /// 모든 이벤트 구독을 해제합니다.
     /// </summary>
     public void Dispose()
     {
         OnRotateToAttackDirection = null;
         OnFootstep = null;
-        OnHit = null;
-        OnDefendHit = null;
-        OnFirstMeleeAttackEffect = null;
-        OnSecondMeleeAttackEffect = null;
-
         Dodge.Dispose();
         Parry.Dispose();
-        
         MeleeAttack.Dispose();
-
-        ChargeMeleeAttack.Dispose();
-        MeleeAttackCharge.Dispose();
-
         RangedAttack.Dispose();
-        RangedAttackCharge.Dispose();
-
+        ChargeMeleeAttack.Dispose();
         CounterAttack.Dispose();
     }
 
@@ -160,9 +103,9 @@ public struct PlayerActionEvents<T>
     /// </summary>
     public event Action OnFinished;
     /// <summary>
-    /// 액션이 취소되었을 때 발생합니다.
+    /// 액션이 차지(충전)될 때 발생합니다.
     /// </summary>
-    public event Action OnCancel;
+    public event Action OnCharge;
     /// <summary>
     /// 액션이 대상에 영향을 미쳤을 때 발생합니다.
     /// </summary>
@@ -189,13 +132,12 @@ public struct PlayerActionEvents<T>
     {
         OnFinished?.Invoke();
     }
-
     /// <summary>
-    /// 액션 취소 이벤트를 발생시킵니다.
+    /// 액션 차지 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishCancel()
+    public void PublishCharge()
     {
-        OnCancel?.Invoke();
+        OnCharge?.Invoke();
     }
     /// <summary>
     /// 액션 영향 이벤트를 발생시킵니다.
@@ -214,55 +156,7 @@ public struct PlayerActionEvents<T>
         OnStart = null;
         OnPerform = null;
         OnFinished = null;
+        OnCharge = null;
         OnAffect = null;
-    }
-}
-
-/// <summary>
-/// 차지 가능한 액션에 특화된 이벤트 그룹 구조체입니다.
-/// </summary>
-public struct PlayerChargeActionEvents
-{
-    /// <summary>
-    /// 차징이 시작될 때 발생합니다.
-    /// </summary>
-    public event Action OnStart;
-    /// <summary>
-    /// 차징 효과가 발생할 때 발생합니다.
-    /// </summary>
-    public event Action OnPerform;
-    /// <summary>
-    /// 차징이 끝났을 때 발생합니다.
-    /// </summary>
-    public event Action OnFinished;
-    /// <summary>
-    /// 차징이 취소되었을 때 발생합니다.
-    /// </summary>
-    public event Action OnCancel;
-    /// <summary>
-    /// 차징 시작 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishStart() => OnStart?.Invoke();
-    /// <summary>
-    /// 차징 효과 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishPerform() => OnPerform?.Invoke();
-    /// <summary>
-    /// 차징 종료 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishFinished() => OnFinished?.Invoke();
-    /// <summary>
-    /// 차징 취소 이벤트를 발생시킵니다.
-    /// </summary>
-    public void PublishCancel() => OnCancel?.Invoke();
-    /// <summary>
-    /// 모든 이벤트 구독을 해제합니다.
-    /// </summary>
-    public void Dispose()
-    {
-        OnStart = null;
-        OnPerform = null;
-        OnFinished = null;
-        OnCancel = null;
     }
 }

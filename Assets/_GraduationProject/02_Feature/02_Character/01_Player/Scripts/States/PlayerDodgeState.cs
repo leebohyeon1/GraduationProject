@@ -18,7 +18,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
     public override void OnEnter()
     {
         base.OnEnter();
-        p_context.EventBus.OnDodgeEnd += OnDodgeEndEvent;
+        p_context.Event.Dodge.OnFinished+= OnDodgeEndEvent;
 
         Log.Print("Player entered Dodge state");
 
@@ -37,7 +37,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             _dodgeDirection = Vector3.zero;
         }
 
-        p_context.EventBus.PublishDodgeStart();
+        p_context.Event.Dodge.PublishStart();
     }
 
     public override void OnUpdate()
@@ -53,7 +53,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
 
     public override void OnExit()
     {
-        p_context.EventBus.OnDodgeEnd -= OnDodgeEndEvent;
+        p_context.Event.Dodge.OnFinished -= OnDodgeEndEvent;
 
         Log.Print("Player exited Dodge state");
     }
@@ -88,6 +88,10 @@ public class PlayerDodgeState : BaseState<PlayerContext>
         else if (p_context.Controller.DefendInput)
         {
             _nextState = typeof(PlayerDefendState);
+        }
+        else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
+        {
+            _nextState = typeof(PlayerCounterAttackState);
         }
         else if (p_context.Controller.AttackHeldInput)
         {

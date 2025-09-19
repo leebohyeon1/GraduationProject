@@ -25,11 +25,6 @@ public class PlayerHeat : HeatSystem
 
         // TODO: 열량 시스템 이벤트 구독
         // TODO: 플레이어 ID로 열량 데이터 초기화
-
-        _context.EventBus.OnAttack += AddHeatOnMeleeAttack;
-        _context.EventBus.OnParrySuccess += AddHeatOnParry;
-        _context.EventBus.OnMeleeAttackChargeStart += ChargeStart;
-        _context.EventBus.OnMeleeAttackCharging += AddHeatOnMeleeAttackCharging;
     }
 
     /// <summary>
@@ -87,12 +82,5 @@ public class PlayerHeat : HeatSystem
 
     public void OnDestroy()
     {
-        if (_context?.EventBus != null)
-        {
-            _context.EventBus.OnAttack -= AddHeatOnMeleeAttack;
-            _context.EventBus.OnParrySuccess -= AddHeatOnParry;
-            _context.EventBus.OnMeleeAttackChargeStart -= ChargeStart;
-            _context.EventBus.OnMeleeAttackCharging -= AddHeatOnMeleeAttackCharging;
-        }
     }
 }
