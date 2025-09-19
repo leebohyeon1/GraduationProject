@@ -11,10 +11,10 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private bool _canCounterAttack;
     private Vector3 _attackCenter;
     private Coroutine _counterAttackCoroutine;
-
+    private Collider _counterObject;
 
     public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
-    public bool CanCounterAttack => _canCounterAttack;
+    public bool CanCounterAttack => _canCounterAttack && ScanCounterable();
 
     public void Initialize(PlayerContext context)
     {
@@ -25,7 +25,6 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
         _event.Parry.OnAffect += (collider) => EnterCounterAttackStance();
 
-        _event.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
         _event.CounterAttack.OnPerform += TryCounterAttack;
     }
 
@@ -109,42 +108,50 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _canCounterAttack = value;
     }
 
+    public bool ScanCounterable()
+    {
+        Collider[] hits = Physics.OverlapBox(transform.position, MeleeAttackData.AttackRadius / 2, transform.rotation, _attackLayerMask);
+        foreach(Collider hit in hits)
+        {
+            ICounterable counterable = hit.GetComponent<ICounterable>();         
+            if (counterable != null && counterable.IsCounterable)
+            {
+                _counterObject = hit;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     /// <summary>
     /// 카운터 공격 시도
     /// </summary>
     public void TryCounterAttack()
     {
-        Vector3 attackCenter = GetAttackCenter();
-        
-        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, MeleeAttackData.AttackRadius.x, _attackLayerMask);
-
-        ProcessHitEnemies(hitEnemies);
+        ProcessHitEnemies(_counterObject);
     }
 
-    private void ProcessHitEnemies(Collider[] hitObjects)
+    private void ProcessHitEnemies(Collider hitObjects)
     {
         SetCanCounterAttack(false);
-        
-        foreach (Collider obj in hitObjects)
+
+        IDamageable damageable = hitObjects.GetComponent<IDamageable>();
+        if (damageable != null && !damageable.IsDead)
         {
-            IDamageable damageable = obj.GetComponent<IDamageable>();
-            if (damageable != null && !damageable.IsDead)
-            {
-                damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
-                _event.CounterAttack.PublishAffect(obj);
-            }
+            damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
+            _event.CounterAttack.PublishAffect(hitObjects);
         }
+
+        ICounterable counterable = hitObjects.GetComponent<ICounterable>();
+        if (counterable != null)
+        {
+            counterable.ExecuteCounterEffect();
+        }
+
+        _counterObject = null;
     }
 
-    private void SetAttackCenter(Vector3 position)
-    {
-        _attackCenter = position;
-    }
-
-    private Vector3 GetAttackCenter()
-    {
-        return _attackCenter;
-    }
     #endregion
 
 #if UNITY_EDITOR
@@ -155,7 +162,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         DrawParryGizmo();
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, MeleeAttackData.AttackRadius.x);
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2);
     }
     private void DrawParryGizmo()
     {
