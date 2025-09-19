@@ -110,7 +110,8 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
     public bool ScanCounterable()
     {
-        Collider[] hits = Physics.OverlapBox(transform.position, MeleeAttackData.AttackRadius / 2, transform.rotation, _attackLayerMask);
+        Vector3 counterCenter = GetCounterCenter(); 
+        Collider[] hits = Physics.OverlapBox(counterCenter, MeleeAttackData.AttackRadius / 2, transform.rotation, _attackLayerMask);
         foreach(Collider hit in hits)
         {
             ICounterable counterable = hit.GetComponent<ICounterable>();         
@@ -152,6 +153,15 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _counterObject = null;
     }
 
+    /// <summary>
+    /// 패링 범위의 중심점 계산
+    /// </summary>
+    /// <returns>패링 범위 박스의 중심 위치</returns>
+    private Vector3 GetCounterCenter()
+    {
+        return transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
+    }
+
     #endregion
 
 #if UNITY_EDITOR
@@ -161,8 +171,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
         DrawParryGizmo();
 
+        Vector3 counterCenter = GetCounterCenter();
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2);
+        Gizmos.matrix = Matrix4x4.TRS(counterCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, MeleeAttackData.AttackRadius);
+        Gizmos.matrix = Matrix4x4.identity;
     }
     private void DrawParryGizmo()
     {
