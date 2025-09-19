@@ -26,6 +26,7 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
 
         p_context.Event.MeleeAttack.OnFinished += AttackFinished;
         p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.PublishSecondMeleeAttackEffect();
     }
 
     public override void OnExit()

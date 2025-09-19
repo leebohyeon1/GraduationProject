@@ -16,7 +16,9 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
     public override void OnEnter()
     {
         base.OnEnter();
-         p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
+
+        p_context.Event.ChargeMeleeAttack.PublishStart();
+        p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
     }
 
     public override void OnExit()

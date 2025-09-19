@@ -22,6 +22,7 @@ public class PlayerFirstMeleeAttackState : PlayerMeleeAttackBaseState
         p_context.Event.MeleeAttack.OnFinished += AttackFinished;
 
         p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.PublishFirstMeleeAttackEffect();
     }
 
     public override void OnExit()

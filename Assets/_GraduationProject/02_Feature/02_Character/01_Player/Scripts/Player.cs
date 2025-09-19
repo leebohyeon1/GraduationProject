@@ -96,7 +96,7 @@ public class Player : CharacterBase
             _playerRangedAttack = GetComponent<PlayerRangedAttack>();
         }
 
-        if(_playerCombat == null)
+        if (_playerCombat == null)
         {
             _playerCombat = GetComponent<PlayerCombat>();
         }
@@ -124,14 +124,23 @@ public class Player : CharacterBase
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.Event);
 
-        // Context.Event.Player.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
-        // Context.Event.Player.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeEnd"); };
-        // Context.Event.Player.MeleeAttack.OnPerform += () => { PlayFeedbackSound("MeleeAttack"); };
-        // Context.Event.Player.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
-        // Context.Event.Player.ChargeMeleeAttack.OnCharge += () => { PlayFeedbackSound("Charge"); };
-        // Context.Event.Player.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttack"); };
-        // Context.Event.Player.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
+        Context.Event.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
+        Context.Event.Dodge.OnStart += () => { PlayFeedbackSound("DodgeStart"); };
+        Context.Event.OnHit += () => { PlayFeedbackSound("Hit"); };
 
+        Context.Event.OnFirstMeleeAttackEffect += () => { PlayFeedbackSound("FirstAttack"); };
+        Context.Event.OnSecondMeleeAttackEffect += () => { PlayFeedbackSound("SecondAttack"); };
+        
+        Context.Event.RangedAttackCharge.OnPerform += () => { PlayFeedbackSound("RangedAttackCharge"); };
+        Context.Event.RangedAttackCharge.OnCancel += () => { PlayFeedbackSound("RangedAttackChargeCancel"); };
+        Context.Event.RangedAttackCharge.OnFinished += () => { PlayFeedbackSound("RangedAttackChargeFinish"); };
+        Context.Event.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
+
+        Context.Event.MeleeAttackCharge.OnStart += () => { PlayFeedbackSound("MeleeAttackChargeStart"); };
+        Context.Event.MeleeAttackCharge.OnPerform += () => { PlayFeedbackSound("MeleeAttackCharge"); };
+        Context.Event.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeMeleeAttack"); };
+
+        Context.Event.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
     }
 
     private void InitializeStateMachine()
