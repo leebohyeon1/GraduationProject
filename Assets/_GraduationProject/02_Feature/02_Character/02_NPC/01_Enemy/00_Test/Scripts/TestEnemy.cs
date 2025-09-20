@@ -18,6 +18,8 @@ public class TestEnemy : CharacterBase, IDamageable
 
     public bool IsDead => _currentHealth <= 0;
 
+    public bool IsInvincible => false;
+
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();

@@ -195,6 +195,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public int currentHeat => throw new NotImplementedException();
 
+    public bool IsInvincible => throw new NotImplementedException();
+
     public void SetState(EnemyState state)
     {
         CurrentState = state;

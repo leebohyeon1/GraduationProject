@@ -19,6 +19,11 @@ public interface IDamageable
     public bool IsDead { get; }
 
     /// <summary>
+    /// 무적 상태 여부
+    /// </summary>
+    public bool IsInvincible { get; }  
+
+    /// <summary>
     /// 피해를 받는 함수
     /// </summary>
     /// <param name="damageAmount">피해량</param>

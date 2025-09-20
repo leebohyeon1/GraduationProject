@@ -183,7 +183,6 @@ public class PlayerEventChannel
         OnSecondMeleeAttackEffect = null;
         OnThirdMeleeAttackEffect = null;
 
-
         Dodge.Dispose();
         Parry.Dispose();
 

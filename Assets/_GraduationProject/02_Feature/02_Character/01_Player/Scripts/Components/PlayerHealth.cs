@@ -69,6 +69,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// </summary>
     public bool IsDefending => _isDefending;
 
+    public bool IsInvincible => _isInvincible;
+
     /// <summary>
     /// Hit 상태 플래그를 리셋합니다
     /// PlayerHitState에서 상태 종료 시 호출
