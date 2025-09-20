@@ -18,7 +18,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
     public override void OnEnter()
     {
         base.OnEnter();
-        p_context.Event.Dodge.OnFinished += (position) => OnDodgeEndEvent();
+        p_context.Event.Dodge.OnFinished += HandleDodgeEndEvent;
 
         Log.Print("Player entered Dodge state");
 
@@ -53,10 +53,17 @@ public class PlayerDodgeState : BaseState<PlayerContext>
 
     public override void OnExit()
     {
-        p_context.Event.Dodge.OnFinished -= (position) => OnDodgeEndEvent();
+        p_context.Event.Dodge.OnFinished -= HandleDodgeEndEvent;
 
         Log.Print("Player exited Dodge state");
     }
+
+    #region Feedback Handlers
+    private void HandleDodgeEndEvent(Vector3 position)
+    {
+        OnDodgeEndEvent();
+    }
+    #endregion
 
     /// <summary>
     /// 회피 애니메이션 종료 이벤트 핸들러

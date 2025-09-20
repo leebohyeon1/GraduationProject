@@ -33,10 +33,16 @@ public class Player : CharacterBase
     // 상태 머신
     private StateMachine<PlayerContext> _stateMachine;
 
+
+    // 현재 상태 정보 (디버깅용)
+    public IState CurrentState => _stateMachine?.CurrentState;
+    public Type CurrentStateType => _stateMachine?.CurrentStateType;
+    public PlayerEventChannel PlayerEvent => Context.Event;
+
     protected override void Awake()
     {
         base.Awake();
-        
+
         InitializeComponents();
     }
 
@@ -126,7 +132,7 @@ public class Player : CharacterBase
         _playerAnimationEventHandler.Initialize(Context);
 
         InitializeFeedbacks();
-       
+
     }
 
     private void InitializeStateMachine()
@@ -194,61 +200,286 @@ public class Player : CharacterBase
     private void InitializeFeedbacks()
     {
         /// 움직임 관련 피드백
-        Context.Event.OnFootstep += () => { PlayFeedbackSound("Move_FB"); };
-        Context.Event.OnMoveStop += () => { PlayFeedbackSound("MoveStop_FB"); };
-        Context.Event.Dodge.OnStart += (position) => { PlayFeedback("DodgeStart_FB", position); };
-        Context.Event.Dodge.OnFinished += (position) => { PlayFeedback("DodgeFinish_FB", position); };
-        Context.Event.OnLand += () => { PlayFeedbackSound("Landing_FB"); };
+        Context.Event.OnFootstep += HandleFootstep;
+        Context.Event.OnMoveStop += HandleMoveStop;
+        Context.Event.Dodge.OnStart += HandleDodgeStart;
+        Context.Event.Dodge.OnFinished += HandleDodgeFinished;
+        Context.Event.OnLand += HandleLand;
 
         /// 피격 관련 피드백
-        Context.Event.OnNomalHit += () => { PlayFeedbackSound("TakeDamage_Nomal_FB"); };
-        Context.Event.OnStrongHit += () => { PlayFeedbackSound("TakeDamage_Strong_FB"); };
-        Context.Event.OnDefendHit += () => { PlayFeedbackSound("TakeDamage_Defend_FB"); };
+        Context.Event.OnNomalHit += HandleNomalHit;
+        Context.Event.OnStrongHit += HandleStrongHit;
+        Context.Event.OnDefendHit += HandleDefendHit;
 
         /// 근접 공격 관련 피드백
-        Context.Event.OnFirstMeleeAttackEffect += (position) => { PlayFeedback("FirstAttackStart_FB", position); };
-        Context.Event.OnSecondMeleeAttackEffect += (position) => { PlayFeedback("SecondAttackStart_FB", position); };
-        Context.Event.OnThirdMeleeAttackEffect += (position) => { PlayFeedback("ThirdAttackStart_FB", position); };
-        Context.Event.MeleeAttack.OnAffect += (position, collider) => { PlayFeedback("MeleeAttackHit_FB", position); };
+        Context.Event.OnFirstMeleeAttackEffect += HandleFirstMeleeAttackEffect;
+        Context.Event.OnSecondMeleeAttackEffect += HandleSecondMeleeAttackEffect;
+        Context.Event.OnThirdMeleeAttackEffect += HandleThirdMeleeAttackEffect;
+        Context.Event.MeleeAttack.OnAffect += HandleMeleeAttackAffect;
 
         /// 차징 공격 관련 피드백
-        Context.Event.MeleeAttackCharge.OnStart += (position) => { PlayFeedback("ChargeStart_FB", position); };
-        Context.Event.MeleeAttackCharge.OnCancel += (position) => { PlayFeedback("ChargeCancel_FB", position); };
-        Context.Event.MeleeAttackCharge.OnFinished += (position) => { PlayFeedback("ChargeFinish_FB", position); };
-        Context.Event.ChargeMeleeAttack.OnStart += (position) => { PlayFeedback("ChargeAttackStart_FB", position); };
-        Context.Event.ChargeMeleeAttack.OnFinished += (position) => { PlayFeedback("ChargeAttackFinish_FB", position); };
-        Context.Event.OnTier1ChargeAttackEffect += (position) => { PlayFeedback("Tier1ChargeAttackHit_FB", position); };
-        Context.Event.OnTier2ChargeAttackEffect += (position) => { PlayFeedback("Tier2ChargeAttackHit_FB", position); };
-        Context.Event.OnTier3ChargeAttackEffect += (position) => { PlayFeedback("Tier3ChargeAttackHit_FB", position); };
+        Context.Event.MeleeAttackCharge.OnStart += HandleMeleeAttackChargeStart;
+        Context.Event.MeleeAttackCharge.OnCancel += HandleMeleeAttackChargeCancel;
+        Context.Event.MeleeAttackCharge.OnFinished += HandleMeleeAttackChargeFinished;
+        Context.Event.ChargeMeleeAttack.OnStart += HandleChargeMeleeAttackStart;
+        Context.Event.ChargeMeleeAttack.OnFinished += HandleChargeMeleeAttackFinished;
+        Context.Event.OnTier1ChargeAttackEffect += HandleTier1ChargeAttackEffect;
+        Context.Event.OnTier2ChargeAttackEffect += HandleTier2ChargeAttackEffect;
+        Context.Event.OnTier3ChargeAttackEffect += HandleTier3ChargeAttackEffect;
 
         /// 원거리 공격 관련 피드백
-        Context.Event.RangedAttackCharge.OnStart += (position) => { PlayFeedback("RangeAttackChargeStart_FB", position); };
-        Context.Event.RangedAttackCharge.OnPerform += (position) => { PlayFeedback("RangeAttackCharging_FB", position); };
-        Context.Event.RangedAttackCharge.OnCancel += (position) => { PlayFeedback("RangeAttackChargeCancel_FB", position); };
-        Context.Event.RangedAttackCharge.OnFinished += (position) => { PlayFeedback("RangeAttackChargeFinish_FB", position); };
-        Context.Event.RangedAttack.OnStart += (position) => { PlayFeedback("RangeAttackStart_FB", position); };
-        Context.Event.RangedAttack.OnAffect += (position, collider) => { PlayFeedback("RangeAttackHit_FB", position); };
+        Context.Event.RangedAttackCharge.OnStart += HandleRangedAttackChargeStart;
+        Context.Event.RangedAttackCharge.OnPerform += HandleRangedAttackChargePerform;
+        Context.Event.RangedAttackCharge.OnCancel += HandleRangedAttackChargeCancel;
+        Context.Event.RangedAttackCharge.OnFinished += HandleRangedAttackChargeFinished;
+        Context.Event.RangedAttack.OnStart += HandleRangedAttackStart;
+        Context.Event.RangedAttack.OnAffect += HandleRangedAttackAffect;
 
         /// 패리/카운터 공격 관련 피드백
-        Context.Event.Parry.OnStart += (position) => { PlayFeedback("ParryStart_FB",position); };
-        Context.Event.Parry.OnAffect += (position, collider) => { PlayFeedback("ParrySuccess_FB", position); };
-        Context.Event.CounterAttack.OnStart += (position) => { PlayFeedback("CounterAttackStart_FB", position); };
-        Context.Event.OnTier1FirstCounterAttackEffect += (position) => { PlayFeedback("Tier1CounterAttackFirstHit_FB", position); };
-        Context.Event.OnTier2FirstCounterAttackEffect += (position) => { PlayFeedback("Tier2CounterAttackFirstHit_FB", position); };
-        Context.Event.OnTier3FirstCounterAttackEffect += (position) => { PlayFeedback("Tier3CounterAttackFirstHit_FB", position); };
-        Context.Event.OnTier1SecondCounterAttackEffect += (position) => { PlayFeedback("Tier1CounterAttackSecondHit_FB", position); };
-        Context.Event.OnTier2SecondCounterAttackEffect += (position) => { PlayFeedback("Tier2CounterAttackSecondHit_FB", position); };
-        Context.Event.OnTier3SecondCounterAttackEffect += (position) => { PlayFeedback("Tier3CounterAttackSecondHit_FB", position); };
-        Context.Event.CounterAttack.OnFinished += (position) => { PlayFeedback("CounterAttackFinish_FB", position); };
+        Context.Event.Parry.OnStart += HandleParryStart;
+        Context.Event.Parry.OnAffect += HandleParryAffect;
+        Context.Event.CounterAttack.OnStart += HandleCounterAttackStart;
+        Context.Event.OnTier1FirstCounterAttackEffect += HandleTier1FirstCounterAttackEffect;
+        Context.Event.OnTier2FirstCounterAttackEffect += HandleTier2FirstCounterAttackEffect;
+        Context.Event.OnTier3FirstCounterAttackEffect += HandleTier3FirstCounterAttackEffect;
+        Context.Event.OnTier1SecondCounterAttackEffect += HandleTier1SecondCounterAttackEffect;
+        Context.Event.OnTier2SecondCounterAttackEffect += HandleTier2SecondCounterAttackEffect;
+        Context.Event.OnTier3SecondCounterAttackEffect += HandleTier3SecondCounterAttackEffect;
+        Context.Event.CounterAttack.OnFinished += HandleCounterAttackFinished;
+    }
+
+    private void OnDisable()
+    {
+        /// 움직임 관련 피드백
+        Context.Event.OnFootstep -= HandleFootstep;
+        Context.Event.OnMoveStop -= HandleMoveStop;
+        Context.Event.Dodge.OnStart -= HandleDodgeStart;
+        Context.Event.Dodge.OnFinished -= HandleDodgeFinished;
+        Context.Event.OnLand -= HandleLand;
+
+        /// 피격 관련 피드백
+        Context.Event.OnNomalHit -= HandleNomalHit;
+        Context.Event.OnStrongHit -= HandleStrongHit;
+        Context.Event.OnDefendHit -= HandleDefendHit;
+
+        /// 근접 공격 관련 피드백
+        Context.Event.OnFirstMeleeAttackEffect -= HandleFirstMeleeAttackEffect;
+        Context.Event.OnSecondMeleeAttackEffect -= HandleSecondMeleeAttackEffect;
+        Context.Event.OnThirdMeleeAttackEffect -= HandleThirdMeleeAttackEffect;
+        Context.Event.MeleeAttack.OnAffect -= HandleMeleeAttackAffect;
+
+        /// 차징 공격 관련 피드백
+        Context.Event.MeleeAttackCharge.OnStart -= HandleMeleeAttackChargeStart;
+        Context.Event.MeleeAttackCharge.OnCancel -= HandleMeleeAttackChargeCancel;
+        Context.Event.MeleeAttackCharge.OnFinished -= HandleMeleeAttackChargeFinished;
+        Context.Event.ChargeMeleeAttack.OnStart -= HandleChargeMeleeAttackStart;
+        Context.Event.ChargeMeleeAttack.OnFinished -= HandleChargeMeleeAttackFinished;
+        Context.Event.OnTier1ChargeAttackEffect -= HandleTier1ChargeAttackEffect;
+        Context.Event.OnTier2ChargeAttackEffect -= HandleTier2ChargeAttackEffect;
+        Context.Event.OnTier3ChargeAttackEffect -= HandleTier3ChargeAttackEffect;
+
+        /// 원거리 공격 관련 피드백
+        Context.Event.RangedAttackCharge.OnStart -= HandleRangedAttackChargeStart;
+        Context.Event.RangedAttackCharge.OnPerform -= HandleRangedAttackChargePerform;
+        Context.Event.RangedAttackCharge.OnCancel -= HandleRangedAttackChargeCancel;
+        Context.Event.RangedAttackCharge.OnFinished -= HandleRangedAttackChargeFinished;
+        Context.Event.RangedAttack.OnStart -= HandleRangedAttackStart;
+        Context.Event.RangedAttack.OnAffect -= HandleRangedAttackAffect;
+
+        /// 패리/카운터 공격 관련 피드백
+        Context.Event.Parry.OnStart -= HandleParryStart;
+        Context.Event.Parry.OnAffect -= HandleParryAffect;
+        Context.Event.CounterAttack.OnStart -= HandleCounterAttackStart;
+        Context.Event.OnTier1FirstCounterAttackEffect -= HandleTier1FirstCounterAttackEffect;
+        Context.Event.OnTier2FirstCounterAttackEffect -= HandleTier2FirstCounterAttackEffect;
+        Context.Event.OnTier3FirstCounterAttackEffect -= HandleTier3FirstCounterAttackEffect;
+        Context.Event.OnTier1SecondCounterAttackEffect -= HandleTier1SecondCounterAttackEffect;
+        Context.Event.OnTier2SecondCounterAttackEffect -= HandleTier2SecondCounterAttackEffect;
+        Context.Event.OnTier3SecondCounterAttackEffect -= HandleTier3SecondCounterAttackEffect;
+        Context.Event.CounterAttack.OnFinished -= HandleCounterAttackFinished;
     }
     
-    // 현재 상태 정보 (디버깅용)
-    public IState CurrentState => _stateMachine?.CurrentState;
-    public Type CurrentStateType => _stateMachine?.CurrentStateType;
-    public PlayerEventChannel PlayerEvent => Context.Event;
+    #region Feedback Handlers
 
-    private void OnDestroy()
+    private void HandleDodgeStart(Vector3 position)
     {
-        PlayerEvent.Dispose();
+        PlayFeedback("DodgeStart_FB", position);
     }
+
+    private void HandleMoveStop()
+    {
+        PlayFeedbackSound("MoveStop_FB");
+    }
+
+    private void HandleFootstep()
+    {
+        PlayFeedbackSound("Move_FB");
+    }
+
+
+    private void HandleDodgeFinished(Vector3 position)
+    {
+        PlayFeedback("DodgeFinish_FB", position);
+    }
+
+    private void HandleLand()
+    {
+        PlayFeedbackSound("Landing_FB");
+    }
+
+    private void HandleNomalHit()
+    {
+        PlayFeedbackSound("TakeDamage_Nomal_FB");
+    }
+
+    private void HandleStrongHit()
+    {
+        PlayFeedbackSound("TakeDamage_Strong_FB");
+    }
+
+    private void HandleDefendHit()
+    {
+        PlayFeedbackSound("TakeDamage_Defend_FB");
+    }
+
+    private void HandleFirstMeleeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("FirstAttackStart_FB", position);
+    }
+
+    private void HandleSecondMeleeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("SecondAttackStart_FB", position);
+    }
+
+    private void HandleThirdMeleeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("ThirdAttackStart_FB", position);
+    }
+
+    private void HandleMeleeAttackAffect(Vector3 position, Collider collider)
+    {
+        PlayFeedback("MeleeAttackHit_FB", position);
+    }
+
+    private void HandleMeleeAttackChargeStart(Vector3 position)
+    {
+        PlayFeedback("ChargeStart_FB", position);
+    }
+
+    private void HandleMeleeAttackChargeCancel(Vector3 position)
+    {
+        PlayFeedback("ChargeCancel_FB", position);
+    }
+
+    private void HandleMeleeAttackChargeFinished(Vector3 position)
+    {
+        PlayFeedback("ChargeFinish_FB", position);
+    }
+
+    private void HandleChargeMeleeAttackStart(Vector3 position)
+    {
+        PlayFeedback("ChargeAttackStart_FB", position);
+    }
+
+    private void HandleChargeMeleeAttackFinished(Vector3 position)
+    {
+        PlayFeedback("ChargeAttackFinish_FB", position);
+    }
+
+    private void HandleTier1ChargeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier1ChargeAttackHit_FB", position);
+    }
+
+    private void HandleTier2ChargeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier2ChargeAttackHit_FB", position);
+    }
+
+    private void HandleTier3ChargeAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier3ChargeAttackHit_FB", position);
+    }
+
+    private void HandleRangedAttackChargeStart(Vector3 position)
+    {
+        PlayFeedback("RangeAttackChargeStart_FB", position);
+    }
+
+    private void HandleRangedAttackChargePerform(Vector3 position)
+    {
+        PlayFeedback("RangeAttackCharging_FB", position);
+    }
+
+    private void HandleRangedAttackChargeCancel(Vector3 position)
+    {
+        PlayFeedback("RangeAttackChargeCancel_FB", position);
+    }
+
+    private void HandleRangedAttackChargeFinished(Vector3 position)
+    {
+        PlayFeedback("RangeAttackChargeFinish_FB", position);
+    }
+
+    private void HandleRangedAttackStart(Vector3 position)
+    {
+        PlayFeedback("RangeAttackStart_FB", position);
+    }
+
+    private void HandleRangedAttackAffect(Vector3 position, Collider collider)
+    {
+        PlayFeedback("RangeAttackHit_FB", position);
+    }
+
+    private void HandleParryStart(Vector3 position)
+    {
+        PlayFeedback("ParryStart_FB", position);
+    }
+
+    private void HandleParryAffect(Vector3 position, Collider collider)
+    {
+        PlayFeedback("ParrySuccess_FB", position);
+    }
+
+    private void HandleCounterAttackStart(Vector3 position)
+    {
+        PlayFeedback("CounterAttackStart_FB", position);
+    }
+
+    private void HandleTier1FirstCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier1CounterAttackFirstHit_FB", position);
+    }
+
+    private void HandleTier2FirstCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier2CounterAttackFirstHit_FB", position);
+    }
+
+    private void HandleTier3FirstCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier3CounterAttackFirstHit_FB", position);
+    }
+
+    private void HandleTier1SecondCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier1CounterAttackSecondHit_FB", position);
+    }
+
+    private void HandleTier2SecondCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier2CounterAttackSecondHit_FB", position);
+    }
+
+    private void HandleTier3SecondCounterAttackEffect(Vector3 position)
+    {
+        PlayFeedback("Tier3CounterAttackSecondHit_FB", position);
+    }
+
+    private void HandleCounterAttackFinished(Vector3 position)
+    {
+        PlayFeedback("CounterAttackFinish_FB", position);
+    }
+    #endregion
 }

@@ -18,7 +18,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         base.OnEnter();
 
         p_context.Event.ChargeMeleeAttack.PublishStart(p_context.Combat.ChargeAttackStartEffectPoint.position);
-        p_context.Event.ChargeMeleeAttack.OnFinished += (position) => AttackFinished();
+        p_context.Event.ChargeMeleeAttack.OnFinished += HandleAttackFinished;
     }
 
     public override void OnExit()
@@ -26,8 +26,15 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         p_context.MeleeAttack.ResetComboCount();
-        p_context.Event.ChargeMeleeAttack.OnFinished -= (position) => AttackFinished();
+        p_context.Event.ChargeMeleeAttack.OnFinished -= HandleAttackFinished;
     }
+       
+    #region Feedback Handlers
+    private void HandleAttackFinished(Vector3 position)
+    {
+        AttackFinished();
+    }
+    #endregion
 
     protected override void HandleInput()
     {
@@ -43,7 +50,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
             {
                 p_nextState = typeof(PlayerDefendState);
             }
-            else if(p_context.Controller.MoveInput != Vector2.zero)
+            else if (p_context.Controller.MoveInput != Vector2.zero)
             {
                 p_nextState = typeof(PlayerMoveState);
             }

@@ -15,17 +15,22 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     /// <summary>다음 공격 상태 (콤보 끝이므로 null)</summary>
     protected override Type p_nextAttackState => null;
 
+    private readonly Action<Vector3> _attackFinishedHandler;
+
     /// <summary>
     /// 두 번째 공격 상태 생성자
     /// </summary>
     public PlayerSecondMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
-        : base(context, stateMachine) { }
+        : base(context, stateMachine)
+    {
+        _attackFinishedHandler = (Position) => AttackFinished();
+    }
 
     public override void OnEnter()
     {
         base.OnEnter();
 
-        p_context.Event.MeleeAttack.OnFinished += (Position) => AttackFinished();
+        p_context.Event.MeleeAttack.OnFinished += _attackFinishedHandler;
         p_context.Event.MeleeAttack.PublishStart(p_context.MeleeAttack.AttackStartEffectPosition);
         p_context.Event.PublishMeleeAttackEffect(p_context.MeleeAttack.ComboCount, p_context.MeleeAttack.AttackStartEffectPosition);
 
@@ -35,6 +40,6 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnExit();
 
-        p_context.Event.MeleeAttack.OnFinished -= (Position) => AttackFinished();
+        p_context.Event.MeleeAttack.OnFinished -= _attackFinishedHandler;
     }
 }

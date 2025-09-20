@@ -28,7 +28,7 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
     /// </summary>
     public override void OnEnter()
     {
-        p_context.Event.RangedAttack.OnFinished += (position) => OnRangedAttackEndEvent();
+        p_context.Event.RangedAttack.OnFinished += HandleRangedAttackEndEvent;
         p_context.Animator.SetTrigger("RangedAttackFire");
         Log.Print("Player entered RangedAttackFireState");
 
@@ -51,9 +51,16 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
     /// </summary>
     public override void OnExit()
     {
-        p_context.Event.RangedAttack.OnFinished -= (position) => OnRangedAttackEndEvent();
+        p_context.Event.RangedAttack.OnFinished -= HandleRangedAttackEndEvent;
         Log.Print("Player exited RangedAttackFireState");
     }
+
+    #region Feedback Handlers
+    private void HandleRangedAttackEndEvent(Vector3 position)
+    {
+        OnRangedAttackEndEvent();
+    }
+    #endregion
 
     /// <summary>
     /// 입력 처리

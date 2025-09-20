@@ -32,12 +32,43 @@ public class PlayerHeat : HeatSystem
 
         // TODO: 열량 시스템 이벤트 구독
         // TODO: 플레이어 ID로 열량 데이터 초기화
-        _context.Event.MeleeAttack.OnAffect += (position, target) => AddHeatOnMeleeAttack(target);
-        _context.Event.Parry.OnAffect += (position, collider) => AddHeatOnParry();
+        _context.Event.MeleeAttack.OnAffect += HandleMeleeAttackAffect;
+        _context.Event.Parry.OnAffect += HandleParryAffect;
 
-        _context.Event.MeleeAttackCharge.OnStart += (position) => ChargeStart();
-        _context.Event.MeleeAttackCharge.OnPerform += (position) => AddHeatOnMeleeAttackCharging();
+        _context.Event.MeleeAttackCharge.OnStart += HandleMeleeAttackChargeStart;
+        _context.Event.MeleeAttackCharge.OnPerform += HandleMeleeAttackChargePerform;
     }
+    public void OnDisable()
+    {
+        _context.Event.MeleeAttack.OnAffect -= HandleMeleeAttackAffect;
+        _context.Event.Parry.OnAffect -= HandleParryAffect;
+
+        _context.Event.MeleeAttackCharge.OnStart -= HandleMeleeAttackChargeStart;
+        _context.Event.MeleeAttackCharge.OnPerform -= HandleMeleeAttackChargePerform;
+    }
+
+    #region Feedback Handlers
+    private void HandleMeleeAttackAffect(Vector3 position, Collider target)
+    {
+        AddHeatOnMeleeAttack(target);
+    }
+
+    private void HandleParryAffect(Vector3 position, Collider collider)
+    {
+        AddHeatOnParry();
+    }
+
+    private void HandleMeleeAttackChargeStart(Vector3 position)
+    {
+        ChargeStart();
+    }
+
+    private void HandleMeleeAttackChargePerform(Vector3 position)
+    {
+        AddHeatOnMeleeAttackCharging();
+    }
+
+    #endregion
 
     /// <summary>
     /// 공격 시 열량 추가
@@ -111,7 +142,5 @@ public class PlayerHeat : HeatSystem
             }
         }
     }
-    public void OnDestroy()
-    {
-    }
+
 }

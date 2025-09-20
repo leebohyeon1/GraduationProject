@@ -106,9 +106,21 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        _event.Dodge.OnStart += (position)=> { SetInvisible(true); };
-        _event.Dodge.OnFinished += (position)=> { SetInvisible(false); };
+        _event.Dodge.OnStart += HandleDodgeStart;
+        _event.Dodge.OnFinished += HandleDodgeFinished;
     }
+
+    #region Feedback Handlers
+    private void HandleDodgeStart(Vector3 position)
+    {
+        SetInvisible(true);
+    }
+
+    private void HandleDodgeFinished(Vector3 position)
+    {
+        SetInvisible(false);
+    }
+    #endregion
 
     /// <summary>
     /// 피해를 입는 처리
@@ -141,7 +153,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
             CurrentHealth = p_currentHealth,
             MaxHealth = MaxHealth,
         };
-        
+
         OnHealthChanged?.Invoke(newHealthData);
 
         if (IsDead)
@@ -187,9 +199,9 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         Log.PrintColor(Color.yellow, $"무적: {isInvisible}");
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        _event.Dodge.OnStart -= (position)=> { SetInvisible(true); };
-        _event.Dodge.OnFinished -= (position)=> { SetInvisible(false); };
+        _event.Dodge.OnStart -= HandleDodgeStart;
+        _event.Dodge.OnFinished -= HandleDodgeFinished;
     }
 }

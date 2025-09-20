@@ -14,12 +14,12 @@ public class HeatBar : MonoBehaviour
         _heatable = _object.GetComponent<IHeatable>();
         
         _heatBarSlider.fillAmount = _heatable.CurrentHeat / (float)_heatable.MaxHeat;
-        _heatable.OnHeatChanged +=(currentHeat, maxHeat) => ChangeHeatBar(currentHeat, maxHeat);
+        _heatable.OnHeatChanged += ChangeHeatBar;
     }
 
     private void OnDestroy()
     {
-        _heatable.OnHeatChanged -= (currentHeat, maxHeat) => ChangeHeatBar(currentHeat, maxHeat);
+        _heatable.OnHeatChanged -= ChangeHeatBar;
     }
 
     private void ChangeHeatBar(int currentHeat, int maxHeat)

@@ -74,8 +74,20 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.RangedAttack.OnPerform += (position) => FireProjectile();         // 원거리 공격 시작 이벤트
+        _event.RangedAttack.OnPerform += HandleRangedAttackPerform;
     }
+
+    private void OnDisable()
+    {
+        _event.RangedAttack.OnPerform -= HandleRangedAttackPerform;
+    }
+
+    #region Feedback Handlers
+    private void HandleRangedAttackPerform(Vector3 position)
+    {
+        FireProjectile();
+    }
+    #endregion
 
     /// <summary>
     /// 원거리 공격 투사체 발사

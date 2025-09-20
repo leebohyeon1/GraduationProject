@@ -164,48 +164,6 @@ public class PlayerEventChannel
         } 
     }
 
-
-    /// <summary>
-    /// 모든 이벤트 구독을 해제합니다.
-    /// </summary>
-    public void Dispose()
-    {
-        OnRotateToAttackDirection = null;
-        OnFootstep = null;
-        OnMoveStop = null;
-        OnLand = null;
-
-        OnNomalHit = null;
-        OnStrongHit = null;
-        OnDefendHit = null;
-
-        OnFirstMeleeAttackEffect = null;
-        OnSecondMeleeAttackEffect = null;
-        OnThirdMeleeAttackEffect = null;
-
-        Dodge.Dispose();
-        Parry.Dispose();
-
-        MeleeAttack.Dispose();
-
-        ChargeMeleeAttack.Dispose();
-        OnTier1ChargeAttackEffect = null;
-        OnTier2ChargeAttackEffect = null;
-        OnTier3ChargeAttackEffect = null;
-        MeleeAttackCharge.Dispose();
-
-        RangedAttack.Dispose();
-        RangedAttackCharge.Dispose();
-
-        CounterAttack.Dispose();
-        OnTier1FirstCounterAttackEffect = null;
-        OnTier2FirstCounterAttackEffect = null;
-        OnTier3FirstCounterAttackEffect = null;
-        OnTier1SecondCounterAttackEffect = null;
-        OnTier2SecondCounterAttackEffect = null;
-        OnTier3SecondCounterAttackEffect = null;
-    }
-
     #endregion
 }
 
@@ -272,19 +230,6 @@ public struct PlayerActionEvents<T>
     {
         OnAffect?.Invoke(position, targets);
     }
-
-
-    /// <summary>
-    /// 모든 이벤트 구독을 해제합니다.
-    /// </summary>
-    public void Dispose()
-    {
-        OnStart = null;
-        OnPerform = null;
-        OnFinished = null;
-        OnAffect = null;
-        OnCancel = null;
-    }
 }
 
 /// <summary>
@@ -325,15 +270,4 @@ public struct PlayerChargeActionEvents
     /// 차징 취소 이벤트를 발생시킵니다.
     /// </summary>
     public void PublishCancel(Vector3 postion) => OnCancel?.Invoke(postion);
-
-    /// <summary>
-    /// 모든 이벤트 구독을 해제합니다.
-    /// </summary>
-    public void Dispose()
-    {
-        OnStart = null;
-        OnPerform = null;
-        OnFinished = null;
-        OnCancel = null;
-    }
 }

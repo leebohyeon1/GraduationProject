@@ -26,7 +26,7 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
         base.OnEnter();
 
         Log.Print("Player entered CounterAttack state");
-        p_context.Event.CounterAttack.OnFinished += (position) => AttackFinished();
+        p_context.Event.CounterAttack.OnFinished += HandleAttackFinished;
         p_context.Event.CounterAttack.PublishStart(p_context.Combat.CounterAttackStartEffectPoint.position);
     }
 
@@ -35,8 +35,15 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         Log.Print("Player exited CounterAttack state");
-        p_context.Event.CounterAttack.OnFinished -= (position) => AttackFinished();
+        p_context.Event.CounterAttack.OnFinished -= HandleAttackFinished;
     }
+
+    #region Feedback Handlers
+    private void HandleAttackFinished(Vector3 position)
+    {
+        AttackFinished();
+    }
+    #endregion
 
     protected override void StartAttackMovement()
     {
@@ -45,9 +52,9 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
             return;
         }
 
-       var attackData = p_context.Stats.CounterAttackData;
+        var attackData = p_context.Stats.CounterAttackData;
         if (attackData.AttackMoveDistance <= 0) return;
-        
+
         p_attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }

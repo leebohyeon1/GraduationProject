@@ -76,7 +76,7 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     {
         0 => _firstAttackStartEffectPosition.position,
         1 => _secondAttackStartEffectPosition.position,
-        2 => _thirdAttackStartEffectPosition.position,
+        // 2 => _thirdAttackStartEffectPosition.position,
         _ => _firstAttackStartEffectPosition.position
     };
 
@@ -94,15 +94,58 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         _context = context;
         _event = _context.Event;
 
-        _event.MeleeAttack.OnStart += (position) => SetAttackCenter();
-        _event.MeleeAttack.OnPerform += (postion) => PerformAttack();              // 일반 공격 수행 이벤트
+        _event.MeleeAttack.OnStart += HandleMeleeAttackStart;
+        _event.MeleeAttack.OnPerform += HandleMeleeAttackPerform;
 
-        _event.MeleeAttackCharge.OnStart += (position) => SetIsPerformingChargeAttack(true);  // 차지 시작
-        _event.ChargeMeleeAttack.OnStart += (position) => SetAttackCenter();
-        _event.ChargeMeleeAttack.OnPerform += (postion) => PerformChargeMeleeAttack(); // 차지 공격 수행 이벤트
-        _event.ChargeMeleeAttack.OnFinished += (position) => SetIsPerformingChargeAttack(false);  // 공격 종료
+        _event.MeleeAttackCharge.OnStart += HandleMeleeAttackChargeStart;
+        _event.ChargeMeleeAttack.OnStart += HandleChargeMeleeAttackStart;
+        _event.ChargeMeleeAttack.OnPerform += HandleChargeMeleeAttackPerform;
+        _event.ChargeMeleeAttack.OnFinished += HandleChargeMeleeAttackFinished;
     }
 
+    private void OnDisable()
+    {
+        _event.MeleeAttack.OnStart -= HandleMeleeAttackStart;
+        _event.MeleeAttack.OnPerform -= HandleMeleeAttackPerform;
+
+        _event.MeleeAttackCharge.OnStart -= HandleMeleeAttackChargeStart;
+        _event.ChargeMeleeAttack.OnStart -= HandleChargeMeleeAttackStart;
+        _event.ChargeMeleeAttack.OnPerform -= HandleChargeMeleeAttackPerform;
+        _event.ChargeMeleeAttack.OnFinished -= HandleChargeMeleeAttackFinished;
+    }
+
+    #region Feedback Handlers
+    private void HandleMeleeAttackStart(Vector3 position)
+    {
+        SetAttackCenter();
+    }
+
+    private void HandleMeleeAttackPerform(Vector3 position)
+    {
+        PerformAttack();
+    }
+
+    private void HandleMeleeAttackChargeStart(Vector3 position)
+    {
+        SetIsPerformingChargeAttack(true);
+    }
+
+    private void HandleChargeMeleeAttackStart(Vector3 position)
+    {
+        SetAttackCenter();
+    }
+
+    private void HandleChargeMeleeAttackPerform(Vector3 position)
+    {
+        PerformChargeMeleeAttack();
+    }
+
+    private void HandleChargeMeleeAttackFinished(Vector3 position)
+    {
+        SetIsPerformingChargeAttack(false);
+    }
+    #endregion
+    
     /// <summary>
     /// 실제 공격 실행 (Physics.OverlapBox로 범위 내 적 감지 및 피해 적용)
     /// 애니메이션 이벤트에서 호출됩니다.

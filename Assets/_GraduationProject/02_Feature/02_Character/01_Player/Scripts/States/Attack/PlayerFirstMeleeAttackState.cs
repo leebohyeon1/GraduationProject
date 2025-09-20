@@ -12,14 +12,19 @@ public class PlayerFirstMeleeAttackState : PlayerMeleeAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerSecondMeleeAttackState);
 
+    private readonly Action<Vector3> _attackFinishedHandler;
+
     public PlayerFirstMeleeAttackState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
-        : base(context, stateMachine) { }
+        : base(context, stateMachine)
+    {
+        _attackFinishedHandler = (position) => AttackFinished();
+    }
 
     public override void OnEnter()
     {
         base.OnEnter();
 
-        p_context.Event.MeleeAttack.OnFinished += (position) => AttackFinished();
+        p_context.Event.MeleeAttack.OnFinished += _attackFinishedHandler;
 
         p_context.Event.MeleeAttack.PublishStart(p_context.MeleeAttack.AttackStartEffectPosition);
         p_context.Event.PublishMeleeAttackEffect(p_context.MeleeAttack.ComboCount, p_context.MeleeAttack.AttackStartEffectPosition);
@@ -29,6 +34,6 @@ public class PlayerFirstMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnExit();
 
-        p_context.Event.MeleeAttack.OnFinished -= (position) => AttackFinished();
+        p_context.Event.MeleeAttack.OnFinished -= _attackFinishedHandler;
     }
 }

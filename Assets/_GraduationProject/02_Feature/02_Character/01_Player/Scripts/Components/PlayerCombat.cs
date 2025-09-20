@@ -76,24 +76,65 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.Parry.OnPerform += (position) => TryParry();                           // 패링 시도 이벤트
-        _event.Parry.OnAffect += (position, collider) => EnterCounterAttackStance();
+        _event.Parry.OnPerform += HandleParryPerform;
+        _event.Parry.OnAffect += HandleParryAffect;
 
-        _event.CounterAttack.OnPerform += (position) => TryCounterAttack();
+        _event.CounterAttack.OnPerform += HandleCounterAttackPerform;
 
         // 행동 관련 이벤트 버스 구독
-        _event.MeleeAttack.OnStart += (position) => ResetRestTimer();
-        _event.MeleeAttackCharge.OnStart += (position) => ResetRestTimer();
-        _event.MeleeAttackCharge.OnPerform += (position) => ResetRestTimer();
-        _event.ChargeMeleeAttack.OnStart += (position) => ResetRestTimer();
-        _event.RangedAttackCharge.OnStart += (position) => ResetRestTimer();
-        _event.RangedAttack.OnStart += (position) => ResetRestTimer();
-        _event.CounterAttack.OnStart += (position) => ResetRestTimer();
-        _event.Parry.OnStart += (position) => ResetRestTimer();
-        _event.OnDefendHit += () => ResetRestTimer();
-        _event.OnNomalHit += () => ResetRestTimer();
-        _event.OnStrongHit += () => ResetRestTimer();
+        _event.MeleeAttack.OnStart += HandleActionStart;
+        _event.MeleeAttackCharge.OnStart += HandleActionStart;
+        _event.MeleeAttackCharge.OnPerform += HandleActionStart;
+        _event.ChargeMeleeAttack.OnStart += HandleActionStart;
+        _event.RangedAttackCharge.OnStart += HandleActionStart;
+        _event.RangedAttack.OnStart += HandleActionStart;
+        _event.CounterAttack.OnStart += HandleActionStart;
+        _event.Parry.OnStart += HandleActionStart;
+        _event.OnDefendHit += ResetRestTimer;
+        _event.OnNomalHit += ResetRestTimer;
+        _event.OnStrongHit += ResetRestTimer;
     }
+    private void OnDisable()
+    {
+        _event.Parry.OnPerform -= HandleParryPerform;
+        _event.Parry.OnAffect -= HandleParryAffect;
+
+        _event.CounterAttack.OnPerform -= HandleCounterAttackPerform;
+
+        _event.MeleeAttack.OnStart -= HandleActionStart;
+        _event.MeleeAttackCharge.OnStart -= HandleActionStart;
+        _event.MeleeAttackCharge.OnPerform -= HandleActionStart;
+        _event.ChargeMeleeAttack.OnStart -= HandleActionStart;
+        _event.RangedAttackCharge.OnStart -= HandleActionStart;
+        _event.RangedAttack.OnStart -= HandleActionStart;
+        _event.CounterAttack.OnStart -= HandleActionStart;
+        _event.Parry.OnStart -= HandleActionStart;
+        _event.OnDefendHit -= ResetRestTimer;
+        _event.OnNomalHit -= ResetRestTimer;
+        _event.OnStrongHit -= ResetRestTimer;
+    }
+
+    #region Feedback Handlers
+    private void HandleParryPerform(Vector3 position)
+    {
+        TryParry();
+    }
+
+    private void HandleParryAffect(Vector3 position, Collider collider)
+    {
+        EnterCounterAttackStance();
+    }
+
+    private void HandleCounterAttackPerform(Vector3 position)
+    {
+        TryCounterAttack();
+    }
+
+    private void HandleActionStart(Vector3 position)
+    {
+        ResetRestTimer();
+    }
+    #endregion
 
     #region Parry
     /// <summary>
@@ -177,11 +218,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
     public bool ScanCounterable()
     {
-        Vector3 counterCenter = GetCounterCenter(); 
+        Vector3 counterCenter = GetCounterCenter();
         Collider[] hits = Physics.OverlapBox(counterCenter, MeleeAttackData.AttackRadius / 2, transform.rotation, _attackLayerMask);
-        foreach(Collider hit in hits)
+        foreach (Collider hit in hits)
         {
-            ICounterable counterable = hit.GetComponent<ICounterable>();         
+            ICounterable counterable = hit.GetComponent<ICounterable>();
             if (counterable != null && counterable.IsCounterable)
             {
                 _counterObject = hit;
@@ -191,7 +232,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
         return false;
     }
-    
+
     /// <summary>
     /// 카운터 공격 시도
     /// </summary>
@@ -262,4 +303,5 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     }
 
 #endif
+
 }

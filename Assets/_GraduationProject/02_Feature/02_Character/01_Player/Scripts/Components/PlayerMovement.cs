@@ -80,6 +80,11 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
         _event.OnRotateToAttackDirection += RotateToAttackDirection;
     }
 
+    private void OnDisable()
+    {
+        _event.OnRotateToAttackDirection -= RotateToAttackDirection;
+    }
+
     /// <summary>
     /// 카메라 기준 이동 처리
     /// 입력 방향을 카메라 기준으로 변환하여 이동 및 회전 수행
