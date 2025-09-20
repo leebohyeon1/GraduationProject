@@ -37,7 +37,10 @@ public class PlayerHeat : HeatSystem
 
         _context.Event.MeleeAttackCharge.OnStart += HandleMeleeAttackChargeStart;
         _context.Event.MeleeAttackCharge.OnPerform += HandleMeleeAttackChargePerform;
+
+        _context.Event.RangedAttack.OnAffect += HandleRangedAttackAffect;
     }
+
     public void OnDisable()
     {
         _context.Event.MeleeAttack.OnAffect -= HandleMeleeAttackAffect;
@@ -45,6 +48,8 @@ public class PlayerHeat : HeatSystem
 
         _context.Event.MeleeAttackCharge.OnStart -= HandleMeleeAttackChargeStart;
         _context.Event.MeleeAttackCharge.OnPerform -= HandleMeleeAttackChargePerform;
+
+        _context.Event.RangedAttack.OnAffect -= HandleRangedAttackAffect;
     }
 
     #region Feedback Handlers
@@ -68,6 +73,11 @@ public class PlayerHeat : HeatSystem
         AddHeatOnMeleeAttackCharging();
     }
 
+    private void HandleRangedAttackAffect(Vector3 position, Collider target)
+    {
+        Log.PrintColor(Color.red, "원거리 공격 열량 감소 처리");
+        MinusHeatOnRangedAttack(target);
+    }
     #endregion
 
     /// <summary>
@@ -143,4 +153,19 @@ public class PlayerHeat : HeatSystem
         }
     }
 
+    private void MinusHeatOnRangedAttack(Collider target)
+    {
+        IHeatable heatable = target.GetComponent<IHeatable>();
+        if (heatable != null)
+        {
+            SourceMap sourceMap;
+            sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess",  heatable.ActorType, -1);
+
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
+            Log.PrintColor(Color.red, $"target: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
+            heatable.ChangeHeat(deltaHeat);
+        }
+
+    }
 }

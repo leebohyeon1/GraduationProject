@@ -25,6 +25,11 @@ public class TestEnemyProjectile : Projectile, IParryable
 
     protected override void OnTriggerEnter(Collider other)
     {
+        if (p_owner == null)
+        {
+            DestroyProjectile();
+            return;
+        }
         if (other.gameObject == p_owner) return;
         
         int layer = 1 << other.gameObject.layer;

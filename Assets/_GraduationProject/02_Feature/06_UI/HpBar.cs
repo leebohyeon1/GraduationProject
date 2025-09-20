@@ -29,7 +29,7 @@ public class HpBar : DIMonoBehaviour
         DOTween.To(() => _hpBarSlider.fillAmount,
                     x => _hpBarSlider.fillAmount = x,
                     eventData.HealthPercent, 0.5f)
-                    .SetEase(Ease.OutQuad)
+                    .SetEase(Ease.Linear)
                     .SetId(_hpBarSlider);
     }
 }

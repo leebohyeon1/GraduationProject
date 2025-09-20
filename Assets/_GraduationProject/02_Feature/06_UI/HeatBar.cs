@@ -30,7 +30,7 @@ public class HeatBar : MonoBehaviour
         DOTween.To(() => _heatBarSlider.fillAmount,
                     x => _heatBarSlider.fillAmount = x,
                     healthPercent, 0.1f)
-                    .SetEase(Ease.OutQuad)
+                    .SetEase(Ease.Linear)
                     .SetId(_heatBarSlider);
     }
 }

@@ -37,6 +37,11 @@ public interface IPlayerController
     bool DefendInput { get; }
     
     /// <summary>
+    /// 스킬 입력 (Q 또는 버튼)
+    /// </summary>
+    bool SkillInput { get; }
+
+    /// <summary>
     /// 조준 입력 (게임패드 우 스틱)
     /// </summary>
     Vector2 LookInput { get; }

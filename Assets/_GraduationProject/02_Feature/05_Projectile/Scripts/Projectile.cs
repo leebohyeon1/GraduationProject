@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour, IAttacker
             if (damageable != null && !damageable.IsDead)
             {
                 Attack(damageable);
-                
+
                 if (p_destroyOnHit)
                 {
                     DestroyProjectile();

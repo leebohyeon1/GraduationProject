@@ -49,7 +49,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
     /// </summary>
     private Vector2 _lookInput;
     private Vector2 _mousePosition;
-    
+
+    /// <summary>
+    /// 스킬 입력 상태입니다.
+    /// </summary>
+    private bool _skillInput;
+
     public void Initialize(IInputDeviceDetector inputDeviceDetector)
     {
         _inputDeviceDetector = inputDeviceDetector;
@@ -93,6 +98,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.DefendCancelledEvent += OnDefendCancelled;
             _inputReader.LookEvent += OnLook;
             _inputReader.MousePositionEvent += OnMousePosition;
+            _inputReader.SkillEvent += OnSkill;
         }
     }
     
@@ -115,6 +121,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputReader.DefendCancelledEvent -= OnDefendCancelled;
             _inputReader.LookEvent -= OnLook;
             _inputReader.MousePositionEvent -= OnMousePosition;
+            _inputReader.SkillEvent -= OnSkill;
         }
     }
     
@@ -211,10 +218,19 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     /// <summary>
+    /// 스킬 이벤트가 발생했을 때 호출되는 콜백 함수입니다.
+    /// </summary>
+    private void OnSkill()
+    {
+        _skillInput = true;
+    }
+
+    /// <summary>
     /// 매 프레임의 마지막에 호출되어, 한 번만 처리해야 하는 입력 상태를 리셋합니다.
     /// </summary>
     public void LateTick()
     {
+        _skillInput = false;
         _attackInput = false;
         _dodgeInput = false;
     }
@@ -235,6 +251,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
     public bool DefendInput => _defendInput;
+    public bool SkillInput => _skillInput;
     public Vector2 LookInput => _lookInput;
     public Vector2 MousePosition => _mousePosition;
 

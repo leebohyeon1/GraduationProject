@@ -34,6 +34,7 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event UnityAction<Vector2> MousePositionEvent = delegate { };
     // 입력 기기 변경 이벤트
     public event UnityAction<InputDeviceType> InputDeviceChangedEvent = delegate { };
+    public event UnityAction SkillEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -77,9 +78,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     {
         switch (context.phase)
         {
-            case InputActionPhase.Started:
-                
-                break;
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
@@ -137,6 +135,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         MousePositionEvent.Invoke(mousePosition);
     }
 
+    public void OnSkill(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SkillEvent.Invoke();
+        }
+    }
+
     /// <summary>
     /// 외부에서 입력 기기 변경을 알릴 때 사용하는 함수
     /// </summary>
@@ -155,4 +161,5 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         _inputActions?.Dispose();
         _inputActions = null;
     }
+
 }
