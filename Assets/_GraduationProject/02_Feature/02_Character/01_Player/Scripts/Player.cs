@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BH_Lib.DI;
 using BH_Lib.FSM;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어 캐릭터의 기본 클래스
@@ -27,7 +28,7 @@ public class Player : CharacterBase
 
     // 입력 기기 감지기
     [Inject] private IInputDeviceDetector _inputDeviceDetector;
-
+    // 플레이어 컨텍스트
     public PlayerContext Context { get; private set; }
     // 상태 머신
     private StateMachine<PlayerContext> _stateMachine;
@@ -124,23 +125,8 @@ public class Player : CharacterBase
         _playerHeat.Initialize(Context);
         _playerAnimationEventHandler.Initialize(Context.Event);
 
-        Context.Event.OnFootstep += () => { PlayFeedbackSound("FootStep"); };
-        Context.Event.Dodge.OnStart += () => { PlayFeedbackSound("DodgeStart"); };
-        Context.Event.OnHit += () => { PlayFeedbackSound("Hit"); };
-
-        Context.Event.OnFirstMeleeAttackEffect += () => { PlayFeedbackSound("FirstAttack"); };
-        Context.Event.OnSecondMeleeAttackEffect += () => { PlayFeedbackSound("SecondAttack"); };
-        
-        Context.Event.RangedAttackCharge.OnPerform += () => { PlayFeedbackSound("RangedAttackCharge"); };
-        Context.Event.RangedAttackCharge.OnCancel += () => { PlayFeedbackSound("RangedAttackChargeCancel"); };
-        Context.Event.RangedAttackCharge.OnFinished += () => { PlayFeedbackSound("RangedAttackChargeFinish"); };
-        Context.Event.RangedAttack.OnPerform += () => { PlayFeedbackSound("RangedAttack"); };
-
-        Context.Event.MeleeAttackCharge.OnStart += () => { PlayFeedbackSound("MeleeAttackChargeStart"); };
-        Context.Event.MeleeAttackCharge.OnPerform += () => { PlayFeedbackSound("MeleeAttackCharge"); };
-        Context.Event.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeMeleeAttack"); };
-
-        Context.Event.Parry.OnAffect += (collider) => { PlayFeedbackSound("Parry"); };
+        InitializeFeedbacks();
+       
     }
 
     private void InitializeStateMachine()
@@ -205,6 +191,57 @@ public class Player : CharacterBase
         // Attack, Dodge 상태에서의 전환은 각 상태 클래스 내부에서 처리됩니다.
     }
 
+    private void InitializeFeedbacks()
+    {
+        /// 움직임 관련 피드백
+        Context.Event.OnFootstep += () => { PlayFeedbackSound("Move_FB"); };
+        Context.Event.OnMoveStop += () => { PlayFeedbackSound("MoveStop_FB"); };
+        Context.Event.Dodge.OnStart += () => { PlayFeedbackSound("DodgeStart_FB"); };
+        Context.Event.Dodge.OnFinished += () => { PlayFeedbackSound("DodgeFinish_FB"); };
+        Context.Event.OnLand += () => { PlayFeedbackSound("Landing_FB"); };
+
+        /// 피격 관련 피드백
+        Context.Event.OnNomalHit += () => { PlayFeedbackSound("TakeDamage_Nomal_FB"); };
+        Context.Event.OnStrongHit += () => { PlayFeedbackSound("TakeDamage_Strong_FB"); };
+        Context.Event.OnDefendHit += () => { PlayFeedbackSound("TakeDamage_Defend_FB"); };
+
+        /// 근접 공격 관련 피드백
+        Context.Event.OnFirstMeleeAttackEffect += (position) => { PlayFeedback("FirstAttackStart_FB", position); };
+        Context.Event.OnSecondMeleeAttackEffect += (position) => { PlayFeedback("SecondAttackStart_FB", position); };
+        Context.Event.OnThirdMeleeAttackEffect += (position) => { PlayFeedback("ThirdAttackStart_FB", position); };
+        Context.Event.MeleeAttack.OnPerform += (position) => { PlayFeedback("MeleeAttackHit_FB", position); };
+
+        /// 차징 공격 관련 피드백
+        Context.Event.MeleeAttackCharge.OnStart += () => { PlayFeedbackSound("ChargeStart_FB"); };
+        Context.Event.MeleeAttackCharge.OnCancel += () => { PlayFeedbackSound("ChargeCancel_FB"); };
+        Context.Event.MeleeAttackCharge.OnFinished += () => { PlayFeedbackSound("ChargeFinish_FB"); };
+        Context.Event.ChargeMeleeAttack.OnStart += () => { PlayFeedbackSound("ChargeAttackStart_FB"); };
+        Context.Event.ChargeMeleeAttack.OnFinished += () => { PlayFeedbackSound("ChargeAttackFinish_FB"); };
+        Context.Event.OnTier1ChargeAttackEffect += (position) => { PlayFeedback("Tier1ChargeAttackHit_FB", position); };
+        Context.Event.OnTier2ChargeAttackEffect += (position) => { PlayFeedback("Tier2ChargeAttackHit_FB", position); };
+        Context.Event.OnTier3ChargeAttackEffect += (position) => { PlayFeedback("Tier3ChargeAttackHit_FB", position); };
+
+        /// 원거리 공격 관련 피드백
+        Context.Event.RangedAttackCharge.OnStart += () => { PlayFeedbackSound("RangeAttackChargeStart_FB"); };
+        Context.Event.RangedAttackCharge.OnPerform += () => { PlayFeedbackSound("RangeAttackCharging_FB"); };
+        Context.Event.RangedAttackCharge.OnCancel += () => { PlayFeedbackSound("RangeAttackChargeCancel_FB"); };
+        Context.Event.RangedAttackCharge.OnFinished += () => { PlayFeedbackSound("RangeAttackChargeFinish_FB"); };
+        Context.Event.RangedAttack.OnStart += () => { PlayFeedbackSound("RangeAttackStart_FB"); };
+        Context.Event.RangedAttack.OnPerform += (position) => { PlayFeedback("RangeAttacHit_FB", position); };
+
+        /// 패리/카운터 공격 관련 피드백
+        Context.Event.Parry.OnStart += () => { PlayFeedbackSound("ParryStart_FB"); };
+        Context.Event.Parry.OnPerform += (position) => { PlayFeedback("ParrySuccess_FB", position); };
+        Context.Event.CounterAttack.OnStart += () => { PlayFeedbackSound("CounterAttackStart_FB"); };
+        Context.Event.OnTier1FirstCounterAttackEffect += (position) => { PlayFeedback("Tier1CounterAttackFirstHit_FB", position); };
+        Context.Event.OnTier2FirstCounterAttackEffect += (position) => { PlayFeedback("Tier2CounterAttackFirstHit_FB", position); };
+        Context.Event.OnTier3FirstCounterAttackEffect += (position) => { PlayFeedback("Tier3CounterAttackFirstHit_FB", position); };
+        Context.Event.OnTier1SecondCounterAttackEffect += (position) => { PlayFeedback("Tier1CounterAttackSecondHit_FB", position); };
+        Context.Event.OnTier2SecondCounterAttackEffect += (position) => { PlayFeedback("Tier2CounterAttackSecondHit_FB", position); };
+        Context.Event.OnTier3SecondCounterAttackEffect += (position) => { PlayFeedback("Tier3CounterAttackSecondHit_FB", position); };
+        Context.Event.CounterAttack.OnFinished += () => { PlayFeedbackSound("CounterAttackFinish_FB"); };
+    }
+    
     // 현재 상태 정보 (디버깅용)
     public IState CurrentState => _stateMachine?.CurrentState;
     public Type CurrentStateType => _stateMachine?.CurrentStateType;

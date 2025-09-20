@@ -125,7 +125,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
         else
         {
-            _context.Event.PublishHit();
+            _context.Event.PublishNormalHit();
         }
 
         int previousHealth = p_currentHealth;
