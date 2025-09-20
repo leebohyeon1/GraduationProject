@@ -218,7 +218,7 @@ public struct PlayerActionEvents<T>
     /// <summary>
     /// 액션이 시작될 때 발생합니다.
     /// </summary>
-    public event Action OnStart;
+    public event Action<Vector3> OnStart;
     /// <summary>
     /// 액션이 수행될 때 발생합니다.
     /// </summary>
@@ -226,7 +226,7 @@ public struct PlayerActionEvents<T>
     /// <summary>
     /// 액션이 끝났을 때 발생합니다.
     /// </summary>
-    public event Action OnFinished;
+    public event Action<Vector3> OnFinished;
     /// <summary>
     /// 액션이 취소되었을 때 발생합니다.
     /// </summary>
@@ -234,14 +234,14 @@ public struct PlayerActionEvents<T>
     /// <summary>
     /// 액션이 대상에 영향을 미쳤을 때 발생합니다.
     /// </summary>
-    public event Action<T> OnAffect;
+    public event Action<Vector3, T> OnAffect;
 
     /// <summary>
     /// 액션 시작 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishStart()
+    public void PublishStart(Vector3 position)
     {
-        OnStart?.Invoke();
+        OnStart?.Invoke(position);
     }
     /// <summary>
     /// 액션 수행 이벤트를 발생시킵니다.
@@ -253,11 +253,10 @@ public struct PlayerActionEvents<T>
     /// <summary>
     /// 액션 종료 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishFinished()
+    public void PublishFinished(Vector3 position)
     {
-        OnFinished?.Invoke();
+        OnFinished?.Invoke(position);
     }
-
     /// <summary>
     /// 액션 취소 이벤트를 발생시킵니다.
     /// </summary>
@@ -269,10 +268,11 @@ public struct PlayerActionEvents<T>
     /// 액션 영향 이벤트를 발생시킵니다.
     /// </summary>
     /// <param name="targets">영향을 받은 대상</param>
-    public void PublishAffect(T targets)
+    public void PublishAffect(Vector3 position, T targets)
     {
-        OnAffect?.Invoke(targets);
+        OnAffect?.Invoke(position, targets);
     }
+
 
     /// <summary>
     /// 모든 이벤트 구독을 해제합니다.
@@ -283,6 +283,7 @@ public struct PlayerActionEvents<T>
         OnPerform = null;
         OnFinished = null;
         OnAffect = null;
+        OnCancel = null;
     }
 }
 
@@ -294,35 +295,37 @@ public struct PlayerChargeActionEvents
     /// <summary>
     /// 차징이 시작될 때 발생합니다.
     /// </summary>
-    public event Action OnStart;
+    public event Action<Vector3> OnStart;
     /// <summary>
     /// 차징 효과가 발생할 때 발생합니다.
     /// </summary>
-    public event Action OnPerform;
+    public event Action<Vector3> OnPerform;
     /// <summary>
     /// 차징이 끝났을 때 발생합니다.
     /// </summary>
-    public event Action OnFinished;
+    public event Action<Vector3> OnFinished;
     /// <summary>
     /// 차징이 취소되었을 때 발생합니다.
     /// </summary>
-    public event Action OnCancel;
+    public event Action<Vector3> OnCancel;
+
     /// <summary>
     /// 차징 시작 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishStart() => OnStart?.Invoke();
+    public void PublishStart(Vector3 postion) => OnStart?.Invoke(postion);
     /// <summary>
     /// 차징 효과 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishPerform() => OnPerform?.Invoke();
+    public void PublishPerform(Vector3 postion) => OnPerform?.Invoke(postion);
     /// <summary>
     /// 차징 종료 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishFinished() => OnFinished?.Invoke();
+    public void PublishFinished(Vector3 postion) => OnFinished?.Invoke(postion);
     /// <summary>
     /// 차징 취소 이벤트를 발생시킵니다.
     /// </summary>
-    public void PublishCancel() => OnCancel?.Invoke();
+    public void PublishCancel(Vector3 postion) => OnCancel?.Invoke(postion);
+
     /// <summary>
     /// 모든 이벤트 구독을 해제합니다.
     /// </summary>

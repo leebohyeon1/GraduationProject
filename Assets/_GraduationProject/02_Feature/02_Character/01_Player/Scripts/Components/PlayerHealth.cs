@@ -106,8 +106,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        _event.Dodge.OnStart += ()=> { SetInvisible(true); };
-        _event.Dodge.OnFinished += ()=> { SetInvisible(false); };
+        _event.Dodge.OnStart += (position)=> { SetInvisible(true); };
+        _event.Dodge.OnFinished += (position)=> { SetInvisible(false); };
     }
 
     /// <summary>
@@ -189,7 +189,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
     private void OnDestroy()
     {
-        _event.Dodge.OnStart -= ()=> { SetInvisible(true); };
-        _event.Dodge.OnFinished -= ()=> { SetInvisible(false); };
+        _event.Dodge.OnStart -= (position)=> { SetInvisible(true); };
+        _event.Dodge.OnFinished -= (position)=> { SetInvisible(false); };
     }
 }

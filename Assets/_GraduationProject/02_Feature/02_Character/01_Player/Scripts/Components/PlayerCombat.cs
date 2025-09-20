@@ -2,30 +2,78 @@ using System.Collections;
 using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerCombat : MonoBehaviour, IPlayerCombat
-{   
+{
+    #region Serialized Fields
+    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
+
+    /// <summary>
+    /// 패링 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _parryStartEffectPoint;
+
+    /// <summary>
+    /// 카운터 공격 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _counterAttackStartEffectPoint;
+    [SerializeField] private Transform _firstCounterAttackEffectPoint;
+    [SerializeField] private Transform _SecondCounterAttackEffectPoint;
+    [SerializeField] private Transform _counterAttackFinishEffectPoint;
+
+    /// <summary>
+    /// 차지 공격 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _chargeStartEffectPoint;
+    [SerializeField] private Transform _chargeFinishEffectPoint;
+    [SerializeField] private Transform _chargeAttackStartEffectPoint;
+    [SerializeField] private Transform _chargeAttackEffectPoint;
+    [SerializeField] private Transform _chargeAttackFinishEffectPoint;
+    #endregion
+
+    #region Private Fields
     private PlayerContext _context;
     private PlayerEventChannel _event;
-    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     private bool _canCounterAttack;
-    private Vector3 _attackCenter;
     private Coroutine _counterAttackCoroutine;
     private Collider _counterObject;
 
+    #endregion
+
+    #region Properties
     public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
     public bool CanCounterAttack => _canCounterAttack && ScanCounterable();
 
+    public Transform ParryStartEffectPoint => _parryStartEffectPoint;
+
+    public Transform CounterAttackStartEffectPoint => _counterAttackStartEffectPoint;
+    public Transform FirstCounterAttackEffectPoint => _firstCounterAttackEffectPoint;
+    public Transform SecondCounterAttackEffectPoint => _SecondCounterAttackEffectPoint;
+    public Transform CounterAttackFinishEffectPoint => _counterAttackFinishEffectPoint;
+
+
+    public Transform ChargeStartEffectPoint => _chargeStartEffectPoint;
+    public Transform ChargeFinishEffectPoint => _chargeFinishEffectPoint;
+
+    public Transform ChargeAttackStartEffectPoint => _chargeAttackStartEffectPoint;
+    public Transform ChargeAttackEffectPoint => _chargeAttackEffectPoint;
+    public Transform ChargeAttackFinishEffectPoint => _chargeAttackFinishEffectPoint;
+    #endregion
+    
     public void Initialize(PlayerContext context)
     {
         _context = context;
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
-        _event.Parry.OnAffect += (collider) => EnterCounterAttackStance();
+        _event.Parry.OnPerform += (position) => TryParry();                           // 패링 시도 이벤트
+        _event.Parry.OnAffect += (position, collider) => EnterCounterAttackStance();
 
-        _event.CounterAttack.OnPerform += TryCounterAttack;
+        _event.CounterAttack.OnPerform += (position) => TryCounterAttack();
     }
 
     #region Parry
@@ -64,7 +112,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
             if (parryable != null && parryable.IsParryable)
             {
                 parryable.Parry(gameObject);
-                _event.Parry.PublishAffect(enemy);
+                _event.Parry.PublishAffect(enemy.transform.position, enemy);
             }
         }
     }
@@ -141,7 +189,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         if (damageable != null && !damageable.IsDead)
         {
             damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
-            _event.CounterAttack.PublishAffect(hitObjects);
+            _event.CounterAttack.PublishAffect(_firstCounterAttackEffectPoint.position, hitObjects);
         }
 
         ICounterable counterable = hitObjects.GetComponent<ICounterable>();

@@ -1,6 +1,7 @@
 using BH_Lib.DI;
 using BH_Lib.Log;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어의 공격 시스템을 담당하는 컴포넌트
@@ -14,6 +15,12 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     [Tooltip("적 레이어 마스크 (공격 대상 감지용)")]
     [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     
+    /// <summary>
+    /// 근거리 공격 시작 이펙트 위치
+    /// </summary>
+    [SerializeField] private Transform _firstAttackStartEffectPosition;
+    [SerializeField] private Transform _secondAttackStartEffectPosition;
+    [SerializeField] private Transform _thirdAttackStartEffectPosition;
     #endregion
 
     #region Private Fields
@@ -64,6 +71,15 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
     /// </summary>
     public Vector3 AttackCenter => _attackCenter;
 
+    public Vector3 AttackStartEffectPosition => _comboCount
+    switch
+    {
+        0 => _firstAttackStartEffectPosition.position,
+        1 => _secondAttackStartEffectPosition.position,
+        2 => _thirdAttackStartEffectPosition.position,
+        _ => _firstAttackStartEffectPosition.position
+    };
+
     #endregion
 
     #region Public Methods
@@ -78,13 +94,13 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
         _context = context;
         _event = _context.Event;
 
-        _event.MeleeAttack.OnStart += SetAttackCenter;
-        _event.MeleeAttack.OnPerform += PerformAttack;              // 일반 공격 수행 이벤트
-       
-        _event.MeleeAttackCharge.OnStart += () => SetIsPerformingChargeAttack(true);  // 차지 시작
-        _event.ChargeMeleeAttack.OnStart += SetAttackCenter;
-        _event.ChargeMeleeAttack.OnPerform += PerformChargeMeleeAttack; // 차지 공격 수행 이벤트
-        _event.ChargeMeleeAttack.OnFinished += () => SetIsPerformingChargeAttack(false);  // 공격 종료
+        _event.MeleeAttack.OnStart += (position) => SetAttackCenter();
+        _event.MeleeAttack.OnPerform += (postion) => PerformAttack();              // 일반 공격 수행 이벤트
+
+        _event.MeleeAttackCharge.OnStart += (position) => SetIsPerformingChargeAttack(true);  // 차지 시작
+        _event.ChargeMeleeAttack.OnStart += (position) => SetAttackCenter();
+        _event.ChargeMeleeAttack.OnPerform += (postion) => PerformChargeMeleeAttack(); // 차지 공격 수행 이벤트
+        _event.ChargeMeleeAttack.OnFinished += (position) => SetIsPerformingChargeAttack(false);  // 공격 종료
     }
 
     /// <summary>
@@ -178,11 +194,11 @@ public class PlayerMeleeAttack : MonoBehaviour, IPlayerMeleeAttack
                 // 감지된 적들에게 피해 적용 이벤트 발생
                 if (_isPerformingChargeAttack)
                 {
-                    _event.ChargeMeleeAttack.PublishAffect(obj);
+                    _event.ChargeMeleeAttack.PublishAffect(obj.transform.position, obj);
                 }
                 else
                 {
-                    _event.MeleeAttack.PublishAffect(obj);
+                    _event.MeleeAttack.PublishAffect(obj.transform.position, obj);
                 }
             }
         }

@@ -17,8 +17,8 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnEnter();
 
-        p_context.Event.ChargeMeleeAttack.PublishStart();
-        p_context.Event.ChargeMeleeAttack.OnFinished += AttackFinished;
+        p_context.Event.ChargeMeleeAttack.PublishStart(p_context.Combat.ChargeAttackStartEffectPoint.position);
+        p_context.Event.ChargeMeleeAttack.OnFinished += (position) => AttackFinished();
     }
 
     public override void OnExit()
@@ -26,7 +26,7 @@ public class PlayerChargeMeleeAttackState : PlayerMeleeAttackBaseState
         base.OnExit();
 
         p_context.MeleeAttack.ResetComboCount();
-        p_context.Event.ChargeMeleeAttack.OnFinished -= AttackFinished;
+        p_context.Event.ChargeMeleeAttack.OnFinished -= (position) => AttackFinished();
     }
 
     protected override void HandleInput()

@@ -6,12 +6,20 @@ using UnityEngine;
 /// </summary>
 public interface IPlayerRangedAttack
 {
+    /// <summary>투사체 스폰 위치</summary>
+    public Vector3 ProjectileSpawnPosition { get; }
+
     /// <summary>원거리 공격 차징 시간</summary>
     public float RangedAttackChargeTime { get; }
-    
+
     /// <summary>원거리 공격 데미지</summary>
     public int RangedAttackDamage { get; }
 
     /// <summary>투사체 발사 실행</summary>
     public void FireProjectile();
+
+    public Vector3 RangedAttackChargeStartEffectPoint { get; }
+    public Vector3 RangedAttackChargeEffectPoint { get; }
+    public Vector3 RangedAttackChargeCancelEffectPoint { get; }
+    public Vector3 RangedAttackChargeFinishEffectPoint { get; }
 }
