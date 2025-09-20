@@ -14,6 +14,7 @@ public class PlayerHeat : HeatSystem
     private PlayerContext _context;
 
     private float _lastMeleeAttackChargingTime = 0;
+    private int _chargeGuage = 0;
 
     /// <summary>
     /// 플레이어 열량 시스템 초기화
@@ -25,24 +26,26 @@ public class PlayerHeat : HeatSystem
 
         // TODO: 열량 시스템 이벤트 구독
         // TODO: 플레이어 ID로 열량 데이터 초기화
+        _context.Event.MeleeAttack.OnAffect += (position, target) => AddHeatOnMeleeAttack(target);
+        _context.Event.Parry.OnAffect += (position, collider) => AddHeatOnParry();
+
+        _context.Event.MeleeAttackCharge.OnStart += (position) => ChargeStart();
+        _context.Event.MeleeAttackCharge.OnPerform += (position) => AddHeatOnMeleeAttackCharging();
     }
 
     /// <summary>
     /// 공격 시 열량 추가
     /// </summary>
     /// <param name="targets">충돌한 오브젝트들</param>
-    private void AddHeatOnMeleeAttack(Collider[] targets)
+    private void AddHeatOnMeleeAttack(Collider target)
     {
-        foreach (Collider target in targets)
+        IHeatable heatable = target.GetComponent<IHeatable>();
+        if (heatable != null)
         {
-            IHeatable heatable = target.GetComponent<IHeatable>();
-            if (heatable != null)
-            {
-                SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
-                int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-                heatable.ChangeHeat(deltaHeat);
-                Log.PrintColor(Color.red, $"target: {target.gameObject.name}, 열기 변화량: {deltaHeat}");
-            }
+            SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            heatable.ChangeHeat(deltaHeat);
+            Log.PrintColor(Color.red, $"target: {target.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
     }
 
@@ -61,6 +64,7 @@ public class PlayerHeat : HeatSystem
     private void ChargeStart()
     {
         _lastMeleeAttackChargingTime = Time.time;
+        _chargeGuage = 0;
     }
 
     /// <summary>
@@ -71,10 +75,14 @@ public class PlayerHeat : HeatSystem
         SourceMap sourceMap;
         sourceMap = p_heatDataBase.GetSourceMap("OnCharge", ActorType, -1);
 
-        if (Time.time - _lastMeleeAttackChargingTime >= sourceMap.TickSecond)
+        if (Time.time - _lastMeleeAttackChargingTime >= 1.0f / sourceMap.DeltaHeat)
         {
-            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-            ChangeHeat(deltaHeat);
+            _chargeGuage += 1;
+
+            if (_chargeGuage >= CurrentHeat)
+            {
+                SetHeat(_chargeGuage); ;
+            }
 
             _lastMeleeAttackChargingTime = Time.time;
         }

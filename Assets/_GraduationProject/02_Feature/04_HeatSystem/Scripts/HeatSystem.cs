@@ -19,6 +19,10 @@ public class HeatSystem : MonoBehaviour, IHeatable
     [field: SerializeField]
     public ActorType ActorType { get; private set; }
 
+    /// <summary>
+    /// 열량 변경 함수
+    /// </summary>
+    /// <param name="amount"> 열기 변화량 </param>
     public void ChangeHeat(int amount)
     {
         if (amount == 0) return;
@@ -27,6 +31,29 @@ public class HeatSystem : MonoBehaviour, IHeatable
         int oldHeat = _currentHeat;
 
         _currentHeat = Mathf.Clamp(_currentHeat + amount, 0, _maxHeat);
+
+        if (oldHeat != _currentHeat)
+        {
+            OnHeatChanged?.Invoke(_currentHeat, _maxHeat);
+        }
+
+        int newTier = GetTier();
+        if (oldTier != newTier)
+        {
+            OnTierChanged?.Invoke(oldTier, newTier);
+        }
+    }
+
+    /// <summary>
+    /// 열량 설정 함수
+    /// </summary>
+    /// <param name="amount"> 열기 설정값 </param>
+    public void SetHeat(int amount)
+    {
+        int oldTier = GetTier();
+        int oldHeat = _currentHeat;
+
+        _currentHeat = Mathf.Clamp(amount, 0, _maxHeat);
 
         if (oldHeat != _currentHeat)
         {

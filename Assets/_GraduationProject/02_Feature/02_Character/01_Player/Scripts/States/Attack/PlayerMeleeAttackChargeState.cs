@@ -33,25 +33,26 @@ public class PlayerMeleeAttackChargeState : BaseState<PlayerContext>
         }
 
         if (!p_context.Controller.AttackHeldInput)
+        {
+            if (_isCharged)
             {
-                if (_isCharged)
-                {
-                    p_stateMachine.ChangeState<PlayerChargeMeleeAttackState>();
-                    return;
-                }
-                else
-                {
-                    p_stateMachine.ChangeState<PlayerIdleState>();
-                    return;
-                }
-
+                p_stateMachine.ChangeState<PlayerChargeMeleeAttackState>();
+                return;
             }
+            else
+            {
+                p_stateMachine.ChangeState<PlayerIdleState>();
+                return;
+            }
+
+        }
         
         // 에임 방향으로 회전
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var lookInput = p_context.Controller.LookInput;
         var mousePosition = p_context.Controller.MousePosition;
         p_context.Event.PublishRotateToAttackDirection(deviceType, lookInput, mousePosition);
+
         p_context.Event.MeleeAttackCharge.PublishPerform(p_context.Owner.transform.position);
     }
 
