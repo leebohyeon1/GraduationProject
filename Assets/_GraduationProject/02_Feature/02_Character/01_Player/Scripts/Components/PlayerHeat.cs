@@ -14,7 +14,13 @@ public class PlayerHeat : HeatSystem
     private PlayerContext _context;
 
     private float _lastMeleeAttackChargingTime = 0;
+    private float _lastRestTime = 0;
     private int _chargeGuage = 0;
+
+    private void Update()
+    {
+        MinusHeatOnRest();
+    }
 
     /// <summary>
     /// 플레이어 열량 시스템 초기화
@@ -75,9 +81,9 @@ public class PlayerHeat : HeatSystem
         SourceMap sourceMap;
         sourceMap = p_heatDataBase.GetSourceMap("OnCharge", ActorType, -1);
 
-        if (Time.time - _lastMeleeAttackChargingTime >= 1.0f / sourceMap.DeltaHeat)
+        if (Time.time - _lastMeleeAttackChargingTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
         {
-            _chargeGuage += 1;
+            _chargeGuage += (int)sourceMap.HeatChangeType;
 
             if (_chargeGuage >= CurrentHeat)
             {
@@ -88,6 +94,23 @@ public class PlayerHeat : HeatSystem
         }
     }
 
+    /// <summary>
+    /// 휴식으로 인한 열기 감소
+    /// </summary>
+    private void MinusHeatOnRest()
+    {
+        if (_context.Combat.IsRest)
+        {
+            SourceMap sourceMap;
+            sourceMap = p_heatDataBase.GetSourceMap("OnBattleOut", ActorType, -1);
+
+            if (sourceMap.DeltaHeat > 0 && Time.time - _lastRestTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
+            {
+                ChangeHeat((int)sourceMap.HeatChangeType);
+                _lastRestTime = Time.time;
+            }
+        }
+    }
     public void OnDestroy()
     {
     }

@@ -39,6 +39,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private PlayerContext _context;
     private PlayerEventChannel _event;
     private bool _canCounterAttack;
+    private float _lastActionTime;
     private Coroutine _counterAttackCoroutine;
     private Collider _counterObject;
 
@@ -47,6 +48,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     #region Properties
     public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
     public bool CanCounterAttack => _canCounterAttack && ScanCounterable();
+    public bool IsRest => (Time.time - _lastActionTime) >= 8.0f;
+    public int MaxMana => throw new System.NotImplementedException();
+    public int CurrentMana => throw new System.NotImplementedException();
 
     public Transform ParryStartEffectPoint => _parryStartEffectPoint;
 
@@ -62,8 +66,10 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     public Transform ChargeAttackStartEffectPoint => _chargeAttackStartEffectPoint;
     public Transform ChargeAttackEffectPoint => _chargeAttackEffectPoint;
     public Transform ChargeAttackFinishEffectPoint => _chargeAttackFinishEffectPoint;
+
+
     #endregion
-    
+
     public void Initialize(PlayerContext context)
     {
         _context = context;
@@ -74,6 +80,19 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event.Parry.OnAffect += (position, collider) => EnterCounterAttackStance();
 
         _event.CounterAttack.OnPerform += (position) => TryCounterAttack();
+
+        // 행동 관련 이벤트 버스 구독
+        _event.MeleeAttack.OnStart += (position) => ResetRestTimer();
+        _event.MeleeAttackCharge.OnStart += (position) => ResetRestTimer();
+        _event.MeleeAttackCharge.OnPerform += (position) => ResetRestTimer();
+        _event.ChargeMeleeAttack.OnStart += (position) => ResetRestTimer();
+        _event.RangedAttackCharge.OnStart += (position) => ResetRestTimer();
+        _event.RangedAttack.OnStart += (position) => ResetRestTimer();
+        _event.CounterAttack.OnStart += (position) => ResetRestTimer();
+        _event.Parry.OnStart += (position) => ResetRestTimer();
+        _event.OnDefendHit += () => ResetRestTimer();
+        _event.OnNomalHit += () => ResetRestTimer();
+        _event.OnStrongHit += () => ResetRestTimer();
     }
 
     #region Parry
@@ -208,6 +227,14 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private Vector3 GetCounterCenter()
     {
         return transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
+    }
+
+    #endregion
+
+    #region Rest
+    private void ResetRestTimer()
+    {
+        _lastActionTime = Time.time;
     }
 
     #endregion

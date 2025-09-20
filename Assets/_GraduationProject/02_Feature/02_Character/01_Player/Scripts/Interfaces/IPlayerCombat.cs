@@ -6,6 +6,10 @@ using UnityEngine;
 public interface IPlayerCombat
 {
     public bool CanCounterAttack { get; }
+    public bool IsRest { get; }
+
+    public int MaxMana { get; }
+    public int CurrentMana { get; }
 
     public void TryParry();
 
