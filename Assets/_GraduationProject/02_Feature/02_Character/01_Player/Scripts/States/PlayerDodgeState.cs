@@ -18,7 +18,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
     public override void OnEnter()
     {
         base.OnEnter();
-        p_context.Event.Dodge.OnFinished+= OnDodgeEndEvent;
+        p_context.Event.Dodge.OnFinished += (position) => OnDodgeEndEvent();
 
         Log.Print("Player entered Dodge state");
 
@@ -37,7 +37,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
             _dodgeDirection = Vector3.zero;
         }
 
-        p_context.Event.Dodge.PublishStart();
+        p_context.Event.Dodge.PublishStart(p_context.Owner.transform.position);
     }
 
     public override void OnUpdate()
@@ -53,7 +53,7 @@ public class PlayerDodgeState : BaseState<PlayerContext>
 
     public override void OnExit()
     {
-        p_context.Event.Dodge.OnFinished -= OnDodgeEndEvent;
+        p_context.Event.Dodge.OnFinished -= (position) => OnDodgeEndEvent();
 
         Log.Print("Player exited Dodge state");
     }

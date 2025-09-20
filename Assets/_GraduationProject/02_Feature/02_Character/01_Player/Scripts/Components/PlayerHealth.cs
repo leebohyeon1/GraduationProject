@@ -69,6 +69,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// </summary>
     public bool IsDefending => _isDefending;
 
+    public bool IsInvincible => _isInvincible;
+
     /// <summary>
     /// Hit 상태 플래그를 리셋합니다
     /// PlayerHitState에서 상태 종료 시 호출
@@ -104,8 +106,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
 
         // 이벤트 버스 구독
-        _event.Dodge.OnStart += ()=> { SetInvisible(true); };
-        _event.Dodge.OnFinished += ()=> { SetInvisible(false); };
+        _event.Dodge.OnStart += (position)=> { SetInvisible(true); };
+        _event.Dodge.OnFinished += (position)=> { SetInvisible(false); };
     }
 
     /// <summary>
@@ -125,7 +127,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
         }
         else
         {
-            _context.Event.PublishHit();
+            _context.Event.PublishNormalHit();
         }
 
         int previousHealth = p_currentHealth;
@@ -187,7 +189,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
 
     private void OnDestroy()
     {
-        _event.Dodge.OnStart -= ()=> { SetInvisible(true); };
-        _event.Dodge.OnFinished -= ()=> { SetInvisible(false); };
+        _event.Dodge.OnStart -= (position)=> { SetInvisible(true); };
+        _event.Dodge.OnFinished -= (position)=> { SetInvisible(false); };
     }
 }

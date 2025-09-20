@@ -28,7 +28,7 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
     /// </summary>
     public override void OnEnter()
     {
-        p_context.Event.RangedAttack.OnFinished += OnRangedAttackEndEvent;
+        p_context.Event.RangedAttack.OnFinished += (position) => OnRangedAttackEndEvent();
         p_context.Animator.SetTrigger("RangedAttackFire");
         Log.Print("Player entered RangedAttackFireState");
 
@@ -51,7 +51,7 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
     /// </summary>
     public override void OnExit()
     {
-        p_context.Event.RangedAttack.OnFinished -= OnRangedAttackEndEvent;
+        p_context.Event.RangedAttack.OnFinished -= (position) => OnRangedAttackEndEvent();
         Log.Print("Player exited RangedAttackFireState");
     }
 
@@ -94,7 +94,7 @@ public class PlayerRangedAttackFireState : BaseState<PlayerContext>
     /// </summary>
     private void FireProjectile()
     {
-        p_context.Event.RangedAttack.PublishPerform();
+        p_context.Event.RangedAttack.PublishPerform(p_context.RangedAttack.ProjectileSpawnPosition);
     }
 
     /// <summary>
