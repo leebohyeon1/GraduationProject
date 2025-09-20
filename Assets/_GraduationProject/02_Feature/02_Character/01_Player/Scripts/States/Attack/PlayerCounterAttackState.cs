@@ -36,4 +36,17 @@ public class PlayerCounterAttackState : PlayerMeleeAttackBaseState
         Log.Print("Player exited CounterAttack state");
         p_context.Event.CounterAttack.OnFinished -= AttackFinished;
     }
+
+    protected override void StartAttackMovement()
+    {
+        if (p_context.MeleeAttack?.MeleeAttackData == null)
+        {
+            return;
+        }
+
+       var attackData = p_context.Stats.CounterAttackData;
+        if (attackData.AttackMoveDistance <= 0) return;
+        
+        p_attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
+    }
 }
