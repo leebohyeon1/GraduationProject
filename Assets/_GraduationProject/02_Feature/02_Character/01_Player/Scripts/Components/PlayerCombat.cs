@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using BH_Lib.Log;
 using Unity.VisualScripting;
@@ -33,6 +34,8 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     [SerializeField] private Transform _chargeAttackStartEffectPoint;
     [SerializeField] private Transform _chargeAttackEffectPoint;
     [SerializeField] private Transform _chargeAttackFinishEffectPoint;
+
+    [SerializeField] private Transform _skillEffectPoint;
     #endregion
 
     #region Private Fields
@@ -42,6 +45,9 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private float _lastActionTime;
     private Coroutine _counterAttackCoroutine;
     private Collider _counterObject;
+    private int _currentMana;
+
+    public event Action<int, int> OnManaChanged;
 
     #endregion
 
@@ -49,8 +55,8 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
     public bool CanCounterAttack => _canCounterAttack && ScanCounterable();
     public bool IsRest => (Time.time - _lastActionTime) >= 8.0f;
-    public int MaxMana => throw new System.NotImplementedException();
-    public int CurrentMana => throw new System.NotImplementedException();
+    public int MaxMana => _context.Stats.MaxMana;
+    public int CurrentMana => _currentMana;
 
     public Transform ParryStartEffectPoint => _parryStartEffectPoint;
 
@@ -67,13 +73,14 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     public Transform ChargeAttackEffectPoint => _chargeAttackEffectPoint;
     public Transform ChargeAttackFinishEffectPoint => _chargeAttackFinishEffectPoint;
 
-
+    public Transform SkillEffectPoint => _skillEffectPoint;
     #endregion
 
     public void Initialize(PlayerContext context)
     {
         _context = context;
         _event = _context.Event;
+        _currentMana = MaxMana;
 
         // 전투 관련 이벤트 버스 구독
         _event.Parry.OnPerform += HandleParryPerform;
@@ -93,6 +100,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event.OnDefendHit += ResetRestTimer;
         _event.OnNomalHit += ResetRestTimer;
         _event.OnStrongHit += ResetRestTimer;
+        _event.Skill.OnPerform += HandleSkillPerform;
     }
     private void OnDisable()
     {
@@ -112,6 +120,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _event.OnDefendHit -= ResetRestTimer;
         _event.OnNomalHit -= ResetRestTimer;
         _event.OnStrongHit -= ResetRestTimer;
+        _event.Skill.OnPerform -= HandleSkillPerform;
     }
 
     #region Feedback Handlers
@@ -133,6 +142,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
     private void HandleActionStart(Vector3 position)
     {
         ResetRestTimer();
+    }
+
+    private void HandleSkillPerform(Vector3 position)
+    {
+        ChangeMana(-_context.Heat.GetCostMana("OnSkillSuccess"));
     }
     #endregion
 
@@ -280,6 +294,23 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
     #endregion
 
+    #region Mana
+    public void ChangeMana(int amount)
+    {
+        if (amount == 0) return;
+
+        int oldMana = _currentMana;
+
+        _currentMana = Mathf.Clamp(_currentMana + amount, 0, MaxMana);
+
+        if (oldMana != _currentMana)
+        {
+            OnManaChanged?.Invoke(_currentMana, MaxMana);
+        }
+    }
+    #endregion
+
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -301,6 +332,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
         Gizmos.matrix = Matrix4x4.identity;
     }
+
 
 #endif
 

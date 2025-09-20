@@ -14,6 +14,8 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
     private float _chargeTime = 0f;
     protected Type _nextState;
 
+    private int _costMana;
+
     /// <summary>
     /// 원거리 공격 차징 상태 생성자
     /// </summary>
@@ -28,9 +30,19 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", true);
         Log.Print("Player entered RangedAttackChargeState");
+        
+        _costMana = p_context.Heat.GetCostMana("OnIceBallSuccess");
+        if (_costMana <= p_context.Combat.CurrentMana)
+        {
+            p_context.Event.RangedAttackCharge.PublishStart(p_context.RangedAttack.RangedAttackChargeStartEffectPoint);
+            _chargeTime = 0f;
+        }
+        else
+        {
+            p_context.Event.RangedAttackCharge.PublishCancel(p_context.RangedAttack.RangedAttackChargeCancelEffectPoint);
+            p_stateMachine.ChangeState<PlayerIdleState>();
+        }
 
-        p_context.Event.RangedAttackCharge.PublishStart(p_context.RangedAttack.RangedAttackChargeStartEffectPoint);
-        _chargeTime = 0f;
     }
 
     /// <summary>
@@ -63,6 +75,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
             {
                 p_context.Event.RangedAttackCharge.PublishFinished(p_context.RangedAttack.RangedAttackChargeFinishEffectPoint);
                 p_stateMachine.ChangeState<PlayerRangedAttackFireState>();
+                p_context.Combat.ChangeMana(-_costMana);                
             }
         }
         else

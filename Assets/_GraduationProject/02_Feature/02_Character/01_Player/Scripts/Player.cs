@@ -152,6 +152,7 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerMeleeAttackChargeState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerChargeMeleeAttackState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerCounterAttackState(Context, _stateMachine));
+        _stateMachine.AddState(new PlayerSkillState(Context, _stateMachine));
 
 
         // 상태 전환 조건 설정
@@ -177,6 +178,8 @@ public class Player : CharacterBase
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedAttackChargeState>(() => Context.Controller.RangedAttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerCounterAttackState>(() =>
             Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerSkillState>(() => Context.Controller.SkillInput);
+
 
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() => Context.Controller.MoveInput == Vector2.zero);
@@ -188,6 +191,10 @@ public class Player : CharacterBase
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedAttackChargeState>(() => Context.Controller.RangedAttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerCounterAttackState>(() =>
             Context.Combat.CanCounterAttack && Context.Controller.AttackInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerSkillState>(() => Context.Controller.SkillInput);
+
+
+        // FirstMeleeAttack 상태에서의 전환
 
         _stateMachine.AddTransition<PlayerDefendState, PlayerCounterAttackState>(() =>
             Context.Combat.CanCounterAttack && Context.Controller.AttackInput);

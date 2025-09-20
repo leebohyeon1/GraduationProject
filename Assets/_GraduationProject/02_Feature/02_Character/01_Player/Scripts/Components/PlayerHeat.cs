@@ -6,7 +6,7 @@ using UnityEngine;
 /// HeatSystem을 상속받아 플레이어의 열량 관리를 담당합니다.
 /// 공격, 스킬 사용 등에 따라 열량이 축적되고, 티어별로 스탯 변화가 적용됩니다.
 /// </summary>
-public class PlayerHeat : HeatSystem
+public class PlayerHeat : HeatSystem, IPlayerHeatable
 {
     /// <summary>
     /// 플레이어 컨텍스트 참조
@@ -39,6 +39,8 @@ public class PlayerHeat : HeatSystem
         _context.Event.MeleeAttackCharge.OnPerform += HandleMeleeAttackChargePerform;
 
         _context.Event.RangedAttack.OnAffect += HandleRangedAttackAffect;
+
+        _context.Event.Skill.OnPerform += HandleSkillPerform;
     }
 
     public void OnDisable()
@@ -50,6 +52,8 @@ public class PlayerHeat : HeatSystem
         _context.Event.MeleeAttackCharge.OnPerform -= HandleMeleeAttackChargePerform;
 
         _context.Event.RangedAttack.OnAffect -= HandleRangedAttackAffect;
+
+        _context.Event.Skill.OnPerform -= HandleSkillPerform;
     }
 
     #region Feedback Handlers
@@ -77,6 +81,11 @@ public class PlayerHeat : HeatSystem
     {
         Log.PrintColor(Color.red, "원거리 공격 열량 감소 처리");
         MinusHeatOnRangedAttack(target);
+    }
+
+    private void HandleSkillPerform(Vector3 position)
+    {
+        MinusHeatOnSkill();
     }
     #endregion
 
@@ -153,13 +162,17 @@ public class PlayerHeat : HeatSystem
         }
     }
 
+    /// <summary>
+    /// 원거리 공격 시 열량 감소
+    /// </summary>
+    /// <param name="target"> 충돌한 오브젝트 </param>
     private void MinusHeatOnRangedAttack(Collider target)
     {
         IHeatable heatable = target.GetComponent<IHeatable>();
         if (heatable != null)
         {
             SourceMap sourceMap;
-            sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess",  heatable.ActorType, -1);
+            sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
 
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
@@ -168,4 +181,23 @@ public class PlayerHeat : HeatSystem
         }
 
     }
+
+    /// <summary>
+    /// 스킬 사용 시 열량 감소
+    /// </summary>
+    private void MinusHeatOnSkill()
+    {
+        SourceMap sourceMap;
+        sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess", -1);
+        int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
+        ChangeHeat(deltaHeat);
+
+    }
+
+    public int GetCostMana(string id, int tier = -1)
+    {
+        SourceMap data = p_heatDataBase.GetSourceMap(id, tier);
+        return data.ManaCost;
+    }   
 }

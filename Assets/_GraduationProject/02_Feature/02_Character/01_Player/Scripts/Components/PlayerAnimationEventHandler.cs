@@ -122,4 +122,17 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     }
 
     #endregion
+
+    #region Skill
+    public void TriggerSkill()
+    {
+        _event.Skill.PublishPerform(_context.Combat.SkillEffectPoint.position);
+    }
+
+    public void TriggerSkillFinished()
+    {
+        _event.Skill.PublishFinished(_context.Combat.SkillEffectPoint.position);
+    }
+
+    #endregion
 }

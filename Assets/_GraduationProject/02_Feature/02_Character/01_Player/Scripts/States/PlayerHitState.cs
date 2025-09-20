@@ -61,7 +61,7 @@ public class PlayerHitState : BaseState<PlayerContext>
             
         }
     }
-
+    
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsHit", false);

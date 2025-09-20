@@ -80,6 +80,12 @@ public class PlayerEventChannel
     public event Action<Vector3> OnTier1SecondCounterAttackEffect;
     public event Action<Vector3> OnTier2SecondCounterAttackEffect;
     public event Action<Vector3> OnTier3SecondCounterAttackEffect;
+
+    /// <summary>
+    /// 플레이어 스킬 액션 관련 이벤트입니다.
+    /// </summary>
+    public PlayerActionEvents<int> Skill;
+    
     #region Public Methods
 
     /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -12,12 +13,12 @@ public interface IPlayerCombat
     public int CurrentMana { get; }
 
     public void TryParry();
-
     public void TryCounterAttack();
+    public void ChangeMana(int amount);
 
     public Transform ParryStartEffectPoint { get; }
 
-    public Transform CounterAttackStartEffectPoint { get; } 
+    public Transform CounterAttackStartEffectPoint { get; }
     public Transform FirstCounterAttackEffectPoint { get; }
     public Transform SecondCounterAttackEffectPoint { get; }
     public Transform CounterAttackFinishEffectPoint { get; }
@@ -27,5 +28,8 @@ public interface IPlayerCombat
     public Transform ChargeAttackStartEffectPoint { get; }
     public Transform ChargeAttackEffectPoint { get; }
     public Transform ChargeAttackFinishEffectPoint { get; }
+    public Transform SkillEffectPoint { get; }
+    
+    public event Action<int, int> OnManaChanged;
     
 }

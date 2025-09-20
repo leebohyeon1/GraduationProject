@@ -7,7 +7,9 @@ using UnityEngine;
 /// </summary>
 [CreateAssetMenu(fileName = "PlayerStats", menuName = "Stats/Player Stats")]
 public class PlayerStatsSO : CharacterStatsSO
-{
+{   
+    public int MaxMana = 100;
+
     [Header("Movement")]
     [Tooltip("회전 속도 (Slerp 보간 계수)")]
     public float RotateSpeed = 5f;
