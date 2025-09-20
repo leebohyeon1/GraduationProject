@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,6 @@ public class HeatBar : MonoBehaviour
     [SerializeField] private Image _heatBarSlider;
     [SerializeField] private GameObject _object;
     private IHeatable _heatable;
-    private Coroutine _heatBarCoroutine;
     
     private void Start()
     {
@@ -24,27 +24,13 @@ public class HeatBar : MonoBehaviour
 
     private void ChangeHeatBar(int currentHeat, int maxHeat)
     {
+        DOTween.Kill(_heatBarSlider, true);
+
         float healthPercent = (float)currentHeat / maxHeat;
-        if (_heatBarCoroutine != null)
-        {
-            StopCoroutine(_heatBarCoroutine);
-        }
-        _heatBarCoroutine = StartCoroutine(CoChangeHeatBar(healthPercent));
-    }
-
-    private IEnumerator CoChangeHeatBar(float targetFillAmount)
-    {
-        float startFillAmount = _heatBarSlider.fillAmount;
-        float elapsedTimer = 0.0f;
-        float duration = 0.05f;
-
-        while (startFillAmount != targetFillAmount)
-        {
-            elapsedTimer += Time.deltaTime;
-            _heatBarSlider.fillAmount = Mathf.Lerp(_heatBarSlider.fillAmount, targetFillAmount, elapsedTimer / duration);
-            yield return null;
-        }
-
-        _heatBarSlider.fillAmount = targetFillAmount;
+        DOTween.To(() => _heatBarSlider.fillAmount,
+                    x => _heatBarSlider.fillAmount = x,
+                    healthPercent, 0.1f)
+                    .SetEase(Ease.OutQuad)
+                    .SetId(_heatBarSlider);
     }
 }
