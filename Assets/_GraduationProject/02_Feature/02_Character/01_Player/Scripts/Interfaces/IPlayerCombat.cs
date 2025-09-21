@@ -10,5 +10,18 @@ public interface IPlayerCombat
     public void TryParry();
 
     public void TryCounterAttack();
+
+    public Transform ParryStartEffectPoint { get; }
+
+    public Transform CounterAttackStartEffectPoint { get; } 
+    public Transform FirstCounterAttackEffectPoint { get; }
+    public Transform SecondCounterAttackEffectPoint { get; }
+    public Transform CounterAttackFinishEffectPoint { get; }
+
+    public Transform ChargeStartEffectPoint { get; }
+    public Transform ChargeFinishEffectPoint { get; }
+    public Transform ChargeAttackStartEffectPoint { get; }
+    public Transform ChargeAttackEffectPoint { get; }
+    public Transform ChargeAttackFinishEffectPoint { get; }
     
 }

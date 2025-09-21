@@ -2,31 +2,78 @@ using System.Collections;
 using BH_Lib.Log;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerCombat : MonoBehaviour, IPlayerCombat
-{   
+{
+    #region Serialized Fields
+    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
+
+    /// <summary>
+    /// 패링 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _parryStartEffectPoint;
+
+    /// <summary>
+    /// 카운터 공격 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _counterAttackStartEffectPoint;
+    [SerializeField] private Transform _firstCounterAttackEffectPoint;
+    [SerializeField] private Transform _SecondCounterAttackEffectPoint;
+    [SerializeField] private Transform _counterAttackFinishEffectPoint;
+
+    /// <summary>
+    /// 차지 공격 이펙트 위치
+    /// </summary>
+    [Space(10)]
+    [SerializeField] private Transform _chargeStartEffectPoint;
+    [SerializeField] private Transform _chargeFinishEffectPoint;
+    [SerializeField] private Transform _chargeAttackStartEffectPoint;
+    [SerializeField] private Transform _chargeAttackEffectPoint;
+    [SerializeField] private Transform _chargeAttackFinishEffectPoint;
+    #endregion
+
+    #region Private Fields
     private PlayerContext _context;
     private PlayerEventChannel _event;
-    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
     private bool _canCounterAttack;
-    private Vector3 _attackCenter;
     private Coroutine _counterAttackCoroutine;
+    private Collider _counterObject;
 
+    #endregion
 
+    #region Properties
     public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
-    public bool CanCounterAttack => _canCounterAttack;
+    public bool CanCounterAttack => _canCounterAttack && ScanCounterable();
 
+    public Transform ParryStartEffectPoint => _parryStartEffectPoint;
+
+    public Transform CounterAttackStartEffectPoint => _counterAttackStartEffectPoint;
+    public Transform FirstCounterAttackEffectPoint => _firstCounterAttackEffectPoint;
+    public Transform SecondCounterAttackEffectPoint => _SecondCounterAttackEffectPoint;
+    public Transform CounterAttackFinishEffectPoint => _counterAttackFinishEffectPoint;
+
+
+    public Transform ChargeStartEffectPoint => _chargeStartEffectPoint;
+    public Transform ChargeFinishEffectPoint => _chargeFinishEffectPoint;
+
+    public Transform ChargeAttackStartEffectPoint => _chargeAttackStartEffectPoint;
+    public Transform ChargeAttackEffectPoint => _chargeAttackEffectPoint;
+    public Transform ChargeAttackFinishEffectPoint => _chargeAttackFinishEffectPoint;
+    #endregion
+    
     public void Initialize(PlayerContext context)
     {
         _context = context;
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
-        _event.Parry.OnAffect += (collider) => EnterCounterAttackStance();
+        _event.Parry.OnPerform += (position) => TryParry();                           // 패링 시도 이벤트
+        _event.Parry.OnAffect += (position, collider) => EnterCounterAttackStance();
 
-        _event.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
-        _event.CounterAttack.OnPerform += TryCounterAttack;
+        _event.CounterAttack.OnPerform += (position) => TryCounterAttack();
     }
 
     #region Parry
@@ -65,7 +112,7 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
             if (parryable != null && parryable.IsParryable)
             {
                 parryable.Parry(gameObject);
-                _event.Parry.PublishAffect(enemy);
+                _event.Parry.PublishAffect(enemy.transform.position, enemy);
             }
         }
     }
@@ -109,42 +156,60 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
         _canCounterAttack = value;
     }
 
+    public bool ScanCounterable()
+    {
+        Vector3 counterCenter = GetCounterCenter(); 
+        Collider[] hits = Physics.OverlapBox(counterCenter, MeleeAttackData.AttackRadius / 2, transform.rotation, _attackLayerMask);
+        foreach(Collider hit in hits)
+        {
+            ICounterable counterable = hit.GetComponent<ICounterable>();         
+            if (counterable != null && counterable.IsCounterable)
+            {
+                _counterObject = hit;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     /// <summary>
     /// 카운터 공격 시도
     /// </summary>
     public void TryCounterAttack()
     {
-        Vector3 attackCenter = GetAttackCenter();
-        
-        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, MeleeAttackData.AttackRadius.x, _attackLayerMask);
-
-        ProcessHitEnemies(hitEnemies);
+        ProcessHitEnemies(_counterObject);
     }
 
-    private void ProcessHitEnemies(Collider[] hitObjects)
+    private void ProcessHitEnemies(Collider hitObjects)
     {
         SetCanCounterAttack(false);
-        
-        foreach (Collider obj in hitObjects)
+
+        IDamageable damageable = hitObjects.GetComponent<IDamageable>();
+        if (damageable != null && !damageable.IsDead)
         {
-            IDamageable damageable = obj.GetComponent<IDamageable>();
-            if (damageable != null && !damageable.IsDead)
-            {
-                damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
-                _event.CounterAttack.PublishAffect(obj);
-            }
+            damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
+            _event.CounterAttack.PublishAffect(_firstCounterAttackEffectPoint.position, hitObjects);
         }
+
+        ICounterable counterable = hitObjects.GetComponent<ICounterable>();
+        if (counterable != null)
+        {
+            counterable.ExecuteCounterEffect();
+        }
+
+        _counterObject = null;
     }
 
-    private void SetAttackCenter(Vector3 position)
+    /// <summary>
+    /// 패링 범위의 중심점 계산
+    /// </summary>
+    /// <returns>패링 범위 박스의 중심 위치</returns>
+    private Vector3 GetCounterCenter()
     {
-        _attackCenter = position;
+        return transform.position + transform.forward * (MeleeAttackData.AttackRadius.z / 2);
     }
 
-    private Vector3 GetAttackCenter()
-    {
-        return _attackCenter;
-    }
     #endregion
 
 #if UNITY_EDITOR
@@ -154,8 +219,11 @@ public class PlayerCombat : MonoBehaviour, IPlayerCombat
 
         DrawParryGizmo();
 
+        Vector3 counterCenter = GetCounterCenter();
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, MeleeAttackData.AttackRadius.x);
+        Gizmos.matrix = Matrix4x4.TRS(counterCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, MeleeAttackData.AttackRadius);
+        Gizmos.matrix = Matrix4x4.identity;
     }
     private void DrawParryGizmo()
     {

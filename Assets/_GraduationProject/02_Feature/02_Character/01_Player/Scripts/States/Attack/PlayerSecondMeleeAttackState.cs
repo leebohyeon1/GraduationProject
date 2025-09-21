@@ -1,6 +1,7 @@
 using System;
 using BH_Lib.FSM;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어 두 번째 공격 상태
@@ -24,14 +25,16 @@ public class PlayerSecondMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnEnter();
 
-        p_context.Event.MeleeAttack.OnFinished += AttackFinished;
-        p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.MeleeAttack.OnFinished += (Position) => AttackFinished();
+        p_context.Event.MeleeAttack.PublishStart(p_context.MeleeAttack.AttackStartEffectPosition);
+        p_context.Event.PublishMeleeAttackEffect(p_context.MeleeAttack.ComboCount, p_context.MeleeAttack.AttackStartEffectPosition);
+
     }
 
     public override void OnExit()
     {
         base.OnExit();
 
-        p_context.Event.MeleeAttack.OnFinished -= AttackFinished;
+        p_context.Event.MeleeAttack.OnFinished -= (Position) => AttackFinished();
     }
 }

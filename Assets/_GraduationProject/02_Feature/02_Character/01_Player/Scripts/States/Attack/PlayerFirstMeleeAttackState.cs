@@ -19,15 +19,16 @@ public class PlayerFirstMeleeAttackState : PlayerMeleeAttackBaseState
     {
         base.OnEnter();
 
-        p_context.Event.MeleeAttack.OnFinished += AttackFinished;
+        p_context.Event.MeleeAttack.OnFinished += (position) => AttackFinished();
 
-        p_context.Event.MeleeAttack.PublishStart();
+        p_context.Event.MeleeAttack.PublishStart(p_context.MeleeAttack.AttackStartEffectPosition);
+        p_context.Event.PublishMeleeAttackEffect(p_context.MeleeAttack.ComboCount, p_context.MeleeAttack.AttackStartEffectPosition);
     }
 
     public override void OnExit()
     {
         base.OnExit();
 
-        p_context.Event.MeleeAttack.OnFinished -= AttackFinished;
+        p_context.Event.MeleeAttack.OnFinished -= (position) => AttackFinished();
     }
 }

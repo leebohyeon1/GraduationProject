@@ -29,6 +29,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
         p_context.Animator.SetBool("IsRangedAttackCharging", true);
         Log.Print("Player entered RangedAttackChargeState");
 
+        p_context.Event.RangedAttackCharge.PublishStart(p_context.RangedAttack.RangedAttackChargeStartEffectPoint);
         _chargeTime = 0f;
     }
 
@@ -60,6 +61,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
             // 완전 차징 완료 후 키를 떼면 Fire 상태로 전환
             if (!p_context.Controller.RangedAttackInput)
             {
+                p_context.Event.RangedAttackCharge.PublishFinished(p_context.RangedAttack.RangedAttackChargeFinishEffectPoint);
                 p_stateMachine.ChangeState<PlayerRangedAttackFireState>();
             }
         }
@@ -68,6 +70,7 @@ public class PlayerRangedAttackChargeState : BaseState<PlayerContext>
             // 차징 미완료 상태에서 키를 떼면 Idle로 전환
             if (!p_context.Controller.RangedAttackInput)
             {
+                p_context.Event.RangedAttackCharge.PublishCancel(p_context.RangedAttack.RangedAttackChargeCancelEffectPoint);
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         }

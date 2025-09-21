@@ -1,6 +1,7 @@
 using BH_Lib.DI;
 using BH_Lib.Log;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어의 공격 시스템을 담당하는 컴포넌트
@@ -19,6 +20,13 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
     
     [Tooltip("원거리 공격에 사용할 투사체 프리팹")]
     [SerializeField] private GameObject _projectilePrefab;
+
+    [Space(10)]
+    [SerializeField] private Transform _rangeAttackChargeStartEffectPoint;
+    [SerializeField] private Transform _rangeAttackChargeEffectPoint;
+    [SerializeField] private Transform _rangeAttackChargeCancelEffectPoint;
+    [SerializeField] private Transform _rangeAttackChargeFinishEffectPoint;
+
 
     #endregion
 
@@ -44,6 +52,13 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
     /// 투사체 속도
     /// </summary>
     public float ProjectileSpeed => _context?.Stats?.RangedAttackData.ProjectileSpeed ?? 100.0f;
+
+    public Vector3 ProjectileSpawnPosition => _rangedAttackPoint.position;
+    public Vector3 RangedAttackChargeStartEffectPoint => _rangeAttackChargeStartEffectPoint.position;
+    public Vector3 RangedAttackChargeEffectPoint => _rangeAttackChargeEffectPoint.position;
+    public Vector3 RangedAttackChargeCancelEffectPoint => _rangeAttackChargeCancelEffectPoint.position;
+    public Vector3 RangedAttackChargeFinishEffectPoint => _rangeAttackChargeFinishEffectPoint.position;
+
     #endregion
 
     #region Public Methods
@@ -59,7 +74,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
         _event = _context.Event;
 
         // 전투 관련 이벤트 버스 구독
-        _event.RangedAttack.OnPerform += FireProjectile;         // 원거리 공격 시작 이벤트
+        _event.RangedAttack.OnPerform += (position) => FireProjectile();         // 원거리 공격 시작 이벤트
     }
 
     /// <summary>
@@ -78,6 +93,7 @@ public class PlayerRangedAttack : MonoBehaviour, IPlayerRangedAttack
 
         // 투사체 생성
         GameObject projectileObj = Instantiate(_projectilePrefab, _rangedAttackPoint.position, _rangedAttackPoint.rotation);
+        _context.Event.RangedAttack.PublishStart(_rangedAttackPoint.position);
 
         // 투사체 초기화
         Projectile projectile = projectileObj.GetComponent<Projectile>();
