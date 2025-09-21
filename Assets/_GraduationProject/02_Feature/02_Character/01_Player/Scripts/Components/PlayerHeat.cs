@@ -98,7 +98,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
         IHeatable heatable = target.GetComponent<IHeatable>();
         if (heatable != null)
         {
-            SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
             Log.PrintColor(Color.red, $"target: {target.gameObject.name}, 열기 변화량: {deltaHeat}");
@@ -110,7 +110,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
     /// </summary>
     private void AddHeatOnParry()
     {
-        SourceMap sourceMap = p_heatDataBase.GetSourceMap("OnParrySuccess", ActorType, -1);
+        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", ActorType, -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
         ChangeHeat(deltaHeat);
 
@@ -129,7 +129,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
     private void AddHeatOnMeleeAttackCharging()
     {
         SourceMap sourceMap;
-        sourceMap = p_heatDataBase.GetSourceMap("OnCharge", ActorType, -1);
+        sourceMap = p_sourceMapDataBase.GetSourceMap("OnCharge", ActorType, -1);
 
         if (Time.time - _lastMeleeAttackChargingTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
         {
@@ -152,7 +152,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
         if (_context.Combat.IsRest)
         {
             SourceMap sourceMap;
-            sourceMap = p_heatDataBase.GetSourceMap("OnBattleOut", ActorType, -1);
+            sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", ActorType, -1);
 
             if (sourceMap.DeltaHeat > 0 && Time.time - _lastRestTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
             {
@@ -172,7 +172,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
         if (heatable != null)
         {
             SourceMap sourceMap;
-            sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
+            sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
 
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
@@ -188,7 +188,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
     private void MinusHeatOnSkill()
     {
         SourceMap sourceMap;
-        sourceMap = p_heatDataBase.GetSourceMap("OnIceBallSuccess", -1);
+        sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
         ChangeHeat(deltaHeat);
@@ -197,7 +197,7 @@ public class PlayerHeat : HeatSystem, IPlayerHeatable
 
     public int GetCostMana(string id, int tier = -1)
     {
-        SourceMap data = p_heatDataBase.GetSourceMap(id, tier);
+        SourceMap data = p_sourceMapDataBase.GetSourceMap(id, tier);
         return data.ManaCost;
     }   
 }

@@ -1,9 +1,8 @@
 using UnityEngine;
+using player.Refactor;
 
 public class PlayerProjectile : Projectile
 {
-
-
     protected override void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == p_owner) return;
@@ -15,8 +14,9 @@ public class PlayerProjectile : Projectile
             if (damageable != null && !damageable.IsDead)
             {
                 Attack(damageable);
-                p_owner.GetComponent<Player>().Context?
-                .Event.RangedAttack.PublishAffect(other.transform.position, other);
+                p_owner.GetComponent<player.Refactor.Player>()
+                    .Events.TriggerRangedAttackAffect(other);
+
 
                 if (p_destroyOnHit)
                 {

@@ -148,7 +148,7 @@ public class Player : CharacterBase
         _stateMachine.AddState(new PlayerRangedAttackFireState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(Context, _stateMachine));
-        _stateMachine.AddState(new PlayerHitState(Context, _stateMachine));
+        _stateMachine.AddState((IState)new PlayerHitState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerMeleeAttackChargeState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerChargeMeleeAttackState(Context, _stateMachine));
         _stateMachine.AddState(new PlayerCounterAttackState(Context, _stateMachine));

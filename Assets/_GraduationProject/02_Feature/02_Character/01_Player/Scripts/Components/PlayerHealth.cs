@@ -36,7 +36,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     /// </summary>
     private PlayerEventChannel _event;
 
-    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
     /// <summary>
@@ -70,6 +70,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
     public bool IsDefending => _isDefending;
 
     public bool IsInvincible => _isInvincible;
+
+
 
     /// <summary>
     /// Hit 상태 플래그를 리셋합니다
@@ -154,7 +156,7 @@ public class PlayerHealth : MonoBehaviour, IPlayerHealth
             MaxHealth = MaxHealth,
         };
 
-        OnHealthChanged?.Invoke(newHealthData);
+        OnHealthChanged?.Invoke(previousHealth, p_currentHealth);
 
         if (IsDead)
         {

@@ -32,7 +32,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public int Maxhealth { get; set; }
     public int CurrentHealth { get; set; }
-    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
     Rigidbody rb;
@@ -197,6 +197,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public bool IsInvincible => throw new NotImplementedException();
 
+    public bool IsHit => throw new NotImplementedException();
+
     public void SetState(EnemyState state)
     {
         CurrentState = state;
@@ -328,6 +330,11 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
 
         target.TakeDamage(AttackDamage, this);
+    }
+
+    public void ResetHitState()
+    {
+        throw new NotImplementedException();
     }
 
 

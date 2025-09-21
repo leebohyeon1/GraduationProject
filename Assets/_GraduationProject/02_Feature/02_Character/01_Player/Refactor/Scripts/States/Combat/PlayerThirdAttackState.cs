@@ -1,0 +1,25 @@
+using BH_Lib.FSM;
+using player.Refactor;
+using System;
+
+namespace player.Refactor
+{
+    public class PlayerThirdAttackState : PlayerAttackBaseState
+    {
+        public PlayerThirdAttackState(Player context, StateMachine<Player> stateMachine)
+            : base(context, stateMachine) { }
+
+        protected override string p_animationTrigger => "ThirdAttack";
+
+        protected override Type p_nextAttackState => null;
+
+        protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.AttackDatas[2];
+
+        protected override void HandleAttackPerform()
+        {
+            base.HandleAttackPerform();
+        }
+
+    }
+}
+

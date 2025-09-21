@@ -22,13 +22,13 @@ public class HpBar : DIMonoBehaviour
         _damageable.OnHealthChanged -= ChangeHpBar;        
     }
 
-    private void ChangeHpBar(HealthChangeEventData eventData)
+    private void ChangeHpBar(int previousHp, int currentHp)
     {
         DOTween.Kill(_hpBarSlider, true);
 
         DOTween.To(() => _hpBarSlider.fillAmount,
                     x => _hpBarSlider.fillAmount = x,
-                    eventData.HealthPercent, 0.5f)
+                    currentHp/(float)_damageable.MaxHealth, 0.5f)
                     .SetEase(Ease.Linear)
                     .SetId(_hpBarSlider);
     }

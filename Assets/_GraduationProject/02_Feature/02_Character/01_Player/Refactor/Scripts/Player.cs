@@ -1,0 +1,192 @@
+using BH_Lib.DI;
+using BH_Lib.FSM;
+using BH_Lib.Log;
+using UnityEngine;
+
+namespace player.Refactor
+{
+    public class Player : DIMonoBehaviour
+    {
+        #region Private Fields
+        [Inject] private IInputDeviceDetector _inputDeviceDetector;
+
+        [SerializeField] private Animator _animator;
+        [SerializeField] private CharacterController _characterController;
+
+        [SerializeField] private PlayerDataBase _dataBase;
+        [SerializeField] private PlayerController _controller;
+        [SerializeField] private PlayerHealth _health;
+        [SerializeField] private PlayerMovement _movement;
+        [SerializeField] private PlayerCombat _combat;
+        [SerializeField] private PlayerHeat _heat;
+        [SerializeField] private PlayerEvents _events;
+
+        private StateMachine<Player> _stateMachine;
+        private PlayerHeatManager _heatManager;
+        private PlayerCombatManager _combatManager;
+        #endregion
+
+        #region Properties
+        public Animator Animator => _animator;
+        public PlayerDataBase DataBase => _dataBase;
+        public PlayerController Controller => _controller;
+        public PlayerHealth Health => _health;
+        public PlayerMovement Movement => _movement;
+        public PlayerCombat Combat => _combat;
+        public PlayerHeat Heat => _heat;
+        public PlayerEvents Events => _events;
+
+        public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+        #endregion
+
+        private void Start()
+        {
+            InitializeReference();
+            InitializeStateMachine();
+        }
+
+        private void Update()
+        {
+            _movement.CheckGrounded(DataBase.RuntimeData.GroundCheckDistance,
+                DataBase.RuntimeData.GroundLayerMask);
+
+            _stateMachine?.Update();
+        }
+
+        private void FixedUpdate()
+        {
+            _movement.ApplyGravity(DataBase.RuntimeData.Gravity);
+
+            // 상태 머신 고정 업데이트
+            _stateMachine?.FixedUpdate();
+        }
+
+        private void LateUpdate()
+        {
+            _controller.LateTick();
+        }
+
+        private void OnDestroy()
+        {
+            _heatManager?.Dispose();
+            _combatManager?.Dispose();
+        }
+
+        private void InitializeReference()
+        {
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+
+            if (_characterController == null)
+            {
+                _characterController = GetComponent<CharacterController>();
+            }
+
+            if (_dataBase == null)
+            {
+                _dataBase = GetComponent<PlayerDataBase>();
+            }
+
+            if (_controller == null)
+            {
+                _controller = GetComponent<PlayerController>();
+            }
+
+            if (_health == null)
+            {
+                _health = GetComponent<PlayerHealth>();
+            }
+
+            if (_movement == null)
+            {
+                _movement = GetComponent<PlayerMovement>();
+            }
+
+            if (_combat == null)
+            {
+                _combat = GetComponent<PlayerCombat>();
+            }
+
+            if(_heat == null)
+            {
+                _heat = GetComponent<PlayerHeat>(); 
+            }
+
+            if (_events == null)
+            {
+                _events = GetComponent<PlayerEvents>();
+            }
+
+            _dataBase.Initialize();
+            _controller.Initialize(_inputDeviceDetector);
+            _health.Initialize(_dataBase.RuntimeData);
+            _movement.Initialize(_characterController);
+            _combat.Initialize(DataBase.RuntimeData.CombatData);
+            _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData);
+
+            _heatManager = new PlayerHeatManager(Heat, Events);
+            _combatManager = new PlayerCombatManager(Combat, Events);
+        }
+
+        private void InitializeStateMachine()
+        {
+            _stateMachine = new StateMachine<Player>(this);
+
+            _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerThirdAttackState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerRangedChargeState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerRangedAttackState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
+            _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
+
+            SetupStateTransitions();
+
+            // 초기 상태를 Idle로 설정
+            _stateMachine.ChangeState<PlayerIdleState>();
+        }
+
+        private void SetupStateTransitions()
+        {
+            // Hit 상태로의 전환 (모든 상태에서 가능)
+            _stateMachine.AddAnyTransition<PlayerHitState>(() =>
+                !Health.IsDead && Health.IsHit);
+
+            // Idle 상태에서의 전환
+            _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
+                => Controller.MoveInput != Vector2.zero);
+            _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
+                => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
+                => !Combat.CanCounterAttack && Controller.AttackInput);
+            _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
+                => Controller.AttackHeldInput);
+            _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
+               => Controller.RangedAttackInput);
+            _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
+                => Controller.DefendInput);
+
+            // Move 상태에서의 전환
+            _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
+                => Controller.MoveInput == Vector2.zero);
+            _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
+                => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
+                => !Combat.CanCounterAttack && Controller.AttackInput);
+            _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
+                => Controller.AttackHeldInput);
+            _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()
+                => Controller.RangedAttackInput);
+            _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
+               => Controller.DefendInput);
+
+        }
+    }
+}

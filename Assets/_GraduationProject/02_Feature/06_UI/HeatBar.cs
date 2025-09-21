@@ -22,11 +22,11 @@ public class HeatBar : MonoBehaviour
         _heatable.OnHeatChanged -= ChangeHeatBar;
     }
 
-    private void ChangeHeatBar(int currentHeat, int maxHeat)
+    private void ChangeHeatBar(int previousHeat, int currentHeat)
     {
         DOTween.Kill(_heatBarSlider, true);
 
-        float healthPercent = (float)currentHeat / maxHeat;
+        float healthPercent = currentHeat / (float)_heatable.MaxHeat;
         DOTween.To(() => _heatBarSlider.fillAmount,
                     x => _heatBarSlider.fillAmount = x,
                     healthPercent, 0.1f)

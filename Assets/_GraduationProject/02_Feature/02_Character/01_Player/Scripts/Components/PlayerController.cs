@@ -10,7 +10,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour, IPlayerController
 {
     [Header("Input")]
-    [Tooltip("입력 이벤트를 제공하는 InputReader ScriptableObject입니다.")]
     [SerializeField] private InputReader _inputReader;
     private IInputDeviceDetector _inputDeviceDetector;
 
@@ -18,42 +17,48 @@ public class PlayerController : MonoBehaviour, IPlayerController
     /// 현재 이동 입력 값입니다. (x, y)
     /// </summary>
     private Vector2 _moveInput;
-    
     /// <summary>
     /// 현재 공격 입력 상태입니다.
     /// </summary>
     private bool _attackInput;
-
     /// <summary>
     /// 현재 공격 홀드 입력 상태입니다.
     /// </summary>
     private bool _attackHeldInput;
-    
     /// <summary>
     /// 현재 원거리 공격 입력 상태입니다.
     /// </summary>
     private bool _rangedAttackInput;
-    
     /// <summary>
     /// 현재 회피 입력 상태입니다.
     /// </summary>
-    private bool _dodgeInput;
-    
+    private bool _dodgeInput;    
     /// <summary>
     /// 현재 방어 입력 상태입니다.
     /// </summary>
-    private bool _defendInput;
-    
+    private bool _defendInput;   
     /// <summary>
     /// 현재 조준/시선 입력 값입니다.
     /// </summary>
     private Vector2 _lookInput;
     private Vector2 _mousePosition;
-
     /// <summary>
     /// 스킬 입력 상태입니다.
     /// </summary>
     private bool _skillInput;
+
+
+    #region Properties
+    public Vector2 MoveInput => _moveInput;
+    public bool AttackInput => _attackInput;
+    public bool AttackHeldInput => _attackHeldInput;
+    public bool RangedAttackInput => _rangedAttackInput;
+    public bool DodgeInput => _dodgeInput;
+    public bool DefendInput => _defendInput;
+    public bool SkillInput => _skillInput;
+    public Vector2 LookInput => _lookInput;
+    public Vector2 MousePosition => _mousePosition;
+    #endregion
 
     public void Initialize(IInputDeviceDetector inputDeviceDetector)
     {
@@ -243,16 +248,5 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _inputDeviceDetector.OnInputDeviceChanged.RemoveListener(OnInputDeviceDetectorChanged);
         }
     }
-
-    // 다른 스크립트(주로 상태 클래스)에서 현재 입력 값을 참조하기 위한 프로퍼티들입니다.
-    public Vector2 MoveInput => _moveInput;
-    public bool AttackInput => _attackInput;
-    public bool AttackHeldInput => _attackHeldInput;
-    public bool RangedAttackInput => _rangedAttackInput;
-    public bool DodgeInput => _dodgeInput;
-    public bool DefendInput => _defendInput;
-    public bool SkillInput => _skillInput;
-    public Vector2 LookInput => _lookInput;
-    public Vector2 MousePosition => _mousePosition;
 
 }
