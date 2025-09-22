@@ -48,6 +48,21 @@ namespace player.Refactor
             }
         }
 
+        public void DecreaseHeatOnRangeAttack(Collider collider)
+        {
+            IHeatable heatable = collider.GetComponent<IHeatable>();
+            if (heatable != null)
+            {
+                SourceMap sourceMap;
+                sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
+
+                int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
+                Log.PrintColor(Color.red, $"target: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
+                heatable.ChangeHeat(deltaHeat);
+            }
+        }
+
         public void IncreaseHeatOnParrySuccess()
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
@@ -74,6 +89,7 @@ namespace player.Refactor
             _events.OnAttackAffect += HandleAttackAffect;
             _events.OnChargeAttackAffect += HandleChargeAttackAffect;
             _events.OnParryAffect += HandleParryAffect;
+            _events.OnRangedAttackAffect += HandleRangedAttackAffect;
         }
 
         // IDisposable 인터페이스의 Dispose 메서드
@@ -87,6 +103,7 @@ namespace player.Refactor
             _events.OnAttackAffect -= HandleAttackAffect;
             _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
             _events.OnParryAffect -= HandleParryAffect;
+            _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
 
             _disposed = true;
         }
@@ -134,6 +151,11 @@ namespace player.Refactor
         private void HandleParryAffect(Collider collider) 
         {
             _heat.IncreaseHeatOnParrySuccess();
+        }
+
+        private void HandleRangedAttackAffect(Collider collider) 
+        {
+            _heat.DecreaseHeatOnRangeAttack(collider);
         }
     }
 }
