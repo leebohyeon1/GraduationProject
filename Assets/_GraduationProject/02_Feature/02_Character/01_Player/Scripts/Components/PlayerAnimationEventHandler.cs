@@ -10,7 +10,6 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PlayerAnimationEventHandler : MonoBehaviour
 {
-    private PlayerContext _context;
     /// <summary>플레이어 이벤트 버스 참조</summary>
     private PlayerEventChannel _event;
 
@@ -18,10 +17,9 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// 애니메이션 이벤트 핸들러 초기화
     /// </summary>
     /// <param name="event">플레이어 이벤트 매니저</param>
-    public void Initialize(PlayerContext context)
+    public void Initialize(PlayerEventChannel @event)
     {
-        _context = context;
-        _event = _context.Event;
+        _event = @event;
     }
 
 
@@ -34,19 +32,11 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// 애니메이션 이벤트: 멈춤 시점
-    /// </summary>
-    public void TriggerStop()
-    {
-        _event.PublishMoveStop();
-    }
-
-    /// <summary>
     /// 애니메이션 이벤트: 회피 애니메이션 종료 시점
     /// </summary>
     public void TriggerDodgeEnd()
     {
-        _event.Dodge.PublishFinished(transform.position);
+        _event.Dodge.PublishFinished();
     }
 
     /// <summary>
@@ -54,7 +44,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerParry()
     {
-        _event.Parry.PublishPerform(_context.Combat.ChargeStartEffectPoint.position);
+        _event.Parry.PublishPerform();
     }
 
     #region MeleeAttack
@@ -63,7 +53,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerMeleeAttack()
     {
-        _event.MeleeAttack.PublishPerform(transform.position);
+        _event.MeleeAttack.PublishPerform();
     }
 
     /// <summary>
@@ -72,7 +62,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     public void TriggerMeleeAttackFinished()
     {
         Log.PrintColor(Color.aliceBlue, "공격 종료!");
-        _event.MeleeAttack.PublishFinished(transform.position);
+        _event.MeleeAttack.PublishFinished();
     }
     #endregion
 
@@ -82,7 +72,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerRangedAttackFinished()
     {
-        _event.RangedAttack.PublishFinished(_context.RangedAttack.ProjectileSpawnPosition);
+        _event.RangedAttack.PublishFinished();
     }
     #endregion
 
@@ -92,7 +82,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerChargeMeleeAttack()
     {
-        _event.ChargeMeleeAttack.PublishPerform(transform.position);
+        _event.ChargeMeleeAttack.PublishPerform();
     }
 
     /// <summary>
@@ -100,7 +90,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>    
     public void TriggerChargeMeleeAttackFinished()
     {
-        _event.ChargeMeleeAttack.PublishFinished(_context.Combat.ChargeAttackFinishEffectPoint.position);
+        _event.ChargeMeleeAttack.PublishFinished();
     }
     #endregion
 
@@ -110,7 +100,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerCounterAttack()
     {
-        _event.CounterAttack.PublishPerform(transform.position);
+        _event.CounterAttack.PublishPerform();
     }
 
     /// <summary>
@@ -118,7 +108,7 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     /// </summary>
     public void TriggerCounterAttackFinished()
     {
-        _event.CounterAttack.PublishFinished(_context.Combat.CounterAttackFinishEffectPoint.position);
+        _event.CounterAttack.PublishFinished();
     }
 
     #endregion

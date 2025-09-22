@@ -17,7 +17,7 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     /// <summary>입력 허용 플래그</summary>  
     protected bool p_canInput = false;
     /// <summary>공격 이동 코루틴 참조</summary>
-    protected Coroutine p_attackMoveCoroutine;
+    private Coroutine _attackMoveCoroutine;
 
     /// <summary>애니메이션 트리거 이름 (하위 클래스에서 구현)</summary>    
     protected abstract string p_animationTrigger { get; }
@@ -70,10 +70,10 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
         p_context.Animator.ResetTrigger(p_animationTrigger);
 
         // 공격 이동 코루틴 정리
-        if (p_attackMoveCoroutine != null)
+        if (_attackMoveCoroutine != null)
         {
-            p_context.StopCoroutine(p_attackMoveCoroutine);
-            p_attackMoveCoroutine = null;
+            p_context.StopCoroutine(_attackMoveCoroutine);
+            _attackMoveCoroutine = null;
         }
 
         if (p_nextState == null || !p_nextState.IsSubclassOf(typeof(PlayerMeleeAttackBaseState)))
@@ -161,19 +161,13 @@ public abstract class PlayerMeleeAttackBaseState : BaseState<PlayerContext>
     /// <summary>
     /// 공격 시 전진 이동 시작
     /// </summary>
-    protected virtual void StartAttackMovement()
+    private void StartAttackMovement()
     {
-        if (p_context.MeleeAttack?.MeleeAttackData == null)
-        {
-            return;
-        }
+        if (p_context.MeleeAttack?.MeleeAttackData == null) return;
         
         var attackData = p_context.MeleeAttack.MeleeAttackData;
-        if (attackData.AttackMoveDistance <= 0)
-        {
-            return;
-        }
+        if (attackData.AttackMoveDistance <= 0) return;
         
-        p_attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
+        _attackMoveCoroutine = p_context.StartCoroutine(p_context.Movement.CoMoveForwardWithCurve(attackData.AttackMoveDistance, attackData.AttackMoveDuration, attackData.AttackMoveCurve));
     }
 }

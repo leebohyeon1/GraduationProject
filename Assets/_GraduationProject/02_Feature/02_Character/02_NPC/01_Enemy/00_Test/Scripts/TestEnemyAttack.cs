@@ -16,16 +16,6 @@ public class TestEnemyAttack : MonoBehaviour, IPlayerRangedAttack
 
     public int RangedAttackDamage => _attackDamage;
 
-    public Vector3 ProjectileSpawnPosition => _rangedAttackPoint.position;
-
-    public Vector3 RangedAttackChargeStartEffectPoint => throw new System.NotImplementedException();
-
-    public Vector3 RangedAttackChargeEffectPoint => throw new System.NotImplementedException();
-
-    public Vector3 RangedAttackChargeCancelEffectPoint => throw new System.NotImplementedException();
-
-    public Vector3 RangedAttackChargeFinishEffectPoint => throw new System.NotImplementedException();
-
     private float _timer = 0f;
 
     private void Update()
