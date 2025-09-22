@@ -1,3 +1,4 @@
+using BH_Lib.Log;
 using UnityEngine;
 
 namespace player.Refactor
@@ -35,9 +36,10 @@ namespace player.Refactor
 
             if (_isDefending)
             {
-                damageAmount = Mathf.RoundToInt(damageAmount * _runtimeData.DefendDamageReductionRate);
+                damageAmount = Mathf.RoundToInt(damageAmount * 
+                    _runtimeData.CombatData.DefendDamageReductionRate);
+       
             }
-
 
             ChangeHealth(-damageAmount);
 

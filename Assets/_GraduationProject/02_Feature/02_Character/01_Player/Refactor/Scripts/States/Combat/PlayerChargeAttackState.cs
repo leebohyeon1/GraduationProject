@@ -26,7 +26,7 @@ namespace player.Refactor
 
             Log.Print("Player entered ChargeAttack state");
             p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
-            p_context.Combat.SetupAttackCenter();
+            p_context.Combat.SetupCombatCenter();
 
             // 공격 실행
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;

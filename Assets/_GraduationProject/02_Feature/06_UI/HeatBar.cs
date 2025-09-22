@@ -19,7 +19,10 @@ public class HeatBar : MonoBehaviour
 
     private void OnDestroy()
     {
-        _heatable.OnHeatChanged -= ChangeHeatBar;
+        if( _heatBarSlider != null )
+        {
+            _heatable.OnHeatChanged -= ChangeHeatBar;
+        }
     }
 
     private void ChangeHeatBar(int previousHeat, int currentHeat)

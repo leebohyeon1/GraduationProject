@@ -47,6 +47,13 @@ namespace player.Refactor
                 Log.PrintColor(Color.red, $"target: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
             }
         }
+
+        public void IncreaseHeatOnParrySuccess()
+        {
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            ChangeHeat(deltaHeat);
+        }
     }
 
     /// <summary>
@@ -66,6 +73,7 @@ namespace player.Refactor
             _heat.OnHeatChanged += HandleHeatChanged;
             _events.OnAttackAffect += HandleAttackAffect;
             _events.OnChargeAttackAffect += HandleChargeAttackAffect;
+            _events.OnParryAffect += HandleParryAffect;
         }
 
         // IDisposable 인터페이스의 Dispose 메서드
@@ -78,6 +86,7 @@ namespace player.Refactor
             _heat.OnHeatChanged -= HandleHeatChanged;
             _events.OnAttackAffect -= HandleAttackAffect;
             _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
+            _events.OnParryAffect -= HandleParryAffect;
 
             _disposed = true;
         }
@@ -116,6 +125,15 @@ namespace player.Refactor
         private void HandleChargeAttackAffect(Collider collider)
         {
             _heat.IncreaseHeatOnChargeAttack(collider);
+        }
+
+        /// <summary>
+        /// 패링 성공 시 효과 핸들 함수
+        /// </summary>
+        /// <param name="collider">패링한 오브젝트</param>
+        private void HandleParryAffect(Collider collider) 
+        {
+            _heat.IncreaseHeatOnParrySuccess();
         }
     }
 }

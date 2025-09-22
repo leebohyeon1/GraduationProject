@@ -24,10 +24,6 @@ namespace player.Refactor
         [Header("Combat")]
         public PlayerCombatData CombatData;
 
-        [Header("Damaged")]
-        public float HitStunDuration;
-        public float DefendDamageReductionRate;
-
         public void Initialize(PlayerBaseDatasSO baseData)
         {
             MaxHealth = baseData.MaxHealth;
@@ -90,6 +86,9 @@ namespace player.Refactor
 
         [Header("RangedAttack")]
         public RangedAttackData RangedAttackData;
+
+        [Header("Parry")]
+        public Vector3 ParryRadius;
     }
 
     /// <summary>

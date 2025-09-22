@@ -17,7 +17,7 @@ namespace player.Refactor
         public override void OnEnter()
         {
             p_context.Animator.SetBool("IsCharge", true);
-            p_context.Events.OnTier1Up += HandleMinChargeFinish;
+
             p_context.Heat.OnHeatChanged += HandleSetupChargeSourceMap;
             SetupChargeSourceMap();
             _chargeGuage = 0;
@@ -36,6 +36,11 @@ namespace player.Refactor
             if (Time.time - _lastChargeTime > tickCounter)
             {
                 _chargeGuage += 1;
+                if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
+                {
+                    MinChargeFinish();
+                }
+
                 p_context.Heat.IncreaseHeatOnCharge(chargeSourceMap, _chargeGuage);
                 _lastChargeTime = Time.time;
             }
@@ -71,14 +76,13 @@ namespace player.Refactor
         {
             p_context.Animator.SetBool("IsCharge", false);
 
-            p_context.Events.OnTier1Up -= HandleMinChargeFinish;
             p_context.Heat.OnHeatChanged -= HandleSetupChargeSourceMap;
         }
 
         /// <summary>
-        /// 최소 차지가 완료되었을 때 발생하는 이벤트
+        /// 최소 차지가 완료 함수
         /// </summary>
-        private void HandleMinChargeFinish()
+        private void MinChargeFinish()
         {
             if(!_isCharged)
             {

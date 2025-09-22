@@ -10,9 +10,9 @@ namespace player.Refactor
         #region Private Fields
 
         /// <summary>
-        /// °ø°Ý ¹üÀ§ÀÇ Áß½ÉÁ¡ À§Ä¡
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
         /// </summary>
-        private Vector3 _attackCenter;
+        private Vector3 _combatCenter;
 
         private bool _canCounterAttack;
 
@@ -20,7 +20,7 @@ namespace player.Refactor
 
 
         /// <summary>
-        /// ³ªÁß¿¡ Áö¿ì±â
+        /// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         private bool _isDrawGizmos = false;
         #endregion
@@ -36,35 +36,36 @@ namespace player.Refactor
             _isDrawGizmos = true;
             _combatData = combatData;
         }
-
+        
+        /// <summary>
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        /// </summary>
+        public void SetupCombatCenter()
+        {
+            _combatCenter = transform.position;
+        }
 
         #region Attack
         /// <summary>
-        /// °ø°Ý ½ÃÀÛÁ¡ ¼³Á¤
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         /// </summary>
-        public void SetupAttackCenter()
-        {
-            _attackCenter = transform.position;
-        }
-
-        /// <summary>
-        /// °ø°Ý ¹üÀ§ÀÇ Áß½ÉÁ¡ °è»ê
-        /// </summary>
-        /// <returns>°ø°Ý ¹üÀ§ ¹Ú½ºÀÇ Áß½É À§Ä¡</returns>
+        /// <returns>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ß½ï¿½ ï¿½ï¿½Ä¡</returns>
         private Vector3 GetAttackCenter(PlayerAttackData attackData)
         {
-            return _attackCenter + transform.forward * (attackData.AttackRadius.z / 2);
+            return _combatCenter + transform.forward * (attackData.AttackRadius.z / 2);
         }
 
         /// <summary>
-        /// °øÅë °ø°Ý ½ÇÇà ·ÎÁ÷ (ÀÏ¹Ý/Â÷Áö °ø°Ý µÑ ´Ù »ç¿ë)
-        /// Physics.OverlapBox¸¦ »ç¿ëÇÏ¿© ¹Ú½º ÇüÅÂÀÇ °ø°Ý ¹üÀ§¿¡¼­ ÀûÀ» °¨ÁöÇÕ´Ï´Ù.
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Ï¹ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½)
+        /// Physics.OverlapBoxï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
+        /// <param name="attackData"> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </param>
+        /// <returns>Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</returns>
         public Collider[] ExecuteAttack(PlayerAttackData attackData)
         {
-            // °ø°Ý Áß½ÉÁ¡°ú ¹üÀ§ ¼³Á¤
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Vector3 attackCenter = GetAttackCenter(attackData);
-            Vector3 halfExtents = attackData.AttackRadius / 2f;  // OverlapBox´Â halfExtents¸¦ »ç¿ë
+            Vector3 halfExtents = attackData.AttackRadius / 2f;  // OverlapBoxï¿½ï¿½ halfExtentsï¿½ï¿½ ï¿½ï¿½ï¿½
 
             Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
@@ -75,9 +76,9 @@ namespace player.Refactor
         }
 
         /// <summary>
-        /// °ø°Ý ¹üÀ§ ³» °¨ÁöµÈ Àûµé¿¡°Ô ÇÇÇØ Àû¿ë
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="hitObjects">°¨ÁöµÈ ÀûµéÀÇ Collider ¹è¿­</param>
+        /// <param name="hitObjects">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Collider ï¿½è¿­</param>
         private void ProcessHitEnemies(PlayerAttackData attackData, Collider[] hitObjects)
         {
             foreach (Collider obj in hitObjects)
@@ -111,6 +112,42 @@ namespace player.Refactor
         }
         #endregion
 
+        #region Parry
+        /// <summary>
+        /// ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        /// </summary>
+        /// <param name="parryRadius">ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½</param>
+        /// <returns>ï¿½Ð¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</returns>
+        public Collider[] ExcuteParry(Vector3 parryRadius)
+        {
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
+            Vector3 halfExtents = parryRadius / 2f;  // OverlapBoxï¿½ï¿½ halfExtentsï¿½ï¿½ ï¿½ï¿½ï¿½
+
+            Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
+
+            ProcessParryEnemies(hitEnemies);
+
+            return hitEnemies;
+        }
+
+        /// <summary>
+        /// ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        /// </summary>
+        /// <param name="hitObjects">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Collider ï¿½è¿­</param>
+        private void ProcessParryEnemies( Collider[] hitObjects)
+        {
+            foreach (Collider obj in hitObjects)
+            {
+                IParryable parryable = obj.GetComponent<IParryable>();
+                if (parryable != null && parryable.IsParryable)
+                {
+                    parryable.Parry(gameObject);
+                }
+            }
+        }
+        #endregion
+
 #if UNITY_EDITOR
 
         private void OnDrawGizmos()
@@ -120,27 +157,21 @@ namespace player.Refactor
                 return;
             }
 
-            DrawAttackGizmo();
-            DrawChargeAttackGizmo();
+            DrawActionGizmo(_combatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
+            DrawActionGizmo(_combatData.AttackDatas[1].AttackRadius, Color.orangeRed);
+            DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);
+            DrawActionGizmo(_combatData.ChargeAttackData.AttackRadius, Color.indianRed);
+            DrawActionGizmo(_combatData.ParryRadius, Color.green);
+
         }
 
-        private void DrawAttackGizmo()
+        private void DrawActionGizmo(Vector3 Radius, Color color)
         {
 
-            Vector3 attackCenter = transform.position + transform.forward * (_combatData.AttackDatas[0].AttackRadius.z / 2);
-            Gizmos.color = Color.red;
+            Vector3 attackCenter = transform.position + transform.forward * (Radius.z / 2);
+            Gizmos.color = color;
             Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
-            Gizmos.DrawWireCube(Vector3.zero, _combatData.AttackDatas[0].AttackRadius);
-            Gizmos.matrix = Matrix4x4.identity;
-        }
-
-        private void DrawChargeAttackGizmo()
-        {
-
-            Vector3 attackCenter = transform.position + transform.forward * (_combatData.ChargeAttackData.AttackRadius.z / 2);
-            Gizmos.color = Color.darkRed;
-            Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
-            Gizmos.DrawWireCube(Vector3.zero, _combatData.ChargeAttackData.AttackRadius);
+            Gizmos.DrawWireCube(Vector3.zero, Radius);
             Gizmos.matrix = Matrix4x4.identity;
         }
 #endif

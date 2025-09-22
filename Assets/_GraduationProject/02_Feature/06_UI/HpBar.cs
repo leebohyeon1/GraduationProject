@@ -19,7 +19,10 @@ public class HpBar : DIMonoBehaviour
 
     private void OnDestroy()
     {
-        _damageable.OnHealthChanged -= ChangeHpBar;        
+        if (_damageable != null)
+        {
+            _damageable.OnHealthChanged -= ChangeHpBar;
+        }
     }
 
     private void ChangeHpBar(int previousHp, int currentHp)

@@ -81,7 +81,7 @@ namespace player.Refactor
         public event Action<Collider> OnRangedAttackAffect;
         public event Action OnRangedAttackFinish;
 
-        public event Action OnParryStart;
+        public event Action OnParryPerform;
         public event Action<Collider> OnParryAffect;
 
         public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
@@ -283,17 +283,17 @@ namespace player.Refactor
         /// 패링 시작 시 효과
         /// (애니메이션 트리거)
         /// </summary>
-        public void TriggerParryStart()
+        public void TriggerParryPerform()
         {
-            OnParryStart.Invoke();
+            OnParryPerform.Invoke();
         }
         /// <summary>
         /// 패링 성공 시 효과
         /// </summary>
         /// <param name="collider">패링 당한 오브젝트</param>
-        public void TriggerParrySuccess(Collider collider)
+        public void TriggerParryAffect(Collider collider)
         {
-            OnParryAffect.Invoke(collider);
+            OnParryAffect?.Invoke(collider);
          
             if (collider != null)
             {
@@ -311,16 +311,16 @@ namespace player.Refactor
             switch (tier)
             {
                 case 1:
-                    OnTier1Up.Invoke(); 
+                    OnTier1Up?.Invoke(); 
                     break;
                 case 2: 
-                    OnTier2Up.Invoke(); 
+                    OnTier2Up?.Invoke(); 
                     break;
                 case 3: 
-                    OnTier3Up.Invoke();
+                    OnTier3Up?.Invoke();
                     break;
                 case 4:
-                    OnOverHeatStart.Invoke(); 
+                    OnOverHeatStart?.Invoke(); 
                     break;
             }
         }

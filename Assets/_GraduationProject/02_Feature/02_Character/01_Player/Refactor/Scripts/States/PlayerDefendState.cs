@@ -22,8 +22,9 @@ namespace player.Refactor
             p_context.Animator.SetBool("IsDefending", true);
             Log.Print("Player entered Defend state");
 
-            // 방어 상태 시작 시 체력 시스템에 알림
+            p_context.Events.OnParryPerform += HandleParryPerform;
             p_context.Health.SetDefending(true);
+            p_context.Combat.SetupCombatCenter();
         }
 
         public override void OnUpdate()
@@ -50,7 +51,18 @@ namespace player.Refactor
             Log.Print("Player exited Defend state");
 
             // 방어 상태 종료 시 체력 시스템에 알림
+            p_context.Events.OnParryPerform -= HandleParryPerform;
+        }
 
+        private void HandleParryPerform()
+        {
+            Log.Print("패리");
+            Collider[] colliders = p_context.Combat.ExcuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
+
+            foreach (Collider collider in colliders)
+            {
+                p_context.Events.TriggerParryAffect(collider);
+            }
         }
     }
 }

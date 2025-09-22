@@ -12,7 +12,7 @@ namespace player.Refactor
         public PlayerHitState(Player context, StateMachine<Player> stateMachine) 
             : base(context, stateMachine) 
         {
-            _hitDuration = p_context.DataBase.RuntimeData.HitStunDuration;
+            _hitDuration = p_context.DataBase.RuntimeData.CombatData.HitStunDuration;
         }
 
         public override void OnEnter()
