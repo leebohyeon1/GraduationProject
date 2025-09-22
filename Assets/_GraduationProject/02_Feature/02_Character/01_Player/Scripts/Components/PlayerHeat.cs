@@ -1,203 +1,229 @@
-using BH_Lib.Log;
+﻿using BH_Lib.Log;
+using DG.Tweening;
+using System;
+using System.Threading;
 using UnityEngine;
 
-/// <summary>
-/// 플레이어 열량 시스템 클래스
-/// HeatSystem을 상속받아 플레이어의 열량 관리를 담당합니다.
-/// 공격, 스킬 사용 등에 따라 열량이 축적되고, 티어별로 스탯 변화가 적용됩니다.
-/// </summary>
-public class PlayerHeat : HeatSystem, IPlayerHeatable
+public class PlayerHeat : HeatSystem
 {
     /// <summary>
-    /// 플레이어 컨텍스트 참조
+    /// 열기 시스템 초기화
     /// </summary>
-    private PlayerContext _context;
-
-    private float _lastMeleeAttackChargingTime = 0;
-    private float _lastRestTime = 0;
-    private int _chargeGuage = 0;
-
-    private void Update()
+    /// <param name="sourceMapDatabaseSO">소스맵 데이터베이스</param>
+    /// <param name="tierStatDatabaseSO">티어 스탯 데이터베이스</param>
+    public void Initialize(SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO)
     {
-        MinusHeatOnRest();
+        p_sourceMapDataBase = sourceMapDatabaseSO;
+        p_tierStatDatabase = tierStatDatabaseSO;
     }
 
     /// <summary>
-    /// 플레이어 열량 시스템 초기화
+    /// 근접 공격 시 열기 증가 처리
     /// </summary>
-    /// <param name="context">플레이어 컨텍스트</param>
-    public void Initialize(PlayerContext context)
+    /// <param name="collider">타격 대상 콜라이더</param>
+    public void IncreaseHeatOnAttack(Collider collider)
     {
-        _context = context;
+        IHeatable heatable = collider.GetComponent<IHeatable>();
 
-        // TODO: 열량 시스템 이벤트 구독
-        // TODO: 플레이어 ID로 열량 데이터 초기화
-        _context.Event.MeleeAttack.OnAffect += HandleMeleeAttackAffect;
-        _context.Event.Parry.OnAffect += HandleParryAffect;
-
-        _context.Event.MeleeAttackCharge.OnStart += HandleMeleeAttackChargeStart;
-        _context.Event.MeleeAttackCharge.OnPerform += HandleMeleeAttackChargePerform;
-
-        _context.Event.RangedAttack.OnAffect += HandleRangedAttackAffect;
-
-        _context.Event.Skill.OnPerform += HandleSkillPerform;
-    }
-
-    public void OnDisable()
-    {
-        _context.Event.MeleeAttack.OnAffect -= HandleMeleeAttackAffect;
-        _context.Event.Parry.OnAffect -= HandleParryAffect;
-
-        _context.Event.MeleeAttackCharge.OnStart -= HandleMeleeAttackChargeStart;
-        _context.Event.MeleeAttackCharge.OnPerform -= HandleMeleeAttackChargePerform;
-
-        _context.Event.RangedAttack.OnAffect -= HandleRangedAttackAffect;
-
-        _context.Event.Skill.OnPerform -= HandleSkillPerform;
-    }
-
-    #region Feedback Handlers
-    private void HandleMeleeAttackAffect(Vector3 position, Collider target)
-    {
-        AddHeatOnMeleeAttack(target);
-    }
-
-    private void HandleParryAffect(Vector3 position, Collider collider)
-    {
-        AddHeatOnParry();
-    }
-
-    private void HandleMeleeAttackChargeStart(Vector3 position)
-    {
-        ChargeStart();
-    }
-
-    private void HandleMeleeAttackChargePerform(Vector3 position)
-    {
-        AddHeatOnMeleeAttackCharging();
-    }
-
-    private void HandleRangedAttackAffect(Vector3 position, Collider target)
-    {
-        Log.PrintColor(Color.red, "원거리 공격 열량 감소 처리");
-        MinusHeatOnRangedAttack(target);
-    }
-
-    private void HandleSkillPerform(Vector3 position)
-    {
-        MinusHeatOnSkill();
-    }
-    #endregion
-
-    /// <summary>
-    /// 공격 시 열량 추가
-    /// </summary>
-    /// <param name="targets">충돌한 오브젝트들</param>
-    private void AddHeatOnMeleeAttack(Collider target)
-    {
-        IHeatable heatable = target.GetComponent<IHeatable>();
-        if (heatable != null)
+        if (heatable != null && !heatable.IsHeatLock)
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
             heatable.ChangeHeat(deltaHeat);
-            Log.PrintColor(Color.red, $"target: {target.gameObject.name}, 열기 변화량: {deltaHeat}");
+
+            Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
     }
 
     /// <summary>
-    /// 패링 시 열량 추가
+    /// 차지 게이지에 따른 열기 증가 처리
     /// </summary>
-    private void AddHeatOnParry()
+    /// <param name="sourceMap">소스맵 데이터</param>
+    /// <param name="chargeGuage">차지 게이지 값</param>
+    public void IncreaseHeatOnCharge(SourceMap sourceMap, float chargeGuage)
     {
-        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", ActorType, -1);
-        int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-        ChangeHeat(deltaHeat);
-
-        Log.PrintColor(Color.red, $"패링, 열기 변화량: {deltaHeat}");
-    }
-
-    private void ChargeStart()
-    {
-        _lastMeleeAttackChargingTime = Time.time;
-        _chargeGuage = 0;
-    }
-
-    /// <summary>
-    /// 근거리 공격 차징 시 열량 추가
-    /// </summary>
-    private void AddHeatOnMeleeAttackCharging()
-    {
-        SourceMap sourceMap;
-        sourceMap = p_sourceMapDataBase.GetSourceMap("OnCharge", ActorType, -1);
-
-        if (Time.time - _lastMeleeAttackChargingTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
+        if (chargeGuage >= CurrentHeat)
         {
-            _chargeGuage += (int)sourceMap.HeatChangeType;
-
-            if (_chargeGuage >= CurrentHeat)
-            {
-                SetHeat(_chargeGuage); ;
-            }
-
-            _lastMeleeAttackChargingTime = Time.time;
+            SetHeat(Mathf.FloorToInt(chargeGuage));
         }
     }
 
     /// <summary>
-    /// 휴식으로 인한 열기 감소
+    /// 차지 공격 시 열기 증가 처리
     /// </summary>
-    private void MinusHeatOnRest()
+    /// <param name="collider">타격 대상 콜라이더</param>
+    public void IncreaseHeatOnChargeAttack(Collider collider)
     {
-        if (_context.Combat.IsRest)
+        IHeatable heatable = collider.GetComponent<IHeatable>();
+        if (heatable != null && !heatable.IsHeatLock)
         {
-            SourceMap sourceMap;
-            sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", ActorType, -1);
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            heatable.ChangeHeat(deltaHeat);
 
-            if (sourceMap.DeltaHeat > 0 && Time.time - _lastRestTime >= (float)(sourceMap.TickSecond / sourceMap.DeltaHeat))
-            {
-                ChangeHeat((int)sourceMap.HeatChangeType);
-                _lastRestTime = Time.time;
-            }
+            Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
     }
 
     /// <summary>
-    /// 원거리 공격 시 열량 감소
+    /// 원거리 공격 시 열기 감소 처리
     /// </summary>
-    /// <param name="target"> 충돌한 오브젝트 </param>
-    private void MinusHeatOnRangedAttack(Collider target)
+    /// <param name="collider">타격 대상 콜라이더</param>
+    public void DecreaseHeatOnRangeAttack(Collider collider)
     {
-        IHeatable heatable = target.GetComponent<IHeatable>();
+        IHeatable heatable = collider.GetComponent<IHeatable>();
         if (heatable != null)
         {
-            SourceMap sourceMap;
-            sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
-
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
-            Log.PrintColor(Color.red, $"target: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
+            Log.PrintColor(Color.red, $"대상: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
             heatable.ChangeHeat(deltaHeat);
         }
-
     }
 
     /// <summary>
-    /// 스킬 사용 시 열량 감소
+    /// 패리 성공 시 열기 증가 처리
     /// </summary>
-    private void MinusHeatOnSkill()
+    public void IncreaseHeatOnParrySuccess()
     {
-        SourceMap sourceMap;
-        sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", -1);
+        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-
+            
         ChangeHeat(deltaHeat);
-
     }
 
-    public int GetCostMana(string id, int tier = -1)
+    /// <summary>
+    /// 전투에서 나옴으로 인한 열기 감소 함수
+    /// </summary>
+    public void DecreaseHeatOnBattleOut()
     {
-        SourceMap data = p_sourceMapDataBase.GetSourceMap(id, tier);
-        return data.ManaCost;
-    }   
+        if(CurrentHeat <= 0)
+        {
+            return;
+        }
+
+        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
+        int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            
+        ChangeHeat(deltaHeat);
+    }
+}
+
+/// <summary>
+/// 플레이어 열기 시스템을 관리하는 클래스
+/// </summary>
+public class PlayerHeatManager : IDisposable
+{
+    private PlayerHeat _heat;
+    private PlayerEvents _events;
+    private bool _disposed = false; // 중복 Dispose 방지
+
+    public PlayerHeatManager(PlayerHeat heat, PlayerEvents events)
+    {
+        _heat = heat;
+        _events = events;
+
+        // 이벤트 구독
+        _events.OnBattleStateChaged += HandleBattleSateChanged;
+        _heat.OnHeatChanged += HandleHeatChanged;
+        _events.OnAttackAffect += HandleAttackAffect;
+        _events.OnChargeAttackAffect += HandleChargeAttackAffect;
+        _events.OnParryAffect += HandleParryAffect;
+        _events.OnRangedAttackAffect += HandleRangedAttackAffect;
+    }
+
+    /// <summary>
+    /// 리소스 정리 및 이벤트 구독 해제
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+
+        // 이벤트 구독 해제
+        _events.OnBattleStateChaged -= HandleBattleSateChanged;
+        _heat.OnHeatChanged -= HandleHeatChanged;
+        _events.OnAttackAffect -= HandleAttackAffect;
+        _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
+        _events.OnParryAffect -= HandleParryAffect;
+        _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
+
+        _disposed = true;
+    }
+
+    /// <summary>
+    /// 전투 상황을 벗어났을 때 상황
+    /// </summary>
+    private Sequence _battleOutSequence;
+    /// <summary>
+    /// 전투 상태 변경 이벤트 처리
+    /// </summary>
+    /// <param name="isBattleState">전투 상태 여부</param>
+    private void HandleBattleSateChanged(bool isBattleState)
+    {
+        _battleOutSequence?.Kill();
+
+        if(!isBattleState)
+        {
+            _battleOutSequence = DOTween.Sequence()
+                .AppendCallback(_heat.DecreaseHeatOnBattleOut)
+                .SetDelay(1f)
+                .SetLoops(-1, LoopType.Restart);
+        }
+    }
+
+    /// <summary>
+    /// 열기 변화 이벤트 처리
+    /// </summary>
+    /// <param name="previousHeat">이전 열기 값</param>
+    /// <param name="currentHeat">현재 열기 값</param>
+    private void HandleHeatChanged(int previousHeat, int currentHeat)
+    {
+        // 열기 티어 변경 여부 확인
+        if (currentHeat > previousHeat)
+        {
+            _events.TriggerTierUp(_heat.CurrentTier);
+        }
+        else
+        {
+            _events.TriggerTierDown(_heat.CurrentTier);
+        }
+    }
+
+    /// <summary>
+    /// 근접 공격 시 열기 효과 처리
+    /// </summary>
+    /// <param name="collider">타격 대상 콜라이더</param>
+    private void HandleAttackAffect(Collider collider)
+    {
+        _heat.IncreaseHeatOnAttack(collider);
+    }
+
+    /// <summary>
+    /// 차지 공격 시 열기 효과 처리
+    /// </summary>
+    /// <param name="collider">타격 대상 콜라이더</param>
+    private void HandleChargeAttackAffect(Collider collider)
+    {
+        _heat.IncreaseHeatOnChargeAttack(collider);
+    }
+
+    /// <summary>
+    /// 패리 성공 시 열기 효과 처리
+    /// </summary>
+    /// <param name="collider">패리 대상 콜라이더</param>
+    private void HandleParryAffect(Collider collider)
+    {
+        _heat.IncreaseHeatOnParrySuccess();
+    }
+
+    /// <summary>
+    /// 원거리 공격 시 열기 효과 처리
+    /// </summary>
+    /// <param name="collider">타격 대상 콜라이더</param>
+    private void HandleRangedAttackAffect(Collider collider)
+    {
+        _heat.DecreaseHeatOnRangeAttack(collider);
+    }
 }

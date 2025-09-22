@@ -7,7 +7,7 @@ using UnityEngine;
 /// 플레이어의 입력을 받아 캐릭터를 제어하는 컨트롤러입니다. (Unity의 새로운 Input System 사용)
 /// InputReader로부터 입력을 받아 각종 이벤트를 발생시키고, 현재 입력 상태를 저장합니다.
 /// </summary>
-public class PlayerController : MonoBehaviour, IPlayerController
+public class PlayerController : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputReader _inputReader;

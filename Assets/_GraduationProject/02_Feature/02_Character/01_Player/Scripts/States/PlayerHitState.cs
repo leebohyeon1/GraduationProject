@@ -2,19 +2,16 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
-/// <summary>
-/// í”Œë ˆì´ì–´ í”¼ê²© ìƒíƒœ
-/// ë°ë¯¸ì§€ë¥¼ ë°›ì•˜ì„ ë•Œì˜ ìƒíƒœ
-/// </summary>
-public class PlayerHitState : BaseState<PlayerContext>
+
+public class PlayerHitState : BaseState<Player>
 {
-    private float _hitDuration = 0.1f; // í”¼ê²© ìƒíƒœ ì§€ì† ì‹œê°„
+    private float _hitDuration = 0.1f; // ÇÇ°İ »óÅÂ Áö¼Ó ½Ã°£
     private float _hitTimer;
 
-    public PlayerHitState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
-        : base(context, stateMachine)
+    public PlayerHitState(Player context, StateMachine<Player> stateMachine) 
+        : base(context, stateMachine) 
     {
-         _hitDuration = p_context.Stats.HitStunDuration;   
+        _hitDuration = p_context.DataBase.RuntimeData.CombatData.HitStunDuration;
     }
 
     public override void OnEnter()
@@ -30,24 +27,24 @@ public class PlayerHitState : BaseState<PlayerContext>
 
         p_context.Animator.SetBool("IsHit", true);
 
-
-        
         _hitTimer = 0f;
 
-        // í”¼ê²© ì‹œ ì´ë™ ì •ì§€
-        p_context.Movement?.Move(Vector3.zero, 0f);
-        
+        // ÇÇ°İ ½Ã ÀÌµ¿ Á¤Áö
+        p_context.Movement?.Move(Vector3.zero, 0f, 0f);
+        p_context.Events.TriggerBattleStateChanged(true);
+
         Log.Print("Player entered Hit state");
     }
+
 
     public override void OnUpdate()
     {
         _hitTimer += Time.deltaTime;
 
-        // í”¼ê²© ìƒíƒœì—ì„œë„ ì¤‘ë ¥ ì ìš©
-        p_context.Movement?.Move(Vector3.zero, 0f);
+        // ÇÇ°İ »óÅÂ¿¡¼­µµ Áß·Â Àû¿ë
+        p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
-        // í”¼ê²© ì§€ì† ì‹œê°„ì´ ëë‚˜ë©´ Idle ìƒíƒœë¡œ ì „í™˜
+        // ÇÇ°İ Áö¼Ó ½Ã°£ÀÌ ³¡³ª¸é Idle »óÅÂ·Î ÀüÈ¯
         if (_hitTimer >= _hitDuration)
         {
             if (p_context.Health.IsDefending)
@@ -58,16 +55,18 @@ public class PlayerHitState : BaseState<PlayerContext>
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
-            
+
         }
     }
-    
+
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsHit", false);
-        
-        p_context.Health.SetDefending(false);
-        p_context.Health.ResetHitState(); // í”¼ê²© ìƒíƒœ í”Œë˜ê·¸ ë¦¬ì…‹
+
+        p_context.Health.ResetHitState();
+        p_context.Events.TriggerBattleStateChanged(true);
+
         Log.Print("Player exited Hit state");
     }
-}
+    }
+

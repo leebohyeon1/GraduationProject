@@ -1,32 +1,45 @@
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// í”Œë ˆì´ì–´ ëŒ€ê¸° ìƒíƒœ
-/// ì…ë ¥ì´ ì—†ì„ ë•Œì˜ ê¸°ë³¸ ìƒíƒœ
+/// ÇÃ·¹ÀÌ¾î ´ë±â »óÅÂ
+/// ÀÔ·ÂÀÌ ¾øÀ» ¶§ÀÇ ±âº» »óÅÂ
 /// </summary>
-public class PlayerIdleState : BaseState<PlayerContext>
+public class PlayerIdleState : BaseState<Player>
 {
-    public PlayerIdleState(PlayerContext context, StateMachine<PlayerContext> stateMachine) 
-        : base(context, stateMachine) {}
+    public PlayerIdleState(Player context, StateMachine<Player> stateMachine)
+    : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        p_context.Animator.SetBool("IsIdle", true);  
-        // ëŒ€ê¸° ìƒíƒœ ì§„ì… ì‹œ ì²˜ë¦¬
+        p_context.Animator.SetBool("IsIdle", true);
+            
+        // ´ë±â »óÅÂ ÁøÀÔ ½Ã Ã³¸®
         Log.Print("Player entered Idle state");
     }
 
     public override void OnUpdate()
     {
-        // Idle ìƒíƒœì—ì„œë„ ì¤‘ë ¥ ì ìš© (ì´ë™ ì…ë ¥ ì—†ì´)
-        p_context.Movement?.Move(Vector3.zero, 0f);
+        if(Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
+            && p_context.Combat.IsBattleState)
+        {
+            p_context.Events.TriggerBattleStateChanged(false);
+        }
+    }
+
+    public override void OnFixedUpdate()
+    {
+        // Idle »óÅÂ¿¡¼­µµ Áß·Â Àû¿ë (ÀÌµ¿ ÀÔ·Â ¾øÀÌ)
+        p_context.Movement?.Move(Vector3.zero, 0f, 0f);
     }
 
     public override void OnExit()
     {
-        p_context.Animator.SetBool("IsIdle", false); 
+        p_context.Animator.SetBool("IsIdle", false);
         Log.Print("Player exited Idle state");
     }
 }
+
+

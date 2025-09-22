@@ -1,5 +1,4 @@
 using UnityEngine;
-using player.Refactor;
 
 public class PlayerProjectile : Projectile
 {
@@ -14,7 +13,7 @@ public class PlayerProjectile : Projectile
             if (damageable != null && !damageable.IsDead)
             {
                 Attack(damageable);
-                p_owner.GetComponent<player.Refactor.Player>()
+                p_owner.GetComponent<Player>()
                     .Events.TriggerRangedAttackAffect(other);
 
 
