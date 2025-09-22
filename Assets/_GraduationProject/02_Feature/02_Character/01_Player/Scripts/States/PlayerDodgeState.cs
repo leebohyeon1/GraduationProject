@@ -36,7 +36,12 @@ public class PlayerDodgeState : BaseState<Player>
         }
 
         p_context.Health.SetInvisible(true);
-        p_context.Events.TriggerBattleStateChanged(true);
+
+        if(p_context.Combat.IsBattleState)
+        {
+            p_context.Events.TriggerBattleStateChanged(true);
+        }
+
 
         Log.Print("Player entered Dodge state");
     }
@@ -57,7 +62,11 @@ public class PlayerDodgeState : BaseState<Player>
         p_context.Events.OnDodgeFinish -= HandleDodgeFinish;
 
         p_context.Health.SetInvisible(false);
-        p_context.Events.TriggerBattleStateChanged(true);
+
+        if (p_context.Combat.IsBattleState)
+        {
+            p_context.Events.TriggerBattleStateChanged(true);
+        }
 
         Log.Print("Player exited Dodge state");
     }
