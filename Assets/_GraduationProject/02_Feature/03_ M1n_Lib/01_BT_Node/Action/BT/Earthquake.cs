@@ -23,7 +23,7 @@ public class Earthquake : Node
     protected override NodeState OnUpdate()
     {
         // IsName의 인자는 애니메이션 상태(State)의 이름이어야 합니다.
-        if (runner.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
             Vector3 spawnPos = runner.transform.position + Vector3.up * 0.5f;
             Quaternion spawnRot = Quaternion.Euler(0, 0, 180);
@@ -32,7 +32,7 @@ public class Earthquake : Node
             var wave = Earth.GetComponent<DonutWave>();
             wave.speed = _speed;
             wave.maxRadius = _maxRadius;
-            runner.AnimationEvent_CloseHitWindow();
+            Handler.CloseHitWindow();
 
             return NodeState.SUCCESS;
         }

@@ -36,11 +36,11 @@ public class BeamAttack : Node
     protected override NodeState OnUpdate()
     {
 
-        if (runner.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
             // runner.StartBeamAttack(activeDuration, beamLength, beamWidth);
         }
-        else if (!runner.IsHitWindowOpen)
+        else if (!Handler.IsHitWindowOpen)
         {
             // runner.UpdateAimingAtPlayer();
                 // runner.StopBeamAttack();
@@ -48,7 +48,7 @@ public class BeamAttack : Node
         // if(!runner.IsHitWindowOpen)
             // {
             // }
-            if (runner.IsActionFinished)
+            if (Handler.IsActionFinished)
             {
                 return NodeState.SUCCESS;
             }

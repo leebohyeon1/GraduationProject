@@ -17,7 +17,7 @@ public class GenericAttackNode : Node
     public override void OnEnter()
     {
         // 1. Enemy의 범용 플래그들을 리셋합니다.
-        runner.ResetActionFlags();
+        Handler.ResetAllFlags();
         _didHitPlayer = false;
 
         runner.SetState(Enemy.EnemyState.Attack);
@@ -29,12 +29,12 @@ public class GenericAttackNode : Node
     protected override NodeState OnUpdate()
     {
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
-        if (runner.IsSound)
+        if (Handler.IsSound)
         {
             runner.PlayFeedback(animationName, attackOrigin);
-            runner.AnimationEvent_EndSound();
+            Handler.EndSound();
         }
-        if (runner.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
             Debug.Log(":");
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
@@ -46,13 +46,13 @@ public class GenericAttackNode : Node
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
-                        runner.AnimationEvent_CloseHitWindow();
+                        Handler.CloseHitWindow();
                     }
                 }
             }
         }
 
-        if (runner.IsActionFinished)
+        if (Handler.IsActionFinished)
         {
             Debug.Log(this.animationName);
             return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
@@ -64,7 +64,7 @@ public class GenericAttackNode : Node
     public override void OnExit()
     {
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
-        runner.ResetActionFlags();
+        Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
     }
 

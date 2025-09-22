@@ -23,14 +23,14 @@ public class RushUntilWall : Node
     protected override NodeState OnUpdate()
     {
 
-        if (runner.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
             Debug.Log("<color=magenta>--WALL RUSH--: OnEnter</color>");
             _startTime = Time.time;
             runner.SetState(Enemy.EnemyState.Rush);
             runner.Movement.StartWallRush(rushSpeed);
             runner.GetComponent<Animator>().SetBool("Rush_Running", true);
-            runner.AnimationEvent_CloseHitWindow();
+            Handler.CloseHitWindow();
             Debug.Log("작동/.");
         }
         
