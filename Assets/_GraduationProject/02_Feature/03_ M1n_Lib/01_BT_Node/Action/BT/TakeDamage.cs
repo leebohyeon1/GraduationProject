@@ -6,7 +6,7 @@ public class TakeDamage : Node
     public string animationName;
     public override void OnEnter()
     {
-        runner.ResetActionFlags();
+        Handler.ResetAllFlags();
         if(runner.CurrentState != Enemy.EnemyState.Die)
         runner.AnimationEvent(animationName);
     }
@@ -20,7 +20,7 @@ public class TakeDamage : Node
     protected override NodeState OnUpdate()
     {
         Debug.Log("TakeDamage 노드 업데이트");
-        if (runner.IsActionFinished)
+        if (Handler.IsActionFinished)
             return NodeState.SUCCESS;
         return NodeState.RUNNING;
     }

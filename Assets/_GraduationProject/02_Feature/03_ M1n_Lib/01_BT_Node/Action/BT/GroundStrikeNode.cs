@@ -17,7 +17,7 @@ public class GroundStrikeNode : Node
     {
         _hitPlayers = new List<Player>();
 
-        runner.ResetActionFlags();
+        Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
         runner.AnimationEvent("Do_GroundStrike");
@@ -28,14 +28,14 @@ public class GroundStrikeNode : Node
     {
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOriginOffset);
 
-        if (runner.IsSound)
+        if (Handler.IsSound)
         {
             runner.PlayFeedback("GroundStrike", attackOrigin);
-            runner.AnimationEvent_EndSound();
+            Handler.EndSound();
 
         }
         // "공격 창 열림!" 신호가 켜져 있는 동안 매 프레임 실행
-        if (runner.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
 
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
@@ -57,7 +57,7 @@ public class GroundStrikeNode : Node
         }
 
         // "행동 끝!" 신호를 받으면 노드를 종료합니다.
-        if (runner.IsActionFinished)
+        if (Handler.IsActionFinished)
         {
             return NodeState.SUCCESS;
         }
@@ -67,7 +67,7 @@ public class GroundStrikeNode : Node
 
     public override void OnExit()
     {
-        runner.ResetActionFlags();
+        Handler.ResetAllFlags();
     }
 
     public override Node Clone()
