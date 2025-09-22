@@ -20,8 +20,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     public override void OnEnter()
     {
-        p_context.Events.OnChargeAttackFinish += HandleAttackFinish;
-        p_context.Events.OnChargeAttackPerform += HandleAttackPerform;
+        p_context.Events.OnAttackFinish += HandleAttackFinish;
+        p_context.Events.OnAttackPerform += HandleAttackPerform;
 
         p_nextState = null; // 다음 상태 초기화
 
@@ -43,8 +43,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     public override void OnExit()
     {
-        p_context.Events.OnChargeAttackFinish -= HandleAttackFinish;
-        p_context.Events.OnChargeAttackPerform -= HandleAttackPerform;
+        p_context.Events.OnAttackFinish -= HandleAttackFinish;
+        p_context.Events.OnAttackPerform -= HandleAttackPerform;
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
 

@@ -73,9 +73,7 @@ public class PlayerEvents : MonoBehaviour
     public event Action<Collider> OnAttackAffect;
     public event Action OnAttackFinish;
 
-    public event Action OnChargeAttackPerform;
     public event Action<Collider> OnChargeAttackAffect;
-    public event Action OnChargeAttackFinish;
 
     public event Action<Transform> OnRangedAttackStart;
     public event Action<Collider> OnRangedAttackAffect;
@@ -210,14 +208,6 @@ public class PlayerEvents : MonoBehaviour
         }
     }
     /// <summary>
-    /// 차지 공격 시 효과
-    /// (애니메이션 트리거)
-    /// </summary>
-    public void TriggerChargeAttackPerform()
-    {
-        OnChargeAttackPerform.Invoke();
-    }
-    /// <summary>
     /// 차지 공격으로 인한 피격 효과
     /// </summary>
     /// <param name="collider">충돌한 오브젝트</param>
@@ -238,14 +228,7 @@ public class PlayerEvents : MonoBehaviour
                 break ;
         }   
     }
-    /// <summary>
-    /// 차지 공격 종료 시 효과
-    /// (애니메이션 트리거)
-    /// </summary>
-    public void TriggerChargeAttackFinish()
-    {
-        OnChargeAttackFinish.Invoke();
-    }
+
 
             
     /// <summary>
