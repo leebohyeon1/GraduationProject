@@ -19,6 +19,8 @@ namespace player.Refactor
             p_context.Animator.SetBool("IsRangedAttackCharging", true);
             _chargeTimer = 0f;
 
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player entered RangedAttackChargeState");
         }
 
@@ -66,6 +68,8 @@ namespace player.Refactor
         public override void OnExit()
         {
             p_context.Animator.SetBool("IsRangedAttackCharging", false);
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player exited RangedAttackChargeState");
         }
 

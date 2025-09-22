@@ -32,6 +32,7 @@ namespace player.Refactor
 
             // 피격 시 이동 정지
             p_context.Movement?.Move(Vector3.zero, 0f, 0f);
+            p_context.Events.TriggerBattleStateChanged(true);
 
             Log.Print("Player entered Hit state");
         }
@@ -64,6 +65,8 @@ namespace player.Refactor
             p_context.Animator.SetBool("IsHit", false);
 
             p_context.Health.ResetHitState();
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player exited Hit state");
         }
     }

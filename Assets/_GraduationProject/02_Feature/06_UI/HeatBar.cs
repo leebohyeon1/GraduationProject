@@ -29,10 +29,10 @@ public class HeatBar : MonoBehaviour
     {
         DOTween.Kill(_heatBarSlider, true);
 
-        float healthPercent = currentHeat / (float)_heatable.MaxHeat;
+        float heatPercent = currentHeat / (float)_heatable.MaxHeat;
         DOTween.To(() => _heatBarSlider.fillAmount,
                     x => _heatBarSlider.fillAmount = x,
-                    healthPercent, 0.1f)
+                    heatPercent, 0.5f)
                     .SetEase(Ease.Linear)
                     .SetId(_heatBarSlider);
     }

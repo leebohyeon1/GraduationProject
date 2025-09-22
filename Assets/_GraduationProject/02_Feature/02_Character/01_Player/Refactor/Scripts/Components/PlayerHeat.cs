@@ -1,5 +1,7 @@
 ﻿using BH_Lib.Log;
+using DG.Tweening;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace player.Refactor
@@ -90,6 +92,23 @@ namespace player.Refactor
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            
+            ChangeHeat(deltaHeat);
+        }
+
+        /// <summary>
+        /// 전투에서 나옴으로 인한 열기 감소 함수
+        /// </summary>
+        public void DecreaseHeatOnBattleOut()
+        {
+            if(CurrentHeat <= 0)
+            {
+                return;
+            }
+
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+            
             ChangeHeat(deltaHeat);
         }
     }
@@ -109,8 +128,9 @@ namespace player.Refactor
             _events = events;
 
             // 이벤트 구독
-            _events.OnAttackAffect += HandleAttackAffect;
+            _events.OnBattleStateChaged += HandleBattleSateChanged;
             _heat.OnHeatChanged += HandleHeatChanged;
+            _events.OnAttackAffect += HandleAttackAffect;
             _events.OnChargeAttackAffect += HandleChargeAttackAffect;
             _events.OnParryAffect += HandleParryAffect;
             _events.OnRangedAttackAffect += HandleRangedAttackAffect;
@@ -124,13 +144,35 @@ namespace player.Refactor
             if (_disposed) return;
 
             // 이벤트 구독 해제
-            _events.OnAttackAffect -= HandleAttackAffect;
+            _events.OnBattleStateChaged -= HandleBattleSateChanged;
             _heat.OnHeatChanged -= HandleHeatChanged;
+            _events.OnAttackAffect -= HandleAttackAffect;
             _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
             _events.OnParryAffect -= HandleParryAffect;
             _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
 
             _disposed = true;
+        }
+
+        /// <summary>
+        /// 전투 상황을 벗어났을 때 상황
+        /// </summary>
+        private Sequence _battleOutSequence;
+        /// <summary>
+        /// 전투 상태 변경 이벤트 처리
+        /// </summary>
+        /// <param name="isBattleState">전투 상태 여부</param>
+        private void HandleBattleSateChanged(bool isBattleState)
+        {
+            _battleOutSequence?.Kill();
+
+            if(!isBattleState)
+            {
+                _battleOutSequence = DOTween.Sequence()
+                    .AppendCallback(_heat.DecreaseHeatOnBattleOut)
+                    .SetDelay(1f)
+                    .SetLoops(-1, LoopType.Restart);
+            }
         }
 
         /// <summary>

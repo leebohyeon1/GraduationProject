@@ -22,6 +22,7 @@ namespace player.Refactor
         public float GroundCheckDistance = 0.1f;
 
         [Header("Combat")]
+        public float BattleOutTime = 8f;
         public PlayerCombatData CombatData;
 
         public void Initialize(PlayerBaseDatasSO baseData)
@@ -118,6 +119,16 @@ namespace player.Refactor
         [Header("Attack Timing")]
         [Tooltip("공격후 딜레이 시간")]
         public float AttackDelay = 0.2f;
+
+        public PlayerAttackData(PlayerAttackData attackData)
+        {
+            AttackMoveDistance = attackData.AttackMoveDistance;
+            AttackMoveDuration = attackData.AttackMoveDuration;
+            AttackMoveCurve = attackData.AttackMoveCurve;
+            AttackDamage = attackData.AttackDamage;
+            AttackRadius = attackData.AttackRadius;
+            AttackDelay = attackData.AttackDelay;
+        }
     }
 
     /// <summary>

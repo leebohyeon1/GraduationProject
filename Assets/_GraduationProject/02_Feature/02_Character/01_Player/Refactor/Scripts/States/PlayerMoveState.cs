@@ -20,6 +20,15 @@ namespace player.Refactor
             Log.Print("Player entered Move state");
         }
 
+        public override void OnUpdate()
+        {
+            if (Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
+             && p_context.Combat.IsBattleState)
+            {
+                p_context.Events.TriggerBattleStateChanged(false);
+            }
+        }
+
         public override void OnFixedUpdate()
         {
             // 이동 처리 (상태 전환은 StateMachine의 조건부 전환으로 자동 처리됨)

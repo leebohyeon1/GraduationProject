@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using UnityEngine;
 
 namespace player.Refactor
@@ -7,7 +8,7 @@ namespace player.Refactor
     {
         private bool _isCharged = false;
 
-        private float _lastChargeTime;
+        private float _chargeTimer;
         private float _chargeGuage;
         private SourceMap chargeSourceMap;
 
@@ -16,14 +17,17 @@ namespace player.Refactor
 
         public override void OnEnter()
         {
-            p_context.Animator.SetBool("IsCharge", true);
-
             p_context.Heat.OnHeatChanged += HandleSetupChargeSourceMap;
+
+            p_context.Animator.SetBool("IsCharge", true);
             SetupChargeSourceMap();
+
+            _isCharged = false;
             _chargeGuage = 0;
-            _lastChargeTime = -999;
+            _chargeTimer = 0;
 
             p_context.Events.TriggerChargeStart();
+            p_context.Events.TriggerBattleStateChanged(true);
         }
 
 
@@ -31,18 +35,18 @@ namespace player.Refactor
         {
             p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
-            // 열기가 1만 올라가는 간격 구하기
-            float tickCounter = chargeSourceMap.TickSecond / (float)chargeSourceMap.DeltaHeat;
-            if (Time.time - _lastChargeTime > tickCounter)
+            _chargeTimer += Time.deltaTime;
+            if (_chargeTimer > chargeSourceMap.TickSecond)
             {
-                _chargeGuage += 1;
+                _chargeTimer = 0;
+
+                _chargeGuage += (int)chargeSourceMap.HeatChangeType * chargeSourceMap.DeltaHeat;
                 if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
                 {
                     MinChargeFinish();
                 }
-
+               
                 p_context.Heat.IncreaseHeatOnCharge(chargeSourceMap, _chargeGuage);
-                _lastChargeTime = Time.time;
             }
 
             if (!p_context.Controller.AttackHeldInput)
@@ -74,9 +78,11 @@ namespace player.Refactor
 
         public override void OnExit()
         {
+            p_context.Heat.OnHeatChanged -= HandleSetupChargeSourceMap;
             p_context.Animator.SetBool("IsCharge", false);
 
-            p_context.Heat.OnHeatChanged -= HandleSetupChargeSourceMap;
+
+            p_context.Events.TriggerBattleStateChanged(true);
         }
 
         /// <summary>
@@ -104,8 +110,10 @@ namespace player.Refactor
         /// </summary>
         private void SetupChargeSourceMap()
         {
+            Log.Print(p_context.Heat.CurrentTier);
+            int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.CurrentTier;
             chargeSourceMap = p_context.DataBase.SourceMapData.
-                GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
+                GetSourceMap("OnCharge", tier);
         }
     }
 

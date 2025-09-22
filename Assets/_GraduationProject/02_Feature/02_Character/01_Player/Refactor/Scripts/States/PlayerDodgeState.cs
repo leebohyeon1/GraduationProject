@@ -37,7 +37,8 @@ namespace player.Refactor
             }
 
             p_context.Health.SetInvisible(true);
-            
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player entered Dodge state");
         }
 
@@ -57,6 +58,8 @@ namespace player.Refactor
             p_context.Events.OnDodgeFinish -= HandleDodgeFinish;
 
             p_context.Health.SetInvisible(false);
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player exited Dodge state");
         }
 

@@ -14,6 +14,8 @@ namespace player.Refactor
 
         protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.ChargeAttackData;
 
+        private PlayerAttackData _playerAttackData;
+
         public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
             : base(context, stateMachine) { }
 
@@ -27,6 +29,7 @@ namespace player.Refactor
             Log.Print("Player entered ChargeAttack state");
             p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
             p_context.Combat.SetupCombatCenter();
+            _playerAttackData = new PlayerAttackData(p_AttackData);
 
             // 공격 실행
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
@@ -60,7 +63,6 @@ namespace player.Refactor
         {
             Sequence sequence = DOTween.Sequence();
             sequence.SetDelay(p_AttackData.AttackDelay);
-
             sequence.AppendCallback(() =>
             {
                 if (p_nextState != null)
@@ -79,7 +81,7 @@ namespace player.Refactor
         /// </summary>
         protected override void HandleAttackPerform()
         {
-            Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
+            Collider[] colliders = p_context.Combat.ExecuteAttack(_playerAttackData);
 
             foreach (Collider collider in colliders)
             {
@@ -89,6 +91,27 @@ namespace player.Refactor
             p_context.Heat.SetHeat(0);
         }
 
+        /// <summary>
+        /// 공격 시 전진 이동 시작
+        /// </summary>
+        protected override void StartAttackMovement()
+        {
+            float distance = p_AttackData.AttackMoveDistance;
+
+            // 전방에 오브젝트가 있을 경우 전진 거리 조정
+            if (Physics.Raycast(p_context.transform.position, p_context.transform.forward,
+                out var hitInfo, p_AttackData.AttackMoveDistance))
+            {
+                distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
+
+                _playerAttackData.AttackRadius.z = distance + 1;
+            }
+
+            Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+
+            p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
+            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+        }
 
     }
 }

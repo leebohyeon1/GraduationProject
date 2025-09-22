@@ -1,4 +1,4 @@
-
+ï»¿
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
@@ -11,23 +11,25 @@ namespace player.Refactor
     public abstract class PlayerAttackBaseState : BaseState<Player>
     {
         /// <summary>
-        /// ´ÙÀ½ »óÅÂ¸¦ ÀúÀåÇÒ º¯¼ö
+        /// ë‹¤ìŒ ìƒíƒœë¥¼ ì €ì¥í•  ë³€ìˆ˜
         /// </summary>
         protected Type p_nextState;
 
         /// <summary>
-        /// ¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å ÀÌ¸§ (ÇÏÀ§ Å¬·¡½º¿¡¼­ ±¸Çö)
+        /// ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±° ì´ë¦„ (í•˜ìœ„ í´ë˜ìŠ¤ì—ì„œ êµ¬í˜„)
         /// </summary>    
         protected abstract string p_animationTrigger { get; }
         /// <summary>
-        /// ´ÙÀ½ °ø°İ »óÅÂ Å¸ÀÔ (ÇÏÀ§ Å¬·¡½º¿¡¼­ ±¸Çö)
+        /// ë‹¤ìŒ ê³µê²© ìƒíƒœ íƒ€ì… (í•˜ìœ„ í´ë˜ìŠ¤ì—ì„œ êµ¬í˜„)
         /// </summary>
         protected abstract Type p_nextAttackState { get; }
-
+        /// <summary>
+        /// í”Œë ˆì´ì–´ ê³µê²© ë°ì´í„°
+        /// </summary>
         protected abstract PlayerAttackData p_AttackData { get; }
 
         /// <summary>
-        /// ÇÃ·¹ÀÌ¾î °ø°İ ±âº» »óÅÂ »ı¼ºÀÚ
+        /// í”Œë ˆì´ì–´ ê³µê²© ê¸°ë³¸ ìƒíƒœ ìƒì„±ì
         /// </summary>
         public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
             : base(context, stateMachine) { }
@@ -37,20 +39,21 @@ namespace player.Refactor
             p_context.Events.OnAttackFinish += HandleAttackFinish;
             p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-            p_nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+            p_nextState = null; // ë‹¤ìŒ ìƒíƒœ ì´ˆê¸°í™”
 
             Log.Print("Player entered Attack state");
-            p_context.Animator.SetTrigger(p_animationTrigger);  // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+            p_context.Animator.SetTrigger(p_animationTrigger);  // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
             p_context.Combat.SetupCombatCenter();
 
-            // °ø°İ ½ÇÇà
+            // ê³µê²© ì‹¤í–‰
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Controller.MoveInput;
             var mousePosition = p_context.Controller.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-            
+            p_context.Events.TriggerBattleStateChanged(true);
+          
 
-            // °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÇÇà
+            // ê³µê²© ì‹œ ì „ì§„ ì´ë™ ì‹¤í–‰
             StartAttackMovement();
         }
 
@@ -67,23 +70,26 @@ namespace player.Refactor
             p_context.Events.OnAttackPerform -= HandleAttackPerform;
 
             p_context.Animator.ResetTrigger(p_animationTrigger);
+            p_context.Events.TriggerBattleStateChanged(true);
 
             DOTween.Kill(p_animationTrigger);
+
+
 
             p_nextState = null;
             Log.Print("Player exited Attack state");
         }
 
         /// <summary>
-        /// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® ÇÚµé·¯
-        /// °ø°İÀÌ ¿Ï·áµÇ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+        /// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
+        /// ê³µê²©ì´ ì™„ë£Œë˜ë©´ ë‹¤ë¥¸ ìƒíƒœë¡œ ì „í™˜
         /// </summary>
         protected virtual void HandleAttackFinish()
         {
             Sequence sequence = DOTween.Sequence();
             sequence.SetDelay(p_AttackData.AttackDelay);
 
-            // ¿¬¼Ó °ø°İÀÌ ¾Æ´Ï¸é Ãß°¡ µô·¹ÀÌ
+            // ì—°ì† ê³µê²©ì´ ì•„ë‹ˆë©´ ì¶”ê°€ ë”œë ˆì´
             if (!typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
             { 
                 sequence.SetDelay(p_context.DataBase.RuntimeData.CombatData.LastAttackDelay);
@@ -103,11 +109,11 @@ namespace player.Refactor
         }
 
         /// <summary>
-        /// °ø°İ È¿°ú Àû¿ë
+        /// ê³µê²© íš¨ê³¼ ì ìš©
         /// </summary>
         protected virtual void HandleAttackPerform()
         {
-            Log.Print("°ø°İ");
+            Log.Print("ê³µê²©");
             Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
 
             foreach (Collider collider in colliders)
@@ -117,18 +123,28 @@ namespace player.Refactor
         }
 
         /// <summary>
-        /// °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÃÀÛ
+        /// ê³µê²© ì‹œ ì „ì§„ ì´ë™ ì‹œì‘
         /// </summary>
         protected virtual void StartAttackMovement()
         {
-            Vector3 targetPosition = p_context.transform.position + p_context.transform.forward * p_AttackData.AttackMoveDistance;
+            float distance = p_AttackData.AttackMoveDistance;
+
+            // ì „ë°©ì— ì˜¤ë¸Œì íŠ¸ê°€ ìˆì„ ê²½ìš° ì „ì§„ ê±°ë¦¬ ì¡°ì •
+            if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, 
+                out var hitInfo, p_AttackData.AttackMoveDistance))
+            {
+                distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
+            }
+
+            Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+
             p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-                .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
         }
 
         /// <summary>
-        /// ÀÔ·Â Ã³¸®
-        /// È¸ÇÇ Áß ÀÔ·ÂÀ» °¨ÁöÇÏ¿© ´ÙÀ½ »óÅÂ¸¦ °áÁ¤
+        /// ì…ë ¥ ì²˜ë¦¬
+        /// íšŒí”¼ ì¤‘ ì…ë ¥ì„ ê°ì§€í•˜ì—¬ ë‹¤ìŒ ìƒíƒœë¥¼ ê²°ì •
         /// </summary>
         public void HandleInput()
         {
@@ -165,7 +181,7 @@ namespace player.Refactor
 
             if (p_nextState != null)
             {
-                Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] ´ÙÀ½ »óÅÂ: {p_nextState}");
+                Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] ë‹¤ìŒ ìƒíƒœ: {p_nextState}");
             }
         }
 

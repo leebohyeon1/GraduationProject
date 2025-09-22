@@ -67,6 +67,8 @@ namespace player.Refactor
         #endregion
 
         #region Events
+        public event Action<bool> OnBattleStateChaged;
+
         public event Action OnDodgeFinish;
 
         public event Action OnAttackPerform;
@@ -96,6 +98,15 @@ namespace player.Refactor
         }
 
         #region EventHandler
+        /// <summary>
+        /// 전투 상태가 바뀔 때 호출
+        /// </summary>
+        /// <param name="isbattleState">전투 상태 여부</param>
+        public void TriggerBattleStateChanged(bool isbattleState)
+        {
+            OnBattleStateChaged.Invoke(isbattleState);
+        }
+
 
         /// <summary>
         /// 이동 중 땅에 발이 닿이는 순간 나오는 효과

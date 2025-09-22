@@ -1,5 +1,6 @@
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
 using UnityEngine;
 
 namespace player.Refactor
@@ -19,6 +20,15 @@ namespace player.Refactor
             
             // 대기 상태 진입 시 처리
             Log.Print("Player entered Idle state");
+        }
+
+        public override void OnUpdate()
+        {
+            if(Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
+                && p_context.Combat.IsBattleState)
+            {
+                p_context.Events.TriggerBattleStateChanged(false);
+            }
         }
 
         public override void OnFixedUpdate()

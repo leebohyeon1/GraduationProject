@@ -31,7 +31,7 @@ public class HpBar : DIMonoBehaviour
 
         DOTween.To(() => _hpBarSlider.fillAmount,
                     x => _hpBarSlider.fillAmount = x,
-                    currentHp/(float)_damageable.MaxHealth, 0.5f)
+                    currentHp/(float)_damageable.MaxHealth, 0.3f)
                     .SetEase(Ease.Linear)
                     .SetId(_hpBarSlider);
     }

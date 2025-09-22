@@ -18,6 +18,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public int CurrentHeat => _currentHeat;
     public int CurrentTier => GetTier();
     public bool IsHeatLock => _isHeatLock;
+    public SourceMapDatabaseSO SourceMapDataBase => p_sourceMapDataBase;
 
 
     [field: SerializeField]

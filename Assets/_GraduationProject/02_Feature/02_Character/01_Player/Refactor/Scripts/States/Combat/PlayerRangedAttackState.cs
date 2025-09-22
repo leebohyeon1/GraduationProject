@@ -20,6 +20,8 @@ namespace player.Refactor
             p_context.Animator.SetTrigger("RangedAttack");
 
             p_context.Events.TriggerRangedAttackStart();
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player entered RangedAttackFireState");
         }
 
@@ -31,7 +33,9 @@ namespace player.Refactor
         public override void OnExit()
         {
             p_context.Events.OnRangedAttackFinish -= HandleAttackFinish;
-            
+
+            p_context.Events.TriggerBattleStateChanged(true);
+
             Log.Print("Player exited RangedAttackFireState");
         }
 

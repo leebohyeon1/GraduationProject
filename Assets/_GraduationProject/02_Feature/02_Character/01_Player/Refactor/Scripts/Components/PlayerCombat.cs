@@ -8,15 +8,23 @@ namespace player.Refactor
     public class PlayerCombat : MonoBehaviour, IAttacker
     {
         #region Private Fields
-
+        private PlayerCombatData _combatData;
         /// <summary>
         /// 전투 중심점의 위치
         /// </summary>
         private Vector3 _combatCenter;
-
+        /// <summary>
+        /// 카운터 공격 가능 여부
+        /// </summary>
         private bool _canCounterAttack;
-
-        private PlayerCombatData _combatData;
+        /// <summary>
+        /// 마지막 전투 시간
+        /// </summary>
+        private float _lastBattleTime;
+        /// <summary>
+        /// 전투 중이 아닌지 여부
+        /// </summary>
+        private bool _isBattleState;
 
         /// <summary>
         /// 디버깅용 기즈모 표시 여부
@@ -26,6 +34,8 @@ namespace player.Refactor
 
         #region Properties
         public bool CanCounterAttack => _canCounterAttack;
+        public float LastBattleTime => _lastBattleTime;
+        public bool IsBattleState => _isBattleState;
         #endregion
 
         public void Initialize(PlayerCombatData combatData)
@@ -41,6 +51,24 @@ namespace player.Refactor
         {
             _combatCenter = transform.position;
         }
+
+        #region BattleState
+        /// <summary>
+        /// 마지막 전투 시간 설정
+        /// </summary>
+        public void SetupBattleTime()
+        {
+            _lastBattleTime = Time.time;
+        }
+        /// <summary>
+        /// 전투 중 상태 변경 함수
+        /// </summary>
+        /// <param name="isBattleState"></param>
+        public void SetBattleState(bool isBattleState)
+        {
+            _isBattleState = isBattleState;
+        }
+        #endregion
 
         #region Attack
         /// <summary>
@@ -188,16 +216,31 @@ namespace player.Refactor
             _events = events;
 
             _events.OnRangedAttackStart += HandleRangedAttack;
+            _events.OnBattleStateChaged += HandleBattleStateChanged;
         }
 
         public void Dispose()
         {
             _events.OnRangedAttackStart -= HandleRangedAttack;
+            _events.OnBattleStateChaged -= HandleBattleStateChanged;
         }
 
         private void HandleRangedAttack(Transform firePoint)
         {
             _combat.FireProjectile(firePoint);
+        }
+
+        private void HandleBattleStateChanged(bool isBattleState)
+        {
+            if (isBattleState)
+            {
+                _combat.SetupBattleTime();
+                _combat.SetBattleState(isBattleState);
+            }
+            else
+            {
+                _combat.SetBattleState(isBattleState);
+            }
         }
     }
 }
