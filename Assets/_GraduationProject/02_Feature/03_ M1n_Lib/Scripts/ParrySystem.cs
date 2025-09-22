@@ -1,36 +1,40 @@
 
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class ParrySystem : MonoBehaviour, IParryable
+public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 {
     // Parry system implementation
-    public bool IsParryable { get;private set; } = false;
+    public bool IsParryable { get; private set; } = false;
+    public bool IsCounterable { get; private set; } = false;
 
-    public bool CanCounterAttack { get;private set; } = false;
     private Enemy _enemy;
-    private SourceMapDatabaseSO _database;
-    public void Initialize(SourceMapDatabaseSO Database, Enemy enemy)
+    public void Initialize(Enemy enemy)
     {
         _enemy = enemy;
-        _database = Database;
     }
     public void SetParryable(string value)
     {
         IsParryable = value == "true" ? true : false;
     }
-    public void SetCounterAttack(string value)
+    public void SetCounterAttack(bool value)
     {
-        CanCounterAttack = value == "true" ? true : false;
+        IsCounterable = value;
     }
-    public void CounterAttack()
+    public void ExecuteCounterEffect()
     {
-        SetCounterAttack("false");
-        // _enemy.AnimationEvent("CounterAttack");
+        SetCounterAttack(false);
+        // _enemy.AnimationEvent("CounterAttack"); 
+        // _enemy.TakeDamage(30); // 카운터 공격 시 데미지 적용 
     }
 
     public bool Parry(GameObject parryInstigator)
     {
         SetParryable("false");
+        _enemy.ApplyStun();
+        SetCounterAttack(true);
         return true;
     }
+
+
 }
