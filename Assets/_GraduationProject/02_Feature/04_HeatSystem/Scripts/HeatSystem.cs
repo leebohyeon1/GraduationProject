@@ -23,7 +23,10 @@ public class HeatSystem : MonoBehaviour, IHeatable
 
     [field: SerializeField]
     public ActorType ActorType { get; private set; }
-
+    public virtual void Init(ActorType actorType)
+    {
+        ActorType = actorType;
+    }
 
 
     /// <summary>
@@ -49,6 +52,13 @@ public class HeatSystem : MonoBehaviour, IHeatable
         {
             OnTierChanged?.Invoke(previousTier, newTier);
         }
+        
+        if (_currentHeat >= _maxHeat && !_isHeatLock)
+        {
+            Debug.Log("과열 발생");
+            OverHeat();
+            SetHeatLock(true);
+        }   
     }
 
     /// <summary>
@@ -90,4 +100,5 @@ public class HeatSystem : MonoBehaviour, IHeatable
     {
         _isHeatLock = isLock;
     }
+    protected virtual void OverHeat(){}
 }
