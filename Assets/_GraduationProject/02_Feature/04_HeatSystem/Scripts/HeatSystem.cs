@@ -7,6 +7,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
     [SerializeField] private int _currentHeat = 0;
+    private bool _isHeatLock = false;
     [SerializeField] protected SourceMapDatabaseSO p_sourceMapDataBase;
     [SerializeField] protected TierStatDatabaseSO p_tierStatDatabase;
 
@@ -16,9 +17,13 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public int MaxHeat => _maxHeat;
     public int CurrentHeat => _currentHeat;
     public int CurrentTier => GetTier();
+    public bool IsHeatLock => _isHeatLock;
+
 
     [field: SerializeField]
     public ActorType ActorType { get; private set; }
+
+
 
     /// <summary>
     /// 열량 변경 함수
@@ -78,5 +83,10 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public int GetTier()
     {
         return p_tierStatDatabase.GetCurrentTier(_currentHeat);
+    }
+
+    public void SetHeatLock(bool isLock)
+    {
+        _isHeatLock = isLock;
     }
 }

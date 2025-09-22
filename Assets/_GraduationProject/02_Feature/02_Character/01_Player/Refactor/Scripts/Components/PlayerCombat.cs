@@ -1,3 +1,5 @@
+using BH_Lib.Log;
+using Pathfinding.Drawing;
 using System;
 using UnityEngine;
 
@@ -15,6 +17,12 @@ namespace player.Refactor
         private bool _canCounterAttack;
 
         private PlayerCombatData _combatData;
+
+
+        /// <summary>
+        /// 나중에 지우기
+        /// </summary>
+        private bool _isDrawGizmos = false;
         #endregion
 
         #region Properties
@@ -25,11 +33,20 @@ namespace player.Refactor
 
         public void Initialize(PlayerCombatData combatData)
         {
+            _isDrawGizmos = true;
             _combatData = combatData;
         }
 
 
         #region Attack
+        /// <summary>
+        /// 공격 시작점 설정
+        /// </summary>
+        public void SetupAttackCenter()
+        {
+            _attackCenter = transform.position;
+        }
+
         /// <summary>
         /// 공격 범위의 중심점 계산
         /// </summary>
@@ -51,6 +68,7 @@ namespace player.Refactor
 
             Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
+            Log.Print(hitEnemies.Length);   
             ProcessHitEnemies(attackData, hitEnemies);
 
             return hitEnemies;
@@ -97,7 +115,7 @@ namespace player.Refactor
 
         private void OnDrawGizmos()
         {
-            if(_combatData == null)
+            if(!_isDrawGizmos)
             {
                 return;
             }
@@ -108,6 +126,7 @@ namespace player.Refactor
 
         private void DrawAttackGizmo()
         {
+
             Vector3 attackCenter = transform.position + transform.forward * (_combatData.AttackDatas[0].AttackRadius.z / 2);
             Gizmos.color = Color.red;
             Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
@@ -117,6 +136,7 @@ namespace player.Refactor
 
         private void DrawChargeAttackGizmo()
         {
+
             Vector3 attackCenter = transform.position + transform.forward * (_combatData.ChargeAttackData.AttackRadius.z / 2);
             Gizmos.color = Color.darkRed;
             Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);

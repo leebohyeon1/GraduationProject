@@ -41,6 +41,7 @@ namespace player.Refactor
 
             Log.Print("Player entered Attack state");
             p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+            p_context.Combat.SetupAttackCenter();
 
             // 공격 실행
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
@@ -106,6 +107,7 @@ namespace player.Refactor
         /// </summary>
         protected virtual void HandleAttackPerform()
         {
+            Log.Print("공격");
            Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
 
             foreach (Collider collider in colliders)

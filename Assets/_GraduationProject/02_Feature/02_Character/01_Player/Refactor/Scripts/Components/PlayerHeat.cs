@@ -19,6 +19,19 @@ namespace player.Refactor
                 SetHeat(Mathf.FloorToInt(chargeGuage)); ;
             }
         }
+
+        public void IncreaseHeatOnAttack(Collider collider)
+        {
+            IHeatable heatable = collider.GetComponent<IHeatable>();
+
+            if (heatable != null && !heatable.IsHeatLock)
+            {
+                SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
+                int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
+                heatable.ChangeHeat(deltaHeat);
+            }
+        }
     }
 
     /// <summary>
@@ -36,6 +49,7 @@ namespace player.Refactor
             _events = events;
 
             _heat.OnHeatChanged += HandleHeatChanged;
+            _events.OnAttackAffect += HandleAttackAffect;
         }
 
         // IDisposable 인터페이스의 Dispose 메서드
@@ -66,6 +80,11 @@ namespace player.Refactor
             {
                 _events.TriggerTierDown(_heat.CurrentTier);
             }
+        }
+
+        private void HandleAttackAffect(Collider collider)
+        {
+            _heat.IncreaseHeatOnAttack(collider);
         }
     }
 }
