@@ -1,4 +1,4 @@
-using BH_Lib.Log;
+ï»¿using BH_Lib.Log;
 using System;
 using UnityEngine;
 
@@ -6,20 +6,21 @@ namespace player.Refactor
 {
     public class PlayerHeat : HeatSystem
     {
+        /// <summary>
+        /// ì—´ê¸° ì‹œìŠ¤í…œ ì´ˆê¸°í™”
+        /// </summary>
+        /// <param name="sourceMapDatabaseSO">ì†ŒìŠ¤ë§µ ë°ì´í„°ë² ì´ìŠ¤</param>
+        /// <param name="tierStatDatabaseSO">í‹°ì–´ ìŠ¤íƒ¯ ë°ì´í„°ë² ì´ìŠ¤</param>
         public void Initialize(SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO)
         {
             p_sourceMapDataBase = sourceMapDatabaseSO;
             p_tierStatDatabase = tierStatDatabaseSO;
         }
 
-        public void IncreaseHeatOnCharge(SourceMap sourceMap , float chargeGuage) 
-        {
-            if (chargeGuage >= CurrentHeat)
-            {
-                SetHeat(Mathf.FloorToInt(chargeGuage)); ;
-            }
-        }
-
+        /// <summary>
+        /// ê·¼ì ‘ ê³µê²© ì‹œ ì—´ê¸° ì¦ê°€ ì²˜ë¦¬
+        /// </summary>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
         public void IncreaseHeatOnAttack(Collider collider)
         {
             IHeatable heatable = collider.GetComponent<IHeatable>();
@@ -31,10 +32,27 @@ namespace player.Refactor
 
                 heatable.ChangeHeat(deltaHeat);
 
-                Log.PrintColor(Color.red, $"target: {collider.gameObject.name}, ¿­±â º¯È­·®: {deltaHeat}");
+                Log.PrintColor(Color.red, $"ëŒ€ìƒ: {collider.gameObject.name}, ì—´ê¸° ë³€í™”ëŸ‰: {deltaHeat}");
             }
         }
 
+        /// <summary>
+        /// ì°¨ì§€ ê²Œì´ì§€ì— ë”°ë¥¸ ì—´ê¸° ì¦ê°€ ì²˜ë¦¬
+        /// </summary>
+        /// <param name="sourceMap">ì†ŒìŠ¤ë§µ ë°ì´í„°</param>
+        /// <param name="chargeGuage">ì°¨ì§€ ê²Œì´ì§€ ê°’</param>
+        public void IncreaseHeatOnCharge(SourceMap sourceMap, float chargeGuage)
+        {
+            if (chargeGuage >= CurrentHeat)
+            {
+                SetHeat(Mathf.FloorToInt(chargeGuage));
+            }
+        }
+
+        /// <summary>
+        /// ì°¨ì§€ ê³µê²© ì‹œ ì—´ê¸° ì¦ê°€ ì²˜ë¦¬
+        /// </summary>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
         public void IncreaseHeatOnChargeAttack(Collider collider)
         {
             IHeatable heatable = collider.GetComponent<IHeatable>();
@@ -44,25 +62,30 @@ namespace player.Refactor
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                 heatable.ChangeHeat(deltaHeat);
 
-                Log.PrintColor(Color.red, $"target: {collider.gameObject.name}, ¿­±â º¯È­·®: {deltaHeat}");
+                Log.PrintColor(Color.red, $"ëŒ€ìƒ: {collider.gameObject.name}, ì—´ê¸° ë³€í™”ëŸ‰: {deltaHeat}");
             }
         }
 
+        /// <summary>
+        /// ì›ê±°ë¦¬ ê³µê²© ì‹œ ì—´ê¸° ê°ì†Œ ì²˜ë¦¬
+        /// </summary>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
         public void DecreaseHeatOnRangeAttack(Collider collider)
         {
             IHeatable heatable = collider.GetComponent<IHeatable>();
             if (heatable != null)
             {
-                SourceMap sourceMap;
-                sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
-
+                SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
-                Log.PrintColor(Color.red, $"target: {heatable.ActorType}, ¿­±â º¯È­·®: {deltaHeat}");
+                Log.PrintColor(Color.red, $"ëŒ€ìƒ: {heatable.ActorType}, ì—´ê¸° ë³€í™”ëŸ‰: {deltaHeat}");
                 heatable.ChangeHeat(deltaHeat);
             }
         }
 
+        /// <summary>
+        /// íŒ¨ë¦¬ ì„±ê³µ ì‹œ ì—´ê¸° ì¦ê°€ ì²˜ë¦¬
+        /// </summary>
         public void IncreaseHeatOnParrySuccess()
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
@@ -72,35 +95,37 @@ namespace player.Refactor
     }
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î ¿­±â¸¦ °ü¸®ÇÏ´Â Å¬·¡½º
+    /// í”Œë ˆì´ì–´ ì—´ê¸° ì‹œìŠ¤í…œì„ ê´€ë¦¬í•˜ëŠ” í´ë˜ìŠ¤
     /// </summary>
-    public class PlayerHeatManager: IDisposable
+    public class PlayerHeatManager : IDisposable
     {
         private PlayerHeat _heat;
         private PlayerEvents _events;
-        private bool _disposed = false; // Áßº¹ È£Ãâ ¹æÁö
+        private bool _disposed = false; // ì¤‘ë³µ Dispose ë°©ì§€
 
         public PlayerHeatManager(PlayerHeat heat, PlayerEvents events)
         {
             _heat = heat;
             _events = events;
 
-            _heat.OnHeatChanged += HandleHeatChanged;
+            // ì´ë²¤íŠ¸ êµ¬ë…
             _events.OnAttackAffect += HandleAttackAffect;
+            _heat.OnHeatChanged += HandleHeatChanged;
             _events.OnChargeAttackAffect += HandleChargeAttackAffect;
             _events.OnParryAffect += HandleParryAffect;
             _events.OnRangedAttackAffect += HandleRangedAttackAffect;
         }
 
-        // IDisposable ÀÎÅÍÆäÀÌ½ºÀÇ Dispose ¸Ş¼­µå
+        /// <summary>
+        /// ë¦¬ì†ŒìŠ¤ ì •ë¦¬ ë° ì´ë²¤íŠ¸ êµ¬ë… í•´ì œ
+        /// </summary>
         public void Dispose()
         {
-            // ÀÌ¹Ì Dispose°¡ È£ÃâµÇ¾ú´Ù¸é ¾Æ¹«°Íµµ ÇÏÁö ¾ÊÀ½
             if (_disposed) return;
 
-            // ÀÌº¥Æ® ±¸µ¶ ÇØÁ¦
-            _heat.OnHeatChanged -= HandleHeatChanged;
+            // ì´ë²¤íŠ¸ êµ¬ë… í•´ì œ
             _events.OnAttackAffect -= HandleAttackAffect;
+            _heat.OnHeatChanged -= HandleHeatChanged;
             _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
             _events.OnParryAffect -= HandleParryAffect;
             _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
@@ -109,13 +134,13 @@ namespace player.Refactor
         }
 
         /// <summary>
-        /// ¿­±â °ü·Ã ÀÌº¥Æ® ÇÚµé ÇÔ¼ö
+        /// ì—´ê¸° ë³€í™” ì´ë²¤íŠ¸ ì²˜ë¦¬
         /// </summary>
-        /// <param name="previousHeat">ÀÌÀü ¿­±â Æ¼¾î</param>
-        /// <param name="currentHeat">ÇöÀç ¿­±â Æ¼¾î</param>
+        /// <param name="previousHeat">ì´ì „ ì—´ê¸° ê°’</param>
+        /// <param name="currentHeat">í˜„ì¬ ì—´ê¸° ê°’</param>
         private void HandleHeatChanged(int previousHeat, int currentHeat)
         {
-            // ¿­±â Æ¼¾î°¡ ¿Ã¶ó°¬´ÂÁö ³»·Á°¬´ÂÁö È®ÀÎ           
+            // ì—´ê¸° í‹°ì–´ ë³€ê²½ ì—¬ë¶€ í™•ì¸
             if (currentHeat > previousHeat)
             {
                 _events.TriggerTierUp(_heat.CurrentTier);
@@ -127,33 +152,37 @@ namespace player.Refactor
         }
 
         /// <summary>
-        /// ±ÙÁ¢ °ø°İ ½Ã ¿­±â È¿°ú ÇÚµé ÇÔ¼ö
+        /// ê·¼ì ‘ ê³µê²© ì‹œ ì—´ê¸° íš¨ê³¼ ì²˜ë¦¬
         /// </summary>
-        /// <param name="collider">È¿°ú ´ë»ó</param>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
         private void HandleAttackAffect(Collider collider)
         {
             _heat.IncreaseHeatOnAttack(collider);
         }
 
         /// <summary>
-        /// Â÷Â¡ °ø°İ ½Ã ¿­±â È¿°ú ÇÚµé ÇÔ¼ö
+        /// ì°¨ì§€ ê³µê²© ì‹œ ì—´ê¸° íš¨ê³¼ ì²˜ë¦¬
         /// </summary>
-        /// <param name="collider">È¿°ú ´ë»ó</param>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
         private void HandleChargeAttackAffect(Collider collider)
         {
             _heat.IncreaseHeatOnChargeAttack(collider);
         }
 
         /// <summary>
-        /// ÆĞ¸µ ¼º°ø ½Ã È¿°ú ÇÚµé ÇÔ¼ö
+        /// íŒ¨ë¦¬ ì„±ê³µ ì‹œ ì—´ê¸° íš¨ê³¼ ì²˜ë¦¬
         /// </summary>
-        /// <param name="collider">ÆĞ¸µÇÑ ¿ÀºêÁ§Æ®</param>
-        private void HandleParryAffect(Collider collider) 
+        /// <param name="collider">íŒ¨ë¦¬ ëŒ€ìƒ ì½œë¼ì´ë”</param>
+        private void HandleParryAffect(Collider collider)
         {
             _heat.IncreaseHeatOnParrySuccess();
         }
 
-        private void HandleRangedAttackAffect(Collider collider) 
+        /// <summary>
+        /// ì›ê±°ë¦¬ ê³µê²© ì‹œ ì—´ê¸° íš¨ê³¼ ì²˜ë¦¬
+        /// </summary>
+        /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
+        private void HandleRangedAttackAffect(Collider collider)
         {
             _heat.DecreaseHeatOnRangeAttack(collider);
         }

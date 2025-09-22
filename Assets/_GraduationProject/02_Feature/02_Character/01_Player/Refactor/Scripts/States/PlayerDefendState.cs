@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace player.Refactor
 {
@@ -8,9 +8,9 @@ namespace player.Refactor
     using UnityEngine;
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î ¹æ¾î »óÅÂ
-    /// ¹æ¾î Å°¸¦ ´©¸£°í ÀÖÀ» ¶§ÀÇ »óÅÂ
-    /// ¹æ¾î Áß¿¡´Â ÀÌµ¿ ¹× °ø°İÀÌ ºÒ°¡´ÉÇÏ°í, ¹Ş´Â µ¥¹ÌÁö°¡ 70% °¨¼Ò
+    /// í”Œë ˆì´ì–´ ë°©ì–´ ìƒíƒœ
+    /// ë°©ì–´ í‚¤ë¥¼ ëˆ„ë¥´ê³  ìˆì„ ë•Œì˜ ìƒíƒœ
+    /// ë°©ì–´ ì¤‘ì—ëŠ” ì´ë™ ë° ê³µê²©ì´ ë¶ˆê°€ëŠ¥í•˜ê³ , ë°›ëŠ” ë°ë¯¸ì§€ê°€ 70% ê°ì†Œ
     /// </summary>
     public class PlayerDefendState : BaseState<Player>
     {
@@ -29,10 +29,10 @@ namespace player.Refactor
 
         public override void OnUpdate()
         {
-            // ¹æ¾î Áß¿¡´Â ÀÌµ¿ÇÏÁö ¾ÊÀ½ (Áß·Â¸¸ Àû¿ë)
+            // ë°©ì–´ ì¤‘ì—ëŠ” ì´ë™í•˜ì§€ ì•ŠìŒ (ì¤‘ë ¥ë§Œ ì ìš©)
             p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
-            // ¹æ¾î Å°¸¦ ¶¼¸é Idle »óÅÂ·Î ÀüÈ¯
+            // ë°©ì–´ í‚¤ë¥¼ ë–¼ë©´ Idle ìƒíƒœë¡œ ì „í™˜
             if (!p_context.Controller.DefendInput)
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
@@ -50,14 +50,14 @@ namespace player.Refactor
             p_context.Animator.SetBool("IsDefending", false);
             Log.Print("Player exited Defend state");
 
-            // ¹æ¾î »óÅÂ Á¾·á ½Ã Ã¼·Â ½Ã½ºÅÛ¿¡ ¾Ë¸²
+            // ë°©ì–´ ìƒíƒœ ì¢…ë£Œ ì‹œ ì²´ë ¥ ì‹œìŠ¤í…œì— ì•Œë¦¼
             p_context.Events.OnParryPerform -= HandleParryPerform;
         }
 
         private void HandleParryPerform()
         {
-            Log.Print("ÆĞ¸®");
-            Collider[] colliders = p_context.Combat.ExcuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
+            Log.Print("íŒ¨ë¦¬");
+            Collider[] colliders = p_context.Combat.ExecuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
 
             foreach (Collider collider in colliders)
             {
