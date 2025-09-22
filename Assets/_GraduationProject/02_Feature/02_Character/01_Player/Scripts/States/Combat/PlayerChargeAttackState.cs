@@ -73,6 +73,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         });
+
+        sequence.Play();
     }
 
     /// <summary>

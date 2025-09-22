@@ -1,4 +1,5 @@
 using BH_Lib.Log;
+using DG.Tweening;
 using Pathfinding.Drawing;
 using System;
 using UnityEngine;
@@ -178,7 +179,25 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     #endregion
 
     #region CounterAttack
+    
+    public void ToggleCanCounter(float delayTime)
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.AppendCallback(() => SetCanCounterAttack(true));
+        sequence.AppendInterval(delayTime);
+        sequence.AppendCallback(() => SetCanCounterAttack(false));
 
+        sequence.Play();
+    }
+
+    /// <summary>
+    /// 카운터 공격 가능 여부 설정 함수
+    /// </summary>
+    /// <param name="canCounterAttack">가능 여부</param>
+    public void SetCanCounterAttack(bool canCounterAttack)
+    {
+        _canCounterAttack = canCounterAttack;
+    }
 
     #endregion
 

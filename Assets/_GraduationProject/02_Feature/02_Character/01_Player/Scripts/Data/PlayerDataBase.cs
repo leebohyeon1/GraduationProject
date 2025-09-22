@@ -91,6 +91,7 @@ public class PlayerCombatData
     public Vector3 ParryRadius;
 
     [Header("CounterAttack")]
+    public float CounterAttackWindow;
     public PlayerAttackData[] CounterAttackDatas;
 }
 

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using System.Threading;
-using BH_Lib.FSM;
+﻿using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
+using System.Threading;
+using UnityEditor.Timeline;
+using UnityEngine;
 
 
 /// <summary>
@@ -17,6 +19,7 @@ public class PlayerDefendState : BaseState<Player>
     public override void OnEnter()
     {
         p_context.Events.OnParryPerform += HandleParryPerform;
+        p_context.Events.OnParryAffect += HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", true);
         Log.Print("Player entered Defend state");
@@ -48,6 +51,7 @@ public class PlayerDefendState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Events.OnParryPerform -= HandleParryPerform;
+        p_context.Events.OnParryAffect -= HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
@@ -66,6 +70,11 @@ public class PlayerDefendState : BaseState<Player>
         {
             p_context.Events.TriggerParryAffect(collider);
         }
+    }
+
+    private void HandleParryAffect(Collider collider)
+    {
+       p_context.Combat.ToggleCanCounter(p_context.DataBase.RuntimeData.CombatData.CounterAttackWindow);
     }
 }
 
