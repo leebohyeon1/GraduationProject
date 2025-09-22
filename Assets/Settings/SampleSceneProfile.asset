@@ -68,13 +68,13 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0
   smoothness:
     m_OverrideState: 0
     m_Value: 0.2
   rounded:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-2944672580355540183
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -140,9 +140,11 @@ MonoBehaviour:
   - {fileID: 7391319092446245454}
   - {fileID: -3357603926938260329}
   - {fileID: -1541230609928174855}
-  - {fileID: 8614908047479927982}
   - {fileID: -2944672580355540183}
   - {fileID: 7417386176392571475}
+  - {fileID: 8196659200141131120}
+  - {fileID: 8979547894772145010}
+  - {fileID: 4664132372703079960}
 --- !u!114 &849379129802519247
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -183,6 +185,34 @@ MonoBehaviour:
   maxNits:
     m_OverrideState: 1
     m_Value: 647
+--- !u!114 &4664132372703079960
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
+  m_Name: ColorAdjustments
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.ColorAdjustments
+  active: 1
+  postExposure:
+    m_OverrideState: 0
+    m_Value: 0
+  contrast:
+    m_OverrideState: 0
+    m_Value: 0
+  colorFilter:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  hueShift:
+    m_OverrideState: 0
+    m_Value: 0
+  saturation:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!114 &7391319092446245454
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -204,10 +234,10 @@ MonoBehaviour:
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 0.6
+    m_Value: 1
   clamp:
     m_OverrideState: 1
-    m_Value: 0.05
+    m_Value: 0.2
 --- !u!114 &7417386176392571475
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -224,7 +254,29 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0
---- !u!114 &8614908047479927982
+--- !u!114 &8196659200141131120
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.LiftGammaGain
+  active: 1
+  lift:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  gain:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+--- !u!114 &8979547894772145010
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,25 +294,25 @@ MonoBehaviour:
     m_Value: 2
   gaussianStart:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 20
   gaussianEnd:
     m_OverrideState: 1
-    m_Value: 100
+    m_Value: 200
   gaussianMaxRadius:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 1.5
   highQualitySampling:
     m_OverrideState: 0
     m_Value: 0
   focusDistance:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 20
   aperture:
     m_OverrideState: 1
-    m_Value: 32
+    m_Value: 5
   focalLength:
     m_OverrideState: 1
-    m_Value: 300
+    m_Value: 200
   bladeCount:
     m_OverrideState: 0
     m_Value: 5
