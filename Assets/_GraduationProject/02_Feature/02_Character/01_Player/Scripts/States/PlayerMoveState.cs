@@ -2,13 +2,14 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
+
 /// <summary>
-/// í”Œë ˆì´ì–´ ì´ë™ ìƒíƒœ
-/// ì´ë™ ì…ë ¥ì´ ìˆì„ ë•Œ í™œì„±í™”ë˜ëŠ” ìƒíƒœ
+/// ÇÃ·¹ÀÌ¾î ÀÌµ¿ »óÅÂ
+/// ÀÌµ¿ ÀÔ·ÂÀÌ ÀÖÀ» ¶§ È°¼ºÈ­µÇ´Â »óÅÂ
 /// </summary>
-public class PlayerMoveState : BaseState<PlayerContext>
+public class PlayerMoveState : BaseState<Player>
 {
-    public PlayerMoveState(PlayerContext context, StateMachine<PlayerContext> stateMachine)
+    public PlayerMoveState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
     public override void OnEnter()
@@ -20,7 +21,16 @@ public class PlayerMoveState : BaseState<PlayerContext>
 
     public override void OnUpdate()
     {
-        // ì´ë™ ì²˜ë¦¬ (ìƒíƒœ ì „í™˜ì€ StateMachineì˜ ì¡°ê±´ë¶€ ì „í™˜ìœ¼ë¡œ ìë™ ì²˜ë¦¬ë¨)
+        if (Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
+            && p_context.Combat.IsBattleState)
+        {
+            p_context.Events.TriggerBattleStateChanged(false);
+        }
+    }
+
+    public override void OnFixedUpdate()
+    {
+        // ÀÌµ¿ Ã³¸® (»óÅÂ ÀüÈ¯Àº StateMachineÀÇ Á¶°ÇºÎ ÀüÈ¯À¸·Î ÀÚµ¿ Ã³¸®µÊ)
         HandleMovement();
     }
 
@@ -28,9 +38,9 @@ public class PlayerMoveState : BaseState<PlayerContext>
     {
         if (p_context.Movement != null && p_context.Controller.MoveInput != Vector2.zero)
         {
-            // 2D ì…ë ¥ì„ 3D ì›”ë“œ ì¢Œí‘œë¡œ ë³€í™˜
+            // 2D ÀÔ·ÂÀ» 3D ¿ùµå ÁÂÇ¥·Î º¯È¯
             Vector3 moveDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
-            p_context.Movement.Move(moveDirection, p_context.Movement.MoveSpeed);
+            p_context.Movement.Move(moveDirection, p_context.DataBase.RuntimeData.MoveSpeed, p_context.DataBase.RuntimeData.RotateSpeed);
         }
     }
 

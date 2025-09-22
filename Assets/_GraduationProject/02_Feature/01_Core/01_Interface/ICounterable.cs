@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Л╧╢Л ╢М└╟ ЙЁ╣Й╡╘ Й╟─К┼╔ Л≈╛К╤─К╔╪ К┌≤М┐─К┌╢К┼■ Л²╦М└╟М▌≤Л²╢Л┼╓
+/// д╚©Нем ╟Ь╟щ ╟║╢и ©╘╨н╦╕ Ё╙е╦Ё╩╢б юнемфДюл╫╨
 /// </summary>
 public interface ICounterable
 {
     /// <summary>
-    /// Л╧╢Л ╢М└╟ ЙЁ╣Й╡╘ Й╟─К┼╔ Л≈╛К╤─
+    /// д╚©Нем ╟Ь╟щ ╟║╢и ©╘╨н
     /// </summary>
     bool IsCounterable { get; }
 
     /// <summary>
-    /// Л╧╢Л ╢М└╟ М ╗ЙЁ╪ Л▀╓М√┴
+    /// д╚©Нем х©╟З ╫ггЮ
     /// </summary>
     void ExecuteCounterEffect();
 }

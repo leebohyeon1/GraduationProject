@@ -4,8 +4,9 @@ using BehaviorTree;
 [CreateAssetMenu(fileName = "NoiseActionNode", menuName = "BehaviorTree/NoiseActionNode")]
 public class NoiseActionNode : Node
 {
-    private bool hasCalled;
-
+    private bool _hasCalled;
+    public float Noise_distance;
+    public AudioClip EnemyCallingSoundClip;
     public override void OnEnter()
     {
         runner.SetState(Enemy.EnemyState.Noise);
@@ -15,7 +16,7 @@ public class NoiseActionNode : Node
     
     protected override NodeState OnUpdate()
     {
-        if (hasCalled)
+        if (_hasCalled)
         {
             return NodeState.SUCCESS;
         }
@@ -26,7 +27,7 @@ public class NoiseActionNode : Node
         {
             // runner.soundManager.PlaySFXAtPosition(runner.EnemyCallingSoundClip, runner.transform.position);
 
-            Collider[] hitColliders = Physics.OverlapSphere(runner.transform.position, runner.EnemyDetect);
+            Collider[] hitColliders = Physics.OverlapSphere(runner.transform.position, Noise_distance);
             foreach (Collider col in hitColliders)
             {
                 if (col.TryGetComponent<Enemy>(out Enemy enemy) && enemy != runner)
@@ -34,7 +35,7 @@ public class NoiseActionNode : Node
                     brain.CombatEnter();
                 }
             }
-            hasCalled = true;
+            _hasCalled = true;
             brain.CombatEnter(); // 전투 상태로 전환
             return NodeState.SUCCESS;
         }
@@ -45,7 +46,7 @@ public class NoiseActionNode : Node
     public override void initNode()
     {
         base.initNode();
-        hasCalled = false;
+        _hasCalled = false;
     }
     
     public override Node Clone()

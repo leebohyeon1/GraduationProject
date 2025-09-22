@@ -1,43 +1,29 @@
 using UnityEngine;
 using Pathfinding;
 using System;
-using BH_Lib.AssetManager;
-using System.Threading.Tasks;
-using System.Collections;
-using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
-[RequireComponent(typeof(AIPath),typeof(AiController))]
+[RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))]
 public class Enemy : CharacterBase, IAttacker, IDamageable
 {
     private AiController _aiController;
     Animator animator;
     public AudioClip deathSoundClip;
-    public AudioClip EnemyCallingSoundClip;
-    [Header("Enemy Settings")]
-
-    [SerializeField] private float chaseRange = 10f;
-    public float ChaseRange => chaseRange;
-
-    [SerializeField] private float detectionRange = 10f;
-    public float DetectionRange => detectionRange;
-
-    [SerializeField] private float enemyDetect = 10f;
-    public float EnemyDetect => enemyDetect;
+    
 
     AIPath aIPath;
     public Player player;
 
     public int Maxhealth { get; set; }
     public int CurrentHealth { get; set; }
-    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
     Rigidbody rb;
 
-    // public bool CanParry { get; private set; } // 적이 플레이어의 공격을 막을 수 있는지 여부
+    public Enemy_AnimationEventHandler animHandler;
     bool _isStunned = false;
     float _stunExitTime = -Mathf.Infinity;
     public float StunExitTime => _stunExitTime;
@@ -62,6 +48,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         _aiController.Initialize(this);
 
         StatCalculator.Initialize(tierStatDatabase);
+        animHandler = GetComponent<Enemy_AnimationEventHandler>();
 
     }
 
@@ -96,50 +83,50 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     
     #endregion
 
-    #region Animation Event
-    public bool IsActive { get; private set; }
-    public bool IsHitWindowOpen { get; private set; }
-    public bool IsActionFinished { get; private set; }
-    public bool IsSound { get; private set; }
+    // #region Animation Event
+    // public bool IsActive { get; private set; }
+    // public bool IsHitWindowOpen { get; private set; }
+    // public bool IsActionFinished { get; private set; }
+    // public bool IsSound { get; private set; }
 
-    public void AnimationEvent_StartAction()
-    {
-        IsActive = true;
-    }
+    // public void AnimationEvent_StartAction()
+    // {
+    //     IsActive = true;
+    // }
 
-    public void AnimationEvent_StartSound()
-    {
-        IsSound = true;
-    }
-    public void AnimationEvent_EndSound()
-    {
-        IsSound = false;
-    }
+    // public void AnimationEvent_StartSound()
+    // {
+    //     IsSound = true;
+    // }
+    // public void AnimationEvent_EndSound()
+    // {
+    //     IsSound = false;
+    // }
 
-    //공격 판정 킴
-    public void AnimationEvent_OpenHitWindow()
-    {
-        IsHitWindowOpen = true;
-    }
+    // //공격 판정 킴
+    // public void AnimationEvent_OpenHitWindow()
+    // {
+    //     IsHitWindowOpen = true;
+    // }
 
-    // 공격 판정을 끔
-    public void AnimationEvent_CloseHitWindow()
-    {
-        IsHitWindowOpen = false;
-    }
+    // // 공격 판정을 끔
+    // public void AnimationEvent_CloseHitWindow()
+    // {
+    //     IsHitWindowOpen = false;
+    // }
 
-    // 행동이 끝
-    public void AnimationEvent_FinishAction()
-    {
-        IsActionFinished = true;
-    }
-    public void ResetActionFlags()
-    {
-        IsActionFinished = false;
-        IsHitWindowOpen = false;
-        IsActive = false;
-    }
-    #endregion
+    // // 행동이 끝
+    // public void AnimationEvent_FinishAction()
+    // {
+    //     IsActionFinished = true;
+    // }
+    // public void ResetActionFlags()
+    // {
+    //     IsActionFinished = false;
+    //     IsHitWindowOpen = false;
+    //     IsActive = false;
+    // }
+    // #endregion
     #region parry
     public void ApplyStun(float duration)
     {
@@ -196,6 +183,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public int currentHeat => throw new NotImplementedException();
 
     public bool IsInvincible => throw new NotImplementedException();
+
+    public bool IsHit => throw new NotImplementedException();
 
     public void SetState(EnemyState state)
     {
@@ -328,6 +317,11 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
 
         target.TakeDamage(AttackDamage, this);
+    }
+
+    public void ResetHitState()
+    {
+        throw new NotImplementedException();
     }
 
 

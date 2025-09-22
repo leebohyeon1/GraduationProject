@@ -68,16 +68,7 @@ public class AiBrain
         // 상태 변경 요청이 오면 Brain이 주인(owner)의 상태를 바꾼다.
         _owner.SetState(state);
     }
-    public bool IsInDetectionRange()
-    {
-        return Vector3.Distance(_owner.transform.position, _owner.player.transform.position) <= _owner.DetectionRange;
-    }
 
-
-    public bool IsInChaseRange()
-    {
-        return Vector3.Distance(_owner.transform.position, _owner.player.transform.position) <= _owner.ChaseRange;
-    }
 
 
 
