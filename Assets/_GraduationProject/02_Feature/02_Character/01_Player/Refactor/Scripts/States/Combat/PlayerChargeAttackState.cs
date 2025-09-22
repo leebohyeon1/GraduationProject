@@ -26,6 +26,7 @@ namespace player.Refactor
 
             Log.Print("Player entered ChargeAttack state");
             p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+            p_context.Combat.SetupAttackCenter();
 
             // 공격 실행
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
@@ -82,8 +83,10 @@ namespace player.Refactor
 
             foreach (Collider collider in colliders)
             {
-                p_context.Events.TriggerChargeAttackAffect(collider, p_context.Heat.CurrentHeat);
+                p_context.Events.TriggerChargeAttackAffect(collider, p_context.Heat.CurrentTier);
             }
+
+            p_context.Heat.SetHeat(0);
         }
 
 

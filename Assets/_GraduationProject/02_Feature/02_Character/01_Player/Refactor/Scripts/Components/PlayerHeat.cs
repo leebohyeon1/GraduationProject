@@ -30,6 +30,21 @@ namespace player.Refactor
                 int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
 
                 heatable.ChangeHeat(deltaHeat);
+
+                Log.PrintColor(Color.red, $"target: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
+            }
+        }
+
+        public void IncreaseHeatOnChargeAttack(Collider collider)
+        {
+            IHeatable heatable = collider.GetComponent<IHeatable>();
+            if (heatable != null && !heatable.IsHeatLock)
+            {
+                SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
+                int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+                heatable.ChangeHeat(deltaHeat);
+
+                Log.PrintColor(Color.red, $"target: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
             }
         }
     }
@@ -50,6 +65,7 @@ namespace player.Refactor
 
             _heat.OnHeatChanged += HandleHeatChanged;
             _events.OnAttackAffect += HandleAttackAffect;
+            _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         }
 
         // IDisposable 인터페이스의 Dispose 메서드
@@ -60,12 +76,14 @@ namespace player.Refactor
 
             // 이벤트 구독 해제
             _heat.OnHeatChanged -= HandleHeatChanged;
+            _events.OnAttackAffect -= HandleAttackAffect;
+            _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
 
             _disposed = true;
         }
 
         /// <summary>
-        /// 열기 관련 이벤트 바이딩 함수
+        /// 열기 관련 이벤트 핸들 함수
         /// </summary>
         /// <param name="previousHeat">이전 열기 티어</param>
         /// <param name="currentHeat">현재 열기 티어</param>
@@ -82,9 +100,22 @@ namespace player.Refactor
             }
         }
 
+        /// <summary>
+        /// 근접 공격 시 열기 효과 핸들 함수
+        /// </summary>
+        /// <param name="collider">효과 대상</param>
         private void HandleAttackAffect(Collider collider)
         {
             _heat.IncreaseHeatOnAttack(collider);
+        }
+
+        /// <summary>
+        /// 차징 공격 시 열기 효과 핸들 함수
+        /// </summary>
+        /// <param name="collider">효과 대상</param>
+        private void HandleChargeAttackAffect(Collider collider)
+        {
+            _heat.IncreaseHeatOnChargeAttack(collider);
         }
     }
 }
