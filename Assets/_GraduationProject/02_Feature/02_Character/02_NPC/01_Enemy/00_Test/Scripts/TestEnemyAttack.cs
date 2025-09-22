@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class TestEnemyAttack : MonoBehaviour, IPlayerRangedAttack
+public class TestEnemyAttack : MonoBehaviour
 {
     [SerializeField] private Transform _rangedAttackPoint;
     [SerializeField] private LayerMask _enemyLayerMask = 1 << 8;

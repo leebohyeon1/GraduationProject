@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading;
 using BH_Lib.DI;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,6 @@ public class HpBar : DIMonoBehaviour
     [SerializeField] private Image _hpBarSlider;
     [SerializeField] private GameObject _object;
     private IDamageable _damageable;
-    private Coroutine _hpBarCoroutine;
     
     private void Start()
     {
@@ -19,31 +19,20 @@ public class HpBar : DIMonoBehaviour
 
     private void OnDestroy()
     {
-        _damageable.OnHealthChanged -= ChangeHpBar;        
+        if (_damageable != null)
+        {
+            _damageable.OnHealthChanged -= ChangeHpBar;
+        }
     }
 
-    private void ChangeHpBar(HealthChangeEventData eventData)
+    private void ChangeHpBar(int previousHp, int currentHp)
     {
-        if (_hpBarCoroutine != null)
-        {
-            StopCoroutine(_hpBarCoroutine);
-        }
-        _hpBarCoroutine = StartCoroutine(CoChangeHpBar(eventData.HealthPercent));
-    }
+        DOTween.Kill(_hpBarSlider, true);
 
-    private IEnumerator CoChangeHpBar(float targetFillAmount)
-    {
-        float startFillAmount = _hpBarSlider.fillAmount;
-        float elapsedTimer = 0.0f;
-        float duration = 0.5f;
-
-        while (startFillAmount != targetFillAmount)
-        {
-            elapsedTimer += Time.deltaTime;
-            _hpBarSlider.fillAmount = Mathf.Lerp(_hpBarSlider.fillAmount, targetFillAmount, elapsedTimer / duration);
-            yield return null;
-        }
-
-        _hpBarSlider.fillAmount = targetFillAmount;
+        DOTween.To(() => _hpBarSlider.fillAmount,
+                    x => _hpBarSlider.fillAmount = x,
+                    currentHp/(float)_damageable.MaxHealth, 0.3f)
+                    .SetEase(Ease.Linear)
+                    .SetId(_hpBarSlider);
     }
 }

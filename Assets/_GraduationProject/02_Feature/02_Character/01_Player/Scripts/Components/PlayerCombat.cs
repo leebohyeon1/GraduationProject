@@ -1,170 +1,244 @@
-using System.Collections;
 using BH_Lib.Log;
-using Unity.VisualScripting;
+using Pathfinding.Drawing;
+using System;
 using UnityEngine;
 
-public class PlayerCombat : MonoBehaviour, IPlayerCombat
-{   
-    private PlayerContext _context;
-    private PlayerEventChannel _event;
-    [SerializeField] private LayerMask _attackLayerMask = 1 << 8;
+
+public class PlayerCombat : MonoBehaviour, IAttacker
+{
+    #region Private Fields
+    private PlayerCombatData _combatData;
+    /// <summary>
+    /// 전투 중심점의 위치
+    /// </summary>
+    private Vector3 _combatCenter;
+    /// <summary>
+    /// 카운터 공격 가능 여부
+    /// </summary>
     private bool _canCounterAttack;
-    private Vector3 _attackCenter;
-    private Coroutine _counterAttackCoroutine;
+    /// <summary>
+    /// 마지막 전투 시간
+    /// </summary>
+    private float _lastBattleTime;
+    /// <summary>
+    /// 전투 중이 아닌지 여부
+    /// </summary>
+    private bool _isBattleState;
 
+    /// <summary>
+    /// 디버깅용 기즈모 표시 여부
+    /// </summary>
+    private bool _isDrawGizmos = false;
+    #endregion
 
-    public PlayerMeleeAttackData MeleeAttackData => _context.Stats.CounterAttackData;
+    #region Properties
     public bool CanCounterAttack => _canCounterAttack;
+    public float LastBattleTime => _lastBattleTime;
+    public bool IsBattleState => _isBattleState;
+    #endregion
 
-    public void Initialize(PlayerContext context)
+    public void Initialize(PlayerCombatData combatData)
     {
-        _context = context;
-        _event = _context.Event;
-
-        // 전투 관련 이벤트 버스 구독
-        _event.Parry.OnPerform += TryParry;                           // 패링 시도 이벤트
-        _event.Parry.OnAffect += (collider) => EnterCounterAttackStance();
-
-        _event.CounterAttack.OnStart += () => SetAttackCenter(transform.position);
-        _event.CounterAttack.OnPerform += TryCounterAttack;
-    }
-
-    #region Parry
-    /// <summary>
-    /// 패링 시도 (패링 가능한 적의 공격을 반격)
-    /// 애니메이션 이벤트에서 호출됩니다.
-    /// </summary>
-    public void TryParry()
-    {
-        if (_context?.Stats == null) return;
-
-        Vector3 parryCenter = GetParryCenter();
-        Collider[] hitEnemies = Physics.OverlapBox(parryCenter, _context.Stats.ParryRadius / 2, transform.rotation, _attackLayerMask);
-
-        ProcessParryableEnemies(hitEnemies);
+        _isDrawGizmos = true;
+        _combatData = combatData;
     }
 
     /// <summary>
-    /// 패링 범위의 중심점 계산
+    /// 전투 중심점을 설정
     /// </summary>
-    /// <returns>패링 범위 박스의 중심 위치</returns>
-    private Vector3 GetParryCenter()
+    public void SetupCombatCenter()
     {
-        return transform.position + transform.forward * (_context.Stats.ParryRadius.z / 2);
+        _combatCenter = transform.position;
     }
 
+    #region BattleState
     /// <summary>
-    /// 패링 범위 내 감지된 적들에게 패링 적용
+    /// 마지막 전투 시간 설정
     /// </summary>
-    /// <param name="hitEnemies">감지된 적들의 Collider 배열</param>
-    private void ProcessParryableEnemies(Collider[] hitEnemies)
+    public void SetupBattleTime()
     {
-        foreach (Collider enemy in hitEnemies)
-        {
-            IParryable parryable = enemy.GetComponent<IParryable>();
-            if (parryable != null && parryable.IsParryable)
-            {
-                parryable.Parry(gameObject);
-                _event.Parry.PublishAffect(enemy);
-            }
-        }
+        _lastBattleTime = Time.time;
+    }
+    /// <summary>
+    /// 전투 중 상태 변경 함수
+    /// </summary>
+    /// <param name="isBattleState"></param>
+    public void SetBattleState(bool isBattleState)
+    {
+        _isBattleState = isBattleState;
     }
     #endregion
 
-    #region CounterAttack
-
+    #region Attack
     /// <summary>
-    /// 코루틴 작동
+    /// 공격 중심점을 계산
     /// </summary>
-    public void EnterCounterAttackStance()
+    /// <returns>공격 박스의 중심 위치</returns>
+    private Vector3 GetAttackCenter(PlayerAttackData attackData)
     {
-
-        if (_counterAttackCoroutine != null)
-        {
-            StopCoroutine(_counterAttackCoroutine);
-        }
-
-        _counterAttackCoroutine = StartCoroutine(CoCounterAttackWindow());
+        return _combatCenter + transform.forward * (attackData.AttackRadius.z / 2);
     }
 
     /// <summary>
-    /// 패링 가능 상태로 변경 후 해제
+    /// 공격 실행 (일반/차지 공격 등 공격 처리)
+    /// Physics.OverlapBox를 사용하여 박스 범위 내의 적을 감지합니다.
     /// </summary>
-    /// <returns></returns>
-    public IEnumerator CoCounterAttackWindow()
+    /// <param name="attackData">공격 데이터</param>
+    /// <returns>타격한 대상의 콜라이더 배열</returns>
+    public Collider[] ExecuteAttack(PlayerAttackData attackData)
     {
-        SetCanCounterAttack(true);
+        // 공격 중심점과 범위 계산
+        Vector3 attackCenter = GetAttackCenter(attackData);
+        Vector3 halfExtents = attackData.AttackRadius / 2f;  // OverlapBox에 필요한 halfExtents 계산
 
-        yield return new WaitForSeconds(_context.Stats.ParryCounterWindow);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
-        SetCanCounterAttack(false);
+        Log.Print(hitEnemies.Length);
+        ProcessHitEnemies(attackData, hitEnemies);
+
+        return hitEnemies;
     }
 
     /// <summary>
-    /// 카운터 공격 가능 여부 설정
+    /// 공격에 맞은 적들에 대한 처리
     /// </summary>
-    /// <param name="value">가능 여부</param>
-    public void SetCanCounterAttack(bool value)
+    /// <param name="attackData">공격 데이터</param>
+    /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
+    private void ProcessHitEnemies(PlayerAttackData attackData, Collider[] hitObjects)
     {
-        _canCounterAttack = value;
-    }
-
-    /// <summary>
-    /// 카운터 공격 시도
-    /// </summary>
-    public void TryCounterAttack()
-    {
-        Vector3 attackCenter = GetAttackCenter();
-        
-        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, MeleeAttackData.AttackRadius.x, _attackLayerMask);
-
-        ProcessHitEnemies(hitEnemies);
-    }
-
-    private void ProcessHitEnemies(Collider[] hitObjects)
-    {
-        SetCanCounterAttack(false);
-        
         foreach (Collider obj in hitObjects)
         {
             IDamageable damageable = obj.GetComponent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
             {
-                damageable.TakeDamage(MeleeAttackData.AttackDamage, _context.MeleeAttack);
-                _event.CounterAttack.PublishAffect(obj);
+                damageable.TakeDamage(attackData.AttackDamage, this);
             }
         }
     }
+    #endregion
 
-    private void SetAttackCenter(Vector3 position)
+    #region RangedAttack
+    /// <summary>
+    /// 원거리 공격 실행
+    /// </summary>
+    /// <param name="firePoint">발사 지점</param>
+    public void FireProjectile(Transform firePoint)
     {
-        _attackCenter = position;
+        if (_combatData.RangedAttackData.ProjectilePrefab == null)
+        {
+            return;
+        }
+
+        GameObject projectileObj = Instantiate(_combatData.RangedAttackData.ProjectilePrefab,
+            firePoint.position, firePoint.rotation);
+
+        Projectile projectile = projectileObj.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            projectile.Initialize(_combatData.RangedAttackData.AttackDamage,
+                _combatData.RangedAttackData.ProjectileSpeed, gameObject, _combatData.AttackLayerMask);
+        }
+    }
+    #endregion
+
+    #region Parry
+    /// <summary>
+    /// 패리(방어) 실행
+    /// </summary>
+    /// <param name="parryRadius">패리 범위</param>
+    /// <returns>패리에 영향을 받은 대상의 콜라이더 배열</returns>
+    public Collider[] ExecuteParry(Vector3 parryRadius)
+    {
+        // 공격 중심점과 범위 계산
+        Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
+        Vector3 halfExtents = parryRadius / 2f;  // OverlapBox에 필요한 halfExtents 계산
+
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
+
+        ProcessParryEnemies(hitEnemies);
+
+        return hitEnemies;
     }
 
-    private Vector3 GetAttackCenter()
+    /// <summary>
+    /// 패리 성공 시 적들에 대한 처리
+    /// </summary>
+    /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
+    private void ProcessParryEnemies(Collider[] hitObjects)
     {
-        return _attackCenter;
+        foreach (Collider obj in hitObjects)
+        {
+            IParryable parryable = obj.GetComponent<IParryable>();
+            if (parryable != null && parryable.IsParryable)
+            {
+                parryable.Parry(gameObject);
+            }
+        }
     }
     #endregion
 
 #if UNITY_EDITOR
+
     private void OnDrawGizmos()
     {
-        if (_context?.Stats == null) return;
+        if (!_isDrawGizmos)
+        {
+            return;
+        }
 
-        DrawParryGizmo();
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, MeleeAttackData.AttackRadius.x);
+        DrawActionGizmo(_combatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_combatData.AttackDatas[1].AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);
+        DrawActionGizmo(_combatData.ChargeAttackData.AttackRadius, Color.indianRed);
+        DrawActionGizmo(_combatData.ParryRadius, Color.green);
     }
-    private void DrawParryGizmo()
+
+    private void DrawActionGizmo(Vector3 radius, Color color)
     {
-        Vector3 parryCenter = GetParryCenter();
-        Gizmos.color = Color.green;
-        Gizmos.matrix = Matrix4x4.TRS(parryCenter, transform.rotation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, _context.Stats.ParryRadius);
+        Vector3 attackCenter = transform.position + transform.forward * (radius.z / 2);
+        Gizmos.color = color;
+        Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, radius);
         Gizmos.matrix = Matrix4x4.identity;
     }
-
 #endif
+}
+
+public class PlayerCombatManager : IDisposable
+{
+    [SerializeField] private PlayerCombat _combat;
+    [SerializeField] private PlayerEvents _events;
+
+    public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
+    {
+        _combat = combat;
+        _events = events;
+
+        _events.OnRangedAttackStart += HandleRangedAttack;
+        _events.OnBattleStateChaged += HandleBattleStateChanged;
+    }
+
+    public void Dispose()
+    {
+        _events.OnRangedAttackStart -= HandleRangedAttack;
+        _events.OnBattleStateChaged -= HandleBattleStateChanged;
+    }
+
+    private void HandleRangedAttack(Transform firePoint)
+    {
+        _combat.FireProjectile(firePoint);
+    }
+
+    private void HandleBattleStateChanged(bool isBattleState)
+    {
+        if (isBattleState)
+        {
+            _combat.SetupBattleTime();
+            _combat.SetBattleState(isBattleState);
+        }
+        else
+        {
+            _combat.SetBattleState(isBattleState);
+        }
+    }
 }

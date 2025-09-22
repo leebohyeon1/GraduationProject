@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using BH_Lib.DI;
 using UnityEngine.InputSystem.Interactions;
 using BH_Lib.Log;
+using System;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
@@ -11,29 +11,30 @@ using BH_Lib.Log;
 public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
 {
     // 이동 이벤트
-    public event UnityAction<Vector2> MoveEvent = delegate { };
+    public event Action<Vector2> MoveEvent = delegate { };
     // 공격 이벤트 (시작)
-    public event UnityAction AttackEvent = delegate { };
+    public event Action AttackEvent = delegate { };
     // 공격 홀드 이벤트 
-    public event UnityAction AttackHoldEvent = delegate { };
+    public event Action AttackHoldEvent = delegate { };
     // 공격 이벤트 (종료)
-    public event UnityAction AttackCancelledEvent = delegate { };
+    public event Action AttackCancelledEvent = delegate { };
     // 원거리 공격 이벤트 (시작)
-    public event UnityAction RangedAttackEvent = delegate { };
+    public event Action RangedAttackEvent = delegate { };
     // 원거리 공격 이벤트 (종료)
-    public event UnityAction RangedAttackCancelledEvent = delegate { };
+    public event Action RangedAttackCancelledEvent = delegate { };
     // 회피 이벤트
-    public event UnityAction DodgeEvent = delegate { };
+    public event Action DodgeEvent = delegate { };
     // 방어 이벤트 (시작)
-    public event UnityAction DefendEvent = delegate { };
+    public event Action DefendEvent = delegate { };
     // 방어 이벤트 (종료)
-    public event UnityAction DefendCancelledEvent = delegate { };
+    public event Action DefendCancelledEvent = delegate { };
     // 시선/조준 이벤트
-    public event UnityAction<Vector2> LookEvent = delegate { };
+    public event Action<Vector2> LookEvent = delegate { };
     // 마우스 위치 이벤트
-    public event UnityAction<Vector2> MousePositionEvent = delegate { };
+    public event Action<Vector2> MousePositionEvent = delegate { };
     // 입력 기기 변경 이벤트
-    public event UnityAction<InputDeviceType> InputDeviceChangedEvent = delegate { };
+    public event Action<InputDeviceType> InputDeviceChangedEvent = delegate { };
+    public event Action SkillEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -77,9 +78,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     {
         switch (context.phase)
         {
-            case InputActionPhase.Started:
-                
-                break;
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
@@ -137,6 +135,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         MousePositionEvent.Invoke(mousePosition);
     }
 
+    public void OnSkill(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SkillEvent.Invoke();
+        }
+    }
+
     /// <summary>
     /// 외부에서 입력 기기 변경을 알릴 때 사용하는 함수
     /// </summary>
@@ -155,4 +161,5 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         _inputActions?.Dispose();
         _inputActions = null;
     }
+
 }

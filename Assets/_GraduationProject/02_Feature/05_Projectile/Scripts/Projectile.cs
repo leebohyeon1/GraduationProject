@@ -8,25 +8,25 @@ public class Projectile : MonoBehaviour, IAttacker
 {
     [Header("Projectile Settings")]
     [SerializeField] private float _lifeTime = 5f;
-    [SerializeField] private bool _destroyOnHit = true;
+    [SerializeField] protected bool p_destroyOnHit = true;
     
     private int _damage;
     private float _speed;
-    private GameObject _owner;
-    private LayerMask _targetLayerMask;
-    private Rigidbody _rigidbody;
+    protected GameObject p_owner;
+    protected LayerMask p_targetLayerMask;
+    protected Rigidbody p_rigidbody;
     
     public int AttackDamage => _damage;
 
     protected virtual void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
-        if (_rigidbody == null)
+        p_rigidbody = GetComponent<Rigidbody>();
+        if (p_rigidbody == null)
         {
-            _rigidbody = gameObject.AddComponent<Rigidbody>();
+            p_rigidbody = gameObject.AddComponent<Rigidbody>();
         }
         
-        _rigidbody.useGravity = false;
+        p_rigidbody.useGravity = false;
         
         Destroy(gameObject, _lifeTime);
     }
@@ -35,10 +35,10 @@ public class Projectile : MonoBehaviour, IAttacker
     {
         _damage = damage;
         _speed = speed;
-        _owner = owner;
-        _targetLayerMask = targetLayerMask;
+        p_owner = owner;
+        p_targetLayerMask = targetLayerMask;
         
-        _rigidbody.linearVelocity = transform.forward * _speed;
+        p_rigidbody.linearVelocity = transform.forward * _speed;
         
         Log.Print($"투사체 초기화: 데미지={damage}, 속도={speed}");
     }
@@ -51,31 +51,31 @@ public class Projectile : MonoBehaviour, IAttacker
         Log.Print($"투사체가 {target}에게 {_damage} 피해를 입혔습니다!");
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == _owner) return;
+        if (other.gameObject == p_owner) return;
         
         int layer = 1 << other.gameObject.layer;
-        if ((_targetLayerMask.value & layer) != 0)
+        if ((p_targetLayerMask.value & layer) != 0)
         {
             IDamageable damageable = other.GetComponent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
             {
                 Attack(damageable);
-                
-                if (_destroyOnHit)
+
+                if (p_destroyOnHit)
                 {
                     DestroyProjectile();
                 }
             }
         }
-        else if (other.gameObject.layer != _owner.layer)
+        else if (other.gameObject.layer != p_owner.layer)
         {
             DestroyProjectile();
         }
     }
 
-    private void DestroyProjectile()
+    protected virtual void DestroyProjectile()
     {
         Log.Print("투사체 파괴");
         Destroy(gameObject);

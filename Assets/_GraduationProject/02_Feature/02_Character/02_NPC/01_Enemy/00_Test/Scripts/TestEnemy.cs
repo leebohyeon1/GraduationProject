@@ -9,7 +9,7 @@ public class TestEnemy : CharacterBase, IDamageable
 
     private int _currentHealth = 100;
 
-    public event Action<HealthChangeEventData> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
     public int Health => _currentHealth;
@@ -17,6 +17,10 @@ public class TestEnemy : CharacterBase, IDamageable
     public int MaxHealth => 200;
 
     public bool IsDead => _currentHealth <= 0;
+
+    public bool IsInvincible => false;
+
+    public bool IsHit => throw new NotImplementedException();
 
     void Start()
     {
@@ -58,6 +62,8 @@ public class TestEnemy : CharacterBase, IDamageable
         _currentHealth = MaxHealth;
     }
 
-    
-
+    public void ResetHitState()
+    {
+        throw new NotImplementedException();
+    }
 }

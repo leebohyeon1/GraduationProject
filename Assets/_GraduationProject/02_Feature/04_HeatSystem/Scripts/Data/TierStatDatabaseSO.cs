@@ -24,30 +24,27 @@ public class TierStatDatabaseSO : ScriptableObject
     }
 
     /// <summary>
-    /// 주어진 체력/열 값에 대해 달성된 가장 높은 등급을 가져옵니다.
-    /// 현재 체력보다 작거나 같은 가장 높은 임계값을 가진 등급을 찾습니다.
+    /// 주어진 열 값에 대해 달성된 가장 높은 등급을 가져옵니다.
     /// </summary>
-    /// <param name="currentHealth">현재 체력 또는 열 값입니다.</param>
+    /// <param name="currentHeat">현재 열 값입니다.</param>
     /// <returns>달성한 가장 높은 등급의 ID입니다. 충족되는 등급 임계값이 없으면 0을 반환합니다.</returns>
-    public int GetCurrentTier(int currentHealth)
+    public int GetCurrentTier(int currentHeat)
     {
-        TierStatData bestTier = null;
+        int highestAchievedTier = 0;
+
+        // 리스트의 모든 등급을 순회합니다.
         foreach (var tierData in TierStats)
         {
-            if (currentHealth >= tierData.HeatThrehold)
+            // 현재 열이 등급의 임계값을 넘었고,
+            // 이 등급이 이전에 찾은 가장 높은 등급보다 높다면
+            if (currentHeat >= tierData.HeatThrehold && tierData.TierID > highestAchievedTier)
             {
-                if (bestTier == null || tierData.HeatThrehold > bestTier.HeatThrehold)
-                {
-                    bestTier = tierData;
-                }
+                // 가장 높은 등급을 현재 등급으로 업데이트합니다.
+                highestAchievedTier = tierData.TierID;
             }
         }
 
-        if (bestTier != null)
-        {
-            return bestTier.TierID;
-        }
-
-        return 0;
+        // 루프가 끝난 후, 찾은 가장 높은 등급을 반환합니다.
+        return highestAchievedTier;
     }
 }

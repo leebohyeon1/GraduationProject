@@ -29,7 +29,6 @@ public class SourceMapDatabaseSO : ScriptableObject
         SourceMap data = tierID == -1 
             ? heatDataList.Find(data => data.ID == ruleID) 
             : heatDataList.Find(data => data.ID == ruleID && data.TierID == tierID);
-        data.DeltaHeat *= (int)data.HeatChangeType;
         return data;
     }
     
@@ -39,7 +38,6 @@ public class SourceMapDatabaseSO : ScriptableObject
         SourceMap data = tierID == -1 
             ? heatDataList.Find(data => data.ID == ruleID && data.TargetType == targetType) 
             : heatDataList.Find(data => data.ID == ruleID && data.TargetType == targetType && data.TierID == tierID);
-        data.DeltaHeat *= (int)data.HeatChangeType;
         return data;
     }
 }
