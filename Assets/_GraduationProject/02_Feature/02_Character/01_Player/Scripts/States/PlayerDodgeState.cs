@@ -91,7 +91,7 @@ public class PlayerDodgeState : BaseState<Player>
         }
         else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
         {
-           // _nextState = typeof(PlayerCounterAttackState);
+            _nextState = typeof(PlayerFirstCounterAttackState);
         }
         else if (p_context.Controller.AttackHeldInput)
         {

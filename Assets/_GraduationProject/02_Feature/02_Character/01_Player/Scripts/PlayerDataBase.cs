@@ -89,6 +89,9 @@ public class PlayerCombatData
 
     [Header("Parry")]
     public Vector3 ParryRadius;
+
+    [Header("CounterAttack")]
+    public PlayerAttackData[] CounterAttackDatas;
 }
 
 /// <summary>

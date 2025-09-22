@@ -177,6 +177,11 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     }
     #endregion
 
+    #region CounterAttack
+
+
+    #endregion
+
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
