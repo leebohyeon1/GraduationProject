@@ -7,16 +7,18 @@ namespace BH_Lib.Log
     public static class Log
     {
         public static bool LogOn = true;
-     
+
         public static void PrintColor(Color color, params object[] args)
         {
-            if (!LogOn) 
+            if (!LogOn)
             {
-                return; 
+                return;
             }
+#if (DEBUG_MODE)
 
             string message = string.Join(string.Empty, args);
             Debug.Log("<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">" + message + "</color>");
+            #endif
         }
 
         public static void Print(params object[] args)
@@ -25,8 +27,9 @@ namespace BH_Lib.Log
             {
                 return;
             }
-
+#if (DEBUG_MODE)
             Debug.Log(string.Join(string.Empty, args));
+            #endif
         }
 
         public static void PrintErr(params object[] args)
