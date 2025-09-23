@@ -64,6 +64,7 @@ public class PlayerHeat : HeatSystem
 
             Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
+        SetHeat(0);
     }
 
     /// <summary>
