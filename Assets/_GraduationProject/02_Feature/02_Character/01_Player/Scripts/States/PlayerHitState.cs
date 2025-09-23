@@ -19,10 +19,12 @@ public class PlayerHitState : BaseState<Player>
         if (p_context.Health.IsDefending)
         {
             p_context.Animator.SetTrigger("DefendHit");
+            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
         }
         else
         {
             p_context.Animator.SetTrigger("Hit");
+            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
         }
 
         p_context.Animator.SetBool("IsHit", true);
@@ -32,6 +34,8 @@ public class PlayerHitState : BaseState<Player>
         // 피격 시 이동 정지
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
         p_context.Events.TriggerBattleStateChanged(true);
+
+       
 
         Log.Print("Player entered Hit state");
     }
