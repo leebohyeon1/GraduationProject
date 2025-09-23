@@ -57,12 +57,14 @@ public class PlayerChargeState : BaseState<Player>
             }
             else
             {
+                p_context.Events.TriggerChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
                 return;
             }
         }
         else if(p_context.Controller.DodgeInput)
         {
+            p_context.Events.TriggerChargeCancel();
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
