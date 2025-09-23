@@ -30,7 +30,7 @@ public class GroundStrikeNode : Node
 
         if (Handler.IsSound)
         {
-            runner.PlayFeedback("GroundStrike", attackOrigin);
+           // runner.PlayFeedback("GroundStrike", attackOrigin);
             Handler.EndSound();
 
         }
