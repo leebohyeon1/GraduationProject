@@ -4,13 +4,14 @@ using refactor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static CharacterBase;
 
 public enum PlayerFeedbackType
 {
     Move_FB, MoveStop_FB, DodgeStart_FB,
     DodgeFinish_FB, Landing_FB,
 
-    TakeDamage_Nomal_FB,
+    TakeDamage_Normal_FB,
     TakeDamage_Strong_FB,
     TakeDamage_Defend_FB,
 
@@ -39,6 +40,20 @@ public enum PlayerFeedbackType
     Tier1_FB, Tier2_FB, Tier3_FB, OverHeat_FB
 }
 
+public enum PlayerAttackType
+{
+    Attack = 0,
+    ChargeAttack = 1,
+    CounterAttack = 2,
+}
+
+public enum PlayerDamagedType
+{
+    Normal = 0,
+    Strong = 1,
+    Defend = 2
+}
+
 public class PlayerEvents : MonoBehaviour
 {
     [SerializeField] private FeedbackPlayer<PlayerFeedbackType> _feedbackPlayer;
@@ -57,11 +72,18 @@ public class PlayerEvents : MonoBehaviour
     /// 차지 효과 발생 위치
     /// </summary>
     [SerializeField] private Transform _chargeEffectPoint;
+    [SerializeField] private Transform _chargeAttackPoint;
 
     /// <summary>
     /// 원거리 공격 효과 발생 위치
     /// </summary>
     [SerializeField] private Transform _rangedAttackPoint;
+
+    /// <summary>
+    /// 카운터 공격 효과 발생 위치
+    /// </summary>
+    [SerializeField] private Transform _counterAttackPoint;
+
     #endregion
 
     #region Events
@@ -103,16 +125,37 @@ public class PlayerEvents : MonoBehaviour
         OnBattleStateChaged.Invoke(isBattleState);
     }
 
+    #region Movement
     /// <summary>
     /// 이동 중 발자국 효과 재생
+    /// (애니메이션 트리거)
     /// </summary>
-    public void TriggerFootstep()
+    public void TriggerMove()
     {
         _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Move_FB, transform.position);
     }
 
     /// <summary>
+    /// 이동 멈춤 효과 재생
+    /// (애니메이션 트리거)
+    /// </summary>
+    public void TriggerMoveStop()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.MoveStop_FB, transform.position);
+    }
+
+    /// <summary>
+    /// 회피 시작 시 효과 재생
+    /// </summary>
+    public void TriggerDodgeStart()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.DodgeStart_FB, transform.position);
+    }
+
+    /// <summary>
+    /// Todo: 회피가 순간이동으로 바뀌면서 이것도 바뀔 듯
     /// 회피 완료 시 효과 재생
+    /// (애니메이션 트리거)
     /// </summary>
     public void TriggerDodgeFinish()
     {
@@ -120,6 +163,72 @@ public class PlayerEvents : MonoBehaviour
         _feedbackPlayer.PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
     }
 
+    /// <summary>
+    /// 착지 했을 때 효과 재생
+    /// </summary>
+    public void TriggerLanding()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Landing_FB, transform.position);
+    }
+    #endregion
+
+    #region Damaged
+
+    /// <summary>
+    /// 피격 효과 재생
+    /// </summary>
+    /// <param name="damagedType">피격 효과</param>
+    public void TriggerTakeDamge(PlayerDamagedType damagedType)
+    {
+        switch (damagedType)
+        {
+            case PlayerDamagedType.Normal:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB, transform.position);
+                break;
+            case PlayerDamagedType.Strong:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB, transform.position);
+                break;
+            case PlayerDamagedType.Defend:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB, transform.position);
+                break;
+        }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 근접 공격 수행 시 효과 재생
+    /// (애니메이션 트리거)
+    /// </summary>
+    public void TriggerAttackPerform()
+    {
+        OnAttackPerform.Invoke();
+    }
+
+    /// <summary>
+    /// 근접 공격 완료 시 효과 재생
+    /// (애니메이션 트리거)
+    /// </summary>
+    public void TriggerAttackFinish(int type)
+    {
+        OnAttackFinish.Invoke();
+
+        switch(type)
+        {
+            case (int)PlayerAttackType.Attack:
+
+                break;
+            case (int)PlayerAttackType.ChargeAttack:
+                TriggerChargeAttackFinish();
+                break;
+            case (int)PlayerAttackType.CounterAttack:
+                TriggerCounterAttackFinish();
+                break;
+        }    
+
+    }
+
+    #region Attack
     /// <summary>
     /// 첫 번째 근접 공격 시작 시 효과 재생
     /// </summary>
@@ -157,14 +266,6 @@ public class PlayerEvents : MonoBehaviour
     }
 
     /// <summary>
-    /// 근접 공격 수행 시 효과 재생
-    /// </summary>
-    public void TriggerAttackPerform()
-    {
-        OnAttackPerform.Invoke();
-    }
-
-    /// <summary>
     /// 근접 공격 타격 시 효과 재생
     /// </summary>
     /// <param name="collider">타격 대상 콜라이더</param>
@@ -173,15 +274,9 @@ public class PlayerEvents : MonoBehaviour
         OnAttackAffect.Invoke(collider);
         _feedbackPlayer.PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
     }
+    #endregion
 
-    /// <summary>
-    /// 근접 공격 완료 시 효과 재생
-    /// </summary>
-    public void TriggerAttackFinish()
-    {
-        OnAttackFinish.Invoke();
-    }
-
+    #region ChargeAttack
     /// <summary>
     /// 차지 시작 시 효과 재생
     /// </summary>
@@ -195,6 +290,14 @@ public class PlayerEvents : MonoBehaviour
     }
 
     /// <summary>
+    /// 차지 취소 되었을 때 효과 재생
+    /// </summary>
+    public void TriggerChargeCancel()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeCancel_FB, _chargeEffectPoint.position);
+    }
+
+    /// <summary>
     /// 차지 완료 시 효과 재생
     /// </summary>
     public void TriggerChargeFinish()
@@ -204,6 +307,22 @@ public class PlayerEvents : MonoBehaviour
             Log.PrintWarning("차지 효과 위치 설정");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
         }
+    }
+
+    /// <summary>
+    /// 차지 공격 시작 시 호출
+    /// </summary>
+    public void TriggerChargeAttackStart()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB, _chargeAttackPoint.position);
+    }    
+
+    /// <summary>
+    /// 차지 공격 종료 시 호출
+    /// </summary>
+    public void TriggerChargeAttackFinish()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB, _chargeAttackPoint.position);
     }
 
     /// <summary>
@@ -228,6 +347,39 @@ public class PlayerEvents : MonoBehaviour
                 break;
         }
     }
+    #endregion
+
+    #region RangedAttack
+
+    /// <summary>
+    /// 원거리 공격 차지 시작 시 효과 재생
+    /// </summary>
+    public void TriggerRangedChargeStart()
+    {
+        if (_chargeEffectPoint != null)
+        {
+            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB, _chargeEffectPoint.position);
+        }
+    }
+
+    /// <summary>
+    /// 원거리 공격 차지 효과 재생
+    /// </summary>
+    public void TriggerRangedCharging()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackCharging_FB, _chargeEffectPoint.position);
+    }
+
+    /// <summary>
+    /// 원거리 공격 차지 취소 시 효과 재생
+    /// </summary>
+    public void TriggerRangedChargeCancel()
+    {
+        if (_chargeEffectPoint != null)
+        {
+            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB, _chargeEffectPoint.position);
+        }
+    }
 
     /// <summary>
     /// 원거리 공격 차지 완료 시 효과 재생
@@ -246,6 +398,8 @@ public class PlayerEvents : MonoBehaviour
     public void TriggerRangedAttackStart()
     {
         OnRangedAttackStart.Invoke(_rangedAttackPoint);
+
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackPoint.position);
     }
 
     /// <summary>
@@ -269,13 +423,18 @@ public class PlayerEvents : MonoBehaviour
     {
         OnRangedAttackFinish.Invoke();
     }
+    #endregion
+
+    #region Parry
 
     /// <summary>
     /// 패리 시작 시 효과 재생
+    /// (애니메이션 트리거)
     /// </summary>
     public void TriggerParryPerform()
     {
         OnParryPerform?.Invoke();
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ParryStart_FB, transform.position);
     }
 
     /// <summary>
@@ -290,6 +449,17 @@ public class PlayerEvents : MonoBehaviour
         {
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
         }
+    }
+    #endregion
+
+    #region CounterAttack
+
+    /// <summary>
+    /// 카운터 공격 시작 시 효과 재생
+    /// </summary>
+    public void TriggerCounterAttackStart()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.CounterAttackStart_FB, _counterAttackPoint.position);
     }
 
     /// <summary>
@@ -337,7 +507,17 @@ public class PlayerEvents : MonoBehaviour
                 break;
         }
     }
+    
+    /// <summary>
+    /// 카운터 공격 종료 시 효과 재생
+    /// </summary>
+    public void TriggerCounterAttackFinish()
+    {
+        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.CounterAttackFinish_FB, _counterAttackPoint.position);
+    }
+    #endregion
 
+    #region Heat
     /// <summary>
     /// 티어 상승 시 효과 재생
     /// </summary>
@@ -348,15 +528,19 @@ public class PlayerEvents : MonoBehaviour
         {
             case 1:
                 OnTier1Up?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position);
                 break;
             case 2:
                 OnTier2Up?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position);
                 break;
             case 3:
                 OnTier3Up?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position);
                 break;
             case 4:
                 OnOverHeatStart?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position);
                 break;
         }
     }
@@ -371,17 +555,47 @@ public class PlayerEvents : MonoBehaviour
         {
             case 0:
                 OnTier1Down?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position);
                 break;
             case 1:
                 OnTier2Down?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position);
                 break;
             case 2:
                 OnTier3Down?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position);
                 break;
             case 3:
                 OnOverHeatFinish?.Invoke();
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position);
                 break;
         }
     }
+
+    /// <summary>
+    /// 티어 효과 재생
+    /// </summary>
+    /// <param name="tier">현재 티어</param>
+    public void TriggerTier(int tier)
+    {
+        switch (tier)
+        {
+            case 0:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position);
+                break;
+            case 1:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position);
+                break;
+            case 2:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position);
+                break;
+            case 3:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
+                break;
+        }
+    }
+
+    #endregion
+
     #endregion
 }
