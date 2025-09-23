@@ -26,6 +26,9 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         Log.Print("Player entered FirstCounterAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
+        p_context.Combat.SetCanCounterAttack(false);
+        p_context.Health.SetInvisible(true);
+
         // 공격 시 전진 이동 실행
         StartAttackMovement();
     }
@@ -46,6 +49,38 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 
     protected override void HandleAttackPerform()
     {
-        
+        p_context.Combat.ExcuteFirstCounterAttack(p_AttackData);
+        p_context.Events.TriggerFirstCounterAttackAffect(
+            p_context.Combat.CounterableTarget, 
+            p_context.Heat.CurrentTier);
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 이벤트 핸들러
+    /// 공격이 완료되면 다른 상태로 전환
+    /// </summary>
+    protected override void HandleAttackFinish()
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.SetDelay(p_AttackData.AttackDelay);
+
+        sequence.AppendCallback(() =>
+        {
+            if (p_nextState != null)
+            {
+                if(p_nextAttackState != p_nextState)
+                {
+                    p_context.Health.SetInvisible(false);
+                    p_context.Combat.ClearCounterTarget();
+                }
+
+                p_stateMachine.ChangeState(p_nextState);
+            }
+            else
+            {
+                p_stateMachine.ChangeState<PlayerIdleState>();
+            }
+        });
+
     }
 }

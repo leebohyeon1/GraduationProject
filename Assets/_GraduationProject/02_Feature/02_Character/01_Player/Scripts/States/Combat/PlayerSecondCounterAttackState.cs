@@ -61,4 +61,36 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
     }
 
+    protected override void HandleAttackPerform()
+    {
+        p_context.Combat.ExcuteSecondCounterAttack(p_AttackData);
+        p_context.Events.TriggerSecondCounterAttackAffect(
+            p_context.Combat.CounterableTarget,
+            p_context.Heat.CurrentTier);
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 이벤트 핸들러
+    /// 공격이 완료되면 다른 상태로 전환
+    /// </summary>
+    protected override void HandleAttackFinish()
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.SetDelay(p_AttackData.AttackDelay);
+        p_context.Combat.ClearCounterTarget();
+        p_context.Health.SetInvisible(false);
+
+        sequence.AppendCallback(() =>
+        {
+            if (p_nextState != null)
+            {
+                p_stateMachine.ChangeState(p_nextState);
+            }
+            else
+            {
+                p_stateMachine.ChangeState<PlayerIdleState>();
+            }
+        });
+
+    }
 }

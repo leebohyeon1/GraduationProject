@@ -33,7 +33,7 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
         p_context.Events.TriggerBattleStateChanged(true);
 
-        if (p_context.Combat.CanCounterAttack && p_context.Combat.ScanCounterableObject() != null)
+        if (p_context.Combat.CanCounterAttack && p_context.Combat.CanIsScanCounterable())
         {
             p_stateMachine.ChangeState<PlayerFirstCounterAttackState>();
         }

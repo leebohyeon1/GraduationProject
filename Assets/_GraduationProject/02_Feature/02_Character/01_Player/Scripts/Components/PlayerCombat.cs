@@ -13,11 +13,16 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     /// 전투 중심점의 위치
     /// </summary>
     private Vector3 _combatCenter;
+
     /// <summary>
     /// 카운터 공격 가능 여부
     /// </summary>
     private bool _canCounterAttack;
-
+    /// <summary>
+    /// 카운터 공격 가능 오브젝트
+    /// </summary>
+    private Collider _counterableTarget = null;
+    
     /// <summary>
     /// 마지막 전투 시간
     /// </summary>
@@ -35,6 +40,8 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
     #region Properties
     public bool CanCounterAttack => _canCounterAttack;
+    public Collider CounterableTarget => _counterableTarget;
+
     public float LastBattleTime => _lastBattleTime;
     public bool IsBattleState => _isBattleState;
     #endregion
@@ -200,16 +207,49 @@ public class PlayerCombat : MonoBehaviour, IAttacker
         _canCounterAttack = canCounterAttack;
     }
 
+    /// <summary>
+    /// 카운터 가능한 적이 있는지 확인
+    /// </summary>
+    /// <returns>카운터 가능한 적이 있는가</returns>
+    public bool CanIsScanCounterable()
+    {
+        Collider[] colliders = Physics.OverlapBox(transform.position,
+                  _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 카운터 공격 가능한 오브젝트 감지
+    /// </summary>
+    /// <returns>가장 가까운 카운터 가능한 오브젝트</returns>
     public Collider ScanCounterableObject()
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position, 
+        _counterableTarget = GetComponent<Collider>();
+        return GetComponent<Collider>();
+    }
+
+    /// <summary>
+    /// 첫번째 카운터 공격 실행
+    /// </summary>
+    public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
+    {
+        Collider[] colliders = Physics.OverlapBox(transform.position,
             _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
-        
+
         float minDistance = Mathf.Infinity;
         Collider collider = null;
-        for(int i = 0; i < colliders.Length; i++)
+        for (int i = 0; i < colliders.Length; i++)
         {
-            if (colliders[i].TryGetComponent<ICounterable>(out var counterable))
+            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
             {
                 float distance = Vector3.Distance(transform.position, colliders[i].transform.position);
                 if (distance < minDistance)
@@ -220,7 +260,26 @@ public class PlayerCombat : MonoBehaviour, IAttacker
             }
         }
 
-        return collider;
+        _counterableTarget = collider;
+
+        _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();
+
+        if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.TakeDamage(attackData.AttackDamage, this);
+        }
+    }
+
+    public void ExcuteSecondCounterAttack(PlayerAttackData attackData)
+    {
+
+
+        
+    }
+
+    public void ClearCounterTarget()
+    {
+        _counterableTarget = null;
     }
 
     #endregion
@@ -239,6 +298,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
         DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);
         DrawActionGizmo(_combatData.ChargeAttackData.AttackRadius, Color.indianRed);
         DrawActionGizmo(_combatData.ParryRadius, Color.green);
+        DrawActionGizmo(_combatData.CounterAttackDatas[0].AttackRadius, Color.beige);
     }
 
     private void DrawActionGizmo(Vector3 radius, Color color)

@@ -81,6 +81,8 @@ public class PlayerEvents : MonoBehaviour
 
     public event Action OnParryPerform;
     public event Action<Collider> OnParryAffect;
+    public event Action<Collider> OnFirstCounterAttackAffect;
+    public event Action<Collider> OnSecondCounterAttackAffect;
 
     public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish;
@@ -292,6 +294,51 @@ public class PlayerEvents : MonoBehaviour
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
         }
     }
+    /// <summary>
+    /// 첫번째 카운터 공격 효과
+    /// </summary>
+    /// <param name="collider">효과 받을 오브젝트</param>
+    /// <param name="tier">현재 티어</param>
+    public void TriggerFirstCounterAttackAffect(Collider collider, int tier)
+    {
+        OnFirstCounterAttackAffect.Invoke(collider);
+
+        switch (tier)
+        {
+            case 1:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position);
+                break;
+            case 2:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position);
+                break;
+            case 3:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position);
+                break;
+        }
+    }
+    /// <summary>
+    /// 두번째 카운터 공격 효과
+    /// </summary>
+    /// <param name="collider">효과 받을 오브젝트</param>
+    /// <param name="tier">현재 티어</param>
+    public void TriggerSecondCounterAttackAffect(Collider collider, int tier)
+    {
+        OnSecondCounterAttackAffect.Invoke(collider);
+
+        switch (tier)
+        {
+            case 1:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+            case 2:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+            case 3:
+                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+        }
+    }
+
 
 
     /// <summary>
