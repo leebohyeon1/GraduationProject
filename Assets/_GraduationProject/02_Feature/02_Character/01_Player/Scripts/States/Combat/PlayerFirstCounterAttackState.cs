@@ -43,4 +43,9 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         p_nextState = null;
         Log.Print("Player exited FirstCounterAttack state");
     }
+
+    protected override void HandleAttackPerform()
+    {
+        
+    }
 }

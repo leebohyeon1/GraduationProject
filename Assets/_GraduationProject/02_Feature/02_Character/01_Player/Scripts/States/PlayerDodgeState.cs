@@ -27,7 +27,7 @@ public class PlayerDodgeState : BaseState<Player>
         {
             // PlayerMovement.Move()가 카메라 기준으로 변환하므로 입력 그대로 전달
             _dodgeDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
-            p_context.Movement.RotateImmediately(_dodgeDirection);
+            p_context.Movement.RotateToDirection(_dodgeDirection);
         }
         else
         {

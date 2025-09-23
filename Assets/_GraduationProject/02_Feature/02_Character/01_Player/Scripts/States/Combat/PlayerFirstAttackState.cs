@@ -1,6 +1,7 @@
-using BH_Lib.FSM;
+ï»¿using BH_Lib.FSM;
 using BH_Lib.Log;
 using System;
+using UnityEngine;
 
 
 public class PlayerFirstAttackState : PlayerAttackBaseState
@@ -19,29 +20,29 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+        p_nextState = null; // ë‹¤ìŒ ìƒíƒœ ì´ˆê¸°í™”
 
         Log.Print("Player entered Attack state");
      
         p_context.Combat.SetupCombatCenter();
 
-        // °ø°İ ½ÇÇà
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var moveInput = p_context.Controller.MoveInput;
         var mousePosition = p_context.Controller.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        p_context.Movement.SetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+
         p_context.Events.TriggerBattleStateChanged(true);
 
-        if(p_context.Combat.CanCounterAttack && p_context.Combat.ScanCounterableObject() != null)
+        if (p_context.Combat.CanCounterAttack && p_context.Combat.ScanCounterableObject() != null)
         {
             p_stateMachine.ChangeState<PlayerFirstCounterAttackState>();
         }
         else
         {
-            p_context.Animator.SetTrigger(p_animationTrigger);  // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+            p_context.Animator.SetTrigger(p_animationTrigger);  // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
         }
 
-        // °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÇÇà
+        // ê³µê²© ì‹œ ì „ì§„ ì´ë™ ì‹¤í–‰
         StartAttackMovement();
 
         p_context.Events.TriggerFirstAttackStart();
