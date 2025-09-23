@@ -32,6 +32,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     {
         SetParryable("false");
         _enemy.ApplyStun();
+        _enemy.StiffnessSystem.AddStiffness(_enemy.CurrentStiffness);
         SetCounterAttack(true);
         return true;
     }

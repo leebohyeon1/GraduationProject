@@ -11,14 +11,13 @@ using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
-[RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem)),RequireComponent(typeof(Monster_HeatSystem))]
+[RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem)),RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness))]
 public class Enemy : CharacterBase, IAttacker, IDamageable
 {
     private AiController _aiController;
     Animator animator;
     public AudioClip deathSoundClip;
     
-
     AIPath aIPath;
     public Player player;
 
@@ -36,8 +35,11 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField] private float _stunTime = 3f;
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
+    private int _CurrentStiffness = 0;
+    public int CurrentStiffness => _CurrentStiffness;
+    public Mon_Stiffness StiffnessSystem { get; private set; }
 
-    [SerializeField]private TierStatDatabaseSO tierStatDatabase;
+    [SerializeField] private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
     protected override void Awake()
     {
@@ -68,7 +70,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             Debug.LogError("AIPath component not found in the scene.");
         }
         Movement = new EnemyMovement(this);
-
+    }
+    public void SetStiffness(int amount)
+    {
+        _CurrentStiffness = amount;
     }
     #region Behavior Tree Conditions
     public bool IsStunned()
