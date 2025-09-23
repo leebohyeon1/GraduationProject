@@ -1927,6 +1927,7 @@ GameObject:
   - component: {fileID: 1185445142}
   - component: {fileID: 1185445143}
   - component: {fileID: 1185445144}
+  - component: {fileID: 1185445145}
   m_Layer: 8
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -2042,9 +2043,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3870fabe7cb22a7448fa85737cca01c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
-  _feedbacks:
-  - name: Damaged
-    feedback: {fileID: 1021423492}
 --- !u!114 &1185445142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2094,6 +2092,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 140228ac52eb0f7469c70b0acf9e07a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestCounter
+--- !u!114 &1185445145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185445136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173f68200b36a2543914d5c8cc1585e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestFeedback
+  _feedbacks:
+  - type: Damaged
+    Feedback: {fileID: 1021423492}
 --- !u!1 &1191501471
 GameObject:
   m_ObjectHideFlags: 0

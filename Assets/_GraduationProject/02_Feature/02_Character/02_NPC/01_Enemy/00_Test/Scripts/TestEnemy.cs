@@ -22,11 +22,13 @@ public class TestEnemy : CharacterBase, IDamageable
 
     public bool IsHit => throw new NotImplementedException();
 
-    public FeedbackPlayer<string> Feedback { get; set; }
+    public TestFeedback Feedback { get; set; }
 
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
+        Feedback = GetComponent<TestFeedback>();
+
         OnDied += Die;
 
         _currentHealth = MaxHealth;
