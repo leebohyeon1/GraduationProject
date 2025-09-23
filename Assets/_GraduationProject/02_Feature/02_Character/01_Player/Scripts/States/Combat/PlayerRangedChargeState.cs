@@ -18,7 +18,7 @@ public class PlayerRangedChargeState : BaseState<Player>
         _chargeTimer = 0f;
 
         p_context.Events.TriggerBattleStateChanged(true);
-
+        p_context.Events.TriggerRangedChargeStart();
         Log.Print("Player entered RangedAttackChargeState");
     }
 
@@ -43,12 +43,14 @@ public class PlayerRangedChargeState : BaseState<Player>
             }
             else
             {
+                p_context.Events.TriggerRangedChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
                 return;
             }
         }
         else if (p_context.Controller.DodgeInput)
         {
+            p_context.Events.TriggerRangedChargeCancel();
             p_stateMachine.ChangeState<PlayerDodgeState>();
         }
 
