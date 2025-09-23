@@ -19,10 +19,21 @@ public class PlayerMovement : MonoBehaviour
     /// 마지막 회피 시간 (쿨다운 계산용)
     /// </summary>
     private float _lastDodgeTime = -999f;
+    /// <summary>
+    /// 목표 회전값
+    /// </summary>
+    private Quaternion _targetRotation;
+    /// <summary>
+    /// 목표 회전값이 있는지
+    /// </summary>
+    private bool _hasTargetRotation;
     #endregion
 
     #region Properties
     public float LastDodgeTime => _lastDodgeTime;
+
+    public Quaternion TargetRotation => _targetRotation;
+    public bool HasTargetRotation => _hasTargetRotation;
     #endregion
 
 
@@ -39,7 +50,43 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 지면 접촉 상태 체크
+    /// CharacterController 하단에서 레이캐스트로 확인
+    /// </summary>
+    /// <param name="groundCheckDistance">지면 체크 거리</param>
+    /// <param name="groundLayerMask">지면 레이어</param>
+    public void CheckGrounded(float groundCheckDistance, LayerMask groundLayerMask)
+    {
+        // CharacterController의 아래쪽 경계에서 체크
+        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
+        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, groundCheckDistance, groundLayerMask);
+    }
 
+    /// <summary>
+    /// 중력 적용
+    /// 지면 접촉 시 미세한 하향력 유지, 공중에서는 중력 가속도 적용
+    /// </summary>
+    /// <param name="gravityScale">중력 크기</param>
+    public void ApplyGravity(float gravityScale)
+    {
+        if (_isGrounded && _velocity.y < 0)
+        {
+            _velocity.y = -2f; // 약간의 하향력 유지하여 지면에 붙어있도록
+        }
+        else
+        {
+            _velocity.y += gravityScale * Time.fixedDeltaTime;
+        }
+
+        // 최대 낙하 속도 제한
+        if (_velocity.y < -30f)
+        {
+            _velocity.y = -30f;
+        }
+    }
+
+    #region Move
     /// <summary>
     /// 카메라 기준 이동 처리
     /// 입력 방향을 카메라 기준으로 변환하여 이동 및 회전 수행
@@ -93,7 +140,9 @@ public class PlayerMovement : MonoBehaviour
             );
         }
     }
+    #endregion
 
+    #region Dodge
     /// <summary>
     /// 회피 이동 실행
     /// 입력 방향이 있으면 해당 방향으로, 없으면 전방으로 회피
@@ -118,43 +167,7 @@ public class PlayerMovement : MonoBehaviour
 
         _lastDodgeTime = Time.time;
     }
-
-    /// <summary>
-    /// 지면 접촉 상태 체크
-    /// CharacterController 하단에서 레이캐스트로 확인
-    /// </summary>
-    /// <param name="groundCheckDistance">지면 체크 거리</param>
-    /// <param name="groundLayerMask">지면 레이어</param>
-    public void CheckGrounded(float groundCheckDistance, LayerMask groundLayerMask)
-    {
-        // CharacterController의 아래쪽 경계에서 체크
-        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
-        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, groundCheckDistance, groundLayerMask);
-    }
-
-
-    /// <summary>
-    /// 중력 적용
-    /// 지면 접촉 시 미세한 하향력 유지, 공중에서는 중력 가속도 적용
-    /// </summary>
-    /// <param name="gravityScale">중력 크기</param>
-    public void ApplyGravity(float gravityScale)
-    {
-        if (_isGrounded && _velocity.y < 0)
-        {
-            _velocity.y = -2f; // 약간의 하향력 유지하여 지면에 붙어있도록
-        }
-        else
-        {
-            _velocity.y += gravityScale * Time.fixedDeltaTime;
-        }
-
-        // 최대 낙하 속도 제한
-        if (_velocity.y < -30f)
-        {
-            _velocity.y = -30f;
-        }
-    }
+    #endregion
 
     #region Rotate
 
@@ -249,6 +262,17 @@ public class PlayerMovement : MonoBehaviour
     public void SetRotation(Quaternion rotation)
     {
         transform.rotation = rotation;
+    }
+
+    public void SetTargetRotation(Quaternion targetRotation)
+    {
+        _targetRotation = targetRotation;
+        _hasTargetRotation = true;
+    }
+
+    public void ClearTargetRotation()
+    {
+        _hasTargetRotation = false;
     }
 
     /// <summary>

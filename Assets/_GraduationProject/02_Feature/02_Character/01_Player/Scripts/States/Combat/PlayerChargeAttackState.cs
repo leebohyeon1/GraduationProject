@@ -30,12 +30,19 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_context.Combat.SetupCombatCenter();
         _playerAttackData = new PlayerAttackData(p_AttackData);
 
-        // 공격 실행
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-
+        // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
+        if (p_context.Movement.HasTargetRotation)
+        {
+            p_context.Movement.SetRotation(p_context.Movement.TargetRotation);
+            p_context.Movement.ClearTargetRotation();
+        }
+        else
+        {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        }
 
         // 공격 시 전진 이동 실행
         StartAttackMovement();

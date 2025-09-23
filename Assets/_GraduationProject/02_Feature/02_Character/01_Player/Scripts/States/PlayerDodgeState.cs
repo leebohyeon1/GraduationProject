@@ -104,6 +104,11 @@ public class PlayerDodgeState : BaseState<Player>
         }
         else if (p_context.Controller.AttackInput)
         {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+
             _nextState = typeof(PlayerFirstAttackState);
         }
         else if (p_context.Controller.RangedAttackInput)
