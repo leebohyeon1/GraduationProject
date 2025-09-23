@@ -66,4 +66,8 @@ public class TestEnemy : CharacterBase, IDamageable
     {
         throw new NotImplementedException();
     }
+
+    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    {
+    }
 }

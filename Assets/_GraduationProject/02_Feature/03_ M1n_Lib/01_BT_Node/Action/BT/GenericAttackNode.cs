@@ -37,7 +37,6 @@ public class GenericAttackNode : Node
         }
         if (Handler.IsHitWindowOpen)
         {
-            Debug.Log(":");
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {

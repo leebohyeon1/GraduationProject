@@ -289,6 +289,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         throw new NotImplementedException();
     }
 
+    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    {
+        throw new NotImplementedException();
+    }
+
+
+
 
     #endregion
 }
