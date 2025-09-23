@@ -42,7 +42,7 @@ public class GenericAttackNode : Node
             {
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
-                    player.TakeDamage(damage, runner);
+                    player.TakeDamage(damage, StiffenessAmount, runner);
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
