@@ -13,5 +13,6 @@ public class Mon_Stiffness : StiffnessSystem
     protected override void OnHeavyStagger()
     {
         _owner.ApplyStun(_stiffnessDuration);
+        _owner.ParrySystem.SetCounterAttack(true);
     }
 }
