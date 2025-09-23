@@ -22,6 +22,8 @@ public class TestEnemy : CharacterBase, IDamageable
 
     public bool IsHit => throw new NotImplementedException();
 
+    public FeedbackPlayer<string> Feedback { get; set; }
+
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
@@ -36,7 +38,7 @@ public class TestEnemy : CharacterBase, IDamageable
 
         _currentHealth -= damageAmount;
 
-        PlayFeedback("Damaged", transform.position);
+        Feedback.PlayFeedback("Damaged", transform.position);
 
         if (IsDead)
         {

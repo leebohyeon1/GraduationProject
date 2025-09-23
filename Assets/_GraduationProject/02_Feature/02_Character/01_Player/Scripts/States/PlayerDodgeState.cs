@@ -42,6 +42,7 @@ public class PlayerDodgeState : BaseState<Player>
             p_context.Events.TriggerBattleStateChanged(true);
         }
 
+        p_context.Events.TriggerDodgeStart();
 
         Log.Print("Player entered Dodge state");
     }

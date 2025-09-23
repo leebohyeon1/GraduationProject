@@ -32,7 +32,7 @@ public class GenericAttackNode : Node
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
         if (Handler.IsSound)
         {
-            runner.PlayFeedback(animationName, attackOrigin);
+           // runner.PlayFeedback(animationName, attackOrigin);
             Handler.EndSound();
         }
         if (Handler.IsHitWindowOpen)
