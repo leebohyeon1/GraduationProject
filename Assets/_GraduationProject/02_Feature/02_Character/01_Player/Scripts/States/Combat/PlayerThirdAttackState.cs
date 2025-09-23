@@ -12,11 +12,12 @@ public class PlayerThirdAttackState : PlayerAttackBaseState
 
     protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.AttackDatas[2];
 
-    protected override void HandleAttackPerform()
+    public override void OnEnter()
     {
-        base.HandleAttackPerform();
-    }
+        base.OnEnter();
 
+        p_context.Events.TriggerThirdAttackStart();
+    }
 }
 
 

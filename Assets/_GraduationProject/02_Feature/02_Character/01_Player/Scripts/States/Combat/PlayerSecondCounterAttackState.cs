@@ -28,6 +28,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
         // 공격 시 전진 이동 실행
         StartAttackMovement();
+        p_context.Events.TriggerSecondAttackStart();
     }
 
 

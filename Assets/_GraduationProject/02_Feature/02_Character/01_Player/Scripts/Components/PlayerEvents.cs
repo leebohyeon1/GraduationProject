@@ -25,7 +25,7 @@ public enum PlayerFeedbackType
     RangeAttackChargeCancel_FB, RangeAttackChargeFinish_FB,
     RangeAttackStart_FB, RangeAttackHit_FB,
 
-    ParryStart_FB, ParrySuccess_FB, CounterAttackStart_FB,
+    ParryStart_FB, ParrySuccess_FB, CounterFirstAttackStart_FB, CounterSecondAttackStart_FB,
     Tier1CounterAttackFirstHit_FB, Tier2CounterAttackFirstHit_FB, Tier3CounterAttackFirstHit_FB,
     Tier1CounterAttackSecondHit_FB, Tier2CounterAttackSecondHit_FB, Tier3CounterAttackSecondHit_FB,
     CounterAttackFinish_FB,
@@ -444,11 +444,11 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #region CounterAttack
 
     /// <summary>
-    /// 카운터 공격 시작 시 효과 재생
+    /// 첫번째 카운터 공격 시작 시 효과 재생
     /// </summary>
-    public void TriggerCounterAttackStart()
+    public void TriggerFirstCounterAttackStart()
     {
-        PlayFeedback(PlayerFeedbackType.CounterAttackStart_FB, _counterAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.CounterFirstAttackStart_FB, _counterAttackPoint.position);
     }
 
     /// <summary>
@@ -472,6 +472,14 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
                 PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, collider.transform.position);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 두번째 카운터 공격 시작 시 효과 재생
+    /// </summary>
+    public void TriggerSecondCounterAttackStart()
+    {
+        PlayFeedback(PlayerFeedbackType.CounterSecondAttackStart_FB, _counterAttackPoint.position);
     }
 
     /// <summary>
