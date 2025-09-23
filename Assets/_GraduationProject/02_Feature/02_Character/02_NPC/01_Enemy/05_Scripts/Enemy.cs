@@ -38,7 +38,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     private int _CurrentStiffness = 0;
     public int CurrentStiffness => _CurrentStiffness;
     public Mon_Stiffness StiffnessSystem { get; private set; }
-
+    public ParrySystem ParrySystem { get; private set; }
     [SerializeField] private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
     protected override void Awake()
