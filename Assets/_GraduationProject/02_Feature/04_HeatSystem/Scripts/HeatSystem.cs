@@ -35,7 +35,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 변화량 </param>
     public void ChangeHeat(int amount)
     {
-        if (amount == 0) return;
+        if (amount == 0 && IsHeatLock) return;
 
         int previousTier = GetTier();
         int previousHeat = _currentHeat;

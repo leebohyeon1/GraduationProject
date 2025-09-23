@@ -27,7 +27,7 @@ public class PlayerDodgeState : BaseState<Player>
         {
             // PlayerMovement.Move()가 카메라 기준으로 변환하므로 입력 그대로 전달
             _dodgeDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
-            p_context.Movement.RotateImmediately(_dodgeDirection);
+            p_context.Movement.RotateToDirection(_dodgeDirection);
         }
         else
         {
@@ -98,16 +98,17 @@ public class PlayerDodgeState : BaseState<Player>
         {
             _nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
-        {
-           // _nextState = typeof(PlayerCounterAttackState);
-        }
         else if (p_context.Controller.AttackHeldInput)
         {
             _nextState = typeof(PlayerChargeState);
         }
         else if (p_context.Controller.AttackInput)
         {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+
             _nextState = typeof(PlayerFirstAttackState);
         }
         else if (p_context.Controller.RangedAttackInput)
