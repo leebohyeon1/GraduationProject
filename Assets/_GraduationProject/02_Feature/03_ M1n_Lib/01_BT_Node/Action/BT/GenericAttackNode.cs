@@ -12,6 +12,7 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
+    [SerializeField] private int StiffenessAmount = 10;
 
 
     public override void OnEnter()
