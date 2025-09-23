@@ -17,6 +17,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     /// 카운터 공격 가능 여부
     /// </summary>
     private bool _canCounterAttack;
+
     /// <summary>
     /// 마지막 전투 시간
     /// </summary>
@@ -199,6 +200,29 @@ public class PlayerCombat : MonoBehaviour, IAttacker
         _canCounterAttack = canCounterAttack;
     }
 
+    public Collider ScanCounterableObject()
+    {
+        Collider[] colliders = Physics.OverlapBox(transform.position, 
+            _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        
+        float minDistance = Mathf.Infinity;
+        Collider collider = null;
+        for(int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].TryGetComponent<ICounterable>(out var counterable))
+            {
+                float distance = Vector3.Distance(transform.position, colliders[i].transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    collider = colliders[i];
+                }
+            }
+        }
+
+        return collider;
+    }
+
     #endregion
 
 #if UNITY_EDITOR
@@ -230,8 +254,8 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
 public class PlayerCombatManager : IDisposable
 {
-    [SerializeField] private PlayerCombat _combat;
-    [SerializeField] private PlayerEvents _events;
+    private PlayerCombat _combat;
+    private PlayerEvents _events;
 
     public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
     {

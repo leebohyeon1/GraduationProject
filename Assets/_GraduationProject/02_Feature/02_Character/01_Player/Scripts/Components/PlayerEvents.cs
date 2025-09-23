@@ -47,19 +47,19 @@ public class PlayerEvents : MonoBehaviour
 
     #region EffectPoint
     /// <summary>
-    /// ±Ù°Å¸® °ø°Ý ½ÃÀÛ °ü·Ã À§Ä¡
+    /// ï¿½Ù°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
     /// </summary>
     [SerializeField] private Transform _firstAttackStartEffectPoint;
     [SerializeField] private Transform _secondAttackStartEffectPoint;
     [SerializeField] private Transform _thirdAttackStartEffectPoint;
 
     /// <summary>
-    /// Â÷Â¡ °ø°Ý °ü·Ã À§Ä¡
+    /// ï¿½ï¿½Â¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
     /// </summary>
     [SerializeField] private Transform _chargeEffectPoint;
 
     /// <summary>
-    /// ¿ø°Å¸® °ø°Ý °ü·Ã À§Ä¡
+    /// ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
     /// </summary>
     [SerializeField] private Transform _rangedAttackPoint;
     #endregion
@@ -95,9 +95,9 @@ public class PlayerEvents : MonoBehaviour
 
     #region EventHandler
     /// <summary>
-    /// ÀüÅõ »óÅÂ°¡ ¹Ù²ð ¶§ È£Ãâ
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ È£ï¿½ï¿½
     /// </summary>
-    /// <param name="isbattleState">ÀüÅõ »óÅÂ ¿©ºÎ</param>
+    /// <param name="isbattleState">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</param>
     public void TriggerBattleStateChanged(bool isbattleState)
     {
         OnBattleStateChaged.Invoke(isbattleState);
@@ -105,8 +105,8 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// ÀÌµ¿ Áß ¶¥¿¡ ¹ßÀÌ ´êÀÌ´Â ¼ø°£ ³ª¿À´Â È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å) 
+    /// ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½) 
     /// </summary>
     public void TriggerFootstep()
     {
@@ -115,8 +115,8 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// ±¸¸£±â Á¾·á ½Ã ³ª¿À´Â È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å)
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void TriggerDodgeFinish()
     {
@@ -126,58 +126,58 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// Ã¹ ¹øÂ° ±ÙÁ¢ °ø°Ý ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
+    /// Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerFirstAttackStart()
     {
         if (_firstAttackStartEffectPoint != null)
         {
-            Log.PrintWarning("Ã¹ ¹øÂ° °ø°Ý À§Ä¡ ¾øÀ½");
+            Log.PrintWarning("Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
         }
     }
     /// <summary>
-    /// µÎ ¹øÂ° ±ÙÁ¢ °ø°Ý ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
+    /// ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerSecondAttackStart()
     {
         if (_secondAttackStartEffectPoint != null)
         {
-            Log.PrintWarning("µÎ ¹øÂ° °ø°Ý À§Ä¡ ¾øÀ½");
+            Log.PrintWarning("ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, transform.position);
         }
     }
     /// <summary>
-    /// ¼¼ ¹øÂ° ±ÙÁ¢ °ø°Ý ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
+    /// ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerThirdAttackStart()
     {
         if (_thirdAttackStartEffectPoint != null)
         {
-            Log.PrintWarning("¼¼ ¹øÂ° °ø°Ý À§Ä¡ ¾øÀ½");
+            Log.PrintWarning("ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
         }
     }
     /// <summary>
-    /// ±ÙÁ¢ °ø°Ý ½Ã È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å)
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void TriggerAttackPerform()
     {
         OnAttackPerform.Invoke();
     }
     /// <summary>
-    /// ±ÙÁ¢ °ø°ÝÀ¸·Î ÀÎÇÑ ÇÇ°Ý È¿°ú
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</param>
     public void TriggerAttackAffect(Collider collider)
     {
         OnAttackAffect.Invoke(collider);
         _feedbackPlayer.PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
     }
     /// <summary>
-    /// ±ÙÁ¢ °ø°Ý Á¾·á ½Ã È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å)
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void TriggerAttackFinish()
     {
@@ -186,31 +186,31 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// Â÷Â¡ ½ÃÀÛ ½Ã È¿°ú
+    /// ï¿½ï¿½Â¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerChargeStart()
     {
         if(_chargeEffectPoint != null)
         {
-            Log.PrintWarning("Â÷Â¡ ÀÌÆåÆ® À§Ä¡ ¾øÀ½");
+            Log.PrintWarning("ï¿½ï¿½Â¡ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
         }  
     }
     /// <summary>
-    /// ÃÖ¼Ò Â÷Â¡ ¿Ï·á ½Ã È¿°ú 
+    /// ï¿½Ö¼ï¿½ ï¿½ï¿½Â¡ ï¿½Ï·ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½ 
     /// </summary>
     public void TriggerChargeFinish()
     {
         if (_chargeEffectPoint != null)
         {
-            Log.PrintWarning("Â÷Â¡ ÀÌÆåÆ® À§Ä¡ ¾øÀ½");
+            Log.PrintWarning("ï¿½ï¿½Â¡ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½");
             _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
         }
     }
     /// <summary>
-    /// Â÷Áö °ø°ÝÀ¸·Î ÀÎÇÑ ÇÇ°Ý È¿°ú
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</param>
     public void TriggerChargeAttackAffect(Collider collider, int tier)
     {
         OnChargeAttackAffect.Invoke(collider);
@@ -232,7 +232,7 @@ public class PlayerEvents : MonoBehaviour
 
             
     /// <summary>
-    /// ¿ø°Å¸® °ø°Ý Â÷Â¡ ¿Ï·á ½Ã È¿°ú
+    /// ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¡ ï¿½Ï·ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerRangedChargeFinish()
     {
@@ -242,16 +242,16 @@ public class PlayerEvents : MonoBehaviour
         }
     }
     /// <summary>
-    /// ¿ø°Å¸® °ø°Ý ½ÃÀÛ ½Ã È¿°ú
+    /// ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
     public void TriggerRangedAttackStart()
     {
         OnRangedAttackStart.Invoke(_rangedAttackPoint);
     }
     /// <summary>
-    /// ¿ø°Å¸® °ø°Ý ½Ã È¿°ú
+    /// ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</param>
     public void TriggerRangedAttackAffect(Collider collider)
     {
         OnRangedAttackAffect.Invoke(collider);
@@ -262,8 +262,8 @@ public class PlayerEvents : MonoBehaviour
         }
     }
     /// <summary>
-    /// ¿ø°Å¸® °ø°Ý Á¾·á ½Ã È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å)
+    /// ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void TriggerRangedAttackFinish()
     {
@@ -272,17 +272,17 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// ÆÐ¸µ ½ÃÀÛ ½Ã È¿°ú
-    /// (¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å)
+    /// ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
+    /// (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void TriggerParryPerform()
     {
-        OnParryPerform.Invoke();
+        OnParryPerform?.Invoke();
     }
     /// <summary>
-    /// ÆÐ¸µ ¼º°ø ½Ã È¿°ú
+    /// ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="collider">ÆÐ¸µ ´çÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</param>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
@@ -295,9 +295,9 @@ public class PlayerEvents : MonoBehaviour
 
 
     /// <summary>
-    /// Æ¼¾î°¡ ¿Ã¶ó°¥ ¶§ È¿°ú
+    /// Æ¼ï¿½î°¡ ï¿½Ã¶ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="tier">ÇöÀç Æ¼¾î</param>
+    /// <param name="tier">ï¿½ï¿½ï¿½ï¿½ Æ¼ï¿½ï¿½</param>
     public void TriggerTierUp(int tier)
     {
         switch (tier)
@@ -317,9 +317,9 @@ public class PlayerEvents : MonoBehaviour
         }
     }
     /// <summary>
-    /// Æ¼¾î°¡ ³»·Á°¥ ¶§ È¿°ú
+    /// Æ¼ï¿½î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È¿ï¿½ï¿½
     /// </summary>
-    /// <param name="tier">ÇöÀç Æ¼¾î</param>
+    /// <param name="tier">ï¿½ï¿½ï¿½ï¿½ Æ¼ï¿½ï¿½</param>
     public void TriggerTierDown(int tier)
     {
         switch (tier)

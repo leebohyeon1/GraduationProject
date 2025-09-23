@@ -161,10 +161,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
-        {
-            p_nextState = typeof(PlayerFirstCounterAttackState);
-        }
         else if (p_context.Controller.AttackHeldInput)
         {
             p_nextState = typeof(PlayerChargeState);

@@ -25,14 +25,6 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 
         Log.Print("Player entered FirstCounterAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
-        p_context.Combat.SetupCombatCenter();
-
-        // 공격 실행
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-
 
         // 공격 시 전진 이동 실행
         StartAttackMovement();

@@ -10,7 +10,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.CounterAttackDatas[0];
+    protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.CounterAttackDatas[1];
 
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)
@@ -25,14 +25,6 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
         Log.Print("Player entered SecondCounterAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
-        p_context.Combat.SetupCombatCenter();
-
-        // 공격 실행
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-
 
         // 공격 시 전진 이동 실행
         StartAttackMovement();
@@ -50,6 +42,23 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
         p_nextState = null;
         Log.Print("Player exited SecondCounterAttack state");
+    }
+
+    protected override void StartAttackMovement()
+    {
+        float distance = p_AttackData.AttackMoveDistance;
+
+        // 전방에 오브젝트가 있을 경우 전진 거리 조정
+        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward,
+            out var hitInfo, p_AttackData.AttackMoveDistance))
+        {
+            distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
+        }
+
+        Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+
+        p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
+        .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
     }
 
 }

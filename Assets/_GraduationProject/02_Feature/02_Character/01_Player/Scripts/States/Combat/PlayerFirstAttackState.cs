@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using System;
 
 
@@ -15,7 +16,33 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
     public override void OnEnter()
     {
-        base.OnEnter();
+        p_context.Events.OnAttackFinish += HandleAttackFinish;
+        p_context.Events.OnAttackPerform += HandleAttackPerform;
+
+        p_nextState = null; // 다음 상태 초기화
+
+        Log.Print("Player entered Attack state");
+     
+        p_context.Combat.SetupCombatCenter();
+
+        // 공격 실행
+        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+        var moveInput = p_context.Controller.MoveInput;
+        var mousePosition = p_context.Controller.MousePosition;
+        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        p_context.Events.TriggerBattleStateChanged(true);
+
+        if(p_context.Combat.CanCounterAttack && p_context.Combat.ScanCounterableObject() != null)
+        {
+            p_stateMachine.ChangeState<PlayerFirstCounterAttackState>();
+        }
+        else
+        {
+            p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+        }
+
+        // 공격 시 전진 이동 실행
+        StartAttackMovement();
 
         p_context.Events.TriggerFirstAttackStart();
     }
