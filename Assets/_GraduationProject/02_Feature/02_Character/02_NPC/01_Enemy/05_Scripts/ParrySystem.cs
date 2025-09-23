@@ -31,9 +31,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public bool Parry(GameObject parryInstigator)
     {
         SetParryable("false");
-        _enemy.ApplyStun();
         _enemy.StiffnessSystem.AddStiffness(_enemy.CurrentStiffness);
-        SetCounterAttack(true);
         return true;
     }
 
