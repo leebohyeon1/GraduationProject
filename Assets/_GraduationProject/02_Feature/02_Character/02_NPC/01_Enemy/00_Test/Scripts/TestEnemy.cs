@@ -22,9 +22,13 @@ public class TestEnemy : CharacterBase, IDamageable
 
     public bool IsHit => throw new NotImplementedException();
 
+    public TestFeedback Feedback { get; set; }
+
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
+        Feedback = GetComponent<TestFeedback>();
+
         OnDied += Die;
 
         _currentHealth = MaxHealth;
@@ -36,7 +40,7 @@ public class TestEnemy : CharacterBase, IDamageable
 
         _currentHealth -= damageAmount;
 
-        PlayFeedback("Damaged", transform.position);
+        Feedback.PlayFeedback("Damaged", transform.position);
 
         if (IsDead)
         {
@@ -65,5 +69,9 @@ public class TestEnemy : CharacterBase, IDamageable
     public void ResetHitState()
     {
         throw new NotImplementedException();
+    }
+
+    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    {
     }
 }

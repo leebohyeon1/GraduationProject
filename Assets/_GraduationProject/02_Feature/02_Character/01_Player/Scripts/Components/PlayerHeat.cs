@@ -18,7 +18,7 @@ public class PlayerHeat : HeatSystem
     }
 
     /// <summary>
-    /// 근접 공격 시 열기 증가 처리
+    /// 근접 공격 시 대상 열기 증가 처리
     /// </summary>
     /// <param name="collider">타격 대상 콜라이더</param>
     public void IncreaseHeatOnAttack(Collider collider)
@@ -50,7 +50,7 @@ public class PlayerHeat : HeatSystem
     }
 
     /// <summary>
-    /// 차지 공격 시 열기 증가 처리
+    /// 차지 공격 시 대상 열기 증가 처리
     /// </summary>
     /// <param name="collider">타격 대상 콜라이더</param>
     public void IncreaseHeatOnChargeAttack(Collider collider)
@@ -64,10 +64,11 @@ public class PlayerHeat : HeatSystem
 
             Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
+        SetHeat(0);
     }
 
     /// <summary>
-    /// 원거리 공격 시 열기 감소 처리
+    /// 원거리 공격 시 대상 열기 감소 처리
     /// </summary>
     /// <param name="collider">타격 대상 콜라이더</param>
     public void DecreaseHeatOnRangeAttack(Collider collider)
@@ -109,6 +110,23 @@ public class PlayerHeat : HeatSystem
             
         ChangeHeat(deltaHeat);
     }
+
+    /// <summary>
+    /// 카운터 공격으로 인한 열기 상승 함수
+    /// </summary>
+    public void IncreaseHeatOnCounterAttack(Collider collider)
+    {
+        if(collider.TryGetComponent<IHeatable>(out var heatable))
+        {
+            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnCounterSuccess", heatable.ActorType, CurrentTier);
+            int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+
+            Log.PrintColor(Color.red, $"대상: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
+            heatable.ChangeHeat(deltaHeat);
+        }
+
+        SetHeat(0);
+    }
 }
 
 /// <summary>
@@ -132,6 +150,7 @@ public class PlayerHeatManager : IDisposable
         _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         _events.OnParryAffect += HandleParryAffect;
         _events.OnRangedAttackAffect += HandleRangedAttackAffect;
+        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect;
     }
 
     /// <summary>
@@ -148,6 +167,7 @@ public class PlayerHeatManager : IDisposable
         _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
         _events.OnParryAffect -= HandleParryAffect;
         _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
+        _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
 
         _disposed = true;
     }
@@ -225,5 +245,14 @@ public class PlayerHeatManager : IDisposable
     private void HandleRangedAttackAffect(Collider collider)
     {
         _heat.DecreaseHeatOnRangeAttack(collider);
+    }
+
+    /// <summary>
+    /// 카운터 공격 시 열기 효과 처리
+    /// </summary>
+    /// <param name="collider">타격 대상 콜라이더</param>
+    private void HandleSecondCounterAttackAffect(Collider collider)
+    {
+        _heat.IncreaseHeatOnCounterAttack(collider);
     }
 }

@@ -145,6 +145,8 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerRangedAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerFirstCounterAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerSecondCounterAttackState(this, _stateMachine));
 
         SetupStateTransitions();
 
@@ -164,7 +166,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
             => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
-            => !Combat.CanCounterAttack && Controller.AttackInput);
+            => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
@@ -178,7 +180,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
             => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
-            => !Combat.CanCounterAttack && Controller.AttackInput);
+            => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
             => Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()

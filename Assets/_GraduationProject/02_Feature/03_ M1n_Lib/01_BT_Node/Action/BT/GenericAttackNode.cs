@@ -12,6 +12,7 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
+    [SerializeField] private int StiffenessAmount = 10;
 
 
     public override void OnEnter()
@@ -31,18 +32,17 @@ public class GenericAttackNode : Node
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
         if (Handler.IsSound)
         {
-            runner.PlayFeedback(animationName, attackOrigin);
+           // runner.PlayFeedback(animationName, attackOrigin);
             Handler.EndSound();
         }
         if (Handler.IsHitWindowOpen)
         {
-            Debug.Log(":");
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
-                    player.TakeDamage(damage, runner);
+                    player.TakeDamage(damage, StiffenessAmount, runner);
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {

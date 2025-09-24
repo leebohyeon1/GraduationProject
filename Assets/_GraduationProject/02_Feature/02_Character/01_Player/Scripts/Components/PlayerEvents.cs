@@ -1,16 +1,15 @@
 using BH_Lib.Log;
 using MoreMountains.Feedbacks;
-using refactor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum PlayerFeedbackType
 {
-    Move_FB, MoveStop_FB, DodgeStart_FB, 
+    Move_FB, MoveStop_FB, DodgeStart_FB,
     DodgeFinish_FB, Landing_FB,
 
-    TakeDamage_Nomal_FB,
+    TakeDamage_Normal_FB,
     TakeDamage_Strong_FB,
     TakeDamage_Defend_FB,
 
@@ -18,7 +17,7 @@ public enum PlayerFeedbackType
     ThirdAttackStart_FB, MeleeAttackHit_FB,
 
     ChargeStart_FB, ChargeCancel_FB,
-    ChargeFinish_FB, ChargeAttackStart_FB, 
+    ChargeFinish_FB, ChargeAttackStart_FB,
     ChargeAttackFinish_FB, Tier1ChargeAttackHit_FB,
     Tier2ChargeAttackHit_FB, Tier3ChargeAttackHit_FB,
 
@@ -26,7 +25,7 @@ public enum PlayerFeedbackType
     RangeAttackChargeCancel_FB, RangeAttackChargeFinish_FB,
     RangeAttackStart_FB, RangeAttackHit_FB,
 
-    ParryStart_FB, ParrySuccess_FB, CounterAttackStart_FB, 
+    ParryStart_FB, ParrySuccess_FB, CounterFirstAttackStart_FB, CounterSecondAttackStart_FB,
     Tier1CounterAttackFirstHit_FB, Tier2CounterAttackFirstHit_FB, Tier3CounterAttackFirstHit_FB,
     Tier1CounterAttackSecondHit_FB, Tier2CounterAttackSecondHit_FB, Tier3CounterAttackSecondHit_FB,
     CounterAttackFinish_FB,
@@ -39,29 +38,46 @@ public enum PlayerFeedbackType
     Tier1_FB, Tier2_FB, Tier3_FB, OverHeat_FB
 }
 
-public class PlayerEvents : MonoBehaviour
+public enum PlayerAttackType
 {
-    [SerializeField] private FeedbackPlayer<PlayerFeedbackType> _feedbackPlayer;
+    Attack = 0,
+    ChargeAttack = 1,
+    CounterAttack = 2,
+}
 
-    public FeedbackPlayer<PlayerFeedbackType> Feedback => _feedbackPlayer;
+public enum PlayerDamagedType
+{
+    Normal = 0,
+    Strong = 1,
+    Defend = 2
+}
 
+public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
+{
     #region EffectPoint
     /// <summary>
-    /// ±Ù°Å¸® °ø°İ ½ÃÀÛ °ü·Ã À§Ä¡
+    /// ê·¼ì ‘ ê³µê²© íš¨ê³¼ ë°œìƒ ìœ„ì¹˜
     /// </summary>
     [SerializeField] private Transform _firstAttackStartEffectPoint;
     [SerializeField] private Transform _secondAttackStartEffectPoint;
     [SerializeField] private Transform _thirdAttackStartEffectPoint;
 
     /// <summary>
-    /// Â÷Â¡ °ø°İ °ü·Ã À§Ä¡
+    /// ì°¨ì§€ íš¨ê³¼ ë°œìƒ ìœ„ì¹˜
     /// </summary>
     [SerializeField] private Transform _chargeEffectPoint;
+    [SerializeField] private Transform _chargeAttackPoint;
 
     /// <summary>
-    /// ¿ø°Å¸® °ø°İ °ü·Ã À§Ä¡
+    /// ì›ê±°ë¦¬ ê³µê²© íš¨ê³¼ ë°œìƒ ìœ„ì¹˜
     /// </summary>
     [SerializeField] private Transform _rangedAttackPoint;
+
+    /// <summary>
+    /// ì¹´ìš´í„° ê³µê²© íš¨ê³¼ ë°œìƒ ìœ„ì¹˜
+    /// </summary>
+    [SerializeField] private Transform _counterAttackPoint;
+
     #endregion
 
     #region Events
@@ -81,264 +97,502 @@ public class PlayerEvents : MonoBehaviour
 
     public event Action OnParryPerform;
     public event Action<Collider> OnParryAffect;
+    public event Action<Collider> OnFirstCounterAttackAffect;
+    public event Action<Collider> OnSecondCounterAttackAffect;
 
     public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish;
     #endregion
 
-
-
-    private void Start()
-    {
-        _feedbackPlayer.Initialize();
-    }
-
     #region EventHandler
     /// <summary>
-    /// ÀüÅõ »óÅÂ°¡ ¹Ù²ğ ¶§ È£Ãâ
+    /// ì „íˆ¬ ìƒíƒœ ë³€ê²½ ì‹œ í˜¸ì¶œ
     /// </summary>
-    /// <param name="isbattleState">ÀüÅõ »óÅÂ ¿©ºÎ</param>
-    public void TriggerBattleStateChanged(bool isbattleState)
+    /// <param name="isBattleState">ì „íˆ¬ ìƒíƒœ ì—¬ë¶€</param>
+    public void TriggerBattleStateChanged(bool isBattleState)
     {
-        OnBattleStateChaged.Invoke(isbattleState);
+        OnBattleStateChaged.Invoke(isBattleState);
     }
 
-
+    #region Movement
     /// <summary>
-    /// ÀÌµ¿ Áß ¶¥¿¡ ¹ßÀÌ ´êÀÌ´Â ¼ø°£ ³ª¿À´Â È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å) 
+    /// ì´ë™ ì¤‘ ë°œìêµ­ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
     /// </summary>
-    public void TriggerFootstep()
+    public void TriggerMove()
     {
-        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Move_FB, transform.position);
+        PlayFeedback(PlayerFeedbackType.Move_FB, transform.position);
     }
 
+    /// <summary>
+    /// ì´ë™ ë©ˆì¶¤ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
+    /// </summary>
+    public void TriggerMoveStop()
+    {
+        PlayFeedback(PlayerFeedbackType.MoveStop_FB, transform.position);
+    }
 
     /// <summary>
-    /// ±¸¸£±â Á¾·á ½Ã ³ª¿À´Â È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å)
+    /// íšŒí”¼ ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerDodgeStart()
+    {
+        PlayFeedback(PlayerFeedbackType.DodgeStart_FB, transform.position);
+    }
+
+    /// <summary>
+    /// Todo: íšŒí”¼ê°€ ìˆœê°„ì´ë™ìœ¼ë¡œ ë°”ë€Œë©´ì„œ ì´ê²ƒë„ ë°”ë€” ë“¯
+    /// íšŒí”¼ ì™„ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
     /// </summary>
     public void TriggerDodgeFinish()
     {
         OnDodgeFinish.Invoke();
-        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
+        PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
     }
 
+    /// <summary>
+    /// ì°©ì§€ í–ˆì„ ë•Œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerLanding()
+    {
+        PlayFeedback(PlayerFeedbackType.Landing_FB, transform.position);
+    }
+    #endregion
+
+    #region Damaged
 
     /// <summary>
-    /// Ã¹ ¹øÂ° ±ÙÁ¢ °ø°İ ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
+    /// í”¼ê²© íš¨ê³¼ ì¬ìƒ
     /// </summary>
-    public void TriggerFirstAttackStart()
+    /// <param name="damagedType">í”¼ê²© íš¨ê³¼</param>
+    public void TriggerTakeDamge(PlayerDamagedType damagedType)
     {
-        if (_firstAttackStartEffectPoint != null)
+        switch (damagedType)
         {
-            Log.PrintWarning("Ã¹ ¹øÂ° °ø°İ À§Ä¡ ¾øÀ½");
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
+            case PlayerDamagedType.Normal:
+                PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB, transform.position);
+                break;
+            case PlayerDamagedType.Strong:
+                PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB, transform.position);
+                break;
+            case PlayerDamagedType.Defend:
+                PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB, transform.position);
+                break;
         }
     }
+
+    #endregion
+
     /// <summary>
-    /// µÎ ¹øÂ° ±ÙÁ¢ °ø°İ ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
-    /// </summary>
-    public void TriggerSecondAttackStart()
-    {
-        if (_secondAttackStartEffectPoint != null)
-        {
-            Log.PrintWarning("µÎ ¹øÂ° °ø°İ À§Ä¡ ¾øÀ½");
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, transform.position);
-        }
-    }
-    /// <summary>
-    /// ¼¼ ¹øÂ° ±ÙÁ¢ °ø°İ ½ÃÀÛ ½Ã ³ª¿À´Â È¿°ú
-    /// </summary>
-    public void TriggerThirdAttackStart()
-    {
-        if (_thirdAttackStartEffectPoint != null)
-        {
-            Log.PrintWarning("¼¼ ¹øÂ° °ø°İ À§Ä¡ ¾øÀ½");
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
-        }
-    }
-    /// <summary>
-    /// ±ÙÁ¢ °ø°İ ½Ã È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å)
+    /// ê·¼ì ‘ ê³µê²© ìˆ˜í–‰ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
     /// </summary>
     public void TriggerAttackPerform()
     {
         OnAttackPerform.Invoke();
     }
+
     /// <summary>
-    /// ±ÙÁ¢ °ø°İÀ¸·Î ÀÎÇÑ ÇÇ°İ È¿°ú
+    /// ê·¼ì ‘ ê³µê²© ì™„ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    public void TriggerAttackFinish(int type)
+    {
+        OnAttackFinish.Invoke();
+
+        switch(type)
+        {
+            case (int)PlayerAttackType.Attack:
+
+                break;
+            case (int)PlayerAttackType.ChargeAttack:
+                TriggerChargeAttackFinish();
+                break;
+            case (int)PlayerAttackType.CounterAttack:
+                TriggerCounterAttackFinish();
+                break;
+        }    
+
+    }
+
+    #region Attack
+    /// <summary>
+    /// ì²« ë²ˆì§¸ ê·¼ì ‘ ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerFirstAttackStart()
+    {
+        if (_firstAttackStartEffectPoint != null)
+        {
+            Log.PrintWarning("ì²« ë²ˆì§¸ ê³µê²© íš¨ê³¼ ìœ„ì¹˜ ì„¤ì •");
+            PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
+        }
+    }
+
+    /// <summary>
+    /// ë‘ ë²ˆì§¸ ê·¼ì ‘ ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerSecondAttackStart()
+    {
+        if (_secondAttackStartEffectPoint != null)
+        {
+            Log.PrintWarning("ë‘ ë²ˆì§¸ ê³µê²© íš¨ê³¼ ìœ„ì¹˜ ì„¤ì •");
+            PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, _secondAttackStartEffectPoint.position);
+        }
+    }
+
+    /// <summary>
+    /// ì„¸ ë²ˆì§¸ ê·¼ì ‘ ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerThirdAttackStart()
+    {
+        if (_thirdAttackStartEffectPoint != null)
+        {
+            Log.PrintWarning("ì„¸ ë²ˆì§¸ ê³µê²© íš¨ê³¼ ìœ„ì¹˜ ì„¤ì •");
+            PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
+        }
+    }
+
+    /// <summary>
+    /// ê·¼ì ‘ ê³µê²© íƒ€ê²© ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
     public void TriggerAttackAffect(Collider collider)
     {
         OnAttackAffect.Invoke(collider);
-        _feedbackPlayer.PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
+        PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
     }
-    /// <summary>
-    /// ±ÙÁ¢ °ø°İ Á¾·á ½Ã È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å)
-    /// </summary>
-    public void TriggerAttackFinish()
-    {
-        OnAttackFinish.Invoke();
-    }
+    #endregion
 
-
+    #region ChargeAttack
     /// <summary>
-    /// Â÷Â¡ ½ÃÀÛ ½Ã È¿°ú
+    /// ì°¨ì§€ ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
     public void TriggerChargeStart()
     {
-        if(_chargeEffectPoint != null)
+        if (_chargeEffectPoint != null)
         {
-            Log.PrintWarning("Â÷Â¡ ÀÌÆåÆ® À§Ä¡ ¾øÀ½");
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
-        }  
+            Log.PrintWarning("ì°¨ì§€ íš¨ê³¼ ìœ„ì¹˜ ì„¤ì •");
+            PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
+        }
     }
+
     /// <summary>
-    /// ÃÖ¼Ò Â÷Â¡ ¿Ï·á ½Ã È¿°ú 
+    /// ì°¨ì§€ ì·¨ì†Œ ë˜ì—ˆì„ ë•Œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerChargeCancel()
+    {
+        PlayFeedback(PlayerFeedbackType.ChargeCancel_FB, _chargeEffectPoint.position);
+    }
+
+    /// <summary>
+    /// ì°¨ì§€ ì™„ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
     public void TriggerChargeFinish()
     {
         if (_chargeEffectPoint != null)
         {
-            Log.PrintWarning("Â÷Â¡ ÀÌÆåÆ® À§Ä¡ ¾øÀ½");
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
+            Log.PrintWarning("ì°¨ì§€ íš¨ê³¼ ìœ„ì¹˜ ì„¤ì •");
+            PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
         }
     }
+
     /// <summary>
-    /// Â÷Áö °ø°İÀ¸·Î ÀÎÇÑ ÇÇ°İ È¿°ú
+    /// ì°¨ì§€ ê³µê²© ì‹œì‘ ì‹œ í˜¸ì¶œ
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    public void TriggerChargeAttackStart()
+    {
+        PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB, _chargeAttackPoint.position);
+    }    
+
+    /// <summary>
+    /// ì°¨ì§€ ê³µê²© ì¢…ë£Œ ì‹œ í˜¸ì¶œ
+    /// </summary>
+    public void TriggerChargeAttackFinish()
+    {
+        PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB, _chargeAttackPoint.position);
+    }
+
+    /// <summary>
+    /// ì°¨ì§€ ê³µê²© íƒ€ê²© ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
     public void TriggerChargeAttackAffect(Collider collider, int tier)
     {
         OnChargeAttackAffect.Invoke(collider);
 
-        switch(tier)
+        switch (tier)
         {
             case 1:
-                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackHit_FB, collider.transform.position);
+                PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackHit_FB, collider.transform.position);
                 break;
             case 2:
-                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackHit_FB, collider.transform.position);
-                break ;
+                PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackHit_FB, collider.transform.position);
+                break;
             case 3:
-                _feedbackPlayer.PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackHit_FB, collider.transform.position);
-                break ;
-        }   
+                PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackHit_FB, collider.transform.position);
+                break;
+        }
+    }
+    #endregion
+
+    #region RangedAttack
+
+    /// <summary>
+    /// ì›ê±°ë¦¬ ê³µê²© ì°¨ì§€ ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerRangedChargeStart()
+    {
+        if (_chargeEffectPoint != null)
+        {
+            PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB, _chargeEffectPoint.position);
+        }
     }
 
-
-            
     /// <summary>
-    /// ¿ø°Å¸® °ø°İ Â÷Â¡ ¿Ï·á ½Ã È¿°ú
+    /// ì›ê±°ë¦¬ ê³µê²© ì°¨ì§€ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerRangedCharging()
+    {
+        PlayFeedback(PlayerFeedbackType.RangeAttackCharging_FB, _chargeEffectPoint.position);
+    }
+
+    /// <summary>
+    /// ì›ê±°ë¦¬ ê³µê²© ì°¨ì§€ ì·¨ì†Œ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerRangedChargeCancel()
+    {
+        if (_chargeEffectPoint != null)
+        {
+            PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB, _chargeEffectPoint.position);
+        }
+    }
+
+    /// <summary>
+    /// ì›ê±°ë¦¬ ê³µê²© ì°¨ì§€ ì™„ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
     public void TriggerRangedChargeFinish()
     {
         if (_chargeEffectPoint != null)
         {
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackChargeFinish_FB, _chargeEffectPoint.position);
+            PlayFeedback(PlayerFeedbackType.RangeAttackChargeFinish_FB, _chargeEffectPoint.position);
         }
     }
+
     /// <summary>
-    /// ¿ø°Å¸® °ø°İ ½ÃÀÛ ½Ã È¿°ú
+    /// ì›ê±°ë¦¬ ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
     public void TriggerRangedAttackStart()
     {
         OnRangedAttackStart.Invoke(_rangedAttackPoint);
+
+        PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackPoint.position);
     }
+
     /// <summary>
-    /// ¿ø°Å¸® °ø°İ ½Ã È¿°ú
+    /// ì›ê±°ë¦¬ ê³µê²© íƒ€ê²© ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
-    /// <param name="collider">Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
     public void TriggerRangedAttackAffect(Collider collider)
     {
         OnRangedAttackAffect.Invoke(collider);
 
         if (collider != null)
         {
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.RangeAttackHit_FB, collider.transform.position);
+            PlayFeedback(PlayerFeedbackType.RangeAttackHit_FB, collider.transform.position);
         }
     }
+
     /// <summary>
-    /// ¿ø°Å¸® °ø°İ Á¾·á ½Ã È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å)
+    /// ì›ê±°ë¦¬ ê³µê²© ì™„ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
     public void TriggerRangedAttackFinish()
     {
         OnRangedAttackFinish.Invoke();
     }
+    #endregion
 
+    #region Parry
 
     /// <summary>
-    /// ÆĞ¸µ ½ÃÀÛ ½Ã È¿°ú
-    /// (¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å)
+    /// íŒ¨ë¦¬ ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// (ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°)
     /// </summary>
     public void TriggerParryPerform()
     {
-        OnParryPerform.Invoke();
+        OnParryPerform?.Invoke();
+        PlayFeedback(PlayerFeedbackType.ParryStart_FB, transform.position);
     }
+
     /// <summary>
-    /// ÆĞ¸µ ¼º°ø ½Ã È¿°ú
+    /// íŒ¨ë¦¬ ì„±ê³µ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
-    /// <param name="collider">ÆĞ¸µ ´çÇÑ ¿ÀºêÁ§Æ®</param>
+    /// <param name="collider">íŒ¨ë¦¬ ëŒ€ìƒ ì½œë¼ì´ë”</param>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-         
+
         if (collider != null)
         {
-            _feedbackPlayer.PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
+            PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
+        }
+    }
+    #endregion
+
+    #region CounterAttack
+
+    /// <summary>
+    /// ì²«ë²ˆì§¸ ì¹´ìš´í„° ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerFirstCounterAttackStart()
+    {
+        PlayFeedback(PlayerFeedbackType.CounterFirstAttackStart_FB, _counterAttackPoint.position);
+    }
+
+    /// <summary>
+    /// ì²« ë²ˆì§¸ ì¹´ìš´í„° ê³µê²© íƒ€ê²© ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
+    public void TriggerFirstCounterAttackAffect(Collider collider, int tier)
+    {
+        OnFirstCounterAttackAffect.Invoke(collider);
+
+        switch (tier)
+        {
+            case 1:
+                PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.Tier2CounterAttackFirstHit_FB, collider.transform.position);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, collider.transform.position);
+                break;
         }
     }
 
+    /// <summary>
+    /// ë‘ë²ˆì§¸ ì¹´ìš´í„° ê³µê²© ì‹œì‘ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerSecondCounterAttackStart()
+    {
+        PlayFeedback(PlayerFeedbackType.CounterSecondAttackStart_FB, _counterAttackPoint.position);
+    }
 
     /// <summary>
-    /// Æ¼¾î°¡ ¿Ã¶ó°¥ ¶§ È¿°ú
+    /// ë‘ ë²ˆì§¸ ì¹´ìš´í„° ê³µê²© íƒ€ê²© ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
-    /// <param name="tier">ÇöÀç Æ¼¾î</param>
+    /// <param name="collider">íƒ€ê²© ëŒ€ìƒ ì½œë¼ì´ë”</param>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
+    public void TriggerSecondCounterAttackAffect(Collider collider, int tier)
+    {
+        OnSecondCounterAttackAffect.Invoke(collider);
+
+        switch (tier)
+        {
+            case 1:
+                PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.Tier2CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.Tier3CounterAttackSecondHit_FB, collider.transform.position);
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// ì¹´ìš´í„° ê³µê²© ì¢…ë£Œ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    public void TriggerCounterAttackFinish()
+    {
+        PlayFeedback(PlayerFeedbackType.CounterAttackFinish_FB, _counterAttackPoint.position);
+    }
+    #endregion
+
+    #region Heat
+    /// <summary>
+    /// í‹°ì–´ ìƒìŠ¹ ì‹œ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
     public void TriggerTierUp(int tier)
     {
         switch (tier)
         {
             case 1:
-                OnTier1Up?.Invoke(); 
+                OnTier1Up?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position);
                 break;
-            case 2: 
-                OnTier2Up?.Invoke(); 
+            case 2:
+                OnTier2Up?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position);
                 break;
-            case 3: 
+            case 3:
                 OnTier3Up?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position);
                 break;
             case 4:
-                OnOverHeatStart?.Invoke(); 
+                OnOverHeatStart?.Invoke();
+                PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position);
                 break;
         }
     }
+
     /// <summary>
-    /// Æ¼¾î°¡ ³»·Á°¥ ¶§ È¿°ú
+    /// í‹°ì–´ í•˜ë½ ì‹œ íš¨ê³¼ ì¬ìƒ
     /// </summary>
-    /// <param name="tier">ÇöÀç Æ¼¾î</param>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
     public void TriggerTierDown(int tier)
     {
         switch (tier)
         {
             case 0:
-                OnTier1Down.Invoke();
+                OnTier1Down?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position);
                 break;
             case 1:
-                OnTier2Down.Invoke();
+                OnTier2Down?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position);
                 break;
             case 2:
-                OnTier3Down.Invoke();
+                OnTier3Down?.Invoke();
+                PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position);
                 break;
             case 3:
-                OnOverHeatFinish.Invoke();
+                OnOverHeatFinish?.Invoke();
+                PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// í‹°ì–´ íš¨ê³¼ ì¬ìƒ
+    /// </summary>
+    /// <param name="tier">í˜„ì¬ í‹°ì–´</param>
+    public void TriggerTier(int tier)
+    {
+        switch (tier)
+        {
+            case 0:
+                PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position);
+                break;
+            case 1:
+                PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
                 break;
         }
     }
 
     #endregion
-}
 
+    #endregion
+}

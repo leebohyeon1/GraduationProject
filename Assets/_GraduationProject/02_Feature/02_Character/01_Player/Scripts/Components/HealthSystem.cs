@@ -84,5 +84,10 @@ public class HealthSystem : MonoBehaviour, IHealth
     {
         p_isHit = false;
     }
+
+    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    {
+        
+    }
 }
 
