@@ -54,7 +54,6 @@ public class GenericAttackNode : Node
 
         if (Handler.IsActionFinished)
         {
-            Debug.Log(this.animationName);
             return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
