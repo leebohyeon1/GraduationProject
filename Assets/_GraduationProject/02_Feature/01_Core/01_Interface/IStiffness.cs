@@ -1,27 +1,27 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// °æÁ÷µµ¸¦ °¡Áö°í ÀÖ´Â ¿ÀºêÁ§Æ®¿¡ ³Ö´Â ÀÎÅÍÆäÀÌ½º
+/// ê²½ì§ë„ë¥¼ ê°€ì§€ê³  ìˆëŠ” ì˜¤ë¸Œì íŠ¸ì— ë„£ëŠ” ì¸í„°í˜ì´ìŠ¤
 /// </summary>
 public interface IStiffness
 {
     /// <summary>
-    /// ÇöÀç °æÁ÷µµ
+    /// í˜„ì¬ ê²½ì§ë„
     /// </summary>
     int CurrentStiffness { get; }
 
     /// <summary>
-    /// °æÁ÷ ÀÓ°èÁ¡
+    /// ê²½ì§ ì„ê³„ì 
     /// </summary>
     int StiffnessThreshold { get; }
 
     /// <summary>
-    /// °æÁ÷ Áö¼Ó ½Ã°£
+    /// ê²½ì§ ì§€ì† ì‹œê°„
     /// </summary>
     float StiffnessDuration { get; }
     
     /// <summary>
-    /// °æÁ÷µµ °ÔÀÌÁö ´©Àû
+    /// ê²½ì§ë„ ê²Œì´ì§€ ëˆ„ì 
     /// </summary>
     /// <param name="amount"></param>
     void AddStiffness(int amount);

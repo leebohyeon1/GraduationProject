@@ -1,4 +1,4 @@
-using BH_Lib.Log;
+ï»¿using BH_Lib.Log;
 using UnityEngine;
 
 
@@ -8,7 +8,7 @@ public class PlayerHealth : HealthSystem, IStiffness
     private bool _isDefending;
 
     /// <summary>
-    /// °æÁ÷µµ °ü·Ã
+    /// ê²½ì§ë„ ê´€ë ¨
     /// </summary>
     private int _currentStiffness;
     private int _stiffnessThreshold;
@@ -30,10 +30,10 @@ public class PlayerHealth : HealthSystem, IStiffness
     }
 
     /// <summary>
-    /// ¹æ¾î »óÅÂ¸¦ ¼³Á¤ÇÕ´Ï´Ù
-    /// PlayerDefendState¿¡¼­ È£Ãâ
+    /// ë°©ì–´ ìƒíƒœë¥¼ ì„¤ì •í•©ë‹ˆë‹¤
+    /// PlayerDefendStateì—ì„œ í˜¸ì¶œ
     /// </summary>
-    /// <param name="isDefending">¹æ¾î »óÅÂ ¿©ºÎ</param>
+    /// <param name="isDefending">ë°©ì–´ ìƒíƒœ ì—¬ë¶€</param>
     public void SetDefending(bool isDefending)
     {
         _isDefending = isDefending;
