@@ -65,22 +65,65 @@ public class PlayerHealth : HealthSystem, IStiffness
         }
     }
 
-    public override void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    public override void TakeDamage(int damageAmount, int stiffenessAmount, IAttacker attacker = null)
     {
+        // 죽었거나 무적이면 리턴
+        if (IsDead || IsInvincible)
+        {
+            return;
+        }
 
+        // 방어중일 때 수치 경감
+        if (_isDefending)
+        {
+            damageAmount = Mathf.RoundToInt(damageAmount *
+                _runtimeData.CombatData.DefendDamageReductionRate);
+
+            stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
+        }
+
+        ChangeHealth(-damageAmount);
+        AddStiffness(stiffenessAmount);
+
+        if (IsDead)
+        {
+            Die();
+        }
+        else
+        {
+            p_isHit = true;
+        }
     }
 
     public void AddStiffness(int amount)
     {
+        ChangeStiffness(amount);
 
+        // 현재 경직도가 최대 경직도를 넘을 때
+        if(_currentStiffness > _stiffnessThreshold)
+        {
+            // 경직도 초기화
+            ChangeStiffness(-_currentStiffness);
+            // 강한 경직
+            HeavyStagger();
+        }
+        else
+        {
+            // 약한 경직
+            LightStagger();
+        }
+    }
+
+    /// <summary>
+    /// 경직도 변경 함수
+    /// </summary>
+    /// <param name="amount">경직도 변경량</param>
+    private void ChangeStiffness(int amount)
+    {
+        _currentStiffness += amount;
     }
 
     private void LightStagger()
-    {
-
-    }
-
-    private void DefendStagger()
     {
 
     }
