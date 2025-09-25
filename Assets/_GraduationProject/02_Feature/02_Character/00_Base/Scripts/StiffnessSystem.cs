@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
 
-public class StiffnessSystem : MonoBehaviour
+public class  StiffnessSystem : MonoBehaviour, IStiffness
 {
     [Header("Stiffness Settings")]
     [Tooltip("캐릭터 최대 경직")]
@@ -10,11 +10,19 @@ public class StiffnessSystem : MonoBehaviour
     [SerializeField] protected float _stiffnessDuration = 2f;
     private int _currentStiffness = 0;
 
+    #region Properties
+    public int CurrentStiffness => _currentStiffness;
+
+    public int StiffnessThreshold => _stiffnessThreshold;
+
+    public float StiffnessDuration => _stiffnessDuration;
+    #endregion
+
     /// <summary>
     /// 경직도를 게이지에 누적시킵니다.
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
-    public void AddStiffness(int amount)
+    public virtual void AddStiffness(int amount)
     {
         _currentStiffness += amount;
         
@@ -32,6 +40,14 @@ public class StiffnessSystem : MonoBehaviour
             OnLightStagger();
         }
     }
+
+    /// <summary>
+    /// 가벼운 경직 함수
+    /// </summary>
     protected virtual void OnLightStagger() { }
+
+    /// <summary>
+    /// 무거운 경직 함수
+    /// </summary>
     protected virtual void OnHeavyStagger() { }
 }
