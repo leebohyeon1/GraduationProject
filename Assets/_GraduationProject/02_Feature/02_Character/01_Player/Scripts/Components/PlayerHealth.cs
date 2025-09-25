@@ -1,13 +1,26 @@
-using BH_Lib.Log;
+ï»¿using BH_Lib.Log;
 using UnityEngine;
 
 
-public class PlayerHealth : HealthSystem
+public class PlayerHealth : HealthSystem, IStiffness
 {
     private PlayerRuntimeData _runtimeData;
     private bool _isDefending;
 
+    /// <summary>
+    /// ê²½ì§ë„ ê´€ë ¨
+    /// </summary>
+    private int _currentStiffness;
+    private int _stiffnessThreshold;
+    private float _stiffnessDuration;
+
+    #region Properties
     public bool IsDefending => _isDefending;
+
+    public int CurrentStiffness => _currentStiffness;
+    public int StiffnessThreshold => _stiffnessThreshold;
+    public float StiffnessDuration => _stiffnessDuration;
+    #endregion
 
     public void Initialize(PlayerRuntimeData data)
     {
@@ -17,10 +30,10 @@ public class PlayerHealth : HealthSystem
     }
 
     /// <summary>
-    /// ¹æ¾î »óÅÂ¸¦ ¼³Á¤ÇÕ´Ï´Ù
-    /// PlayerDefendState¿¡¼­ È£Ãâ
+    /// ë°©ì–´ ìƒíƒœë¥¼ ì„¤ì •í•©ë‹ˆë‹¤
+    /// PlayerDefendStateì—ì„œ í˜¸ì¶œ
     /// </summary>
-    /// <param name="isDefending">¹æ¾î »óÅÂ ¿©ºÎ</param>
+    /// <param name="isDefending">ë°©ì–´ ìƒíƒœ ì—¬ë¶€</param>
     public void SetDefending(bool isDefending)
     {
         _isDefending = isDefending;
@@ -35,9 +48,9 @@ public class PlayerHealth : HealthSystem
 
         if (_isDefending)
         {
-            damageAmount = Mathf.RoundToInt(damageAmount * 
+            damageAmount = Mathf.RoundToInt(damageAmount *
                 _runtimeData.CombatData.DefendDamageReductionRate);
-       
+
         }
 
         ChangeHealth(-damageAmount);
@@ -50,5 +63,30 @@ public class PlayerHealth : HealthSystem
         {
             p_isHit = true;
         }
+    }
+
+    public override void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    {
+
+    }
+
+    public void AddStiffness(int amount)
+    {
+
+    }
+
+    private void LightStagger()
+    {
+
+    }
+
+    private void DefendStagger()
+    {
+
+    }
+
+    private void HeavyStagger()
+    {
+
     }
 }

@@ -19,7 +19,6 @@ public class PlayerHitState : BaseState<Player>
         if (p_context.Health.IsDefending)
         {
             p_context.Animator.SetTrigger("DefendHit");
-            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
         }
         else
         {
