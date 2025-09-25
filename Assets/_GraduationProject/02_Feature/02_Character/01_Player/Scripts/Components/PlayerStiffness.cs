@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player_Stiffness : StiffnessSystem
+public class PlayerStiffness : StiffnessSystem
 {
     private Player _owner;
     public void Initialize(Player owner)
