@@ -39,9 +39,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public int CurrentStiffness => _CurrentStiffness;
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
-    [SerializeField] private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
-    HeatSystem heatSystem;
+    public HeatSystem heatSystem { get; private set; }
     protected override void Awake()
     {
         // health = new Health(100);
@@ -148,11 +147,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetTrigger(eventName);
-            if (heatSystem.GetTier() >= 1)
-            {
-                CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
-                animator.speed = stat.FinalAnimSpeed;
-            }
+            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
+            animator.speed = stat.FinalAnimSpeed;
+            
         }
     }
     public void AnimationBool(string boolName, bool value)
@@ -160,6 +157,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetBool(boolName, value);
+            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
+            animator.speed = stat.FinalAnimSpeed;
         }
     }
     private void OnEnemyDeath()
@@ -182,6 +181,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void Die()
     {
         animator.SetBool("Die", true);
+        animator.speed = 1;
         SetState(EnemyState.Die);
     }
 
@@ -215,7 +215,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         {
             TakeDamage(perDmg);
             timer += 1f;
-            Debug.Log("데미지 받는중");
             yield return new WaitForSeconds(1f);
         }
     }

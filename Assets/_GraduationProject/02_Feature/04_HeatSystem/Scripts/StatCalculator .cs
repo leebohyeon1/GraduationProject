@@ -39,6 +39,7 @@ public static class StatCalculator
         result.FinalDamage = (int)(baseDamage * tierStats.DamageMultiply);
         result.FinalAnimSpeed = 1.0f * tierStats.AnimSpeedMultiply;
         result.FinalRange = 1.0f * tierStats.RangeMultiply;
+        result.FinalSpeed = 1.0f * tierStats.SpeedMultiply;
         
         result.IsSuccess = true;
         return result;
