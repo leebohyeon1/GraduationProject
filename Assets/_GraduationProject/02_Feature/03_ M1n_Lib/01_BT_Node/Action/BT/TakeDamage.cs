@@ -19,14 +19,12 @@ public class TakeDamage : Node
 
     protected override NodeState OnUpdate()
     {
-        Debug.Log("TakeDamage 노드 업데이트");
         if (Handler.IsActionFinished)
             return NodeState.SUCCESS;
         return NodeState.RUNNING;
     }
     public override void OnExit()
     {
-        Debug.Log("TakeDamage 노드 종료");
         runner.SetState(Enemy.EnemyState.Idle);
     }
 }

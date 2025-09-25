@@ -23,6 +23,7 @@ public class Stunned : Node
         else
         {
             runner.ClearStun();
+            Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
             return NodeState.SUCCESS;
         }
     }

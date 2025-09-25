@@ -32,6 +32,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 453, y: -109}
   nodes:
+  - {fileID: -7245226355301169087}
   - {fileID: 8656888805184373649}
   - {fileID: 6108192575178470743}
 --- !u!114 &-8122339867687390800
@@ -47,6 +48,22 @@ MonoBehaviour:
   m_Name: Patrol
   m_EditorClassIdentifier: 
   position: {x: 458, y: 433}
+--- !u!114 &-7245226355301169087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Stun
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 681, y: -294}
+  nodes:
+  - {fileID: 6343833873525823109}
+  - {fileID: -3662235796367844752}
 --- !u!114 &-7071762007778814168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +161,20 @@ MonoBehaviour:
   - {fileID: 5169151897725617425}
   - {fileID: 3383802295068753850}
   - {fileID: 8246282568877846733}
+--- !u!114 &-3662235796367844752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
+  m_Name: Stunned
+  m_EditorClassIdentifier: Assembly-CSharp::Stunned
+  position: {x: 879, y: -251}
+  animationName: Do_Stun
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,9 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
-  position: {x: 1024, y: 198}
+  position: {x: 1024, y: 199}
   minDistance: 0.5
-  maxDistance: 10
+  maxDistance: 15
 --- !u!114 &2422854897302023152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,6 +248,7 @@ MonoBehaviour:
   damageRadius: 3.5
   attackOffset: {x: 0, y: 1, z: 4}
   maintainAtk: 0
+  StiffenessAmount: 10
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +321,19 @@ MonoBehaviour:
   - {fileID: 8581566141182817877}
   - {fileID: 1742704995383000931}
   - {fileID: 8440268503078126261}
+--- !u!114 &6343833873525823109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
+  m_Name: Condition_Is Stunned
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
+  position: {x: 865, y: -371}
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0

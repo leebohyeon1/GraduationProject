@@ -41,6 +41,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public ParrySystem ParrySystem { get; private set; }
     [SerializeField] private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
+    HeatSystem heatSystem;
     protected override void Awake()
     {
         // health = new Health(100);
@@ -54,10 +55,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
-
-        StatCalculator.Initialize(tierStatDatabase);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
-        GetComponent<HeatSystem>().Init(ActorType.Monster);
+        heatSystem = GetComponent<HeatSystem>();
+        heatSystem.Init(ActorType.Monster);
 
     }
 
@@ -148,6 +148,11 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetTrigger(eventName);
+            if (heatSystem.GetTier() >= 1)
+            {
+                CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
+                animator.speed = stat.FinalAnimSpeed;
+            }
         }
     }
     public void AnimationBool(string boolName, bool value)
@@ -197,10 +202,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
     }
-    public void TakeDamage(int percentDamage, float Time)
+    public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
     {
         int perDmg = Maxhealth / percentDamage;
-        StartCoroutine(PerDmgTimer(perDmg, Time));
+        StartCoroutine(PerDmgTimer(perDmg, TickTime));
     }
 
     private IEnumerator PerDmgTimer(int perDmg, float time)

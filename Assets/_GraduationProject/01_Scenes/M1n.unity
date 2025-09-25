@@ -1186,9 +1186,17 @@ PrefabInstance:
       value: MushroomSmilePA
       objectReference: {fileID: 0}
     - target: {fileID: 7866171331518385183, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
+      propertyPath: _currentHeat
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7866171331518385183, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: p_tierStatDatabase
       value: 
       objectReference: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
+    - target: {fileID: 7866171331518385183, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
+      propertyPath: p_sourceMapDataBase
+      value: 
+      objectReference: {fileID: 11400000, guid: 744deb5878a87404cb1c11afc8642bdc, type: 2}
     - target: {fileID: 7866171331518385183, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: <ActorType>k__BackingField
       value: 1
@@ -2305,7 +2313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1185445137
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2414,9 +2422,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3870fabe7cb22a7448fa85737cca01c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
-  _feedbacks:
-  - name: Damaged
-    feedback: {fileID: 1021423492}
 --- !u!114 &1185445142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2431,7 +2436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HeatSystem
   _maxHeat: 100
   _currentHeat: 0
-  p_sourceMapDataBase: {fileID: 0}
+  p_sourceMapDataBase: {fileID: 11400000, guid: 744deb5878a87404cb1c11afc8642bdc, type: 2}
   p_tierStatDatabase: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
   <ActorType>k__BackingField: 1
 --- !u!114 &1185445143
@@ -5177,15 +5182,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6df5ca9e8f44934899eb44fa890e10f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerEvents
-  _feedbackPlayer:
-    _feedbacks:
-    - type: 0
-      Feedback: {fileID: 0}
+  _feedbacks: []
   _firstAttackStartEffectPoint: {fileID: 0}
   _secondAttackStartEffectPoint: {fileID: 0}
   _thirdAttackStartEffectPoint: {fileID: 0}
   _chargeEffectPoint: {fileID: 0}
+  _chargeAttackPoint: {fileID: 0}
   _rangedAttackPoint: {fileID: 8518299325564543927}
+  _counterAttackPoint: {fileID: 0}
 --- !u!114 &8638729848705615711
 MonoBehaviour:
   m_ObjectHideFlags: 0

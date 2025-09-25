@@ -6,7 +6,7 @@ using UnityEngine;
 public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
-    [SerializeField] private int _currentHeat = 0;
+    [SerializeField] protected int _currentHeat = 0;
     private bool _isHeatLock = false;
     [SerializeField] protected SourceMapDatabaseSO p_sourceMapDataBase;
     [SerializeField] protected TierStatDatabaseSO p_tierStatDatabase;
@@ -26,6 +26,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public virtual void Init(ActorType actorType)
     {
         ActorType = actorType;
+        StatCalculator.Initialize(p_tierStatDatabase);
+
     }
 
 
@@ -84,7 +86,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
         }
     }
 
-    protected CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
+    public CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
         SourceMap data = p_sourceMapDataBase.GetSourceMap(id, actorType, tier);
         CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);

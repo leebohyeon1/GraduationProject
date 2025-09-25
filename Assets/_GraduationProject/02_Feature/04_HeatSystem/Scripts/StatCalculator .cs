@@ -14,6 +14,7 @@ public static class StatCalculator
 
     public static void Initialize(TierStatDatabaseSO tierDb)
     {
+        if(_tierStatDatabase != null) return;
         _tierStatDatabase = tierDb;
     }
     
@@ -29,7 +30,7 @@ public static class StatCalculator
 
         TierStatData tierStats = _tierStatDatabase.GetTierStat(data.TierID);
         if (tierStats == null)
-        {
+        {   
             result.IsSuccess = false;
             return result;
         }
