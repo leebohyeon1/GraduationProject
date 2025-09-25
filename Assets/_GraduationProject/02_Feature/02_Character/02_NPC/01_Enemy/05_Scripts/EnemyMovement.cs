@@ -71,7 +71,7 @@ public class EnemyMovement
 
         StartOrUpdateChase(_runner.wayPoints[_runner.wayPointIndex], _normalSpeed);
     }
-    public void StartOrUpdateChase(Vector3 newTarget,float speed)
+    public void StartOrUpdateChase(Vector3 newTarget,float speed = 2)
     {
         if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise || CurrentState == EnemyState.Idle)
         {
@@ -83,7 +83,9 @@ public class EnemyMovement
         _runner.SetState(EnemyState.Chase);
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
-        aIPath.maxSpeed = speed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
+        CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
+        aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
+        Debug.Log($"Chase Speed: {aIPath.maxSpeed}");
         aIPath.destination = newTarget;
         aIPath.isStopped = false;
     }

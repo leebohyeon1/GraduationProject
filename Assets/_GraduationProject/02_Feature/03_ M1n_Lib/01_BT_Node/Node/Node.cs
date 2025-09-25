@@ -15,7 +15,6 @@ namespace BehaviorTree
         protected Enemy runner;
         protected AiBrain brain;
         protected Enemy_AnimationEventHandler Handler => runner.animHandler;
-
         public NodeState Evaluate()
         {
             if (!isEntered)

@@ -1,7 +1,6 @@
 using UnityEngine;
 using Pathfinding;
 using System;
-using Unity.Mathematics;
 using UnityEditor.Rendering;
 using System.Collections;
 
@@ -41,6 +40,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
     public HeatSystem heatSystem { get; private set; }
+    public Vector3 PatrolOriginPoint { get; private set; }
+
     protected override void Awake()
     {
         // health = new Health(100);
@@ -69,6 +70,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             Debug.LogError("AIPath component not found in the scene.");
         }
         Movement = new EnemyMovement(this);
+        PatrolOriginPoint = transform.position;
     }
     public void SetStiffness(int amount)
     {
