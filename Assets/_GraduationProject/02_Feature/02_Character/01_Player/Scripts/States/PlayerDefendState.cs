@@ -25,7 +25,7 @@ public class PlayerDefendState : BaseState<Player>
         Log.Print("Player entered Defend state");
 
 
-        p_context.Health.SetDefending(true);
+        p_context.Combat.DefendStart();
         p_context.Combat.SetupCombatCenter();
         p_context.Events.TriggerBattleStateChanged(true);
     }
@@ -39,12 +39,12 @@ public class PlayerDefendState : BaseState<Player>
         if (!p_context.Controller.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
         else if (p_context.Controller.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
     }
 

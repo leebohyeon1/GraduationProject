@@ -16,7 +16,7 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnEnter()
     {
-        if (p_context.Health.IsDefending)
+        if (p_context.RuntimeData.IsDefending)
         {
             p_context.Animator.SetTrigger("DefendHit");
         }
@@ -50,7 +50,7 @@ public class PlayerHitState : BaseState<Player>
         // 피격 지속 시간이 끝나면 Idle 상태로 전환
         if (_hitTimer >= _hitDuration)
         {
-            if (p_context.Health.IsDefending)
+            if (p_context.RuntimeData.IsDefending)
             {
                 p_stateMachine.RevertToPreviousState();
             }
