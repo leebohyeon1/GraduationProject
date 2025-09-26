@@ -108,7 +108,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     {
         _isStunned = false;
     }
- 
+
     #endregion
     #region Enemy State Management
     public enum EnemyState
@@ -122,7 +122,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Die,
         Stunned, // 스턴 상태 추가
         Rush,
-        Hit
+        Hit,
+        RunAway
     }
     public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
@@ -196,7 +197,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         _aiController.CombatEnter();
         if (!_aiController.IsActionable())
         {
-            _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
+            SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
