@@ -34,7 +34,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField] private float _stunTime = 3f;
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
-    private int _CurrentStiffness = 0;
+    [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
@@ -58,7 +58,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         heatSystem = GetComponent<HeatSystem>();
         heatSystem.Init(ActorType.Monster);
-
+        ParrySystem = GetComponent<ParrySystem>();
+        ParrySystem.Initialize(this);
+        StiffnessSystem = GetComponent<Mon_Stiffness>();
+        StiffnessSystem.Initialize(this);
     }
 
     void Start()
@@ -190,13 +193,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
+        _aiController.CombatEnter();
         if (!_aiController.IsActionable())
         {
             _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
-        _aiController.CombatEnter();
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;

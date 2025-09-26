@@ -15,7 +15,12 @@ public class Condition_IsInAttackRange : ConditionNode
     }
     protected override bool CheckCondition()
     {
-        return runner != null && brain.IsInAttackRange(_attackRange * stat.FinalRange);
+        if (heatRange)
+        {
+            stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), 0);
+            return runner != null && brain.IsInAttackRange(_attackRange * stat.FinalRange);
+        }
+        return runner != null && brain.IsInAttackRange(_attackRange);
     }
     public override Node Clone()
     {
