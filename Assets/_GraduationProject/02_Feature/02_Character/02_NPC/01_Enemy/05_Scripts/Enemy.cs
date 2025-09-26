@@ -207,22 +207,22 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
     }
-    public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
-    {
-        int perDmg = Maxhealth / percentDamage;
-        StartCoroutine(PerDmgTimer(perDmg, TickTime));
-    }
+    // public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
+    // {
+    //     int perDmg = Maxhealth / percentDamage;
+    //     StartCoroutine(PerDmgTimer(perDmg, TickTime));
+    // }
 
-    private IEnumerator PerDmgTimer(int perDmg, float time)
-    {
-        float timer = 0f;
-        while (timer < time)
-        {
-            TakeDamage(perDmg);
-            timer += 1f;
-            yield return new WaitForSeconds(1f);
-        }
-    }
+    // private IEnumerator PerDmgTimer(int perDmg, float time)
+    // {
+    //     float timer = 0f;
+    //     while (timer < time)
+    //     {
+    //         TakeDamage(perDmg);
+    //         timer += 1f;
+    //         yield return new WaitForSeconds(1f);
+    //     }
+    // }
     
 
     [SerializeField] GameObject LastRushHitObject;
