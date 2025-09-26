@@ -9,17 +9,24 @@ public class Condition_IsSkillReady : ConditionNode
 
     [Tooltip("이 스킬의 쿨타임 시간(초)입니다.")]
     public float cooldownDuration;
-
+    public bool HeatCooldown = false;
+    CalculationResult stat;
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), 0);
+    }
     protected override bool CheckCondition()
     {
         if (string.IsNullOrEmpty(skillName))
         {
-            Debug.LogWarning("Skill Name is not set in Condition_IsSkillReady node!", this);
             return false;
         }
         
-        // runner(Enemy)에게 이 스킬이 사용 가능한지 물어봅니다.
-        return brain.IsSkillReady(skillName, cooldownDuration);
+        if (HeatCooldown == false)
+            return brain.IsSkillReady(skillName, cooldownDuration);
+        else
+            return brain.IsSkillReady(skillName, cooldownDuration / stat.FinalSpeed);
     }
 
     public override Node Clone()
@@ -27,6 +34,7 @@ public class Condition_IsSkillReady : ConditionNode
         var node = Instantiate(this);
         node.skillName = this.skillName;
         node.cooldownDuration = this.cooldownDuration;
+        node.HeatCooldown = this.HeatCooldown;
         return node;
     }
 }

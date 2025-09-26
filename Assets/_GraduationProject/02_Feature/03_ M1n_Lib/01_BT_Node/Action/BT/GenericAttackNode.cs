@@ -13,7 +13,7 @@ public class GenericAttackNode : Node
 
     private bool _didHitPlayer;
     [SerializeField] private int StiffenessAmount = 10;
-
+    CalculationResult stat;
 
     public override void OnEnter()
     {
@@ -25,6 +25,7 @@ public class GenericAttackNode : Node
         runner.Movement.StopMovement();
         runner.AnimationEvent(animationName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
+        stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), damage);
     }
 
     protected override NodeState OnUpdate()
@@ -37,12 +38,13 @@ public class GenericAttackNode : Node
         }
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
-                    player.TakeDamage(damage, StiffenessAmount, runner);
+                    // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
+                    player.TakeDamage( stat.FinalDamage, runner);
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {

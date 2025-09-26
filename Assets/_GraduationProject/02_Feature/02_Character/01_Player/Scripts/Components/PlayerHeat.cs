@@ -25,7 +25,7 @@ public class PlayerHeat : HeatSystem
     {
         IHeatable heatable = collider.GetComponent<IHeatable>();
 
-        if (heatable != null && !heatable.IsHeatLock)
+        if (heatable != null)
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
@@ -56,7 +56,7 @@ public class PlayerHeat : HeatSystem
     public void IncreaseHeatOnChargeAttack(Collider collider)
     {
         IHeatable heatable = collider.GetComponent<IHeatable>();
-        if (heatable != null && !heatable.IsHeatLock)
+        if (heatable != null)
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
