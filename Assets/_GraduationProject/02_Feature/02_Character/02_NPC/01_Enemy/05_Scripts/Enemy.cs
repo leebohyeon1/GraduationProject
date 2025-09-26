@@ -1,7 +1,6 @@
 using UnityEngine;
 using Pathfinding;
 using System;
-using Unity.Mathematics;
 using UnityEditor.Rendering;
 using System.Collections;
 
@@ -35,12 +34,14 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField] private float _stunTime = 3f;
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
-    private int _CurrentStiffness = 0;
+    [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
     public HeatSystem heatSystem { get; private set; }
+    public Vector3 PatrolOriginPoint { get; private set; }
+
     protected override void Awake()
     {
         // health = new Health(100);
@@ -57,7 +58,10 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         heatSystem = GetComponent<HeatSystem>();
         heatSystem.Init(ActorType.Monster);
-
+        ParrySystem = GetComponent<ParrySystem>();
+        ParrySystem.Initialize(this);
+        StiffnessSystem = GetComponent<Mon_Stiffness>();
+        StiffnessSystem.Initialize(this);
     }
 
     void Start()
@@ -69,6 +73,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             Debug.LogError("AIPath component not found in the scene.");
         }
         Movement = new EnemyMovement(this);
+        PatrolOriginPoint = transform.position;
     }
     public void SetStiffness(int amount)
     {
@@ -188,13 +193,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
+        _aiController.CombatEnter();
         if (!_aiController.IsActionable())
         {
             _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
-        _aiController.CombatEnter();
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
