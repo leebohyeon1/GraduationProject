@@ -23,6 +23,7 @@ public class Player : DIMonoBehaviour
     private StateMachine<Player> _stateMachine;
     private PlayerHeatManager _heatManager;
     private PlayerCombatManager _combatManager;
+    private PlayerDataManager _dataDataManager;
     #endregion
 
     #region Properties
@@ -34,6 +35,9 @@ public class Player : DIMonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
+    public PlayerBaseDatasSO BaseData => DataBase.BaseData;
+    public PlayerData RuntimeData => DataBase.RuntimeData;
+
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     #endregion
@@ -42,19 +46,21 @@ public class Player : DIMonoBehaviour
     {
         InitializeReference();
         InitializeStateMachine();
+
+        SubscribeToEvents();
     }
 
     private void Update()
     {
-        _movement.CheckGrounded(DataBase.RuntimeData.GroundCheckDistance,
-            DataBase.RuntimeData.GroundLayerMask);
+        _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
+            DataBase.BaseData.GroundLayerMask);
 
         _stateMachine?.Update();
     }
 
     private void FixedUpdate()
     {
-        _movement.ApplyGravity(DataBase.RuntimeData.Gravity);
+        _movement.ApplyGravity(DataBase.BaseData.Gravity);
 
         // 상태 머신 고정 업데이트
         _stateMachine?.FixedUpdate();
@@ -67,8 +73,7 @@ public class Player : DIMonoBehaviour
 
     private void OnDestroy()
     {
-        _heatManager?.Dispose();
-        _combatManager?.Dispose();
+        UnsubscribeToEvents();
     }
 
     private void InitializeReference()
@@ -122,11 +127,12 @@ public class Player : DIMonoBehaviour
         _controller.Initialize(_inputDeviceDetector);
         _health.Initialize(_dataBase.RuntimeData);
         _movement.Initialize(_characterController);
-        _combat.Initialize(DataBase.RuntimeData.CombatData);
+        _combat.Initialize(DataBase.RuntimeData);
         _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData);
 
         _heatManager = new PlayerHeatManager(Heat, Events);
         _combatManager = new PlayerCombatManager(Combat, Events);
+        _dataDataManager = new PlayerDataManager(DataBase, Heat, Events);
     }
 
     private void InitializeStateMachine()
@@ -187,6 +193,24 @@ public class Player : DIMonoBehaviour
             => Controller.RangedAttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
             => Controller.DefendInput);
+    }
 
+    private void SubscribeToEvents()
+    {
+        RuntimeData.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
+    }
+
+    private void UnsubscribeToEvents()
+    {
+        _heatManager?.Dispose();
+        _combatManager?.Dispose();
+        _dataDataManager?.Dispose();
+
+        RuntimeData.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
+    }
+
+    private void HandleAnimationSpeedChanged(float speed)
+    {
+        Animator.speed = speed;
     }
 }

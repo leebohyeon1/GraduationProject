@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState;
-    private RangedAttackData _attackData => p_context.DataBase.RuntimeData.CombatData.RangedAttackData;
+    private RangedAttackData _attackData => p_context.RuntimeData.CombatData.RangedAttackData;
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }

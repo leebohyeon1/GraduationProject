@@ -145,7 +145,7 @@ public class PlayerHeatManager : IDisposable
 
         // 이벤트 구독
         _events.OnBattleStateChaged += HandleBattleSateChanged;
-        _heat.OnHeatChanged += HandleHeatChanged;
+        _heat.OnTierChanged += HandleHeatChanged;
         _events.OnAttackAffect += HandleAttackAffect;
         _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         _events.OnParryAffect += HandleParryAffect;
@@ -162,7 +162,7 @@ public class PlayerHeatManager : IDisposable
 
         // 이벤트 구독 해제
         _events.OnBattleStateChaged -= HandleBattleSateChanged;
-        _heat.OnHeatChanged -= HandleHeatChanged;
+        _heat.OnTierChanged -= HandleHeatChanged;
         _events.OnAttackAffect -= HandleAttackAffect;
         _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
         _events.OnParryAffect -= HandleParryAffect;
@@ -196,18 +196,18 @@ public class PlayerHeatManager : IDisposable
     /// <summary>
     /// 열기 변화 이벤트 처리
     /// </summary>
-    /// <param name="previousHeat">이전 열기 값</param>
-    /// <param name="currentHeat">현재 열기 값</param>
-    private void HandleHeatChanged(int previousHeat, int currentHeat)
+    /// <param name="previousTier">이전 티어</param>
+    /// <param name="currentTier">현재 티어</param>
+    private void HandleHeatChanged(int previousTier, int currentTier)
     {
         // 열기 티어 변경 여부 확인
-        if (currentHeat > previousHeat)
+        if (currentTier > previousTier)
         {
-            _events.TriggerTierUp(_heat.CurrentTier);
+            _events.TriggerTierUp(currentTier);
         }
         else
         {
-            _events.TriggerTierDown(_heat.CurrentTier);
+            _events.TriggerTierDown(currentTier);
         }
     }
 
