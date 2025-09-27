@@ -177,6 +177,8 @@ public class PlayerCombatData
 
     public void UpdateData(PlayerCombatData baseData, TierStatData tierStatData)
     {
+        DodgeSpeed = baseData.DodgeSpeed * tierStatData.SpeedMultiply;
+
         // 공격 데이터 
         for (int i = 0; i < AttackDatas.Length; i++)
         {
