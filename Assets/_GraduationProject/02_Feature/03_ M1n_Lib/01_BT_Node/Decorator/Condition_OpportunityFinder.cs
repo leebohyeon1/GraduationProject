@@ -16,10 +16,12 @@ public class Condition_OpportunityFinder : ConditionNode
     {
         if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.CurrentPlayerState))
         {
+            Debug.Log(runner.player.CurrentPlayerState);
             return true;
         }
         else if (runner.player.CurrentPlayerState == typeof(PlayerDodgeState))
         {
+            Debug.Log(runner.player.CurrentPlayerState);
             return true;
         }
         else

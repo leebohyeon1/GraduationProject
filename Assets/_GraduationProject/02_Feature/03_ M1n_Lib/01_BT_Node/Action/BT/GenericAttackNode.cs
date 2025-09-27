@@ -26,10 +26,19 @@ public class GenericAttackNode : Node
         runner.AnimationEvent(animationName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
         stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), damage);
+        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        directionToPlayer.y = 0;
+
+        if (directionToPlayer != Vector3.zero)
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
     }
 
     protected override NodeState OnUpdate()
     {
+        
+        
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
         if (Handler.IsSound)
         {
