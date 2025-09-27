@@ -37,7 +37,7 @@ public class RandomPatrol : Node
                 {
                     targetPos = hitInfo.point;
                 }
-                runner.Movement.StartOrUpdateChase(targetPos);
+                runner.Movement.StartOrUpdateChase(targetPos, runner.NormalSpeed);
                 _hasTarget = true;
             }
             if (_hasTarget)

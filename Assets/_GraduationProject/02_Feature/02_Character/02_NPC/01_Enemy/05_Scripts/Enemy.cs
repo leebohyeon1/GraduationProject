@@ -51,7 +51,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Cunning
     }
     public GroupAi groupAi{get;private set;}
-
+    [SerializeField] private float _normalSpeed = 2f;
+    public float NormalSpeed => _normalSpeed;
     protected override void Awake()
     {
         // health = new Health(100);
@@ -72,7 +73,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         ParrySystem.Initialize(this);
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
-        
+
     }
 
     void Start()
