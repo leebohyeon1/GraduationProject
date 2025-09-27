@@ -21,7 +21,6 @@ public class Condition_IsBetweenDistances : ConditionNode
         float distanceToPlayer = Vector3.Distance(runner.transform.position, runner.player.transform.position);
 
         // 거리가 최소 거리와 최대 거리 사이에 있는지 확인합니다.
-        Debug.Log($"Distance to Player: {distanceToPlayer}, Min: {minDistance}, Max: {maxDistance}");
         bool isInRange = distanceToPlayer >= minDistance && distanceToPlayer <= maxDistance;
         
         return isInRange;
