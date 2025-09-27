@@ -1,4 +1,5 @@
 ﻿using BH_Lib.Log;
+using System;
 using UnityEngine;
 
 
@@ -120,5 +121,28 @@ public class PlayerHealth : HealthSystem, IStiffness
         _stiffnessDuration = _runtimeData.CombatData.HeavyStaggerDuration;
         _runtimeData.SetDamaged(PlayerDamagedType.Strong);
         Log.PrintColor(Color.red, "강한 경직");
+    }
+}
+
+public class PlayerHealthManager : IDisposable
+{
+    private PlayerHealth _health;
+    private PlayerEvents _events;
+    private bool _disposed = false; // 중복 Dispose 방지
+
+    public PlayerHealthManager(PlayerHealth health, PlayerEvents events)
+    {
+        _health = health; 
+        _events = events;
+    }
+
+    public void Dispose()
+    {
+        if(_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
     }
 }

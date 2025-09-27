@@ -330,6 +330,7 @@ public class PlayerCombatManager : IDisposable
 {
     private PlayerCombat _combat;
     private PlayerEvents _events;
+    private bool _disposed = false;
 
     public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
     {
@@ -342,8 +343,15 @@ public class PlayerCombatManager : IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _events.OnRangedAttackStart -= HandleRangedAttack;
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
+        
+        _disposed = true;
     }
 
     private void HandleRangedAttack(Transform firePoint)

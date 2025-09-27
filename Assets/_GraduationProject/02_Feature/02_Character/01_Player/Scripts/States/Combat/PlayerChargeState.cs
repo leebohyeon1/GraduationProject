@@ -111,7 +111,6 @@ public class PlayerChargeState : BaseState<Player>
     /// </summary>
     private void SetupChargeSourceMap()
     {
-        Log.Print(p_context.Heat.CurrentTier);
         int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.CurrentTier;
         chargeSourceMap = p_context.DataBase.SourceMapData.
             GetSourceMap("OnCharge", tier);

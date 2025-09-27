@@ -6,16 +6,118 @@ using UnityEngine;
 
 public class PlayerHeat : HeatSystem
 {
+    private OverHeatDataSO _overHeatData;
+    private float _heatTierTimer;
+    private bool _isOverHeat;   
+
+    public bool IsOverHeat => _isOverHeat;
     /// <summary>
     /// 열기 시스템 초기화
     /// </summary>
     /// <param name="sourceMapDatabaseSO">소스맵 데이터베이스</param>
     /// <param name="tierStatDatabaseSO">티어 스탯 데이터베이스</param>
-    public void Initialize(SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO)
+    public void Initialize(SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO)
     {
         p_sourceMapDataBase = sourceMapDatabaseSO;
         p_tierStatDatabase = tierStatDatabaseSO;
+        _overHeatData = overHeatDataSO;
     }
+
+    #region SetHeat
+    /// <summary>
+    /// 열량 변경 함수
+    /// </summary>
+    /// <param name="amount"> 열기 변화량 </param>
+    public override void ChangeHeat(int amount)
+    {
+        if (amount == 0 && IsHeatLock) return;
+
+        int previousTier = GetTier();
+        int previousHeat = p_currentHeat;
+
+        p_currentHeat = Mathf.Clamp(p_currentHeat + amount, 0, MaxHeat);
+
+        if (previousHeat != p_currentHeat)
+        {
+            TriggerOnHeatChanged(previousHeat);
+        }
+
+        int newTier = GetTier();
+        if (previousTier != newTier)
+        {
+            TriggerOnTierChanged(previousTier);
+        }
+
+        if(CurrentHeat >= MaxHeat && !IsOverHeat)
+        {
+            OverHeat();
+        }
+    }
+
+    /// <summary>
+    /// 열량 설정 함수
+    /// </summary>
+    /// <param name="amount"> 열기 설정값 </param>
+    public override void SetHeat(int amount)
+    {
+
+        int previousTier = GetTier();
+        int previousHeat = p_currentHeat;
+
+        p_currentHeat = Mathf.Clamp(amount, 0, MaxHeat);
+
+        if (previousHeat != p_currentHeat)
+        {
+            TriggerOnHeatChanged(previousHeat);
+        }
+
+        int newTier = GetTier();
+        if (previousTier != newTier)
+        {
+            TriggerOnTierChanged(previousTier);
+        }
+
+        if (CurrentHeat >= MaxHeat && !IsOverHeat)
+        {
+            OverHeat();
+        }
+    }
+    #endregion
+
+    #region OverHeat
+    /// <summary>
+    /// 오버히트 시작
+    /// </summary>
+    protected override void OverHeat()
+    {
+        _heatTierTimer = Time.time;
+        _isOverHeat = true;
+    }
+
+    /// <summary>
+    /// 오버히트 효과 작동할 수 있는지
+    /// </summary>
+    public bool CanHeatTierEffect()
+    {
+        _heatTierTimer += Time.deltaTime;
+
+        if (_heatTierTimer > _overHeatData.TickSecond)
+        {
+            _heatTierTimer = 0f;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void OverHeatFinish()
+    {
+        if (_isOverHeat)
+        {
+            _isOverHeat = false;
+        }
+    }
+    #endregion
 
     /// <summary>
     /// 근접 공격 시 대상 열기 증가 처리
@@ -150,7 +252,8 @@ public class PlayerHeatManager : IDisposable
         _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         _events.OnParryAffect += HandleParryAffect;
         _events.OnRangedAttackAffect += HandleRangedAttackAffect;
-        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect;
+        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect; 
+        _events.OnOverHeatFinish += HandleOverHeatFinish;
     }
 
     /// <summary>
@@ -158,7 +261,10 @@ public class PlayerHeatManager : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
 
         // 이벤트 구독 해제
         _events.OnBattleStateChaged -= HandleBattleSateChanged;
@@ -168,6 +274,7 @@ public class PlayerHeatManager : IDisposable
         _events.OnParryAffect -= HandleParryAffect;
         _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
         _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
+        _events.OnOverHeatFinish -= HandleOverHeatFinish;
 
         _disposed = true;
     }
@@ -254,5 +361,13 @@ public class PlayerHeatManager : IDisposable
     private void HandleSecondCounterAttackAffect(Collider collider)
     {
         _heat.IncreaseHeatOnCounterAttack(collider);
+    }
+
+    /// <summary>
+    /// 오버 히트 종료 시 
+    /// </summary>
+    private void HandleOverHeatFinish()
+    {
+        _heat.OverHeatFinish(); 
     }
 }
