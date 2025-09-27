@@ -135,8 +135,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
     public bool IsInvincible => throw new NotImplementedException();
 
-    public bool IsHit => throw new NotImplementedException();
-
     public void SetState(EnemyState state)
     {
         CurrentState = state;
@@ -291,11 +289,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             return;
         }
 
-    }
-
-    public void ResetHitState()
-    {
-        throw new NotImplementedException();
     }
 
     public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)

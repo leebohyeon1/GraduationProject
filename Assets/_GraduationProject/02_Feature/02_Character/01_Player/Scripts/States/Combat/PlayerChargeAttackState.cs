@@ -25,7 +25,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered ChargeAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
         p_context.Combat.SetupCombatCenter();
 
@@ -61,7 +60,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         DOTween.Kill(p_animationTrigger);
 
         p_nextState = null;
-        Log.Print("Player exited ChargeAttack state");
     }
 
     /// <summary>

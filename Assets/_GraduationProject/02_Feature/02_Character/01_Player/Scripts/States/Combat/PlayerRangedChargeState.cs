@@ -19,7 +19,6 @@ public class PlayerRangedChargeState : BaseState<Player>
 
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerRangedChargeStart();
-        Log.Print("Player entered RangedAttackChargeState");
     }
 
     public override void OnUpdate()
@@ -69,8 +68,6 @@ public class PlayerRangedChargeState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited RangedAttackChargeState");
     }
 
 }

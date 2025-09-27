@@ -21,8 +21,6 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
         p_nextState = null; // 다음 상태 초기화
-
-        Log.Print("Player entered Attack state");
      
         p_context.Combat.SetupCombatCenter();
 

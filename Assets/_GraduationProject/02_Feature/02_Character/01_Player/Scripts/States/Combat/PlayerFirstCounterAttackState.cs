@@ -23,7 +23,6 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered FirstCounterAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         p_context.Combat.SetCanCounterAttack(false);
@@ -45,7 +44,6 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         DOTween.Kill(p_animationTrigger);
 
         p_nextState = null;
-        Log.Print("Player exited FirstCounterAttack state");
     }
 
     protected override void HandleAttackPerform()

@@ -40,7 +40,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
         p_context.Combat.SetupCombatCenter();
 
@@ -86,7 +85,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
 
         p_nextState = null;
-        Log.Print("Player exited Attack state");
     }
 
     /// <summary>
