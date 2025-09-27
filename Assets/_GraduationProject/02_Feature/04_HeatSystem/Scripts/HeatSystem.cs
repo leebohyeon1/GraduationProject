@@ -6,7 +6,7 @@ using UnityEngine;
 public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
-    [SerializeField] private int _currentHeat = 0;
+    [SerializeField] protected int _currentHeat = 0;
     private bool _isHeatLock = false;
     [SerializeField] protected SourceMapDatabaseSO p_sourceMapDataBase;
     [SerializeField] protected TierStatDatabaseSO p_tierStatDatabase;
@@ -19,6 +19,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public int CurrentTier => GetTier();
     public bool IsHeatLock => _isHeatLock;
     public SourceMapDatabaseSO SourceMapDataBase => p_sourceMapDataBase;
+    [SerializeField] float LockTimer = 2;
+    float Timer;
 
 
     [field: SerializeField]
@@ -26,6 +28,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public virtual void Init(ActorType actorType)
     {
         ActorType = actorType;
+        StatCalculator.Initialize(p_tierStatDatabase);
+
     }
 
 
@@ -35,6 +39,13 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 변화량 </param>
     public void ChangeHeat(int amount)
     {
+        if (IsHeatLock)
+        {
+            if (Time.time >= Timer)
+            {
+                SetHeatLock(false);
+            }
+        }
         if (amount == 0 && IsHeatLock) return;
 
         int previousTier = GetTier();
@@ -52,12 +63,13 @@ public class HeatSystem : MonoBehaviour, IHeatable
         {
             OnTierChanged?.Invoke(previousTier, newTier);
         }
-        
+
         if (_currentHeat >= _maxHeat && !_isHeatLock)
         {
             Debug.Log("과열 발생");
             OverHeat();
             SetHeatLock(true);
+            Timer = Time.time + LockTimer; // 2초 동안 열기 잠금
         }   
     }
 
@@ -84,7 +96,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
         }
     }
 
-    protected CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
+    public CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
         SourceMap data = p_sourceMapDataBase.GetSourceMap(id, actorType, tier);
         CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);

@@ -22,10 +22,9 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.OnParryAffect += HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", true);
-        Log.Print("Player entered Defend state");
 
 
-        p_context.Health.SetDefending(true);
+        p_context.Combat.DefendStart();
         p_context.Combat.SetupCombatCenter();
         p_context.Events.TriggerBattleStateChanged(true);
     }
@@ -39,12 +38,12 @@ public class PlayerDefendState : BaseState<Player>
         if (!p_context.Controller.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
         else if (p_context.Controller.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
     }
 
@@ -55,8 +54,6 @@ public class PlayerDefendState : BaseState<Player>
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited Defend state");
 
         // 방어 상태 종료 시 체력 시스템에 알림
     }

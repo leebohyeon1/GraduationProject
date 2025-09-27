@@ -1,7 +1,6 @@
 using UnityEngine;
 using Pathfinding;
 using System;
-using Unity.Mathematics;
 using UnityEditor.Rendering;
 using System.Collections;
 
@@ -35,12 +34,14 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     [SerializeField] private float _stunTime = 3f;
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
-    private int _CurrentStiffness = 0;
+    [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
-    [SerializeField] private TierStatDatabaseSO tierStatDatabase;
     public EnemyMovement Movement { get; private set; }
+    public HeatSystem heatSystem { get; private set; }
+    public Vector3 PatrolOriginPoint { get; private set; }
+
     protected override void Awake()
     {
         // health = new Health(100);
@@ -54,11 +55,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
-
-        StatCalculator.Initialize(tierStatDatabase);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
-        GetComponent<HeatSystem>().Init(ActorType.Monster);
-
+        heatSystem = GetComponent<HeatSystem>();
+        heatSystem.Init(ActorType.Monster);
+        ParrySystem = GetComponent<ParrySystem>();
+        ParrySystem.Initialize(this);
+        StiffnessSystem = GetComponent<Mon_Stiffness>();
+        StiffnessSystem.Initialize(this);
     }
 
     void Start()
@@ -70,6 +73,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             Debug.LogError("AIPath component not found in the scene.");
         }
         Movement = new EnemyMovement(this);
+        PatrolOriginPoint = transform.position;
     }
     public void SetStiffness(int amount)
     {
@@ -104,7 +108,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     {
         _isStunned = false;
     }
- 
+
     #endregion
     #region Enemy State Management
     public enum EnemyState
@@ -118,7 +122,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Die,
         Stunned, // 스턴 상태 추가
         Rush,
-        Hit
+        Hit,
+        RunAway
     }
     public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
@@ -130,8 +135,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public bool IsDead => CurrentHealth <= 0;
 
     public bool IsInvincible => throw new NotImplementedException();
-
-    public bool IsHit => throw new NotImplementedException();
 
     public void SetState(EnemyState state)
     {
@@ -148,6 +151,9 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetTrigger(eventName);
+            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
+            animator.speed = stat.FinalAnimSpeed;
+            
         }
     }
     public void AnimationBool(string boolName, bool value)
@@ -155,6 +161,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         if (animator != null)
         {
             animator.SetBool(boolName, value);
+            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
+            animator.speed = stat.FinalAnimSpeed;
         }
     }
     private void OnEnemyDeath()
@@ -177,19 +185,20 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public void Die()
     {
         animator.SetBool("Die", true);
+        animator.speed = 1;
         SetState(EnemyState.Die);
     }
 
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
+        _aiController.CombatEnter();
         if (!_aiController.IsActionable())
         {
-            _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
+            SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
-        _aiController.CombatEnter();
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
@@ -197,23 +206,22 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
     }
-    public void TakeDamage(int percentDamage, float Time)
-    {
-        int perDmg = Maxhealth / percentDamage;
-        StartCoroutine(PerDmgTimer(perDmg, Time));
-    }
+    // public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
+    // {
+    //     int perDmg = Maxhealth / percentDamage;
+    //     StartCoroutine(PerDmgTimer(perDmg, TickTime));
+    // }
 
-    private IEnumerator PerDmgTimer(int perDmg, float time)
-    {
-        float timer = 0f;
-        while (timer < time)
-        {
-            TakeDamage(perDmg);
-            timer += 1f;
-            Debug.Log("데미지 받는중");
-            yield return new WaitForSeconds(1f);
-        }
-    }
+    // private IEnumerator PerDmgTimer(int perDmg, float time)
+    // {
+    //     float timer = 0f;
+    //     while (timer < time)
+    //     {
+    //         TakeDamage(perDmg);
+    //         timer += 1f;
+    //         yield return new WaitForSeconds(1f);
+    //     }
+    // }
     
 
     [SerializeField] GameObject LastRushHitObject;
@@ -282,11 +290,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             return;
         }
 
-    }
-
-    public void ResetHitState()
-    {
-        throw new NotImplementedException();
     }
 
     public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)

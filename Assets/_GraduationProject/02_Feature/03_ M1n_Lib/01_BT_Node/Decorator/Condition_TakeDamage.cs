@@ -12,9 +12,6 @@ public class Condition_TakeDamage : ConditionNode
 
     protected override bool CheckCondition()
     {
-        if(runner.CurrentState==Enemy.EnemyState.Hit)
-        Debug.Log($"Condition_TakeDamage 체크{runner.CurrentState==Enemy.EnemyState.Hit}");
-
         return runner.CurrentState == Enemy.EnemyState.Hit;
     }
 

@@ -10,7 +10,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.CounterAttackDatas[1];
+    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.CounterAttackDatas[1];
 
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)
@@ -23,7 +23,6 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered SecondCounterAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
 
         // 공격 시 전진 이동 실행
@@ -42,7 +41,6 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         DOTween.Kill(p_animationTrigger);
 
         p_nextState = null;
-        Log.Print("Player exited SecondCounterAttack state");
     }
 
     protected override void StartAttackMovement()

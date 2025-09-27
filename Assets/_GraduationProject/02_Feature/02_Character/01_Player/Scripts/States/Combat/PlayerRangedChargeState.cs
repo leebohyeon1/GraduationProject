@@ -19,7 +19,6 @@ public class PlayerRangedChargeState : BaseState<Player>
 
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerRangedChargeStart();
-        Log.Print("Player entered RangedAttackChargeState");
     }
 
     public override void OnUpdate()
@@ -27,7 +26,7 @@ public class PlayerRangedChargeState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
-        if (!_isCharged && _chargeTimer > p_context.DataBase.RuntimeData.CombatData.RangedAttackData.ChargeTime)
+        if (!_isCharged && _chargeTimer > p_context.RuntimeData.CombatData.RangedAttackData.ChargeTime)
         {
             p_context.Events.TriggerRangedChargeFinish();
 
@@ -69,8 +68,6 @@ public class PlayerRangedChargeState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited RangedAttackChargeState");
     }
 
 }

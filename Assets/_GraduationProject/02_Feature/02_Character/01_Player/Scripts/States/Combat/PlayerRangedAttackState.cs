@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState;
-    private RangedAttackData _attackData => p_context.DataBase.RuntimeData.CombatData.RangedAttackData;
+    private RangedAttackData _attackData => p_context.RuntimeData.CombatData.RangedAttackData;
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -20,7 +20,6 @@ public class PlayerRangedAttackState : BaseState<Player>
         p_context.Events.TriggerRangedAttackStart();
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player entered RangedAttackFireState");
     }
 
     public override void OnUpdate() 
@@ -34,7 +33,6 @@ public class PlayerRangedAttackState : BaseState<Player>
 
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player exited RangedAttackFireState");
     }
 
     /// <summary>

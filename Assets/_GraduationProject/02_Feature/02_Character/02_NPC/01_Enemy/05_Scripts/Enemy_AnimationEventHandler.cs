@@ -5,7 +5,6 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public bool IsHitWindowOpen { get; private set; }
     public bool IsActionFinished { get; private set; }
     public bool IsSound { get; private set; }
-    public bool CanParry { get; private set; } // 패링 시스템도 여기로 통합
 
     public void OpenHitWindow()
     {
@@ -30,21 +29,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         IsSound = false;
     }
 
-    public void OpenParryWindow()
-    {
-        CanParry = true;
-    }
-
-    public void CloseParryWindow()
-    {
-        CanParry = false;
-    }
     public void ResetAllFlags()
     {
         IsActive = false;
         IsHitWindowOpen = false;
         IsActionFinished = false;
         IsSound = false;
-        CanParry = false;
     }
 }

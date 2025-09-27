@@ -11,9 +11,9 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.ChargeAttackData;
+    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.ChargeAttackData;
 
-    private PlayerAttackData _playerAttackData;
+    private PlayerAttackData _playerAttackData = new PlayerAttackData();
 
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -25,10 +25,11 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered ChargeAttack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
         p_context.Combat.SetupCombatCenter();
-        _playerAttackData = new PlayerAttackData(p_AttackData);
+
+        _playerAttackData = new PlayerAttackData();
+        _playerAttackData.Initialize(p_AttackData);
 
         // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
         if (p_context.Movement.HasTargetRotation)
@@ -59,7 +60,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         DOTween.Kill(p_animationTrigger);
 
         p_nextState = null;
-        Log.Print("Player exited ChargeAttack state");
     }
 
     /// <summary>
@@ -105,11 +105,11 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void StartAttackMovement()
     {
-        float distance = p_AttackData.AttackMoveDistance;
+        float distance = _playerAttackData.AttackMoveDistance;
 
         // 전방에 오브젝트가 있을 경우 전진 거리 조정
         if (Physics.Raycast(p_context.transform.position, p_context.transform.forward,
-            out var hitInfo, p_AttackData.AttackMoveDistance))
+            out var hitInfo, _playerAttackData.AttackMoveDistance))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
 

@@ -8,7 +8,6 @@ public class HealthSystem : MonoBehaviour, IHealth
     protected int p_health;
     protected int p_maxHealth;
     protected bool p_isInvincible;
-    protected bool p_isHit;
     #endregion
 
     #region Properties
@@ -19,8 +18,6 @@ public class HealthSystem : MonoBehaviour, IHealth
     public bool IsDead => p_health <= 0;
 
     public bool IsInvincible => p_isInvincible;
-
-    public bool IsHit => p_isHit;
     #endregion
 
     #region Events
@@ -51,10 +48,6 @@ public class HealthSystem : MonoBehaviour, IHealth
         {
             Die();
         }
-        else
-        {
-            p_isHit = true;
-        }
 
     }
 
@@ -83,11 +76,6 @@ public class HealthSystem : MonoBehaviour, IHealth
         p_isInvincible = isInvisible;
 
         OnInvisibleChanged?.Invoke(isInvisible);
-    }
-
-    public void ResetHitState()
-    {
-        p_isHit = false;
     }
 
 }
