@@ -43,8 +43,6 @@ public class PlayerDodgeState : BaseState<Player>
         }
 
         p_context.Events.TriggerDodgeStart();
-
-        Log.Print("Player entered Dodge state");
     }
 
     public override void OnUpdate()
@@ -68,8 +66,6 @@ public class PlayerDodgeState : BaseState<Player>
         {
             p_context.Events.TriggerBattleStateChanged(true);
         }
-
-        Log.Print("Player exited Dodge state");
     }
 
     /// <summary>

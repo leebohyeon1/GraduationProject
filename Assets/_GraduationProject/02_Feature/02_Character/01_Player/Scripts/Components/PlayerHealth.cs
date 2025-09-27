@@ -10,7 +10,7 @@ public class PlayerHealth : HealthSystem, IStiffness
     /// 경직도 관련
     /// </summary>
     private int _currentStiffness;
-    private int _stiffnessThreshold;
+    private int _stiffnessThreshold = 100;
     private float _stiffnessDuration;
 
     #region Properties
@@ -46,10 +46,6 @@ public class PlayerHealth : HealthSystem, IStiffness
         {
             Die();
         }
-        else
-        {
-            p_isHit = true;
-        }
     }
 
     public override void TakeDamage(int damageAmount, int stiffenessAmount, IAttacker attacker = null)
@@ -76,10 +72,6 @@ public class PlayerHealth : HealthSystem, IStiffness
         {
             Die();
         }
-        else
-        {
-            p_isHit = true;
-        }
     }
 
     public void AddStiffness(int amount)
@@ -87,7 +79,7 @@ public class PlayerHealth : HealthSystem, IStiffness
         ChangeStiffness(amount);
 
         // 현재 경직도가 최대 경직도를 넘을 때
-        if(_currentStiffness > _stiffnessThreshold)
+        if(_currentStiffness >= _stiffnessThreshold)
         {
             // 경직도 초기화
             ChangeStiffness(-_currentStiffness);
@@ -110,13 +102,23 @@ public class PlayerHealth : HealthSystem, IStiffness
         _currentStiffness += amount;
     }
 
+    /// <summary>
+    /// 약한 경직
+    /// </summary>
     private void LightStagger()
     {
+        _stiffnessDuration = _runtimeData.CombatData.LightStaggerDuration;
+        _runtimeData.SetDamaged(PlayerDamagedType.Normal);
         Log.PrintColor(Color.red, "약한 경직");
     }
 
+    /// <summary>
+    /// 강한 경직
+    /// </summary>
     private void HeavyStagger()
     {
+        _stiffnessDuration = _runtimeData.CombatData.HeavyStaggerDuration;
+        _runtimeData.SetDamaged(PlayerDamagedType.Strong);
         Log.PrintColor(Color.red, "강한 경직");
     }
 }

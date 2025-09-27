@@ -22,7 +22,6 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.OnParryAffect += HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", true);
-        Log.Print("Player entered Defend state");
 
 
         p_context.Combat.DefendStart();
@@ -55,8 +54,6 @@ public class PlayerDefendState : BaseState<Player>
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited Defend state");
 
         // 방어 상태 종료 시 체력 시스템에 알림
     }

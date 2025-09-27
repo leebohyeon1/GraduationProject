@@ -15,7 +15,6 @@ public class PlayerBaseDatasSO : ScriptableObject
     public float Gravity = -9.81f;
     public float GroundCheckDistance = 0.1f;
 
-
     [Header("Combat")]
     public PlayerCombatData CombatData;
 }
@@ -30,10 +29,14 @@ public class PlayerData
     // State
     public bool IsDefending { get; private set; }
     public bool IsInCombat { get; private set; }
+    public bool IsDamaged => IsLightHit || IsHeavyHit;
+    public bool IsLightHit { get; private set; } 
+    public bool IsHeavyHit { get; private set; } 
 
     // Stat
     public int MaxHealth;
     public int MaxMana;
+
     public float MoveSpeed;
     public float RotateSpeed;
 
@@ -76,6 +79,24 @@ public class PlayerData
         IsInCombat = inCombat;
     }
 
+    public void SetDamaged(PlayerDamagedType damagedType)
+    {
+        switch (damagedType)
+        { 
+            case PlayerDamagedType.Normal:
+                IsLightHit = true;
+                break;
+            case PlayerDamagedType.Strong:
+                IsHeavyHit = true;
+                break;
+        }
+    }
+
+    public void ResetDamaged()
+    {
+        IsLightHit = false;
+        IsHeavyHit = false;
+    }
 }
 
 /// <summary>
@@ -90,7 +111,8 @@ public class PlayerCombatData
 
     [Header("Damaged")]
     public float DefendDamageReductionRate;
-    public float HitStunDuration;
+    public float LightStaggerDuration;
+    public float HeavyStaggerDuration;
 
     [Header("Attack")]
     public LayerMask AttackLayerMask;
@@ -126,7 +148,8 @@ public class PlayerCombatData
         DodgeCooldown = data.DodgeCooldown;
 
         DefendDamageReductionRate = data.DefendDamageReductionRate;
-        HitStunDuration = data.HitStunDuration;
+        LightStaggerDuration = data.LightStaggerDuration;
+        HeavyStaggerDuration = data.HeavyStaggerDuration;
         AttackLayerMask = data.AttackLayerMask;
 
         for (int i = 0; i < AttackDatas.Length; i ++)

@@ -20,8 +20,6 @@ public class TestEnemy : CharacterBase, IDamageable
 
     public bool IsInvincible => false;
 
-    public bool IsHit => throw new NotImplementedException();
-
     public TestFeedback Feedback { get; set; }
 
     void Start()
@@ -64,11 +62,6 @@ public class TestEnemy : CharacterBase, IDamageable
         GetComponent<Collider>().enabled = true;   
 
         _currentHealth = MaxHealth;
-    }
-
-    public void ResetHitState()
-    {
-        throw new NotImplementedException();
     }
 
     public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)

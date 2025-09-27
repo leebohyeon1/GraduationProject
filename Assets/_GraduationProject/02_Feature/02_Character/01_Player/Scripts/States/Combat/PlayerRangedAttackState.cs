@@ -20,7 +20,6 @@ public class PlayerRangedAttackState : BaseState<Player>
         p_context.Events.TriggerRangedAttackStart();
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player entered RangedAttackFireState");
     }
 
     public override void OnUpdate() 
@@ -34,7 +33,6 @@ public class PlayerRangedAttackState : BaseState<Player>
 
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player exited RangedAttackFireState");
     }
 
     /// <summary>

@@ -38,7 +38,6 @@ public class Player : DIMonoBehaviour
     public PlayerBaseDatasSO BaseData => DataBase.BaseData;
     public PlayerData RuntimeData => DataBase.RuntimeData;
 
-
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     #endregion
 
@@ -164,7 +163,7 @@ public class Player : DIMonoBehaviour
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && Health.IsHit);
+            !Health.IsDead && RuntimeData.IsDamaged);
 
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
