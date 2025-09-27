@@ -14,10 +14,7 @@ public class PlayerIdleState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Animator.SetBool("IsIdle", true);
-            
-        // 대기 상태 진입 시 처리
-        Log.Print("Player entered Idle state");
+        p_context.Animator.SetBool("IsIdle", true);         
     }
 
     public override void OnUpdate()
@@ -38,7 +35,6 @@ public class PlayerIdleState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsIdle", false);
-        Log.Print("Player exited Idle state");
     }
 }
 

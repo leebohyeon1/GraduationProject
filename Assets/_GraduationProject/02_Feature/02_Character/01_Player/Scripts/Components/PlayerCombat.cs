@@ -1,4 +1,5 @@
 using BH_Lib.Log;
+using DG.Tweening;
 using Pathfinding.Drawing;
 using System;
 using UnityEngine;
@@ -7,15 +8,22 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour, IAttacker
 {
     #region Private Fields
-    private PlayerCombatData _combatData;
+    private PlayerData _runtimeData;
+    private PlayerCombatData _combatData => _runtimeData.CombatData;
     /// <summary>
     /// 전투 중심점의 위치
     /// </summary>
     private Vector3 _combatCenter;
+
     /// <summary>
     /// 카운터 공격 가능 여부
     /// </summary>
     private bool _canCounterAttack;
+    /// <summary>
+    /// 카운터 공격 가능 오브젝트
+    /// </summary>
+    private Collider _counterableTarget = null;
+    
     /// <summary>
     /// 마지막 전투 시간
     /// </summary>
@@ -33,14 +41,16 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
     #region Properties
     public bool CanCounterAttack => _canCounterAttack;
+    public Collider CounterableTarget => _counterableTarget;
+
     public float LastBattleTime => _lastBattleTime;
     public bool IsBattleState => _isBattleState;
     #endregion
 
-    public void Initialize(PlayerCombatData combatData)
+    public void Initialize(PlayerData combatData)
     {
         _isDrawGizmos = true;
-        _combatData = combatData;
+        _runtimeData = combatData;
     }
 
     /// <summary>
@@ -141,6 +151,19 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     }
     #endregion
 
+    #region Defend
+
+    public void DefendStart()
+    {
+        _runtimeData.SetDefending(true);
+    }
+
+    public void DefendFinish()
+    {
+        _runtimeData.SetDefending(false);
+    }
+    #endregion
+
     #region Parry
     /// <summary>
     /// 패리(방어) 실행
@@ -177,6 +200,104 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     }
     #endregion
 
+    #region CounterAttack
+    
+    public void ToggleCanCounter(float delayTime)
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.AppendCallback(() => SetCanCounterAttack(true));
+        sequence.AppendInterval(delayTime);
+        sequence.AppendCallback(() => SetCanCounterAttack(false));
+
+        sequence.Play();
+    }
+
+    /// <summary>
+    /// 카운터 공격 가능 여부 설정 함수
+    /// </summary>
+    /// <param name="canCounterAttack">가능 여부</param>
+    public void SetCanCounterAttack(bool canCounterAttack)
+    {
+        _canCounterAttack = canCounterAttack;
+    }
+
+    /// <summary>
+    /// 카운터 가능한 적이 있는지 확인
+    /// </summary>
+    /// <returns>카운터 가능한 적이 있는가</returns>
+    public bool CanIsScanCounterable()
+    {
+        Collider[] colliders = Physics.OverlapBox(transform.position,
+                  _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 카운터 공격 가능한 오브젝트 감지
+    /// </summary>
+    /// <returns>가장 가까운 카운터 가능한 오브젝트</returns>
+    public Collider ScanCounterableObject()
+    {
+        _counterableTarget = GetComponent<Collider>();
+        return GetComponent<Collider>();
+    }
+
+    /// <summary>
+    /// 첫번째 카운터 공격 실행
+    /// </summary>
+    public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
+    {
+        Collider[] colliders = Physics.OverlapBox(transform.position,
+            _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+
+        float minDistance = Mathf.Infinity;
+        Collider collider = null;
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
+            {
+                float distance = Vector3.Distance(transform.position, colliders[i].transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    collider = colliders[i];
+                }
+            }
+        }
+
+        _counterableTarget = collider;
+
+        _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();
+
+        if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.TakeDamage(attackData.AttackDamage, this);
+        }
+    }
+
+    public void ExcuteSecondCounterAttack(PlayerAttackData attackData)
+    {
+
+
+        
+    }
+
+    public void ClearCounterTarget()
+    {
+        _counterableTarget = null;
+    }
+
+    #endregion
+
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
@@ -191,6 +312,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
         DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);
         DrawActionGizmo(_combatData.ChargeAttackData.AttackRadius, Color.indianRed);
         DrawActionGizmo(_combatData.ParryRadius, Color.green);
+        DrawActionGizmo(_combatData.CounterAttackDatas[0].AttackRadius, Color.beige);
     }
 
     private void DrawActionGizmo(Vector3 radius, Color color)
@@ -206,8 +328,9 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
 public class PlayerCombatManager : IDisposable
 {
-    [SerializeField] private PlayerCombat _combat;
-    [SerializeField] private PlayerEvents _events;
+    private PlayerCombat _combat;
+    private PlayerEvents _events;
+    private bool _disposed = false;
 
     public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
     {
@@ -220,8 +343,15 @@ public class PlayerCombatManager : IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _events.OnRangedAttackStart -= HandleRangedAttack;
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
+        
+        _disposed = true;
     }
 
     private void HandleRangedAttack(Transform firePoint)

@@ -15,8 +15,6 @@ public class PlayerMoveState : BaseState<Player>
     public override void OnEnter()
     {
         p_context.Animator.SetBool("IsMoving", true);
-
-        Log.Print("Player entered Move state");
     }
 
     public override void OnUpdate()
@@ -47,7 +45,5 @@ public class PlayerMoveState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsMoving", false);
-
-        Log.Print("Player exited Move state");
     }
 }

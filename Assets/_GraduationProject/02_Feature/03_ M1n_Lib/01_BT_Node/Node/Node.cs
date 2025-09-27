@@ -15,7 +15,6 @@ namespace BehaviorTree
         protected Enemy runner;
         protected AiBrain brain;
         protected Enemy_AnimationEventHandler Handler => runner.animHandler;
-
         public NodeState Evaluate()
         {
             if (!isEntered)
@@ -31,7 +30,7 @@ namespace BehaviorTree
             }
 
             // if(currentState == NodeState.SUCCESS)
-            // Debug.Log($"Node: {this.name}, State: <color=green>{currentState}</color>");
+            Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
 
             return currentState;
         }

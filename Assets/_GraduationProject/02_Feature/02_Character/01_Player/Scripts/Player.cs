@@ -1,8 +1,9 @@
-using BH_Lib.DI;
+ï»¿using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
+using System;
 using UnityEngine;
-
 
 public class Player : DIMonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Player : DIMonoBehaviour
     private StateMachine<Player> _stateMachine;
     private PlayerHeatManager _heatManager;
     private PlayerCombatManager _combatManager;
+    private PlayerDataManager _dataDataManager;
     #endregion
 
     #region Properties
@@ -34,29 +36,35 @@ public class Player : DIMonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
+    public PlayerBaseDatasSO BaseData => DataBase.BaseData;
+    public PlayerData RuntimeData => DataBase.RuntimeData;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+
+    /// <summary>
+    /// í˜„ì¬ í”Œë ˆì´ì–´ ìƒíƒœ
+    /// </summary>
+    public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
 
     private void Start()
     {
         InitializeReference();
         InitializeStateMachine();
+
+        SubscribeToEvents();
     }
 
     private void Update()
     {
-        _movement.CheckGrounded(DataBase.RuntimeData.GroundCheckDistance,
-            DataBase.RuntimeData.GroundLayerMask);
-
+        OnUpdate();
         _stateMachine?.Update();
     }
 
     private void FixedUpdate()
     {
-        _movement.ApplyGravity(DataBase.RuntimeData.Gravity);
-
-        // »óÅÂ ¸Ó½Å °íÁ¤ ¾÷µ¥ÀÌÆ®
+        OnFixedUpdate();
+        // ìƒíƒœ ë¨¸ì‹  ê³ ì • ì—…ë°ì´íŠ¸
         _stateMachine?.FixedUpdate();
     }
 
@@ -67,10 +75,12 @@ public class Player : DIMonoBehaviour
 
     private void OnDestroy()
     {
-        _heatManager?.Dispose();
-        _combatManager?.Dispose();
+        UnsubscribeToEvents();
     }
 
+    /// <summary>
+    /// ë ˆí¼ëŸ°ìŠ¤ ì´ˆê¸°í™”
+    /// </summary>
     private void InitializeReference()
     {
         if (_animator == null)
@@ -122,13 +132,16 @@ public class Player : DIMonoBehaviour
         _controller.Initialize(_inputDeviceDetector);
         _health.Initialize(_dataBase.RuntimeData);
         _movement.Initialize(_characterController);
-        _combat.Initialize(DataBase.RuntimeData.CombatData);
-        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData);
+        _combat.Initialize(DataBase.RuntimeData);
+        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData, DataBase.OverHeatData);
 
         _heatManager = new PlayerHeatManager(Heat, Events);
         _combatManager = new PlayerCombatManager(Combat, Events);
+        _dataDataManager = new PlayerDataManager(DataBase, Heat, Events);
     }
-
+    /// <summary>
+    /// ìƒíƒœë¨¸ì‹  ì´ˆê¸°í™”
+    /// </summary>
     private void InitializeStateMachine()
     {
         _stateMachine = new StateMachine<Player>(this);
@@ -145,26 +158,30 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerRangedAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerFirstCounterAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerSecondCounterAttackState(this, _stateMachine));
 
         SetupStateTransitions();
 
-        // ÃÊ±â »óÅÂ¸¦ Idle·Î ¼³Á¤
+        // ì´ˆê¸° ìƒíƒœë¥¼ Idleë¡œ ì„¤ì •
         _stateMachine.ChangeState<PlayerIdleState>();
     }
-
+    /// <summary>
+    /// ìƒíƒœë¨¸ì‹  ë³€ê²½ ì„¸íŒ…
+    /// </summary>
     private void SetupStateTransitions()
     {
-        // Hit »óÅÂ·ÎÀÇ ÀüÈ¯ (¸ğµç »óÅÂ¿¡¼­ °¡´É)
+        // Hit ìƒíƒœë¡œì˜ ì „í™˜ (ëª¨ë“  ìƒíƒœì—ì„œ ê°€ëŠ¥)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && Health.IsHit);
+            !Health.IsDead && RuntimeData.IsDamaged);
 
-        // Idle »óÅÂ¿¡¼­ÀÇ ÀüÈ¯
+        // Idle ìƒíƒœì—ì„œì˜ ì „í™˜
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Controller.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
             => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
-            => !Combat.CanCounterAttack && Controller.AttackInput);
+            => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
@@ -172,19 +189,71 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
             => Controller.DefendInput);
 
-        // Move »óÅÂ¿¡¼­ÀÇ ÀüÈ¯
+        // Move ìƒíƒœì—ì„œì˜ ì „í™˜
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
             => Controller.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
             => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
-            => !Combat.CanCounterAttack && Controller.AttackInput);
+            => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
             => Controller.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()
             => Controller.RangedAttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
             => Controller.DefendInput);
+    }
+
+    /// <summary>
+    /// Updateì— í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    /// </summary>
+    private void OnUpdate()
+    {
+        _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
+                   DataBase.BaseData.GroundLayerMask);
+
+        if (Heat.CanHeatTierEffect())
+        {
+            Events.TriggerTier(Heat.CurrentTier);
+        }
+    }
+    /// <summary>
+    /// FixedUpdateì— í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    /// </summary>
+    private void OnFixedUpdate()
+    {
+        _movement.ApplyGravity(DataBase.BaseData.Gravity);
 
     }
+
+    #region Event
+    private void SubscribeToEvents()
+    {
+        RuntimeData.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
+        Events.OnOverHeat += HandleOverHeat;
+    }
+
+    private void UnsubscribeToEvents()
+    {
+        _heatManager?.Dispose();
+        _combatManager?.Dispose();
+        _dataDataManager?.Dispose();
+
+        RuntimeData.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
+        Events.OnOverHeat -= HandleOverHeat;
+    }
+
+    private void HandleAnimationSpeedChanged(float speed)
+    {
+        Animator.speed = speed;
+    }
+
+    private void HandleOverHeat()
+    {
+        if (Heat.IsOverHeat)
+        {
+            Health.TakeDamage(DataBase.OverHeatData.DamagePerTick);
+        }
+    }
+    #endregion
 }

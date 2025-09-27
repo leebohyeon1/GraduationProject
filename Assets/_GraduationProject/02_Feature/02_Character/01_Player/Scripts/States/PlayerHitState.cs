@@ -9,31 +9,38 @@ public class PlayerHitState : BaseState<Player>
     private float _hitTimer;
 
     public PlayerHitState(Player context, StateMachine<Player> stateMachine) 
-        : base(context, stateMachine) 
-    {
-        _hitDuration = p_context.DataBase.RuntimeData.CombatData.HitStunDuration;
-    }
+        : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        if (p_context.Health.IsDefending)
+        if (p_context.RuntimeData.IsHeavyHit)
         {
-            p_context.Animator.SetTrigger("DefendHit");
+            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
         }
-        else
+        else if(p_context.RuntimeData.IsLightHit)
         {
-            p_context.Animator.SetTrigger("Hit");
+            if (p_context.RuntimeData.IsDefending)
+            {
+                p_context.Animator.SetTrigger("DefendHit");
+                p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
+            }
+            else
+            {
+                p_context.Animator.SetTrigger("Hit");
+                p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
+            }
+
         }
 
         p_context.Animator.SetBool("IsHit", true);
 
+        _hitDuration = p_context.Health.StiffnessDuration;
         _hitTimer = 0f;
+
 
         // 피격 시 이동 정지
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player entered Hit state");
     }
 
 
@@ -47,7 +54,7 @@ public class PlayerHitState : BaseState<Player>
         // 피격 지속 시간이 끝나면 Idle 상태로 전환
         if (_hitTimer >= _hitDuration)
         {
-            if (p_context.Health.IsDefending)
+            if (p_context.RuntimeData.IsDefending)
             {
                 p_stateMachine.RevertToPreviousState();
             }
@@ -63,10 +70,8 @@ public class PlayerHitState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsHit", false);
 
-        p_context.Health.ResetHitState();
+        p_context.RuntimeData.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited Hit state");
     }
-    }
+}
 

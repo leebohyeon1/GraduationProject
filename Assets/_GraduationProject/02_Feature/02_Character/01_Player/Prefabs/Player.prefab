@@ -1708,6 +1708,7 @@ MonoBehaviour:
   _baseDatasSO: {fileID: 11400000, guid: 566f1563e84bc08448785bd0dfbc8508, type: 2}
   _tierStatDatabaseSO: {fileID: 11400000, guid: 5c5414580c904c9429bcd2ee6edf1198, type: 2}
   _sourceMapDatabaseSO: {fileID: 11400000, guid: 6a7236ca84ee074438f611eb3d714c46, type: 2}
+  _overHeatDataSO: {fileID: 11400000, guid: f278d7c66fc3dff419f92bb94131fb70, type: 2}
 --- !u!114 &7649532155660733297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1745,15 +1746,114 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6df5ca9e8f44934899eb44fa890e10f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerEvents
-  _feedbackPlayer:
-    _feedbacks:
-    - type: 0
-      Feedback: {fileID: 0}
-  _firstAttackStartEffectPoint: {fileID: 0}
-  _secondAttackStartEffectPoint: {fileID: 0}
-  _thirdAttackStartEffectPoint: {fileID: 0}
-  _chargeEffectPoint: {fileID: 0}
+  _feedbacks:
+  - type: 0
+    Feedback: {fileID: 0}
+  - type: 1
+    Feedback: {fileID: 0}
+  - type: 2
+    Feedback: {fileID: 0}
+  - type: 3
+    Feedback: {fileID: 0}
+  - type: 4
+    Feedback: {fileID: 0}
+  - type: 5
+    Feedback: {fileID: 0}
+  - type: 5
+    Feedback: {fileID: 0}
+  - type: 6
+    Feedback: {fileID: 0}
+  - type: 7
+    Feedback: {fileID: 0}
+  - type: 8
+    Feedback: {fileID: 0}
+  - type: 9
+    Feedback: {fileID: 0}
+  - type: 10
+    Feedback: {fileID: 0}
+  - type: 11
+    Feedback: {fileID: 0}
+  - type: 12
+    Feedback: {fileID: 0}
+  - type: 13
+    Feedback: {fileID: 0}
+  - type: 14
+    Feedback: {fileID: 0}
+  - type: 15
+    Feedback: {fileID: 0}
+  - type: 16
+    Feedback: {fileID: 0}
+  - type: 17
+    Feedback: {fileID: 0}
+  - type: 18
+    Feedback: {fileID: 0}
+  - type: 19
+    Feedback: {fileID: 0}
+  - type: 20
+    Feedback: {fileID: 0}
+  - type: 21
+    Feedback: {fileID: 0}
+  - type: 22
+    Feedback: {fileID: 0}
+  - type: 23
+    Feedback: {fileID: 0}
+  - type: 24
+    Feedback: {fileID: 0}
+  - type: 25
+    Feedback: {fileID: 0}
+  - type: 26
+    Feedback: {fileID: 0}
+  - type: 27
+    Feedback: {fileID: 0}
+  - type: 28
+    Feedback: {fileID: 0}
+  - type: 29
+    Feedback: {fileID: 0}
+  - type: 30
+    Feedback: {fileID: 0}
+  - type: 31
+    Feedback: {fileID: 0}
+  - type: 32
+    Feedback: {fileID: 0}
+  - type: 33
+    Feedback: {fileID: 0}
+  - type: 34
+    Feedback: {fileID: 0}
+  - type: 35
+    Feedback: {fileID: 0}
+  - type: 36
+    Feedback: {fileID: 0}
+  - type: 37
+    Feedback: {fileID: 0}
+  - type: 38
+    Feedback: {fileID: 0}
+  - type: 39
+    Feedback: {fileID: 0}
+  - type: 40
+    Feedback: {fileID: 0}
+  - type: 41
+    Feedback: {fileID: 0}
+  - type: 42
+    Feedback: {fileID: 0}
+  - type: 43
+    Feedback: {fileID: 0}
+  - type: 44
+    Feedback: {fileID: 0}
+  - type: 45
+    Feedback: {fileID: 0}
+  - type: 46
+    Feedback: {fileID: 0}
+  - type: 47
+    Feedback: {fileID: 0}
+  - type: 48
+    Feedback: {fileID: 0}
+  _firstAttackStartEffectPoint: {fileID: 3995782768419392909}
+  _secondAttackStartEffectPoint: {fileID: 7183611462762354382}
+  _thirdAttackStartEffectPoint: {fileID: 1963431263193456219}
+  _chargeEffectPoint: {fileID: 6761722275825484946}
+  _chargeAttackPoint: {fileID: 4578035567730943111}
   _rangedAttackPoint: {fileID: 4088683721708587602}
+  _counterAttackPoint: {fileID: 3718239216204341862}
 --- !u!114 &6502035142526053912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1782,6 +1882,7 @@ MonoBehaviour:
   _currentHeat: 0
   p_sourceMapDataBase: {fileID: 0}
   p_tierStatDatabase: {fileID: 0}
+  LockTimer: 2
   <ActorType>k__BackingField: 0
 --- !u!114 &5037239723093530524
 MonoBehaviour:

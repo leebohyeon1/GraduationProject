@@ -19,11 +19,21 @@ public class PlayerMovement : MonoBehaviour
     /// 마지막 회피 시간 (쿨다운 계산용)
     /// </summary>
     private float _lastDodgeTime = -999f;
+    /// <summary>
+    /// 목표 회전값
+    /// </summary>
+    private Quaternion _targetRotation;
+    /// <summary>
+    /// 목표 회전값이 있는지
+    /// </summary>
+    private bool _hasTargetRotation;
     #endregion
 
     #region Properties
     public float LastDodgeTime => _lastDodgeTime;
 
+    public Quaternion TargetRotation => _targetRotation;
+    public bool HasTargetRotation => _hasTargetRotation;
     #endregion
 
 
@@ -40,7 +50,43 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 지면 접촉 상태 체크
+    /// CharacterController 하단에서 레이캐스트로 확인
+    /// </summary>
+    /// <param name="groundCheckDistance">지면 체크 거리</param>
+    /// <param name="groundLayerMask">지면 레이어</param>
+    public void CheckGrounded(float groundCheckDistance, LayerMask groundLayerMask)
+    {
+        // CharacterController의 아래쪽 경계에서 체크
+        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
+        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, groundCheckDistance, groundLayerMask);
+    }
 
+    /// <summary>
+    /// 중력 적용
+    /// 지면 접촉 시 미세한 하향력 유지, 공중에서는 중력 가속도 적용
+    /// </summary>
+    /// <param name="gravityScale">중력 크기</param>
+    public void ApplyGravity(float gravityScale)
+    {
+        if (_isGrounded && _velocity.y < 0)
+        {
+            _velocity.y = -2f; // 약간의 하향력 유지하여 지면에 붙어있도록
+        }
+        else
+        {
+            _velocity.y += gravityScale * Time.fixedDeltaTime;
+        }
+
+        // 최대 낙하 속도 제한
+        if (_velocity.y < -30f)
+        {
+            _velocity.y = -30f;
+        }
+    }
+
+    #region Move
     /// <summary>
     /// 카메라 기준 이동 처리
     /// 입력 방향을 카메라 기준으로 변환하여 이동 및 회전 수행
@@ -94,7 +140,9 @@ public class PlayerMovement : MonoBehaviour
             );
         }
     }
+    #endregion
 
+    #region Dodge
     /// <summary>
     /// 회피 이동 실행
     /// 입력 방향이 있으면 해당 방향으로, 없으면 전방으로 회피
@@ -119,51 +167,27 @@ public class PlayerMovement : MonoBehaviour
 
         _lastDodgeTime = Time.time;
     }
-
-    /// <summary>
-    /// 지면 접촉 상태 체크
-    /// CharacterController 하단에서 레이캐스트로 확인
-    /// </summary>
-    /// <param name="groundCheckDistance">지면 체크 거리</param>
-    /// <param name="groundLayerMask">지면 레이어</param>
-    public void CheckGrounded(float groundCheckDistance, LayerMask groundLayerMask)
-    {
-        // CharacterController의 아래쪽 경계에서 체크
-        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
-        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, groundCheckDistance, groundLayerMask);
-    }
-
-
-    /// <summary>
-    /// 중력 적용
-    /// 지면 접촉 시 미세한 하향력 유지, 공중에서는 중력 가속도 적용
-    /// </summary>
-    /// <param name="gravityScale">중력 크기</param>
-    public void ApplyGravity(float gravityScale)
-    {
-        if (_isGrounded && _velocity.y < 0)
-        {
-            _velocity.y = -2f; // 약간의 하향력 유지하여 지면에 붙어있도록
-        }
-        else
-        {
-            _velocity.y += gravityScale * Time.fixedDeltaTime;
-        }
-
-        // 최대 낙하 속도 제한
-        if (_velocity.y < -30f)
-        {
-            _velocity.y = -30f;
-        }
-    }
+    #endregion
 
     #region Rotate
+
     /// <summary>
-    /// 지정된 방향으로 즉시 회전
+    /// 입력 기기에 따라 회전
+    /// </summary>
+    /// <param name="deviceType">현재 사용 중인 입력 기기 타입</param>
+    /// <param name="moveInput">게임패드 좌측 스틱 입력 벡터</param>
+    /// <param name="mousePosition">마우스 스크린 좌표 위치</param>
+    public void RotateToDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
+    {
+        SetRotation(GetTargetRotation(deviceType, moveInput, mousePosition));
+    }
+
+    /// <summary>
+    /// 방향으로 회전
     /// 회피 시작 시 방향 설정 등에 사용
     /// </summary>
     /// <param name="direction">회전할 방향</param>
-    public void RotateImmediately(Vector3 direction)
+    public void RotateToDirection(Vector3 direction)
     {
         if (transform == null) return;
 
@@ -180,77 +204,75 @@ public class PlayerMovement : MonoBehaviour
         cameraRight.Normalize();
 
         // 즉시 회전 적용
-        transform.rotation = Quaternion.LookRotation(cameraForward * direction.z + cameraRight * direction.x);
+        SetRotation(Quaternion.LookRotation(cameraForward * direction.z + cameraRight * direction.x));
     }
 
     /// <summary>
-    /// 입력 기기에 따라 회전
-    /// 키보드/마우스는 마우스 위치, 게임패드는 좌측 스틱 방향 사용
+    /// 입력 기기에 따른 회전 각도 
     /// </summary>
     /// <param name="deviceType">현재 사용 중인 입력 기기 타입</param>
     /// <param name="moveInput">게임패드 좌측 스틱 입력 벡터</param>
     /// <param name="mousePosition">마우스 스크린 좌표 위치</param>
-    public void RotateToDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
+    /// <returns>계산된 각도</returns>
+    public Quaternion GetTargetRotation(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
     {
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            RotatePlayerWithMouse(mousePosition);    // 마우스 위치 기반 회전
+            // 스크린 좌표를 3D 공간의 레이로 변환
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+            // 플레이어와 같은 Y 높이의 수평 평면 생성 (지면 평면)
+            Plane groundPlane = new Plane(Vector3.up, transform.position.y);
+
+            // 레이가 지면 평면과 교차하는지 확인
+            if (groundPlane.Raycast(ray, out float distance))
+            {
+                // 교차점에서 플레이어로의 방햦 계산
+                Vector3 direction = GetMouseDirection(ray.GetPoint(distance));
+                if (direction.sqrMagnitude > 0.1f)  // 최소 방햦 강도 체크
+                {
+                    // 계산된 방햦으로 즐시 회전
+                    return Quaternion.LookRotation(direction, Vector3.up);
+                }
+            }
         }
         else // Gamepad
         {
-            RotatePlayerWithGamepad(moveInput);      // 게임패드 스틱 방향 기반 회전
-        }
-    }
-
-    /// <summary>
-    /// 게임패드 좌측 스틱 입력으로 플레이어 회전
-    /// 카메라 방향을 기준으로 스틱 입력을 월드 방향으로 변환합니다.
-    /// </summary>
-    /// <param name="moveInput">게임패드 우측 스틱의 2D 입력 벡터</param>
-    private void RotatePlayerWithGamepad(Vector2 moveInput)
-    {
-        // 입력 강도가 최소 임계값 이하이거나 카메라가 없으면 무시
-        if (moveInput.sqrMagnitude < 0.1f || Camera.main == null)
-        {
-            return;
-        }
-
-        // 스틱 입력을 카메라 기준 3D 방향으로 변환
-        Vector3 lookDirection = CalculateLookDirection(moveInput);
-        if (lookDirection.sqrMagnitude > 0.1f)
-        {
-            // 방향 벡터를 사용하여 즐시 회전 (수직 축은 고정)
-            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-        }
-    }
-
-    /// <summary>
-    /// 마우스 스크린 좌표로 플레이어 회전
-    /// 마우스 스크린 위치를 월드 좌표로 변환하여 회전 방햦 계산
-    /// Ray를 사용하여 마우스 포인터의 3D 월드 좌표를 구합니다.
-    /// </summary>
-    /// <param name="mousePosition">마우스의 스크린 좌표 (pixels)</param>
-    private void RotatePlayerWithMouse(Vector2 mousePosition)
-    {
-        if (Camera.main == null) return;
-
-        // 스크린 좌표를 3D 공간의 레이로 변환
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-
-        // 플레이어와 같은 Y 높이의 수평 평면 생성 (지면 평면)
-        Plane groundPlane = new Plane(Vector3.up, transform.position.y);
-
-        // 레이가 지면 평면과 교차하는지 확인
-        if (groundPlane.Raycast(ray, out float distance))
-        {
-            // 교차점에서 플레이어로의 방햦 계산
-            Vector3 direction = GetMouseDirection(ray.GetPoint(distance));
-            if (direction.sqrMagnitude > 0.1f)  // 최소 방햦 강도 체크
+            // 입력 강도가 최소 임계값 이하이거나 카메라가 없으면 무시
+            if (moveInput.sqrMagnitude < 0.1f || Camera.main == null)
             {
-                // 계산된 방햦으로 즐시 회전
-                transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+                return transform.rotation;
+            }
+
+            // 스틱 입력을 카메라 기준 3D 방향으로 변환
+            Vector3 lookDirection = CalculateLookDirection(moveInput);
+            if (lookDirection.sqrMagnitude > 0.1f)
+            {
+                // 방향 벡터를 사용하여 즐시 회전 (수직 축은 고정)
+                return Quaternion.LookRotation(lookDirection, Vector3.up);
             }
         }
+        return transform.rotation;
+    }
+
+    /// <summary>
+    /// 각도 설정
+    /// </summary>
+    /// <param name="rotation">각도</param>
+    public void SetRotation(Quaternion rotation)
+    {
+        transform.rotation = rotation;
+    }
+
+    public void SetTargetRotation(Quaternion targetRotation)
+    {
+        _targetRotation = targetRotation;
+        _hasTargetRotation = true;
+    }
+
+    public void ClearTargetRotation()
+    {
+        _hasTargetRotation = false;
     }
 
     /// <summary>

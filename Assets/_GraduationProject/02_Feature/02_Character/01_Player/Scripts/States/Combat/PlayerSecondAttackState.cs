@@ -11,7 +11,14 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerThirdAttackState);
 
-    protected override PlayerAttackData p_AttackData => p_context.DataBase.RuntimeData.CombatData.AttackDatas[1];
+    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.AttackDatas[1];
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        p_context.Events.TriggerSecondAttackStart();
+    }
 
 }
 

@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState;
-    private RangedAttackData _attackData => p_context.DataBase.RuntimeData.CombatData.RangedAttackData;
+    private RangedAttackData _attackData => p_context.RuntimeData.CombatData.RangedAttackData;
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -20,7 +20,6 @@ public class PlayerRangedAttackState : BaseState<Player>
         p_context.Events.TriggerRangedAttackStart();
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player entered RangedAttackFireState");
     }
 
     public override void OnUpdate() 
@@ -34,7 +33,6 @@ public class PlayerRangedAttackState : BaseState<Player>
 
         p_context.Events.TriggerBattleStateChanged(true);
 
-        Log.Print("Player exited RangedAttackFireState");
     }
 
     /// <summary>
@@ -45,6 +43,11 @@ public class PlayerRangedAttackState : BaseState<Player>
     {
         if (p_context.Controller.AttackInput)
         {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+
             _nextState = typeof(PlayerFirstAttackState);
         }
         else if (p_context.Controller.DodgeInput &&
@@ -56,10 +59,6 @@ public class PlayerRangedAttackState : BaseState<Player>
         else if (p_context.Controller.DefendInput)
         {
             _nextState = typeof(PlayerDefendState);
-        }
-        else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
-        {
-            //_nextState = typeof(PlayerCounterAttackState);
         }
         else if (p_context.Controller.AttackHeldInput)
         {

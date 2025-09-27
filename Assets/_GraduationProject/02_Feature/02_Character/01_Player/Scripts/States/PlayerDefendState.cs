@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using System.Threading;
-using BH_Lib.FSM;
+﻿using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
+using System.Threading;
+using UnityEditor.Timeline;
+using UnityEngine;
 
 
 /// <summary>
@@ -17,12 +19,12 @@ public class PlayerDefendState : BaseState<Player>
     public override void OnEnter()
     {
         p_context.Events.OnParryPerform += HandleParryPerform;
+        p_context.Events.OnParryAffect += HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", true);
-        Log.Print("Player entered Defend state");
 
 
-        p_context.Health.SetDefending(true);
+        p_context.Combat.DefendStart();
         p_context.Combat.SetupCombatCenter();
         p_context.Events.TriggerBattleStateChanged(true);
     }
@@ -36,23 +38,22 @@ public class PlayerDefendState : BaseState<Player>
         if (!p_context.Controller.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
         else if (p_context.Controller.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
-            p_context.Health.SetDefending(false);
+            p_context.Combat.DefendFinish();
         }
     }
 
     public override void OnExit()
     {
         p_context.Events.OnParryPerform -= HandleParryPerform;
+        p_context.Events.OnParryAffect -= HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        Log.Print("Player exited Defend state");
 
         // 방어 상태 종료 시 체력 시스템에 알림
     }
@@ -64,8 +65,17 @@ public class PlayerDefendState : BaseState<Player>
 
         foreach (Collider collider in colliders)
         {
-            p_context.Events.TriggerParryAffect(collider);
+            if(collider.TryGetComponent<IParryable>(out var parryable) && parryable.IsParryable)
+            {
+                p_context.Events.TriggerParryAffect(collider);
+            }
+
         }
+    }
+
+    private void HandleParryAffect(Collider collider)
+    {
+       p_context.Combat.ToggleCanCounter(p_context.DataBase.RuntimeData.CombatData.CounterAttackWindow);
     }
 }
 

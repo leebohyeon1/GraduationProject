@@ -12,7 +12,8 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
-
+    [SerializeField] private int StiffenessAmount = 10;
+    CalculationResult stat;
 
     public override void OnEnter()
     {
@@ -24,25 +25,35 @@ public class GenericAttackNode : Node
         runner.Movement.StopMovement();
         runner.AnimationEvent(animationName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
+        stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), damage);
+        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        directionToPlayer.y = 0;
+
+        if (directionToPlayer != Vector3.zero)
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
     }
 
     protected override NodeState OnUpdate()
     {
+        
+        
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
         if (Handler.IsSound)
         {
-            runner.PlayFeedback(animationName, attackOrigin);
+           // runner.PlayFeedback(animationName, attackOrigin);
             Handler.EndSound();
         }
         if (Handler.IsHitWindowOpen)
         {
-            Debug.Log(":");
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius, LayerMask.GetMask("Player"));
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange, LayerMask.GetMask("Player"));
             foreach (var col in hitColliders)
             {
                 if (col.TryGetComponent<IDamageable>(out IDamageable player))
                 {
-                    player.TakeDamage(damage, runner);
+                    // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
+                    player.TakeDamage( stat.FinalDamage, runner);
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
@@ -54,7 +65,6 @@ public class GenericAttackNode : Node
 
         if (Handler.IsActionFinished)
         {
-            Debug.Log(this.animationName);
             return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 

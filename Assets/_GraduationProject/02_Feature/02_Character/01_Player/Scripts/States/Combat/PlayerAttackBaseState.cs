@@ -40,15 +40,24 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         p_nextState = null; // 다음 상태 초기화
 
-        Log.Print("Player entered Attack state");
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
         p_context.Combat.SetupCombatCenter();
 
-        // 공격 실행
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
+        if(p_context.Movement.HasTargetRotation)
+        {
+            p_context.Movement.SetRotation(p_context.Movement.TargetRotation);
+            p_context.Movement.ClearTargetRotation();
+        }
+        else
+        {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        }
+            
+
         p_context.Events.TriggerBattleStateChanged(true);
           
 
@@ -76,7 +85,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
 
         p_nextState = null;
-        Log.Print("Player exited Attack state");
     }
 
     /// <summary>
@@ -149,6 +157,11 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     {
         if (p_nextAttackState != null && p_context.Controller.AttackInput)
         {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Controller.MoveInput;
+            var mousePosition = p_context.Controller.MousePosition;
+            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+
             p_nextState = p_nextAttackState;
         }
         else if (p_context.Controller.DodgeInput &&
@@ -160,10 +173,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         else if (p_context.Controller.DefendInput)
         {
             p_nextState = typeof(PlayerDefendState);
-        }
-        else if (p_context.Combat.CanCounterAttack && p_context.Controller.AttackInput)
-        {
-           // p_nextState = typeof(PlayerCounterAttackState);
         }
         else if (p_context.Controller.AttackHeldInput)
         {
