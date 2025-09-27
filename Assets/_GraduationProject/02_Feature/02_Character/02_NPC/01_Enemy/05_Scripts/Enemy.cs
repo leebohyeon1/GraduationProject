@@ -3,6 +3,8 @@ using Pathfinding;
 using System;
 using UnityEditor.Rendering;
 using System.Collections;
+using System.Text.RegularExpressions;
+
 
 
 
@@ -13,7 +15,7 @@ using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요�
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem)),RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness))]
 public class Enemy : CharacterBase, IAttacker, IDamageable
 {
-    private AiController _aiController;
+    public AiController _aiController{get;private set;}
     Animator animator;
     public AudioClip deathSoundClip;
     
@@ -41,6 +43,14 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     public EnemyMovement Movement { get; private set; }
     public HeatSystem heatSystem { get; private set; }
     public Vector3 PatrolOriginPoint { get; private set; }
+    [SerializeField]public Enemy_Type EnemyType;
+    public enum Enemy_Type
+    {
+        Brave,
+        Cowardly,
+        Cunning
+    }
+    public GroupAi groupAi{get;private set;}
 
     protected override void Awake()
     {
@@ -62,6 +72,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         ParrySystem.Initialize(this);
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
+        
     }
 
     void Start()
@@ -74,6 +85,13 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         Movement = new EnemyMovement(this);
         PatrolOriginPoint = transform.position;
+        groupAi = FindObjectOfType<GroupAi>();
+        if (groupAi == null)
+        {
+            GameObject groupObj = new GameObject("EnemyGroup");
+            groupAi = groupObj.AddComponent<GroupAi>();
+        }
+        groupAi.GroupAdd(this);
     }
     public void SetStiffness(int amount)
     {
@@ -187,15 +205,17 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         animator.SetBool("Die", true);
         animator.speed = 1;
         SetState(EnemyState.Die);
+        groupAi.GroupRemove(this);
+        Destroy(GetComponentInChildren<HeatBar>().gameObject);
     }
 
     public void TakeDamage(int amount, IAttacker attacker = null)
     {
         if (CurrentHealth <= 0) return;
-        _aiController.CombatEnter();
+        groupAi.CombatAll();
         if (!_aiController.IsActionable())
         {
-            SetState(Enemy.EnemyState.Hit);
+            // SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
@@ -204,7 +224,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
             CurrentHealth = 0;
             Die();
         }
-        OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
+        // OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
     }
     // public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
     // {
