@@ -108,7 +108,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
     {
         _isStunned = false;
     }
- 
+
     #endregion
     #region Enemy State Management
     public enum EnemyState
@@ -122,7 +122,8 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Die,
         Stunned, // 스턴 상태 추가
         Rush,
-        Hit
+        Hit,
+        RunAway
     }
     public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
@@ -194,7 +195,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         _aiController.CombatEnter();
         if (!_aiController.IsActionable())
         {
-            _aiController._aiBrain.SetState(Enemy.EnemyState.Hit);
+            SetState(Enemy.EnemyState.Hit);
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
@@ -205,22 +206,22 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         OnHealthChanged.Invoke(CurrentHealth + amount, CurrentHealth);
     }
-    public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
-    {
-        int perDmg = Maxhealth / percentDamage;
-        StartCoroutine(PerDmgTimer(perDmg, TickTime));
-    }
+    // public void TakeDamage(int percentDamage, float TickTime,bool Tick = true)
+    // {
+    //     int perDmg = Maxhealth / percentDamage;
+    //     StartCoroutine(PerDmgTimer(perDmg, TickTime));
+    // }
 
-    private IEnumerator PerDmgTimer(int perDmg, float time)
-    {
-        float timer = 0f;
-        while (timer < time)
-        {
-            TakeDamage(perDmg);
-            timer += 1f;
-            yield return new WaitForSeconds(1f);
-        }
-    }
+    // private IEnumerator PerDmgTimer(int perDmg, float time)
+    // {
+    //     float timer = 0f;
+    //     while (timer < time)
+    //     {
+    //         TakeDamage(perDmg);
+    //         timer += 1f;
+    //         yield return new WaitForSeconds(1f);
+    //     }
+    // }
     
 
     [SerializeField] GameObject LastRushHitObject;
