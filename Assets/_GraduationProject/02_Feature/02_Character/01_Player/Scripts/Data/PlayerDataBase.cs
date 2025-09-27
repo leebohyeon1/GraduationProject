@@ -13,6 +13,7 @@ public class PlayerDataBase : MonoBehaviour
     [SerializeField] private PlayerBaseDatasSO _baseDatasSO;
     [SerializeField] private TierStatDatabaseSO _tierStatDatabaseSO;
     [SerializeField] private SourceMapDatabaseSO _sourceMapDatabaseSO;
+    [SerializeField] private OverHeatDataSO _overHeatDataSO;
 
    
     private PlayerData _runtimeData;
@@ -23,6 +24,7 @@ public class PlayerDataBase : MonoBehaviour
     public PlayerData RuntimeData => _runtimeData;
     public TierStatDatabaseSO TierStatData => _tierStatDatabaseSO;
     public SourceMapDatabaseSO SourceMapData => _sourceMapDatabaseSO;
+    public OverHeatDataSO OverHeatData => _overHeatDataSO;
     #endregion
 
     public void Initialize()
@@ -45,6 +47,8 @@ public class PlayerDataManager : IDisposable
     private PlayerHeat _heat;
     private PlayerEvents _events;
 
+    private bool _disposed = false;
+
     public PlayerDataManager(PlayerDataBase data, PlayerHeat heat, PlayerEvents events)
     {
         _data = data;
@@ -56,7 +60,14 @@ public class PlayerDataManager : IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _heat.OnTierChanged -= HandleTierChanged;
+
+        _disposed = true;
     }
 
     /// <summary>

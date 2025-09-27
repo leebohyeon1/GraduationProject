@@ -102,6 +102,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish;
+
+    public event Action OnOverHeat;
     #endregion
 
     #region EventHandler
@@ -577,17 +579,18 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         switch (tier)
         {
-            case 0:
+            case 1:
                 PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position);
                 break;
-            case 1:
+            case 2:
                 PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position);
                 break;
-            case 2:
+            case 3:
                 PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position);
                 break;
-            case 3:
+            case 4:
                 PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
+                OnOverHeat.Invoke();
                 break;
         }
     }

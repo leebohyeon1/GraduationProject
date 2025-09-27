@@ -1,6 +1,7 @@
 ﻿using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -56,16 +57,13 @@ public class Player : DIMonoBehaviour
 
     private void Update()
     {
-        _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
-            DataBase.BaseData.GroundLayerMask);
-
+        OnUpdate();
         _stateMachine?.Update();
     }
 
     private void FixedUpdate()
     {
-        _movement.ApplyGravity(DataBase.BaseData.Gravity);
-
+        OnFixedUpdate();
         // 상태 머신 고정 업데이트
         _stateMachine?.FixedUpdate();
     }
@@ -80,6 +78,9 @@ public class Player : DIMonoBehaviour
         UnsubscribeToEvents();
     }
 
+    /// <summary>
+    /// 레퍼런스 초기화
+    /// </summary>
     private void InitializeReference()
     {
         if (_animator == null)
@@ -132,13 +133,15 @@ public class Player : DIMonoBehaviour
         _health.Initialize(_dataBase.RuntimeData);
         _movement.Initialize(_characterController);
         _combat.Initialize(DataBase.RuntimeData);
-        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData);
+        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData, DataBase.OverHeatData);
 
         _heatManager = new PlayerHeatManager(Heat, Events);
         _combatManager = new PlayerCombatManager(Combat, Events);
         _dataDataManager = new PlayerDataManager(DataBase, Heat, Events);
     }
-
+    /// <summary>
+    /// 상태머신 초기화
+    /// </summary>
     private void InitializeStateMachine()
     {
         _stateMachine = new StateMachine<Player>(this);
@@ -163,7 +166,9 @@ public class Player : DIMonoBehaviour
         // 초기 상태를 Idle로 설정
         _stateMachine.ChangeState<PlayerIdleState>();
     }
-
+    /// <summary>
+    /// 상태머신 변경 세팅
+    /// </summary>
     private void SetupStateTransitions()
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
@@ -199,9 +204,33 @@ public class Player : DIMonoBehaviour
             => Controller.DefendInput);
     }
 
+    /// <summary>
+    /// Update에 호출되는 함수
+    /// </summary>
+    private void OnUpdate()
+    {
+        _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
+                   DataBase.BaseData.GroundLayerMask);
+
+        if (Heat.CanHeatTierEffect())
+        {
+            Events.TriggerTier(Heat.CurrentTier);
+        }
+    }
+    /// <summary>
+    /// FixedUpdate에 호출되는 함수
+    /// </summary>
+    private void OnFixedUpdate()
+    {
+        _movement.ApplyGravity(DataBase.BaseData.Gravity);
+
+    }
+
+    #region Event
     private void SubscribeToEvents()
     {
         RuntimeData.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
+        Events.OnOverHeat += HandleOverHeat;
     }
 
     private void UnsubscribeToEvents()
@@ -211,10 +240,20 @@ public class Player : DIMonoBehaviour
         _dataDataManager?.Dispose();
 
         RuntimeData.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
+        Events.OnOverHeat -= HandleOverHeat;
     }
 
     private void HandleAnimationSpeedChanged(float speed)
     {
         Animator.speed = speed;
     }
+
+    private void HandleOverHeat()
+    {
+        if (Heat.IsOverHeat)
+        {
+            Health.TakeDamage(DataBase.OverHeatData.DamagePerTick);
+        }
+    }
+    #endregion
 }

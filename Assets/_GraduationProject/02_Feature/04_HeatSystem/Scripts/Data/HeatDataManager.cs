@@ -6,4 +6,5 @@ public class HeatDataManager : ScriptableObject
 {
     public List<SourceMapDatabaseSO> SourceMapDataBases;
     public List<TierStatDatabaseSO> TierStatDatabases;
+    public List<OverHeatDataSO> OverHeatDataBases;
 }
