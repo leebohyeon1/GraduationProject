@@ -1,8 +1,8 @@
-using BH_Lib.DI;
+ï»¿using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using System;
 using UnityEngine;
-
 
 public class Player : DIMonoBehaviour
 {
@@ -39,6 +39,11 @@ public class Player : DIMonoBehaviour
     public PlayerData RuntimeData => DataBase.RuntimeData;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+
+    /// <summary>
+    /// í˜„ì¬ í”Œë ˆì´ì–´ ìƒíƒœ
+    /// </summary>
+    public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
 
     private void Start()
@@ -61,7 +66,7 @@ public class Player : DIMonoBehaviour
     {
         _movement.ApplyGravity(DataBase.BaseData.Gravity);
 
-        // »óÅÂ ¸Ó½Å °íÁ¤ ¾÷µ¥ÀÌÆ®
+        // ìƒíƒœ ë¨¸ì‹  ê³ ì • ì—…ë°ì´íŠ¸
         _stateMachine?.FixedUpdate();
     }
 
@@ -155,17 +160,17 @@ public class Player : DIMonoBehaviour
 
         SetupStateTransitions();
 
-        // ÃÊ±â »óÅÂ¸¦ Idle·Î ¼³Á¤
+        // ì´ˆê¸° ìƒíƒœë¥¼ Idleë¡œ ì„¤ì •
         _stateMachine.ChangeState<PlayerIdleState>();
     }
 
     private void SetupStateTransitions()
     {
-        // Hit »óÅÂ·ÎÀÇ ÀüÈ¯ (¸ğµç »óÅÂ¿¡¼­ °¡´É)
+        // Hit ìƒíƒœë¡œì˜ ì „í™˜ (ëª¨ë“  ìƒíƒœì—ì„œ ê°€ëŠ¥)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
             !Health.IsDead && RuntimeData.IsDamaged);
 
-        // Idle »óÅÂ¿¡¼­ÀÇ ÀüÈ¯
+        // Idle ìƒíƒœì—ì„œì˜ ì „í™˜
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Controller.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
@@ -179,7 +184,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
             => Controller.DefendInput);
 
-        // Move »óÅÂ¿¡¼­ÀÇ ÀüÈ¯
+        // Move ìƒíƒœì—ì„œì˜ ì „í™˜
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
             => Controller.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
