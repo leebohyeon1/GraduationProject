@@ -62,11 +62,6 @@ public class AiBrain
         _lastUsedSkillTimes[skillName] = Time.time;
     }
 
-    public void SetState(Enemy.EnemyState state)
-    {
-        // 상태 변경 요청이 오면 Brain이 주인(owner)의 상태를 바꾼다.
-        _owner.SetState(state);
-    }
 
 
 

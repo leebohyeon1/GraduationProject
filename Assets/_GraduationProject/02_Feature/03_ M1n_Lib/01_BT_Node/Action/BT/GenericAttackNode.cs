@@ -5,7 +5,7 @@ using BehaviorTree;
 public class GenericAttackNode : Node
 {
     [Header("Attack Properties")]
-    public string animationName;
+    public string AttackName;
     public int damage;
     public float damageRadius;
     public Vector3 attackOffset;
@@ -23,11 +23,11 @@ public class GenericAttackNode : Node
 
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
-        runner.AnimationEvent(animationName);
+        runner.AnimationEvent(AttackName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
-        stat = runner.heatSystem.CalculationHeat("Test", ActorType.Monster, runner.heatSystem.GetTier(), damage);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
+        stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
 
         if (directionToPlayer != Vector3.zero)
         {
@@ -37,23 +37,34 @@ public class GenericAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
-        
-        
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
         if (Handler.IsSound)
         {
-           // runner.PlayFeedback(animationName, attackOrigin);
+           // runner.PlayFeedback(AttackName, attackOrigin);
             Handler.EndSound();
         }
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange, LayerMask.GetMask("Player"));
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
             {
-                if (col.TryGetComponent<IDamageable>(out IDamageable player))
+                if(col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
+                if (col.TryGetComponent<IHeatable>(out IHeatable heatable))
+                {
+                    stat = runner.heatSystem.CalculationHeat(AttackName, heatable.ActorType, runner.heatSystem.GetTier(), damage);
+                    SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
+                    Debug.Log($"SourceMap: {sourceMap}, actor: { heatable.ActorType}, tier: {runner.heatSystem.GetTier()}");
+                    Debug.Log($"heatchange: {sourceMap.HeatChangeType}, delta: {sourceMap.DeltaHeat}");
+                    int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
+                    Debug.Log($"Applying Heat: {deltaHeat} to {heatable}");
+                    heatable.ChangeHeat(deltaHeat);
+                }
+
+               if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
-                    player.TakeDamage( stat.FinalDamage, runner);
+                    Character.TakeDamage(stat.FinalDamage, runner);
+                    
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
@@ -61,6 +72,7 @@ public class GenericAttackNode : Node
                     }
                 }
             }
+            
         }
 
         if (Handler.IsActionFinished)
@@ -81,7 +93,7 @@ public class GenericAttackNode : Node
     public override Node Clone()
     {
         var node = Instantiate(this);
-        node.animationName = this.animationName;
+        node.AttackName = this.AttackName;
         node.damage = this.damage;
         node.damageRadius = this.damageRadius;
         node.attackOffset = this.attackOffset;

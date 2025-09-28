@@ -10,7 +10,6 @@ public class RandomPatrol : Node
 
     public override void OnEnter()
     {
-        Debug.Log("Entering RandomPatrol");
         runner.SetState(Enemy.EnemyState.Patrol);
         _aiPath = runner.GetComponent<AIPath>();
         _hasTarget = false;
@@ -25,7 +24,6 @@ public class RandomPatrol : Node
         if (!_hasTarget || (_aiPath != null && _aiPath.reachedDestination))
         {
             Vector3 randomDirection = runner.PatrolOriginPoint + (Random.insideUnitSphere * 15);
-            Debug.Log(randomDirection);
 
             GraphNode graphNode = AstarPath.active.GetNearest(randomDirection).node;
 
@@ -45,7 +43,6 @@ public class RandomPatrol : Node
                 RaycastHit hit;
                 if (Physics.Raycast(runner.transform.position + Vector3.up * 0.25f, runner.transform.forward, out hit, 1f, LayerMask.GetMask("Ground")))
                 {
-                    Debug.Log("Obstacle detected, recalculating path");
                     _hasTarget = false; // 장애물이 감지되면 새로운 목표 지점을 설정하도록 플래그를 재설정
                 }
             }

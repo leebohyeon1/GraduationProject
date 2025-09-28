@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: 
-  position: {x: 1828, y: 760}
+  position: {x: 1832, y: 847}
   skillName: Attack
 --- !u!114 &-6419026422163123980
 MonoBehaviour:
@@ -134,6 +134,23 @@ MonoBehaviour:
   - {fileID: 3328858872078899426}
   - {fileID: 3190198380513302506}
   - {fileID: 8097750573212284376}
+--- !u!114 &-5164429530539259904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b8fdfecce30b64f9a5677be3a10a05, type: 3}
+  m_Name: Mortar Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::MortarAttackNode
+  position: {x: 1832, y: 770}
+  projectilePrefab: {fileID: -82023211534088462, guid: 8234711606e40444ebf67156d7b7f215, type: 3}
+  launchPoint: {fileID: 0}
+  launchAngle: 80
+  AttackName: MortarAttack
 --- !u!114 &-5091929620939849768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,8 +348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
-  position: {x: 1834, y: 126}
-  animationName: Attack
+  position: {x: 1833, y: 68}
+  AttackName: Attack
   damage: 3
   damageRadius: 3.5
   attackOffset: {x: 0, y: 1, z: 4}
@@ -394,25 +411,6 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
   position: {x: 1833, y: -227}
---- !u!114 &2422854897302023152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Generic Attack Node
-  m_EditorClassIdentifier: 
-  position: {x: 1832, y: 837}
-  animationName: Attack
-  damage: 3
-  damageRadius: 8
-  attackOffset: {x: 0, y: 1, z: 15}
-  maintainAtk: 0
-  StiffenessAmount: 10
 --- !u!114 &2919154666137795031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,8 +429,8 @@ MonoBehaviour:
   - {fileID: 8479167246048659318}
   - {fileID: 929164364379773173}
   - {fileID: 4887522364135060110}
-  - {fileID: 7500717222779531911}
   - {fileID: 486735361095925541}
+  - {fileID: 7500717222779531911}
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1834, y: 59}
+  position: {x: 1836, y: 145}
   skillName: Attack
 --- !u!114 &8097750573212284376
 MonoBehaviour:
@@ -748,8 +746,7 @@ MonoBehaviour:
   m_Name: Action_Look At Player
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
   position: {x: 1801, y: -521}
-  rotationSpeed: 5
-  acceptanceAngle: 15
+  IsSee: 1
 --- !u!114 &8440268503078126261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -822,8 +819,8 @@ MonoBehaviour:
   - {fileID: -4553377999928142451}
   - {fileID: 8503346464321683557}
   - {fileID: 2962903648140353133}
+  - {fileID: -5164429530539259904}
   - {fileID: -6477674856501047169}
-  - {fileID: 2422854897302023152}
 --- !u!114 &8887713463563181787
 MonoBehaviour:
   m_ObjectHideFlags: 0

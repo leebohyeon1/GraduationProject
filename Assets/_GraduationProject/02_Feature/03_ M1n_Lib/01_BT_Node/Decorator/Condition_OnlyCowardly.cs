@@ -13,7 +13,6 @@ public class Condition_OnlyCowardly : ConditionNode
     {
         if (runner.groupAi.OnlyCowardly())
         {
-            Debug.Log("OnlyCowardly: true");
             return true;
         }
         return false;
