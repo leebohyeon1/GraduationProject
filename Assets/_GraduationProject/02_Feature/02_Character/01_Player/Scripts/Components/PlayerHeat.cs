@@ -11,6 +11,9 @@ public class PlayerHeat : HeatSystem
     private bool _isOverHeat;   
 
     public bool IsOverHeat => _isOverHeat;
+
+    private Sequence _overheatSequence;
+
     /// <summary>
     /// 열기 시스템 초기화
     /// </summary>
@@ -30,12 +33,16 @@ public class PlayerHeat : HeatSystem
     /// <param name="amount"> 열기 변화량 </param>
     public override void ChangeHeat(int amount)
     {
-        if (amount == 0 && IsHeatLock) return;
+        if (amount == 0 && IsHeatLock)
+        {
+            return;
+        }
 
         int previousTier = GetTier();
         int previousHeat = p_currentHeat;
 
         p_currentHeat = Mathf.Clamp(p_currentHeat + amount, 0, MaxHeat);
+
 
         if (previousHeat != p_currentHeat)
         {
@@ -60,6 +67,10 @@ public class PlayerHeat : HeatSystem
     /// <param name="amount"> 열기 설정값 </param>
     public override void SetHeat(int amount)
     {
+        if (IsHeatLock)
+        {
+            return;
+        }
 
         int previousTier = GetTier();
         int previousHeat = p_currentHeat;
@@ -90,8 +101,19 @@ public class PlayerHeat : HeatSystem
     /// </summary>
     protected override void OverHeat()
     {
-        _heatTierTimer = Time.time;
-        _isOverHeat = true;
+        if (_overheatSequence != null && _overheatSequence.IsActive())
+        {
+            return;
+        }
+
+        _overheatSequence = DOTween.Sequence();
+        _overheatSequence.SetDelay(_overHeatData.DelaySecond)
+            .AppendCallback(() =>
+            {
+                _heatTierTimer = Time.time;
+                _isOverHeat = true;
+                SetHeatLock(true);
+            });
     }
 
     /// <summary>
@@ -112,9 +134,12 @@ public class PlayerHeat : HeatSystem
 
     public void OverHeatFinish()
     {
+        _overheatSequence?.Kill();
+
         if (_isOverHeat)
         {
             _isOverHeat = false;
+            SetHeatLock(false);
         }
     }
     #endregion
@@ -293,10 +318,14 @@ public class PlayerHeatManager : IDisposable
 
         if(!isBattleState)
         {
+            _heat.SetHeatLock(false);
+
             _battleOutSequence = DOTween.Sequence()
                 .AppendCallback(_heat.DecreaseHeatOnBattleOut)
                 .SetDelay(1f)
                 .SetLoops(-1, LoopType.Restart);
+
+            _battleOutSequence.Play();
         }
     }
 
@@ -310,11 +339,11 @@ public class PlayerHeatManager : IDisposable
         // 열기 티어 변경 여부 확인
         if (currentTier > previousTier)
         {
-            _events.TriggerTierUp(currentTier);
+            _events.TriggerTierUp(previousTier, currentTier);
         }
         else
         {
-            _events.TriggerTierDown(currentTier);
+            _events.TriggerTierDown(previousTier, currentTier);
         }
     }
 

@@ -60,7 +60,6 @@ public class PlayerDefendState : BaseState<Player>
 
     private void HandleParryPerform()
     {
-        Log.Print("패리");
         Collider[] colliders = p_context.Combat.ExecuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
 
         foreach (Collider collider in colliders)
