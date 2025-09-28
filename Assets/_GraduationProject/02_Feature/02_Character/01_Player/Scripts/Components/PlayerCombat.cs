@@ -103,7 +103,6 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
-        Log.Print(hitEnemies.Length);
         ProcessHitEnemies(attackData, hitEnemies);
 
         return hitEnemies;
