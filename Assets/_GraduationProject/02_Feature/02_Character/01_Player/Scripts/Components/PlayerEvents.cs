@@ -520,54 +520,67 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 티어 상승 시 효과 재생
     /// </summary>
-    /// <param name="tier">현재 티어</param>
-    public void TriggerTierUp(int tier)
+    /// <param name="previousTier">이전 티어</param>
+    /// <param name="currentTier">현재 티어</param>
+    public void TriggerTierUp(int previousTier, int currentTier)
     {
-        switch (tier)
+        for(int i = previousTier + 1; i <= currentTier; i++)
         {
-            case 1:
-                OnTier1Up?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position);
-                break;
-            case 2:
-                OnTier2Up?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position);
-                break;
-            case 3:
-                OnTier3Up?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position);
-                break;
-            case 4:
-                OnOverHeatStart?.Invoke();
-                PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position);
-                break;
+            switch (i)
+            {
+                case 1:
+                    OnTier1Up?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position);
+                    break;
+                case 2:
+                    OnTier2Up?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position);
+                    break;
+                case 3:
+                    OnTier3Up?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position);
+                    break;
+                case 4:
+                    OnOverHeatStart?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position);
+                    break;
+            }
         }
     }
 
     /// <summary>
     /// 티어 하락 시 효과 재생
     /// </summary>
-    /// <param name="tier">현재 티어</param>
-    public void TriggerTierDown(int tier)
+    /// <param name="previousTier">이전 티어</param>
+    /// <param name="currentTier">현재 티어</param>
+    public void TriggerTierDown(int previousTier, int currentTier)
     {
-        switch (tier)
+        for (int i = previousTier; i > currentTier; i--)
         {
-            case 0:
-                OnTier1Down?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position);
-                break;
-            case 1:
-                OnTier2Down?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position);
-                break;
-            case 2:
-                OnTier3Down?.Invoke();
-                PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position);
-                break;
-            case 3:
-                OnOverHeatFinish?.Invoke();
-                PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position);
-                break;
+            // 반복문의 현재 값 'i'는 우리가 거쳐 내려오는 각 티어를 의미합니다.
+            switch (i)
+            {
+                // Tier 1에서 0으로 내려올 때
+                case 1:
+                    OnTier1Down?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position);
+                    break;
+                // Tier 2에서 1로 내려올 때
+                case 2:
+                    OnTier2Down?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position);
+                    break;
+                // Tier 3에서 2로 내려올 때
+                case 3:
+                    OnTier3Down?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position);
+                    break;
+                // OverHeat(Tier 4로 가정)에서 3으로 내려올 때
+                case 4:
+                    OnOverHeatFinish?.Invoke();
+                    PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position);
+                    break;
+            }
         }
     }
 

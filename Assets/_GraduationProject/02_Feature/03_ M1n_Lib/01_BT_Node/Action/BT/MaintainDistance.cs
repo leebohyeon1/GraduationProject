@@ -20,21 +20,18 @@ public class MaintainDistance : Node
     private Transform playerTransform;
     private AIPath aiPath;
 
-    public override void SetRunner(Enemy runner, AiBrain brain)
-    {
-        base.SetRunner(runner, brain);
-        aiPath = runner.GetComponent<AIPath>();
-    }
 
     public override void OnEnter()
     {
         playerTransform = runner.player.transform;
+        aiPath = runner.GetComponent<AIPath>();
 
         if (aiPath == null)
         {
             Debug.LogError("AIPath 컴포넌트를 찾을 수 없습니다!", runner);
         }
         runner.SetState(Enemy.EnemyState.RunAway);
+        aiPath.enableRotation = false;
     }
 
     protected override NodeState OnUpdate()
@@ -43,7 +40,13 @@ public class MaintainDistance : Node
         {
             return NodeState.FAILURE;
         }
+        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        directionToPlayer.y = 0;
 
+        if (directionToPlayer != Vector3.zero)
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
         Vector3 vectorToPlayer = runner.transform.position - playerTransform.position;
         float currentDistance = vectorToPlayer.magnitude;
 
@@ -91,6 +94,8 @@ public class MaintainDistance : Node
     public override void OnExit()
     {
         runner.Movement.StopMovement();
+        aiPath.enableRotation = true;
+        runner.Movement.StartOrUpdateChase(runner.player.transform.position);
         runner.SetState(Enemy.EnemyState.Idle);
     }
 }

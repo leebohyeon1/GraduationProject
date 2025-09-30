@@ -220,6 +220,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         }
         CurrentHealth -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {CurrentHealth}");
+        
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;

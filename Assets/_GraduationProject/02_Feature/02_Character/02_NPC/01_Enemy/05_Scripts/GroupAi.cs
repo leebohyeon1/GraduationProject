@@ -20,12 +20,10 @@ public class GroupAi : MonoBehaviour
             {
                 if (enemy.EnemyType == Enemy.Enemy_Type.Cowardly)
                 {
-                    Debug.Log("Only Cowardly True");
                     return true;
                 }
             }
         }
-        Debug.Log("Only Cowardly False");
         return false;
     }
     public void CombatAll()
