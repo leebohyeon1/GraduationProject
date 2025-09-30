@@ -117,6 +117,7 @@ public class EnemyMovement
         }
         if (_runner != null) 
         _runner.AnimationBool("Walk", false);
+        aIPath.enableRotation = true;
         
 
         aIPath.isStopped = true;

@@ -34,10 +34,9 @@ MonoBehaviour:
   nodes:
   - {fileID: 6733767921067591588}
   - {fileID: -5383055750570203492}
-  - {fileID: -1198667856612942049}
-  - {fileID: -7940636610147236465}
   - {fileID: -6744645030134086082}
   - {fileID: -2755801006588839190}
+  - {fileID: -1198667856612942049}
   - {fileID: -5813741239373490832}
   - {fileID: -91614837426282233}
 --- !u!114 &-8730112079219288532
@@ -59,20 +58,6 @@ MonoBehaviour:
   - {fileID: -8904176251656235448}
   - {fileID: -4999535621410860006}
   - {fileID: 6108192575178470743}
---- !u!114 &-7940636610147236465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1011, y: 497}
-  skillName: RandomAtk
 --- !u!114 &-7245226355301169087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,9 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
   m_Name: Condition_Is In Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInAttackRange
-  position: {x: 1007, y: 589}
-  heatRange: 0
-  _attackRange: 4
+  position: {x: 994, y: 435}
+  heatRange: 1
+  _attackRange: 5
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: 
-  position: {x: 1027, y: 144}
+  position: {x: 1023, y: 167}
   skillName: Attack
 --- !u!114 &-6419026422163123980
 MonoBehaviour:
@@ -181,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
-  position: {x: 1009, y: 730}
+  position: {x: 995, y: 666}
   AttackName: Attack
   damage: 3
   damageRadius: 3.5
@@ -200,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710edeff7fe9e644199e60bd4a6ca894, type: 3}
   m_Name: Condition_Is Player Behind
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
-  position: {x: 1011, y: 355}
+  position: {x: 998, y: 358}
   angleThreshold: 45
 --- !u!114 &-4999535621410860006
 MonoBehaviour:
@@ -303,7 +288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Is Skill Ready
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsSkillReady
-  position: {x: 1005, y: 661}
+  position: {x: 994, y: 512}
   skillName: InviAtk
   cooldownDuration: 0.65
   HeatCooldown: 0
@@ -332,10 +317,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
-  position: {x: 1011, y: 420}
+  position: {x: 995, y: 589}
   checkName: RandomAtk
   cooldownDuration: 2.5
-  successChance: 70
+  successChance: 80
 --- !u!114 &-91614837426282233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1009, y: 807}
+  position: {x: 995, y: 743}
   skillName: InviAtk
 --- !u!114 &11400000
 MonoBehaviour:

@@ -15,6 +15,11 @@ namespace BehaviorTree
         protected Enemy runner;
         protected AiBrain brain;
         protected Enemy_AnimationEventHandler Handler => runner.animHandler;
+        bool SetEnter = true;
+        public void SetBool(Node node, bool x)
+        {
+            node.SetEnter = x;
+        }
         public NodeState Evaluate()
         {
             if (!isEntered)
@@ -28,10 +33,6 @@ namespace BehaviorTree
                 OnExit();
                 isEntered = false;
             }
-
-            // if(currentState == NodeState.SUCCESS)
-            // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
-
             return currentState;
         }
 
@@ -44,12 +45,9 @@ namespace BehaviorTree
             }
         }
 
-        public virtual void OnEnter()
-        {
-            
-        }
+        public virtual void OnEnter(){}
 
-        public virtual void OnExit() { }
+        public virtual void OnExit(){}
         protected abstract NodeState OnUpdate();
 
         public abstract Node Clone();

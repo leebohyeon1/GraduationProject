@@ -17,7 +17,6 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
 {
     public AiController _aiController{get;private set;}
     Animator animator;
-    public AudioClip deathSoundClip;
     
     AIPath aIPath;
     public Player player;
@@ -144,7 +143,7 @@ public class Enemy : CharacterBase, IAttacker, IDamageable
         Hit,
         RunAway
     }
-    public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
+    [SerializeField]public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
 
     public int Health => throw new NotImplementedException();

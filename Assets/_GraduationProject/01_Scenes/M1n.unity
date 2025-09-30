@@ -438,6 +438,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115205517}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &116245773 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+  m_PrefabInstance: {fileID: 3844961043524670712}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &116245786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 116245773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 2
+  centerBackingField: 1
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.5
+  debug: 0
 --- !u!1 &121541146
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,7 +727,7 @@ GameObject:
   - component: {fileID: 270533542}
   - component: {fileID: 270533541}
   - component: {fileID: 270533540}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -997,7 +1029,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1023,7 +1055,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.44272146, y: 0.3358838, z: -0.1833812, w: 0.8108953}
+  m_LocalRotation: {x: 0.4427215, y: 0.33588383, z: -0.18338124, w: 0.8108952}
   m_LocalPosition: {x: -22.52, y: 20.5, z: -25.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1647,6 +1679,38 @@ MonoBehaviour:
     value: 0
   graphMask:
     value: -1
+--- !u!1 &593875549 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+  m_PrefabInstance: {fileID: 787900415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &593875562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593875549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 2
+  centerBackingField: 1
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.5
+  debug: 0
 --- !u!1 &614453520
 GameObject:
   m_ObjectHideFlags: 0
@@ -1678,7 +1742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AstarPathfindingProject::AstarPath
   version: 1073741824
   data:
-    dataString: UEsDBBQAAAgIAABIIexB/GEysgIAAO8FAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1v4jAQ/SvI56VKCpTu3naBtntoi0qrHpYeTDwhFsaO/FGgVf/7zjgGApUiJXrzZubNVz6Z1K6Gwht7a6W4NwLYrw6jb/ajczTewZYvjZ7JD9hzXqXwFZF45DxxLw3iObk5swZvZfFbLxWRMwSDlqWx64lYwsg47xAuuXKAJms8eWuEPjtsmxx26f1B784XfhWgPdjvrG5+MewnZjfvX/QiO+hC8XUNglQfnQZ7r8tBpGmsJzFIe2GUki6JYX5Xx2JHvHYBS0GCkByLizKIX4FcVv7c+bEsHfgk0fLdWFrsUROV/TFN49bcrRpd71wFyjPIG+lN0Ptv9utoLa1Z3x3SZpTCV7JYPfFdwZ1vNbYNj091B73hasUXCl4r0A/m1pqgBRq9DeQaHFyOW6EOpY0qKFZHXiP1DAz19yHlx1F+xeK3Mw/1oY7son9EXxy4mTKx9ykkWRLyk0KCxbn9xXri5riUCFHSiP7PfNlesWS4kdZ5NCU9CSXuFAcEAnQBqe1dImiStzDBUiw2iVqpGcGPjNUQ4SSwBs2V300xoj/fgDNbS9eZ5YbTtSV1ybY/ojOXCB/5WXZmmprNYdgWd9fFhd5//XujIbjKbO7BVY/BK6lb3SbDAzZ4ZLRuFrfdzL3bLNiSFy03D1sfLIy55zEbysEFE21X7GX00EEp2uVYQFSEBdDzRv2tOOZVEWYPRsfDO3lH+csgxemBsN5g0R9cZj95vrgSwyveLcredX8xHA6GedYTImfxhKTGdnM1bfqVpoTb1R6NxnuhkC9aYCPp8i3f3MqPtWlNXerSzAoLoB9PvR1YTID/FTEREkucgfdSx51kn3OmTLECMT8EmsemTrbe8vkxypzV8t14QuZsFP9+c0bw4Rpxbd8lbCj5STBQODYQz1LBmtdkyr7Y139QSwMEFAAACAgAAEgh7ImdxiN4AgAA4gQAAAsAJABncmFwaDEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAW1UwXLaMBD9FcbnhjEYY5xjIU0PTdLBzDSTTg+LvNiayBKVZQjJ5N+7KwQ4bbl4/Hbf0+7Tw2+RqMGCcGiXUMquja4H8XD8aRAJo53p7B283FhrLOEjRlGpQr6ib2NgD+oZ1gq/oqxqF7pO4FzJZu1bp4Q28FIos2VuekZuygq/oa5c7WEGpV5iJY0O50wIw1I6Y1dSYQBH3OnC+yMBSZr3kCdCMt6ia5FZvNYGVIsEbdF+gwPaO1PKjRTg6Ciu//xFxVI2qFtCqMrnRIsTkCwiqq9BPFfWdLpcWdihbWEtlXQHbv0RtuY+iwp3oN2thW1ddHYDAs+S5t64Jf7upPW9wiiFgsco0DmpK57mrQefiH7slinb+tBK0RYCNVd0p9Rf6HhxwZVfF9pn1h1EO1Ads5JZOnhn06AKRW+BhZbSQCbOaQBZ8onXA2c77NfusK0/uHqurNBakPo/nJVF7Gm5Y+MxOA1sF2avW2i2ihz4Qon0mUuCPzzH8iS0QAdSnXNl9Pxo1Xko3ps3s8b56z3u/cIMQg/h+cpP78DGWIHlZ77Wdo6aTukxhtNxTL9Zkgfu1WgYJyljeVC5SoZZPEvzf8RCWoNUkg5neTJOJklQmgzH8SRLx0Emo9dpNsonXqetzZ43eugcWYIX47hwT5GYG62PAelfxIkWQnehaQSLrSvoIeoHrQ6PTz0aao7uPewa4s47n8MLt+pk+TE8URZvsnwsRAlZOcYkvlrn5ShbTzFNYpHmszjyW0gtnQT1nfSVOzlPH4FeQDQ0XrGgW7Wc7tLC/la+NqaXFqk3phCUIP1wJJ/3pUiAIp/LG/+R6P2Horf36P0PUEsDBBQAAAgIAABIIez/00FZsAIAAO0FAAALACQAZ3JhcGgzLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1v4jAQ/SvI520VYNvC3naBtntoi0qrHpYe3HhCLIwd+aNAK/57Z4whIdVKkWy9+fCbNzP5ZFK7CnJv7I2V4s4IYL86jO7sR6c23sKGL4yeyQ84+LxI4Uty4tHnkXtpEO9SmDMr8Fbmv/VCkXOGYNCyMHY1EQsYGecdwgVXDtBkjadojdBnh21SwDadH3R2dnjLQXuw//fqds+H/eFwOLiM7kHniq8qEES7jro4hPUuopvGgpIHkc+NUtIlNsxvq1jtiFcuYC3oICTH6iKP7PwCgRLkovTt8IeicOATO8u3Y2lRpn1e9sfstVtxt9wze+cqwLHSfcq7b9ZBtBbWrG6Pj2b0gC9lvnzk25w731C2CY9r3t2ozpqrJX9T8FKCvjc31gQt0OhtoNDgoDdupDoWNiohX9Z+e6otMFTfu9Ste7mLpW9mHqpjHdn5zxp9duBmykTtU0qyJGRIKcFi3/5iPXF0XHoIUeKI8U980ZyxZLiW1nk0JT4JJd8ptgcE6ByS7GfkoInemwmWcrFJ5EpiBD8yVkOEE8EKNFd+O8WMvt3/lq3Bq2W55rRuiV2yHbaoFRLh2j/LWqapWR+bbXF2XRzow+3fKzXBlWZ9B658CF5J3VCbDPco8MhovR/bppiHsFmwBc8bYR42PlgYc8/ja0gHB0w0Q1HLGKGDUjTLsYDICAug75X0LTm+qyLM7o2Oi3dyRvqLIMXpgrDLoj8QPBv2r/rdy1xkZ1d5D0SvO8j6PVH0h28srpDUKDdX071eqUs4Xc3WaNwXSvlcxbW3fH0jP1am0XKpCzPLLYB+OA11YDE7/lTEREisbwbeSx0Hkn3OmTL5EsT8mGgeFZ1svOXzOsucVfLdeELmbBT/fXNG8HEVcWbfJazp8ZNkoLBnIJ6kghWvyJTt2O4LUEsDBBQAAAgIAABIIex/+e3QswAAAAEBAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BbY7BCsIwEER/peRsyybbZBt/wJuIV+khyaYa0CptFUT8d1NU8OBtZ+cNMw9xi8OYzr1YFrrCqlkUYj+4y2HMj3oW18TzvROofa0VWCe9YTKuDB02tSfSJAGZpcg4QUdWhcCOWEWE0luW5E3UCEHbBjLUX4/HjJocZwcWCaUJDCUFFVnJBlBxh9aLNlPT/RLX7hTfGzZuOnSp59Tvq9WQeDVPnXt/jW0Mbpy+1qftf7J9vgBQSwECLQAUAAAICAAASCHsQfxhMrICAADvBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHsiZ3GI3gCAADiBAAACwAkAAAAAAAAAAAAAAD/AgAAZ3JhcGgxLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHs/9NBWbACAADtBQAACwAkAAAAAAAAAAAAAADEBQAAZ3JhcGgzLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHsf/nt0LMAAAABAQAACQAkAAAAAAAAAAAAAADBCAAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAAEAAQAcgEAAL8JAAAAAA==
+    dataString: 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
     file_cachedStartup: {fileID: 0}
     cacheStartup: 0
   showNavGraphs: 1
@@ -1765,6 +1829,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &642510962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2854800613794656859, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
+  m_PrefabInstance: {fileID: 1918008161}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &642510975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642510962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 2
+  centerBackingField: 1
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.5
+  debug: 0
 --- !u!1 &642879071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,6 +2109,74 @@ MonoBehaviour:
     value: 0
   graphMask:
     value: -1
+--- !u!1001 &787900415
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.531498
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8822937
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 3904062907638952366, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_Name
+      value: 'Coward AD Monster '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8680272973686503458, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 593875562}
+  m_SourcePrefab: {fileID: 100100000, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
 --- !u!1 &798999566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,7 +2353,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 60
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -2216,7 +2380,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854570586}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.44272143, y: 0.33588377, z: -0.1833812, w: 0.8108953}
+  m_LocalRotation: {x: 0.4427215, y: 0.3358838, z: -0.18338121, w: 0.81089526}
   m_LocalPosition: {x: -22.52, y: 20.5, z: -25.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2386,8 +2550,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 933857410}
+  - component: {fileID: 933857411}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: RVO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2408,6 +2573,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &933857411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933857409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1764de1de43cc4d19af52679d3eaae06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOSimulator
+  version: 1073741824
+  desiredSimulationFPS: 20
+  workerThreads: 2
+  doubleBuffering: 0
+  hardCollisions: 1
+  symmetryBreakingBias: 0.1
+  movementPlane: 0
+  useNavmeshAsObstacle: 0
+  drawQuadtree: 0
+--- !u!1 &965257758 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6373146046666775989, guid: 0ce2d9121c877d645b452e0e635e62e6, type: 3}
+  m_PrefabInstance: {fileID: 5575200776413201248}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &965257771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965257758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 2
+  centerBackingField: 1
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.5
+  debug: 0
 --- !u!1 &999457248
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,7 +3360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeatSystem
   _maxHeat: 100
-  _currentHeat: 0
+  p_currentHeat: 0
   p_sourceMapDataBase: {fileID: 11400000, guid: 744deb5878a87404cb1c11afc8642bdc, type: 2}
   p_tierStatDatabase: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
   LockTimer: 2
@@ -4211,15 +4429,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 135210120121119749, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -7.7
       objectReference: {fileID: 0}
     - target: {fileID: 135210120121119749, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.6
       objectReference: {fileID: 0}
     - target: {fileID: 135210120121119749, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -19.08
       objectReference: {fileID: 0}
     - target: {fileID: 135210120121119749, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4260,7 +4478,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2854800613794656859, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 642510975}
   m_SourcePrefab: {fileID: 100100000, guid: 3974d3572ce3da74b8ea63900d406b87, type: 3}
 --- !u!1 &1963161760
 GameObject:
@@ -5452,6 +5673,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CowardMonster
       objectReference: {fileID: 0}
+    - target: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8680272973686503458, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
       propertyPath: m_Camera
       value: 
@@ -5459,7 +5684,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4709528800344048337, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 116245786}
   m_SourcePrefab: {fileID: 100100000, guid: 03a5d0b260b9dca498050ebe5ab1ce2c, type: 3}
 --- !u!1 &3857245402856804494
 GameObject:
@@ -5863,10 +6091,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: YaBi
       objectReference: {fileID: 0}
+    - target: {fileID: 6373146046666775989, guid: 0ce2d9121c877d645b452e0e635e62e6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6373146046666775989, guid: 0ce2d9121c877d645b452e0e635e62e6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 965257771}
   m_SourcePrefab: {fileID: 100100000, guid: 0ce2d9121c877d645b452e0e635e62e6, type: 3}
 --- !u!1 &5592523720407156591
 GameObject:
@@ -6599,6 +6834,7 @@ GameObject:
   - component: {fileID: 8638729848705615711}
   - component: {fileID: 8638729848705615712}
   - component: {fileID: 8638729848705615713}
+  - component: {fileID: 8638729848705615714}
   m_Layer: 7
   m_Name: RefactorPlayer
   m_TagString: Untagged
@@ -6642,6 +6878,7 @@ MonoBehaviour:
   _baseDatasSO: {fileID: 11400000, guid: 566f1563e84bc08448785bd0dfbc8508, type: 2}
   _tierStatDatabaseSO: {fileID: 11400000, guid: 5c5414580c904c9429bcd2ee6edf1198, type: 2}
   _sourceMapDatabaseSO: {fileID: 11400000, guid: 6a7236ca84ee074438f611eb3d714c46, type: 2}
+  _overHeatDataSO: {fileID: 11400000, guid: f278d7c66fc3dff419f92bb94131fb70, type: 2}
 --- !u!114 &8638729848705615708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6712,7 +6949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHeat
   _maxHeat: 100
-  _currentHeat: 0
+  p_currentHeat: 0
   p_sourceMapDataBase: {fileID: 0}
   p_tierStatDatabase: {fileID: 0}
   LockTimer: 2
@@ -6729,6 +6966,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b45b375080cdc4a9f205fcc9ef087e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHealth
+--- !u!114 &8638729848705615714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8638729848705615704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 0.97
+  centerBackingField: 0.79
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.852
+  debug: 0
 --- !u!33 &8901348188149160567
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -6831,6 +7095,7 @@ SceneRoots:
   - {fileID: 1504142172}
   - {fileID: 379269630}
   - {fileID: 1907230841}
+  - {fileID: 933857410}
   - {fileID: 6335203}
   - {fileID: 614453522}
   - {fileID: 29785480}
@@ -6843,6 +7108,6 @@ SceneRoots:
   - {fileID: 1655963205192133558}
   - {fileID: 1185445140}
   - {fileID: 3844961043524670712}
+  - {fileID: 787900415}
   - {fileID: 1918008161}
   - {fileID: 5575200776413201248}
-  - {fileID: 933857410}
