@@ -2,10 +2,9 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
-
 /// <summary>
-/// ÇÃ·¹ÀÌ¾î ÀÌµ¿ »óÅÂ
-/// ÀÌµ¿ ÀÔ·ÂÀÌ ÀÖÀ» ¶§ È°¼ºÈ­µÇ´Â »óÅÂ
+/// í”Œë ˆì´ì–´ ì´ë™ ìƒíƒœ
+/// ì´ë™ ì…ë ¥ì— ë”°ë¼ í™œì„±í™”ë˜ëŠ” ìƒíƒœ
 /// </summary>
 public class PlayerMoveState : BaseState<Player>
 {
@@ -17,18 +16,9 @@ public class PlayerMoveState : BaseState<Player>
         p_context.Animator.SetBool("IsMoving", true);
     }
 
-    public override void OnUpdate()
-    {
-        if (Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
-            && p_context.Combat.IsBattleState)
-        {
-            p_context.Events.TriggerBattleStateChanged(false);
-        }
-    }
-
     public override void OnFixedUpdate()
     {
-        // ÀÌµ¿ Ã³¸® (»óÅÂ ÀüÈ¯Àº StateMachineÀÇ Á¶°ÇºÎ ÀüÈ¯À¸·Î ÀÚµ¿ Ã³¸®µÊ)
+        // ì´ë™ ì²˜ë¦¬ (ìƒíƒœ ì „í™˜ì€ StateMachineì—ì„œ ë³„ë„ ì²˜ë¦¬)
         HandleMovement();
     }
 
@@ -36,7 +26,7 @@ public class PlayerMoveState : BaseState<Player>
     {
         if (p_context.Movement != null && p_context.Controller.MoveInput != Vector2.zero)
         {
-            // 2D ÀÔ·ÂÀ» 3D ¿ùµå ÁÂÇ¥·Î º¯È¯
+            // 2D ì…ë ¥ì„ 3D ë°©í–¥ ì¢Œí‘œë¡œ ë³€í™˜
             Vector3 moveDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
             p_context.Movement.Move(moveDirection, p_context.DataBase.RuntimeData.MoveSpeed, p_context.DataBase.RuntimeData.RotateSpeed);
         }

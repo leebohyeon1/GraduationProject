@@ -210,13 +210,19 @@ public class Player : DIMonoBehaviour
     private void OnUpdate()
     {
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
-                   DataBase.BaseData.GroundLayerMask);
-
+                    DataBase.BaseData.GroundLayerMask);
+    
         if (Heat.CanHeatTierEffect())
         {
             Events.TriggerTier(Heat.CurrentTier);
         }
-    }
+    
+        if (Time.time - Combat.LastBattleTime >= RuntimeData.BattleOutTime && Combat.IsBattleState)
+        {
+            Events.TriggerBattleStateChanged(false);
+        }
+    }    
+
     /// <summary>
     /// FixedUpdate에 호출되는 함수
     /// </summary>
