@@ -64,7 +64,7 @@ public class GenericAttackNode : Node
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
-                    Character.TakeDamage(stat.FinalDamage, runner);
+                    Character.TakeDamage(stat.FinalDamage, null);
                     
                     _didHitPlayer = true;
                     if (!maintainAtk)
@@ -89,7 +89,6 @@ public class GenericAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
-        Debug.Log(runner.CurrentState);
     }
 
     public override Node Clone()

@@ -48,7 +48,7 @@ public class GroundStrikeNode : Node
                     
                     if (!_hitPlayers.Contains(player))
                     {
-                        damageable.TakeDamage(damage, runner);
+                        damageable.TakeDamage(damage, null);
                         knockbackable.ApplyKnockback(10f, (player.transform.position - attackOriginOffset).normalized);
                         _hitPlayers.Add(player); // 리스트에 추가하여 중복 데미지 방지
                     }

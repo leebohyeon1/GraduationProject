@@ -17,6 +17,8 @@ public class BackMoving : Node
 
     // 이 노드가 활성화되어 있는 동안 절대 변하지 않을 고정된 목표 지점
     private Vector3 fixedTargetPosition;
+    public float timeout = 1.8f;
+    float startTime;
 
     public override void OnEnter()
     {
@@ -43,9 +45,10 @@ public class BackMoving : Node
 
         // 이 노드가 끝날 때까지 목적지는 이 값으로 고정됩니다.
         fixedTargetPosition = runner.transform.position + directionFromInitialPlayer.normalized * targetDistance;
-        
+
 
         runner.Movement.StartOrUpdateChase(fixedTargetPosition, runSpeed);
+        startTime = Time.time;
     }
 
     protected override NodeState OnUpdate()
@@ -76,6 +79,11 @@ public class BackMoving : Node
             Debug.Log("벽에 부딪혔습니다");
             return NodeState.SUCCESS;
         }
+        if(Time.time - startTime > timeout)
+        {
+            Debug.Log("시간초과");
+            return NodeState.SUCCESS;
+        }
         // 도착 체크: AI가 "고정된 목표 지점"에 도착했는지 확인합니다.
         if (aiPath.reachedDestination)
         {
@@ -90,7 +98,7 @@ public class BackMoving : Node
     {
         if (runner != null && aiPath != null)
         {
-            runner.Movement.StopMovement();
+            // runner.Movement.StopMovement();
             runner.SetState(Enemy.EnemyState.Idle);
         }
     }

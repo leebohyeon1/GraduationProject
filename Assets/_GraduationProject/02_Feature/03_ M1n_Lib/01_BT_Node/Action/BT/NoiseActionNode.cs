@@ -21,7 +21,7 @@ public class NoiseActionNode : Node
             return NodeState.SUCCESS;
         }
 
-        AnimatorStateInfo stateInfo = runner.GetAnimator().GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         // IsName의 인자는 애니메이션 상태(State)의 이름이어야 합니다.
         if (stateInfo.IsName("Noise") && stateInfo.normalizedTime >= 0.85f)
         {
