@@ -28,8 +28,5 @@ public class ActionNode : Node
         return clone;
     }
 
-    public override void initNode()
-    {
-        //set init
-    }
+
 }

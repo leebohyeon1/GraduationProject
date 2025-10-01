@@ -16,7 +16,7 @@ public class AiController : MonoBehaviour
     }
     void Update()
     {
-        if(_enemy.IsDead) return;
+        if(_enemy.EnemyHealth.IsDead) return;
         _aiBrain?.Tick(Time.deltaTime);
     }
     public bool IsActionable()

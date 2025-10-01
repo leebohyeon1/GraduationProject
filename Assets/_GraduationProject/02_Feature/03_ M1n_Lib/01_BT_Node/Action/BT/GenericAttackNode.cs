@@ -20,7 +20,7 @@ public class GenericAttackNode : Node
         // 1. Enemy의 범용 플래그들을 리셋합니다.
         Handler.ResetAllFlags();
         _didHitPlayer = false;
-
+        runner.Movement.StartOrUpdateChase(runner.player.transform.position);
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
         runner.AnimationEvent(AttackName);
@@ -28,19 +28,23 @@ public class GenericAttackNode : Node
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
         stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
+        initNode();
 
-        if (directionToPlayer != Vector3.zero)
-        {
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        }
     }
 
     protected override NodeState OnUpdate()
     {
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
+        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        directionToPlayer.y = 0;
+
+        if (directionToPlayer != Vector3.zero)
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
         if (Handler.IsSound)
         {
-           // runner.PlayFeedback(AttackName, attackOrigin);
+            // runner.PlayFeedback(AttackName, attackOrigin);
             Handler.EndSound();
         }
         if (Handler.IsHitWindowOpen)
@@ -53,17 +57,14 @@ public class GenericAttackNode : Node
                 {
                     stat = runner.heatSystem.CalculationHeat(AttackName, heatable.ActorType, runner.heatSystem.GetTier(), damage);
                     SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
-                    Debug.Log($"SourceMap: {sourceMap}, actor: { heatable.ActorType}, tier: {runner.heatSystem.GetTier()}");
-                    Debug.Log($"heatchange: {sourceMap.HeatChangeType}, delta: {sourceMap.DeltaHeat}");
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-                    Debug.Log($"Applying Heat: {deltaHeat} to {heatable}");
                     heatable.ChangeHeat(deltaHeat);
                 }
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
-                    Character.TakeDamage(stat.FinalDamage, runner);
+                    Character.TakeDamage(stat.FinalDamage, null);
                     
                     _didHitPlayer = true;
                     if (!maintainAtk)
