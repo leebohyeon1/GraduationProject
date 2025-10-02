@@ -22,14 +22,18 @@ public class Condition_RandomChance : ConditionNode
         }
 
         brain.StartSkillCooldown(checkName);
-
-        return Random.Range(0f, 100f) <= successChance;
+        Debug.Log("[RandomChance] Checking chance: " + successChance + "%");
+        bool cnt = Random.Range(0f, 100f) <= successChance;
+        Debug.Log(cnt);
+        return cnt;
     }
 
     public override Node Clone()
     {
         var node = Instantiate(this);
         node.successChance = this.successChance;
+        node.checkName = this.checkName;
+        node.cooldownDuration = this.cooldownDuration;
         return node;
     }
 }

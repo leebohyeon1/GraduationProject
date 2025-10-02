@@ -10,7 +10,7 @@ public class ApplyStun : Node
     protected override NodeState OnUpdate()
     {
         // runner(Enemy)의 ApplyStun 함수를 직접 호출합니다.
-        runner.ApplyStun();
+        runner.ParrySystem.ApplyStun();
         
         // 이 노드는 스위치를 누르는 역할만 하고 즉시 성공을 반환합니다.
         return NodeState.SUCCESS;

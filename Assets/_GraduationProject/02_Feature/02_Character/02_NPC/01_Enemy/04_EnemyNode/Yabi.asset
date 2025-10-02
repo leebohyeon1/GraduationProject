@@ -30,14 +30,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: inviattack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 784, y: 271}
+  position: {x: 765, y: 474}
   nodes:
   - {fileID: 6733767921067591588}
   - {fileID: -5383055750570203492}
-  - {fileID: -1198667856612942049}
-  - {fileID: -7940636610147236465}
   - {fileID: -6744645030134086082}
   - {fileID: -2755801006588839190}
+  - {fileID: -1198667856612942049}
   - {fileID: -5813741239373490832}
   - {fileID: -91614837426282233}
 --- !u!114 &-8730112079219288532
@@ -59,20 +58,6 @@ MonoBehaviour:
   - {fileID: -8904176251656235448}
   - {fileID: -4999535621410860006}
   - {fileID: 6108192575178470743}
---- !u!114 &-7940636610147236465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1011, y: 497}
-  skillName: RandomAtk
 --- !u!114 &-7245226355301169087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,9 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
   m_Name: Condition_Is In Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInAttackRange
-  position: {x: 1007, y: 589}
-  heatRange: 0
-  _attackRange: 4
+  position: {x: 994, y: 435}
+  heatRange: 1
+  _attackRange: 5
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: 
-  position: {x: 1027, y: 144}
+  position: {x: 1023, y: 167}
   skillName: Attack
 --- !u!114 &-6419026422163123980
 MonoBehaviour:
@@ -181,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
-  position: {x: 1009, y: 730}
+  position: {x: 995, y: 666}
   AttackName: Attack
   damage: 3
   damageRadius: 3.5
@@ -200,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710edeff7fe9e644199e60bd4a6ca894, type: 3}
   m_Name: Condition_Is Player Behind
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
-  position: {x: 1011, y: 355}
+  position: {x: 998, y: 358}
   angleThreshold: 45
 --- !u!114 &-4999535621410860006
 MonoBehaviour:
@@ -214,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: MoveBack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 787, y: 1123}
+  position: {x: 765, y: 912}
   nodes:
   - {fileID: 5851155588711365391}
   - {fileID: 3069574526105782513}
@@ -234,6 +219,20 @@ MonoBehaviour:
   nodes:
   - {fileID: -1995372082178178704}
   - {fileID: -8730112079219288532}
+--- !u!114 &-4571666413586387207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 671, y: -592}
+  waitTime: 1
 --- !u!114 &-4553377999928142451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,11 +258,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: TakeDamage
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 222, y: -289}
+  position: {x: 222, y: -538}
   nodes:
   - {fileID: 7027237538290763944}
   - {fileID: 3383802295068753850}
   - {fileID: 8246282568877846733}
+  - {fileID: -1456587011237061795}
 --- !u!114 &-3662235796367844752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Is Skill Ready
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsSkillReady
-  position: {x: 1005, y: 661}
+  position: {x: 994, y: 512}
   skillName: InviAtk
   cooldownDuration: 0.65
   HeatCooldown: 0
@@ -320,6 +320,24 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: 
   position: {x: 437, y: -199}
+--- !u!114 &-1456587011237061795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: backstep
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 437, y: -458}
+  nodes:
+  - {fileID: 5883210979223998324}
+  - {fileID: -4571666413586387207}
+  - {fileID: 1514640868041876688}
+  - {fileID: 4418371570474132438}
 --- !u!114 &-1198667856612942049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,10 +350,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
-  position: {x: 1011, y: 420}
+  position: {x: 995, y: 589}
   checkName: RandomAtk
   cooldownDuration: 2.5
-  successChance: 70
+  successChance: 80
 --- !u!114 &-91614837426282233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1009, y: 807}
+  position: {x: 995, y: 743}
   skillName: InviAtk
 --- !u!114 &11400000
 MonoBehaviour:
@@ -378,6 +396,23 @@ MonoBehaviour:
   position: {x: 1023, y: -122}
   heatRange: 0
   _attackRange: 4
+--- !u!114 &1514640868041876688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
+  m_Name: Condition_Check Object Behind
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
+  position: {x: 671, y: -525}
+  checkDistance: 2
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1742704995383000931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
-  position: {x: 1018, y: 1287}
+  position: {x: 996, y: 1076}
   minDistance: 0.5
   maxDistance: 40
 --- !u!114 &2422854897302023152
@@ -440,7 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2164c965335697840954bf8e72f9a845, type: 3}
   m_Name: Only Back Chase
   m_EditorClassIdentifier: Assembly-CSharp::OnlyBackChase
-  position: {x: 1020, y: 1138}
+  position: {x: 998, y: 927}
   desiredBehindDistance: 5
   avoidanceRadius: 3
   penaltyTag: 1
@@ -457,7 +492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d04602de3090e249a3d21a2bfdca92a, type: 3}
   m_Name: Condition_Take Damage
   m_EditorClassIdentifier: Assembly-CSharp::Condition_TakeDamage
-  position: {x: 437, y: -363}
+  position: {x: 437, y: -612}
 --- !u!114 &4324966382876483621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,7 +505,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd6128cd85e2ac442acab9a2a207e5c5, type: 3}
   m_Name: Condition_Opportunity Finder
   m_EditorClassIdentifier: Assembly-CSharp::Condition_OpportunityFinder
-  position: {x: 1018, y: -64}
+  position: {x: 1027, y: -63}
+--- !u!114 &4418371570474132438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
+  m_Name: Stop Movement
+  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
+  position: {x: 678, y: -463}
+  juststop: 0
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,9 +560,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
   m_Name: Condition_Is In Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInAttackRange
-  position: {x: 1020, y: 1061}
+  position: {x: 998, y: 850}
   heatRange: 0
   _attackRange: 5
+--- !u!114 &5883210979223998324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
+  m_Name: Back Moving
+  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
+  position: {x: 671, y: -669}
+  targetDistance: 5
+  acceptanceRadius: 0.5
+  runSpeed: 5
+  timeout: 1.8
 --- !u!114 &6108192575178470743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Chase
   m_EditorClassIdentifier: 
-  position: {x: 787, y: 1287}
+  position: {x: 765, y: 1076}
   nodes:
   - {fileID: 8581566141182817877}
   - {fileID: 1742704995383000931}
@@ -595,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 437, y: -440}
+  position: {x: 437, y: -689}
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -621,7 +687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 657e5e6952b4a564ea040a09afada9ab, type: 3}
   m_Name: Take Damage
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
-  position: {x: 437, y: -286}
+  position: {x: 437, y: -535}
   animationName: Hit
 --- !u!114 &8440268503078126261
 MonoBehaviour:
@@ -635,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Chase Player Node
   m_EditorClassIdentifier: 
-  position: {x: 1018, y: 1364}
+  position: {x: 996, y: 1153}
 --- !u!114 &8581566141182817877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,7 +714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 1018, y: 1221}
+  position: {x: 996, y: 1010}
 --- !u!114 &8656888805184373649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,7 +727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Atk
   m_EditorClassIdentifier: 
-  position: {x: 790, y: -122}
+  position: {x: 790, y: -102}
   nodes:
   - {fileID: 4748238847309724425}
   - {fileID: -4553377999928142451}
