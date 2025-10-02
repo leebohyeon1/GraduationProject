@@ -160,26 +160,3 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
     }
 
 }
-
-public class PlayerHealthManager : IDisposable
-{
-    private PlayerHealth _health;
-    private PlayerEvents _events;
-    private bool _disposed = false; // 중복 Dispose 방지
-
-    public PlayerHealthManager(PlayerHealth health, PlayerEvents events)
-    {
-        _health = health; 
-        _events = events;
-    }
-
-    public void Dispose()
-    {
-        if(_disposed)
-        {
-            return;
-        }
-
-        _disposed = true;
-    }
-}
