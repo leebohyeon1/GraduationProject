@@ -5,6 +5,7 @@ using UnityEngine;
 using BehaviorTree;
 using UnityEditor;
 using UnityEngine.UIElements;
+using System.Collections.Generic;
 
 public class NodeView : UnityEditor.Experimental.GraphView.Node
 {
@@ -19,7 +20,7 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         this.viewDataKey = node.GetInstanceID().ToString();
 
         SetPosition(new Rect(node.position, new Vector2(150, 100)));
-        
+
         CreateInputPorts();
         CreateOutputPorts();
     }
@@ -33,16 +34,18 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         // 이 코드 한 줄로 인스펙터 창이 자동으로 갱신됩니다.
         Selection.activeObject = node;
     }
-    
+
     public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
     {
         base.BuildContextualMenu(evt);
         evt.menu.AppendSeparator();
         evt.menu.AppendAction("이름 바꾸기", OnRenameAction);
+        evt.menu.AppendSeparator();
+        evt.menu.AppendAction("Sub-tree로 추출...", (action) => ExtractAsSubTree());
     }
-    
+
     private void OnRenameAction(DropdownMenuAction action) { OpenRenameEditor(); }
-    
+
     private void OpenRenameEditor()
     {
         var titleLabel = titleContainer.Q<Label>();
@@ -53,6 +56,50 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         textField.SelectAll();
         textField.RegisterValueChangedCallback(e => OnRename(e.newValue, titleLabel, textField));
         textField.RegisterCallback<FocusOutEvent>(e => OnRename(textField.value, titleLabel, textField));
+    }
+    private void ExtractAsSubTree()
+    {
+        // 1. 파일 저장 경로를 묻습니다.
+        string path = EditorUtility.SaveFilePanelInProject("SubTree 에셋 저장", $"{this.node.name}_SubTree", "asset", "Sub-tree를 저장할 경로를 선택하세요.");
+        if (string.IsNullOrEmpty(path)) return;
+
+        // 2. 새로운 SubTree 에셋을 생성합니다. (SubTree.cs 클래스가 미리 정의되어 있어야 합니다)
+        SubTree newSubTree = ScriptableObject.CreateInstance<SubTree>();
+        AssetDatabase.CreateAsset(newSubTree, path);
+
+        // 3. 현재 노드(this.node)와 모든 자식 노드를 Deep Copy합니다.
+        newSubTree.rootNode = this.node.Clone();
+
+        // 4. 복제된 노드들을 새로운 SubTree 에셋의 하위 에셋으로 추가합니다.
+        var allNodes = new List<BehaviorTree.Node>();
+        CollectAllNodes(newSubTree.rootNode, allNodes);
+
+        foreach (var n in allNodes)
+        {
+            // 원본 에셋과의 연결을 끊고 새 에셋의 자식으로 만듭니다.
+            AssetDatabase.AddObjectToAsset(n, newSubTree);
+        }
+
+        AssetDatabase.SaveAssets();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = newSubTree;
+    }
+    private void CollectAllNodes(BehaviorTree.Node node, List<BehaviorTree.Node> nodes)
+    {
+        if (node == null) return;
+        nodes.Add(node);
+
+        if (node is CompositeNode composite)
+        {
+            foreach (var child in composite.nodes)
+            {
+                CollectAllNodes(child, nodes);
+            }
+        }
+        else if (node is Decorator_Inverter inverter)
+        {
+            CollectAllNodes(inverter.child, nodes);
+        }
     }
 
     private void OnRename(string newName, Label titleLabel, TextField textField)
@@ -74,14 +121,14 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         textField.parent.Remove(textField);
         titleLabel.style.display = DisplayStyle.Flex;
     }
-    
+
     private void CreateInputPorts()
     {
         input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(bool));
         input.portName = "Parent";
         inputContainer.Add(input);
     }
-    
+
     private void CreateOutputPorts()
     {
         if (node is CompositeNode)
