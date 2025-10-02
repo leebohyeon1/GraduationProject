@@ -38,8 +38,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
 

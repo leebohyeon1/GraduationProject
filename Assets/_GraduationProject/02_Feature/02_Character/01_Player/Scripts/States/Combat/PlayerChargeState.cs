@@ -48,7 +48,7 @@ public class PlayerChargeState : BaseState<Player>
             p_context.Heat.IncreaseHeatOnCharge(chargeSourceMap, _chargeGuage);
         }
 
-        if (!p_context.Controller.AttackHeldInput)
+        if (!p_context.Input.AttackHeldInput)
         {
             if (_isCharged)
             {
@@ -62,7 +62,7 @@ public class PlayerChargeState : BaseState<Player>
                 return;
             }
         }
-        else if(p_context.Controller.DodgeInput)
+        else if(p_context.Input.DodgeInput)
         {
             p_context.Events.TriggerChargeCancel();
             p_stateMachine.ChangeState <PlayerDodgeState>();
@@ -70,8 +70,8 @@ public class PlayerChargeState : BaseState<Player>
 
         // 에임 방향으로 회전
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
+        var moveInput = p_context.Input.MoveInput;
+        var mousePosition = p_context.Input.MousePosition;
         p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
     }
 

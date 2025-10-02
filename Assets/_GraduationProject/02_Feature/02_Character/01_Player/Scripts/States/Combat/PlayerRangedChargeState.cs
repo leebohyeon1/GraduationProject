@@ -33,7 +33,7 @@ public class PlayerRangedChargeState : BaseState<Player>
             _isCharged = true;
         }
 
-        if (!p_context.Controller.RangedAttackInput)
+        if (!p_context.Input.RangedAttackInput)
         {
             if (_isCharged)
             {
@@ -47,7 +47,7 @@ public class PlayerRangedChargeState : BaseState<Player>
                 return;
             }
         }
-        else if (p_context.Controller.DodgeInput)
+        else if (p_context.Input.DodgeInput)
         {
             p_context.Events.TriggerRangedChargeCancel();
             p_stateMachine.ChangeState<PlayerDodgeState>();
@@ -55,8 +55,8 @@ public class PlayerRangedChargeState : BaseState<Player>
 
         // 에임 방향으로 회전
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
+        var moveInput = p_context.Input.MoveInput;
+        var mousePosition = p_context.Input.MousePosition;
         p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
     }
 

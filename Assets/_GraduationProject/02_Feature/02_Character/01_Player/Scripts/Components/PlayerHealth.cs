@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 
-public class PlayerHealth : MonoBehaviour, IHealth, IStiffness
+public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
 {
     private PlayerStats _stats;
 

@@ -16,7 +16,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerDataBase _dataBase;
     [SerializeField] private PlayerStats _stats;
 
-    [SerializeField] private PlayerController _controller;
+    [SerializeField] private PlayerInputHandler _input;
     [SerializeField] private PlayerHealth _health;
     [SerializeField] private PlayerMovement _movement;
     [SerializeField] private PlayerCombat _combat;
@@ -31,7 +31,7 @@ public class Player : DIMonoBehaviour
     #region Properties
     public Animator Animator => _animator;
     public PlayerDataBase DataBase => _dataBase;
-    public PlayerController Controller => _controller;
+    public PlayerInputHandler Input => _input;
     public PlayerHealth Health => _health;
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
@@ -71,7 +71,7 @@ public class Player : DIMonoBehaviour
 
     private void LateUpdate()
     {
-        _controller.LateTick();
+        _input.LateTick();
     }
 
     private void OnDestroy()
@@ -100,11 +100,11 @@ public class Player : DIMonoBehaviour
         }
         _stats = new PlayerStats(BaseData);
 
-        if (_controller == null)
+        if (_input == null)
         {
-            _controller = GetComponent<PlayerController>();
+            _input = GetComponent<PlayerInputHandler>();
         }
-        _controller.Initialize(_inputDeviceDetector);
+        _input.Initialize(_inputDeviceDetector);
 
         if (_health == null)
         {
@@ -177,31 +177,31 @@ public class Player : DIMonoBehaviour
 
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
-            => Controller.MoveInput != Vector2.zero);
+            => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
-            => Controller.AttackInput);
+            => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
-            => Controller.AttackHeldInput);
+            => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
-            => Controller.RangedAttackInput);
+            => Input.RangedAttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
-            => Controller.DefendInput);
+            => Input.DefendInput);
 
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
-            => Controller.MoveInput == Vector2.zero);
+            => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
-            => Controller.AttackInput);
+            => Input.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
-            => Controller.AttackHeldInput);
+            => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()
-            => Controller.RangedAttackInput);
+            => Input.RangedAttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
-            => Controller.DefendInput);
+            => Input.DefendInput);
     }
 
     /// <summary>

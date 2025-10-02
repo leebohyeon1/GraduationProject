@@ -24,10 +24,10 @@ public class PlayerMoveState : BaseState<Player>
 
     private void HandleMovement()
     {
-        if (p_context.Movement != null && p_context.Controller.MoveInput != Vector2.zero)
+        if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             // 2D 입력을 3D 방향 좌표로 변환
-            Vector3 moveDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
+            Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y);
             p_context.Movement.Move(moveDirection, p_context.Stats.MoveSpeed, p_context.Stats.RotateSpeed);
         }
     }

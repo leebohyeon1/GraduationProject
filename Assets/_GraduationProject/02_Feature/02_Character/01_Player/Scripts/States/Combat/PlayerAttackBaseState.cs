@@ -51,8 +51,8 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
             
@@ -152,30 +152,30 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
-        if (p_nextAttackState != null && p_context.Controller.AttackInput)
+        if (p_nextAttackState != null && p_context.Input.AttackInput)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
 
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Controller.DodgeInput &&
+        else if (p_context.Input.DodgeInput &&
             Time.time - p_context.Movement.LastDodgeTime >=
             p_context.Stats.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }
-        else if (p_context.Controller.DefendInput)
+        else if (p_context.Input.DefendInput)
         {
             p_nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Controller.AttackHeldInput)
+        else if (p_context.Input.AttackHeldInput)
         {
             p_nextState = typeof(PlayerChargeState);
         }
-        else if (p_context.Controller.RangedAttackInput)
+        else if (p_context.Input.RangedAttackInput)
         {
             p_nextState = typeof(PlayerRangedChargeState);
         }

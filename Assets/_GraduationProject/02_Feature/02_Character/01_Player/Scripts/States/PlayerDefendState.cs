@@ -34,12 +34,12 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         // 방어 키를 떼면 Idle 상태로 전환
-        if (!p_context.Controller.DefendInput)
+        if (!p_context.Input.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
             p_context.Combat.SetDefending(false);
         }
-        else if (p_context.Controller.DodgeInput)
+        else if (p_context.Input.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
             p_context.Combat.SetDefending(false);
