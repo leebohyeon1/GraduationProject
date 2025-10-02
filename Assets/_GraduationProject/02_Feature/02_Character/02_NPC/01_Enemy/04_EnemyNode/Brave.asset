@@ -33,7 +33,7 @@ MonoBehaviour:
   position: {x: 453, y: -109}
   nodes:
   - {fileID: -7245226355301169087}
-  - {fileID: 8656888805184373649}
+  - {fileID: -2870098089127236727}
   - {fileID: 6108192575178470743}
 --- !u!114 &-7974736735570412724
 MonoBehaviour:
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: Condition_Check Object Behind
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
   position: {x: 1016, y: 271}
-  checkDistance: 2
+  checkDistance: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 512
@@ -241,6 +241,20 @@ MonoBehaviour:
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
   position: {x: 457, y: 355}
+--- !u!114 &-2870098089127236727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Run Sub Tree Node
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 748, y: 7}
+  subTreeToRun: {fileID: 11400000, guid: 72bb54cccae1b074d8e6b80e0318c461, type: 2}
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Atk
   m_EditorClassIdentifier: 
-  position: {x: 746, y: -99}
+  position: {x: 828, y: -95}
   nodes:
   - {fileID: 4748238847309724425}
   - {fileID: -4553377999928142451}
