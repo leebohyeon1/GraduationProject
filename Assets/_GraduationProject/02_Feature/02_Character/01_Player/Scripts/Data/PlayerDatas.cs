@@ -48,7 +48,7 @@ public class PlayerStats
 
     public event Action<float> OnAnimationSpeedChanged;
 
-    public void Initialize(PlayerBaseDatasSO baseData)
+    public PlayerStats(PlayerBaseDatasSO baseData)
     {
         ResetData(baseData);
     }

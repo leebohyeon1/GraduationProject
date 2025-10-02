@@ -99,7 +99,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 연속 공격이 아니면 추가 딜레이
         if (!typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
-            sequence.SetDelay(p_context.DataBase.RuntimeData.CombatData.LastAttackDelay);
+            sequence.SetDelay(p_context.Stats.CombatData.LastAttackDelay);
         }
 
         sequence.AppendCallback(() =>
@@ -166,7 +166,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         }
         else if (p_context.Controller.DodgeInput &&
             Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.DataBase.RuntimeData.CombatData.DodgeCooldown)
+            p_context.Stats.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }

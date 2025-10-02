@@ -60,7 +60,7 @@ public class PlayerDefendState : BaseState<Player>
 
     private void HandleParryPerform()
     {
-        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
+        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.CombatData.ParryRadius);
 
         foreach (Collider collider in colliders)
         {
@@ -74,7 +74,7 @@ public class PlayerDefendState : BaseState<Player>
 
     private void HandleParryAffect(Collider collider)
     {
-       p_context.Combat.ToggleCanCounter(p_context.DataBase.RuntimeData.CombatData.CounterAttackWindow);
+       p_context.Combat.ToggleCanCounter(p_context.Stats.CombatData.CounterAttackWindow);
     }
 }
 

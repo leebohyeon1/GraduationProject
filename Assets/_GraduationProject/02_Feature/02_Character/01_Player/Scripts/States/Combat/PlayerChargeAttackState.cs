@@ -11,7 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.ChargeAttackData;
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.ChargeAttackData;
 
     private PlayerAttackData _playerAttackData = new PlayerAttackData();
 

@@ -10,7 +10,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.CounterAttackDatas[1];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[1];
 
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)

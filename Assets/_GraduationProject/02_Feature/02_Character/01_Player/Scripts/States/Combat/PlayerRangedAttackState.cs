@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState;
-    private RangedAttackData _attackData => p_context.RuntimeData.CombatData.RangedAttackData;
+    private RangedAttackData _attackData => p_context.Stats.CombatData.RangedAttackData;
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -52,7 +52,7 @@ public class PlayerRangedAttackState : BaseState<Player>
         }
         else if (p_context.Controller.DodgeInput &&
             Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.DataBase.RuntimeData.CombatData.DodgeCooldown)
+            p_context.Stats.CombatData.DodgeCooldown)
         {
             _nextState = typeof(PlayerDodgeState);
         }

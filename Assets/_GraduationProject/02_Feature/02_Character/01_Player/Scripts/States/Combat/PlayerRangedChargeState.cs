@@ -26,7 +26,7 @@ public class PlayerRangedChargeState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
-        if (!_isCharged && _chargeTimer > p_context.RuntimeData.CombatData.RangedAttackData.ChargeTime)
+        if (!_isCharged && _chargeTimer > p_context.Stats.CombatData.RangedAttackData.ChargeTime)
         {
             p_context.Events.TriggerRangedChargeFinish();
 

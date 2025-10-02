@@ -14,6 +14,8 @@ public class Player : DIMonoBehaviour
     [SerializeField] private CharacterController _characterController;
 
     [SerializeField] private PlayerDataBase _dataBase;
+    [SerializeField] private PlayerStats _stats;
+
     [SerializeField] private PlayerController _controller;
     [SerializeField] private PlayerHealth _health;
     [SerializeField] private PlayerMovement _movement;
@@ -24,7 +26,6 @@ public class Player : DIMonoBehaviour
     private StateMachine<Player> _stateMachine;
     private PlayerHeatManager _heatManager;
     private PlayerCombatManager _combatManager;
-    private PlayerDataManager _dataDataManager;
     #endregion
 
     #region Properties
@@ -37,7 +38,7 @@ public class Player : DIMonoBehaviour
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
     public PlayerBaseDatasSO BaseData => DataBase.BaseData;
-    public PlayerStats RuntimeData => DataBase.RuntimeData;
+    public PlayerStats Stats => _stats;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
 
@@ -97,48 +98,47 @@ public class Player : DIMonoBehaviour
         {
             _dataBase = GetComponent<PlayerDataBase>();
         }
+        _stats = new PlayerStats(BaseData);
 
         if (_controller == null)
         {
             _controller = GetComponent<PlayerController>();
         }
+        _controller.Initialize(_inputDeviceDetector);
 
         if (_health == null)
         {
             _health = GetComponent<PlayerHealth>();
         }
+        _health.Initialize(Stats);
 
         if (_movement == null)
         {
             _movement = GetComponent<PlayerMovement>();
         }
+        _movement.Initialize(_characterController);
 
         if (_combat == null)
         {
             _combat = GetComponent<PlayerCombat>();
         }
+        _combat.Initialize(Stats);
 
-        if(_heat == null)
+        if (_heat  == null)
         {
             _heat = GetComponent<PlayerHeat>(); 
         }
+        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData, DataBase.OverHeatData);
 
         if (_events == null)
         {
             _events = GetComponent<PlayerEvents>();
         }
 
-        _dataBase.Initialize();
-        _controller.Initialize(_inputDeviceDetector);
-        _health.Initialize(_dataBase.RuntimeData);
-        _movement.Initialize(_characterController);
-        _combat.Initialize(DataBase.RuntimeData);
-        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData, DataBase.OverHeatData);
-
         _heatManager = new PlayerHeatManager(Heat, Events);
         _combatManager = new PlayerCombatManager(Combat, Events);
-        _dataDataManager = new PlayerDataManager(DataBase, Heat, Events);
     }
+
     /// <summary>
     /// 상태머신 초기화
     /// </summary>
@@ -173,13 +173,13 @@ public class Player : DIMonoBehaviour
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && RuntimeData.IsDamaged);
+            !Health.IsDead && Stats.IsDamaged);
 
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Controller.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
@@ -193,7 +193,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
             => Controller.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Controller.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
@@ -217,7 +217,7 @@ public class Player : DIMonoBehaviour
             Events.TriggerTier(Heat.CurrentTier);
         }
     
-        if (Time.time - Combat.LastBattleTime >= RuntimeData.BattleOutTime && Combat.IsBattleState)
+        if (Time.time - Combat.LastBattleTime >= Stats.BattleOutTime && Combat.IsBattleState)
         {
             Events.TriggerBattleStateChanged(false);
         }
@@ -235,7 +235,7 @@ public class Player : DIMonoBehaviour
     #region Event
     private void SubscribeToEvents()
     {
-        RuntimeData.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
+        Stats.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
         Events.OnOverHeat += HandleOverHeat;
     }
 
@@ -243,9 +243,8 @@ public class Player : DIMonoBehaviour
     {
         _heatManager?.Dispose();
         _combatManager?.Dispose();
-        _dataDataManager?.Dispose();
 
-        RuntimeData.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
+        Stats.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
         Events.OnOverHeat -= HandleOverHeat;
     }
 
