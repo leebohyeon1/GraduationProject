@@ -114,7 +114,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="isBattleState">전투 상태 여부</param>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
-        OnBattleStateChaged.Invoke(isBattleState);
+        OnBattleStateChaged?.Invoke(isBattleState);
     }
 
     #region Movement
@@ -151,7 +151,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerDodgeFinish()
     {
-        OnDodgeFinish.Invoke();
+        OnDodgeFinish?.Invoke();
         PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
     }
 
@@ -194,7 +194,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerAttackPerform()
     {
-        OnAttackPerform.Invoke();
+        OnAttackPerform?.Invoke();
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerAttackFinish(int type)
     {
-        OnAttackFinish.Invoke();
+        OnAttackFinish?.Invoke();
 
         switch(type)
         {
@@ -265,7 +265,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="collider">타격 대상 콜라이더</param>
     public void TriggerAttackAffect(Collider collider)
     {
-        OnAttackAffect.Invoke(collider);
+        OnAttackAffect?.Invoke(collider);
         PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
     }
     #endregion
@@ -328,7 +328,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="tier">현재 티어</param>
     public void TriggerChargeAttackAffect(Collider collider, int tier)
     {
-        OnChargeAttackAffect.Invoke(collider);
+        OnChargeAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
@@ -393,7 +393,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedAttackStart()
     {
-        OnRangedAttackStart.Invoke(_rangedAttackPoint);
+        OnRangedAttackStart?.Invoke(_rangedAttackPoint);
 
         PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackPoint.position);
     }
@@ -404,7 +404,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="collider">타격 대상 콜라이더</param>
     public void TriggerRangedAttackAffect(Collider collider)
     {
-        OnRangedAttackAffect.Invoke(collider);
+        OnRangedAttackAffect?.Invoke(collider);
 
         if (collider != null)
         {
@@ -417,7 +417,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedAttackFinish()
     {
-        OnRangedAttackFinish.Invoke();
+        OnRangedAttackFinish?.Invoke();
     }
     #endregion
 
@@ -465,7 +465,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="tier">현재 티어</param>
     public void TriggerFirstCounterAttackAffect(Collider collider, int tier)
     {
-        OnFirstCounterAttackAffect.Invoke(collider);
+        OnFirstCounterAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
@@ -496,7 +496,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <param name="tier">현재 티어</param>
     public void TriggerSecondCounterAttackAffect(Collider collider, int tier)
     {
-        OnSecondCounterAttackAffect.Invoke(collider);
+        OnSecondCounterAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
@@ -608,7 +608,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
                 break;
             case 4:
                 PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
-                OnOverHeat.Invoke();
+                OnOverHeat?.Invoke();
                 break;
         }
     }
