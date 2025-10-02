@@ -37,7 +37,7 @@ public class Player : DIMonoBehaviour
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
     public PlayerBaseDatasSO BaseData => DataBase.BaseData;
-    public PlayerData RuntimeData => DataBase.RuntimeData;
+    public PlayerStats RuntimeData => DataBase.RuntimeData;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
 

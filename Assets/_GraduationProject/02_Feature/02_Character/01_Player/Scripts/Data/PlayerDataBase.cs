@@ -16,12 +16,12 @@ public class PlayerDataBase : MonoBehaviour
     [SerializeField] private OverHeatDataSO _overHeatDataSO;
 
    
-    private PlayerData _runtimeData;
+    private PlayerStats _runtimeData;
     #endregion
 
     #region Properties
     public PlayerBaseDatasSO BaseData => _baseDatasSO;
-    public PlayerData RuntimeData => _runtimeData;
+    public PlayerStats RuntimeData => _runtimeData;
     public TierStatDatabaseSO TierStatData => _tierStatDatabaseSO;
     public SourceMapDatabaseSO SourceMapData => _sourceMapDatabaseSO;
     public OverHeatDataSO OverHeatData => _overHeatDataSO;
@@ -29,7 +29,7 @@ public class PlayerDataBase : MonoBehaviour
 
     public void Initialize()
     {
-        _runtimeData = new PlayerData();
+        _runtimeData = new PlayerStats();
         _runtimeData.Initialize(_baseDatasSO);
     }
 

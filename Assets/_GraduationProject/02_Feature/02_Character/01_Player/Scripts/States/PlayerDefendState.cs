@@ -24,7 +24,7 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Animator.SetBool("IsDefending", true);
 
 
-        p_context.Combat.DefendStart();
+        p_context.Combat.SetDefending(true);
         p_context.Combat.SetupCombatCenter();
         p_context.Events.TriggerBattleStateChanged(true);
     }
@@ -38,12 +38,12 @@ public class PlayerDefendState : BaseState<Player>
         if (!p_context.Controller.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Combat.DefendFinish();
+            p_context.Combat.SetDefending(false);
         }
         else if (p_context.Controller.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
-            p_context.Combat.DefendFinish();
+            p_context.Combat.SetDefending(false);
         }
     }
 

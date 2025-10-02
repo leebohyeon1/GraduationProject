@@ -6,7 +6,6 @@ public class PlayerBaseDatasSO : ScriptableObject
 {
     [Header("Stats")]
     public int MaxHealth = 100;
-    public int MaxMana = 100;
 
     [Header("Movement")]
     public LayerMask GroundLayerMask = 1 << 3;
@@ -23,19 +22,23 @@ public class PlayerBaseDatasSO : ScriptableObject
 /// 런타임 데이터를 담을 플레이어 데이터 클래스
 /// </summary>
 [Serializable]
-public class PlayerData
+public class PlayerStats
 {
-    public float AnimatorSpeed { get; private set; }
+    public float AnimatorSpeed;
+
     // State
-    public bool IsDefending { get; private set; }
-    public bool IsInCombat { get; private set; }
+    public bool IsDefending;
+    public bool IsInCombat;
+    public bool IsInvincible;
+    public bool IsLightHit;
+    public bool IsHeavyHit;
     public bool IsDamaged => IsLightHit || IsHeavyHit;
-    public bool IsLightHit { get; private set; } 
-    public bool IsHeavyHit { get; private set; } 
+
 
     // Stat
     public int MaxHealth;
-    public int MaxMana;
+    public int CurrentHealth;
+    public int CurrentHeat;
 
     public float MoveSpeed;
     public float RotateSpeed;
@@ -63,20 +66,9 @@ public class PlayerData
     public void ResetData(PlayerBaseDatasSO baseData)
     {
         MaxHealth = baseData.MaxHealth;
-        MaxMana = baseData.MaxMana;
         MoveSpeed = baseData.MoveSpeed;
         RotateSpeed = baseData.RotateSpeed;
         CombatData.Initialize(baseData.CombatData);
-    }
-
-    public void SetDefending(bool defending)
-    {
-        IsDefending = defending;
-    }
-
-    public void SetInCombat(bool inCombat)
-    {
-        IsInCombat = inCombat;
     }
 
     public void SetDamaged(PlayerDamagedType damagedType)

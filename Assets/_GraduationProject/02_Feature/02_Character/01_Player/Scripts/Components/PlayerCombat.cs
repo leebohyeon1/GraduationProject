@@ -8,8 +8,8 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour, IAttacker
 {
     #region Private Fields
-    private PlayerData _runtimeData;
-    private PlayerCombatData _combatData => _runtimeData.CombatData;
+    private PlayerStats _stats;
+    private PlayerCombatData _combatData => _stats.CombatData;
     /// <summary>
     /// 전투 중심점의 위치
     /// </summary>
@@ -47,10 +47,10 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     public bool IsBattleState => _isBattleState;
     #endregion
 
-    public void Initialize(PlayerData combatData)
+    public void Initialize(PlayerStats combatData)
     {
         _isDrawGizmos = true;
-        _runtimeData = combatData;
+        _stats = combatData;
     }
 
     /// <summary>
@@ -152,14 +152,9 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
     #region Defend
 
-    public void DefendStart()
+    public void SetDefending(bool isDefending)
     {
-        _runtimeData.SetDefending(true);
-    }
-
-    public void DefendFinish()
-    {
-        _runtimeData.SetDefending(false);
+        _stats.IsDefending = isDefending;
     }
     #endregion
 
