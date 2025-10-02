@@ -10,7 +10,7 @@ using UnityEngine;
 public class PlayerDataBase : MonoBehaviour
 {
     #region Private Fields
-    [SerializeField] private PlayerBaseDatasSO _baseDatasSO;
+    [SerializeField] private BasePlayerDatasSO _baseDatasSO;
     [SerializeField] private TierStatDatabaseSO _tierStatDatabaseSO;
     [SerializeField] private SourceMapDatabaseSO _sourceMapDatabaseSO;
     [SerializeField] private OverHeatDataSO _overHeatDataSO;
@@ -18,7 +18,7 @@ public class PlayerDataBase : MonoBehaviour
     #endregion
 
     #region Properties
-    public PlayerBaseDatasSO BaseData => _baseDatasSO;
+    public BasePlayerDatasSO BaseData => _baseDatasSO;
     public TierStatDatabaseSO TierStatData => _tierStatDatabaseSO;
     public SourceMapDatabaseSO SourceMapData => _sourceMapDatabaseSO;
     public OverHeatDataSO OverHeatData => _overHeatDataSO;

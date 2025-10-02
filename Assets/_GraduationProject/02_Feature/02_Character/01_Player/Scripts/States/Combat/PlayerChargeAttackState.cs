@@ -29,7 +29,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_context.Combat.SetupCombatCenter();
 
         _playerAttackData = new PlayerAttackData();
-        _playerAttackData.Initialize(p_AttackData);
+        _playerAttackData = p_AttackData;
 
         // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
         if (p_context.Movement.HasTargetRotation)

@@ -37,7 +37,7 @@ public class Player : DIMonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
-    public PlayerBaseDatasSO BaseData => DataBase.BaseData;
+    public BasePlayerDatasSO BaseData => DataBase.BaseData;
     public PlayerStats Stats => _stats;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
