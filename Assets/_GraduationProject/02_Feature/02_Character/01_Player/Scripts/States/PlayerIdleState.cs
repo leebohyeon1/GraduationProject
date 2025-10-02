@@ -4,31 +4,22 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// ÇÃ·¹ÀÌ¾î ´ë±â »óÅÂ
-/// ÀÔ·ÂÀÌ ¾øÀ» ¶§ÀÇ ±âº» »óÅÂ
+/// í”Œë ˆì´ì–´ ëŒ€ê¸° ìƒíƒœ
+/// ì…ë ¥ì´ ì—†ì„ ë•Œ ê¸°ë³¸ ìƒíƒœ
 /// </summary>
 public class PlayerIdleState : BaseState<Player>
 {
     public PlayerIdleState(Player context, StateMachine<Player> stateMachine)
-    : base(context, stateMachine) { }
+        : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        p_context.Animator.SetBool("IsIdle", true);         
-    }
-
-    public override void OnUpdate()
-    {
-        if(Time.time - p_context.Combat.LastBattleTime >= p_context.DataBase.RuntimeData.BattleOutTime 
-            && p_context.Combat.IsBattleState)
-        {
-            p_context.Events.TriggerBattleStateChanged(false);
-        }
+        p_context.Animator.SetBool("IsIdle", true);
     }
 
     public override void OnFixedUpdate()
     {
-        // Idle »óÅÂ¿¡¼­µµ Áß·Â Àû¿ë (ÀÌµ¿ ÀÔ·Â ¾øÀÌ)
+        // Idle ìƒíƒœì—ì„œì˜ ì¤‘ë ¥ ì²˜ë¦¬ (ì´ë™ ì…ë ¥ ì—†ìŒ)
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
     }
 
@@ -37,5 +28,3 @@ public class PlayerIdleState : BaseState<Player>
         p_context.Animator.SetBool("IsIdle", false);
     }
 }
-
-

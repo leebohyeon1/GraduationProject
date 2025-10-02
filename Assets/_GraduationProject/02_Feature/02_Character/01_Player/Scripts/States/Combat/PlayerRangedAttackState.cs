@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState;
-    private RangedAttackData _attackData => p_context.RuntimeData.CombatData.RangedAttackData;
+    private RangedAttackData _attackData => p_context.Stats.CombatData.RangedAttackData;
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -41,37 +41,34 @@ public class PlayerRangedAttackState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
-        if (p_context.Controller.AttackInput)
+        if (p_context.Input.AttackInput)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
 
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Controller.DodgeInput &&
+        else if (p_context.Input.DodgeInput &&
             Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.DataBase.RuntimeData.CombatData.DodgeCooldown)
+            p_context.Stats.CombatData.DodgeCooldown)
         {
             _nextState = typeof(PlayerDodgeState);
         }
-        else if (p_context.Controller.DefendInput)
+        else if (p_context.Input.DefendInput)
         {
             _nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Controller.AttackHeldInput)
+        else if (p_context.Input.AttackHeldInput)
         {
             _nextState = typeof(PlayerChargeState);
         }
-        else if (p_context.Controller.RangedAttackInput)
+        else if (p_context.Input.RangedAttackInput)
         {
             _nextState = typeof(PlayerRangedChargeState);
         }
-        else if (p_context.Controller.SkillInput)
-        {
-           // _nextState = typeof(PlayerSkillState);
-        }
+ 
 
         if (_nextState != null)
         {

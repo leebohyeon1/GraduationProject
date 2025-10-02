@@ -46,14 +46,13 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
         if(p_context.Movement.HasTargetRotation)
         {
-            p_context.Movement.SetRotation(p_context.Movement.TargetRotation);
-            p_context.Movement.ClearTargetRotation();
+            p_context.Movement.RotateToTargetRotation();
         }
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
             
@@ -82,8 +81,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         DOTween.Kill(p_animationTrigger);
 
-
-
         p_nextState = null;
     }
 
@@ -99,7 +96,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 연속 공격이 아니면 추가 딜레이
         if (!typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
-            sequence.SetDelay(p_context.DataBase.RuntimeData.CombatData.LastAttackDelay);
+            sequence.SetDelay(p_context.Stats.CombatData.LastAttackDelay);
         }
 
         sequence.AppendCallback(() =>
@@ -155,36 +152,32 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
-        if (p_nextAttackState != null && p_context.Controller.AttackInput)
+        if (p_nextAttackState != null && p_context.Input.AttackInput)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
 
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Controller.DodgeInput &&
+        else if (p_context.Input.DodgeInput &&
             Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.DataBase.RuntimeData.CombatData.DodgeCooldown)
+            p_context.Stats.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }
-        else if (p_context.Controller.DefendInput)
+        else if (p_context.Input.DefendInput)
         {
             p_nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Controller.AttackHeldInput)
+        else if (p_context.Input.AttackHeldInput)
         {
             p_nextState = typeof(PlayerChargeState);
         }
-        else if (p_context.Controller.RangedAttackInput)
+        else if (p_context.Input.RangedAttackInput)
         {
             p_nextState = typeof(PlayerRangedChargeState);
-        }
-        else if (p_context.Controller.SkillInput)
-        {
-           // p_nextState = typeof(PlayerSkillState);
         }
 
         if (p_nextState != null)

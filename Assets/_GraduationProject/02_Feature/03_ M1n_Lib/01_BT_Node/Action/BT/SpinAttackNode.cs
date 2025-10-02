@@ -40,7 +40,7 @@ public class SpinAttackNode : Node
         {
             if (col.TryGetComponent<IDamageable>(out IDamageable player))
             {
-                player.TakeDamage(damage, null);
+                player.TakeDamage(damage);
             }
         }
 

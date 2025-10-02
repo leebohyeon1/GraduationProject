@@ -11,7 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.ChargeAttackData;
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.ChargeAttackData;
 
     private PlayerAttackData _playerAttackData = new PlayerAttackData();
 
@@ -26,22 +26,20 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_nextState = null; // 다음 상태 초기화
 
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
-        p_context.Combat.SetupCombatCenter();
 
         _playerAttackData = new PlayerAttackData();
-        _playerAttackData.Initialize(p_AttackData);
+        _playerAttackData = p_AttackData;
 
         // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
         if (p_context.Movement.HasTargetRotation)
         {
-            p_context.Movement.SetRotation(p_context.Movement.TargetRotation);
-            p_context.Movement.ClearTargetRotation();
+            p_context.Movement.RotateToTargetRotation();
         }
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
 

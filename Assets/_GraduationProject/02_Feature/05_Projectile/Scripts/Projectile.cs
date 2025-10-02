@@ -4,8 +4,8 @@ using UnityEngine;
 /// <summary>
 /// 플레이어 원거리 공격 투사체 클래스
 /// </summary>
-public class Projectile : MonoBehaviour, IAttacker
-{
+public class Projectile : MonoBehaviour
+{ 
     [Header("Projectile Settings")]
     [SerializeField] private float _lifeTime = 5f;
     [SerializeField] protected bool p_destroyOnHit = true;
@@ -47,7 +47,7 @@ public class Projectile : MonoBehaviour, IAttacker
     {
         if (target == null || target.IsDead) return;
         
-        target.TakeDamage(_damage, 50,this);
+        target.TakeDamage(_damage, 50);
         Log.Print($"투사체가 {target}에게 {_damage} 피해를 입혔습니다!");
     }
 
