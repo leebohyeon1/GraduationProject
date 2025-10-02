@@ -26,7 +26,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_nextState = null; // 다음 상태 초기화
 
         p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
-        p_context.Combat.SetupCombatCenter();
 
         _playerAttackData = new PlayerAttackData();
         _playerAttackData = p_AttackData;

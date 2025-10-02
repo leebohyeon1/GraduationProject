@@ -10,8 +10,8 @@ public class PlayerStats
 
     // State
     public bool IsDefending;
-    public bool IsInCombat;
     public bool IsInvincible;
+    public bool IsCounterAttack;
     public bool IsLightHit;
     public bool IsHeavyHit;
     public bool IsDamaged => IsLightHit || IsHeavyHit;

@@ -1,4 +1,4 @@
-using BH_Lib.FSM;
+ï»¿using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
@@ -68,7 +68,7 @@ public class PlayerChargeState : BaseState<Player>
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
-        // ¿¡ÀÓ ¹æÇâÀ¸·Î È¸Àü
+        // ì—ì„ ë°©í–¥ìœ¼ë¡œ íšŒì „
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var moveInput = p_context.Controller.MoveInput;
         var mousePosition = p_context.Controller.MousePosition;
@@ -87,7 +87,26 @@ public class PlayerChargeState : BaseState<Player>
     }
 
     /// <summary>
-    /// ÃÖ¼Ò Â÷Áö°¡ ¿Ï·á ÇÔ¼ö
+    /// ì—´ê¸° í‹°ì–´ê°€ ë°”ë€” ë•Œë§ˆë‹¤ ì°¨ì§• ì†ŒìŠ¤ë§µ ë³€ê²½
+    /// </summary>
+    /// <param name="previousHeat">ì´ì „ ì—´ê¸°</param>
+    /// <param name="currentHeat">í˜„ì¬ ì—´ê¸°</param>
+    private void HandleSetupChargeSourceMap(int previousHeat, int currentHeat)
+    {
+        SetupChargeSourceMap();
+    }
+
+    /// <summary>
+    /// ì°¨ì§€ ì†ŒìŠ¤ë§µ ë“±ë¡
+    /// </summary>
+    private void SetupChargeSourceMap()
+    {
+        chargeSourceMap = p_context.DataBase.SourceMapData.
+            GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
+    }
+
+    /// <summary>
+    /// ìµœì†Œ ì°¨ì§€ê°€ ì™„ë£Œ í•¨ìˆ˜
     /// </summary>
     private void MinChargeFinish()
     {
@@ -96,24 +115,6 @@ public class PlayerChargeState : BaseState<Player>
             _isCharged = true;
             p_context.Events.TriggerChargeFinish();
         }
-    }
-    /// <summary>
-    /// ¿­±â Æ¼¾î°¡ ¹Ù²ğ ¶§¸¶´Ù Â÷Â¡ ¼Ò½º¸Ê º¯°æ
-    /// </summary>
-    /// <param name="previousHeat">ÀÌÀü ¿­±â</param>
-    /// <param name="currentHeat">ÇöÀç ¿­±â</param>
-    private void HandleSetupChargeSourceMap(int previousHeat, int currentHeat)
-    {
-        SetupChargeSourceMap();
-    }
-    /// <summary>
-    /// Â÷Áö ¼Ò½º¸Ê µî·Ï
-    /// </summary>
-    private void SetupChargeSourceMap()
-    {
-        int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.CurrentTier;
-        chargeSourceMap = p_context.DataBase.SourceMapData.
-            GetSourceMap("OnCharge", tier);
     }
 }
 

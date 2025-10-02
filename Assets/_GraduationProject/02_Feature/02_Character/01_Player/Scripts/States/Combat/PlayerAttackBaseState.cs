@@ -179,10 +179,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerRangedChargeState);
         }
-        else if (p_context.Controller.SkillInput)
-        {
-           // p_nextState = typeof(PlayerSkillState);
-        }
 
         if (p_nextState != null)
         {
