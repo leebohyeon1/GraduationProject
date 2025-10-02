@@ -29,7 +29,6 @@ public class PlayerHitState : BaseState<Player>
                 p_context.Animator.SetTrigger("Hit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
             }
-
         }
 
         p_context.Animator.SetBool("IsHit", true);
@@ -62,7 +61,6 @@ public class PlayerHitState : BaseState<Player>
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
-
         }
     }
 

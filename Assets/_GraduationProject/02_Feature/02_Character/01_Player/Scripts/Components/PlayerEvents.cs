@@ -1,3 +1,4 @@
+using BH_Lib.AssetManager;
 using BH_Lib.Log;
 using MoreMountains.Feedbacks;
 using System;
@@ -85,7 +86,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action OnDodgeFinish;
 
-    public event Action OnAttackPerform;
+    public event Action OnAttackStart, OnAttackPerform;
     public event Action<Collider> OnAttackAffect;
     public event Action OnAttackFinish;
 
@@ -227,6 +228,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         if (_firstAttackStartEffectPoint != null)
         {
+            OnAttackStart?.Invoke();
             Log.PrintWarning("첫 번째 공격 효과 위치 설정");
             PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
         }
@@ -239,6 +241,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         if (_secondAttackStartEffectPoint != null)
         {
+            OnAttackStart?.Invoke();
             Log.PrintWarning("두 번째 공격 효과 위치 설정");
             PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, _secondAttackStartEffectPoint.position);
         }
@@ -275,6 +278,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         if (_chargeEffectPoint != null)
         {
+            OnAttackStart?.Invoke();
             Log.PrintWarning("차지 효과 위치 설정");
             PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
         }
@@ -305,6 +309,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeAttackStart()
     {
+        OnAttackStart?.Invoke();
         PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB, _chargeAttackPoint.position);
     }    
 

@@ -116,10 +116,6 @@ public class PlayerDodgeState : BaseState<Player>
         {
             _nextState = typeof(PlayerMoveState);
         }
-        else if(p_context.Controller.SkillInput)
-        {
-           // _nextState = typeof(PlayerSkillState);
-        }
 
         if (_nextState != null)
         {

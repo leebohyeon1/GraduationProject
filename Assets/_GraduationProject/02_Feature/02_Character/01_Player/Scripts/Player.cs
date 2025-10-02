@@ -237,6 +237,9 @@ public class Player : DIMonoBehaviour
     {
         Stats.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
         Events.OnOverHeat += HandleOverHeat;
+
+        Events.OnAttackStart += Combat.SetupCombatCenter;
+        Events.OnParryPerform += Combat.SetupCombatCenter;
     }
 
     private void UnsubscribeToEvents()
@@ -246,6 +249,9 @@ public class Player : DIMonoBehaviour
 
         Stats.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
         Events.OnOverHeat -= HandleOverHeat;
+
+        Events.OnAttackStart -= Combat.SetupCombatCenter;
+        Events.OnParryPerform -= Combat.SetupCombatCenter;
     }
 
     private void HandleAnimationSpeedChanged(float speed)

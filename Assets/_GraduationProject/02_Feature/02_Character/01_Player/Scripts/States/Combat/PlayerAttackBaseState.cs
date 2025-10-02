@@ -82,8 +82,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         DOTween.Kill(p_animationTrigger);
 
-
-
         p_nextState = null;
     }
 

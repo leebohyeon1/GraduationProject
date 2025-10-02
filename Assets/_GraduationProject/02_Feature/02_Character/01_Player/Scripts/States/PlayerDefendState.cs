@@ -25,7 +25,6 @@ public class PlayerDefendState : BaseState<Player>
 
 
         p_context.Combat.SetDefending(true);
-        p_context.Combat.SetupCombatCenter();
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
@@ -54,8 +53,6 @@ public class PlayerDefendState : BaseState<Player>
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        // 방어 상태 종료 시 체력 시스템에 알림
     }
 
     private void HandleParryPerform()
@@ -68,7 +65,6 @@ public class PlayerDefendState : BaseState<Player>
             {
                 p_context.Events.TriggerParryAffect(collider);
             }
-
         }
     }
 
