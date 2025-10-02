@@ -16,45 +16,226 @@ MonoBehaviour:
   GroundLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  MoveSpeed: 5
+  MoveSpeed: 10
   RotateSpeed: 5
   Gravity: -9.81
   GroundCheckDistance: 0.1
   CombatData:
-    DodgeSpeed: 0
-    DodgeCooldown: 0
-    DefendDamageReductionRate: 0
-    LightStaggerDuration: 0
-    HeavyStaggerDuration: 0
+    DodgeSpeed: 10
+    DodgeCooldown: 2
+    DefendDamageReductionRate: 70
+    LightStaggerDuration: 0.5
+    HeavyStaggerDuration: 1
     AttackLayerMask:
       serializedVersion: 2
-      m_Bits: 0
-    AttackDatas: []
-    LastAttackDelay: 0
+      m_Bits: 256
+    AttackDatas:
+    - AttackMoveDistance: 2
+      AttackMoveDuration: 0.5
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 10
+      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackDelay: 0.2
+    - AttackMoveDistance: 2
+      AttackMoveDuration: 0.5
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 10
+      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackDelay: 0.2
+    - AttackMoveDistance: 2
+      AttackMoveDuration: 0.5
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 10
+      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackDelay: 0.2
+    LastAttackDelay: 0.3
     ChargeAttackData:
-      AttackMoveDistance: 0
+      AttackMoveDistance: 5
+      AttackMoveDuration: 0.5
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 20
+      AttackRadius: {x: 4, y: 1, z: 10}
+      AttackDelay: 0.2
+    RangedAttackData:
+      ChargeTime: 1
+      AttackDamage: 4
+      ProjectilePrefab: {fileID: 8749592458861236631, guid: f22f61d0c376a484c89f60d85b6c5fa9, type: 3}
+      ProjectileSpeed: 10
+      ProjectileMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDelay: 0.2
+    ParryRadius: {x: 4, y: 0, z: 4}
+    CounterAttackWindow: 0.5
+    CounterAttackDatas:
+    - AttackMoveDistance: 0
       AttackMoveDuration: 0
       AttackMoveCurve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      AttackDamage: 0
-      AttackRadius: {x: 0, y: 0, z: 0}
-      AttackDelay: 0
-    RangedAttackData:
-      ChargeTime: 0
-      AttackDamage: 0
-      ProjectilePrefab: {fileID: 0}
-      ProjectileSpeed: 0
-      ProjectileMoveCurve:
+      AttackDamage: 10
+      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackDelay: 0.2
+    - AttackMoveDistance: -2
+      AttackMoveDuration: 0.5
+      AttackMoveCurve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      AttackDelay: 0
-    ParryRadius: {x: 0, y: 0, z: 0}
-    CounterAttackWindow: 0
-    CounterAttackDatas: []
+      AttackDamage: 10
+      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackDelay: 0.2
