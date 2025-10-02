@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 
 
-public class PlayerCombat : MonoBehaviour, IAttacker
+public class PlayerCombat : MonoBehaviour
 {
     #region Private Fields
     private PlayerStats _stats;
@@ -120,7 +120,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
             IDamageable damageable = obj.GetComponent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
             {
-                damageable.TakeDamage(attackData.AttackDamage, this);
+                damageable.TakeDamage(attackData.AttackDamage);
             }
         }
     }
@@ -274,7 +274,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
         if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(attackData.AttackDamage, this);
+            damageable.TakeDamage(attackData.AttackDamage);
         }
     }
 

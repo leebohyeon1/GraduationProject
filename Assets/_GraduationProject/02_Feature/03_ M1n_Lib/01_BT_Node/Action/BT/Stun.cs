@@ -15,7 +15,7 @@ public class Stun : Node
             runner.SetState(Enemy.EnemyState.Idle);
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
         }
-        runner.player.GetComponent<IDamageable>().TakeDamage(Damage, null);
+        runner.player.GetComponent<IDamageable>().TakeDamage(Damage);
         Debug.Log("플레이어 기절함");
         return NodeState.SUCCESS;
     }

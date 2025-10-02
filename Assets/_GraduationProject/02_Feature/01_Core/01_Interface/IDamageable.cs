@@ -27,14 +27,22 @@ public interface IDamageable
     /// 피해를 받는 함수
     /// </summary>
     /// <param name="damageAmount">피해량</param>
-    /// <param name="attacker">피해를 입힌 객체</param>
-    public void TakeDamage(int damageAmount, IAttacker attacker = null);
-    public void TakeDamage(int damageAmount,int StiffenessAmount, IAttacker attacker = null);
+    public void TakeDamage(int damageAmount);
+
+    /// <summary>
+    /// 피해를 받는 함수
+    /// </summary>
+    /// <param name="damageAmount">피해량</param>
+    /// <param name="StiffenessAmount">경직도</param>
+    public void TakeDamage(int damageAmount,int StiffenessAmount);
 
     /// <summary>
     /// 체력 변경 이벤트
     /// </summary>
     public event Action<int, int> OnHealthChanged;
 
+    /// <summary>
+    /// 사망 이벤트
+    /// </summary>
     public event Action OnDied;
 }

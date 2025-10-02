@@ -45,7 +45,7 @@ public class PlayerHealth : MonoBehaviour, IHealth, IStiffness
         OnHealthChanged?.Invoke(previousHealth, Health);
     }
 
-    public void TakeDamage(int damageAmount, IAttacker attacker = null)
+    public void TakeDamage(int damageAmount)
     {
         if (IsDead || IsInvincible)
         {
@@ -67,7 +67,7 @@ public class PlayerHealth : MonoBehaviour, IHealth, IStiffness
         }
     }
 
-    public void TakeDamage(int damageAmount, int stiffenessAmount, IAttacker attacker = null)
+    public void TakeDamage(int damageAmount, int stiffenessAmount)
     {
         // 죽었거나 무적이면 리턴
         if (IsDead || IsInvincible)

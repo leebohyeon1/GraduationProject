@@ -9,12 +9,12 @@ public class BeamDamager : MonoBehaviour
     // 이미 데미지를 입은 캐릭터를 기록하여 중복 데미지를 방지
     private List<CharacterBase> _hitCharacters = new List<CharacterBase>();
     private float _nextTickTime;
-    private IAttacker _attacker; // 누가 이 공격을 했는지 (Enemy)
+    //private IAttacker _attacker; // 누가 이 공격을 했는지 (Enemy)
 
     // 이 빔을 발사한 공격자(Enemy)를 설정하는 함수
-    public void Initialize(IAttacker attacker)
+    public void Initialize()
     {
-        _attacker = attacker;
+        
     }
 
     private void OnTriggerStay(Collider other)

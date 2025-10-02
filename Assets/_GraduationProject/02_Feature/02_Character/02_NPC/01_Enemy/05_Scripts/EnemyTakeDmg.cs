@@ -15,7 +15,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     Enemy _owner;
 
-    public void TakeDamage(int amount, IAttacker attacker = null)
+    public void TakeDamage(int amount)
     {
         if (Health <= 0) return;
         _owner.groupAi.CombatAll();
@@ -41,7 +41,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     }
 
-    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    public void TakeDamage(int damageAmount, int StiffenessAmount)
     {
         throw new NotImplementedException();
     }
