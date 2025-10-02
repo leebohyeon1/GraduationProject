@@ -13,8 +13,8 @@ public class Player : DIMonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private CharacterController _characterController;
 
-    [SerializeField] private PlayerDataBase _dataBase;
-    [SerializeField] private PlayerStats _stats;
+    [SerializeField] private PlayerDataBaseSO _dataBase;
+    private PlayerStats _stats;
 
     [SerializeField] private PlayerInputHandler _input;
     [SerializeField] private PlayerHealth _health;
@@ -30,14 +30,13 @@ public class Player : DIMonoBehaviour
 
     #region Properties
     public Animator Animator => _animator;
-    public PlayerDataBase DataBase => _dataBase;
+    public PlayerDataBaseSO DataBase => _dataBase;
     public PlayerInputHandler Input => _input;
     public PlayerHealth Health => _health;
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
-    public BasePlayerDatasSO BaseData => DataBase.BaseData;
     public PlayerStats Stats => _stats;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
@@ -96,9 +95,9 @@ public class Player : DIMonoBehaviour
 
         if (_dataBase == null)
         {
-            _dataBase = GetComponent<PlayerDataBase>();
+            _dataBase = GetComponent<PlayerDataBaseSO>();
         }
-        _stats = new PlayerStats(BaseData);
+        _stats = new PlayerStats(DataBase.BaseData);
 
         if (_input == null)
         {
