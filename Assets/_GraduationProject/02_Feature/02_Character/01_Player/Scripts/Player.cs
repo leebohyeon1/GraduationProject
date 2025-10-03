@@ -101,7 +101,7 @@ public class Player : DIMonoBehaviour
             _dataBase = GetComponent<PlayerDataBaseSO>();
         }
 
-        _stats = new PlayerStats(DataBase.BaseData, _events);
+        _stats = new PlayerStats(DataBase, _events);
     
         if (_events == null)
         {
@@ -251,6 +251,7 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void UnsubscribeToEvents()
     {
+        Stats.Dispose();
         Health.Dispose();
         Combat.Dispose();
         Heat.Dispose();

@@ -102,6 +102,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish; // 티어 하락, 과열 종료 이벤트
 
     public event Action<int> OnOverHeat; // 과열 상태 이벤트
+
+    public event Action OnDataUpdate; // 데이터 업데이트 이벤트
     #endregion
 
     #region EventHandler
@@ -451,7 +453,9 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerTierUp(int previousTier, int currentTier)
     {
-        for(int i = previousTier + 1; i <= currentTier; i++)
+        OnDataUpdate?.Invoke();
+
+        for (int i = previousTier + 1; i <= currentTier; i++)
         {
             switch (i)
             {
@@ -468,6 +472,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerTierDown(int previousTier, int currentTier)
     {
+        OnDataUpdate?.Invoke();
+
         for (int i = previousTier; i > currentTier; i--)
         {
             switch (i)

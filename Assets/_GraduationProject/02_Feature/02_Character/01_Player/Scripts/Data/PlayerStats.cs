@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerStats: IDisposable
 {
     private PlayerEvents _events;
+    private PlayerDataBaseSO _dataBase;
 
     // State
     public bool IsDefending; // 방어중인가?
@@ -37,38 +38,101 @@ public class PlayerStats: IDisposable
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
 
-    public PlayerStats(BasePlayerDatasSO baseData, PlayerEvents events)
+    public PlayerStats(PlayerDataBaseSO baseData, PlayerEvents events)
     {
-        ResetData(baseData);
+        _dataBase = baseData;
         _events = events;
+
+        _events.OnDataUpdate += UpdateData;
+
+        ResetData();
     }
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _events.OnDataUpdate -= UpdateData;
     }
 
     /// <summary>
     /// 스탯을 티어에 맞게 업데이트합니다.
     /// </summary>
-    /// <param name="baseData">기본 플레이어 데이터</param>
-    /// <param name="tierStatData">티어별 스탯 데이터</param>
-    public void UpdateData(BasePlayerDatasSO baseData, TierStatData tierStatData)
+    public void UpdateData()
     {
+        BasePlayerDatasSO baseData = _dataBase.BaseData;
+        TierStatData tierStatData = _dataBase.TierStatData.
+            GetTierStat(_dataBase.TierStatData.GetCurrentTier(CurrentHeat));
+
         MoveSpeed = baseData.MoveSpeed * tierStatData.SpeedMultiply;
         RotateSpeed = baseData.RotateSpeed * tierStatData.SpeedMultiply;
         AnimatorSpeed = tierStatData.AnimSpeedMultiply;
         OnAnimationSpeedChanged?.Invoke(AnimatorSpeed);
 
-        CombatData = baseData.CombatData;
+        UpdateCombatData(tierStatData);
+    }
+
+    /// <summary>
+    /// 스텟 티어에 맞게 전투 데이터를 업데이트 합니다.
+    /// </summary>
+    /// <param name="tierStatData">티어 데이터</param>
+    private void UpdateCombatData(TierStatData tierStatData)
+    {
+        BasePlayerDatasSO baseData = _dataBase.BaseData;
+        PlayerCombatData combatData = baseData.CombatData;
+
+        CombatData.DodgeSpeed = combatData.DodgeSpeed * tierStatData.SpeedMultiply;
+
+        // 일반 공격
+        for(int i = 0; i < CombatData.AttackDatas.Length; i++)
+        {
+            CombatData.AttackDatas[i].AttackDamage =
+                Mathf.RoundToInt(combatData.AttackDatas[i].AttackDamage * tierStatData.DamageMultiply);
+
+            CombatData.AttackDatas[i].AttackRadius =
+                combatData.AttackDatas[i].AttackRadius * tierStatData.RangeMultiply;
+
+            CombatData.AttackDatas[i].AttackMoveDuration =
+                combatData.AttackDatas[i].AttackMoveDuration / tierStatData.SpeedMultiply;
+
+            CombatData.AttackDatas[i].AttackDelay =
+                combatData.AttackDatas[i].AttackDelay / tierStatData.SpeedMultiply;
+        }
+
+        CombatData.LastAttackDelay = 
+            combatData.LastAttackDelay / tierStatData.SpeedMultiply;
+
+        // 차징 공격
+        CombatData.ChargeAttackData.AttackDamage =
+             Mathf.RoundToInt(CombatData.ChargeAttackData.AttackDamage * tierStatData.DamageMultiply);
+
+        CombatData.ChargeAttackData.AttackRadius.z =
+             combatData.ChargeAttackData.AttackRadius.z * tierStatData.RangeMultiply;
+
+        CombatData.ChargeAttackData.AttackMoveDistance =
+            combatData.ChargeAttackData.AttackMoveDistance * tierStatData.RangeMultiply;
+
+        CombatData.ChargeAttackData.AttackMoveDuration =
+            combatData.ChargeAttackData.AttackMoveDuration / tierStatData.SpeedMultiply;
+
+        // 원거리 공격
+        CombatData.RangedAttackData.AttackDamage =
+            Mathf.RoundToInt(combatData.RangedAttackData.AttackDamage * tierStatData.DamageMultiply);
+
+
+        // 반격 
+        for(int i = 0; i < CombatData.CounterAttackDatas.Length; i++)
+        {
+            CombatData.CounterAttackDatas[i].AttackDamage =
+                   Mathf.RoundToInt(combatData.CounterAttackDatas[i].AttackDamage * tierStatData.DamageMultiply);
+        }
     }
 
     /// <summary>
     /// 스탯을 기본 값으로 리셋합니다.
     /// </summary>
-    /// <param name="baseData">기본 플레이어 데이터</param>
-    public void ResetData(BasePlayerDatasSO baseData)
+    public void ResetData()
     {
+        BasePlayerDatasSO baseData = _dataBase.BaseData;
+
         MaxHealth = baseData.MaxHealth;
         CurrentHealth = MaxHealth;
         CurrentHeat = 0;
@@ -80,7 +144,7 @@ public class PlayerStats: IDisposable
         MoveSpeed = baseData.MoveSpeed;
         RotateSpeed = baseData.RotateSpeed;
 
-        CombatData = baseData.CombatData;
+        CombatData = baseData.CombatData.Clone();
     }
 
     /// <summary>
@@ -147,6 +211,42 @@ public struct PlayerCombatData
     [Header("CounterAttack")]
     public float CounterAttackWindow; // 반격 가능 시간
     public PlayerAttackData[] CounterAttackDatas; // 반격 데이터 배열
+
+    /// <summary>
+    /// 깊은 복사를 위한 데이터 클론 생성
+    /// </summary>
+    /// <returns>깊은 복사된 전투 데이터</returns>
+    public PlayerCombatData Clone()
+    {
+        PlayerCombatData newCombatData = new PlayerCombatData
+        {
+            DodgeSpeed = DodgeSpeed,
+            DodgeCooldown = DodgeCooldown,
+            DefendDamageReductionRate = DefendDamageReductionRate,
+            LightStaggerDuration = LightStaggerDuration,
+            HeavyStaggerDuration = HeavyStaggerDuration,
+            AttackLayerMask = AttackLayerMask,
+            LastAttackDelay = LastAttackDelay,
+            ChargeAttackData = ChargeAttackData,
+            RangedAttackData = RangedAttackData,
+            ParryRadius = ParryRadius,
+            CounterAttackWindow = CounterAttackWindow
+        };
+
+        if(AttackDatas != null)
+        {
+            newCombatData.AttackDatas = new PlayerAttackData[AttackDatas.Length];
+            Array.Copy(AttackDatas, newCombatData.AttackDatas, AttackDatas.Length);
+        }
+
+        if(CounterAttackDatas != null)
+        {
+            newCombatData.CounterAttackDatas = new PlayerAttackData[CounterAttackDatas.Length];
+            Array.Copy(CounterAttackDatas, newCombatData.CounterAttackDatas, CounterAttackDatas.Length);
+        }
+
+        return newCombatData;
+    }
 }
 
 /// <summary>
@@ -176,6 +276,8 @@ public struct PlayerAttackData
     [Header("Attack Timing")]
     [Tooltip("공격 후 딜레이")]
     public float AttackDelay;
+
+
 }
 
 /// <summary>
