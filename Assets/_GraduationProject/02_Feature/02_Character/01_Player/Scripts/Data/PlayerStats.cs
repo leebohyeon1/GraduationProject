@@ -5,7 +5,7 @@ using UnityEngine;
 /// 플레이어의 현재 상태와 스탯을 관리하는 클래스입니다.
 /// </summary>
 [Serializable]
-public class PlayerStats
+public class PlayerStats: IDisposable
 {
     private PlayerEvents _events;
 
@@ -17,6 +17,7 @@ public class PlayerStats
     public bool IsHeavyHit; // 강한 피격중인가?
     public bool IsDamaged => IsLightHit || IsHeavyHit; // 피격중인가?
     public bool IsOverHeat; // 과열 상태인가?
+    public bool IsHeatlock; // 열기 변경이 잠금되었는가?
 
     // Stat
     public int MaxHealth; // 최대 체력
@@ -40,6 +41,11 @@ public class PlayerStats
     {
         ResetData(baseData);
         _events = events;
+    }
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -102,6 +108,11 @@ public class PlayerStats
         IsLightHit = false;
         IsHeavyHit = false;
     }
+
+    #region EvenetHandler
+
+
+    #endregion
 }
 
 /// <summary>

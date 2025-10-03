@@ -7,17 +7,32 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 열기 시스템을 관리하는 컴포넌트입니다.
 /// </summary>
-public class PlayerHeat : HeatSystem, IDisposable
+public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
 {
     private PlayerStats _playerStats; // 플레이어 스탯
+    private SourceMapDatabaseSO _sourceMapDataBase; // 소스맵 데이터
+    private TierStatDatabaseSO _tierStatDataBase;   // 티어 데이터
     private OverHeatDataSO _overHeatData; // 과열 데이터
     private PlayerEvents _events; // 플레이어 이벤트
+
+
     private float _heatTierTimer; // 열기 티어 타이머
+    private ActorType _actorType; // 액터 타입
 
     public bool IsOverHeat => _playerStats.IsOverHeat; // 과열 상태 여부
+    public bool IsHeatLock => _playerStats.IsHeatlock; // 열기 변경 잠금 여부
+    public ActorType ActorType => _actorType;
+
+    public int MaxHeat => 100;  // 최대 열기
+    public int CurrentHeat => _playerStats.CurrentHeat; // 현재 열기
+    public int CurrentTier => GetTier();    // 현재 티어
+
 
     private Sequence _overheatSequence; // 과열 시퀀스
     private Sequence _battleOutSequence; // 전투 종료 시퀀스
+
+    public event Action<int, int> OnHeatChanged;    // 열기 변경 이벤트
+    public event Action<int, int> OnTierChanged;    // 티어 변경 이벤트
 
     /// <summary>
     /// 열기 시스템을 초기화합니다.
@@ -25,10 +40,12 @@ public class PlayerHeat : HeatSystem, IDisposable
     public void Initialize( PlayerStats playerStats, SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO, PlayerEvents events)
     {
         _playerStats = playerStats;
-        p_sourceMapDataBase = sourceMapDatabaseSO;
-        p_tierStatDatabase = tierStatDatabaseSO;
+        _sourceMapDataBase = sourceMapDatabaseSO;
+        _tierStatDataBase = tierStatDatabaseSO;
         _overHeatData = overHeatDataSO;
         _events = events;
+
+        _actorType = ActorType.Player;
 
         // 이벤트 구독
         _events.OnBattleStateChaged += HandleBattleSateChanged;
@@ -62,24 +79,24 @@ public class PlayerHeat : HeatSystem, IDisposable
     /// 열기를 변경합니다.
     /// </summary>
     /// <param name="amount"> 열기 변화량 </param>
-    public override void ChangeHeat(int amount)
+    public void ChangeHeat(int amount)
     {
         if (amount == 0 && IsHeatLock) return;
 
         int previousTier = GetTier();
-        int previousHeat = p_currentHeat;
+        int previousHeat = CurrentHeat;
 
-        p_currentHeat = Mathf.Clamp(p_currentHeat + amount, 0, MaxHeat);
+        _playerStats.CurrentHeat = Mathf.Clamp(CurrentHeat + amount, 0, MaxHeat);
 
-        if (previousHeat != p_currentHeat)
+        if (previousHeat != CurrentHeat)
         {
-            TriggerOnHeatChanged(previousHeat);
+            OnHeatChanged?.Invoke(previousHeat, CurrentHeat);
         }
 
         int newTier = GetTier();
         if (previousTier != newTier)
         {
-            TriggerOnTierChanged(previousTier);
+            OnTierChanged?.Invoke(previousTier, CurrentTier);
         }
 
         if(CurrentHeat >= MaxHeat && !IsOverHeat)
@@ -92,24 +109,24 @@ public class PlayerHeat : HeatSystem, IDisposable
     /// 열기를 설정합니다.
     /// </summary>
     /// <param name="amount"> 열기 설정값 </param>
-    public override void SetHeat(int amount)
+    public void SetHeat(int amount)
     {
         if (IsHeatLock) return;
 
         int previousTier = GetTier();
-        int previousHeat = p_currentHeat;
+        int previousHeat = CurrentHeat;
 
-        p_currentHeat = Mathf.Clamp(amount, 0, MaxHeat);
+        _playerStats.CurrentHeat = Mathf.Clamp(amount, 0, MaxHeat);
 
-        if (previousHeat != p_currentHeat)
+        if (previousHeat != CurrentHeat)
         {
-            TriggerOnHeatChanged(previousHeat);
+            OnHeatChanged?.Invoke(previousHeat, CurrentHeat);
         }
 
         int newTier = GetTier();
         if (previousTier != newTier)
         {
-            TriggerOnTierChanged(previousTier);
+            OnTierChanged?.Invoke(previousTier, CurrentTier);
         }
 
         if (CurrentHeat >= MaxHeat && !IsOverHeat)
@@ -123,7 +140,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     /// <summary>
     /// 과열 상태로 전환합니다.
     /// </summary>
-    protected override void OverHeat()
+    private void OverHeat()
     {
         if (_overheatSequence != null && _overheatSequence.IsActive()) return;
 
@@ -175,7 +192,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     {
         if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
-            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
+            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
@@ -199,7 +216,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     {
         if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
-            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
+            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
@@ -213,7 +230,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     {
         if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
-            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
+            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
@@ -224,7 +241,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     /// </summary>
     public void IncreaseHeatOnParrySuccess()
     {
-        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
+        SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
         ChangeHeat(deltaHeat);
     }
@@ -236,7 +253,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     {
         if(CurrentHeat <= 0) return;
 
-        SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
+        SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
         ChangeHeat(deltaHeat);
     }
@@ -248,12 +265,31 @@ public class PlayerHeat : HeatSystem, IDisposable
     {
         if(collider.TryGetComponent<IHeatable>(out var heatable))
         {
-            SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnCounterSuccess", heatable.ActorType, CurrentTier);
+            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnCounterSuccess", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
         SetHeat(0);
     }
+
+    /// <summary>
+    /// 열기 변경 잠금 여부 설정한다.
+    /// </summary>
+    /// <param name="isLock">잠금 여부</param>
+    public void SetHeatLock(bool isLock)
+    {
+        _playerStats.IsHeatlock = isLock;
+    }
+
+    /// <summary>
+    /// 현재 티어 반환한다.
+    /// </summary>
+    /// <returns>현재 티어</returns>
+    public int GetTier()
+    {
+        return _tierStatDataBase.GetCurrentTier(CurrentHeat);
+    }
+
 
     #region Event Handlers
     /// <summary>
