@@ -24,8 +24,7 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Animator.SetBool("IsDefending", true);
 
 
-        p_context.Combat.DefendStart();
-        p_context.Combat.SetupCombatCenter();
+        p_context.Combat.SetDefending(true);
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
@@ -35,15 +34,15 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         // 방어 키를 떼면 Idle 상태로 전환
-        if (!p_context.Controller.DefendInput)
+        if (!p_context.Input.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Combat.DefendFinish();
+            p_context.Combat.SetDefending(false);
         }
-        else if (p_context.Controller.DodgeInput)
+        else if (p_context.Input.DodgeInput)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
-            p_context.Combat.DefendFinish();
+            p_context.Combat.SetDefending(false);
         }
     }
 
@@ -54,13 +53,11 @@ public class PlayerDefendState : BaseState<Player>
 
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
-
-        // 방어 상태 종료 시 체력 시스템에 알림
     }
 
     private void HandleParryPerform()
     {
-        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.DataBase.RuntimeData.CombatData.ParryRadius);
+        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.CombatData.ParryRadius);
 
         foreach (Collider collider in colliders)
         {
@@ -68,13 +65,12 @@ public class PlayerDefendState : BaseState<Player>
             {
                 p_context.Events.TriggerParryAffect(collider);
             }
-
         }
     }
 
     private void HandleParryAffect(Collider collider)
     {
-       p_context.Combat.ToggleCanCounter(p_context.DataBase.RuntimeData.CombatData.CounterAttackWindow);
+       p_context.Combat.ToggleCanCounter(p_context.Stats.CombatData.CounterAttackWindow);
     }
 }
 

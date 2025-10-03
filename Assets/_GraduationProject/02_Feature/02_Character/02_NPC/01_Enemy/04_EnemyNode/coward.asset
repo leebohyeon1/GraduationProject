@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
-  m_Name: AttackorChase
+  m_Name: "\uC6D0\uAC70\uB9AC \uACF5\uACA9"
   m_EditorClassIdentifier: 
   position: {x: 1287, y: 272}
   nodes:
@@ -117,23 +117,6 @@ MonoBehaviour:
   - {fileID: 6545543868557049618}
   - {fileID: 5776244238602323464}
   - {fileID: 6816747113147883713}
---- !u!114 &-5868491133412455019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: LOS
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1482, y: -547}
-  nodes:
-  - {fileID: 3328858872078899426}
-  - {fileID: 3190198380513302506}
-  - {fileID: 8097750573212284376}
 --- !u!114 &-5164429530539259904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,10 +302,10 @@ MonoBehaviour:
   m_Name: Maintain Distance
   m_EditorClassIdentifier: Assembly-CSharp::MaintainDistance
   position: {x: 1797, y: 1021}
-  targetDistance: 18.5
+  targetDistance: 17
   predictionTime: 0.5
   acceptanceRadius: 0.5
-  RunSpeed: 5
+  RunSpeed: 8
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
-  position: {x: 1833, y: 68}
+  position: {x: 1833, y: 46}
   AttackName: Attack
   damage: 3
   damageRadius: 3.5
@@ -460,34 +443,6 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
   position: {x: 482, y: 650}
---- !u!114 &3190198380513302506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
-  m_Name: Decorator_Inverter
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
-  position: {x: 1801, y: -662}
-  child: {fileID: 6631976132736815560}
---- !u!114 &3328858872078899426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 575bf97f615e75043804f88036a6e67b, type: 3}
-  m_Name: Condition_Is Run Away
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsRunAway
-  position: {x: 1779, y: -739}
-  targetDistance: 0
 --- !u!114 &3713734425821449763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -632,7 +587,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
+  m_Name: "\uADFC\uC811 \uACF5\uACA9"
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1229, y: -68}
   nodes:
@@ -664,19 +619,6 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 456, y: 323}
---- !u!114 &6631976132736815560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
-  m_Name: Condition_Can See Player
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
-  position: {x: 1805, y: -585}
 --- !u!114 &6816747113147883713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,22 +673,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1836, y: 145}
+  position: {x: 1828, y: 123}
   skillName: Attack
---- !u!114 &8097750573212284376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
-  m_Name: Action_Look At Player
-  m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 1801, y: -521}
-  IsSee: 1
 --- !u!114 &8440268503078126261
 MonoBehaviour:
   m_ObjectHideFlags: 0

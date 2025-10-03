@@ -1,11 +1,13 @@
 ﻿using BH_Lib.Log;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
-public class PlayerHealth : HealthSystem, IStiffness
+public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, IDisposable
 {
-    private PlayerData _runtimeData;
+    private PlayerStats _stats;
+    private PlayerEvents _events;
 
     /// <summary>
     /// 경직도 관련
@@ -14,30 +16,56 @@ public class PlayerHealth : HealthSystem, IStiffness
     private int _stiffnessThreshold = 100;
     private float _stiffnessDuration;
 
+    public event Action<bool> OnInvisibleChanged;
+    public event Action<int, int> OnHealthChanged;
+    public event Action OnDied;
+
     #region Properties
     public int CurrentStiffness => _currentStiffness;
     public int StiffnessThreshold => _stiffnessThreshold;
     public float StiffnessDuration => _stiffnessDuration;
+
+    public int Health => _stats.CurrentHealth;
+
+    public int MaxHealth => _stats.MaxHealth;
+
+    public bool IsDead => _stats.CurrentHealth <= 0;
+
+    public bool IsInvincible => _stats.IsInvincible;
     #endregion
 
-    public void Initialize(PlayerData data)
+    public void Initialize(PlayerStats data, PlayerEvents evets)
     {
-        _runtimeData = data;
-        p_maxHealth = _runtimeData.MaxHealth;
-        p_health = MaxHealth;
+        _stats = data;
+        _events = evets;
+
+        _events.OnOverHeat += HandleOverHeat;
     }
 
-    public override void TakeDamage(int damageAmount, IAttacker attacker = null)
+    public void Dispose()
+    {
+        _events.OnOverHeat -= HandleOverHeat;
+    }
+
+    public void ChangeHealth(int amount)
+    {
+        int previousHealth = Health;
+        _stats.CurrentHealth = Mathf.Clamp(_stats.CurrentHealth + amount, 0, MaxHealth);
+
+        OnHealthChanged?.Invoke(previousHealth, Health);
+    }
+
+    public void TakeDamage(int damageAmount)
     {
         if (IsDead || IsInvincible)
         {
             return;
         }
 
-        if (_runtimeData.IsDefending)
+        if (_stats.IsDefending)
         {
             damageAmount = Mathf.RoundToInt(damageAmount *
-                _runtimeData.CombatData.DefendDamageReductionRate);
+                _stats.CombatData.DefendDamageReductionRate);
 
         }
 
@@ -49,7 +77,7 @@ public class PlayerHealth : HealthSystem, IStiffness
         }
     }
 
-    public override void TakeDamage(int damageAmount, int stiffenessAmount, IAttacker attacker = null)
+    public void TakeDamage(int damageAmount, int stiffenessAmount)
     {
         // 죽었거나 무적이면 리턴
         if (IsDead || IsInvincible)
@@ -58,10 +86,10 @@ public class PlayerHealth : HealthSystem, IStiffness
         }
 
         // 방어중일 때 수치 경감
-        if (_runtimeData.IsDefending)
+        if (_stats.IsDefending)
         {
             damageAmount = Mathf.RoundToInt(damageAmount *
-                _runtimeData.CombatData.DefendDamageReductionRate);
+                _stats.CombatData.DefendDamageReductionRate);
 
             stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
         }
@@ -108,9 +136,8 @@ public class PlayerHealth : HealthSystem, IStiffness
     /// </summary>
     private void LightStagger()
     {
-        _stiffnessDuration = _runtimeData.CombatData.LightStaggerDuration;
-        _runtimeData.SetDamaged(PlayerDamagedType.Normal);
-        Log.PrintColor(Color.red, "약한 경직");
+        _stiffnessDuration = _stats.CombatData.LightStaggerDuration;
+        _stats.SetDamagedType(PlayerDamagedType.Normal);
     }
 
     /// <summary>
@@ -118,31 +145,35 @@ public class PlayerHealth : HealthSystem, IStiffness
     /// </summary>
     private void HeavyStagger()
     {
-        _stiffnessDuration = _runtimeData.CombatData.HeavyStaggerDuration;
-        _runtimeData.SetDamaged(PlayerDamagedType.Strong);
-        Log.PrintColor(Color.red, "강한 경직");
-    }
-}
-
-public class PlayerHealthManager : IDisposable
-{
-    private PlayerHealth _health;
-    private PlayerEvents _events;
-    private bool _disposed = false; // 중복 Dispose 방지
-
-    public PlayerHealthManager(PlayerHealth health, PlayerEvents events)
-    {
-        _health = health; 
-        _events = events;
+        _stiffnessDuration = _stats.CombatData.HeavyStaggerDuration;
+        _stats.SetDamagedType(PlayerDamagedType.Strong);
     }
 
-    public void Dispose()
+    public void Heal(int healAmount)
     {
-        if(_disposed)
+        if (IsDead)
         {
             return;
         }
 
-        _disposed = true;
+        ChangeHealth(healAmount);
+    }
+
+    public void Die()
+    {
+        OnDied?.Invoke();
+    }
+
+    public void SetInvisible(bool isInvisible)
+    {
+        _stats.IsInvincible = isInvisible;
+    }
+
+    private void HandleOverHeat(int damage)
+    {
+        if(_stats.IsOverHeat)
+        {
+            TakeDamage(damage);
+        }
     }
 }

@@ -4,26 +4,53 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerHeat : HeatSystem
+public class PlayerHeat : HeatSystem, IDisposable
 {
+    private PlayerStats _playerStats;
     private OverHeatDataSO _overHeatData;
+    private PlayerEvents _events;
     private float _heatTierTimer;
-    private bool _isOverHeat;   
 
-    public bool IsOverHeat => _isOverHeat;
+    public bool IsOverHeat => _playerStats.IsOverHeat;
 
     private Sequence _overheatSequence;
+    private Sequence _battleOutSequence;
 
     /// <summary>
     /// 열기 시스템 초기화
     /// </summary>
     /// <param name="sourceMapDatabaseSO">소스맵 데이터베이스</param>
     /// <param name="tierStatDatabaseSO">티어 스탯 데이터베이스</param>
-    public void Initialize(SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO)
+    public void Initialize( PlayerStats playerStats, SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO, PlayerEvents events)
     {
+        _playerStats = playerStats;
         p_sourceMapDataBase = sourceMapDatabaseSO;
         p_tierStatDatabase = tierStatDatabaseSO;
         _overHeatData = overHeatDataSO;
+        _events = events;
+
+        // 이벤트 구독
+        _events.OnBattleStateChaged += HandleBattleSateChanged;
+        OnTierChanged += HandleHeatChanged;
+        _events.OnAttackAffect += HandleAttackAffect;
+        _events.OnChargeAttackAffect += HandleChargeAttackAffect;
+        _events.OnParryAffect += HandleParryAffect;
+        _events.OnRangedAttackAffect += HandleRangedAttackAffect;
+        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect;
+        _events.OnOverHeatFinish += HandleOverHeatFinish;
+    } 
+
+    public void Dispose()
+    {
+        // 이벤트 구독 해제
+        _events.OnBattleStateChaged -= HandleBattleSateChanged;
+        OnTierChanged -= HandleHeatChanged;
+        _events.OnAttackAffect -= HandleAttackAffect;
+        _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
+        _events.OnParryAffect -= HandleParryAffect;
+        _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
+        _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
+        _events.OnOverHeatFinish -= HandleOverHeatFinish;
     }
 
     #region SetHeat
@@ -110,9 +137,9 @@ public class PlayerHeat : HeatSystem
         _overheatSequence.SetDelay(_overHeatData.DelaySecond)
             .AppendCallback(() =>
             {
-                _heatTierTimer = Time.time;
-                _isOverHeat = true;
                 SetHeatLock(true);
+                _heatTierTimer = Time.time;
+                _playerStats.IsOverHeat = true;
             });
     }
 
@@ -136,9 +163,9 @@ public class PlayerHeat : HeatSystem
     {
         _overheatSequence?.Kill();
 
-        if (_isOverHeat)
+        if (_playerStats.IsOverHeat)
         {
-            _isOverHeat = false;
+            _playerStats.IsOverHeat = false;
             SetHeatLock(false);
         }
     }
@@ -254,60 +281,8 @@ public class PlayerHeat : HeatSystem
 
         SetHeat(0);
     }
-}
 
-/// <summary>
-/// 플레이어 열기 시스템을 관리하는 클래스
-/// </summary>
-public class PlayerHeatManager : IDisposable
-{
-    private PlayerHeat _heat;
-    private PlayerEvents _events;
-    private bool _disposed = false; // 중복 Dispose 방지
-
-    public PlayerHeatManager(PlayerHeat heat, PlayerEvents events)
-    {
-        _heat = heat;
-        _events = events;
-
-        // 이벤트 구독
-        _events.OnBattleStateChaged += HandleBattleSateChanged;
-        _heat.OnTierChanged += HandleHeatChanged;
-        _events.OnAttackAffect += HandleAttackAffect;
-        _events.OnChargeAttackAffect += HandleChargeAttackAffect;
-        _events.OnParryAffect += HandleParryAffect;
-        _events.OnRangedAttackAffect += HandleRangedAttackAffect;
-        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect; 
-        _events.OnOverHeatFinish += HandleOverHeatFinish;
-    }
-
-    /// <summary>
-    /// 리소스 정리 및 이벤트 구독 해제
-    /// </summary>
-    public void Dispose()
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        // 이벤트 구독 해제
-        _events.OnBattleStateChaged -= HandleBattleSateChanged;
-        _heat.OnTierChanged -= HandleHeatChanged;
-        _events.OnAttackAffect -= HandleAttackAffect;
-        _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
-        _events.OnParryAffect -= HandleParryAffect;
-        _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
-        _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
-        _events.OnOverHeatFinish -= HandleOverHeatFinish;
-
-        _disposed = true;
-    }
-
-    /// <summary>
-    /// 전투 상황을 벗어났을 때 상황
-    /// </summary>
-    private Sequence _battleOutSequence;
+    #region Event Handlers
     /// <summary>
     /// 전투 상태 변경 이벤트 처리
     /// </summary>
@@ -318,10 +293,10 @@ public class PlayerHeatManager : IDisposable
 
         if(!isBattleState)
         {
-            _heat.SetHeatLock(false);
+            SetHeatLock(false);
 
             _battleOutSequence = DOTween.Sequence()
-                .AppendCallback(_heat.DecreaseHeatOnBattleOut)
+                .AppendCallback(DecreaseHeatOnBattleOut)
                 .SetDelay(1f)
                 .SetLoops(-1, LoopType.Restart);
 
@@ -353,7 +328,7 @@ public class PlayerHeatManager : IDisposable
     /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleAttackAffect(Collider collider)
     {
-        _heat.IncreaseHeatOnAttack(collider);
+        IncreaseHeatOnAttack(collider);
     }
 
     /// <summary>
@@ -362,7 +337,7 @@ public class PlayerHeatManager : IDisposable
     /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleChargeAttackAffect(Collider collider)
     {
-        _heat.IncreaseHeatOnChargeAttack(collider);
+        IncreaseHeatOnChargeAttack(collider);
     }
 
     /// <summary>
@@ -371,7 +346,7 @@ public class PlayerHeatManager : IDisposable
     /// <param name="collider">패리 대상 콜라이더</param>
     private void HandleParryAffect(Collider collider)
     {
-        _heat.IncreaseHeatOnParrySuccess();
+        IncreaseHeatOnParrySuccess();
     }
 
     /// <summary>
@@ -380,7 +355,7 @@ public class PlayerHeatManager : IDisposable
     /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleRangedAttackAffect(Collider collider)
     {
-        _heat.DecreaseHeatOnRangeAttack(collider);
+        DecreaseHeatOnRangeAttack(collider);
     }
 
     /// <summary>
@@ -389,7 +364,7 @@ public class PlayerHeatManager : IDisposable
     /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleSecondCounterAttackAffect(Collider collider)
     {
-        _heat.IncreaseHeatOnCounterAttack(collider);
+        IncreaseHeatOnCounterAttack(collider);
     }
 
     /// <summary>
@@ -397,6 +372,8 @@ public class PlayerHeatManager : IDisposable
     /// </summary>
     private void HandleOverHeatFinish()
     {
-        _heat.OverHeatFinish(); 
+        OverHeatFinish(); 
     }
+    #endregion
 }
+

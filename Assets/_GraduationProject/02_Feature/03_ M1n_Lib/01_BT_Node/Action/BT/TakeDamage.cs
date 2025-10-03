@@ -7,8 +7,8 @@ public class TakeDamage : Node
     public override void OnEnter()
     {
         Handler.ResetAllFlags();
-        if(runner.CurrentState != Enemy.EnemyState.Die)
-        runner.AnimationEvent(animationName);
+        if (runner.CurrentState != Enemy.EnemyState.Die)
+            runner.AnimationEvent(animationName);
     }
     public override Node Clone()
     {

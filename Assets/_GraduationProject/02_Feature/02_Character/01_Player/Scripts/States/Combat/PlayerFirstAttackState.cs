@@ -13,7 +13,7 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerSecondAttackState);
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.AttackDatas[0];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.AttackDatas[0];
 
     public override void OnEnter()
     {
@@ -27,14 +27,13 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
         // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
         if (p_context.Movement.HasTargetRotation)
         {
-            p_context.Movement.SetRotation(p_context.Movement.TargetRotation);
-            p_context.Movement.ClearTargetRotation();
+            p_context.Movement.RotateToTargetRotation();
         }
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
 

@@ -1589,16 +1589,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 431287307262341145}
-  - component: {fileID: 1237165853291308891}
+  - component: {fileID: 3178177789902032294}
   - component: {fileID: 711568186495637284}
   - component: {fileID: 1636207851185063661}
-  - component: {fileID: 5964288794055141317}
-  - component: {fileID: 7649532155660733297}
   - component: {fileID: 1000522476364963410}
   - component: {fileID: 560369078637628095}
-  - component: {fileID: 6502035142526053912}
   - component: {fileID: 8830776819107811238}
-  - component: {fileID: 5037239723093530524}
+  - component: {fileID: 6502035142526053912}
+  - component: {fileID: 3259499344088917303}
+  - component: {fileID: 7649532155660733297}
+  - component: {fileID: 1948424745503444239}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -1625,7 +1625,7 @@ Transform:
   - {fileID: 7991569648605186652}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &1237165853291308891
+--- !u!143 &3178177789902032294
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1643,7 +1643,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.4
+  m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -1685,42 +1685,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.Player
   _animator: {fileID: 711568186495637284}
-  _characterController: {fileID: 1237165853291308891}
-  _dataBase: {fileID: 5964288794055141317}
-  _controller: {fileID: 1000522476364963410}
-  _health: {fileID: 5037239723093530524}
+  _characterController: {fileID: 3178177789902032294}
+  _dataBase: {fileID: 11400000, guid: 26e19b2231c251041b880db41fbe37be, type: 2}
+  _events: {fileID: 560369078637628095}
+  _input: {fileID: 1000522476364963410}
+  _health: {fileID: 3259499344088917303}
   _movement: {fileID: 7649532155660733297}
   _combat: {fileID: 6502035142526053912}
   _heat: {fileID: 8830776819107811238}
-  _events: {fileID: 560369078637628095}
---- !u!114 &5964288794055141317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3748f2ae91618f1499eca697efec5f31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerDataBase
-  _baseDatasSO: {fileID: 11400000, guid: 566f1563e84bc08448785bd0dfbc8508, type: 2}
-  _tierStatDatabaseSO: {fileID: 11400000, guid: 5c5414580c904c9429bcd2ee6edf1198, type: 2}
-  _sourceMapDatabaseSO: {fileID: 11400000, guid: 6a7236ca84ee074438f611eb3d714c46, type: 2}
-  _overHeatDataSO: {fileID: 11400000, guid: f278d7c66fc3dff419f92bb94131fb70, type: 2}
---- !u!114 &7649532155660733297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f81a725c12c0ae34caaf322fd9dd6bbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoveSystem
+  _mediator: {fileID: 1948424745503444239}
 --- !u!114 &1000522476364963410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,18 +1827,6 @@ MonoBehaviour:
   _chargeAttackPoint: {fileID: 4578035567730943111}
   _rangedAttackPoint: {fileID: 4088683721708587602}
   _counterAttackPoint: {fileID: 3718239216204341862}
---- !u!114 &6502035142526053912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a170f9b7ba6a19d4f9d07af853588ac7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerCombat
 --- !u!114 &8830776819107811238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1879,12 +1840,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHeat
   _maxHeat: 100
-  _currentHeat: 0
+  p_currentHeat: 0
   p_sourceMapDataBase: {fileID: 0}
   p_tierStatDatabase: {fileID: 0}
   LockTimer: 2
   <ActorType>k__BackingField: 0
---- !u!114 &5037239723093530524
+--- !u!114 &6502035142526053912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7274864751189949029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a170f9b7ba6a19d4f9d07af853588ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerCombat
+--- !u!114 &3259499344088917303
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1895,7 +1868,31 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a7b45b375080cdc4a9f205fcc9ef087e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHealth
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+--- !u!114 &7649532155660733297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7274864751189949029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81a725c12c0ae34caaf322fd9dd6bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveSystem
+--- !u!114 &1948424745503444239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7274864751189949029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a59821a8f067494eb8713d819d3ead1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMediator
 --- !u!1 &7354079342891410513
 GameObject:
   m_ObjectHideFlags: 0

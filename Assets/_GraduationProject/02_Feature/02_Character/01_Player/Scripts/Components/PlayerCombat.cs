@@ -5,11 +5,12 @@ using System;
 using UnityEngine;
 
 
-public class PlayerCombat : MonoBehaviour, IAttacker
+public class PlayerCombat : MonoBehaviour, IDisposable
 {
     #region Private Fields
-    private PlayerData _runtimeData;
-    private PlayerCombatData _combatData => _runtimeData.CombatData;
+    private PlayerStats _stats;
+    private PlayerEvents _events;
+    private PlayerCombatData _combatData => _stats.CombatData;
     /// <summary>
     /// 전투 중심점의 위치
     /// </summary>
@@ -47,10 +48,24 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     public bool IsBattleState => _isBattleState;
     #endregion
 
-    public void Initialize(PlayerData combatData)
+    public void Initialize(PlayerStats combatData, PlayerEvents events)
     {
         _isDrawGizmos = true;
-        _runtimeData = combatData;
+        _stats = combatData;
+        _events = events;
+
+        _events.OnRangedAttackStart += HandleRangedAttack;
+        _events.OnBattleStateChaged += HandleBattleStateChanged;
+        _events.OnAttackStart += SetupCombatCenter;
+        _events.OnParryPerform += SetupCombatCenter;
+    }
+
+    public void Dispose()
+    {
+        _events.OnRangedAttackStart -= HandleRangedAttack;
+        _events.OnBattleStateChaged -= HandleBattleStateChanged;
+        _events.OnAttackStart -= SetupCombatCenter;
+        _events.OnParryPerform -= SetupCombatCenter;
     }
 
     /// <summary>
@@ -120,7 +135,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
             IDamageable damageable = obj.GetComponent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
             {
-                damageable.TakeDamage(attackData.AttackDamage, this);
+                damageable.TakeDamage(attackData.AttackDamage);
             }
         }
     }
@@ -152,14 +167,9 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
     #region Defend
 
-    public void DefendStart()
+    public void SetDefending(bool isDefending)
     {
-        _runtimeData.SetDefending(true);
-    }
-
-    public void DefendFinish()
-    {
-        _runtimeData.SetDefending(false);
+        _stats.IsDefending = isDefending;
     }
     #endregion
 
@@ -279,7 +289,7 @@ public class PlayerCombat : MonoBehaviour, IAttacker
 
         if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(attackData.AttackDamage, this);
+            damageable.TakeDamage(attackData.AttackDamage);
         }
     }
 
@@ -296,6 +306,24 @@ public class PlayerCombat : MonoBehaviour, IAttacker
     }
 
     #endregion
+
+    private void HandleRangedAttack(Transform firePoint)
+    {
+        FireProjectile(firePoint);
+    }
+
+    private void HandleBattleStateChanged(bool isBattleState)
+    {
+        if (isBattleState)
+        {
+            SetupBattleTime();
+            SetBattleState(isBattleState);
+        }
+        else
+        {
+            SetBattleState(isBattleState);
+        }
+    }
 
 #if UNITY_EDITOR
 
@@ -323,51 +351,4 @@ public class PlayerCombat : MonoBehaviour, IAttacker
         Gizmos.matrix = Matrix4x4.identity;
     }
 #endif
-}
-
-public class PlayerCombatManager : IDisposable
-{
-    private PlayerCombat _combat;
-    private PlayerEvents _events;
-    private bool _disposed = false;
-
-    public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
-    {
-        _combat = combat;
-        _events = events;
-
-        _events.OnRangedAttackStart += HandleRangedAttack;
-        _events.OnBattleStateChaged += HandleBattleStateChanged;
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        _events.OnRangedAttackStart -= HandleRangedAttack;
-        _events.OnBattleStateChaged -= HandleBattleStateChanged;
-        
-        _disposed = true;
-    }
-
-    private void HandleRangedAttack(Transform firePoint)
-    {
-        _combat.FireProjectile(firePoint);
-    }
-
-    private void HandleBattleStateChanged(bool isBattleState)
-    {
-        if (isBattleState)
-        {
-            _combat.SetupBattleTime();
-            _combat.SetBattleState(isBattleState);
-        }
-        else
-        {
-            _combat.SetBattleState(isBattleState);
-        }
-    }
 }

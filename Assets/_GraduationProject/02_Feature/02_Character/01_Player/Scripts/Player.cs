@@ -13,71 +13,70 @@ public class Player : DIMonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private CharacterController _characterController;
 
-    [SerializeField] private PlayerDataBase _dataBase;
-    [SerializeField] private PlayerController _controller;
+    [SerializeField] private PlayerDataBaseSO _dataBase;
+    private PlayerStats _stats;
+    [SerializeField] private PlayerEvents _events;
+
+    [SerializeField] private PlayerInputHandler _input;
     [SerializeField] private PlayerHealth _health;
     [SerializeField] private PlayerMovement _movement;
     [SerializeField] private PlayerCombat _combat;
     [SerializeField] private PlayerHeat _heat;
-    [SerializeField] private PlayerEvents _events;
 
     private StateMachine<Player> _stateMachine;
-    private PlayerHeatManager _heatManager;
-    private PlayerCombatManager _combatManager;
-    private PlayerDataManager _dataDataManager;
     #endregion
-
+    
     #region Properties
     public Animator Animator => _animator;
-    public PlayerDataBase DataBase => _dataBase;
-    public PlayerController Controller => _controller;
+    public PlayerDataBaseSO DataBase => _dataBase;
+    public PlayerInputHandler Input => _input;
     public PlayerHealth Health => _health;
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerEvents Events => _events;
-    public PlayerBaseDatasSO BaseData => DataBase.BaseData;
-    public PlayerData RuntimeData => DataBase.RuntimeData;
+
+    public PlayerStats Stats => _stats;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
-
+    
     /// <summary>
     /// 현재 플레이어 상태
     /// </summary>
     public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
-
+    
     private void Start()
     {
         InitializeReference();
         InitializeStateMachine();
-
+    
         SubscribeToEvents();
     }
-
+    
     private void Update()
     {
         OnUpdate();
         _stateMachine?.Update();
     }
-
+    
     private void FixedUpdate()
     {
         OnFixedUpdate();
         // 상태 머신 고정 업데이트
         _stateMachine?.FixedUpdate();
     }
-
+    
     private void LateUpdate()
     {
-        _controller.LateTick();
+        _input.LateTick();
     }
-
+    
     private void OnDestroy()
     {
         UnsubscribeToEvents();
     }
-
+    
     /// <summary>
     /// 레퍼런스 초기화
     /// </summary>
@@ -87,65 +86,64 @@ public class Player : DIMonoBehaviour
         {
             _animator = GetComponent<Animator>();
         }
-
+    
         if (_characterController == null)
         {
             _characterController = GetComponent<CharacterController>();
         }
-
+    
         if (_dataBase == null)
         {
-            _dataBase = GetComponent<PlayerDataBase>();
+            _dataBase = GetComponent<PlayerDataBaseSO>();
         }
 
-        if (_controller == null)
-        {
-            _controller = GetComponent<PlayerController>();
-        }
-
-        if (_health == null)
-        {
-            _health = GetComponent<PlayerHealth>();
-        }
-
-        if (_movement == null)
-        {
-            _movement = GetComponent<PlayerMovement>();
-        }
-
-        if (_combat == null)
-        {
-            _combat = GetComponent<PlayerCombat>();
-        }
-
-        if(_heat == null)
-        {
-            _heat = GetComponent<PlayerHeat>(); 
-        }
-
+        _stats = new PlayerStats(DataBase.BaseData);
+    
         if (_events == null)
         {
             _events = GetComponent<PlayerEvents>();
         }
-
-        _dataBase.Initialize();
-        _controller.Initialize(_inputDeviceDetector);
-        _health.Initialize(_dataBase.RuntimeData);
+    
+        if (_input == null)
+        {
+            _input = GetComponent<PlayerInputHandler>();
+        }
+        _input.Initialize(_inputDeviceDetector);
+    
+        if (_health == null)
+        {
+            _health = GetComponent<PlayerHealth>();
+        }
+        _health.Initialize(Stats, Events);
+    
+        if (_movement == null)
+        {
+            _movement = GetComponent<PlayerMovement>();
+        }
         _movement.Initialize(_characterController);
-        _combat.Initialize(DataBase.RuntimeData);
-        _heat.Initialize(DataBase.SourceMapData, DataBase.TierStatData, DataBase.OverHeatData);
+    
+        if (_combat == null)
+        {
+            _combat = GetComponent<PlayerCombat>();
+        }
+        _combat.Initialize(Stats, Events);
+    
+        if (_heat  == null)
+        {
+            _heat = GetComponent<PlayerHeat>(); 
+        }
+        _heat.Initialize(Stats , DataBase.SourceMapData, DataBase.TierStatData, 
+            DataBase.OverHeatData, Events);
 
-        _heatManager = new PlayerHeatManager(Heat, Events);
-        _combatManager = new PlayerCombatManager(Combat, Events);
-        _dataDataManager = new PlayerDataManager(DataBase, Heat, Events);
     }
+    
     /// <summary>
     /// 상태머신 초기화
     /// </summary>
     private void InitializeStateMachine()
     {
         _stateMachine = new StateMachine<Player>(this);
-
+    
         _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
         _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
@@ -160,9 +158,9 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
         _stateMachine.AddState(new PlayerFirstCounterAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerSecondCounterAttackState(this, _stateMachine));
-
+    
         SetupStateTransitions();
-
+    
         // 초기 상태를 Idle로 설정
         _stateMachine.ChangeState<PlayerIdleState>();
     }
@@ -173,87 +171,92 @@ public class Player : DIMonoBehaviour
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && RuntimeData.IsDamaged);
-
+            !Health.IsDead && Stats.IsDamaged);
+    
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
-            => Controller.MoveInput != Vector2.zero);
+            => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
-            => Controller.AttackInput);
+            => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
-            => Controller.AttackHeldInput);
+            => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
-            => Controller.RangedAttackInput);
+            => Input.RangedAttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
-            => Controller.DefendInput);
-
+            => Input.DefendInput);
+    
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
-            => Controller.MoveInput == Vector2.zero);
+            => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
-            => Controller.DodgeInput && Time.time - Movement.LastDodgeTime >= DataBase.RuntimeData.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
-            => Controller.AttackInput);
+            => Input.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
-            => Controller.AttackHeldInput);
+            => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()
-            => Controller.RangedAttackInput);
+            => Input.RangedAttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
-            => Controller.DefendInput);
+            => Input.DefendInput);
     }
-
+    
     /// <summary>
     /// Update에 호출되는 함수
     /// </summary>
     private void OnUpdate()
     {
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
-                   DataBase.BaseData.GroundLayerMask);
-
+                    DataBase.BaseData.GroundLayerMask);
+        
         if (Heat.CanHeatTierEffect())
         {
-            Events.TriggerTier(Heat.CurrentTier);
+            Events.TriggerTier(Heat.CurrentTier, DataBase.OverHeatData.DamagePerTick);
+        }
+        
+        if (Time.time - Combat.LastBattleTime >= Stats.BattleOutTime && Combat.IsBattleState)
+        {
+            Events.TriggerBattleStateChanged(false);
         }
     }
+    
     /// <summary>
     /// FixedUpdate에 호출되는 함수
     /// </summary>
     private void OnFixedUpdate()
     {
         _movement.ApplyGravity(DataBase.BaseData.Gravity);
-
+    
     }
-
+    
     #region Event
     private void SubscribeToEvents()
     {
-        RuntimeData.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
-        Events.OnOverHeat += HandleOverHeat;
-    }
+        // 이제 PlayerMediator가 이 역할을 담당합니다.
 
+        if (_stats != null)
+        {
+            _stats.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
+        }
+    }
+    
     private void UnsubscribeToEvents()
     {
-        _heatManager?.Dispose();
-        _combatManager?.Dispose();
-        _dataDataManager?.Dispose();
+        // 각 컴포넌트의 Dispose와 PlayerMediator의 OnDisable에서 처리됩니다.
+        Health.Dispose();
+        Combat.Dispose();
+        Heat.Dispose();
 
-        RuntimeData.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
-        Events.OnOverHeat -= HandleOverHeat;
+        if (_stats != null)
+        {
+            _stats.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
+        }
     }
 
     private void HandleAnimationSpeedChanged(float speed)
     {
-        Animator.speed = speed;
-    }
-
-    private void HandleOverHeat()
-    {
-        if (Heat.IsOverHeat)
-        {
-            Health.TakeDamage(DataBase.OverHeatData.DamagePerTick);
-        }
+        _animator.speed = speed;
     }
     #endregion
 }

@@ -5,6 +5,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public bool IsHitWindowOpen { get; private set; }
     public bool IsActionFinished { get; private set; }
     public bool IsSound { get; private set; }
+    public bool IsSuperArmor { get; private set; }
 
     public void OpenHitWindow()
     {
@@ -14,7 +15,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         IsHitWindowOpen = false;
     }
-     public void FinishAction()
+    public void FinishAction()
     {
         IsActionFinished = true;
     }
@@ -28,7 +29,14 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         IsSound = false;
     }
-
+    public void StartSuperArmor()
+    {
+        IsSuperArmor = true;
+    }
+    public void EndSuperArmor()
+    {
+        IsSuperArmor = false;
+    }
     public void ResetAllFlags()
     {
         IsActive = false;
@@ -36,4 +44,5 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         IsActionFinished = false;
         IsSound = false;
     }
+    
 }

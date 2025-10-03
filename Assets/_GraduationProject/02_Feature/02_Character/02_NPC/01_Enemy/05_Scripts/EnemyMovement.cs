@@ -15,7 +15,7 @@ public class EnemyMovement
     {
         _runner = enemy;
         aIPath = _runner.GetComponent<AIPath>();
-        animator = _runner.GetAnimator();
+        animator = _runner.animator;
         rb = _runner.GetComponent<Rigidbody>();
     }
 
@@ -117,6 +117,7 @@ public class EnemyMovement
         }
         if (_runner != null) 
         _runner.AnimationBool("Walk", false);
+        aIPath.enableRotation = true;
         
 
         aIPath.isStopped = true;

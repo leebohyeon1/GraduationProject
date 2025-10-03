@@ -23,10 +23,10 @@ public class PlayerDodgeState : BaseState<Player>
         p_context.Animator.SetTrigger("Dodge");
         p_context.Events.OnDodgeFinish += HandleDodgeFinish;
 
-        if (p_context.Controller.MoveInput != Vector2.zero)
+        if (p_context.Input.MoveInput != Vector2.zero)
         {
             // PlayerMovement.Move()가 카메라 기준으로 변환하므로 입력 그대로 전달
-            _dodgeDirection = new Vector3(p_context.Controller.MoveInput.x, 0, p_context.Controller.MoveInput.y);
+            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y);
             p_context.Movement.RotateToDirection(_dodgeDirection);
         }
         else
@@ -53,7 +53,7 @@ public class PlayerDodgeState : BaseState<Player>
     public override void OnFixedUpdate()
     {
         p_context.Movement?.Dodge(_dodgeDirection, 
-            p_context.DataBase.RuntimeData.CombatData.DodgeSpeed);
+            p_context.Stats.CombatData.DodgeSpeed);
     }
 
     public override void OnExit()
@@ -91,34 +91,30 @@ public class PlayerDodgeState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
-        if (p_context.Controller.DefendInput)
+        if (p_context.Input.DefendInput)
         {
             _nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Controller.AttackHeldInput)
+        else if (p_context.Input.AttackHeldInput)
         {
             _nextState = typeof(PlayerChargeState);
         }
-        else if (p_context.Controller.AttackInput)
+        else if (p_context.Input.AttackInput)
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Controller.MoveInput;
-            var mousePosition = p_context.Controller.MousePosition;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
 
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Controller.RangedAttackInput)
+        else if (p_context.Input.RangedAttackInput)
         {
             _nextState = typeof(PlayerRangedChargeState);
         }
-        else if (p_context.Controller.MoveInput != Vector2.zero)
+        else if (p_context.Input.MoveInput != Vector2.zero)
         {
             _nextState = typeof(PlayerMoveState);
-        }
-        else if(p_context.Controller.SkillInput)
-        {
-           // _nextState = typeof(PlayerSkillState);
         }
 
         if (_nextState != null)

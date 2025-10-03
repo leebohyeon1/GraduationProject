@@ -3,7 +3,7 @@ using System.Collections;
 using BH_Lib.Log;
 using UnityEngine;
 
-public class TestEnemy : CharacterBase, IDamageable
+public class TestEnemy : MonoBehaviour, IDamageable
 {
     private MeshRenderer _meshRenderer;
 
@@ -32,7 +32,7 @@ public class TestEnemy : CharacterBase, IDamageable
         _currentHealth = MaxHealth;
     }
 
-    public void TakeDamage(int damageAmount, IAttacker attacker)
+    public void TakeDamage(int damageAmount)
     {
         if (IsDead) return;
 
@@ -64,7 +64,7 @@ public class TestEnemy : CharacterBase, IDamageable
         _currentHealth = MaxHealth;
     }
 
-    public void TakeDamage(int damageAmount, int StiffenessAmount, IAttacker attacker = null)
+    public void TakeDamage(int damageAmount, int StiffenessAmount)
     {
     }
 }

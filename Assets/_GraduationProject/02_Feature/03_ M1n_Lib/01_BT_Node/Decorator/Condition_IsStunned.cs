@@ -8,7 +8,7 @@ public class Condition_IsStunned : ConditionNode
     // 현재 적이 기절 상태인지 확인합니다.
     protected override bool CheckCondition()
     {
-        return runner != null && runner.IsStunned(); // isStunned가 true일 때만 성공
+        return runner != null && runner.ParrySystem._isStunned; // isStunned가 true일 때만 성공
     }
 
     public override Node Clone() => Instantiate(this);

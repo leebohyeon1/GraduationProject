@@ -1,4 +1,4 @@
-using BH_Lib.FSM;
+ï»¿using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
@@ -9,14 +9,14 @@ public class PlayerChargeState : BaseState<Player>
 
     private float _chargeTimer;
     private float _chargeGuage;
-    private SourceMap chargeSourceMap;
+    private SourceMap _chargeSourceMap;
 
     public PlayerChargeState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        p_context.Heat.OnHeatChanged += HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged += HandleSetupChargeSourceMap;
 
         p_context.Animator.SetBool("IsCharge", true);
         SetupChargeSourceMap();
@@ -35,20 +35,21 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
-        if (_chargeTimer > chargeSourceMap.TickSecond)
+
+        if (_chargeTimer > _chargeSourceMap.TickSecond)
         {
             _chargeTimer = 0;
 
-            _chargeGuage += (int)chargeSourceMap.HeatChangeType * chargeSourceMap.DeltaHeat;
+            _chargeGuage += (int)_chargeSourceMap.HeatChangeType * _chargeSourceMap.DeltaHeat;
             if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
             {
                 MinChargeFinish();
             }
                
-            p_context.Heat.IncreaseHeatOnCharge(chargeSourceMap, _chargeGuage);
+            p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
         }
 
-        if (!p_context.Controller.AttackHeldInput)
+        if (!p_context.Input.AttackHeldInput)
         {
             if (_isCharged)
             {
@@ -62,16 +63,16 @@ public class PlayerChargeState : BaseState<Player>
                 return;
             }
         }
-        else if(p_context.Controller.DodgeInput)
+        else if(p_context.Input.DodgeInput)
         {
             p_context.Events.TriggerChargeCancel();
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
-        // ¿¡ÀÓ ¹æÇâÀ¸·Î È¸Àü
+        // ì—ì„ ë°©í–¥ìœ¼ë¡œ íšŒì „
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Controller.MoveInput;
-        var mousePosition = p_context.Controller.MousePosition;
+        var moveInput = p_context.Input.MoveInput;
+        var mousePosition = p_context.Input.MousePosition;
         p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
     }
 
@@ -79,7 +80,7 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Heat.OnHeatChanged -= HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
         p_context.Animator.SetBool("IsCharge", false);
 
 
@@ -87,7 +88,26 @@ public class PlayerChargeState : BaseState<Player>
     }
 
     /// <summary>
-    /// ÃÖ¼Ò Â÷Áö°¡ ¿Ï·á ÇÔ¼ö
+    /// ì—´ê¸° í‹°ì–´ê°€ ë°”ë€” ë•Œë§ˆë‹¤ ì°¨ì§• ì†ŒìŠ¤ë§µ ë³€ê²½
+    /// </summary>
+    /// <param name="previousTier">ì´ì „ ì—´ê¸°</param>
+    /// <param name="currentTier">í˜„ì¬ ì—´ê¸°</param>
+    private void HandleSetupChargeSourceMap(int previousTier, int currentTier)
+    {
+        SetupChargeSourceMap();
+    }
+
+    /// <summary>
+    /// ì°¨ì§€ ì†ŒìŠ¤ë§µ ë“±ë¡
+    /// </summary>
+    private void SetupChargeSourceMap()
+    {
+        _chargeSourceMap = p_context.DataBase.SourceMapData.
+            GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
+    }
+
+    /// <summary>
+    /// ìµœì†Œ ì°¨ì§€ê°€ ì™„ë£Œ í•¨ìˆ˜
     /// </summary>
     private void MinChargeFinish()
     {
@@ -96,24 +116,6 @@ public class PlayerChargeState : BaseState<Player>
             _isCharged = true;
             p_context.Events.TriggerChargeFinish();
         }
-    }
-    /// <summary>
-    /// ¿­±â Æ¼¾î°¡ ¹Ù²ğ ¶§¸¶´Ù Â÷Â¡ ¼Ò½º¸Ê º¯°æ
-    /// </summary>
-    /// <param name="previousHeat">ÀÌÀü ¿­±â</param>
-    /// <param name="currentHeat">ÇöÀç ¿­±â</param>
-    private void HandleSetupChargeSourceMap(int previousHeat, int currentHeat)
-    {
-        SetupChargeSourceMap();
-    }
-    /// <summary>
-    /// Â÷Áö ¼Ò½º¸Ê µî·Ï
-    /// </summary>
-    private void SetupChargeSourceMap()
-    {
-        int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.CurrentTier;
-        chargeSourceMap = p_context.DataBase.SourceMapData.
-            GetSourceMap("OnCharge", tier);
     }
 }
 
