@@ -35,10 +35,7 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
-        if(_chargeSourceMap != null )
-        {
-            Log.Print("a1111");
-        }
+
         if (_chargeTimer > _chargeSourceMap.TickSecond)
         {
             _chargeTimer = 0;
