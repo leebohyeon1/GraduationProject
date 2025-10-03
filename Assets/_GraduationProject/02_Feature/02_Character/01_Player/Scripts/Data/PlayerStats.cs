@@ -7,7 +7,6 @@ using UnityEngine;
 [Serializable]
 public class PlayerStats
 {
-    public float AnimatorSpeed;
 
     // State
     public bool IsDefending;
@@ -16,6 +15,7 @@ public class PlayerStats
     public bool IsLightHit;
     public bool IsHeavyHit;
     public bool IsDamaged => IsLightHit || IsHeavyHit;
+    public bool IsOverHeat;
 
     // Stat
     public int MaxHealth;
@@ -32,6 +32,7 @@ public class PlayerStats
     public float BattleOutTime = 8f;
     public PlayerCombatData CombatData = new PlayerCombatData();
 
+    public float AnimatorSpeed;
     public event Action<float> OnAnimationSpeedChanged;
 
     public PlayerStats(BasePlayerDatasSO baseData)
@@ -65,7 +66,7 @@ public class PlayerStats
         CombatData = baseData.CombatData;
     }
 
-    public void SetDamaged(PlayerDamagedType damagedType)
+    public void SetDamagedType(PlayerDamagedType damagedType)
     {
         switch (damagedType)
         {
