@@ -43,8 +43,8 @@ public class DonutWave : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, worldOuterRadius);
         foreach (var hit in hits)
         {
-            // if(_hitColliders.Contains(hit))
-            //     continue; // 이미 처리된 충돌체는 무시
+            if(_hitColliders.Contains(hit))
+                continue; // 이미 처리된 충돌체는 무시
 
             if (hit.TryGetComponent<IDamageable>(out IDamageable player))
             {
@@ -53,8 +53,9 @@ public class DonutWave : MonoBehaviour
                 if (distanceToCenter >= worldInnerRadius)
                 {
                     // ToDo: 데미지 하드코딩 되어있음. 추후 수정 필요.
-                    player.TakeDamage(1); // 데미지 주기 (공격자 정보가 없으므로 null 전달)
-                    // _hitColliders.Add(hit); //중복 공격 방지
+                    player.TakeDamage(5); // 데미지 주기 (공격자 정보가 없으므로 null 전달)
+                    Debug.Log("Player Hit by DonutWave");
+                    _hitColliders.Add(hit); //중복 공격 방지
                 }
             }
         }

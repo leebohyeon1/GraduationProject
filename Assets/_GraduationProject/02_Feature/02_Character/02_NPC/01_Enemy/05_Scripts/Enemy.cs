@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))
-,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg))]
+,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecizalAbility))]
 public class Enemy : MonoBehaviour
 {
     public AiController _aiController{get;private set;}
@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
     public HeatSystem heatSystem { get; private set; }
     public Vector3 PatrolOriginPoint { get; private set; }
     public EnemyTakeDmg EnemyHealth { get; private set; }
+    public EnemySpecizalAbility specialAbility { get; private set; }
 
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
@@ -65,7 +66,9 @@ public class Enemy : MonoBehaviour
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
         EnemyHealth = GetComponent<EnemyTakeDmg>();
-        EnemyHealth.InitializeHealth(100,this);
+        EnemyHealth.InitializeHealth(100, this);
+        specialAbility = GetComponent<EnemySpecizalAbility>();
+        specialAbility.Initialize(this);
     }
 
     void Start()
@@ -90,14 +93,6 @@ public class Enemy : MonoBehaviour
     {
         _CurrentStiffness = amount;
     }
-    #region Behavior Tree Conditions
-
-    #endregion
-
-    #region parry
-
-
-    #endregion
     #region Enemy State Management
     public enum EnemyState
     {
