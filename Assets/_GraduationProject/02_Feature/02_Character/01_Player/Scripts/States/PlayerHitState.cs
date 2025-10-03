@@ -13,13 +13,13 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnEnter()
     {
-        if (p_context.RuntimeData.IsHeavyHit)
+        if (p_context.Stats.IsHeavyHit)
         {
             p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
         }
-        else if(p_context.RuntimeData.IsLightHit)
+        else if(p_context.Stats.IsLightHit)
         {
-            if (p_context.RuntimeData.IsDefending)
+            if (p_context.Stats.IsDefending)
             {
                 p_context.Animator.SetTrigger("DefendHit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
@@ -29,7 +29,6 @@ public class PlayerHitState : BaseState<Player>
                 p_context.Animator.SetTrigger("Hit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
             }
-
         }
 
         p_context.Animator.SetBool("IsHit", true);
@@ -54,7 +53,7 @@ public class PlayerHitState : BaseState<Player>
         // 피격 지속 시간이 끝나면 Idle 상태로 전환
         if (_hitTimer >= _hitDuration)
         {
-            if (p_context.RuntimeData.IsDefending)
+            if (p_context.Stats.IsDefending)
             {
                 p_stateMachine.RevertToPreviousState();
             }
@@ -62,7 +61,6 @@ public class PlayerHitState : BaseState<Player>
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
-
         }
     }
 
@@ -70,7 +68,7 @@ public class PlayerHitState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsHit", false);
 
-        p_context.RuntimeData.ResetDamaged();
+        p_context.Stats.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
     }
 }

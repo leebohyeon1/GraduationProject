@@ -208,6 +208,15 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
+    /// 목표 회전값으로 회전
+    /// </summary>
+    public void RotateToTargetRotation()
+    {
+        SetRotation(TargetRotation);
+        ClearTargetRotation();
+    }
+
+    /// <summary>
     /// 입력 기기에 따른 회전 각도 
     /// </summary>
     /// <param name="deviceType">현재 사용 중인 입력 기기 타입</param>
@@ -264,12 +273,19 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = rotation;
     }
 
+    /// <summary>
+    /// 목표 회전값 설정
+    /// </summary>
+    /// <param name="targetRotation">회전값</param>
     public void SetTargetRotation(Quaternion targetRotation)
     {
         _targetRotation = targetRotation;
         _hasTargetRotation = true;
     }
 
+    /// <summary>
+    /// 목표 회전값 플래그 제거
+    /// </summary>
     public void ClearTargetRotation()
     {
         _hasTargetRotation = false;

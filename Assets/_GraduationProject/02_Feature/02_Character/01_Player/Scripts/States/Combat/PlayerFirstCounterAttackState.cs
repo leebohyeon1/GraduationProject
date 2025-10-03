@@ -1,4 +1,4 @@
-using BH_Lib.FSM;
+ï»¿using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
 using System;
@@ -10,7 +10,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => typeof(PlayerSecondCounterAttackState);
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.CounterAttackDatas[0];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[0];
 
 
     public PlayerFirstCounterAttackState(Player context, StateMachine<Player> stateMachine) 
@@ -21,14 +21,14 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+        p_nextState = null; // ë‹¤ìŒ ìƒíƒœ ì´ˆê¸°í™”
 
-        p_context.Animator.SetTrigger(p_animationTrigger);  // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+        p_context.Animator.SetTrigger(p_animationTrigger);  // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
 
         p_context.Combat.SetCanCounterAttack(false);
-        p_context.Health.SetInvisible(true);
+        p_context.Stats.IsCounterAttack = true;
 
-        // °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÇÇà
+        // ê³µê²© ì‹œ ì „ì§„ ì´ë™ ì‹¤í–‰
         StartAttackMovement();
         p_context.Events.TriggerFirstCounterAttackStart();
     }
@@ -46,6 +46,9 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         p_nextState = null;
     }
 
+    /// <summary>
+    /// ê³µê²© ì‹¤í–‰
+    /// </summary>
     protected override void HandleAttackPerform()
     {
         p_context.Combat.ExcuteFirstCounterAttack(p_AttackData);
@@ -55,8 +58,8 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     }
 
     /// <summary>
-    /// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® ÇÚµé·¯
-    /// °ø°İÀÌ ¿Ï·áµÇ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+    /// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
+    /// ê³µê²©ì´ ì™„ë£Œë˜ë©´ ë‹¤ë¥¸ ìƒíƒœë¡œ ì „í™˜
     /// </summary>
     protected override void HandleAttackFinish()
     {
@@ -67,9 +70,10 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         {
             if (p_nextState != null)
             {
+                // ë‹¤ìŒ ê³µê²© ìƒíƒœì™€ ë‹¤ìŒ ìƒíƒœê°€ ë‹¤ë¥´ë©´
                 if(p_nextAttackState != p_nextState)
                 {
-                    p_context.Health.SetInvisible(false);
+                    p_context.Stats.IsCounterAttack = false;
                     p_context.Combat.ClearCounterTarget();
                 }
 

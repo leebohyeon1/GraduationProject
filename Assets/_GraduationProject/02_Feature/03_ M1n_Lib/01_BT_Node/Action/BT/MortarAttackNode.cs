@@ -23,7 +23,7 @@ public class MortarAttackNode : Node
         hasLaunched = false;
         runner.SetState(Enemy.EnemyState.Attack); // 상태를 공격으로 변경
 
-        runner.GetAnimator().SetTrigger(AttackName);
+        runner.AnimationEvent(AttackName);
 
     }
     protected override NodeState OnUpdate()

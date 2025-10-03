@@ -1,12 +1,16 @@
 // ChasePlayerNode.cs 파일
 using UnityEngine;
 using BehaviorTree;
+using Pathfinding;
 
 [CreateAssetMenu(fileName = "ChasePlayerNode", menuName = "BehaviorTree/ChasePlayerNode")]
 public class ChasePlayerNode : Node
 {
+
     public override void OnEnter()
     {
+        runner.GetComponent<AIPath>().enableRotation = true;
+        
         runner.SetState(Enemy.EnemyState.Chase);
     }
 

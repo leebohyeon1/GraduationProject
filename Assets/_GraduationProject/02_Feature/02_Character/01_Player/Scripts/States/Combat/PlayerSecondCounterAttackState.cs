@@ -10,7 +10,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
     protected override Type p_nextAttackState => null;
 
-    protected override PlayerAttackData p_AttackData => p_context.RuntimeData.CombatData.CounterAttackDatas[1];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[1];
 
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)
@@ -47,7 +47,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // 전방에 오브젝트가 있을 경우 전진 거리 조정
+        // 후방에 오브젝트가 있을 경우 후진 거리 조정
         if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward,
             out var hitInfo, p_AttackData.AttackMoveDistance))
         {

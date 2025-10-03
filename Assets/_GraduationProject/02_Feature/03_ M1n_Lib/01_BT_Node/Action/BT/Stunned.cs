@@ -16,9 +16,9 @@ public class Stunned : Node
     protected override NodeState OnUpdate()
     {
         runner.Movement.StopMovement();
-        if (Time.time >= runner.StunExitTime && runner.IsStunned())
+        if (Time.time >= runner.ParrySystem.StunExitTime && runner.ParrySystem._isStunned)
         {
-            runner.ClearStun();
+            runner.ParrySystem.ClearStun();
             return NodeState.SUCCESS;
         }
         else
@@ -38,7 +38,7 @@ public class Stunned : Node
     }
     public override void OnExit()
     {
-        runner.ClearStun();
+        runner.ParrySystem.ClearStun();
         // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
         if (runner.CurrentState == Enemy.EnemyState.Rush)
         {
