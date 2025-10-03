@@ -1,26 +1,27 @@
-﻿using BH_Lib.Log;
+using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어의 열기 시스템을 관리하는 컴포넌트입니다.
+/// </summary>
 public class PlayerHeat : HeatSystem, IDisposable
 {
-    private PlayerStats _playerStats;
-    private OverHeatDataSO _overHeatData;
-    private PlayerEvents _events;
-    private float _heatTierTimer;
+    private PlayerStats _playerStats; // 플레이어 스탯
+    private OverHeatDataSO _overHeatData; // 과열 데이터
+    private PlayerEvents _events; // 플레이어 이벤트
+    private float _heatTierTimer; // 열기 티어 타이머
 
-    public bool IsOverHeat => _playerStats.IsOverHeat;
+    public bool IsOverHeat => _playerStats.IsOverHeat; // 과열 상태 여부
 
-    private Sequence _overheatSequence;
-    private Sequence _battleOutSequence;
+    private Sequence _overheatSequence; // 과열 시퀀스
+    private Sequence _battleOutSequence; // 전투 종료 시퀀스
 
     /// <summary>
-    /// 열기 시스템 초기화
+    /// 열기 시스템을 초기화합니다.
     /// </summary>
-    /// <param name="sourceMapDatabaseSO">소스맵 데이터베이스</param>
-    /// <param name="tierStatDatabaseSO">티어 스탯 데이터베이스</param>
     public void Initialize( PlayerStats playerStats, SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO, PlayerEvents events)
     {
         _playerStats = playerStats;
@@ -40,6 +41,9 @@ public class PlayerHeat : HeatSystem, IDisposable
         _events.OnOverHeatFinish += HandleOverHeatFinish;
     } 
 
+    /// <summary>
+    /// 리소스 해제 함수
+    /// </summary>
     public void Dispose()
     {
         // 이벤트 구독 해제
@@ -55,21 +59,17 @@ public class PlayerHeat : HeatSystem, IDisposable
 
     #region SetHeat
     /// <summary>
-    /// 열량 변경 함수
+    /// 열기를 변경합니다.
     /// </summary>
     /// <param name="amount"> 열기 변화량 </param>
     public override void ChangeHeat(int amount)
     {
-        if (amount == 0 && IsHeatLock)
-        {
-            return;
-        }
+        if (amount == 0 && IsHeatLock) return;
 
         int previousTier = GetTier();
         int previousHeat = p_currentHeat;
 
         p_currentHeat = Mathf.Clamp(p_currentHeat + amount, 0, MaxHeat);
-
 
         if (previousHeat != p_currentHeat)
         {
@@ -89,15 +89,12 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
 
     /// <summary>
-    /// 열량 설정 함수
+    /// 열기를 설정합니다.
     /// </summary>
     /// <param name="amount"> 열기 설정값 </param>
     public override void SetHeat(int amount)
     {
-        if (IsHeatLock)
-        {
-            return;
-        }
+        if (IsHeatLock) return;
 
         int previousTier = GetTier();
         int previousHeat = p_currentHeat;
@@ -124,14 +121,11 @@ public class PlayerHeat : HeatSystem, IDisposable
 
     #region OverHeat
     /// <summary>
-    /// 오버히트 시작
+    /// 과열 상태로 전환합니다.
     /// </summary>
     protected override void OverHeat()
     {
-        if (_overheatSequence != null && _overheatSequence.IsActive())
-        {
-            return;
-        }
+        if (_overheatSequence != null && _overheatSequence.IsActive()) return;
 
         _overheatSequence = DOTween.Sequence();
         _overheatSequence.SetDelay(_overHeatData.DelaySecond)
@@ -144,7 +138,7 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
 
     /// <summary>
-    /// 오버히트 효과 작동할 수 있는지
+    /// 열기 티어 효과를 적용할 수 있는지 확인합니다.
     /// </summary>
     public bool CanHeatTierEffect()
     {
@@ -159,6 +153,9 @@ public class PlayerHeat : HeatSystem, IDisposable
         return false;
     }
 
+    /// <summary>
+    /// 과열 상태를 종료합니다.
+    /// </summary>
     public void OverHeatFinish()
     {
         _overheatSequence?.Kill();
@@ -172,29 +169,21 @@ public class PlayerHeat : HeatSystem, IDisposable
     #endregion
 
     /// <summary>
-    /// 근접 공격 시 대상 열기 증가 처리
+    /// 근접 공격 시 대상의 열기를 증가시킵니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     public void IncreaseHeatOnAttack(Collider collider)
     {
-        IHeatable heatable = collider.GetComponent<IHeatable>();
-
-        if (heatable != null)
+        if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-
             heatable.ChangeHeat(deltaHeat);
-
-            Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
     }
 
     /// <summary>
-    /// 차지 게이지에 따른 열기 증가 처리
+    /// 차지 게이지에 따라 자신의 열기를 증가시킵니다.
     /// </summary>
-    /// <param name="sourceMap">소스맵 데이터</param>
-    /// <param name="chargeGuage">차지 게이지 값</param>
     public void IncreaseHeatOnCharge(SourceMap sourceMap, float chargeGuage)
     {
         if (chargeGuage >= CurrentHeat)
@@ -204,69 +193,56 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
 
     /// <summary>
-    /// 차지 공격 시 대상 열기 증가 처리
+    /// 차지 공격 시 대상의 열기를 증가시키고 자신의 열기를 초기화합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     public void IncreaseHeatOnChargeAttack(Collider collider)
     {
-        IHeatable heatable = collider.GetComponent<IHeatable>();
-        if (heatable != null)
+        if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnChargeAttack", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
-
-            Log.PrintColor(Color.red, $"대상: {collider.gameObject.name}, 열기 변화량: {deltaHeat}");
         }
         SetHeat(0);
     }
 
     /// <summary>
-    /// 원거리 공격 시 대상 열기 감소 처리
+    /// 원거리 공격 시 대상의 열기를 감소시킵니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     public void DecreaseHeatOnRangeAttack(Collider collider)
     {
-        IHeatable heatable = collider.GetComponent<IHeatable>();
-        if (heatable != null)
+        if (collider.TryGetComponent<IHeatable>(out var heatable))
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnIceBallSuccess", heatable.ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-
-            Log.PrintColor(Color.red, $"대상: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
             heatable.ChangeHeat(deltaHeat);
         }
     }
 
     /// <summary>
-    /// 패리 성공 시 열기 증가 처리
+    /// 패리 성공 시 자신의 열기를 증가시킵니다.
     /// </summary>
     public void IncreaseHeatOnParrySuccess()
     {
         SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnParrySuccess", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-            
         ChangeHeat(deltaHeat);
     }
 
     /// <summary>
-    /// 전투에서 나옴으로 인한 열기 감소 함수
+    /// 전투 종료 시 자신의 열기를 감소시킵니다.
     /// </summary>
     public void DecreaseHeatOnBattleOut()
     {
-        if(CurrentHeat <= 0)
-        {
-            return;
-        }
+        if(CurrentHeat <= 0) return;
 
         SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-            
         ChangeHeat(deltaHeat);
     }
 
     /// <summary>
-    /// 카운터 공격으로 인한 열기 상승 함수
+    /// 카운터 공격 시 대상의 열기를 증가시키고 자신의 열기를 초기화합니다.
     /// </summary>
     public void IncreaseHeatOnCounterAttack(Collider collider)
     {
@@ -274,19 +250,15 @@ public class PlayerHeat : HeatSystem, IDisposable
         {
             SourceMap sourceMap = p_sourceMapDataBase.GetSourceMap("OnCounterSuccess", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-
-            Log.PrintColor(Color.red, $"대상: {heatable.ActorType}, 열기 변화량: {deltaHeat}");
             heatable.ChangeHeat(deltaHeat);
         }
-
         SetHeat(0);
     }
 
     #region Event Handlers
     /// <summary>
-    /// 전투 상태 변경 이벤트 처리
+    /// 전투 상태 변경 시 호출됩니다.
     /// </summary>
-    /// <param name="isBattleState">전투 상태 여부</param>
     private void HandleBattleSateChanged(bool isBattleState)
     {
         _battleOutSequence?.Kill();
@@ -305,13 +277,10 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
 
     /// <summary>
-    /// 열기 변화 이벤트 처리
+    /// 열기 티어 변경 시 호출됩니다.
     /// </summary>
-    /// <param name="previousTier">이전 티어</param>
-    /// <param name="currentTier">현재 티어</param>
     private void HandleHeatChanged(int previousTier, int currentTier)
     {
-        // 열기 티어 변경 여부 확인
         if (currentTier > previousTier)
         {
             _events.TriggerTierUp(previousTier, currentTier);
@@ -323,52 +292,47 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
 
     /// <summary>
-    /// 근접 공격 시 열기 효과 처리
+    /// 근접 공격 피격 시 호출됩니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleAttackAffect(Collider collider)
     {
         IncreaseHeatOnAttack(collider);
     }
 
     /// <summary>
-    /// 차지 공격 시 열기 효과 처리
+    /// 차지 공격 피격 시 호출됩니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleChargeAttackAffect(Collider collider)
     {
         IncreaseHeatOnChargeAttack(collider);
     }
 
     /// <summary>
-    /// 패리 성공 시 열기 효과 처리
+    /// 패링 성공 시 호출됩니다.
     /// </summary>
-    /// <param name="collider">패리 대상 콜라이더</param>
     private void HandleParryAffect(Collider collider)
     {
         IncreaseHeatOnParrySuccess();
     }
 
     /// <summary>
-    /// 원거리 공격 시 열기 효과 처리
+    /// 원거리 공격 피격 시 호출됩니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleRangedAttackAffect(Collider collider)
     {
         DecreaseHeatOnRangeAttack(collider);
     }
 
     /// <summary>
-    /// 카운터 공격 시 열기 효과 처리
+    /// 카운터 공격 피격 시 호출됩니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     private void HandleSecondCounterAttackAffect(Collider collider)
     {
         IncreaseHeatOnCounterAttack(collider);
     }
 
     /// <summary>
-    /// 오버 히트 종료 시 
+    /// 과열 종료 시 호출됩니다.
     /// </summary>
     private void HandleOverHeatFinish()
     {
@@ -376,4 +340,3 @@ public class PlayerHeat : HeatSystem, IDisposable
     }
     #endregion
 }
-

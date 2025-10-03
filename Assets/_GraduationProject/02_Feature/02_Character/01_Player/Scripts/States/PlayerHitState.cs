@@ -2,17 +2,20 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
-
+/// <summary>
+/// í”Œë ˆì´ì–´ì˜ í”¼ê²© ìƒíƒœì…ë‹ˆë‹¤.
+/// </summary>
 public class PlayerHitState : BaseState<Player>
 {
-    private float _hitDuration = 0.1f; // ÇÇ°İ »óÅÂ Áö¼Ó ½Ã°£
-    private float _hitTimer;
+    private float _hitDuration = 0.1f; // í”¼ê²© ê²½ì§ ì‹œê°„
+    private float _hitTimer; // í”¼ê²© ì‹œê°„ íƒ€ì´ë¨¸
 
     public PlayerHitState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
+        // í”¼ê²© ì¢…ë¥˜ì— ë”°ë¼ ë‹¤ë¥¸ ì• ë‹ˆë©”ì´ì…˜ ë° íš¨ê³¼ ì¬ìƒ
         if (p_context.Stats.IsHeavyHit)
         {
             p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
@@ -36,26 +39,22 @@ public class PlayerHitState : BaseState<Player>
         _hitDuration = p_context.Health.StiffnessDuration;
         _hitTimer = 0f;
 
-
-        // ÇÇ°İ ½Ã ÀÌµ¿ Á¤Áö
-        p_context.Movement?.Move(Vector3.zero, 0f, 0f);
+        p_context.Movement?.Move(Vector3.zero, 0f, 0f); // í”¼ê²© ì¤‘ ì´ë™ ì •ì§€
         p_context.Events.TriggerBattleStateChanged(true);
     }
-
 
     public override void OnUpdate()
     {
         _hitTimer += Time.deltaTime;
 
-        // ÇÇ°İ »óÅÂ¿¡¼­µµ Áß·Â Àû¿ë
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
-        // ÇÇ°İ Áö¼Ó ½Ã°£ÀÌ ³¡³ª¸é Idle »óÅÂ·Î ÀüÈ¯
+        // ê²½ì§ ì‹œê°„ì´ ì§€ë‚˜ë©´ ìƒíƒœ ì „í™˜
         if (_hitTimer >= _hitDuration)
         {
             if (p_context.Stats.IsDefending)
             {
-                p_stateMachine.RevertToPreviousState();
+                p_stateMachine.RevertToPreviousState(); // ë°©ì–´ ì¤‘ì´ì—ˆìœ¼ë©´ ì´ì „ ìƒíƒœë¡œ ë³µê·€
             }
             else
             {
@@ -67,9 +66,7 @@ public class PlayerHitState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsHit", false);
-
         p_context.Stats.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
     }
 }
-

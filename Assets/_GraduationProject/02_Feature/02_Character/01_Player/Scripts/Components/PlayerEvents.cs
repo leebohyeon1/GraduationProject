@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어의 피드백(이펙트, 사운드 등) 타입을 정의하는 열거형입니다.
+/// </summary>
 public enum PlayerFeedbackType
 {
     Move_FB, MoveStop_FB, DodgeStart_FB,
@@ -39,79 +42,72 @@ public enum PlayerFeedbackType
     Tier1_FB, Tier2_FB, Tier3_FB, OverHeat_FB
 }
 
+/// <summary>
+/// 플레이어의 공격 타입을 정의하는 열거형입니다.
+/// </summary>
 public enum PlayerAttackType
 {
-    Attack = 0,
-    ChargeAttack = 1,
-    CounterAttack = 2,
+    Attack = 0, // 일반 공격
+    ChargeAttack = 1, // 차지 공격
+    CounterAttack = 2, // 카운터 공격
 }
 
+/// <summary>
+/// 플레이어의 피격 타입을 정의하는 열거형입니다.
+/// </summary>
 public enum PlayerDamagedType
 {
-    Normal = 0,
-    Strong = 1,
-    Defend = 2
+    Normal = 0, // 일반 피격
+    Strong = 1, // 강한 피격
+    Defend = 2 // 방어 중 피격
 }
 
+/// <summary>
+/// 플레이어의 모든 이벤트를 관리하고 피드백을 재생하는 클래스입니다.
+/// </summary>
 public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 {
     #region EffectPoint
-    /// <summary>
-    /// 근접 공격 효과 발생 위치
-    /// </summary>
-    [SerializeField] private Transform _firstAttackStartEffectPoint;
-    [SerializeField] private Transform _secondAttackStartEffectPoint;
-    [SerializeField] private Transform _thirdAttackStartEffectPoint;
-
-    /// <summary>
-    /// 차지 효과 발생 위치
-    /// </summary>
-    [SerializeField] private Transform _chargeEffectPoint;
-    [SerializeField] private Transform _chargeAttackPoint;
-
-    /// <summary>
-    /// 원거리 공격 효과 발생 위치
-    /// </summary>
-    [SerializeField] private Transform _rangedAttackPoint;
-
-    /// <summary>
-    /// 카운터 공격 효과 발생 위치
-    /// </summary>
-    [SerializeField] private Transform _counterAttackPoint;
-
+    [Header("Effect Points")]
+    [SerializeField] private Transform _firstAttackStartEffectPoint; // 첫 번째 공격 이펙트 위치
+    [SerializeField] private Transform _secondAttackStartEffectPoint; // 두 번째 공격 이펙트 위치
+    [SerializeField] private Transform _thirdAttackStartEffectPoint; // 세 번째 공격 이펙트 위치
+    [SerializeField] private Transform _chargeEffectPoint; // 차지 이펙트 위치
+    [SerializeField] private Transform _chargeAttackPoint; // 차지 공격 이펙트 위치
+    [SerializeField] private Transform _rangedAttackPoint; // 원거리 공격 이펙트 위치
+    [SerializeField] private Transform _counterAttackPoint; // 카운터 공격 이펙트 위치
     #endregion
 
     #region Events
-    public event Action<bool> OnBattleStateChaged;
+    public event Action<bool> OnBattleStateChaged; // 전투 상태 변경 이벤트
 
-    public event Action OnDodgeFinish;
+    public event Action OnDodgeFinish; // 회피 종료 이벤트
 
-    public event Action OnAttackStart, OnAttackPerform;
-    public event Action<Collider> OnAttackAffect;
-    public event Action OnAttackFinish;
+    public event Action OnAttackStart, OnAttackPerform; // 공격 시작, 공격 수행 이벤트
+    public event Action<Collider> OnAttackAffect; // 공격 피격 이벤트
+    public event Action OnAttackFinish; // 공격 종료 이벤트
 
-    public event Action<Collider> OnChargeAttackAffect;
+    public event Action<Collider> OnChargeAttackAffect; // 차지 공격 피격 이벤트
 
-    public event Action<Transform> OnRangedAttackStart;
-    public event Action<Collider> OnRangedAttackAffect;
-    public event Action OnRangedAttackFinish;
+    public event Action<Transform> OnRangedAttackStart; // 원거리 공격 시작 이벤트
+    public event Action<Collider> OnRangedAttackAffect; // 원거리 공격 피격 이벤트
+    public event Action OnRangedAttackFinish; // 원거리 공격 종료 이벤트
 
-    public event Action OnParryPerform;
-    public event Action<Collider> OnParryAffect;
-    public event Action<Collider> OnFirstCounterAttackAffect;
-    public event Action<Collider> OnSecondCounterAttackAffect;
+    public event Action OnParryPerform; // 패링 수행 이벤트
+    public event Action<Collider> OnParryAffect; // 패링 성공 이벤트
+    public event Action<Collider> OnFirstCounterAttackAffect; // 첫 번째 카운터 공격 피격 이벤트
+    public event Action<Collider> OnSecondCounterAttackAffect; // 두 번째 카운터 공격 피격 이벤트
 
-    public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
-    public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish;
+    public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart; // 티어 상승, 과열 시작 이벤트
+    public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish; // 티어 하락, 과열 종료 이벤트
 
-    public event Action<int> OnOverHeat;
+    public event Action<int> OnOverHeat; // 과열 상태 이벤트
     #endregion
 
     #region EventHandler
     /// <summary>
-    /// 전투 상태 변경 시 호출
+    /// 전투 상태 변경 이벤트를 발생시킵니다.
     /// </summary>
-    /// <param name="isBattleState">전투 상태 여부</param>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
         OnBattleStateChaged?.Invoke(isBattleState);
@@ -119,8 +115,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     #region Movement
     /// <summary>
-    /// 이동 중 발자국 효과 재생
-    /// (애니메이션 트리거)
+    /// 이동 중 발자국 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerMove()
     {
@@ -128,8 +123,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 이동 멈춤 효과 재생
-    /// (애니메이션 트리거)
+    /// 이동 멈춤 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerMoveStop()
     {
@@ -137,7 +131,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 회피 시작 시 효과 재생
+    /// 회피 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerDodgeStart()
     {
@@ -145,9 +139,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// Todo: 회피가 순간이동으로 바뀌면서 이것도 바뀔 듯
-    /// 회피 완료 시 효과 재생
-    /// (애니메이션 트리거)
+    /// 회피 종료 이벤트를 발생시키고 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerDodgeFinish()
     {
@@ -156,7 +148,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 착지 했을 때 효과 재생
+    /// 착지 피드백을 재생합니다.
     /// </summary>
     public void TriggerLanding()
     {
@@ -165,32 +157,22 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #endregion
 
     #region Damaged
-
     /// <summary>
-    /// 피격 효과 재생
+    /// 피격 타입에 맞는 피드백을 재생합니다.
     /// </summary>
-    /// <param name="damagedType">피격 효과</param>
     public void TriggerTakeDamge(PlayerDamagedType damagedType)
     {
         switch (damagedType)
         {
-            case PlayerDamagedType.Normal:
-                PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB, transform.position);
-                break;
-            case PlayerDamagedType.Strong:
-                PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB, transform.position);
-                break;
-            case PlayerDamagedType.Defend:
-                PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB, transform.position);
-                break;
+            case PlayerDamagedType.Normal: PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB, transform.position); break;
+            case PlayerDamagedType.Strong: PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB, transform.position); break;
+            case PlayerDamagedType.Defend: PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB, transform.position); break;
         }
     }
-
     #endregion
 
     /// <summary>
-    /// 근접 공격 수행 시 효과 재생
-    /// (애니메이션 트리거)
+    /// 공격 수행 이벤트를 발생시킵니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerAttackPerform()
     {
@@ -198,71 +180,52 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 근접 공격 완료 시 효과 재생
-    /// (애니메이션 트리거)
+    /// 공격 종료 이벤트를 발생시키고, 공격 타입에 맞는 종료 처리를 합니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerAttackFinish(int type)
     {
         OnAttackFinish?.Invoke();
 
-        switch(type)
+        switch((PlayerAttackType)type)
         {
-            case (int)PlayerAttackType.Attack:
-
-                break;
-            case (int)PlayerAttackType.ChargeAttack:
-                TriggerChargeAttackFinish();
-                break;
-            case (int)PlayerAttackType.CounterAttack:
-                TriggerCounterAttackFinish();
-                break;
-        }    
-
+            case PlayerAttackType.ChargeAttack: TriggerChargeAttackFinish(); break;
+            case PlayerAttackType.CounterAttack: TriggerCounterAttackFinish(); break;
+        }
     }
 
     #region Attack
     /// <summary>
-    /// 첫 번째 근접 공격 시작 시 효과 재생
+    /// 첫 번째 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerFirstAttackStart()
     {
-        if (_firstAttackStartEffectPoint != null)
-        {
-            OnAttackStart?.Invoke();
-            Log.PrintWarning("첫 번째 공격 효과 위치 설정");
-            PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
-        }
+        if (_firstAttackStartEffectPoint == null) return;
+        OnAttackStart?.Invoke();
+        PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
     }
 
     /// <summary>
-    /// 두 번째 근접 공격 시작 시 효과 재생
+    /// 두 번째 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerSecondAttackStart()
     {
-        if (_secondAttackStartEffectPoint != null)
-        {
-            OnAttackStart?.Invoke();
-            Log.PrintWarning("두 번째 공격 효과 위치 설정");
-            PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, _secondAttackStartEffectPoint.position);
-        }
+        if (_secondAttackStartEffectPoint == null) return;
+        OnAttackStart?.Invoke();
+        PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, _secondAttackStartEffectPoint.position);
     }
 
     /// <summary>
-    /// 세 번째 근접 공격 시작 시 효과 재생
+    /// 세 번째 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerThirdAttackStart()
     {
-        if (_thirdAttackStartEffectPoint != null)
-        {
-            Log.PrintWarning("세 번째 공격 효과 위치 설정");
-            PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
-        }
+        if (_thirdAttackStartEffectPoint == null) return;
+        PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
     }
 
     /// <summary>
-    /// 근접 공격 타격 시 효과 재생
+    /// 근접 공격 피격 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     public void TriggerAttackAffect(Collider collider)
     {
         OnAttackAffect?.Invoke(collider);
@@ -272,20 +235,17 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     #region ChargeAttack
     /// <summary>
-    /// 차지 시작 시 효과 재생
+    /// 차지 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerChargeStart()
     {
-        if (_chargeEffectPoint != null)
-        {
-            OnAttackStart?.Invoke();
-            Log.PrintWarning("차지 효과 위치 설정");
-            PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
-        }
+        if (_chargeEffectPoint == null) return;
+        OnAttackStart?.Invoke();
+        PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
     }
 
     /// <summary>
-    /// 차지 취소 되었을 때 효과 재생
+    /// 차지 취소 피드백을 재생합니다.
     /// </summary>
     public void TriggerChargeCancel()
     {
@@ -293,28 +253,25 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 차지 완료 시 효과 재생
+    /// 차지 완료 피드백을 재생합니다.
     /// </summary>
     public void TriggerChargeFinish()
     {
-        if (_chargeEffectPoint != null)
-        {
-            Log.PrintWarning("차지 효과 위치 설정");
-            PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
-        }
+        if (_chargeEffectPoint == null) return;
+        PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
     }
 
     /// <summary>
-    /// 차지 공격 시작 시 호출
+    /// 차지 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerChargeAttackStart()
     {
         OnAttackStart?.Invoke();
         PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB, _chargeAttackPoint.position);
-    }    
+    }
 
     /// <summary>
-    /// 차지 공격 종료 시 호출
+    /// 차지 공격 종료 피드백을 재생합니다.
     /// </summary>
     public void TriggerChargeAttackFinish()
     {
@@ -322,33 +279,24 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 차지 공격 타격 시 효과 재생
+    /// 차지 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
-    /// <param name="tier">현재 티어</param>
     public void TriggerChargeAttackAffect(Collider collider, int tier)
     {
         OnChargeAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
-            case 1:
-                PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackHit_FB, collider.transform.position);
-                break;
-            case 2:
-                PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackHit_FB, collider.transform.position);
-                break;
-            case 3:
-                PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackHit_FB, collider.transform.position);
-                break;
+            case 1: PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackHit_FB, collider.transform.position); break;
+            case 2: PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackHit_FB, collider.transform.position); break;
+            case 3: PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackHit_FB, collider.transform.position); break;
         }
     }
     #endregion
 
     #region RangedAttack
-
     /// <summary>
-    /// 원거리 공격 차지 시작 시 효과 재생
+    /// 원거리 공격 차지 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerRangedChargeStart()
     {
@@ -359,7 +307,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 원거리 공격 차지 효과 재생
+    /// 원거리 공격 차지 중 피드백을 재생합니다.
     /// </summary>
     public void TriggerRangedCharging()
     {
@@ -367,7 +315,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 원거리 공격 차지 취소 시 효과 재생
+    /// 원거리 공격 차지 취소 피드백을 재생합니다.
     /// </summary>
     public void TriggerRangedChargeCancel()
     {
@@ -378,7 +326,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 원거리 공격 차지 완료 시 효과 재생
+    /// 원거리 공격 차지 완료 피드백을 재생합니다.
     /// </summary>
     public void TriggerRangedChargeFinish()
     {
@@ -389,23 +337,20 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 원거리 공격 시작 시 효과 재생
+    /// 원거리 공격 시작 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
     public void TriggerRangedAttackStart()
     {
         OnRangedAttackStart?.Invoke(_rangedAttackPoint);
-
         PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackPoint.position);
     }
 
     /// <summary>
-    /// 원거리 공격 타격 시 효과 재생
+    /// 원거리 공격 피격 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
     public void TriggerRangedAttackAffect(Collider collider)
     {
         OnRangedAttackAffect?.Invoke(collider);
-
         if (collider != null)
         {
             PlayFeedback(PlayerFeedbackType.RangeAttackHit_FB, collider.transform.position);
@@ -413,7 +358,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 원거리 공격 완료 시 효과 재생
+    /// 원거리 공격 종료 이벤트를 발생시킵니다.
     /// </summary>
     public void TriggerRangedAttackFinish()
     {
@@ -422,10 +367,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #endregion
 
     #region Parry
-
     /// <summary>
-    /// 패리 시작 시 효과 재생
-    /// (애니메이션 트리거)
+    /// 패링 수행 이벤트를 발생시키고 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
     public void TriggerParryPerform()
     {
@@ -434,13 +377,11 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 패리 성공 시 효과 재생
+    /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">패리 대상 콜라이더</param>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-
         if (collider != null)
         {
             PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
@@ -449,9 +390,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #endregion
 
     #region CounterAttack
-
     /// <summary>
-    /// 첫번째 카운터 공격 시작 시 효과 재생
+    /// 첫 번째 카운터 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerFirstCounterAttackStart()
     {
@@ -459,30 +399,22 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 첫 번째 카운터 공격 타격 시 효과 재생
+    /// 첫 번째 카운터 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
-    /// <param name="tier">현재 티어</param>
     public void TriggerFirstCounterAttackAffect(Collider collider, int tier)
     {
         OnFirstCounterAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
-            case 1:
-                PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position);
-                break;
-            case 2:
-                PlayFeedback(PlayerFeedbackType.Tier2CounterAttackFirstHit_FB, collider.transform.position);
-                break;
-            case 3:
-                PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, collider.transform.position);
-                break;
+            case 1: PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position); break;
+            case 2: PlayFeedback(PlayerFeedbackType.Tier2CounterAttackFirstHit_FB, collider.transform.position); break;
+            case 3: PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, collider.transform.position); break;
         }
     }
 
     /// <summary>
-    /// 두번째 카운터 공격 시작 시 효과 재생
+    /// 두 번째 카운터 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerSecondCounterAttackStart()
     {
@@ -490,30 +422,22 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     /// <summary>
-    /// 두 번째 카운터 공격 타격 시 효과 재생
+    /// 두 번째 카운터 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    /// <param name="collider">타격 대상 콜라이더</param>
-    /// <param name="tier">현재 티어</param>
     public void TriggerSecondCounterAttackAffect(Collider collider, int tier)
     {
         OnSecondCounterAttackAffect?.Invoke(collider);
 
         switch (tier)
         {
-            case 1:
-                PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position);
-                break;
-            case 2:
-                PlayFeedback(PlayerFeedbackType.Tier2CounterAttackSecondHit_FB, collider.transform.position);
-                break;
-            case 3:
-                PlayFeedback(PlayerFeedbackType.Tier3CounterAttackSecondHit_FB, collider.transform.position);
-                break;
+            case 1: PlayFeedback(PlayerFeedbackType.Tier1CounterAttackSecondHit_FB, collider.transform.position); break;
+            case 2: PlayFeedback(PlayerFeedbackType.Tier2CounterAttackSecondHit_FB, collider.transform.position); break;
+            case 3: PlayFeedback(PlayerFeedbackType.Tier3CounterAttackSecondHit_FB, collider.transform.position); break;
         }
     }
     
     /// <summary>
-    /// 카운터 공격 종료 시 효과 재생
+    /// 카운터 공격 종료 피드백을 재생합니다.
     /// </summary>
     public void TriggerCounterAttackFinish()
     {
@@ -523,96 +447,55 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     #region Heat
     /// <summary>
-    /// 티어 상승 시 효과 재생
+    /// 티어 상승 시 티어별 피드백을 재생합니다.
     /// </summary>
-    /// <param name="previousTier">이전 티어</param>
-    /// <param name="currentTier">현재 티어</param>
     public void TriggerTierUp(int previousTier, int currentTier)
     {
         for(int i = previousTier + 1; i <= currentTier; i++)
         {
             switch (i)
             {
-                case 1:
-                    OnTier1Up?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position);
-                    break;
-                case 2:
-                    OnTier2Up?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position);
-                    break;
-                case 3:
-                    OnTier3Up?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position);
-                    break;
-                case 4:
-                    OnOverHeatStart?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position);
-                    break;
+                case 1: OnTier1Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position); break;
+                case 2: OnTier2Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position); break;
+                case 3: OnTier3Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position); break;
+                case 4: OnOverHeatStart?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position); break;
             }
         }
     }
 
     /// <summary>
-    /// 티어 하락 시 효과 재생
+    /// 티어 하락 시 티어별 피드백을 재생합니다.
     /// </summary>
-    /// <param name="previousTier">이전 티어</param>
-    /// <param name="currentTier">현재 티어</param>
     public void TriggerTierDown(int previousTier, int currentTier)
     {
         for (int i = previousTier; i > currentTier; i--)
         {
-            // 반복문의 현재 값 'i'는 우리가 거쳐 내려오는 각 티어를 의미합니다.
             switch (i)
             {
-                // Tier 1에서 0으로 내려올 때
-                case 1:
-                    OnTier1Down?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position);
-                    break;
-                // Tier 2에서 1로 내려올 때
-                case 2:
-                    OnTier2Down?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position);
-                    break;
-                // Tier 3에서 2로 내려올 때
-                case 3:
-                    OnTier3Down?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position);
-                    break;
-                // OverHeat(Tier 4로 가정)에서 3으로 내려올 때
-                case 4:
-                    OnOverHeatFinish?.Invoke();
-                    PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position);
-                    break;
+                case 1: OnTier1Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position); break;
+                case 2: OnTier2Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position); break;
+                case 3: OnTier3Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position); break;
+                case 4: OnOverHeatFinish?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position); break;
             }
         }
     }
 
     /// <summary>
-    /// 티어 효과 재생
+    /// 현재 티어에 맞는 지속 효과 피드백을 재생하고, 과열 상태일 경우 이벤트를 발생시킵니다.
     /// </summary>
-    /// <param name="tier">현재 티어</param>
     public void TriggerTier(int tier, int overHeatDamage)
     {
         switch (tier)
         {
-            case 1:
-                PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position);
-                break;
-            case 2:
-                PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position);
-                break;
-            case 3:
-                PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position);
-                break;
-            case 4:
+            case 1: PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position); break;
+            case 2: PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position); break;
+            case 3: PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position); break;
+            case 4: 
                 PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
                 OnOverHeat?.Invoke(overHeatDamage);
                 break;
         }
     }
-
     #endregion
 
     #endregion
