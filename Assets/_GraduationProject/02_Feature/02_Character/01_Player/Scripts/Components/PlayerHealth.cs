@@ -1,11 +1,13 @@
 ﻿using BH_Lib.Log;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
-public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
+public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, IDisposable
 {
     private PlayerStats _stats;
+    private PlayerEvents _events;
 
     /// <summary>
     /// 경직도 관련
@@ -32,9 +34,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
     public bool IsInvincible => _stats.IsInvincible;
     #endregion
 
-    public void Initialize(PlayerStats data)
+    public void Initialize(PlayerStats data, PlayerEvents evets)
     {
         _stats = data;
+        _events = evets;
+
+        _events.OnOverHeat += HandleOverHeat;
+    }
+
+    public void Dispose()
+    {
+        _events.OnOverHeat -= HandleOverHeat;
     }
 
     public void ChangeHealth(int amount)
@@ -127,7 +137,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
     private void LightStagger()
     {
         _stiffnessDuration = _stats.CombatData.LightStaggerDuration;
-        _stats.SetDamaged(PlayerDamagedType.Normal);
+        _stats.SetDamagedType(PlayerDamagedType.Normal);
     }
 
     /// <summary>
@@ -136,7 +146,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
     private void HeavyStagger()
     {
         _stiffnessDuration = _stats.CombatData.HeavyStaggerDuration;
-        _stats.SetDamaged(PlayerDamagedType.Strong);
+        _stats.SetDamagedType(PlayerDamagedType.Strong);
     }
 
     public void Heal(int healAmount)
@@ -159,27 +169,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness
         _stats.IsInvincible = isInvisible;
     }
 
-}
-
-public class PlayerHealthManager : IDisposable
-{
-    private PlayerHealth _health;
-    private PlayerEvents _events;
-    private bool _disposed = false; // 중복 Dispose 방지
-
-    public PlayerHealthManager(PlayerHealth health, PlayerEvents events)
+    private void HandleOverHeat(int damage)
     {
-        _health = health; 
-        _events = events;
-    }
-
-    public void Dispose()
-    {
-        if(_disposed)
+        if(_stats.IsOverHeat)
         {
-            return;
+            TakeDamage(damage);
         }
-
-        _disposed = true;
     }
 }

@@ -14,7 +14,7 @@ using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요�
 #endif
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))
 ,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg))]
-public class Enemy : CharacterBase
+public class Enemy : MonoBehaviour
 {
     public AiController _aiController{get;private set;}
     public Animator animator{ get;  private set; }
@@ -49,10 +49,8 @@ public class Enemy : CharacterBase
     public GroupAi groupAi{get;private set;}
     [SerializeField] private float _normalSpeed = 2f;
     public float NormalSpeed => _normalSpeed;
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
-
         // TODO: 적 데이터에서 최대 체력 가져오기
         player = GameObject.FindFirstObjectByType<Player>();
         rb = GetComponent<Rigidbody>();
@@ -80,7 +78,7 @@ public class Enemy : CharacterBase
         }
         Movement = new EnemyMovement(this);
         PatrolOriginPoint = transform.position;
-        groupAi = FindObjectOfType<GroupAi>();
+        groupAi = FindFirstObjectByType<GroupAi>();
         if (groupAi == null)
         {
             GameObject groupObj = new GameObject("EnemyGroup");
