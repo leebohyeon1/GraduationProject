@@ -5,10 +5,11 @@ using System;
 using UnityEngine;
 
 
-public class PlayerCombat : MonoBehaviour
+public class PlayerCombat : MonoBehaviour, IDisposable
 {
     #region Private Fields
     private PlayerStats _stats;
+    private PlayerEvents _events;
     private PlayerCombatData _combatData => _stats.CombatData;
     /// <summary>
     /// 전투 중심점의 위치
@@ -47,10 +48,24 @@ public class PlayerCombat : MonoBehaviour
     public bool IsBattleState => _isBattleState;
     #endregion
 
-    public void Initialize(PlayerStats combatData)
+    public void Initialize(PlayerStats combatData, PlayerEvents events)
     {
         _isDrawGizmos = true;
         _stats = combatData;
+        _events = events;
+
+        _events.OnRangedAttackStart += HandleRangedAttack;
+        _events.OnBattleStateChaged += HandleBattleStateChanged;
+        _events.OnAttackStart += SetupCombatCenter;
+        _events.OnParryPerform += SetupCombatCenter;
+    }
+
+    public void Dispose()
+    {
+        _events.OnRangedAttackStart -= HandleRangedAttack;
+        _events.OnBattleStateChaged -= HandleBattleStateChanged;
+        _events.OnAttackStart -= SetupCombatCenter;
+        _events.OnParryPerform -= SetupCombatCenter;
     }
 
     /// <summary>
@@ -292,6 +307,24 @@ public class PlayerCombat : MonoBehaviour
 
     #endregion
 
+    private void HandleRangedAttack(Transform firePoint)
+    {
+        FireProjectile(firePoint);
+    }
+
+    private void HandleBattleStateChanged(bool isBattleState)
+    {
+        if (isBattleState)
+        {
+            SetupBattleTime();
+            SetBattleState(isBattleState);
+        }
+        else
+        {
+            SetBattleState(isBattleState);
+        }
+    }
+
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
@@ -318,51 +351,4 @@ public class PlayerCombat : MonoBehaviour
         Gizmos.matrix = Matrix4x4.identity;
     }
 #endif
-}
-
-public class PlayerCombatManager : IDisposable
-{
-    private PlayerCombat _combat;
-    private PlayerEvents _events;
-    private bool _disposed = false;
-
-    public PlayerCombatManager(PlayerCombat combat, PlayerEvents events)
-    {
-        _combat = combat;
-        _events = events;
-
-        _events.OnRangedAttackStart += HandleRangedAttack;
-        _events.OnBattleStateChaged += HandleBattleStateChanged;
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        _events.OnRangedAttackStart -= HandleRangedAttack;
-        _events.OnBattleStateChaged -= HandleBattleStateChanged;
-        
-        _disposed = true;
-    }
-
-    private void HandleRangedAttack(Transform firePoint)
-    {
-        _combat.FireProjectile(firePoint);
-    }
-
-    private void HandleBattleStateChanged(bool isBattleState)
-    {
-        if (isBattleState)
-        {
-            _combat.SetupBattleTime();
-            _combat.SetBattleState(isBattleState);
-        }
-        else
-        {
-            _combat.SetBattleState(isBattleState);
-        }
-    }
 }

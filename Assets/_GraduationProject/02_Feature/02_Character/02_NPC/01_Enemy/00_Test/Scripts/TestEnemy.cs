@@ -3,7 +3,7 @@ using System.Collections;
 using BH_Lib.Log;
 using UnityEngine;
 
-public class TestEnemy : CharacterBase, IDamageable
+public class TestEnemy : MonoBehaviour, IDamageable
 {
     private MeshRenderer _meshRenderer;
 

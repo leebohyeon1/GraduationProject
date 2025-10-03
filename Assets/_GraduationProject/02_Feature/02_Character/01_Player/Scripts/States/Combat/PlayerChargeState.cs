@@ -9,14 +9,14 @@ public class PlayerChargeState : BaseState<Player>
 
     private float _chargeTimer;
     private float _chargeGuage;
-    private SourceMap chargeSourceMap;
+    private SourceMap _chargeSourceMap;
 
     public PlayerChargeState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        p_context.Heat.OnHeatChanged += HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged += HandleSetupChargeSourceMap;
 
         p_context.Animator.SetBool("IsCharge", true);
         SetupChargeSourceMap();
@@ -35,17 +35,18 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
-        if (_chargeTimer > chargeSourceMap.TickSecond)
+
+        if (_chargeTimer > _chargeSourceMap.TickSecond)
         {
             _chargeTimer = 0;
 
-            _chargeGuage += (int)chargeSourceMap.HeatChangeType * chargeSourceMap.DeltaHeat;
+            _chargeGuage += (int)_chargeSourceMap.HeatChangeType * _chargeSourceMap.DeltaHeat;
             if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
             {
                 MinChargeFinish();
             }
                
-            p_context.Heat.IncreaseHeatOnCharge(chargeSourceMap, _chargeGuage);
+            p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
         }
 
         if (!p_context.Input.AttackHeldInput)
@@ -79,7 +80,7 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Heat.OnHeatChanged -= HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
         p_context.Animator.SetBool("IsCharge", false);
 
 
@@ -89,9 +90,9 @@ public class PlayerChargeState : BaseState<Player>
     /// <summary>
     /// 열기 티어가 바뀔 때마다 차징 소스맵 변경
     /// </summary>
-    /// <param name="previousHeat">이전 열기</param>
-    /// <param name="currentHeat">현재 열기</param>
-    private void HandleSetupChargeSourceMap(int previousHeat, int currentHeat)
+    /// <param name="previousTier">이전 열기</param>
+    /// <param name="currentTier">현재 열기</param>
+    private void HandleSetupChargeSourceMap(int previousTier, int currentTier)
     {
         SetupChargeSourceMap();
     }
@@ -101,7 +102,7 @@ public class PlayerChargeState : BaseState<Player>
     /// </summary>
     private void SetupChargeSourceMap()
     {
-        chargeSourceMap = p_context.DataBase.SourceMapData.
+        _chargeSourceMap = p_context.DataBase.SourceMapData.
             GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
     }
 

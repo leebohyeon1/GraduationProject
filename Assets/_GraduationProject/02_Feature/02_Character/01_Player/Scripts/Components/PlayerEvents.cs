@@ -104,7 +104,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart;
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish;
 
-    public event Action OnOverHeat;
+    public event Action<int> OnOverHeat;
     #endregion
 
     #region EventHandler
@@ -593,7 +593,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// 티어 효과 재생
     /// </summary>
     /// <param name="tier">현재 티어</param>
-    public void TriggerTier(int tier)
+    public void TriggerTier(int tier, int overHeatDamage)
     {
         switch (tier)
         {
@@ -608,7 +608,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
                 break;
             case 4:
                 PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
-                OnOverHeat?.Invoke();
+                OnOverHeat?.Invoke(overHeatDamage);
                 break;
         }
     }
