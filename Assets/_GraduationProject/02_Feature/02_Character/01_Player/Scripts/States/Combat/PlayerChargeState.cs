@@ -1,15 +1,17 @@
-﻿using BH_Lib.FSM;
+using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
-
+/// <summary>
+/// 플레이어의 차지 상태입니다.
+/// </summary>
 public class PlayerChargeState : BaseState<Player>
 {
-    private bool _isCharged = false;
+    private bool _isCharged = false; // 최소 차지 완료 여부
 
-    private float _chargeTimer;
-    private float _chargeGuage;
-    private SourceMap _chargeSourceMap;
+    private float _chargeTimer; // 차지 시간 타이머
+    private float _chargeGuage; // 현재 차지 게이지
+    private SourceMap _chargeSourceMap; // 차지 관련 소스맵 데이터
 
     public PlayerChargeState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -29,18 +31,19 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
-
     public override void OnUpdate()
     {
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
         _chargeTimer += Time.deltaTime;
 
+        // 일정 시간마다 차지 게이지 및 열기 증가
         if (_chargeTimer > _chargeSourceMap.TickSecond)
         {
             _chargeTimer = 0;
-
             _chargeGuage += (int)_chargeSourceMap.HeatChangeType * _chargeSourceMap.DeltaHeat;
+            
+            // 최소 차지량 도달 시
             if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
             {
                 MinChargeFinish();
@@ -49,18 +52,17 @@ public class PlayerChargeState : BaseState<Player>
             p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
         }
 
+        // 입력에 따른 상태 전환
         if (!p_context.Input.AttackHeldInput)
         {
             if (_isCharged)
             {
                 p_stateMachine.ChangeState<PlayerChargeAttackState>();
-                return;
             }
             else
             {
                 p_context.Events.TriggerChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
-                return;
             }
         }
         else if(p_context.Input.DodgeInput)
@@ -69,45 +71,38 @@ public class PlayerChargeState : BaseState<Player>
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
-        // 에임 방향으로 회전
+        // 조준 방향으로 회전
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var moveInput = p_context.Input.MoveInput;
         var mousePosition = p_context.Input.MousePosition;
         p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
     }
 
-
-
     public override void OnExit()
     {
         p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
         p_context.Animator.SetBool("IsCharge", false);
-
-
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
     /// <summary>
-    /// 열기 티어가 바뀔 때마다 차징 소스맵 변경
+    /// 열기 티어 변경 시 차지 소스맵을 다시 설정합니다.
     /// </summary>
-    /// <param name="previousTier">이전 열기</param>
-    /// <param name="currentTier">현재 열기</param>
     private void HandleSetupChargeSourceMap(int previousTier, int currentTier)
     {
         SetupChargeSourceMap();
     }
 
     /// <summary>
-    /// 차지 소스맵 등록
+    /// 현재 티어에 맞는 차지 소스맵을 설정합니다.
     /// </summary>
     private void SetupChargeSourceMap()
     {
-        _chargeSourceMap = p_context.DataBase.SourceMapData.
-            GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
+        _chargeSourceMap = p_context.DataBase.SourceMapData.GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
     }
 
     /// <summary>
-    /// 최소 차지가 완료 함수
+    /// 최소 차지 조건을 만족했을 때 호출됩니다.
     /// </summary>
     private void MinChargeFinish()
     {
@@ -118,4 +113,3 @@ public class PlayerChargeState : BaseState<Player>
         }
     }
 }
-

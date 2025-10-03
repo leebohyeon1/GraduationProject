@@ -2,12 +2,13 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
 
-
+/// <summary>
+/// í”Œë ˆì´ì–´ì˜ ì›ê±°ë¦¬ ê³µê²© ì°¨ì§€ ìƒíƒœì…ë‹ˆë‹¤.
+/// </summary>
 public class PlayerRangedChargeState : BaseState<Player>
 {
-    private bool _isCharged = false;
-
-    private float _chargeTimer;
+    private bool _isCharged = false; // ì°¨ì§€ ì™„ë£Œ ì—¬ë¶€
+    private float _chargeTimer; // ì°¨ì§€ ì‹œê°„ íƒ€ì´ë¨¸
 
     public PlayerRangedChargeState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -16,6 +17,7 @@ public class PlayerRangedChargeState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", true);
         _chargeTimer = 0f;
+        _isCharged = false;
 
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerRangedChargeStart();
@@ -29,22 +31,20 @@ public class PlayerRangedChargeState : BaseState<Player>
         if (!_isCharged && _chargeTimer > p_context.Stats.CombatData.RangedAttackData.ChargeTime)
         {
             p_context.Events.TriggerRangedChargeFinish();
-
             _isCharged = true;
         }
 
+        // ì…ë ¥ì— ë”°ë¥¸ ìƒíƒœ ì „í™˜
         if (!p_context.Input.RangedAttackInput)
         {
             if (_isCharged)
             {
                 p_stateMachine.ChangeState<PlayerRangedAttackState>();
-                return;
             }
             else
             {
                 p_context.Events.TriggerRangedChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
-                return;
             }
         }
         else if (p_context.Input.DodgeInput)
@@ -53,21 +53,16 @@ public class PlayerRangedChargeState : BaseState<Player>
             p_stateMachine.ChangeState<PlayerDodgeState>();
         }
 
-        // ¿¡ÀÓ ¹æÇâÀ¸·Î È¸Àü
+        // ì¡°ì¤€ ë°©í–¥ìœ¼ë¡œ íšŒì „
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var moveInput = p_context.Input.MoveInput;
         var mousePosition = p_context.Input.MousePosition;
         p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
     }
 
-    /// <summary>
-    /// Â÷Â¡ »óÅÂ Á¾·á ½Ã È£Ãâ
-    /// Â÷Â¡ ¾Ö´Ï¸ŞÀÌ¼Ç ÁßÁö
-    /// </summary>
     public override void OnExit()
     {
         p_context.Animator.SetBool("IsRangedAttackCharging", false);
         p_context.Events.TriggerBattleStateChanged(true);
     }
-
 }
