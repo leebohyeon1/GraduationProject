@@ -13,13 +13,12 @@ public class AnimationNode : Node
     }
     public override void OnEnter()
     {
-        Debug.Log("Animation Node Enter: " + animationName);
+        runner.Movement.StopMovement();
         runner.AnimationEvent(animationName);
     }
 
     protected override NodeState OnUpdate()
     {
-        Debug.Log("Animation Node Update: " + animationName);
         Animator animator = runner.animator;
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
         {
