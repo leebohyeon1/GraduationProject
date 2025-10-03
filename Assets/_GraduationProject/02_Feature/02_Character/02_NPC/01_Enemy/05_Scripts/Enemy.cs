@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
-    public HeatSystem heatSystem { get; private set; }
+    public Monster_HeatSystem heatSystem { get; private set; }
     public Vector3 PatrolOriginPoint { get; private set; }
     public EnemyTakeDmg EnemyHealth { get; private set; }
     public EnemySpecizalAbility specialAbility { get; private set; }
@@ -50,6 +50,7 @@ public class Enemy : MonoBehaviour
     public GroupAi groupAi{get;private set;}
     [SerializeField] private float _normalSpeed = 2f;
     public float NormalSpeed => _normalSpeed;
+    public Transform LaunchPoint;
     protected void Awake()
     {
         // TODO: 적 데이터에서 최대 체력 가져오기
@@ -59,7 +60,7 @@ public class Enemy : MonoBehaviour
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
-        heatSystem = GetComponent<HeatSystem>();
+        heatSystem = GetComponent<Monster_HeatSystem>();
         heatSystem.Init(ActorType.Monster);
         ParrySystem = GetComponent<ParrySystem>();
         ParrySystem.Initialize(this);
@@ -134,7 +135,7 @@ public class Enemy : MonoBehaviour
             animator.speed = stat.FinalAnimSpeed;
         }
     }
-    [SerializeField] GameObject LastRushHitObject;
+    private GameObject LastRushHitObject;
     public GameObject GetLastRushHitObject()
     {
         return LastRushHitObject;
@@ -143,14 +144,20 @@ public class Enemy : MonoBehaviour
     {
         LastRushHitObject = obj;
     }
+    public GameObject TempRushObject{ get; private set;}
     private void OnCollisionEnter(Collision collision)
     {
         if (CurrentState != EnemyState.Rush) return;
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            return;
+            if (GetLastRushHitObject() == collision.gameObject)
+            {
+                return;
+            }
+            SetLastRushHitObject(collision.gameObject);
+            TempRushObject = collision.gameObject;
+
         }
-        SetLastRushHitObject(collision.gameObject);
     }
 
 
