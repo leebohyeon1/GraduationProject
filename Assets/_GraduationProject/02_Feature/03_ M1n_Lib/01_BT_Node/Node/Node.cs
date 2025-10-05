@@ -33,6 +33,8 @@ namespace BehaviorTree
                 OnExit();
                 isEntered = false;
             }
+             // if(currentState == NodeState.SUCCESS)
+            Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
             return currentState;
         }
 

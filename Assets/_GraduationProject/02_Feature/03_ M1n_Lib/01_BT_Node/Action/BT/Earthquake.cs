@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 public class Earthquake : Node
 {
     [Header("earthquake Settings")]
-    [SerializeField]float _maxRadius  = 20f;
-    [SerializeField]float _speed  = 2f;
+    [SerializeField] float _maxRadius = 20f;
+    [SerializeField] float _speed = 2f;
     [SerializeField] GameObject EarthquakeWave;
     public override Node Clone()
     {
@@ -16,8 +16,8 @@ public class Earthquake : Node
     public override void OnEnter()
     {
         base.OnEnter();
-        runner.AnimationEvent("Earthquake");
-        Debug.Log("Earthquake OnEnter");    
+        runner.AnimationEvent("Attack");
+        Debug.Log("Earthquake OnEnter");
         runner.SetState(Enemy.EnemyState.Attack);
     }
     protected override NodeState OnUpdate()
@@ -32,12 +32,19 @@ public class Earthquake : Node
             var wave = Earth.GetComponent<DonutWave>();
             wave.speed = _speed;
             wave.maxRadius = _maxRadius;
-            Handler.CloseHitWindow();
 
             return NodeState.SUCCESS;
         }
-        
+
         return NodeState.RUNNING;
+    }
+    public override void OnExit()
+    {
+        base.OnExit();
+        Debug.Log("Earthquake OnExit");
+        runner.SetState(Enemy.EnemyState.Idle);
+        Handler.CloseHitWindow();
+
     }
 
 }
