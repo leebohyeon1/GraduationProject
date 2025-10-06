@@ -41,9 +41,22 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     }
 
-    public void TakeDamage(int damageAmount, int StiffenessAmount)
+    public void TakeDamage(int amount, int StiffenessAmount)
     {
-        throw new NotImplementedException();
+        if (Health <= 0) return;
+        _owner.groupAi.CombatAll();
+        if (!_owner._aiController.IsActionable())
+        {
+            _owner.SetState(Enemy.EnemyState.Hit);
+        }
+        Health -= amount;
+        Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
+
+        if (Health <= 0)
+        {
+            Health = 0;
+            Die();
+        }
     }
     public void InitializeHealth(int maxHealth, Enemy owner)
     {

@@ -122,6 +122,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         foreach (Collider collider in colliders)
         {
+            Debug.Log($"Hit: {collider.gameObject.name}");
             p_context.Events.TriggerAttackAffect(collider);
         }
     }

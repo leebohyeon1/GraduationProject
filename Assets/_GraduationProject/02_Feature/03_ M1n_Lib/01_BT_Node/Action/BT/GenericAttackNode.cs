@@ -29,7 +29,7 @@ public class GenericAttackNode : Node
         directionToPlayer.y = 0;
         stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
         initNode();
-
+        runner.SetStiffness(StiffenessAmount);
     }
 
     protected override NodeState OnUpdate()
@@ -63,8 +63,8 @@ public class GenericAttackNode : Node
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    // player.TakeDamage( stat.FinalDamage, StiffenessAmount, runner);
-                    Character.TakeDamage(stat.FinalDamage);
+                    Character.TakeDamage( stat.FinalDamage, StiffenessAmount);
+                    // Character.TakeDamage(stat.FinalDamage);
                     
                     _didHitPlayer = true;
                     if (!maintainAtk)
