@@ -1,8 +1,10 @@
 using BH_Lib.AssetManager;
 using BH_Lib.Log;
 using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -67,16 +69,7 @@ public enum PlayerDamagedType
 /// </summary>
 public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 {
-    #region EffectPoint
-    [Header("Effect Points")]
-    [SerializeField] private Transform _firstAttackStartEffectPoint; // 첫 번째 공격 이펙트 위치
-    [SerializeField] private Transform _secondAttackStartEffectPoint; // 두 번째 공격 이펙트 위치
-    [SerializeField] private Transform _thirdAttackStartEffectPoint; // 세 번째 공격 이펙트 위치
-    [SerializeField] private Transform _chargeEffectPoint; // 차지 이펙트 위치
-    [SerializeField] private Transform _chargeAttackPoint; // 차지 공격 이펙트 위치
-    [SerializeField] private Transform _rangedAttackPoint; // 원거리 공격 이펙트 위치
-    [SerializeField] private Transform _counterAttackPoint; // 카운터 공격 이펙트 위치
-    #endregion
+    [SerializeField] private Transform _rangedAttackStartPoint;
 
     #region Events
     public event Action<bool> OnBattleStateChaged; // 전투 상태 변경 이벤트
@@ -201,9 +194,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerFirstAttackStart()
     {
-        if (_firstAttackStartEffectPoint == null) return;
         OnAttackStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB, _firstAttackStartEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB);
     }
 
     /// <summary>
@@ -211,9 +203,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerSecondAttackStart()
     {
-        if (_secondAttackStartEffectPoint == null) return;
         OnAttackStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB, _secondAttackStartEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB);
     }
 
     /// <summary>
@@ -221,12 +212,11 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerThirdAttackStart()
     {
-        if (_thirdAttackStartEffectPoint == null) return;
-        PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB, _thirdAttackStartEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB);
     }
 
     /// <summary>
-    /// 근접 공격 피격 이벤트를 발생시키고 피드백을 재생합니다.
+    /// 근접 공격 타격 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
     public void TriggerAttackAffect(Collider collider)
     {
@@ -241,9 +231,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeStart()
     {
-        if (_chargeEffectPoint == null) return;
         OnAttackStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.ChargeStart_FB, _chargeEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.ChargeStart_FB);
     }
 
     /// <summary>
@@ -251,7 +240,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeCancel()
     {
-        PlayFeedback(PlayerFeedbackType.ChargeCancel_FB, _chargeEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.ChargeCancel_FB);
     }
 
     /// <summary>
@@ -259,8 +248,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeFinish()
     {
-        if (_chargeEffectPoint == null) return;
-        PlayFeedback(PlayerFeedbackType.ChargeFinish_FB, _chargeEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.ChargeFinish_FB);
     }
 
     /// <summary>
@@ -269,7 +257,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerChargeAttackStart()
     {
         OnAttackStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB, _chargeAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB);
     }
 
     /// <summary>
@@ -277,7 +265,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeAttackFinish()
     {
-        PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB, _chargeAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB);
     }
 
     /// <summary>
@@ -302,10 +290,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeStart()
     {
-        if (_chargeEffectPoint != null)
-        {
-            PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB, _chargeEffectPoint.position);
-        }
+            PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB );
     }
 
     /// <summary>
@@ -313,7 +298,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedCharging()
     {
-        PlayFeedback(PlayerFeedbackType.RangeAttackCharging_FB, _chargeEffectPoint.position);
+        PlayFeedback(PlayerFeedbackType.RangeAttackCharging_FB);
     }
 
     /// <summary>
@@ -321,10 +306,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeCancel()
     {
-        if (_chargeEffectPoint != null)
-        {
-            PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB, _chargeEffectPoint.position);
-        }
+        PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB);
     }
 
     /// <summary>
@@ -332,10 +314,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeFinish()
     {
-        if (_chargeEffectPoint != null)
-        {
-            PlayFeedback(PlayerFeedbackType.RangeAttackChargeFinish_FB, _chargeEffectPoint.position);
-        }
+        PlayFeedback(PlayerFeedbackType.RangeAttackChargeFinish_FB);
     }
 
     /// <summary>
@@ -343,8 +322,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedAttackStart()
     {
-        OnRangedAttackStart?.Invoke(_rangedAttackPoint);
-        PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackPoint.position);
+        OnRangedAttackStart?.Invoke(_rangedAttackStartPoint);
+        PlayFeedback(PlayerFeedbackType.RangeAttackStart_FB, _rangedAttackStartPoint.position);
     }
 
     /// <summary>
@@ -375,7 +354,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryPerform()
     {
         OnParryPerform?.Invoke();
-        PlayFeedback(PlayerFeedbackType.ParryStart_FB, transform.position);
+        PlayFeedback(PlayerFeedbackType.ParryStart_FB);
     }
 
     /// <summary>
@@ -397,7 +376,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerFirstCounterAttackStart()
     {
-        PlayFeedback(PlayerFeedbackType.CounterFirstAttackStart_FB, _counterAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.CounterFirstAttackStart_FB);
     }
 
     /// <summary>
@@ -420,7 +399,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerSecondCounterAttackStart()
     {
-        PlayFeedback(PlayerFeedbackType.CounterSecondAttackStart_FB, _counterAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.CounterSecondAttackStart_FB);
     }
 
     /// <summary>
@@ -443,7 +422,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerCounterAttackFinish()
     {
-        PlayFeedback(PlayerFeedbackType.CounterAttackFinish_FB, _counterAttackPoint.position);
+        PlayFeedback(PlayerFeedbackType.CounterAttackFinish_FB);
     }
     #endregion
 
@@ -459,10 +438,10 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
         {
             switch (i)
             {
-                case 1: OnTier1Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Up_FB, transform.position); break;
-                case 2: OnTier2Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Up_FB, transform.position); break;
-                case 3: OnTier3Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Up_FB, transform.position); break;
-                case 4: OnOverHeatStart?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatStart_FB, transform.position); break;
+                case 1: OnTier1Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Up_FB); break;
+                case 2: OnTier2Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Up_FB); break;
+                case 3: OnTier3Up?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Up_FB); break;
+                case 4: OnOverHeatStart?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatStart_FB); break;
             }
         }
     }
@@ -478,10 +457,10 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
         {
             switch (i)
             {
-                case 1: OnTier1Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Down_FB, transform.position); break;
-                case 2: OnTier2Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Down_FB, transform.position); break;
-                case 3: OnTier3Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Down_FB, transform.position); break;
-                case 4: OnOverHeatFinish?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB, transform.position); break;
+                case 1: OnTier1Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Down_FB); break;
+                case 2: OnTier2Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Down_FB); break;
+                case 3: OnTier3Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Down_FB); break;
+                case 4: OnOverHeatFinish?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB); break;
             }
         }
     }
@@ -493,11 +472,11 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         switch (tier)
         {
-            case 1: PlayFeedback(PlayerFeedbackType.Tier1_FB, transform.position); break;
-            case 2: PlayFeedback(PlayerFeedbackType.Tier2_FB, transform.position); break;
-            case 3: PlayFeedback(PlayerFeedbackType.Tier3_FB, transform.position); break;
+            case 1: PlayFeedback(PlayerFeedbackType.Tier1_FB); break;
+            case 2: PlayFeedback(PlayerFeedbackType.Tier2_FB); break;
+            case 3: PlayFeedback(PlayerFeedbackType.Tier3_FB); break;
             case 4: 
-                PlayFeedback(PlayerFeedbackType.OverHeat_FB, transform.position);
+                PlayFeedback(PlayerFeedbackType.OverHeat_FB);
                 OnOverHeat?.Invoke(overHeatDamage);
                 break;
         }
