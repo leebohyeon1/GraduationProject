@@ -4,14 +4,14 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 
+/// <summary>
+/// í”Œë ˆì´ì–´ì˜ ë‘ ë²ˆì§¸ ì¹´ìš´í„° ê³µê²© ìƒíƒœì…ë‹ˆë‹¤.
+/// </summary>
 public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "SecondCounterAttack";
-
     protected override Type p_nextAttackState => null;
-
     protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[1];
-
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -21,15 +21,13 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+        p_nextState = null;
 
-        p_context.Animator.SetTrigger(p_animationTrigger);  // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+        p_context.Animator.SetTrigger(p_animationTrigger);
 
-        // °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÇÇà
         StartAttackMovement();
         p_context.Events.TriggerSecondAttackStart();
     }
-
 
     public override void OnExit()
     {
@@ -43,34 +41,36 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         p_nextState = null;
     }
 
+    /// <summary>
+    /// ê³µê²© ì‹œ ë’¤ë¡œ ë¬¼ëŸ¬ë‚˜ëŠ” ì›€ì§ì„ì„ ì‹œì‘í•©ë‹ˆë‹¤.
+    /// </summary>
     protected override void StartAttackMovement()
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // ÈÄ¹æ¿¡ ¿ÀºêÁ§Æ®°¡ ÀÖÀ» °æ¿ì ÈÄÁø °Å¸® Á¶Á¤
-        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward,
-            out var hitInfo, p_AttackData.AttackMoveDistance))
+        // í›„ë°©ì— ì¥ì• ë¬¼ì´ ìˆìœ¼ë©´ ì´ë™ ê±°ë¦¬ ì¡°ì •
+        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward, out var hitInfo, p_AttackData.AttackMoveDistance))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
 
-        Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+        Vector3 targetPosition = p_context.transform.position - (p_context.transform.forward * distance);
 
         p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-        .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
-    }
-
-    protected override void HandleAttackPerform()
-    {
-        p_context.Combat.ExcuteSecondCounterAttack(p_AttackData);
-        p_context.Events.TriggerSecondCounterAttackAffect(
-            p_context.Combat.CounterableTarget,
-            p_context.Heat.CurrentTier);
+            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
     }
 
     /// <summary>
-    /// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® ÇÚµé·¯
-    /// °ø°İÀÌ ¿Ï·áµÇ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+    /// ê³µê²© íŒì •ì´ ë°œìƒí•˜ëŠ” ì‹œì ì— í˜¸ì¶œë©ë‹ˆë‹¤.
+    /// </summary>
+    protected override void HandleAttackPerform()
+    {
+        p_context.Combat.ExcuteSecondCounterAttack(p_AttackData);
+        p_context.Events.TriggerSecondCounterAttackAffect(p_context.Combat.CounterableTarget, p_context.Heat.CurrentTier);
+    }
+
+    /// <summary>
+    /// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í˜¸ì¶œë©ë‹ˆë‹¤.
     /// </summary>
     protected override void HandleAttackFinish()
     {
@@ -90,6 +90,5 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         });
-
     }
 }

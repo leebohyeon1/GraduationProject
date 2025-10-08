@@ -4,8 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// 플레이어 대기 상태
-/// 입력이 없을 때 기본 상태
+/// 플레이어의 대기 상태입니다.
 /// </summary>
 public class PlayerIdleState : BaseState<Player>
 {
@@ -19,7 +18,7 @@ public class PlayerIdleState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        // Idle 상태에서의 중력 처리 (이동 입력 없음)
+        // 대기 상태에서는 움직이지 않음
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
     }
 

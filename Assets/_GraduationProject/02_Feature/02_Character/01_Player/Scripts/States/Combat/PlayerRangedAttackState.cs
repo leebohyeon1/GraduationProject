@@ -4,10 +4,13 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 
+/// <summary>
+/// í”Œë ˆì´ì–´ì˜ ì›ê±°ë¦¬ ê³µê²© ìƒíƒœì…ë‹ˆë‹¤.
+/// </summary>
 public class PlayerRangedAttackState : BaseState<Player>
 {
-    private Type _nextState;
-    private RangedAttackData _attackData => p_context.Stats.CombatData.RangedAttackData;
+    private Type _nextState; // ë‹¤ìŒ ì „í™˜ë  ìƒíƒœ
+    private RangedAttackData _attackData => p_context.Stats.CombatData.RangedAttackData; // ì›ê±°ë¦¬ ê³µê²© ë°ì´í„°
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -19,7 +22,6 @@ public class PlayerRangedAttackState : BaseState<Player>
 
         p_context.Events.TriggerRangedAttackStart();
         p_context.Events.TriggerBattleStateChanged(true);
-
     }
 
     public override void OnUpdate() 
@@ -30,14 +32,11 @@ public class PlayerRangedAttackState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Events.OnRangedAttackFinish -= HandleAttackFinish;
-
         p_context.Events.TriggerBattleStateChanged(true);
-
     }
 
     /// <summary>
-    /// ÀÔ·Â Ã³¸®
-    /// È¸ÇÇ Áß ÀÔ·ÂÀ» °¨ÁöÇÏ¿© ´ÙÀ½ »óÅÂ¸¦ °áÁ¤
+    /// ê³µê²© ì¤‘ ì…ë ¥ì„ ì²˜ë¦¬í•˜ì—¬ ë‹¤ìŒ ìƒíƒœë¥¼ ê²°ì •í•©ë‹ˆë‹¤.
     /// </summary>
     public void HandleInput()
     {
@@ -47,12 +46,9 @@ public class PlayerRangedAttackState : BaseState<Player>
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
-
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Input.DodgeInput &&
-            Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
         {
             _nextState = typeof(PlayerDodgeState);
         }
@@ -68,17 +64,10 @@ public class PlayerRangedAttackState : BaseState<Player>
         {
             _nextState = typeof(PlayerRangedChargeState);
         }
- 
-
-        if (_nextState != null)
-        {
-            Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] ´ÙÀ½ »óÅÂ: {_nextState}");
-        }
     }
 
     /// <summary>
-    /// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® ÇÚµé·¯
-    /// °ø°İÀÌ ¿Ï·áµÇ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+    /// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í˜¸ì¶œë©ë‹ˆë‹¤.
     /// </summary>
     private void HandleAttackFinish()
     {
@@ -98,5 +87,3 @@ public class PlayerRangedAttackState : BaseState<Player>
         });
     }
 }
-
-

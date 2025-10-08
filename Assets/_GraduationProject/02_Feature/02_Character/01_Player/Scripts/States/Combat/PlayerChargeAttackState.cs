@@ -4,16 +4,16 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 
-
+/// <summary>
+/// í”Œë ˆì´ì–´ì˜ ì°¨ì§€ ê³µê²© ìƒíƒœì…ë‹ˆë‹¤.
+/// </summary>
 public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
-
     protected override Type p_nextAttackState => null;
-
     protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.ChargeAttackData;
 
-    private PlayerAttackData _playerAttackData = new PlayerAttackData();
+    private PlayerAttackData _playerAttackData;
 
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -23,14 +23,13 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+        p_nextState = null;
 
-        p_context.Animator.SetTrigger(p_animationTrigger);  // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+        p_context.Animator.SetTrigger(p_animationTrigger);
 
-        _playerAttackData = new PlayerAttackData();
         _playerAttackData = p_AttackData;
 
-        // ¸ñÇ¥ È¸Àü °ªÀÌ ÀÖÀ» °æ¿ì ¸ñÇ¥ È¸Àü°ªÀ¸·Î È¸Àü ÈÄ »èÁ¦
+        // ëª©í‘œ ë°©í–¥ìœ¼ë¡œ íšŒì „
         if (p_context.Movement.HasTargetRotation)
         {
             p_context.Movement.RotateToTargetRotation();
@@ -43,7 +42,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
 
-        // °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÇÇà
         StartAttackMovement();
         p_context.Events.TriggerChargeAttackStart();
     }
@@ -61,8 +59,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     }
 
     /// <summary>
-    /// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® ÇÚµé·¯
-    /// °ø°İÀÌ ¿Ï·áµÇ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+    /// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í˜¸ì¶œë©ë‹ˆë‹¤.
     /// </summary>
     protected override void HandleAttackFinish()
     {
@@ -79,12 +76,11 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         });
-
         sequence.Play();
     }
 
     /// <summary>
-    /// °ø°İ È¿°ú Àû¿ë
+    /// ê³µê²© íŒì •ì´ ë°œìƒí•˜ëŠ” ì‹œì ì— í˜¸ì¶œë©ë‹ˆë‹¤.
     /// </summary>
     protected override void HandleAttackPerform()
     {
@@ -99,25 +95,22 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     }
 
     /// <summary>
-    /// °ø°İ ½Ã ÀüÁø ÀÌµ¿ ½ÃÀÛ
+    /// ê³µê²© ì‹œ ì•ìœ¼ë¡œ ë‚˜ì•„ê°€ëŠ” ì›€ì§ì„ì„ ì‹œì‘í•©ë‹ˆë‹¤.
     /// </summary>
     protected override void StartAttackMovement()
     {
         float distance = _playerAttackData.AttackMoveDistance;
 
-        // Àü¹æ¿¡ ¿ÀºêÁ§Æ®°¡ ÀÖÀ» °æ¿ì ÀüÁø °Å¸® Á¶Á¤
-        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward,
-            out var hitInfo, _playerAttackData.AttackMoveDistance))
+        // ì „ë°©ì— ì¥ì• ë¬¼ì´ ìˆìœ¼ë©´ ì´ë™ ê±°ë¦¬ ë° ê³µê²© ë²”ìœ„ ì¡°ì •
+        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, out var hitInfo, _playerAttackData.AttackMoveDistance))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
-
             _playerAttackData.AttackRadius.z = distance + 1;
         }
 
         Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
 
         p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-        .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
     }
-
 }

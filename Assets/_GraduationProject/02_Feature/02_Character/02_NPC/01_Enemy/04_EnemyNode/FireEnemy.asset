@@ -1,0 +1,1056 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7245226355301169087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Stun
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 284, y: -196}
+  nodes:
+  - {fileID: 6343833873525823109}
+  - {fileID: -3662235796367844752}
+--- !u!114 &-7071762007778814168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: PatrolSequence
+  m_EditorClassIdentifier: 
+  position: {x: 290, y: 975}
+  nodes:
+  - {fileID: -5091929620939849768}
+  - {fileID: -2923115925387942299}
+--- !u!114 &-6558497616718985206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1303, y: -662}
+--- !u!114 &-6477674856501047169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: 
+  position: {x: 1434, y: 1298}
+  skillName: MortarAttack
+--- !u!114 &-6419026422163123980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: 01Root
+  m_EditorClassIdentifier: 
+  position: {x: -89, y: 35}
+  nodes:
+  - {fileID: -7245226355301169087}
+  - {fileID: 5742173602548847007}
+  - {fileID: -5895060802689115491}
+  - {fileID: -7071762007778814168}
+--- !u!114 &-6253242549311124334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: NonAnchor
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 651, y: -242}
+  nodes:
+  - {fileID: -1753282919429583533}
+  - {fileID: -3463702511840283421}
+--- !u!114 &-6046396257137404989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 057046949428a0b4badc2f7ed67057d1, type: 3}
+  m_Name: Condition_Is Ability
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAbility
+  position: {x: 931, y: 35}
+--- !u!114 &-6020666311056444789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: OverHeat
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1154, y: 57}
+  nodes:
+  - {fileID: -5066762206267624316}
+  - {fileID: 771837084432251439}
+  - {fileID: -2469881891258458694}
+  - {fileID: 6461926639137364807}
+--- !u!114 &-5895060802689115491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: FindPlayer
+  m_EditorClassIdentifier: 
+  position: {x: 215, y: 722}
+  nodes:
+  - {fileID: -4753666918269421874}
+  - {fileID: 7438793480988635909}
+  - {fileID: 6545543868557049618}
+  - {fileID: 5776244238602323464}
+  - {fileID: 6816747113147883713}
+--- !u!114 &-5868491133412455019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: LOS
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1598, y: -585}
+  nodes:
+  - {fileID: 3328858872078899426}
+  - {fileID: 3190198380513302506}
+  - {fileID: 8097750573212284376}
+--- !u!114 &-5164429530539259904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b8fdfecce30b64f9a5677be3a10a05, type: 3}
+  m_Name: Mortar Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::MortarAttackNode
+  position: {x: 1434, y: 1221}
+  projectilePrefab: {fileID: -82023211534088462, guid: 8234711606e40444ebf67156d7b7f215, type: 3}
+  launchPoint: {fileID: 0}
+  launchAngle: 80
+  AttackName: MortarAttack
+--- !u!114 &-5091929620939849768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 520, y: 960}
+  child: {fileID: 3077255509339702266}
+--- !u!114 &-5066762206267624316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1354, y: -59}
+--- !u!114 &-5050252605814469623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b984ef8c8b96f344959c5cc4c3fd456, type: 3}
+  m_Name: Ability Bool
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBool
+  position: {x: 1305, y: -508}
+  Ability: 1
+--- !u!114 &-4753666918269421874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 367, y: 494}
+  child: {fileID: 1310698430826977512}
+--- !u!114 &-4553377999928142451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1431, y: 990}
+--- !u!114 &-4089671005491707422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Run Sub Tree Node
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 1118, y: -130}
+  subTreeToRun: {fileID: 11400000, guid: 56de0720fdefa7f4a8b86848eedcc6c3, type: 2}
+--- !u!114 &-3662235796367844752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
+  m_Name: Stunned
+  m_EditorClassIdentifier: Assembly-CSharp::Stunned
+  position: {x: 466, y: -196}
+  animationName: Stun
+--- !u!114 &-3463702511840283421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 852, y: -245}
+  nodes:
+  - {fileID: 7773046659406113561}
+  - {fileID: -1401877485150607530}
+  - {fileID: -4089671005491707422}
+--- !u!114 &-3402285815794579582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
+  m_Name: Action_Look At Player
+  m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
+  position: {x: 1384, y: 1420}
+  IsSee: 1
+--- !u!114 &-2923115925387942299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
+  m_Name: Random Patrol
+  m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
+  position: {x: 526, y: 1179}
+--- !u!114 &-2547122051901560700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25b035e863f49445a61c62a64296f33, type: 3}
+  m_Name: Rush Until Wall
+  m_EditorClassIdentifier: Assembly-CSharp::RushUntilWall
+  position: {x: 1591, y: -59}
+  rushSpeed: 25
+  wallDetectionDistance: 3
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  timeout: 4
+--- !u!114 &-2495515150341944186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 931, y: 230}
+  nodes:
+  - {fileID: -6020666311056444789}
+  - {fileID: 2919154666137795031}
+  - {fileID: 8656888805184373649}
+  - {fileID: 5873009569046457562}
+--- !u!114 &-2469881891258458694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25b035e863f49445a61c62a64296f33, type: 3}
+  m_Name: Rush Until Wall
+  m_EditorClassIdentifier: Assembly-CSharp::RushUntilWall
+  position: {x: 1354, y: 95}
+  rushSpeed: 25
+  wallDetectionDistance: 3
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  timeout: 4
+--- !u!114 &-1995372082178178704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
+  m_Name: Condition_Is In Combat
+  m_EditorClassIdentifier: 
+  position: {x: 473, y: 52}
+--- !u!114 &-1753282919429583533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 851, y: -386}
+  child: {fileID: 5003486274564194091}
+--- !u!114 &-1407809887985362526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b984ef8c8b96f344959c5cc4c3fd456, type: 3}
+  m_Name: Set Ability
+  m_EditorClassIdentifier: Assembly-CSharp::SetAbility
+  position: {x: 1591, y: 172}
+  Ability: 0
+--- !u!114 &-1401877485150607530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: RunawayToPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1118, y: -207}
+  nodes:
+  - {fileID: 3713734425821449763}
+  - {fileID: -1338340550000061126}
+--- !u!114 &-1338340550000061126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52825fa9ae0ff0149967eb06cd58f356, type: 3}
+  m_Name: Maintain Distance
+  m_EditorClassIdentifier: Assembly-CSharp::MaintainDistance
+  position: {x: 1306, y: -207}
+  targetDistance: 8
+  predictionTime: 0.5
+  acceptanceRadius: 0.5
+  RunSpeed: 7
+--- !u!114 &-1081027372811723936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
+  m_Name: Condition_Is In Attack Range
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInAttackRange
+  position: {x: 1410, y: 675}
+  heatRange: 0
+  _attackRange: 4
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
+  m_Name: FireEnemy
+  m_EditorClassIdentifier: 
+  rootNode: {fileID: -6419026422163123980}
+--- !u!114 &671180339977474040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1305, y: -739}
+  minDistance: 7
+  maxDistance: 20
+--- !u!114 &771837084432251439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3c850550c356fe4dbb62ea5f92dd436, type: 3}
+  m_Name: Condition_Is Over Heat
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsOverHeat
+  position: {x: 1354, y: 18}
+--- !u!114 &1293369529446151032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
+  m_Name: Stop Movement
+  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
+  position: {x: 1305, y: -431}
+  juststop: 1
+--- !u!114 &1310698430826977512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
+  m_Name: Condition_Is In Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
+  position: {x: 494, y: 571}
+--- !u!114 &1742704995383000931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Between
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1341, y: 2045}
+  minDistance: 15
+  maxDistance: 40
+--- !u!114 &1921429767443403384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
+  m_Name: Animation Node
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationNode
+  position: {x: 1305, y: -585}
+  animationName: Anchor
+--- !u!114 &2039206346005532028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcd9d9c478527dd48814b6d40d8c4456, type: 3}
+  m_Name: Earthquake
+  m_EditorClassIdentifier: Assembly-CSharp::Earthquake
+  position: {x: 1412, y: 828}
+  _maxRadius: 20
+  _speed: 4
+  EarthquakeWave: {fileID: 694403148424195070, guid: 692f55fd9c259cb48885a667f42692e4, type: 3}
+--- !u!114 &2275272310736513893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
+  m_Name: Condition_Can See Player
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
+  position: {x: 1412, y: 533}
+--- !u!114 &2919154666137795031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: CloseAtk
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1184, y: 610}
+  nodes:
+  - {fileID: 2275272310736513893}
+  - {fileID: 8479167246048659318}
+  - {fileID: -1081027372811723936}
+  - {fileID: 4887522364135060110}
+  - {fileID: 2039206346005532028}
+  - {fileID: 7500717222779531911}
+--- !u!114 &2962903648140353133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Is Skill Ready
+  m_EditorClassIdentifier: 
+  position: {x: 1431, y: 1144}
+  skillName: MortarAttack
+  cooldownDuration: 0.65
+  HeatCooldown: 1
+--- !u!114 &3077255509339702266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
+  m_Name: Condition_Is In Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
+  position: {x: 520, y: 1052}
+--- !u!114 &3105688345703627495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 722, y: 230}
+  nodes:
+  - {fileID: -6046396257137404989}
+  - {fileID: -2495515150341944186}
+--- !u!114 &3190198380513302506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 1801, y: -662}
+  child: {fileID: 6631976132736815560}
+--- !u!114 &3328858872078899426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575bf97f615e75043804f88036a6e67b, type: 3}
+  m_Name: Condition_Is Run Away
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsRunAway
+  position: {x: 1779, y: -739}
+  targetDistance: 0
+--- !u!114 &3713734425821449763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1305, y: -284}
+  minDistance: 0
+  maxDistance: 14
+--- !u!114 &4887522364135060110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Is Skill Ready
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsSkillReady
+  position: {x: 1410, y: 751}
+  skillName: Attack
+  cooldownDuration: 3
+  HeatCooldown: 0
+--- !u!114 &5003486274564194091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 057046949428a0b4badc2f7ed67057d1, type: 3}
+  m_Name: Condition_Is Ability
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAbility
+  position: {x: 850, y: -322}
+--- !u!114 &5307906939096728612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25b035e863f49445a61c62a64296f33, type: 3}
+  m_Name: Rush Until Wall
+  m_EditorClassIdentifier: Assembly-CSharp::RushUntilWall
+  position: {x: 1591, y: 18}
+  rushSpeed: 25
+  wallDetectionDistance: 3
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  timeout: 4
+--- !u!114 &5310562535509485433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Combat
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 473, y: 129}
+  nodes:
+  - {fileID: -6253242549311124334}
+  - {fileID: 3105688345703627495}
+--- !u!114 &5559153870802147238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de44f73c0333ce840bb288b210bced6c, type: 3}
+  m_Name: Over Heat Use
+  m_EditorClassIdentifier: Assembly-CSharp::OverHeatUse
+  position: {x: 1591, y: 248}
+--- !u!114 &5742173602548847007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: IsCombat
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 244, y: 79}
+  nodes:
+  - {fileID: -1995372082178178704}
+  - {fileID: 5310562535509485433}
+--- !u!114 &5776244238602323464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 494, y: 799}
+  minDistance: 0
+  maxDistance: 5
+--- !u!114 &5843061234020629221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1591, y: 95}
+  waitTime: 2
+--- !u!114 &5873009569046457562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1184, y: 1352}
+  nodes:
+  - {fileID: -3402285815794579582}
+--- !u!114 &6108192575178470743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Chase
+  m_EditorClassIdentifier: 
+  position: {x: 1062, y: 1947}
+  nodes:
+  - {fileID: 8581566141182817877}
+  - {fileID: 1742704995383000931}
+  - {fileID: 8440268503078126261}
+--- !u!114 &6343833873525823109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
+  m_Name: Condition_Is Stunned
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
+  position: {x: 436, y: -281}
+--- !u!114 &6461926639137364807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1354, y: 172}
+  nodes:
+  - {fileID: -2547122051901560700}
+  - {fileID: 5307906939096728612}
+  - {fileID: 5843061234020629221}
+  - {fileID: -1407809887985362526}
+  - {fileID: 5559153870802147238}
+--- !u!114 &6545543868557049618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
+  m_Name: Condition_Can See Player
+  m_EditorClassIdentifier: 
+  position: {x: 494, y: 725}
+--- !u!114 &6631976132736815560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
+  m_Name: Condition_Can See Player
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
+  position: {x: 1805, y: -585}
+--- !u!114 &6816747113147883713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
+  m_Name: Action_Engage Combat
+  m_EditorClassIdentifier: 
+  position: {x: 494, y: 864}
+--- !u!114 &7438793480988635909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe40894ec455244bd08f4deeda853a, type: 3}
+  m_Name: Condition_Is Ally Not Called
+  m_EditorClassIdentifier: 
+  position: {x: 494, y: 648}
+--- !u!114 &7500717222779531911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 1410, y: 905}
+  skillName: Attack
+--- !u!114 &7773046659406113561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: AnchorAnim
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1118, y: -508}
+  nodes:
+  - {fileID: 671180339977474040}
+  - {fileID: -6558497616718985206}
+  - {fileID: 1921429767443403384}
+  - {fileID: -5050252605814469623}
+  - {fileID: 1293369529446151032}
+--- !u!114 &8097750573212284376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
+  m_Name: Action_Look At Player
+  m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
+  position: {x: 1801, y: -521}
+  IsSee: 1
+--- !u!114 &8440268503078126261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
+  m_Name: Chase Player Node
+  m_EditorClassIdentifier: 
+  position: {x: 1341, y: 2111}
+--- !u!114 &8479167246048659318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1412, y: 597}
+--- !u!114 &8503346464321683557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1431, y: 1067}
+  minDistance: 6
+  maxDistance: 20
+--- !u!114 &8581566141182817877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
+  m_Name: Condition_Is Actionable
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
+  position: {x: 1341, y: 1968}
+--- !u!114 &8656888805184373649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Mortal
+  m_EditorClassIdentifier: 
+  position: {x: 1184, y: 1094}
+  nodes:
+  - {fileID: -4553377999928142451}
+  - {fileID: 8503346464321683557}
+  - {fileID: 2962903648140353133}
+  - {fileID: -5164429530539259904}
+  - {fileID: -6477674856501047169}

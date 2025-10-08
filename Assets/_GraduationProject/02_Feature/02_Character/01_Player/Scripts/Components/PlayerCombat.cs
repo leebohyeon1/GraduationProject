@@ -5,12 +5,16 @@ using System;
 using UnityEngine;
 
 
+/// <summary>
+/// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
+/// </summary>
 public class PlayerCombat : MonoBehaviour, IDisposable
 {
     #region Private Fields
-    private PlayerStats _stats;
-    private PlayerEvents _events;
-    private PlayerCombatData _combatData => _stats.CombatData;
+    private PlayerStats _stats; // 플레이어 스탯
+    private PlayerEvents _events; // 플레이어 이벤트
+    private PlayerCombatData _combatData => _stats.CombatData; // 전투 데이터
+    
     /// <summary>
     /// 전투 중심점의 위치
     /// </summary>
@@ -30,7 +34,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     private float _lastBattleTime;
     /// <summary>
-    /// 전투 중이 아닌지 여부
+    /// 전투 중인지 여부
     /// </summary>
     private bool _isBattleState;
 
@@ -41,13 +45,16 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     #endregion
 
     #region Properties
-    public bool CanCounterAttack => _canCounterAttack;
-    public Collider CounterableTarget => _counterableTarget;
+    public bool CanCounterAttack => _canCounterAttack; // 카운터 공격 가능 여부
+    public Collider CounterableTarget => _counterableTarget; // 카운터 공격 대상
 
-    public float LastBattleTime => _lastBattleTime;
-    public bool IsBattleState => _isBattleState;
+    public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
+    public bool IsBattleState => _isBattleState; // 전투 상태 여부
     #endregion
 
+    /// <summary>
+    /// 초기화 함수
+    /// </summary>
     public void Initialize(PlayerStats combatData, PlayerEvents events)
     {
         _isDrawGizmos = true;
@@ -60,6 +67,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.OnParryPerform += SetupCombatCenter;
     }
 
+    /// <summary>
+    /// 리소스 해제 함수
+    /// </summary>
     public void Dispose()
     {
         _events.OnRangedAttackStart -= HandleRangedAttack;
@@ -69,7 +79,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 전투 중심점을 설정
+    /// 전투 중심점을 설정합니다.
     /// </summary>
     public void SetupCombatCenter()
     {
@@ -78,16 +88,16 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region BattleState
     /// <summary>
-    /// 마지막 전투 시간 설정
+    /// 마지막 전투 시간을 현재 시간으로 설정합니다.
     /// </summary>
     public void SetupBattleTime()
     {
         _lastBattleTime = Time.time;
     }
     /// <summary>
-    /// 전투 중 상태 변경 함수
+    /// 전투 상태를 변경합니다.
     /// </summary>
-    /// <param name="isBattleState"></param>
+    /// <param name="isBattleState">새로운 전투 상태</param>
     public void SetBattleState(bool isBattleState)
     {
         _isBattleState = isBattleState;
@@ -96,7 +106,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region Attack
     /// <summary>
-    /// 공격 중심점을 계산
+    /// 공격의 중심 위치를 계산합니다.
     /// </summary>
     /// <returns>공격 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter(PlayerAttackData attackData)
@@ -105,16 +115,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 공격 실행 (일반/차지 공격 등 공격 처리)
+    /// 공격을 실행합니다. (일반/차지 공격 등)
     /// Physics.OverlapBox를 사용하여 박스 범위 내의 적을 감지합니다.
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <returns>타격한 대상의 콜라이더 배열</returns>
     public Collider[] ExecuteAttack(PlayerAttackData attackData)
     {
-        // 공격 중심점과 범위 계산
         Vector3 attackCenter = GetAttackCenter(attackData);
-        Vector3 halfExtents = attackData.AttackRadius / 2f;  // OverlapBox에 필요한 halfExtents 계산
+        Vector3 halfExtents = attackData.AttackRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
@@ -124,7 +133,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 공격에 맞은 적들에 대한 처리
+    /// 공격에 맞은 적들에게 데미지를 입힙니다.
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
@@ -132,8 +141,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         foreach (Collider obj in hitObjects)
         {
-            IDamageable damageable = obj.GetComponent<IDamageable>();
-            if (damageable != null && !damageable.IsDead)
+            if (obj.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
             {
                 damageable.TakeDamage(attackData.AttackDamage);
             }
@@ -143,30 +151,27 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region RangedAttack
     /// <summary>
-    /// 원거리 공격 실행
+    /// 원거리 공격을 실행합니다.
     /// </summary>
     /// <param name="firePoint">발사 지점</param>
     public void FireProjectile(Transform firePoint)
     {
-        if (_combatData.RangedAttackData.ProjectilePrefab == null)
-        {
-            return;
-        }
+        if (_combatData.RangedAttackData.ProjectilePrefab == null) return;
 
-        GameObject projectileObj = Instantiate(_combatData.RangedAttackData.ProjectilePrefab,
-            firePoint.position, firePoint.rotation);
+        GameObject projectileObj = Instantiate(_combatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
 
-        Projectile projectile = projectileObj.GetComponent<Projectile>();
-        if (projectile != null)
+        if (projectileObj.TryGetComponent<Projectile>(out var projectile))
         {
-            projectile.Initialize(_combatData.RangedAttackData.AttackDamage,
-                _combatData.RangedAttackData.ProjectileSpeed, gameObject, _combatData.AttackLayerMask);
+            projectile.Initialize(_combatData.RangedAttackData.AttackDamage, _combatData.RangedAttackData.ProjectileSpeed, gameObject, _combatData.AttackLayerMask);
         }
     }
     #endregion
 
     #region Defend
-
+    /// <summary>
+    /// 방어 상태를 설정합니다.
+    /// </summary>
+    /// <param name="isDefending">방어 여부</param>
     public void SetDefending(bool isDefending)
     {
         _stats.IsDefending = isDefending;
@@ -175,15 +180,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region Parry
     /// <summary>
-    /// 패리(방어) 실행
+    /// 패리를 실행합니다.
     /// </summary>
     /// <param name="parryRadius">패리 범위</param>
     /// <returns>패리에 영향을 받은 대상의 콜라이더 배열</returns>
     public Collider[] ExecuteParry(Vector3 parryRadius)
     {
-        // 공격 중심점과 범위 계산
         Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
-        Vector3 halfExtents = parryRadius / 2f;  // OverlapBox에 필요한 halfExtents 계산
+        Vector3 halfExtents = parryRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
@@ -193,15 +197,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 패리 성공 시 적들에 대한 처리
+    /// 패리 성공 시 적들에게 효과를 적용합니다.
     /// </summary>
     /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
     private void ProcessParryEnemies(Collider[] hitObjects)
     {
         foreach (Collider obj in hitObjects)
         {
-            IParryable parryable = obj.GetComponent<IParryable>();
-            if (parryable != null && parryable.IsParryable)
+            if (obj.TryGetComponent<IParryable>(out var parryable) && parryable.IsParryable)
             {
                 parryable.Parry(gameObject);
             }
@@ -210,19 +213,21 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     #endregion
 
     #region CounterAttack
-    
+    /// <summary>
+    /// 일정 시간 동안 카운터 공격 가능 상태를 활성화/비활성화합니다.
+    /// </summary>
+    /// <param name="delayTime">활성화 유지 시간</param>
     public void ToggleCanCounter(float delayTime)
     {
         Sequence sequence = DOTween.Sequence();
         sequence.AppendCallback(() => SetCanCounterAttack(true));
         sequence.AppendInterval(delayTime);
         sequence.AppendCallback(() => SetCanCounterAttack(false));
-
         sequence.Play();
     }
 
     /// <summary>
-    /// 카운터 공격 가능 여부 설정 함수
+    /// 카운터 공격 가능 여부를 설정합니다.
     /// </summary>
     /// <param name="canCounterAttack">가능 여부</param>
     public void SetCanCounterAttack(bool canCounterAttack)
@@ -231,17 +236,16 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 카운터 가능한 적이 있는지 확인
+    /// 주변에 카운터 가능한 적이 있는지 확인합니다.
     /// </summary>
-    /// <returns>카운터 가능한 적이 있는가</returns>
+    /// <returns>카운터 가능한 적 존재 여부</returns>
     public bool CanIsScanCounterable()
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position,
-                  _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        Collider[] colliders = Physics.OverlapBox(transform.position, _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
         
-        for (int i = 0; i < colliders.Length; i++)
+        foreach (var t in colliders)
         {
-            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
+            if (t.TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
             {
                 return true;
             }
@@ -251,7 +255,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 카운터 공격 가능한 오브젝트 감지
+    /// 카운터 가능한 오브젝트를 스캔합니다.
     /// </summary>
     /// <returns>가장 가까운 카운터 가능한 오브젝트</returns>
     public Collider ScanCounterableObject()
@@ -261,45 +265,51 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 첫번째 카운터 공격 실행
+    /// 첫 번째 카운터 공격을 실행합니다.
     /// </summary>
     public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position,
-            _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        Collider[] colliders = Physics.OverlapBox(transform.position, _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
 
         float minDistance = Mathf.Infinity;
-        Collider collider = null;
-        for (int i = 0; i < colliders.Length; i++)
+        Collider closestCollider = null;
+        foreach (var col in colliders)
         {
-            if (colliders[i].TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
+            if (col.TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
             {
-                float distance = Vector3.Distance(transform.position, colliders[i].transform.position);
+                float distance = Vector3.Distance(transform.position, col.transform.position);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    collider = colliders[i];
+                    closestCollider = col;
                 }
             }
         }
 
-        _counterableTarget = collider;
+        _counterableTarget = closestCollider;
 
-        _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();
-
-        if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
+        if (_counterableTarget != null)
         {
-            damageable.TakeDamage(attackData.AttackDamage);
+            _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();
+
+            if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.TakeDamage(attackData.AttackDamage);
+            }
         }
     }
 
+    /// <summary>
+    /// 두 번째 카운터 공격을 실행합니다. (현재 미구현)
+    /// </summary>
     public void ExcuteSecondCounterAttack(PlayerAttackData attackData)
     {
-
-
-        
+        // TODO: 두 번째 카운터 공격 로직 구현
     }
 
+    /// <summary>
+    /// 카운터 공격 대상을 초기화합니다.
+    /// </summary>
     public void ClearCounterTarget()
     {
         _counterableTarget = null;
@@ -317,23 +327,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         if (isBattleState)
         {
             SetupBattleTime();
-            SetBattleState(isBattleState);
         }
-        else
-        {
-            SetBattleState(isBattleState);
-        }
+        SetBattleState(isBattleState);
     }
 
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
     {
-        if (!_isDrawGizmos)
-        {
-            return;
-        }
+        if (!_isDrawGizmos) return;
 
+        // 공격 범위 기즈모
         DrawActionGizmo(_combatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_combatData.AttackDatas[1].AttackRadius, Color.orangeRed);
         DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);

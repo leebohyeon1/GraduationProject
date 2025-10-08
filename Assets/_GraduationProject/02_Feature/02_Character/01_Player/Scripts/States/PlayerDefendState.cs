@@ -1,15 +1,12 @@
-﻿using BH_Lib.FSM;
+using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
 using System.Threading;
 using UnityEditor.Timeline;
 using UnityEngine;
 
-
 /// <summary>
-/// 플레이어 방어 상태
-/// 방어 키를 누르고 있을 때의 상태
-/// 방어 중에는 이동 및 공격이 불가능하고, 받는 데미지가 70% 감소
+/// 플레이어의 방어 상태입니다.
 /// </summary>
 public class PlayerDefendState : BaseState<Player>
 {
@@ -22,18 +19,15 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.OnParryAffect += HandleParryAffect;
 
         p_context.Animator.SetBool("IsDefending", true);
-
-
         p_context.Combat.SetDefending(true);
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
     public override void OnUpdate()
     {
-        // 방어 중에는 이동하지 않음 (중력만 적용)
         p_context.Movement?.Move(Vector3.zero, 0f, 0f);
 
-        // 방어 키를 떼면 Idle 상태로 전환
+        // 입력에 따른 상태 전환
         if (!p_context.Input.DefendInput)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
@@ -55,6 +49,9 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
+    /// <summary>
+    /// 패링 판정이 발생하는 시점에 호출됩니다.
+    /// </summary>
     private void HandleParryPerform()
     {
         Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.CombatData.ParryRadius);
@@ -68,9 +65,11 @@ public class PlayerDefendState : BaseState<Player>
         }
     }
 
+    /// <summary>
+    /// 패링 성공 시 호출됩니다.
+    /// </summary>
     private void HandleParryAffect(Collider collider)
     {
        p_context.Combat.ToggleCanCounter(p_context.Stats.CombatData.CounterAttackWindow);
     }
 }
-

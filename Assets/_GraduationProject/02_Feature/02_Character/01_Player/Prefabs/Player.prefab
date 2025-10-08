@@ -1598,7 +1598,6 @@ GameObject:
   - component: {fileID: 6502035142526053912}
   - component: {fileID: 3259499344088917303}
   - component: {fileID: 7649532155660733297}
-  - component: {fileID: 1948424745503444239}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -1693,7 +1692,6 @@ MonoBehaviour:
   _movement: {fileID: 7649532155660733297}
   _combat: {fileID: 6502035142526053912}
   _heat: {fileID: 8830776819107811238}
-  _mediator: {fileID: 1948424745503444239}
 --- !u!114 &1000522476364963410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1839,12 +1837,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58ce37b33b0ab245b673d663b519d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHeat
-  _maxHeat: 100
-  p_currentHeat: 0
-  p_sourceMapDataBase: {fileID: 0}
-  p_tierStatDatabase: {fileID: 0}
-  LockTimer: 2
-  <ActorType>k__BackingField: 0
 --- !u!114 &6502035142526053912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1881,18 +1873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81a725c12c0ae34caaf322fd9dd6bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveSystem
---- !u!114 &1948424745503444239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a59821a8f067494eb8713d819d3ead1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMediator
 --- !u!1 &7354079342891410513
 GameObject:
   m_ObjectHideFlags: 0

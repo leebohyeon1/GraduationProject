@@ -41,8 +41,8 @@ public class EnemyMovement
         }
         Vector3 lookAtPosition = _runner.player.transform.position;
         lookAtPosition.y = _runner.transform.position.y;
-        _runner.transform.LookAt(lookAtPosition);
-        _runner.SetLastRushHitObject(null);
+        // _runner.transform.LookAt(lookAtPosition);
+        // _runner.SetLastRushHitObject(null);
         if (rb != null)
         {
             rb.isKinematic = false; // Rigidbody 물리 효과 활성화
