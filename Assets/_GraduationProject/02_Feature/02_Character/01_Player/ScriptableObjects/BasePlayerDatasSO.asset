@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 5cff0c7e55165ed4ebcd9871c1069362, type: 3}
   m_Name: BasePlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
   MaxHealth: 100
@@ -41,8 +41,8 @@ MonoBehaviour:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 2
+          outSlope: 2
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -70,8 +70,8 @@ MonoBehaviour:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 2
+          outSlope: 2
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -99,8 +99,8 @@ MonoBehaviour:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 2
+          outSlope: 2
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
       AttackDamage: 10
       AttackRadius: {x: 4, y: 1, z: 4}
       AttackDelay: 0.2
-    LastAttackDelay: 0.3
+    LastAttackDelay: 0.1
     ChargeAttackData:
       AttackMoveDistance: 10
       AttackMoveDuration: 0.1
@@ -130,8 +130,8 @@ MonoBehaviour:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 2
+          outSlope: 2
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
       ChargeTime: 1
       AttackDamage: 4
       ProjectilePrefab: {fileID: 8749592458861236631, guid: f22f61d0c376a484c89f60d85b6c5fa9, type: 3}
-      ProjectileSpeed: 10
+      ProjectileSpeed: 20
       ProjectileMoveCurve:
         serializedVersion: 2
         m_Curve:
@@ -181,7 +181,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       AttackDelay: 0.2
-    ParryRadius: {x: 4, y: 0, z: 4}
+    ParryRadius: {x: 3, y: 1, z: 3}
     CounterAttackWindow: 1
     CounterAttackDatas:
     - AttackMoveDistance: 0
@@ -191,10 +191,10 @@ MonoBehaviour:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
-          tangentMode: 0
+          tangentMode: 34
           weightedMode: 0
           inWeight: 0
           outWeight: 0
@@ -203,7 +203,7 @@ MonoBehaviour:
           value: 1
           inSlope: 0
           outSlope: 0
-          tangentMode: 0
+          tangentMode: 34
           weightedMode: 0
           inWeight: 0
           outWeight: 0
@@ -211,18 +211,18 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       AttackDamage: 20
-      AttackRadius: {x: 4, y: 1, z: 0}
-      AttackDelay: 0.2
+      AttackRadius: {x: 4, y: 1, z: 4}
+      AttackDelay: 0.5
     - AttackMoveDistance: -2
-      AttackMoveDuration: 0.5
+      AttackMoveDuration: 0.05
       AttackMoveCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 2
+          outSlope: 2
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -240,5 +240,5 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       AttackDamage: 20
-      AttackRadius: {x: 4, y: 1, z: 0}
+      AttackRadius: {x: 0, y: 0, z: 0}
       AttackDelay: 0.2

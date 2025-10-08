@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.ResourceManagement.ResourceProviders.Simulation;
 
 public class  StiffnessSystem : MonoBehaviour, IStiffness
 {
