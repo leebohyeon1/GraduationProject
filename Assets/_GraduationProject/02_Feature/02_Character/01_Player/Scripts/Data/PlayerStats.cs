@@ -46,7 +46,7 @@ public class PlayerStats: IDisposable
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData = new PlayerCombatData(); // 전투 데이터
 
-    public PlayerSkillData SkillData = new PlayerSkillData(3);
+    public PlayerSkillData SkillData;
 
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
@@ -165,6 +165,16 @@ public class PlayerStats: IDisposable
         RotateSpeed = baseData.RotateSpeed;
 
         CombatData = baseData.CombatData.Clone();
+
+        SkillData = new PlayerSkillData(3);
+
+        SkillData.SkillCoolDown[(int)SkillType.Flash] = _dataBase.FlashSkill.CoolDown;
+        SkillData.SkillCoolDown[(int)SkillType.Boost] = _dataBase.BoostSkill.CoolDown;
+        SkillData.SkillCoolDown[(int)SkillType.TimeStop] = _dataBase.TimeStopSkill.CoolDown;
+
+        SkillData.SkillMaxCount[(int)SkillType.Flash] = _dataBase.FlashSkill.Count;
+        SkillData.SkillMaxCount[(int)SkillType.Boost] = _dataBase.BoostSkill.Count;
+        SkillData.SkillMaxCount[(int)SkillType.TimeStop] = _dataBase.TimeStopSkill.Count;
     }
 
     /// <summary>
@@ -344,14 +354,17 @@ public struct PlayerSkillData
 
     public PlayerSkillData(int count)
     {
-        IsMainSkillsUnlock = new List<bool>(count);
-        IsSubSkillsUnlock = new List<List<bool>>(count);
+        IsMainSkillsUnlock = new List<bool>(new bool[count]);
+        IsSubSkillsUnlock = new List<List<bool>>();
+        for (int i = 0; i < count; i++)
+        {
+            IsSubSkillsUnlock.Add(new List<bool>());
+        }
 
-        SkillCoolDown = new List<float>(count);
-        SkillCoolDownTimer = new List<float>(count);
+        SkillCoolDown = new List<float>(new float[count]);
+        SkillCoolDownTimer = new List<float>(new float[count]);
 
-        SkillMaxCount = new List<int>(count);
-        SkillCount = new List<int>(count) {1,1,1 };
-
+        SkillMaxCount = new List<int>(new int[count]);
+        SkillCount = new List<int>(new int[count]);
     }
 }

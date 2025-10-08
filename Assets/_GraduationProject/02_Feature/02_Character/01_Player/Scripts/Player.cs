@@ -231,7 +231,10 @@ public class Player : DIMonoBehaviour
     {
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
                     DataBase.BaseData.GroundLayerMask);
-        
+
+        _skill.Tick();
+
+
         if (Heat.CanHeatTierEffect())
         {
             Events.TriggerTier(Heat.CurrentTier, DataBase.OverHeatData.DamagePerTick);
