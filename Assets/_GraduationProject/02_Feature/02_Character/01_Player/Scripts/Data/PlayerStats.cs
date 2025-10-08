@@ -25,7 +25,12 @@ public class PlayerStats: IDisposable
     // Stat
     public int MaxHealth; // 최대 체력
     public int CurrentHealth; // 현재 체력
+
+    public int MaxHeat; // 최대 열기
     public int CurrentHeat; // 현재 열기
+
+    public int MaxMana; // 최대 마나
+    public int CurrentMana; // 현재 마나
 
     // Currency
     public int SkillPoint;
@@ -143,7 +148,12 @@ public class PlayerStats: IDisposable
 
         MaxHealth = baseData.MaxHealth;
         CurrentHealth = MaxHealth;
+
+        MaxHeat = baseData.MaxHeat;
         CurrentHeat = 0;
+        
+        MaxMana = baseData.MaxMana;
+        CurrentMana = 0;
 
         GroundLayerMask = baseData.GroundLayerMask;
         ObstacleLayerMask = baseData.ObstacleLayerMask;

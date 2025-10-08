@@ -79,6 +79,11 @@ public class PlayerSkill : MonoBehaviour
 
     private void Flash()
     {
+        if(_stats.CurrentMana < _flashSkillSO.SkillCost)
+        {
+            return;
+        }
+
         float distance = _flashSkillSO.MoveDistance;
         if (Physics.Raycast(transform.position, _inputHandler.MoveInput, out RaycastHit hitInfo,
             _flashSkillSO.MoveDistance, _stats.ObstacleLayerMask))
