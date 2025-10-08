@@ -33,6 +33,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         if(p_context.Movement.HasTargetRotation)
         {
             p_context.Movement.RotateToTargetRotation();
+
         }
         else
         {
@@ -78,6 +79,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         if (p_nextState == null || !typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
             sequence.SetDelay(p_context.Stats.CombatData.LastAttackDelay);
+            p_context.Movement.ClearTargetRotation();
         }
 
         sequence.AppendCallback(() =>
@@ -113,21 +115,38 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         float distance = p_AttackData.AttackMoveDistance;
 
         // 전방에 장애물이 있으면 이동 거리 조정
-        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, out var hitInfo, p_AttackData.AttackMoveDistance))
+        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, 
+            out var hitInfo, p_AttackData.AttackMoveDistance,
+            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
 
-        Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+        if (distance <= 0) return;
 
-        p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+        Vector3 moveDirection = p_context.transform.forward;
+        float duration = p_AttackData.AttackMoveDuration;
+        AnimationCurve curve = p_AttackData.AttackMoveCurve;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (x - currentDistance);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            duration)
+            .SetEase(curve)
+            .SetId(p_animationTrigger);
     }
 
     /// <summary>
     /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
     /// </summary>
-    public void HandleInput()
+    protected virtual void HandleInput()
     {
         if (p_nextAttackState != null && p_context.Input.AttackInput)
         {

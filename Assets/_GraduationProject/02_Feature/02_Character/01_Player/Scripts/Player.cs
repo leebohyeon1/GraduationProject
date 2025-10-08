@@ -26,21 +26,26 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerMovement _movement; // 이동 컴포넌트
     [SerializeField] private PlayerCombat _combat; // 전투 컴포넌트
     [SerializeField] private PlayerHeat _heat; // 열기 컴포넌트
+    [SerializeField] private PlayerSkill _skill; // 스킬 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
     
     #region Properties
     public Animator Animator => _animator;
+
     public PlayerDataBaseSO DataBase => _dataBase;
+    public PlayerStats Stats => _stats;
+    public PlayerEvents Events => _events;
     public PlayerInputHandler Input => _input;
+
     public PlayerHealth Health => _health;
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
-    public PlayerEvents Events => _events;
+    public PlayerSkill Skill => _skill; 
 
-    public PlayerStats Stats => _stats;
+
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     
@@ -124,7 +129,7 @@ public class Player : DIMonoBehaviour
         {
             _movement = GetComponent<PlayerMovement>();
         }
-        _movement.Initialize(_characterController);
+        _movement.Initialize(_characterController, Events);
     
         if (_combat == null)
         {
@@ -136,8 +141,15 @@ public class Player : DIMonoBehaviour
         {
             _heat = GetComponent<PlayerHeat>(); 
         }
-        _heat.Initialize(Stats , DataBase.SourceMapData, DataBase.TierStatData, 
+        _heat.Initialize(Stats, DataBase.SourceMapData, DataBase.TierStatData,
             DataBase.OverHeatData, Events);
+
+        if (_skill == null)
+        {
+            _skill = GetComponent<PlayerSkill>();
+        }
+        _skill.Initialize(Stats, Events, Input, DataBase);
+
 
     }
     
@@ -175,14 +187,14 @@ public class Player : DIMonoBehaviour
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && Stats.IsDamaged);
+            !Health.IsDead && !Stats.IsCounterAttack && Stats.IsDamaged);
     
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(() 
+        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
@@ -196,7 +208,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(() 
+        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
@@ -222,6 +234,11 @@ public class Player : DIMonoBehaviour
         if (Time.time - Combat.LastBattleTime >= Stats.BattleOutTime && Combat.IsBattleState)
         {
             Events.TriggerBattleStateChanged(false);
+        }
+
+        if(Input.SkillInput)
+        {
+            Skill.UseSkill();
         }
     }
     
@@ -252,6 +269,7 @@ public class Player : DIMonoBehaviour
     private void UnsubscribeToEvents()
     {
         Stats.Dispose();
+        Movement.Dispose();
         Health.Dispose();
         Combat.Dispose();
         Heat.Dispose();

@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -19,13 +21,18 @@ public class PlayerStats: IDisposable
     public bool IsDamaged => IsLightHit || IsHeavyHit; // 피격중인가?
     public bool IsOverHeat; // 과열 상태인가?
     public bool IsHeatlock; // 열기 변경이 잠금되었는가?
+    public bool IsBoost; // 증폭 상태인가?
 
     // Stat
     public int MaxHealth; // 최대 체력
     public int CurrentHealth; // 현재 체력
     public int CurrentHeat; // 현재 열기
 
+    // Currency
+    public int SkillPoint;
+
     public LayerMask GroundLayerMask = 1 << 3; // 지면 레이어 마스크
+    public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
     public float Gravity = -9.81f; // 중력
     public float GroundCheckDistance = 0.1f; // 지면과의 거리 체크
     
@@ -34,6 +41,8 @@ public class PlayerStats: IDisposable
 
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData = new PlayerCombatData(); // 전투 데이터
+
+    public PlayerSkillData SkillData = new PlayerSkillData(3);
 
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
@@ -138,6 +147,8 @@ public class PlayerStats: IDisposable
         CurrentHeat = 0;
 
         GroundLayerMask = baseData.GroundLayerMask;
+        ObstacleLayerMask = baseData.ObstacleLayerMask;
+
         Gravity = baseData.Gravity;
         GroundCheckDistance = baseData.GroundCheckDistance;
 
@@ -304,4 +315,33 @@ public struct RangedAttackData
 
     [Header("Attack Timing")]
     public float AttackDelay; // 공격 후 딜레이
+}
+
+/// <summary>
+/// 플레이어의 스킬 데이터를 정의하는 구조체입니다.
+/// </summary>
+[Serializable]
+public struct PlayerSkillData
+{
+    public List<bool> IsMainSkillsUnlock;
+    public List<List<bool>> IsSubSkillsUnlock;
+
+    public List<float> SkillCoolDown;
+    public List<float> SkillCoolDownTimer;
+
+    public List<int> SkillMaxCount;
+    public List<int> SkillCount;
+
+    public PlayerSkillData(int count)
+    {
+        IsMainSkillsUnlock = new List<bool>(count);
+        IsSubSkillsUnlock = new List<List<bool>>(count);
+
+        SkillCoolDown = new List<float>(count);
+        SkillCoolDownTimer = new List<float>(count);
+
+        SkillMaxCount = new List<int>(count);
+        SkillCount = new List<int>(count) {1,1,1 };
+
+    }
 }

@@ -13,7 +13,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     protected override Type p_nextAttackState => typeof(PlayerSecondCounterAttackState);
     protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[0];
 
-    public PlayerFirstCounterAttackState(Player context, StateMachine<Player> stateMachine) 
+    public PlayerFirstCounterAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
     public override void OnEnter()
@@ -31,7 +31,6 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         StartAttackMovement();
         p_context.Events.TriggerFirstCounterAttackStart();
     }
-
     public override void OnExit()
     {
         p_context.Events.OnAttackFinish -= HandleAttackFinish;
@@ -66,7 +65,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
             if (p_nextState != null)
             {
                 // 다음 상태가 연계 카운터 공격이 아니면 카운터 상태 해제
-                if(p_nextAttackState != p_nextState)
+                if (p_nextAttackState != p_nextState)
                 {
                     p_context.Stats.IsCounterAttack = false;
                     p_context.Combat.ClearCounterTarget();
@@ -79,4 +78,33 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
             }
         });
     }
+
+    /// <summary>
+    /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
+    /// </summary>
+    protected override void HandleInput()
+    {
+        if (p_nextAttackState != null && p_context.Input.AttackInput && p_context.Stats.IsBoost)
+        {
+            p_nextState = p_nextAttackState;
+        }
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        {
+            p_nextState = typeof(PlayerDodgeState);
+        }
+        else if (p_context.Input.DefendInput)
+        {
+            p_nextState = typeof(PlayerDefendState);
+        }
+        else if (p_context.Input.AttackHeldInput)
+        {
+            p_nextState = typeof(PlayerChargeState);
+        }
+        else if (p_context.Input.RangedAttackInput)
+        {
+            p_nextState = typeof(PlayerRangedChargeState);
+        }
+    }
+
+
 }

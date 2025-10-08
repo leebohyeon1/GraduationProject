@@ -26,7 +26,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         p_context.Animator.SetTrigger(p_animationTrigger);
 
         StartAttackMovement();
-        p_context.Events.TriggerSecondAttackStart();
+        p_context.Events.TriggerSecondCounterAttackStart();
     }
 
     public override void OnExit()
@@ -36,6 +36,8 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
 
+        p_context.Stats.IsCounterAttack = false;
+        p_context.Combat.ClearCounterTarget();
         DOTween.Kill(p_animationTrigger);
 
         p_nextState = null;
@@ -48,16 +50,32 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // 후방에 장애물이 있으면 이동 거리 조정
-        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward, out var hitInfo, p_AttackData.AttackMoveDistance))
+        // 전방에 장애물이 있으면 이동 거리 조정
+        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward,
+            out var hitInfo, p_AttackData.AttackMoveDistance, 
+            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
         {
-            distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
+            distance = hitInfo.distance + (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
 
-        Vector3 targetPosition = p_context.transform.position - (p_context.transform.forward * distance);
+        Vector3 moveDirection = -p_context.transform.forward;
+        float duration = p_AttackData.AttackMoveDuration;
+        AnimationCurve curve = p_AttackData.AttackMoveCurve;
 
-        p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (currentDistance - x);
+                Log.Print(displacement);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            duration)
+            .SetEase(curve)
+            .SetId(p_animationTrigger);
     }
 
     /// <summary>

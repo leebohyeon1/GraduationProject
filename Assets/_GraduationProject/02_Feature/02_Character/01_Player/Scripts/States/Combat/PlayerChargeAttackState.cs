@@ -99,18 +99,34 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void StartAttackMovement()
     {
-        float distance = _playerAttackData.AttackMoveDistance;
+        float distance = p_AttackData.AttackMoveDistance;
 
-        // 전방에 장애물이 있으면 이동 거리 및 공격 범위 조정
-        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, out var hitInfo, _playerAttackData.AttackMoveDistance))
+        // 전방에 장애물이 있으면 이동 거리 조정
+        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward,
+            out var hitInfo, p_AttackData.AttackMoveDistance,
+            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
-            _playerAttackData.AttackRadius.z = distance + 1;
         }
 
-        Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+        if (distance <= 0) return;
 
-        p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-            .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+        Vector3 moveDirection = p_context.transform.forward;
+        float duration = p_AttackData.AttackMoveDuration;
+        AnimationCurve curve = p_AttackData.AttackMoveCurve;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (x - currentDistance);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            duration)
+            .SetEase(curve)
+            .SetId(p_animationTrigger);
     }
 }

@@ -1,13 +1,15 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 이동, 회전, 중력 등 물리적인 움직임을 담당하는 컴포넌트입니다.
 /// </summary>
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IDisposable
 {
     #region Private Fields
     private CharacterController _characterController; // 캐릭터 컨트롤러
     private Camera _mainCamera; // 메인 카메라
+    private PlayerEvents _events;
 
     private Vector3 _velocity; // 현재 속도 (중력 포함)
     private bool _isGrounded; // 지면 접촉 여부
@@ -25,10 +27,19 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// 초기화 함수
     /// </summary>
-    public void Initialize(CharacterController characterController)
+    public void Initialize(CharacterController characterController, PlayerEvents events)
     {
         _characterController = characterController;
         _mainCamera = Camera.main;
+
+        _events = events;
+
+        _events.OnFlashStart += HandleFlashStart;
+    }
+
+    public void Dispose()
+    {
+        _events.OnFlashStart -= HandleFlashStart;
     }
 
     /// <summary>
@@ -58,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
         if (_velocity.y < -30f) _velocity.y = -30f;
     }
 
+
     #region Move
     /// <summary>
     /// 입력 방향으로 이동합니다.
@@ -82,6 +94,16 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime);
         }
     }
+
+    /// <summary>
+    /// 외부에서 계산된 변위만큼 캐릭터를 강제로 이동시킵니다. 중력이 함께 적용됩니다.
+    /// </summary>
+    /// <param name="displacement">프레임당 이동할 변위</param>
+    public void ForceMove(Vector3 displacement)
+    {
+        displacement.y = _velocity.y * Time.fixedDeltaTime;
+        _characterController.Move(displacement);
+    }
     #endregion
 
     #region Dodge
@@ -90,8 +112,8 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void Dodge(Vector3 direction, float dodgeSpeed)
     {
-        Vector3 moveVector = direction != Vector3.zero 
-            ? (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x).normalized 
+        Vector3 moveVector = direction != Vector3.zero
+            ? (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x).normalized
             : transform.forward;
 
         Vector3 movement = moveVector * dodgeSpeed * Time.fixedDeltaTime;
@@ -178,6 +200,16 @@ public class PlayerMovement : MonoBehaviour
     public void ClearTargetRotation()
     {
         _hasTargetRotation = false;
+    }
+    #endregion
+
+    #region Event
+    public void HandleFlashStart(Vector2 input)
+    {
+        Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 Velocity = cameraForward * input.y + _mainCamera.transform.right * input.x;
+
+        ForceMove(Velocity);
     }
     #endregion
 }
