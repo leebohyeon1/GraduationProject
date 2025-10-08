@@ -5,35 +5,35 @@ using UnityEngine.UI;
 
 public class HeatBar : MonoBehaviour
 {
-    [SerializeField] private Image _heatBarSlider;
-    [SerializeField] private GameObject _object;
-    private IHeatable _heatable;
+    [SerializeField] protected Image p_heatBarSlider;
+    [SerializeField] protected GameObject p_object;
+    protected IHeatable p_heatable;
     
-    private void Start()
+    protected virtual void Start()
     {
-        _heatable = _object.GetComponent<IHeatable>();
+        p_heatable = p_object.GetComponent<IHeatable>();
         
-        _heatBarSlider.fillAmount = _heatable.CurrentHeat / (float)_heatable.MaxHeat;
-        _heatable.OnHeatChanged += ChangeHeatBar;
+        p_heatBarSlider.fillAmount = p_heatable.CurrentHeat / (float)p_heatable.MaxHeat;
+        p_heatable.OnHeatChanged += ChangeHeatBar;
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
-        if( _heatBarSlider != null )
+        if(p_heatBarSlider != null )
         {
-            _heatable.OnHeatChanged -= ChangeHeatBar;
+            p_heatable.OnHeatChanged -= ChangeHeatBar;
         }
     }
 
-    private void ChangeHeatBar(int previousHeat, int currentHeat)
+    protected virtual void ChangeHeatBar(int previousHeat, int currentHeat)
     {
-        DOTween.Kill(_heatBarSlider, true);
+        DOTween.Kill(p_heatBarSlider, true);
 
-        float heatPercent =  currentHeat / (float)_heatable.MaxHeat;
-        DOTween.To(() => _heatBarSlider.fillAmount,
-                    x => _heatBarSlider.fillAmount = x,
+        float heatPercent =  currentHeat / (float)p_heatable.MaxHeat;
+        DOTween.To(() => p_heatBarSlider.fillAmount,
+                    x => p_heatBarSlider.fillAmount = x,
                     heatPercent, 0.3f)
                     .SetEase(Ease.Linear)
-                    .SetId(_heatBarSlider);
+                    .SetId(p_heatBarSlider);
     }
 }
