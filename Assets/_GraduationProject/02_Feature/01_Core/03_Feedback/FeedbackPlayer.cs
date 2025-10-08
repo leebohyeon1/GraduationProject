@@ -38,6 +38,28 @@ public class FeedbackPlayer<T> : MonoBehaviour
     /// </summary>
     /// <param name="feedbackType">재생할 피드백 타입</param>
     /// <param name="position">재생 위치</param>
+    public virtual void PlayFeedback(T feedbackType)
+    {
+        if (_feedbackDictionary.TryGetValue(feedbackType, out MMF_Player feedback))
+        {
+            if (feedback == null)
+            {
+                Log.PrintWarning($"피드백이 null입니다: {feedbackType}");
+                return;
+            }
+            feedback.PlayFeedbacks();
+        }
+        else
+        {
+            Log.PrintWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
+        }
+    }
+
+    /// <summary>
+    /// 지정된 타입의 피드백을 특정 위치에서 재생합니다.
+    /// </summary>
+    /// <param name="feedbackType">재생할 피드백 타입</param>
+    /// <param name="position">재생 위치</param>
     public virtual void PlayFeedback(T feedbackType, Vector3 position)
     {
         if (_feedbackDictionary.TryGetValue(feedbackType, out MMF_Player feedback))
