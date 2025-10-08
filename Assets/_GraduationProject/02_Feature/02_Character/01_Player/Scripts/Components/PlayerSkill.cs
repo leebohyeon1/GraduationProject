@@ -1,3 +1,4 @@
+using BH_Lib.Log;
 using DG.Tweening;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -104,20 +105,32 @@ public class PlayerSkill : MonoBehaviour
 
     private void Flash()
     {
-        if(_stats.CurrentMana < _flashSkillSO.SkillCost)
+        if (_stats.CurrentMana < _flashSkillSO.SkillCost)
         {
             return;
         }
 
         float distance = _flashSkillSO.MoveDistance;
-        if (Physics.Raycast(transform.position, _inputHandler.MoveInput, out RaycastHit hitInfo,
+        Vector3 moveDirection;
+
+        if (_inputHandler.MoveInput == Vector2.zero)
+        {
+            moveDirection = transform.forward;
+            Log.Print(moveDirection);
+        }
+        else
+        {
+            moveDirection = new Vector3(_inputHandler.MoveInput.x, 0, _inputHandler.MoveInput.y).normalized;
+        }
+
+        if (Physics.Raycast(transform.position, moveDirection, out RaycastHit hitInfo,
             _flashSkillSO.MoveDistance, _stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (GetComponent<Collider>().bounds.size.z / 2);
         }
 
-        Vector2 input = _inputHandler.MoveInput * distance;
-        _events.TriggerFlashSkillStart(input);
+        Vector2 velocity = new Vector3(_inputHandler.MoveInput.x, 0, _inputHandler.MoveInput.y).normalized;
+        _events.TriggerFlashSkillStart(velocity, distance);
     }
 
     private void Boots()

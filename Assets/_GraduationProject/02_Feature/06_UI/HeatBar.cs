@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class HeatBar : MonoBehaviour
 {
-    [SerializeField] protected Image p_heatBarSlider;
     [SerializeField] protected GameObject p_object;
+    [SerializeField] protected Image p_heatBarSlider;
     protected IHeatable p_heatable;
     
     protected virtual void Start()

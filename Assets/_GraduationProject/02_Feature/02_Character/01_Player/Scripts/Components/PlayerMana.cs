@@ -77,7 +77,7 @@ public class PlayerMana : MonoBehaviour, IDisposable
         SetCanChange(false);
     }
 
-    private void HandleFlashStart(Vector2 input)
+    private void HandleFlashStart(Vector2 input, float distance)
     {
         SetCanChange(true);
         ChangeMana(-1);
