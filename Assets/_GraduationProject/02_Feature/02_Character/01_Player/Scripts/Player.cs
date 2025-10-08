@@ -27,6 +27,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerCombat _combat; // 전투 컴포넌트
     [SerializeField] private PlayerHeat _heat; // 열기 컴포넌트
     [SerializeField] private PlayerSkill _skill; // 스킬 컴포넌트
+    [SerializeField] private PlayerMana _mana;  // 마나 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
@@ -44,6 +45,7 @@ public class Player : DIMonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
     public PlayerSkill Skill => _skill; 
+    public PlayerMana Mana => _mana;
 
 
 
@@ -150,7 +152,11 @@ public class Player : DIMonoBehaviour
         }
         _skill.Initialize(Stats, Events, Input, DataBase);
 
-
+        if(_mana == null)
+        {
+            _mana = GetComponent<PlayerMana>();
+        }
+        _mana.Initialize(Stats, Events);
     }
     
     /// <summary>
@@ -225,7 +231,10 @@ public class Player : DIMonoBehaviour
     {
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
                     DataBase.BaseData.GroundLayerMask);
-        
+
+        _skill.Tick();
+
+
         if (Heat.CanHeatTierEffect())
         {
             Events.TriggerTier(Heat.CurrentTier, DataBase.OverHeatData.DamagePerTick);
@@ -273,6 +282,7 @@ public class Player : DIMonoBehaviour
         Health.Dispose();
         Combat.Dispose();
         Heat.Dispose();
+        Mana.Dispose();
 
         if (_stats != null)
         {

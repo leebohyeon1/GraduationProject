@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ public class PlayerSkill : MonoBehaviour
     private TimeStopSkillSO _timeStopSkillSO;
 
     [SerializeField] private SkillType _currentSkillType;
+
     #endregion
 
     public void Initialize(PlayerStats stats, PlayerEvents events,
@@ -34,6 +36,27 @@ public class PlayerSkill : MonoBehaviour
         _flashSkillSO = dataBaseSO.FlashSkill;
         _boostSkillSO = dataBaseSO.BoostSkill;
         _timeStopSkillSO = dataBaseSO.TimeStopSkill;
+    }
+
+    public void Tick()
+    {
+        for (int i = 0; i < _stats.SkillData.IsMainSkillsUnlock.Count; i++)
+        {
+            if (_stats.SkillData.SkillCount[i] >= _stats.SkillData.SkillMaxCount[i])
+            {
+                continue;
+            }
+
+            _stats.SkillData.SkillCoolDownTimer[i] += Time.deltaTime;
+
+            if (_stats.SkillData.SkillCoolDownTimer[i] >= _stats.SkillData.SkillCoolDown[i])
+            {
+                _stats.SkillData.SkillCount[i] = 
+                    Mathf.Clamp(_stats.SkillData.SkillCount[i] + 1, 0, _stats.SkillData.SkillMaxCount[i]);
+
+                _stats.SkillData.SkillCoolDownTimer[i] = 0f;
+            }
+        }
     }
 
     /// <summary>
@@ -57,7 +80,7 @@ public class PlayerSkill : MonoBehaviour
     public void UseSkill()
     {
         if (_currentSkillType == SkillType.None
-            && _stats.SkillData.SkillCount[(int)_currentSkillType] <= 0)
+            || _stats.SkillData.SkillCount[(int)_currentSkillType] <= 0)
         {
             return;
         }
@@ -75,10 +98,17 @@ public class PlayerSkill : MonoBehaviour
             case SkillType.TimeStop:
                 break;
         }
+
+        _stats.SkillData.SkillCount[(int)_currentSkillType]--;
     }
 
     private void Flash()
     {
+        if(_stats.CurrentMana < _flashSkillSO.SkillCost)
+        {
+            return;
+        }
+
         float distance = _flashSkillSO.MoveDistance;
         if (Physics.Raycast(transform.position, _inputHandler.MoveInput, out RaycastHit hitInfo,
             _flashSkillSO.MoveDistance, _stats.ObstacleLayerMask))

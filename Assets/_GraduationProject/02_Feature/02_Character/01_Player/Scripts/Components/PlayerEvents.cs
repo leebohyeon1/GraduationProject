@@ -216,6 +216,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerThirdAttackStart()
     {
+        OnAttackStart?.Invoke();
         PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB);
     }
 

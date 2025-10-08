@@ -9,6 +9,8 @@ public class BasePlayerDatasSO : ScriptableObject
 {
     [Header("Stats")]
     public int MaxHealth = 100; // 최대 체력
+    public int MaxHeat = 100;
+    public int MaxMana = 3;
 
     [Header("Movement")]
     public LayerMask GroundLayerMask = 1 << 3; // 지면으로 인식할 레이어 마스크
@@ -21,6 +23,4 @@ public class BasePlayerDatasSO : ScriptableObject
 
     [Header("Combat")]
     public PlayerCombatData CombatData; // 전투 관련 데이터
-
-
 }
