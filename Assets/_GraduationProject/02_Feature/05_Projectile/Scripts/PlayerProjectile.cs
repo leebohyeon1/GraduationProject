@@ -23,7 +23,7 @@ public class PlayerProjectile : Projectile
                 Attack(damageable); // 공격 실행
                 
                 // 원거리 공격 피격 이벤트 발생
-                p_owner.GetComponent<Player>().Events.TriggerRangedAttackAffect(other);
+                // p_owner.GetComponent<Player>().Events.TriggerRangedAttackAffect(other);
 
                 // 충돌 시 파괴 옵션이 켜져 있으면 발사체 파괴
                 if (p_destroyOnHit)

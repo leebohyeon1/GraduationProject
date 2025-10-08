@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -201,6 +200,7 @@ public struct PlayerCombatData
     public float DodgeCooldown; // 회피 쿨타임
 
     [Header("Damaged")]
+    [Range(0f,1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
     public float LightStaggerDuration; // 약한 경직 시간
     public float HeavyStaggerDuration; // 강한 경직 시간
