@@ -163,6 +163,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
             Plane groundPlane = new Plane(Vector3.up, transform.position.y);
             if (groundPlane.Raycast(ray, out float distance))
             {
+                Vector3 point = new Vector3(ray.GetPoint(distance).x, transform.position.y, ray.GetPoint(distance).z);
                 Vector3 direction = (ray.GetPoint(distance) - transform.position).normalized;
                 direction.y = 0;
                 if (direction.sqrMagnitude > 0.1f) return Quaternion.LookRotation(direction, Vector3.up);

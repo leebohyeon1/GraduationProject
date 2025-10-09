@@ -127,6 +127,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             distance,
             duration)
             .SetEase(curve)
-            .SetId(p_animationTrigger);
+            .SetId(p_animationTrigger)
+            .SetUpdate(UpdateType.Fixed);
     }
 }
