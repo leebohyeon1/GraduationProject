@@ -7,8 +7,9 @@ public class SkillEnchantUI : PopUpUI
     [SerializeField] private GameObject _skillEnchantPanel;
     private Player _player;
 
-    private void OnEnable()
+    protected override void Start()
     {
+        base.Start();
         if (_interactableObject != null)
         {
             _interactableObject.OnInteract += HandleInteract;

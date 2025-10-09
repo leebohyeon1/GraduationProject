@@ -2,6 +2,7 @@ using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// 플레이어의 입력을 처리하고 관련 이벤트를 발생시키는 클래스입니다. (Unity Input System 사용)
@@ -13,25 +14,32 @@ public class PlayerInputHandler : MonoBehaviour
 
     // 입력 상태 변수
     private Vector2 _moveInput; // 이동 입력
+    private Vector2 _lookInput; // 시선 입력 (게임패드)
+    private Vector2 _mousePosition; // 마우스 위치 (키보드/마우스)
     private bool _attackInput; // 공격 입력
     private bool _attackHeldInput; // 공격 홀드 입력
     private bool _rangedAttackInput; // 원거리 공격 입력
     private bool _dodgeInput; // 회피 입력
     private bool _defendInput; // 방어 입력
-    private Vector2 _lookInput; // 시선 입력 (게임패드)
-    private Vector2 _mousePosition; // 마우스 위치 (키보드/마우스)
     private bool _skillInput; // 스킬 입력
+    private bool _skilChangeInput; // 스킬 변경 입렵
+    private bool _InteractInput; // 상호작용 입력
+    private bool _potionInput; // 포션 사용 입력
+    
 
     #region Properties
     public Vector2 MoveInput => _moveInput;
+    public Vector2 LookInput => _lookInput;
+    public Vector2 MousePosition => _mousePosition;
     public bool AttackInput => _attackInput;
     public bool AttackHeldInput => _attackHeldInput;
     public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
     public bool DefendInput => _defendInput;
     public bool SkillInput => _skillInput;
-    public Vector2 LookInput => _lookInput;
-    public Vector2 MousePosition => _mousePosition;
+    public bool SkillChangeInput => _skilChangeInput;
+    public bool InteractInput => _InteractInput;
+    public bool PotionInput => _potionInput;
     #endregion
 
     /// <summary>
@@ -59,7 +67,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_inputReader == null) return;
+        if (_inputReader == null)
+        {
+            return;
+        }
+
         // 이벤트 구독
         _inputReader.MoveEvent += OnMove;
         _inputReader.AttackEvent += OnAttack;
@@ -73,11 +85,19 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.LookEvent += OnLook;
         _inputReader.MousePositionEvent += OnMousePosition;
         _inputReader.SkillEvent += OnSkill;
+        _inputReader.SkillChangeEvent += OnSkillChange;
+        _inputReader.SkillChangeCancelEvent += OnSkillChangeCancel;
+        _inputReader.InteractEvent += OnInteract;
+        _inputReader.PotionEvent += OnPotion;
     }
     
     private void OnDisable()
     {
-        if (_inputReader == null) return;
+        if (_inputReader == null)
+        {
+            return;
+        }
+
         // 이벤트 구독 해제
         _inputReader.MoveEvent -= OnMove;
         _inputReader.AttackEvent -= OnAttack;
@@ -91,6 +111,10 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.LookEvent -= OnLook;
         _inputReader.MousePositionEvent -= OnMousePosition;
         _inputReader.SkillEvent -= OnSkill;
+        _inputReader.SkillChangeEvent -= OnSkillChange;
+        _inputReader.SkillChangeCancelEvent -= OnSkillChangeCancel;
+        _inputReader.InteractEvent -= OnInteract;
+        _inputReader.PotionEvent -= OnPotion;
     }
     
     private void OnDestroy()
@@ -114,6 +138,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnLook(Vector2 lookInput) => _lookInput = lookInput;
     private void OnMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
     private void OnSkill() => _skillInput = true;
+    private void OnSkillChange() => _skilChangeInput = true;
+    private void OnSkillChangeCancel() => _skilChangeInput = false;
+    private void OnInteract() => _InteractInput = true;
+    private void OnPotion() => _potionInput = true;
 
     /// <summary>
     /// 매 프레임 마지막에 호출되어 일회성 입력 상태를 초기화합니다.
@@ -123,5 +151,7 @@ public class PlayerInputHandler : MonoBehaviour
         _skillInput = false;
         _attackInput = false;
         _dodgeInput = false;
+        _InteractInput = false;
+        _potionInput = false;
     }
 }

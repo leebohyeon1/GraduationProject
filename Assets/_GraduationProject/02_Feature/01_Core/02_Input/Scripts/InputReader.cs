@@ -34,7 +34,16 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public event Action<Vector2> MousePositionEvent = delegate { };
     // 입력 기기 변경 이벤트
     public event Action<InputDeviceType> InputDeviceChangedEvent = delegate { };
+    // 스킬 사용 이벤트
     public event Action SkillEvent = delegate { };
+    // 스킬 변경 이벤트 (시작)
+    public event Action SkillChangeEvent = delegate { };
+    // 스킬 변경 이벤트 (종료)
+    public event Action SkillChangeCancelEvent = delegate { };
+    // 상호작용 이벤트
+    public event Action InteractEvent = delegate { };
+    // 포션 사용 이벤트
+    public event Action PotionEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -106,8 +115,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
                 break;
         }
     }
-    
-    public void OnInteract(InputAction.CallbackContext context) { }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            InteractEvent.Invoke();
+        }
+    }
 
     public void OnDodge(InputAction.CallbackContext context)
     {
@@ -140,6 +155,27 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         if (context.phase == InputActionPhase.Performed)
         {
             SkillEvent.Invoke();
+        }
+    }
+
+    public void OnSkillChange(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                SkillChangeEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                SkillChangeCancelEvent.Invoke();
+                break;
+        }
+    }
+
+    public void OnPotion(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            PotionEvent.Invoke();
         }
     }
 

@@ -262,6 +262,11 @@ public class Player : DIMonoBehaviour
         {
             Skill.UseSkill();
         }
+
+        if(Input.InteractInput)
+        {
+            Interact.Interact();
+        }
     }
     
     /// <summary>
