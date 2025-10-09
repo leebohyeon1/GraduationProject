@@ -24,7 +24,7 @@ public class PlayerDodgeState : BaseState<Player>
         // 입력 방향에 따라 회피 방향 결정
         if (p_context.Input.MoveInput != Vector2.zero)
         {
-            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y);
+            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
             p_context.Movement.RotateToDirection(_dodgeDirection);
         }
         else

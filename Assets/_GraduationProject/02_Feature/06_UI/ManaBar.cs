@@ -16,6 +16,7 @@ public class ManaBar : MonoBehaviour
         }
 
 
+        UpdateUI(0, _manaLists.Count);
         _playerMana.OnManaChange += UpdateUI;
     }
 
