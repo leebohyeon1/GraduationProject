@@ -103,6 +103,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
         foreach (Collider collider in colliders)
         {
+            Debug.Log($"Hit: {collider.gameObject.name}");
             p_context.Events.TriggerAttackAffect(collider);
         }
     }

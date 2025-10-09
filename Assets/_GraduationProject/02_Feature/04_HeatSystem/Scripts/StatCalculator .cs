@@ -11,7 +11,7 @@ public struct CalculationResult
 public static class StatCalculator
 {
     private static TierStatDatabaseSO _tierStatDatabase;
-
+    public static TierStatDatabaseSO TierStatDatabase => _tierStatDatabase;
     public static void Initialize(TierStatDatabaseSO tierDb)
     {
         if(_tierStatDatabase != null) return;
