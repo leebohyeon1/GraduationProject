@@ -28,6 +28,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerHeat _heat; // 열기 컴포넌트
     [SerializeField] private PlayerSkill _skill; // 스킬 컴포넌트
     [SerializeField] private PlayerMana _mana;  // 마나 컴포넌트
+    [SerializeField] private PlayerInteract _interact; // 상호작용 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
@@ -46,6 +47,7 @@ public class Player : DIMonoBehaviour
     public PlayerHeat Heat => _heat;
     public PlayerSkill Skill => _skill; 
     public PlayerMana Mana => _mana;
+    public PlayerInteract Interact => _interact;
 
 
 
@@ -162,6 +164,11 @@ public class Player : DIMonoBehaviour
             _mana = GetComponent<PlayerMana>();
         }
         _mana.Initialize(Stats, Events);
+
+        if(_interact == null)
+        {
+            _interact = GetComponent<PlayerInteract>();
+        }
     }
     
     /// <summary>
