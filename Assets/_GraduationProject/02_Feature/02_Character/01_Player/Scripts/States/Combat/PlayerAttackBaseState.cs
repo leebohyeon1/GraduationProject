@@ -140,7 +140,8 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             distance,
             duration)
             .SetEase(curve)
-            .SetId(p_animationTrigger);
+            .SetId(p_animationTrigger)
+            .SetUpdate(UpdateType.Fixed);
     }
 
     /// <summary>
