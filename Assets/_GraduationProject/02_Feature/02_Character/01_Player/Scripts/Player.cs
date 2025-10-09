@@ -9,6 +9,7 @@ using UnityEngine;
 /// 플레이어의 메인 클래스입니다.
 /// 모든 플레이어 관련 컴포넌트들을 관리하고 상태 머신을 통해 플레이어의 행동을 제어합니다.
 /// </summary>
+[Register(LifetimeScope.Transient)]
 public class Player : DIMonoBehaviour
 {
     #region Private Fields

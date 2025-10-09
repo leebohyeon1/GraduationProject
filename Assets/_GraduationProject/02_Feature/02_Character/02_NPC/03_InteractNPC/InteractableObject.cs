@@ -1,3 +1,4 @@
+using BH_Lib.DI;
 using System;
 using UnityEngine;
 
@@ -7,6 +8,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public event Action<bool> OnPlayerScan;
     public event Action OnInteract;
+
+    private void OnEnable()
+    {
+        if (_player == null)
+        {
+            _player = DIContainer.Instance.Resolve<Player>();
+        }
+    }
 
     private void OnDisable()
     {
@@ -24,10 +33,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<Player>(out var player))
+        if (_player != null && other.gameObject == _player.gameObject)
         {
-            _player = player;
-
             _player.Interact.OnInteract += Interact;
             OnPlayerScan?.Invoke(true);
         }
