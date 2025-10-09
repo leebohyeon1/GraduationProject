@@ -34,6 +34,8 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     public event Action<int, int> OnHeatChanged;    // 열기 변경 이벤트
     public event Action<int, int> OnTierChanged;    // 티어 변경 이벤트
 
+    public event Action<float> OnChargeGuageChanged;
+
     /// <summary>
     /// 열기 시스템을 초기화합니다.
     /// </summary>
@@ -203,6 +205,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// </summary>
     public void IncreaseHeatOnCharge(SourceMap sourceMap, float chargeGuage)
     {
+        OnChargeGuageChanged?.Invoke(chargeGuage);
         if (chargeGuage >= CurrentHeat)
         {
             SetHeat(Mathf.FloorToInt(chargeGuage));
@@ -290,6 +293,12 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         return _tierStatDataBase.GetCurrentTier(CurrentHeat);
     }
 
+    #region Event
+    public void TriggerChargeGuageChanged(float guage)
+    {
+        OnChargeGuageChanged?.Invoke(guage);
+    }
+    #endregion
 
     #region Event Handlers
     /// <summary>

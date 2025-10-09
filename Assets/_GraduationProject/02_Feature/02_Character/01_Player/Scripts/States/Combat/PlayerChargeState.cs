@@ -81,6 +81,7 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
+        p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
     }

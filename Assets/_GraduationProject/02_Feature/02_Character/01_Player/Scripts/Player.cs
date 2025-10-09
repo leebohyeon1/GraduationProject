@@ -56,12 +56,17 @@ public class Player : DIMonoBehaviour
     /// </summary>
     public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
-    
-    private void Start()
+
+    protected override void Awake()
     {
+        base.Awake();
+
         InitializeReference();
         InitializeStateMachine();
-    
+    }
+
+    private void Start()
+    {
         SubscribeToEvents();
     }
     
