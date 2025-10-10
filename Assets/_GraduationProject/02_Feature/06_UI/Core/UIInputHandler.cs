@@ -17,8 +17,6 @@ public class UIInputHandler : MonoBehaviour
     private bool _rightClickInput;
     private bool _middleClickInput;
     private Vector2 _scrollWheelInput;
-    private Quaternion _trackedDeviceOrientationInput;
-    private Vector3 _trackedDevicePositionInput;
 
     #region Properties
     public bool CancelInput => _cancelInput;
@@ -29,8 +27,6 @@ public class UIInputHandler : MonoBehaviour
     public bool RightClickInput => _rightClickInput;
     public bool MiddleClickInput => _middleClickInput;
     public Vector2 ScrollWheelInput => _scrollWheelInput;
-    public Quaternion TrackedDeviceOrientationInput => _trackedDeviceOrientationInput;
-    public Vector3 TrackedDevicePositionInput => _trackedDevicePositionInput;
     #endregion
 
     private void OnEnable()
@@ -49,8 +45,6 @@ public class UIInputHandler : MonoBehaviour
         _inputReader.RightClickEvent += OnRightClick;
         _inputReader.MiddleClickEvent += OnMiddleClick;
         _inputReader.ScrollWheelEvent += OnScrollWheel;
-        _inputReader.TrackedDeviceOrientationEvent += OnTrackedDeviceOrientation;
-        _inputReader.TrackedDevicePositionEvent += OnTrackedDevicePosition;
     }
 
     private void OnDisable()
@@ -69,8 +63,6 @@ public class UIInputHandler : MonoBehaviour
         _inputReader.RightClickEvent -= OnRightClick;
         _inputReader.MiddleClickEvent -= OnMiddleClick;
         _inputReader.ScrollWheelEvent -= OnScrollWheel;
-        _inputReader.TrackedDeviceOrientationEvent -= OnTrackedDeviceOrientation;
-        _inputReader.TrackedDevicePositionEvent -= OnTrackedDevicePosition;
     }
 
     // Callback methods for UI inputs
@@ -82,8 +74,6 @@ public class UIInputHandler : MonoBehaviour
     private void OnRightClick() => _rightClickInput = true;
     private void OnMiddleClick() => _middleClickInput = true;
     private void OnScrollWheel(Vector2 scrollInput) => _scrollWheelInput = scrollInput;
-    private void OnTrackedDeviceOrientation(Quaternion orientation) => _trackedDeviceOrientationInput = orientation;
-    private void OnTrackedDevicePosition(Vector3 position) => _trackedDevicePositionInput = position;
 
     /// <summary>
     /// Resets one-shot input flags at the end of the frame.

@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class SkillEnchantNPC : MonoBehaviour
+public class SkillEnchantNPC :InteractableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private PlayerSkill _playerSkill;
+
+    protected override void OnEnable()
     {
-        
+        base.OnEnable();
+
+        _playerSkill = p_player.Skill;
     }
 
-    // Update is called once per frame
-    void Update()
+    public PlayerSkillData GetPlayerSkillData()
     {
-        
+        return _playerSkill.SkillData;
     }
+
 }

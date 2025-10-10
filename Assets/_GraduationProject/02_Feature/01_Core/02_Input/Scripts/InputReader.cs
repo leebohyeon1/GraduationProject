@@ -38,8 +38,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action RightClickEvent = delegate { };
     public event Action MiddleClickEvent = delegate { };
     public event Action<Vector2> ScrollWheelEvent = delegate { };
-    public event Action<Quaternion> TrackedDeviceOrientationEvent = delegate { };
-    public event Action<Vector3> TrackedDevicePositionEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -243,16 +241,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         {
             SubmitEvent.Invoke();
         }
-    }
-
-    public void OnTrackedDeviceOrientation(InputAction.CallbackContext context)
-    {
-        TrackedDeviceOrientationEvent.Invoke(context.ReadValue<Quaternion>());
-    }
-
-    public void OnTrackedDevicePosition(InputAction.CallbackContext context)
-    {
-        TrackedDevicePositionEvent.Invoke(context.ReadValue<Vector3>());
     }
 
     /// <summary>

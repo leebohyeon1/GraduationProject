@@ -3,9 +3,17 @@ using BH_Lib.DI;
 using System;
 using UnityEngine;
 
+public enum PopUpType
+{
+    SkillEnchant
+}
+
 public class PopUpUI : MonoBehaviour
 {
+    [SerializeField] protected PopUpType p_type;
     [SerializeField] protected EventSO p_openPopUP;
+
+    public PopUpType Type => p_type;
 
     protected virtual async void  Start()
     {

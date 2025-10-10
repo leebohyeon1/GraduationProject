@@ -7,9 +7,9 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private UIInputHandler _input;
-    [SerializeField] private EventListener _listener;
+    [SerializeField] private EventListener _popUpOpenEventListener;
     private Stack<PopUpUI> _popUpUIStack;
-
+    private PopUpUI _currentPopUpUI;
 
     public event Action OnOpenFirstPopUpUI;
     public event Action OnClearPopUpUI;
@@ -21,35 +21,31 @@ public class UIManager : MonoBehaviour
             _input = GetComponent<UIInputHandler>();   
         }
 
-        if( _listener == null)
+        if( _popUpOpenEventListener == null)
         {
-            _listener = GetComponent<EventListener>();
+            _popUpOpenEventListener = GetComponent<EventListener>();
         }
 
-        _listener.EventMessage.AddListener((popUpObject) => { OpenPopUp(popUpObject.GetComponent<PopUpUI>()); });
+        _popUpOpenEventListener.EventMessage.AddListener((popUpObject) => { OpenPopUp(popUpObject.GetComponent<PopUpUI>()); });
         _popUpUIStack = new Stack<PopUpUI>();
     }
 
     private void Update()
     {
-        if (_input.CancelInput)
-        {
-            CloseTopPopUp();
-        }
+        HandlePopUp();
     }
 
     private void LateUpdate()
     {
         _input.LateTick();
-    
     }
 
     private void OnDestroy()
     {
-        _listener.EventMessage.RemoveAllListeners();
+        _popUpOpenEventListener.EventMessage.RemoveAllListeners();
     }
 
-
+    #region PopUp
     public void OpenPopUp(PopUpUI popUpUI)
     {
         if (_popUpUIStack.Count == 0)
@@ -58,6 +54,7 @@ public class UIManager : MonoBehaviour
         }
 
         _popUpUIStack.Push(popUpUI);
+        _currentPopUpUI = _popUpUIStack.Peek();
     }
 
     public void CloseTopPopUp()
@@ -68,12 +65,36 @@ public class UIManager : MonoBehaviour
             if (popUpUI != null)
             {
                 popUpUI.ClosePopUp();
+                _currentPopUpUI = _popUpUIStack.Peek();
             }
 
-            if(_popUpUIStack.Count == 0)
+            if (_popUpUIStack.Count == 0)
             {
                 OnClearPopUpUI?.Invoke();
+                _currentPopUpUI = null;
             }
         }
     }
+
+    public void HandlePopUp()
+    {
+        if (_currentPopUpUI == null)
+        {
+            return;
+        }
+
+        if (_input.CancelInput)
+        {
+            CloseTopPopUp();
+        }
+
+        switch (_currentPopUpUI.Type)
+        {
+            case PopUpType.SkillEnchant:
+
+
+                break;
+        }
+    }
+    #endregion
 }

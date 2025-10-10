@@ -3,28 +3,24 @@ using UnityEngine;
 
 public class SkillEnchantUI : PopUpUI
 {
-    [SerializeField] private InteractableObject _interactableObject;
+    [SerializeField] private SkillEnchantNPC _skillEnchantNPC;
     [SerializeField] private GameObject _skillEnchantPanel;
-    private Player _player;
+
+    private PlayerSkillData _skillData => _skillEnchantNPC.GetPlayerSkillData();
 
     protected override void Start()
     {
         base.Start();
 
-        if (_interactableObject != null)
+        if (_skillEnchantNPC != null)
         {
-            _interactableObject.OnInteract += HandleInteract;
-        }
-
-        if (_player == null)
-        {
-            _player = DIContainer.Instance.Resolve<Player>();
+            _skillEnchantNPC.OnInteract += HandleInteract;
         }
     }
 
     private void OnDisable()
     {
-        _interactableObject.OnInteract -= HandleInteract;
+        _skillEnchantNPC.OnInteract -= HandleInteract;
     }
 
     public override void OpenPopUp()

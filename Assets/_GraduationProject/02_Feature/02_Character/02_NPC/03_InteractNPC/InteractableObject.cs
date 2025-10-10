@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour, IInteractable
 {
-    private Player _player;
+    protected Player p_player;
 
     public event Action<bool> OnPlayerScan;
     public event Action OnInteract;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
-        if (_player == null)
+        if (p_player == null)
         {
-            _player = DIContainer.Instance.Resolve<Player>();
+            p_player = DIContainer.Instance.Resolve<Player>();
         }
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
-        if( _player != null )
+        if( p_player != null )
         {
-            _player.Interact.OnInteract -= Interact;
+            p_player.Interact.OnInteract -= Interact;
             OnPlayerScan?.Invoke(false);
         }
     }
@@ -33,18 +33,18 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (_player != null && other.gameObject == _player.gameObject)
+        if (p_player != null && other.gameObject == p_player.gameObject)
         {
-            _player.Interact.OnInteract += Interact;
+            p_player.Interact.OnInteract += Interact;
             OnPlayerScan?.Invoke(true);
         }
     }
 
     protected virtual void OnTriggerExit(Collider other)
     {
-        if(_player != null && other.gameObject == _player.gameObject)
+        if(p_player != null && other.gameObject == p_player.gameObject)
         {
-            _player.Interact.OnInteract -= Interact;
+            p_player.Interact.OnInteract -= Interact;
             OnPlayerScan?.Invoke(false);
         }
     }

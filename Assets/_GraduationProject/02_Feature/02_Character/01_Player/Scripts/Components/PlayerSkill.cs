@@ -24,7 +24,10 @@ public class PlayerSkill : MonoBehaviour
     private TimeStopSkillSO _timeStopSkillSO;
 
     [SerializeField] private SkillType _currentSkillType;
+    #endregion
 
+    #region Properties
+    public PlayerSkillData SkillData => _stats.SkillData;
     #endregion
 
     public void Initialize(PlayerStats stats, PlayerEvents events,
@@ -41,21 +44,21 @@ public class PlayerSkill : MonoBehaviour
 
     public void Tick()
     {
-        for (int i = 0; i < _stats.SkillData.IsMainSkillsUnlock.Count; i++)
+        for (int i = 0; i < SkillData.IsMainSkillsUnlock.Count; i++)
         {
-            if (_stats.SkillData.SkillCount[i] >= _stats.SkillData.SkillMaxCount[i])
+            if (SkillData.SkillCount[i] >= SkillData.SkillMaxCount[i])
             {
                 continue;
             }
 
-            _stats.SkillData.SkillCoolDownTimer[i] += Time.deltaTime;
+            SkillData.SkillCoolDownTimer[i] += Time.deltaTime;
 
-            if (_stats.SkillData.SkillCoolDownTimer[i] >= _stats.SkillData.SkillCoolDown[i])
+            if (SkillData.SkillCoolDownTimer[i] >= SkillData.SkillCoolDown[i])
             {
-                _stats.SkillData.SkillCount[i] = 
-                    Mathf.Clamp(_stats.SkillData.SkillCount[i] + 1, 0, _stats.SkillData.SkillMaxCount[i]);
+                SkillData.SkillCount[i] = 
+                    Mathf.Clamp(SkillData.SkillCount[i] + 1, 0, SkillData.SkillMaxCount[i]);
 
-                _stats.SkillData.SkillCoolDownTimer[i] = 0f;
+                SkillData.SkillCoolDownTimer[i] = 0f;
             }
         }
     }
@@ -67,7 +70,7 @@ public class PlayerSkill : MonoBehaviour
     public void SetSkill(SkillType skillType)
     {
         if (skillType == _currentSkillType
-            && _stats.SkillData.IsMainSkillsUnlock[(int)skillType])
+            && SkillData.IsMainSkillsUnlock[(int)skillType])
         {
             return;
         }
@@ -81,7 +84,7 @@ public class PlayerSkill : MonoBehaviour
     public void UseSkill()
     {
         if (_currentSkillType == SkillType.None
-            || _stats.SkillData.SkillCount[(int)_currentSkillType] <= 0)
+            || SkillData.SkillCount[(int)_currentSkillType] <= 0)
         {
             return;
         }
@@ -100,7 +103,7 @@ public class PlayerSkill : MonoBehaviour
                 break;
         }
 
-        _stats.SkillData.SkillCount[(int)_currentSkillType]--;
+        SkillData.SkillCount[(int)_currentSkillType]--;
     }
 
     private void Flash()
