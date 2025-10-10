@@ -5,7 +5,7 @@ public class EventListener : MonoBehaviour
 {
     public EventSO Event;
 
-    public UnityEvent EventMessage;
+    public UnityEvent<GameObject> EventMessage;
 
     private void OnEnable()
     {
@@ -17,8 +17,8 @@ public class EventListener : MonoBehaviour
         Event?.Unsubscribe(this);
     }
 
-    public void OnEventTrigger()
+    public void OnEventTrigger(GameObject gameObject)
     {
-        EventMessage.Invoke();
+        EventMessage.Invoke(gameObject);
     }
 }

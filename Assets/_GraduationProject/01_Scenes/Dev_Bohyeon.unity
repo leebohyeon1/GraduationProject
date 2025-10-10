@@ -2362,6 +2362,7 @@ GameObject:
   - component: {fileID: 1077202946}
   - component: {fileID: 1077202947}
   - component: {fileID: 1077202948}
+  - component: {fileID: 1077202949}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -2397,6 +2398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   _input: {fileID: 1077202948}
+  _listener: {fileID: 1077202949}
 --- !u!114 &1077202948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2410,6 +2412,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIInputHandler
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
+--- !u!114 &1077202949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077202945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de9503f02bea7c4eb2a43b6498ba2e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventListener
+  Event: {fileID: 11400000, guid: 88e9261c4445af44d8a07f8b0819ee15, type: 2}
+  EventMessage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1185445136
 GameObject:
   m_ObjectHideFlags: 0
@@ -4068,6 +4086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ff19f311f9160498cf6ed18b0d2fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillEnchantUI
+  p_openPopUP: {fileID: 11400000, guid: 88e9261c4445af44d8a07f8b0819ee15, type: 2}
   _interactableObject: {fileID: 1519804781}
   _skillEnchantPanel: {fileID: 2050408100}
 --- !u!1 &2050408100

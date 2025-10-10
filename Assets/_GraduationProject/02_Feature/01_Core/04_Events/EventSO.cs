@@ -18,11 +18,11 @@ public class EventSO : ScriptableObject
         _listeners.Remove(listener);
     }
 
-    public void Publish()
+    public void Publish(GameObject owner)
     {
         foreach (var listener in _listeners)
         {
-            listener.OnEventTrigger();
+            listener.OnEventTrigger(owner);
         }
     }
 }

@@ -26,13 +26,13 @@ public class InputManager : DIMonoBehaviour
             _inputReader = await _assetManager.LoadAssetAsync<InputReader>("InputReader", gameObject);            
         }
 
-        _uiManager.OnOpenPopUpUI += HandleOpenPopUpUI;
+        _uiManager.OnOpenFirstPopUpUI += HandleOpenPopUpUI;
         _uiManager.OnClearPopUpUI += HandleClearPopUpUI;    
     }
 
     private void OnDisable()
     {
-        _uiManager.OnOpenPopUpUI -= HandleOpenPopUpUI;
+        _uiManager.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
         _uiManager.OnClearPopUpUI -= HandleClearPopUpUI;
     }
 

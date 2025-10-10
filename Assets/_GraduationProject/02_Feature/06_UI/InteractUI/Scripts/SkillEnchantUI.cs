@@ -10,6 +10,7 @@ public class SkillEnchantUI : PopUpUI
     protected override void Start()
     {
         base.Start();
+
         if (_interactableObject != null)
         {
             _interactableObject.OnInteract += HandleInteract;
@@ -26,21 +27,22 @@ public class SkillEnchantUI : PopUpUI
         _interactableObject.OnInteract -= HandleInteract;
     }
 
-    private void OpenUI()
+    public override void OpenPopUp()
     {
-        p_uiManager.OpenUI(this);
+        base.OpenPopUp();
         _skillEnchantPanel.SetActive(true);
     }
 
-    public override void CloseUI()
+    public override void ClosePopUp()
     {
+        base.ClosePopUp();
         _skillEnchantPanel.SetActive(false);
     }
 
 
     private void HandleInteract()
     {
-        OpenUI();
+        OpenPopUp();
     }
 }
 
