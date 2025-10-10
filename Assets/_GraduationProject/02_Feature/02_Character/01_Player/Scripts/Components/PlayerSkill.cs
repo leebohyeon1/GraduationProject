@@ -1,5 +1,6 @@
 using BH_Lib.Log;
 using DG.Tweening;
+using System;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
@@ -12,7 +13,7 @@ public enum SkillType
     TimeStop = 2
 }
 
-public class PlayerSkill : MonoBehaviour
+public class PlayerSkill : MonoBehaviour, IDisposable
 {
     #region Private Fields
     private PlayerStats _stats;
@@ -24,7 +25,10 @@ public class PlayerSkill : MonoBehaviour
     private TimeStopSkillSO _timeStopSkillSO;
 
     [SerializeField] private SkillType _currentSkillType;
+    #endregion
 
+    #region Properties
+    public PlayerSkillData SkillData => _stats.SkillData;
     #endregion
 
     public void Initialize(PlayerStats stats, PlayerEvents events,
@@ -37,25 +41,32 @@ public class PlayerSkill : MonoBehaviour
         _flashSkillSO = dataBaseSO.FlashSkill;
         _boostSkillSO = dataBaseSO.BoostSkill;
         _timeStopSkillSO = dataBaseSO.TimeStopSkill;
+
+        _events.OnFlashFinish += HandleFlashFinsh;
+    }
+
+    public void Dispose()
+    {
+        _events.OnFlashFinish -= HandleFlashFinsh;
     }
 
     public void Tick()
     {
-        for (int i = 0; i < _stats.SkillData.IsMainSkillsUnlock.Count; i++)
+        for (int i = 0; i < SkillData.IsMainSkillsUnlock.Count; i++)
         {
-            if (_stats.SkillData.SkillCount[i] >= _stats.SkillData.SkillMaxCount[i])
+            if (SkillData.SkillCount[i] >= SkillData.SkillMaxCount[i])
             {
                 continue;
             }
 
-            _stats.SkillData.SkillCoolDownTimer[i] += Time.deltaTime;
+            SkillData.SkillCoolDownTimer[i] += Time.deltaTime;
 
-            if (_stats.SkillData.SkillCoolDownTimer[i] >= _stats.SkillData.SkillCoolDown[i])
+            if (SkillData.SkillCoolDownTimer[i] >= SkillData.SkillCoolDown[i])
             {
-                _stats.SkillData.SkillCount[i] = 
-                    Mathf.Clamp(_stats.SkillData.SkillCount[i] + 1, 0, _stats.SkillData.SkillMaxCount[i]);
+                SkillData.SkillCount[i] = 
+                    Mathf.Clamp(SkillData.SkillCount[i] + 1, 0, SkillData.SkillMaxCount[i]);
 
-                _stats.SkillData.SkillCoolDownTimer[i] = 0f;
+                SkillData.SkillCoolDownTimer[i] = 0f;
             }
         }
     }
@@ -67,13 +78,81 @@ public class PlayerSkill : MonoBehaviour
     public void SetSkill(SkillType skillType)
     {
         if (skillType == _currentSkillType
-            && _stats.SkillData.IsMainSkillsUnlock[(int)skillType])
+            && SkillData.IsMainSkillsUnlock[(int)skillType])
         {
             return;
         }
 
         _currentSkillType = skillType;
     }
+    #region Enchant
+    public void EnchantSkill(SkillType skillType, int level = -1)
+    {
+        int skillTypeindex = (int)skillType;
+
+        if (level > -1)
+        {
+            SkillData.IsSubSkillsUnlock[skillTypeindex][level] = false;
+
+            switch (skillType)
+            {
+                case SkillType.Flash:
+                    EnchantFlash(level);
+                    break;
+                case SkillType.Boost: 
+                    EnchantBoost(level);
+                    break;
+            }
+
+            return;
+        }
+
+        for (int i = 0; i < SkillData.IsSubSkillsUnlock[skillTypeindex].Count; i++)
+        {
+            if (SkillData.IsSubSkillsUnlock[skillTypeindex][i])
+            {
+                continue;
+            }
+
+            SkillData.IsSubSkillsUnlock[skillTypeindex][i] = false;
+
+            switch (skillType)
+            {
+                case SkillType.Flash:
+                    EnchantFlash(i);
+                    break;
+                case SkillType.Boost:
+                    EnchantBoost(level);
+                    break;
+
+            }
+        }
+    }
+
+    public void EnchantFlash(int level)
+    {
+        if(level == 0)
+        {
+            SkillData.SkillCoolDown[0] -= _flashSkillSO.DecreaseCoolDownAmount;
+        }
+        else if(level == 1)
+        {
+            SkillData.SkillMaxCount[0] += _flashSkillSO.IncreaseCountAmount;
+        }
+    }
+
+    public void EnchantBoost(int level)
+    {
+        if (level == 0)
+        {
+            SkillData.SetBoostRangeMultiply(_boostSkillSO.IncreaseAttackRangeAmount);
+        }
+        else if(level == 1)
+        {
+            SkillData.SetBoostDamageMultiply(_boostSkillSO.IncreaseAttackDamageAmount);
+        }
+    }
+    #endregion
 
     /// <summary>
     /// ��ų Ÿ�Կ� ���� ��ų�� ����մϴ�.
@@ -81,7 +160,7 @@ public class PlayerSkill : MonoBehaviour
     public void UseSkill()
     {
         if (_currentSkillType == SkillType.None
-            || _stats.SkillData.SkillCount[(int)_currentSkillType] <= 0)
+            || SkillData.SkillCount[(int)_currentSkillType] <= 0)
         {
             return;
         }
@@ -100,9 +179,10 @@ public class PlayerSkill : MonoBehaviour
                 break;
         }
 
-        _stats.SkillData.SkillCount[(int)_currentSkillType]--;
+        SkillData.SkillCount[(int)_currentSkillType]--;
     }
 
+    #region Flash
     private void Flash()
     {
         if (_stats.CurrentMana < _flashSkillSO.SkillCost)
@@ -133,13 +213,40 @@ public class PlayerSkill : MonoBehaviour
         _events.TriggerFlashSkillStart(velocity, distance);
     }
 
+    private void PerformFlashDamage(Vector3 position)
+    {
+        Collider[] colliders = Physics.OverlapSphere(position, _flashSkillSO.FlashAttackRadius);
+        foreach (Collider collider in colliders)
+        {
+            if(collider.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.TakeDamage(_flashSkillSO.FlashDamage);
+            }
+        }
+    }
+    #endregion
+
+    #region Boosts
     private void Boots()
     {
         _stats.IsBoost = true;
+        _events.TriggerBoostSkillStart();
 
         Sequence sequence = DOTween.Sequence();
         sequence.SetDelay(_boostSkillSO.Duration);
         sequence.AppendCallback(() => { _stats.IsBoost = false; });
         
     }
+    #endregion
+
+    #region eventHandler
+    private void HandleFlashFinsh(Vector3 position)
+    {
+        if(SkillData.IsMaxLevelFlash)
+        {
+            PerformFlashDamage(position);
+        }
+    }
+
+    #endregion
 }

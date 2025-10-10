@@ -43,11 +43,14 @@ public class PlayerStats: IDisposable
     public float MoveSpeed; // 이동 속도
     public float RotateSpeed; // 회전 속도
 
+    // Combat
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData = new PlayerCombatData(); // 전투 데이터
 
+    // Skill
     public PlayerSkillData SkillData;
 
+    // Animation
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
 
@@ -113,15 +116,18 @@ public class PlayerStats: IDisposable
         CombatData.LastAttackDelay = 
             combatData.LastAttackDelay / tierStatData.SpeedMultiply;
 
+        float BoostRangeMutiply = IsBoost ? SkillData.BoostRangeMultiply: 1f;
+        float BoostDamageMultiply = IsBoost ? SkillData.BoostDamageMultiply : 1f;
+
         // 차징 공격
         CombatData.ChargeAttackData.AttackDamage =
-             Mathf.RoundToInt(CombatData.ChargeAttackData.AttackDamage * tierStatData.DamageMultiply);
+             Mathf.RoundToInt(CombatData.ChargeAttackData.AttackDamage * tierStatData.DamageMultiply * BoostDamageMultiply);
 
         CombatData.ChargeAttackData.AttackRadius.z =
-             combatData.ChargeAttackData.AttackRadius.z * tierStatData.RangeMultiply;
+             combatData.ChargeAttackData.AttackRadius.z * tierStatData.RangeMultiply * BoostRangeMutiply;
 
         CombatData.ChargeAttackData.AttackMoveDistance =
-            combatData.ChargeAttackData.AttackMoveDistance * tierStatData.RangeMultiply;
+            combatData.ChargeAttackData.AttackMoveDistance * tierStatData.RangeMultiply * BoostRangeMutiply;
 
         CombatData.ChargeAttackData.AttackMoveDuration =
             combatData.ChargeAttackData.AttackMoveDuration / tierStatData.SpeedMultiply;
@@ -135,7 +141,7 @@ public class PlayerStats: IDisposable
         for(int i = 0; i < CombatData.CounterAttackDatas.Length; i++)
         {
             CombatData.CounterAttackDatas[i].AttackDamage =
-                   Mathf.RoundToInt(combatData.CounterAttackDatas[i].AttackDamage * tierStatData.DamageMultiply);
+                   Mathf.RoundToInt(combatData.CounterAttackDatas[i].AttackDamage * tierStatData.DamageMultiply * BoostDamageMultiply);
         }
     }
 
@@ -352,6 +358,18 @@ public struct PlayerSkillData
     public List<int> SkillMaxCount;
     public List<int> SkillCount;
 
+    #region Flash
+    public bool IsMaxLevelFlash => IsSubSkillsUnlock
+        [(int)SkillType.Flash][IsSubSkillsUnlock[(int)SkillType.Flash].Count - 1];
+    #endregion
+
+    #region Boost
+    public float BoostRangeMultiply;
+    public float BoostDamageMultiply;
+    public bool IsMaxLevelBoost => IsSubSkillsUnlock
+        [(int)SkillType.Boost][IsSubSkillsUnlock[(int)SkillType.Boost].Count - 1];
+    #endregion
+
     public PlayerSkillData(int count)
     {
         IsMainSkillsUnlock = new List<bool>(new bool[count]);
@@ -366,5 +384,20 @@ public struct PlayerSkillData
 
         SkillMaxCount = new List<int>(new int[count]);
         SkillCount = new List<int>(new int[count]);
+
+        BoostRangeMultiply = 1f;
+        BoostDamageMultiply = 1f;
     }
+
+    #region BoostMethod
+    public void SetBoostRangeMultiply(float amount)
+    {
+        BoostRangeMultiply = amount;
+    }
+
+    public void SetBoostDamageMultiply(float amount)
+    {
+        BoostDamageMultiply = amount;
+    }
+    #endregion
 }

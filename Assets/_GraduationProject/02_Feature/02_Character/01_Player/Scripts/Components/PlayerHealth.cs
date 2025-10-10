@@ -182,7 +182,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void HandleOverHeat(int damage)
     {
-        if(_stats.IsOverHeat)
+        if(_stats.IsOverHeat && !_stats.SkillData.IsMaxLevelBoost)
         {
             TakeDamage(damage);
         }

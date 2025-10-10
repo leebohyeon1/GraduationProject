@@ -8,33 +8,36 @@ using System;
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
 [CreateAssetMenu(fileName = "InputReader", menuName = "System/Input Reader")]
-public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
+public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions
 {
-    // 이동 이벤트
+    // Player Actions
     public event Action<Vector2> MoveEvent = delegate { };
-    // 공격 이벤트 (시작)
     public event Action AttackEvent = delegate { };
-    // 공격 홀드 이벤트 
     public event Action AttackHoldEvent = delegate { };
-    // 공격 이벤트 (종료)
     public event Action AttackCancelledEvent = delegate { };
-    // 원거리 공격 이벤트 (시작)
     public event Action RangedAttackEvent = delegate { };
-    // 원거리 공격 이벤트 (종료)
     public event Action RangedAttackCancelledEvent = delegate { };
-    // 회피 이벤트
     public event Action DodgeEvent = delegate { };
-    // 방어 이벤트 (시작)
     public event Action DefendEvent = delegate { };
-    // 방어 이벤트 (종료)
     public event Action DefendCancelledEvent = delegate { };
-    // 시선/조준 이벤트
     public event Action<Vector2> LookEvent = delegate { };
-    // 마우스 위치 이벤트
     public event Action<Vector2> MousePositionEvent = delegate { };
-    // 입력 기기 변경 이벤트
     public event Action<InputDeviceType> InputDeviceChangedEvent = delegate { };
     public event Action SkillEvent = delegate { };
+    public event Action SkillChangeEvent = delegate { };
+    public event Action SkillChangeCancelEvent = delegate { };
+    public event Action InteractEvent = delegate { };
+    public event Action PotionEvent = delegate { };
+
+    // UI Actions
+    public event Action CancelEvent = delegate { };
+    public event Action<Vector2> NavigateEvent = delegate { };
+    public event Action SubmitEvent = delegate { };
+    public event Action ClickEvent = delegate { };
+    public event Action<Vector2> PointEvent = delegate { };
+    public event Action RightClickEvent = delegate { };
+    public event Action MiddleClickEvent = delegate { };
+    public event Action<Vector2> ScrollWheelEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -44,13 +47,16 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         {
             _inputActions = new InputSystem_Actions();
             _inputActions.Player.SetCallbacks(this);
+            _inputActions.UI.SetCallbacks(this);
         }
         EnablePlayerActions();
+        // UI Actions can be enabled/disabled separately
     }
 
     private void OnDisable()
     {
         DisablePlayerActions();
+        DisableUIActions();
     }
 
     public void EnablePlayerActions()
@@ -63,6 +69,17 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         _inputActions?.Player.Disable();
     }
 
+    public void EnableUIActions()
+    {
+        _inputActions.UI.Enable();
+    }
+
+    public void DisableUIActions()
+    {
+        _inputActions?.UI.Disable();
+    }
+
+    // Player Action Implementations
     public void OnMove(InputAction.CallbackContext context)
     {
         MoveEvent.Invoke(context.ReadValue<Vector2>());
@@ -106,8 +123,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
                 break;
         }
     }
-    
-    public void OnInteract(InputAction.CallbackContext context) { }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            InteractEvent.Invoke();
+        }
+    }
 
     public void OnDodge(InputAction.CallbackContext context)
     {
@@ -143,6 +166,83 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
         }
     }
 
+    public void OnSkillChange(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                SkillChangeEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                SkillChangeCancelEvent.Invoke();
+                break;
+        }
+    }
+
+    public void OnPotion(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            PotionEvent.Invoke();
+        }
+    }
+
+    // UI Action Implementations
+    public void OnCancel(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            CancelEvent.Invoke();
+        }
+    }
+
+    public void OnClick(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ClickEvent.Invoke();
+        }
+    }
+
+    public void OnMiddleClick(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            MiddleClickEvent.Invoke();
+        }
+    }
+
+    public void OnNavigate(InputAction.CallbackContext context)
+    {
+        NavigateEvent.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnPoint(InputAction.CallbackContext context)
+    {
+        PointEvent.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnRightClick(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            RightClickEvent.Invoke();
+        }
+    }
+
+    public void OnScrollWheel(InputAction.CallbackContext context)
+    {
+        ScrollWheelEvent.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnSubmit(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SubmitEvent.Invoke();
+        }
+    }
+
     /// <summary>
     /// 외부에서 입력 기기 변경을 알릴 때 사용하는 함수
     /// </summary>
@@ -158,8 +258,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions
     public void Dispose()
     {
         DisablePlayerActions();
+        DisableUIActions();
         _inputActions?.Dispose();
         _inputActions = null;
     }
-
 }

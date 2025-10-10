@@ -61,19 +61,16 @@ public class PlayerMana : MonoBehaviour, IDisposable
 
     private void HandleAttackStart()
     {
-        Log.Print("시작");
         SetCanChange(true);
     }
 
     private void HandleAttackAffect(Collider collider)
     {
-        Log.Print("적용");
         ChangeMana(1);
     }
 
     private void HandleAttackFinish()
     {
-        Log.Print("종료");
         SetCanChange(false);
     }
 
