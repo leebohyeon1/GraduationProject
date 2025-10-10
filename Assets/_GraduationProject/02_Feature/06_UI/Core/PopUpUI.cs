@@ -10,7 +10,7 @@ public class PopUpUI : MonoBehaviour
         p_uiManager = DIContainer.Instance.Resolve<UIManager>();
     }
 
-    protected virtual void CloseUI()
+    public virtual void CloseUI()
     {
 
     }

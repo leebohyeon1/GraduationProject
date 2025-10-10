@@ -28,11 +28,11 @@ public class SkillEnchantUI : PopUpUI
 
     private void OpenUI()
     {
-        p_uiManager.RegisterUI(this);
+        p_uiManager.OpenUI(this);
         _skillEnchantPanel.SetActive(true);
     }
 
-    protected override void CloseUI()
+    public override void CloseUI()
     {
         _skillEnchantPanel.SetActive(false);
     }
