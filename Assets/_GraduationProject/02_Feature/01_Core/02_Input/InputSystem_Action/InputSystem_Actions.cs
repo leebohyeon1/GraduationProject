@@ -837,6 +837,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2e84983-3b04-4207-a7f3-7a3d1e52f5c4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -848,6 +857,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""ToggleConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1faf2e84-4400-45d2-8606-7147dd7baf5d"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -943,6 +963,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // Developer
         m_Developer = asset.FindActionMap("Developer", throwIfNotFound: true);
         m_Developer_ToggleConsole = m_Developer.FindAction("ToggleConsole", throwIfNotFound: true);
+        m_Developer_Enter = m_Developer.FindAction("Enter", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1405,6 +1426,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Developer;
     private List<IDeveloperActions> m_DeveloperActionsCallbackInterfaces = new List<IDeveloperActions>();
     private readonly InputAction m_Developer_ToggleConsole;
+    private readonly InputAction m_Developer_Enter;
     /// <summary>
     /// Provides access to input actions defined in input action map "Developer".
     /// </summary>
@@ -1420,6 +1442,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Developer/ToggleConsole".
         /// </summary>
         public InputAction @ToggleConsole => m_Wrapper.m_Developer_ToggleConsole;
+        /// <summary>
+        /// Provides access to the underlying input action "Developer/Enter".
+        /// </summary>
+        public InputAction @Enter => m_Wrapper.m_Developer_Enter;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1449,6 +1475,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ToggleConsole.started += instance.OnToggleConsole;
             @ToggleConsole.performed += instance.OnToggleConsole;
             @ToggleConsole.canceled += instance.OnToggleConsole;
+            @Enter.started += instance.OnEnter;
+            @Enter.performed += instance.OnEnter;
+            @Enter.canceled += instance.OnEnter;
         }
 
         /// <summary>
@@ -1463,6 +1492,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ToggleConsole.started -= instance.OnToggleConsole;
             @ToggleConsole.performed -= instance.OnToggleConsole;
             @ToggleConsole.canceled -= instance.OnToggleConsole;
+            @Enter.started -= instance.OnEnter;
+            @Enter.performed -= instance.OnEnter;
+            @Enter.canceled -= instance.OnEnter;
         }
 
         /// <summary>
@@ -1724,5 +1756,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleConsole(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Enter" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEnter(InputAction.CallbackContext context);
     }
 }

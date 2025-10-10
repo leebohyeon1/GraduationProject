@@ -88,6 +88,7 @@ public class PlayerSkill : MonoBehaviour, IDisposable
     #region Enchant
     public void EnchantSkill(SkillType skillType, int level = -1)
     {
+        Log.Print(1);
         int skillTypeindex = (int)skillType;
 
         if (level > -1)
@@ -131,13 +132,17 @@ public class PlayerSkill : MonoBehaviour, IDisposable
 
     public void EnchantFlash(int level)
     {
-        if(level == 0)
+        if (level == 0)
         {
             SkillData.SkillCoolDown[0] -= _flashSkillSO.DecreaseCoolDownAmount;
         }
-        else if(level == 1)
+        else if (level == 1)
         {
             SkillData.SkillMaxCount[0] += _flashSkillSO.IncreaseCountAmount;
+        }
+        else if (level == 2)
+        {
+            SkillData.SetMaxLevelFlash(true);
         }
     }
 
@@ -150,6 +155,10 @@ public class PlayerSkill : MonoBehaviour, IDisposable
         else if(level == 1)
         {
             SkillData.SetBoostDamageMultiply(_boostSkillSO.IncreaseAttackDamageAmount);
+        }
+        else if (level == 2)
+        {
+            SkillData.SetMaxLevelBoost(true);
         }
     }
     #endregion

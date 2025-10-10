@@ -42,6 +42,7 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
 
     // Developer Actions;
     public event Action ToggleConsoleEvent = delegate { };  
+    public event Action EnterEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -265,6 +266,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         if(context.phase == InputActionPhase.Performed)
         {
             ToggleConsoleEvent.Invoke();
+        }
+    }
+
+    public void OnEnter(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            EnterEvent.Invoke();
         }
     }
 

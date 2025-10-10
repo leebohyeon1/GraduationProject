@@ -359,15 +359,13 @@ public struct PlayerSkillData
     public List<int> SkillCount;
 
     #region Flash
-    public bool IsMaxLevelFlash => IsSubSkillsUnlock
-        [(int)SkillType.Flash][IsSubSkillsUnlock[(int)SkillType.Flash].Count - 1];
+    public bool IsMaxLevelFlash;
     #endregion
 
     #region Boost
     public float BoostRangeMultiply;
     public float BoostDamageMultiply;
-    public bool IsMaxLevelBoost => IsSubSkillsUnlock
-        [(int)SkillType.Boost][IsSubSkillsUnlock[(int)SkillType.Boost].Count - 1];
+    public bool IsMaxLevelBoost;
     #endregion
 
     public PlayerSkillData(int count)
@@ -385,9 +383,20 @@ public struct PlayerSkillData
         SkillMaxCount = new List<int>(new int[count]);
         SkillCount = new List<int>(new int[count]);
 
+        IsMaxLevelFlash = false;
+
         BoostRangeMultiply = 1f;
         BoostDamageMultiply = 1f;
+        IsMaxLevelBoost = false;
     }
+
+    #region FlashMethod
+    public void SetMaxLevelFlash(bool isMaxLevel)
+    {
+        IsMaxLevelFlash = isMaxLevel;
+    }
+
+    #endregion
 
     #region BoostMethod
     public void SetBoostRangeMultiply(float amount)
@@ -398,6 +407,11 @@ public struct PlayerSkillData
     public void SetBoostDamageMultiply(float amount)
     {
         BoostDamageMultiply = amount;
+    }
+
+    public void SetMaxLevelBoost(bool isMaxLevel)
+    {
+        IsMaxLevelBoost = isMaxLevel;
     }
     #endregion
 }
