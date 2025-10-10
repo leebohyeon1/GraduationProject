@@ -84,12 +84,16 @@ public class PlayerSkill : MonoBehaviour
 
         if (level > -1)
         {
+            SkillData.IsSubSkillsUnlock[skillTypeindex][level] = false;
+
             switch (skillType)
             {
                 case SkillType.Flash:
                     EnchantFlash(level);
                     break;
-
+                case SkillType.Boost: 
+                    EnchantBoost(level);
+                    break;
             }
 
             return;
@@ -109,6 +113,9 @@ public class PlayerSkill : MonoBehaviour
                 case SkillType.Flash:
                     EnchantFlash(i);
                     break;
+                case SkillType.Boost:
+                    EnchantBoost(level);
+                    break;
 
             }
         }
@@ -124,12 +131,19 @@ public class PlayerSkill : MonoBehaviour
         {
             SkillData.SkillMaxCount[0] += _flashSkillSO.IncreaseCountAmount;
         }
-        else
-        {
-            _stats.IsMaxLevelFlash = true;
-        }
     }
 
+    public void EnchantBoost(int level)
+    {
+        if (level == 0)
+        {
+            SkillData.SetBoostRangeMultiply(_boostSkillSO.IncreaseAttackRangeAmount);
+        }
+        else if(level == 1)
+        {
+            SkillData.SetBoostDamageMultiply(_boostSkillSO.IncreaseAttackDamageAmount);
+        }
+    }
     #endregion
 
     /// <summary>
@@ -193,6 +207,7 @@ public class PlayerSkill : MonoBehaviour
     private void Boots()
     {
         _stats.IsBoost = true;
+        _events.TriggerBoostSkillStart();
 
         Sequence sequence = DOTween.Sequence();
         sequence.SetDelay(_boostSkillSO.Duration);

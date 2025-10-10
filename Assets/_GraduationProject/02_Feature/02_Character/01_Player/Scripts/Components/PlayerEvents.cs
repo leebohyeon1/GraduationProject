@@ -497,6 +497,13 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnFlashStart?.Invoke(input, distance);
     }
+    /// <summary>
+    /// 증폭 스킬 시작 피드백을 재생합니다.
+    /// </summary>
+    public void TriggerBoostSkillStart()
+    {
+        OnBoostStart?.Invoke(); 
+    }
 
     #endregion
 

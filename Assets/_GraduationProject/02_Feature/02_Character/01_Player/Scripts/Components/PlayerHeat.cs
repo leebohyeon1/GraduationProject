@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
 {
-    private PlayerStats _playerStats; // 플레이어 스탯
+    private PlayerStats _stats; // 플레이어 스탯
     private SourceMapDatabaseSO _sourceMapDataBase; // 소스맵 데이터
     private TierStatDatabaseSO _tierStatDataBase;   // 티어 데이터
     private OverHeatDataSO _overHeatData; // 과열 데이터
@@ -19,12 +19,12 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     private float _heatTierTimer; // 열기 티어 타이머
     private ActorType _actorType; // 액터 타입
 
-    public bool IsOverHeat => _playerStats.IsOverHeat; // 과열 상태 여부
-    public bool IsHeatLock => _playerStats.IsHeatlock; // 열기 변경 잠금 여부
+    public bool IsOverHeat => _stats.IsOverHeat; // 과열 상태 여부
+    public bool IsHeatLock => _stats.IsHeatlock; // 열기 변경 잠금 여부
     public ActorType ActorType => _actorType;
 
     public int MaxHeat => 100;  // 최대 열기
-    public int CurrentHeat => _playerStats.CurrentHeat; // 현재 열기
+    public int CurrentHeat => _stats.CurrentHeat; // 현재 열기
     public int CurrentTier => GetTier();    // 현재 티어
 
 
@@ -41,7 +41,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// </summary>
     public void Initialize( PlayerStats playerStats, SourceMapDatabaseSO sourceMapDatabaseSO, TierStatDatabaseSO tierStatDatabaseSO, OverHeatDataSO overHeatDataSO, PlayerEvents events)
     {
-        _playerStats = playerStats;
+        _stats = playerStats;
         _sourceMapDataBase = sourceMapDatabaseSO;
         _tierStatDataBase = tierStatDatabaseSO;
         _overHeatData = overHeatDataSO;
@@ -58,6 +58,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         _events.OnRangedAttackAffect += HandleRangedAttackAffect;
         _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect;
         _events.OnOverHeatFinish += HandleOverHeatFinish;
+        _events.OnBoostStart += HandleBoostStart;
     } 
 
     /// <summary>
@@ -74,6 +75,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
         _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
         _events.OnOverHeatFinish -= HandleOverHeatFinish;
+        _events.OnBoostStart -= HandleBoostStart;
     }
 
     #region SetHeat
@@ -83,12 +85,12 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// <param name="amount"> 열기 변화량 </param>
     public void ChangeHeat(int amount)
     {
-        if (amount == 0 && IsHeatLock) return;
+        if ( amount == 0 && IsHeatLock) return;
 
         int previousTier = GetTier();
         int previousHeat = CurrentHeat;
 
-        _playerStats.CurrentHeat = Mathf.Clamp(CurrentHeat + amount, 0, MaxHeat);
+        _stats.CurrentHeat = Mathf.Clamp(CurrentHeat + amount, 0, MaxHeat);
 
         if (previousHeat != CurrentHeat)
         {
@@ -118,7 +120,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         int previousTier = GetTier();
         int previousHeat = CurrentHeat;
 
-        _playerStats.CurrentHeat = Mathf.Clamp(amount, 0, MaxHeat);
+        _stats.CurrentHeat = Mathf.Clamp(amount, 0, MaxHeat);
 
         if (previousHeat != CurrentHeat)
         {
@@ -152,7 +154,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
             {
                 SetHeatLock(true);
                 _heatTierTimer = Time.time;
-                _playerStats.IsOverHeat = true;
+                _stats.IsOverHeat = true;
             });
     }
 
@@ -179,9 +181,9 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     {
         _overheatSequence?.Kill();
 
-        if (_playerStats.IsOverHeat)
+        if (_stats.IsOverHeat)
         {
-            _playerStats.IsOverHeat = false;
+            _stats.IsOverHeat = false;
             SetHeatLock(false);
         }
     }
@@ -254,7 +256,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// </summary>
     public void DecreaseHeatOnBattleOut()
     {
-        if(CurrentHeat <= 0) return;
+        if(_stats.SkillData.IsMaxLevelBoost && CurrentHeat <= 0) return;
 
         SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnBattleOut", -1);
         int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
@@ -281,7 +283,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// <param name="isLock">잠금 여부</param>
     public void SetHeatLock(bool isLock)
     {
-        _playerStats.IsHeatlock = isLock;
+        _stats.IsHeatlock = isLock;
     }
 
     /// <summary>
@@ -382,6 +384,11 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     private void HandleOverHeatFinish()
     {
         OverHeatFinish(); 
+    }
+
+    private void HandleBoostStart()
+    {
+        SetHeat(100);
     }
     #endregion
 }
