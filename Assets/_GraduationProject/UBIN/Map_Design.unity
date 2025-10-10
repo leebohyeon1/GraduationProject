@@ -16764,8 +16764,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d94cc9f70e6d54293d94ca9def9130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeatBar
-  _heatBarSlider: {fileID: 1627567439}
-  _object: {fileID: 8638729848705615704}
+  p_object: {fileID: 0}
+  p_heatBarSlider: {fileID: 0}
 --- !u!1 &1907230840
 GameObject:
   m_ObjectHideFlags: 0
@@ -20524,67 +20524,6 @@ Transform:
   - {fileID: 7083175343097262093}
   m_Father: {fileID: 6929938284963472788}
   m_LocalEulerAnglesHint: {x: -42.757526, y: 163.59148, z: -112.48143}
---- !u!1001 &5819927456400122405
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -12.52
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -15.68
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719675082685425691, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5946781216381830389, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5946781216381830389, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 25666b2b4d58d02448b6a4db055d10eb, type: 3}
 --- !u!1 &5998406441452295853
 GameObject:
   m_ObjectHideFlags: 0
@@ -21258,12 +21197,14 @@ MonoBehaviour:
   _animator: {fileID: 2678176000636596864}
   _characterController: {fileID: 6775743024567379279}
   _dataBase: {fileID: 8638729848705615706}
-  _controller: {fileID: 8638729848705615709}
+  _events: {fileID: 8638729848705615710}
+  _input: {fileID: 0}
   _health: {fileID: 8638729848705615713}
   _movement: {fileID: 8638729848705615708}
   _combat: {fileID: 8638729848705615711}
   _heat: {fileID: 8638729848705615712}
-  _events: {fileID: 8638729848705615710}
+  _skill: {fileID: 0}
+  _mana: {fileID: 0}
 --- !u!114 &8638729848705615706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21318,13 +21259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerEvents
   _feedbacks: []
-  _firstAttackStartEffectPoint: {fileID: 0}
-  _secondAttackStartEffectPoint: {fileID: 0}
-  _thirdAttackStartEffectPoint: {fileID: 0}
-  _chargeEffectPoint: {fileID: 0}
-  _chargeAttackPoint: {fileID: 0}
-  _rangedAttackPoint: {fileID: 8518299325564543927}
-  _counterAttackPoint: {fileID: 0}
+  _rangedAttackStartPoint: {fileID: 0}
 --- !u!114 &8638729848705615711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21349,12 +21284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58ce37b33b0ab245b673d663b519d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHeat
-  _maxHeat: 100
-  p_currentHeat: 0
-  p_sourceMapDataBase: {fileID: 0}
-  p_tierStatDatabase: {fileID: 0}
-  LockTimer: 2
-  <ActorType>k__BackingField: 0
 --- !u!114 &8638729848705615713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21477,7 +21406,6 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 854570588}
   - {fileID: 228031590}
-  - {fileID: 5819927456400122405}
   - {fileID: 1655963205192133558}
   - {fileID: 1185445140}
   - {fileID: 60057219}

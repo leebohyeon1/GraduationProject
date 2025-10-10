@@ -124,7 +124,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
         return finalStats;
     }
 
-    public int GetTier()
+    public virtual int GetTier()
     {
         return p_tierStatDatabase.GetCurrentTier(p_currentHeat);
     }

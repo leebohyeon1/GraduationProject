@@ -57,7 +57,7 @@ public class Elevator_Heat : HeatSystem
         Debug.Log($"Heat Changed: {previousHeat} -> {p_currentHeat}");
     }
 
-    public int GetTier()
+    public override int GetTier()
     {
         return -1;
     }
@@ -77,6 +77,20 @@ public class Elevator_Heat : HeatSystem
         
     }
 
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            collision.transform.SetParent(transform);
+        }
+    }
 
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            collision.transform.SetParent(null);
+        }
+    }
 
 }
