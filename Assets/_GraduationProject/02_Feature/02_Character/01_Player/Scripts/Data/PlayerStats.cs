@@ -43,11 +43,15 @@ public class PlayerStats: IDisposable
     public float MoveSpeed; // 이동 속도
     public float RotateSpeed; // 회전 속도
 
+    // Combat
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData = new PlayerCombatData(); // 전투 데이터
 
+    // Skill
     public PlayerSkillData SkillData;
+    public bool IsMaxLevelFlash;
 
+    // Animation
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
 
@@ -175,6 +179,8 @@ public class PlayerStats: IDisposable
         SkillData.SkillMaxCount[(int)SkillType.Flash] = _dataBase.FlashSkill.Count;
         SkillData.SkillMaxCount[(int)SkillType.Boost] = _dataBase.BoostSkill.Count;
         SkillData.SkillMaxCount[(int)SkillType.TimeStop] = _dataBase.TimeStopSkill.Count;
+
+        IsMaxLevelFlash = false;
     }
 
     /// <summary>
@@ -367,4 +373,5 @@ public struct PlayerSkillData
         SkillMaxCount = new List<int>(new int[count]);
         SkillCount = new List<int>(new int[count]);
     }
+
 }

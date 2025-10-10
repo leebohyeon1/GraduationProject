@@ -77,6 +77,60 @@ public class PlayerSkill : MonoBehaviour
 
         _currentSkillType = skillType;
     }
+    #region Enchant
+    public void EnchantSkill(SkillType skillType, int level = -1)
+    {
+        int skillTypeindex = (int)skillType;
+
+        if (level > -1)
+        {
+            switch (skillType)
+            {
+                case SkillType.Flash:
+                    EnchantFlash(level);
+                    break;
+
+            }
+
+            return;
+        }
+
+        for (int i = 0; i < SkillData.IsSubSkillsUnlock[skillTypeindex].Count; i++)
+        {
+            if (SkillData.IsSubSkillsUnlock[skillTypeindex][i])
+            {
+                continue;
+            }
+
+            SkillData.IsSubSkillsUnlock[skillTypeindex][i] = false;
+
+            switch (skillType)
+            {
+                case SkillType.Flash:
+                    EnchantFlash(i);
+                    break;
+
+            }
+        }
+    }
+
+    public void EnchantFlash(int level)
+    {
+        if(level == 0)
+        {
+            SkillData.SkillCoolDown[0] -= _flashSkillSO.DecreaseCoolDownAmount;
+        }
+        else if(level == 1)
+        {
+            SkillData.SkillMaxCount[0] += _flashSkillSO.IncreaseCountAmount;
+        }
+        else
+        {
+            _stats.IsMaxLevelFlash = true;
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// ��ų Ÿ�Կ� ���� ��ų�� ����մϴ�.
