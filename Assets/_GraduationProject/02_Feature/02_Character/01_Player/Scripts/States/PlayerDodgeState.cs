@@ -3,39 +3,36 @@ using BH_Lib.Log;
 using System;
 using UnityEngine;
 
-
 /// <summary>
-/// ÇÃ·¹ÀÌ¾î ´ë±â »óÅÂ
-/// ÀÔ·ÂÀÌ ¾øÀ» ¶§ÀÇ ±âº» »óÅÂ
+/// í”Œë ˆì´ì–´ì˜ íšŒí”¼ ìƒíƒœì…ë‹ˆë‹¤.
 /// </summary>
 public class PlayerDodgeState : BaseState<Player>
 {
-    private Vector3 _dodgeDirection;
-    private Type _nextState;
+    private Vector3 _dodgeDirection; // íšŒí”¼ ë°©í–¥
+    private Type _nextState; // ë‹¤ìŒ ì „í™˜ë  ìƒíƒœ
 
     public PlayerDodgeState(Player context, StateMachine<Player> stateMachine)
     : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
-        _nextState = null; // ´ÙÀ½ »óÅÂ ÃÊ±âÈ­
+        _nextState = null;
 
         p_context.Animator.SetTrigger("Dodge");
         p_context.Events.OnDodgeFinish += HandleDodgeFinish;
 
+        // ì…ë ¥ ë°©í–¥ì— ë”°ë¼ íšŒí”¼ ë°©í–¥ ê²°ì •
         if (p_context.Input.MoveInput != Vector2.zero)
         {
-            // PlayerMovement.Move()°¡ Ä«¸Ş¶ó ±âÁØÀ¸·Î º¯È¯ÇÏ¹Ç·Î ÀÔ·Â ±×´ë·Î Àü´Ş
-            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y);
+            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
             p_context.Movement.RotateToDirection(_dodgeDirection);
         }
         else
         {
-            // ÀÔ·ÂÀÌ ¾øÀ¸¸é Dodge ÇÔ¼ö¿¡¼­ Á÷Á¢ Ã³¸®ÇÏ¹Ç·Î ¹æÇâ ¼³Á¤ ÇÊ¿ä ¾øÀ½
-            _dodgeDirection = Vector3.zero;
+            _dodgeDirection = Vector3.zero; // ì…ë ¥ ì—†ìœ¼ë©´ ì „ë°©ìœ¼ë¡œ
         }
 
-        p_context.Health.SetInvisible(true);
+        p_context.Health.SetInvisible(true); // íšŒí”¼ ì¤‘ ë¬´ì 
 
         if(p_context.Combat.IsBattleState)
         {
@@ -52,15 +49,13 @@ public class PlayerDodgeState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        p_context.Movement?.Dodge(_dodgeDirection, 
-            p_context.Stats.CombatData.DodgeSpeed);
+        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.CombatData.DodgeSpeed);
     }
 
     public override void OnExit()
     {
         p_context.Events.OnDodgeFinish -= HandleDodgeFinish;
-
-        p_context.Health.SetInvisible(false);
+        p_context.Health.SetInvisible(false); // ë¬´ì  í•´ì œ
 
         if (p_context.Combat.IsBattleState)
         {
@@ -69,25 +64,22 @@ public class PlayerDodgeState : BaseState<Player>
     }
 
     /// <summary>
-    /// È¸ÇÇ ¾Ö´Ï¸ŞÀÌ¼Ç Á¾·á ÀÌº¥Æ® ÇÚµé·¯
+    /// íšŒí”¼ ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í˜¸ì¶œë©ë‹ˆë‹¤.
     /// </summary>
     public void HandleDodgeFinish()
     {
-        // ÀúÀåµÈ ´ÙÀ½ »óÅÂ·Î ÀüÈ¯
         if (_nextState != null)
         {
             p_stateMachine.ChangeState(_nextState);
         }
         else
         {
-            // ¾Æ¹« ÀÔ·ÂÀÌ ¾ø¾úÀ¸¸é Idle »óÅÂ·Î
             p_stateMachine.ChangeState<PlayerIdleState>();
         }
     }
 
     /// <summary>
-    /// ÀÔ·Â Ã³¸®
-    /// È¸ÇÇ Áß ÀÔ·ÂÀ» °¨ÁöÇÏ¿© ´ÙÀ½ »óÅÂ¸¦ °áÁ¤
+    /// íšŒí”¼ ì¤‘ ì…ë ¥ì„ ì²˜ë¦¬í•˜ì—¬ ë‹¤ìŒ ìƒíƒœë¥¼ ê²°ì •í•©ë‹ˆë‹¤.
     /// </summary>
     public void HandleInput()
     {
@@ -105,7 +97,6 @@ public class PlayerDodgeState : BaseState<Player>
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
-
             _nextState = typeof(PlayerFirstAttackState);
         }
         else if (p_context.Input.RangedAttackInput)
@@ -116,12 +107,5 @@ public class PlayerDodgeState : BaseState<Player>
         {
             _nextState = typeof(PlayerMoveState);
         }
-
-        if (_nextState != null)
-        {
-            Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] ´ÙÀ½ »óÅÂ: {_nextState}");
-        }
     }
 }
-
-

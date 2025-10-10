@@ -1,18 +1,18 @@
-﻿using BH_Lib.FSM;
+using BH_Lib.FSM;
 using BH_Lib.Log;
 using System;
 using UnityEngine;
 
-
+/// <summary>
+/// 플레이어의 첫 번째 일반 공격 상태입니다.
+/// </summary>
 public class PlayerFirstAttackState : PlayerAttackBaseState
 {
     public PlayerFirstAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
 
     protected override string p_animationTrigger => "FirstAttack";
-
     protected override Type p_nextAttackState => typeof(PlayerSecondAttackState);
-
     protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.AttackDatas[0];
 
     public override void OnEnter()
@@ -20,11 +20,11 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // 다음 상태 초기화
+        p_nextState = null;
      
         p_context.Combat.SetupCombatCenter();
 
-        // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
+        // 목표 방향으로 회전
         if (p_context.Movement.HasTargetRotation)
         {
             p_context.Movement.RotateToTargetRotation();
@@ -39,20 +39,18 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
         p_context.Events.TriggerBattleStateChanged(true);
 
+        // 카운터 공격이 가능한 경우 카운터 상태로 전환
+        // 카운터 가능 상태를 굳이 나한테 필요없을 지도
         if (p_context.Combat.CanCounterAttack && p_context.Combat.CanIsScanCounterable())
         {
             p_stateMachine.ChangeState<PlayerFirstCounterAttackState>();
         }
         else
         {
-            p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+            p_context.Animator.SetTrigger(p_animationTrigger);
         }
 
-        // 공격 시 전진 이동 실행
         StartAttackMovement();
-
         p_context.Events.TriggerFirstAttackStart();
     }
-
 }
-

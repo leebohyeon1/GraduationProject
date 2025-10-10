@@ -1,56 +1,72 @@
-﻿using BH_Lib.DI;
+using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어의 메인 클래스입니다.
+/// 모든 플레이어 관련 컴포넌트들을 관리하고 상태 머신을 통해 플레이어의 행동을 제어합니다.
+/// </summary>
 public class Player : DIMonoBehaviour
 {
     #region Private Fields
-    [Inject] private IInputDeviceDetector _inputDeviceDetector;
+    [Inject] private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
 
-    [SerializeField] private Animator _animator;
-    [SerializeField] private CharacterController _characterController;
+    [SerializeField] private Animator _animator; // 애니메이터
+    [SerializeField] private CharacterController _characterController; // 캐릭터 컨트롤러
 
-    [SerializeField] private PlayerDataBaseSO _dataBase;
-    private PlayerStats _stats;
-    [SerializeField] private PlayerEvents _events;
+    [SerializeField] private PlayerDataBaseSO _dataBase; // 플레이어 데이터베이스
+    private PlayerStats _stats; // 플레이어 스탯
+    [SerializeField] private PlayerEvents _events; // 플레이어 이벤트
 
-    [SerializeField] private PlayerInputHandler _input;
-    [SerializeField] private PlayerHealth _health;
-    [SerializeField] private PlayerMovement _movement;
-    [SerializeField] private PlayerCombat _combat;
-    [SerializeField] private PlayerHeat _heat;
+    [SerializeField] private PlayerInputHandler _input; // 입력 핸들러
+    [SerializeField] private PlayerHealth _health; // 체력 컴포넌트
+    [SerializeField] private PlayerMovement _movement; // 이동 컴포넌트
+    [SerializeField] private PlayerCombat _combat; // 전투 컴포넌트
+    [SerializeField] private PlayerHeat _heat; // 열기 컴포넌트
+    [SerializeField] private PlayerSkill _skill; // 스킬 컴포넌트
+    [SerializeField] private PlayerMana _mana;  // 마나 컴포넌트
 
-    private StateMachine<Player> _stateMachine;
+    private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
     
     #region Properties
     public Animator Animator => _animator;
+
     public PlayerDataBaseSO DataBase => _dataBase;
+    public PlayerStats Stats => _stats;
+    public PlayerEvents Events => _events;
     public PlayerInputHandler Input => _input;
+
     public PlayerHealth Health => _health;
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
     public PlayerHeat Heat => _heat;
-    public PlayerEvents Events => _events;
+    public PlayerSkill Skill => _skill; 
+    public PlayerMana Mana => _mana;
 
-    public PlayerStats Stats => _stats;
+
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     
     /// <summary>
-    /// 현재 플레이어 상태
+    /// 현재 플레이어 상태를 나타냅니다.
     /// </summary>
     public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
-    
-    private void Start()
+
+    protected override void Awake()
     {
+        base.Awake();
+
         InitializeReference();
         InitializeStateMachine();
-    
+    }
+
+    private void Start()
+    {
         SubscribeToEvents();
     }
     
@@ -78,7 +94,7 @@ public class Player : DIMonoBehaviour
     }
     
     /// <summary>
-    /// 레퍼런스 초기화
+    /// 모든 참조를 초기화합니다.
     /// </summary>
     private void InitializeReference()
     {
@@ -97,7 +113,7 @@ public class Player : DIMonoBehaviour
             _dataBase = GetComponent<PlayerDataBaseSO>();
         }
 
-        _stats = new PlayerStats(DataBase.BaseData);
+        _stats = new PlayerStats(DataBase, _events);
     
         if (_events == null)
         {
@@ -120,7 +136,7 @@ public class Player : DIMonoBehaviour
         {
             _movement = GetComponent<PlayerMovement>();
         }
-        _movement.Initialize(_characterController);
+        _movement.Initialize(_characterController, Events);
     
         if (_combat == null)
         {
@@ -132,13 +148,24 @@ public class Player : DIMonoBehaviour
         {
             _heat = GetComponent<PlayerHeat>(); 
         }
-        _heat.Initialize(Stats , DataBase.SourceMapData, DataBase.TierStatData, 
+        _heat.Initialize(Stats, DataBase.SourceMapData, DataBase.TierStatData,
             DataBase.OverHeatData, Events);
 
+        if (_skill == null)
+        {
+            _skill = GetComponent<PlayerSkill>();
+        }
+        _skill.Initialize(Stats, Events, Input, DataBase);
+
+        if(_mana == null)
+        {
+            _mana = GetComponent<PlayerMana>();
+        }
+        _mana.Initialize(Stats, Events);
     }
     
     /// <summary>
-    /// 상태머신 초기화
+    /// 상태 머신을 초기화하고 모든 상태를 추가합니다.
     /// </summary>
     private void InitializeStateMachine()
     {
@@ -165,51 +192,54 @@ public class Player : DIMonoBehaviour
         _stateMachine.ChangeState<PlayerIdleState>();
     }
     /// <summary>
-    /// 상태머신 변경 세팅
+    /// 상태 전이 조건을 설정합니다.
     /// </summary>
     private void SetupStateTransitions()
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && Stats.IsDamaged);
+            !Health.IsDead && !Stats.IsCounterAttack && Stats.IsDamaged);
     
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Input.MoveInput != Vector2.zero);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerRangedChargeState>(() 
             => Input.RangedAttackInput);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() 
             => Input.DefendInput);
     
         // Move 상태에서의 전환
-        _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
             => Input.MoveInput == Vector2.zero);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Input.AttackInput);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerRangedChargeState>(() 
             => Input.RangedAttackInput);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() 
             => Input.DefendInput);
     }
     
     /// <summary>
-    /// Update에 호출되는 함수
+    /// 매 프레임 호출되는 업데이트 함수입니다.
     /// </summary>
     private void OnUpdate()
     {
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
                     DataBase.BaseData.GroundLayerMask);
-        
+
+        _skill.Tick();
+
+
         if (Heat.CanHeatTierEffect())
         {
             Events.TriggerTier(Heat.CurrentTier, DataBase.OverHeatData.DamagePerTick);
@@ -219,10 +249,15 @@ public class Player : DIMonoBehaviour
         {
             Events.TriggerBattleStateChanged(false);
         }
+
+        if(Input.SkillInput)
+        {
+            Skill.UseSkill();
+        }
     }
     
     /// <summary>
-    /// FixedUpdate에 호출되는 함수
+    /// 고정된 시간 간격으로 호출되는 업데이트 함수입니다.
     /// </summary>
     private void OnFixedUpdate()
     {
@@ -231,22 +266,28 @@ public class Player : DIMonoBehaviour
     }
     
     #region Event
+    /// <summary>
+    /// 이벤트 구독을 설정합니다.
+    /// </summary>
     private void SubscribeToEvents()
     {
-        // 이제 PlayerMediator가 이 역할을 담당합니다.
-
         if (_stats != null)
         {
             _stats.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
         }
     }
     
+    /// <summary>
+    /// 이벤트 구독을 해제합니다.
+    /// </summary>
     private void UnsubscribeToEvents()
     {
-        // 각 컴포넌트의 Dispose와 PlayerMediator의 OnDisable에서 처리됩니다.
+        Stats.Dispose();
+        Movement.Dispose();
         Health.Dispose();
         Combat.Dispose();
         Heat.Dispose();
+        Mana.Dispose();
 
         if (_stats != null)
         {
@@ -254,6 +295,10 @@ public class Player : DIMonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 애니메이션 속도 변경을 처리합니다.
+    /// </summary>
+    /// <param name="speed">새로운 속도</param>
     private void HandleAnimationSpeedChanged(float speed)
     {
         _animator.speed = speed;

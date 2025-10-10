@@ -29,8 +29,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
     {
         ActorType = actorType;
         StatCalculator.Initialize(p_tierStatDatabase);
-
     }
+
 
 
     /// <summary>
@@ -39,9 +39,14 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 변화량 </param>
     public virtual void ChangeHeat(int amount)
     {
+        if (p_tierStatDatabase == null)
+        {
+            p_tierStatDatabase = StatCalculator.TierStatDatabase;
+
+        }
         if (IsHeatLock)
         {
-            if (Time.time >= Timer)
+            if (Time.time >= LockTimer)
             {
                 SetHeatLock(false);
             }
@@ -70,7 +75,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
             OverHeat();
             SetHeatLock(true);
             Timer = Time.time + LockTimer; // 2초 동안 열기 잠금
-        }   
+        }
+        Debug.Log($"Heat Changed: {previousHeat} -> {p_currentHeat}");
     }
 
     /// <summary>
@@ -79,13 +85,13 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 설정값 </param>
     public virtual void SetHeat(int amount)
     {
-        if (IsHeatLock)
-        {
-            if (Time.time >= Timer)
-            {
-                SetHeatLock(false);
-            }
-        }
+        // if (IsHeatLock)
+        // {
+        //     if (Time.time >= Timer)
+        //     {
+        //         SetHeatLock(false);
+        //     }
+        // }
         int previousTier = GetTier();
         int previousHeat = p_currentHeat;
 
@@ -118,7 +124,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
         return finalStats;
     }
 
-    public int GetTier()
+    public virtual int GetTier()
     {
         return p_tierStatDatabase.GetCurrentTier(p_currentHeat);
     }

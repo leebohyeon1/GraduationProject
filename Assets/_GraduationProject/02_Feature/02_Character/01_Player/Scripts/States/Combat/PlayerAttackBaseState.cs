@@ -1,4 +1,3 @@
-﻿
 using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
@@ -6,30 +5,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-
+/// <summary>
+/// 플레이어의 모든 공격 상태의 기반이 되는 추상 클래스입니다.
+/// </summary>
 public abstract class PlayerAttackBaseState : BaseState<Player>
 {
-    /// <summary>
-    /// 다음 상태를 저장할 변수
-    /// </summary>
-    protected Type p_nextState;
+    protected Type p_nextState; // 다음 전환될 상태
 
-    /// <summary>
-    /// 애니메이션 트리거 이름 (하위 클래스에서 구현)
-    /// </summary>    
-    protected abstract string p_animationTrigger { get; }
-    /// <summary>
-    /// 다음 공격 상태 타입 (하위 클래스에서 구현)
-    /// </summary>
-    protected abstract Type p_nextAttackState { get; }
-    /// <summary>
-    /// 플레이어 공격 데이터
-    /// </summary>
-    protected abstract PlayerAttackData p_AttackData { get; }
+    protected abstract string p_animationTrigger { get; } // 각 공격에 맞는 애니메이션 트리거
+    protected abstract Type p_nextAttackState { get; } // 다음 연계 공격 상태
+    protected abstract PlayerAttackData p_AttackData { get; } // 현재 공격의 데이터
 
-    /// <summary>
-    /// 플레이어 공격 기본 상태 생성자
-    /// </summary>
     public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
@@ -38,15 +24,16 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
 
-        p_nextState = null; // 다음 상태 초기화
+        p_nextState = null;
 
-        p_context.Animator.SetTrigger(p_animationTrigger);  // 공격 애니메이션 실행
+        p_context.Animator.SetTrigger(p_animationTrigger);
         p_context.Combat.SetupCombatCenter();
 
-        // 목표 회전 값이 있을 경우 목표 회전값으로 회전 후 삭제
+        // 목표 방향으로 회전
         if(p_context.Movement.HasTargetRotation)
         {
             p_context.Movement.RotateToTargetRotation();
+
         }
         else
         {
@@ -56,18 +43,14 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
         }
             
-
         p_context.Events.TriggerBattleStateChanged(true);
           
-
-        // 공격 시 전진 이동 실행
         StartAttackMovement();
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
-
         HandleInput();
     }
 
@@ -85,18 +68,18 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     }
 
     /// <summary>
-    /// 공격 애니메이션 이벤트 핸들러
-    /// 공격이 완료되면 다른 상태로 전환
+    /// 공격 애니메이션 종료 시 호출됩니다.
     /// </summary>
     protected virtual void HandleAttackFinish()
     {
         Sequence sequence = DOTween.Sequence();
         sequence.SetDelay(p_AttackData.AttackDelay);
 
-        // 연속 공격이 아니면 추가 딜레이
-        if (!typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
+        // 다음 공격이 연계 공격이 아닐 경우 추가 딜레이
+        if (p_nextState == null || !typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
             sequence.SetDelay(p_context.Stats.CombatData.LastAttackDelay);
+            p_context.Movement.ClearTargetRotation();
         }
 
         sequence.AppendCallback(() =>
@@ -113,13 +96,11 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     }
 
     /// <summary>
-    /// 공격 효과 적용
+    /// 공격 판정이 발생하는 시점에 호출됩니다.
     /// </summary>
     protected virtual void HandleAttackPerform()
     {
-        Log.Print("공격");
         Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
-
         foreach (Collider collider in colliders)
         {
             p_context.Events.TriggerAttackAffect(collider);
@@ -127,30 +108,46 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     }
 
     /// <summary>
-    /// 공격 시 전진 이동 시작
+    /// 공격 시 앞으로 나아가는 움직임을 시작합니다.
     /// </summary>
     protected virtual void StartAttackMovement()
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // 전방에 오브젝트가 있을 경우 전진 거리 조정
+        // 전방에 장애물이 있으면 이동 거리 조정
         if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, 
-            out var hitInfo, p_AttackData.AttackMoveDistance))
+            out var hitInfo, p_AttackData.AttackMoveDistance,
+            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
 
-        Vector3 targetPosition = p_context.transform.position + (p_context.transform.forward * distance);
+        if (distance <= 0) return;
 
-        p_context.transform.DOMove(targetPosition, p_AttackData.AttackMoveDuration, false)
-        .SetEase(p_AttackData.AttackMoveCurve).SetId(p_animationTrigger);
+        Vector3 moveDirection = p_context.transform.forward;
+        float duration = p_AttackData.AttackMoveDuration;
+        AnimationCurve curve = p_AttackData.AttackMoveCurve;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (x - currentDistance);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            duration)
+            .SetEase(curve)
+            .SetId(p_animationTrigger)
+            .SetUpdate(UpdateType.Fixed);
     }
 
     /// <summary>
-    /// 입력 처리
-    /// 회피 중 입력을 감지하여 다음 상태를 결정
+    /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
     /// </summary>
-    public void HandleInput()
+    protected virtual void HandleInput()
     {
         if (p_nextAttackState != null && p_context.Input.AttackInput)
         {
@@ -158,12 +155,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
-
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Input.DodgeInput &&
-            Time.time - p_context.Movement.LastDodgeTime >=
-            p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }
@@ -179,11 +173,5 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerRangedChargeState);
         }
-
-        if (p_nextState != null)
-        {
-            Log.PrintColor(Color.skyBlue, $"[PlayerAttackBaseState] 다음 상태: {p_nextState}");
-        }
     }
-
 }
