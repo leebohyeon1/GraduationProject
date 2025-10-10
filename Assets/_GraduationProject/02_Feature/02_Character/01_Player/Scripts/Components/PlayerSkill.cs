@@ -1,5 +1,6 @@
 using BH_Lib.Log;
 using DG.Tweening;
+using System;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
@@ -12,7 +13,7 @@ public enum SkillType
     TimeStop = 2
 }
 
-public class PlayerSkill : MonoBehaviour
+public class PlayerSkill : MonoBehaviour, IDisposable
 {
     #region Private Fields
     private PlayerStats _stats;
@@ -40,6 +41,13 @@ public class PlayerSkill : MonoBehaviour
         _flashSkillSO = dataBaseSO.FlashSkill;
         _boostSkillSO = dataBaseSO.BoostSkill;
         _timeStopSkillSO = dataBaseSO.TimeStopSkill;
+
+        _events.OnFlashFinish += HandleFlashFinsh;
+    }
+
+    public void Dispose()
+    {
+        _events.OnFlashFinish -= HandleFlashFinsh;
     }
 
     public void Tick()
@@ -174,6 +182,7 @@ public class PlayerSkill : MonoBehaviour
         SkillData.SkillCount[(int)_currentSkillType]--;
     }
 
+    #region Flash
     private void Flash()
     {
         if (_stats.CurrentMana < _flashSkillSO.SkillCost)
@@ -204,6 +213,20 @@ public class PlayerSkill : MonoBehaviour
         _events.TriggerFlashSkillStart(velocity, distance);
     }
 
+    private void PerformFlashDamage(Vector3 position)
+    {
+        Collider[] colliders = Physics.OverlapSphere(position, _flashSkillSO.FlashAttackRadius);
+        foreach (Collider collider in colliders)
+        {
+            if(collider.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.TakeDamage(_flashSkillSO.FlashDamage);
+            }
+        }
+    }
+    #endregion
+
+    #region Boosts
     private void Boots()
     {
         _stats.IsBoost = true;
@@ -214,4 +237,16 @@ public class PlayerSkill : MonoBehaviour
         sequence.AppendCallback(() => { _stats.IsBoost = false; });
         
     }
+    #endregion
+
+    #region eventHandler
+    private void HandleFlashFinsh(Vector3 position)
+    {
+        if(SkillData.IsMaxLevelFlash)
+        {
+            PerformFlashDamage(position);
+        }
+    }
+
+    #endregion
 }

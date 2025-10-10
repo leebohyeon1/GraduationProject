@@ -97,6 +97,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public event Action<int> OnOverHeat; // 과열 상태 이벤트
 
     public event Action<Vector2, float> OnFlashStart; // 점멸 스킬 이벤트
+    public event Action<Vector3> OnFlashFinish;
     public event Action OnBoostStart; // 증폭 스킬 이벤트
     public event Action OnTimeStopStart; // 시간 정지 스킬 이벤트
 
@@ -496,6 +497,14 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerFlashSkillStart(Vector2 input, float distance)
     {
         OnFlashStart?.Invoke(input, distance);
+    }
+    /// <summary>
+    /// 점멸 스킬 종료 피드백을 재생합니다.
+    /// </summary>
+    /// <param name="endPosition">종료 위치</param>
+    public void TriggerFlashSkillFinish(Vector3 endPosition)
+    {
+        OnFlashFinish?.Invoke(endPosition);
     }
     /// <summary>
     /// 증폭 스킬 시작 피드백을 재생합니다.

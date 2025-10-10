@@ -219,6 +219,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
         Velocity *= distance;
         ForceMove(Velocity);
+        _events.TriggerFlashSkillFinish(transform.position + Velocity);
     }
     #endregion
 }

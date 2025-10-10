@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BoostSkillSO", menuName = "Player/Skill/BoostSkillSO")]
 public class BoostSkillSO : SkillSO
 {
+    [Header("Level 0")]
     public float Duration;
 
     [Header("Level 1")]

@@ -301,6 +301,7 @@ public class Player : DIMonoBehaviour
         Combat.Dispose();
         Heat.Dispose();
         Mana.Dispose();
+        Skill.Dispose();
 
         if (_stats != null)
         {

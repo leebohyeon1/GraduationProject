@@ -13,6 +13,6 @@ public class FlashSkillSO : SkillSO
     public int IncreaseCountAmount = 1;
 
     [Header("Level 3")]
-    public Vector3 FlashAttackRange;
+    public float FlashAttackRadius;
     public int FlashDamage;
 }
