@@ -34,12 +34,16 @@ namespace Console
         public static Dictionary<string, ConsoleCommand> Commands { get; private set; }
 
         private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
+        private System.Text.StringBuilder relatedSearveTermsContent = new System.Text.StringBuilder();
 
         [Header("UI")]
         public Canvas ConsoleCanvas;
         public TMP_Text ConsoleText;
         public TMP_Text InputText;
+
         public TMP_InputField ConsoleInputField;
+        public GameObject RelatedServeTermsConsole;
+        public TMP_Text RelatedSearveTerms;
 
         private float _pausedTimeScale;
 
@@ -167,6 +171,33 @@ namespace Console
                 }
 
                 Commands[commandSplitInput[0]].RunCommand(args.ToArray());
+            }
+        }
+
+        public void ViewRelatedSearveTerms(string input)
+        {
+            relatedSearveTermsContent.Clear();
+
+            if (string.IsNullOrEmpty(input))
+            {
+                RelatedSearveTerms.text = consoleContent.ToString();
+                RelatedServeTermsConsole.SetActive(false);   
+                return;
+            }
+            
+            foreach(KeyValuePair<string, ConsoleCommand> command in Commands)
+            {
+                if(command.Key.Contains(input))
+                {
+                    relatedSearveTermsContent.AppendLine(command.Key);
+                }
+            }
+
+            RelatedSearveTerms.text = relatedSearveTermsContent.ToString();
+            
+            if(!RelatedServeTermsConsole.activeSelf)
+            {
+                RelatedServeTermsConsole.SetActive(true);
             }
         }
     }
