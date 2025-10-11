@@ -172,15 +172,9 @@ public class PlayerStats: IDisposable
 
         CombatData = baseData.CombatData.Clone();
 
-        SkillData = new PlayerSkillData(3);
+        SkillData = new PlayerSkillData(_dataBase);
 
-        SkillData.SkillCoolDown[(int)SkillType.Flash] = _dataBase.FlashSkill.CoolDown;
-        SkillData.SkillCoolDown[(int)SkillType.Boost] = _dataBase.BoostSkill.CoolDown;
-        SkillData.SkillCoolDown[(int)SkillType.TimeStop] = _dataBase.TimeStopSkill.CoolDown;
 
-        SkillData.SkillMaxCount[(int)SkillType.Flash] = _dataBase.FlashSkill.Count;
-        SkillData.SkillMaxCount[(int)SkillType.Boost] = _dataBase.BoostSkill.Count;
-        SkillData.SkillMaxCount[(int)SkillType.TimeStop] = _dataBase.TimeStopSkill.Count;
     }
 
     /// <summary>
@@ -347,47 +341,49 @@ public struct RangedAttackData
 /// 플레이어의 스킬 데이터를 정의하는 구조체입니다.
 /// </summary>
 [Serializable]
-public struct PlayerSkillData
+public class PlayerSkillData
 {
-    public List<bool> IsMainSkillsUnlock;
-    public List<List<bool>> IsSubSkillsUnlock;
+    public List<bool> IsMainSkillsUnlock = new List<bool>(new bool[3]);
+    public List<bool> IsFlashSubSkillsUnlock = new List<bool>(new bool[3]) ;
+    public List<bool> IsBoostSubSkillsUnlock = new List<bool>(new bool[3]);
+    public List<bool> IsTimeStopSubSkillsUnlock = new List<bool>(new bool[3]) ;
 
-    public List<float> SkillCoolDown;
-    public List<float> SkillCoolDownTimer;
+    public List<float> SkillCoolDown = new List<float>(new float[3]);
+    public List<float> SkillCoolDownTimer = new List<float>(new float[3]);
 
-    public List<int> SkillMaxCount;
-    public List<int> SkillCount;
+    public List<int> SkillMaxCount = new List<int>(new int[3]);
+    public List<int> SkillCount = new List<int>(new int[3]);
 
     #region Flash
-    public bool IsMaxLevelFlash => IsSubSkillsUnlock
-        [(int)SkillType.Flash][IsSubSkillsUnlock[(int)SkillType.Flash].Count - 1];
+    [Header("Flash")]
+    public bool IsMaxLevelFlash = false;
     #endregion
 
     #region Boost
-    public float BoostRangeMultiply;
-    public float BoostDamageMultiply;
-    public bool IsMaxLevelBoost => IsSubSkillsUnlock
-        [(int)SkillType.Boost][IsSubSkillsUnlock[(int)SkillType.Boost].Count - 1];
+    [Header("Boost")]
+    public float BoostRangeMultiply = 1f;
+    public float BoostDamageMultiply = 1f;
+    public bool IsMaxLevelBoost = false;
     #endregion
 
-    public PlayerSkillData(int count)
+    public PlayerSkillData(PlayerDataBaseSO dataBase)
     {
-        IsMainSkillsUnlock = new List<bool>(new bool[count]);
-        IsSubSkillsUnlock = new List<List<bool>>();
-        for (int i = 0; i < count; i++)
-        {
-            IsSubSkillsUnlock.Add(new List<bool>());
-        }
+        SkillCoolDown[(int)SkillType.Flash] = dataBase.FlashSkill.CoolDown;
+        SkillCoolDown[(int)SkillType.Boost] = dataBase.BoostSkill.CoolDown;
+        SkillCoolDown[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.CoolDown;
 
-        SkillCoolDown = new List<float>(new float[count]);
-        SkillCoolDownTimer = new List<float>(new float[count]);
-
-        SkillMaxCount = new List<int>(new int[count]);
-        SkillCount = new List<int>(new int[count]);
-
-        BoostRangeMultiply = 1f;
-        BoostDamageMultiply = 1f;
+        SkillMaxCount[(int)SkillType.Flash] = dataBase.FlashSkill.Count;
+        SkillMaxCount[(int)SkillType.Boost] = dataBase.BoostSkill.Count;
+        SkillMaxCount[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.Count;
     }
+
+    #region FlashMethod
+    public void SetMaxLevelFlash(bool isMaxLevel)
+    {
+        IsMaxLevelFlash = isMaxLevel;
+    }
+
+    #endregion
 
     #region BoostMethod
     public void SetBoostRangeMultiply(float amount)
@@ -398,6 +394,11 @@ public struct PlayerSkillData
     public void SetBoostDamageMultiply(float amount)
     {
         BoostDamageMultiply = amount;
+    }
+
+    public void SetMaxLevelBoost(bool isMaxLevel)
+    {
+        IsMaxLevelBoost = isMaxLevel;
     }
     #endregion
 }

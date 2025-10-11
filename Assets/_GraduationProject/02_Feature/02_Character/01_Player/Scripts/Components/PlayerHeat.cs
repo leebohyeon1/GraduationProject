@@ -388,7 +388,10 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
 
     private void HandleBoostStart()
     {
-        SetHeat(100);
+        if(_stats.SkillData.IsMaxLevelBoost)
+        {
+            SetHeat(100);
+        }
     }
     #endregion
 }
