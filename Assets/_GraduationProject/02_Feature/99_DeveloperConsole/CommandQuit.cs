@@ -20,7 +20,7 @@ namespace Console
             AddCommandToConsole();
         }
 
-        public override void RunCommand()
+        public override void RunCommand(string[] args)
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;

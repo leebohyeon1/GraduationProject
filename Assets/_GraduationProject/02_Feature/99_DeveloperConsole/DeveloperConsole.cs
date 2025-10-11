@@ -1,4 +1,6 @@
+using BH_Lib.Log;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -21,7 +23,7 @@ namespace Console
             DeveloperConsole.AddStaticMessageToConsole(Name +  addMessage); 
         }
 
-        public abstract void RunCommand();
+        public abstract void RunCommand(string[] args);
     }
 
     public class DeveloperConsole : MonoBehaviour
@@ -76,13 +78,16 @@ namespace Console
         {
             if (ConsoleCanvas.gameObject.activeSelf)
             {
+                // Closing Console
                 Time.timeScale = _pausedTimeScale;
                 ConsoleCanvas.gameObject.SetActive(false);
             }
             else
             {
+                // Opening Console
                 _pausedTimeScale = Time.timeScale;
                 Time.timeScale = 0;
+                // ConsoleText.text = ""; // Clear console text to prevent freeze from large text
                 ConsoleCanvas.gameObject.SetActive(true);
                 ConsoleInputField.ActivateInputField();
             }
@@ -98,6 +103,7 @@ namespace Console
         private void CreateCommands()
         {
             CommandQuit.CreateCommand();
+            CommandEnchantSkill.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)
@@ -108,42 +114,43 @@ namespace Console
             }
         }
 
+        private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
+
         private void AddMessageToConsole(string msg)
         {
-            ConsoleText.text += msg + "\n";
+            consoleContent.AppendLine(msg); // �� �ٿ� �޽��� �߰�
+            ConsoleText.text = consoleContent.ToString();
         }
 
         public static void AddStaticMessageToConsole(string msg)
         {
-            DeveloperConsole.Instance.AddMessageToConsole(msg);
+            Instance.AddMessageToConsole(msg);
         }
+
 
         private void ParseInput(string input)
         {
-            string trimmedInput = input.Trim();
-            if (string.IsNullOrEmpty(trimmedInput))
+            // Trim and remove zero-width space characters that can be added by TMP_InputField
+            string sanitizedInput = input.Trim().Replace("\u200B", "");
+            string[] commandSplitInput = Regex.Split(sanitizedInput, @"\s+");
+
+            if (commandSplitInput.Length == 0 || string.IsNullOrEmpty(commandSplitInput[0]))
             {
-                AddMessageToConsole("Command not recognized.");
+                AddMessageToConsole("Command not recognized");
                 return;
             }
 
-            string commandName = trimmedInput;
-            int spaceIndex = trimmedInput.IndexOf(' ');
-            if (spaceIndex != -1)
+            if (!Commands.ContainsKey(commandSplitInput[0]))
             {
-                commandName = trimmedInput.Substring(0, spaceIndex);
-            }
-            
-            // Aggressively remove any non-printable/non-ASCII characters
-            commandName = Regex.Replace(commandName, @"[^ -~]", "");
-
-            if (!Commands.ContainsKey(commandName))
-            {
-                AddMessageToConsole("Command not recognized.");
+                AddMessageToConsole("Command not recognized");
             }
             else
             {
-                Commands[commandName].RunCommand();
+                List<string> args = commandSplitInput.ToList();
+
+                args.RemoveAt(0);
+
+                Commands[commandSplitInput[0]].RunCommand(args.ToArray());
             }
         }
     }
