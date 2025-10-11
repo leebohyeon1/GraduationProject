@@ -33,6 +33,8 @@ namespace Console
         [SerializeField] private InputReader _inputReader;
         public static Dictionary<string, ConsoleCommand> Commands { get; private set; }
 
+        private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
+
         [Header("UI")]
         public Canvas ConsoleCanvas;
         public TMP_Text ConsoleText;
@@ -104,6 +106,7 @@ namespace Console
         {
             CommandQuit.CreateCommand();
             CommandEnchantSkill.CreateCommand();
+            CommandClear.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)
@@ -114,11 +117,9 @@ namespace Console
             }
         }
 
-        private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
-
         private void AddMessageToConsole(string msg)
         {
-            consoleContent.AppendLine(msg); // �� �ٿ� �޽��� �߰�
+            consoleContent.AppendLine(msg);
             ConsoleText.text = consoleContent.ToString();
         }
 
@@ -127,10 +128,14 @@ namespace Console
             Instance.AddMessageToConsole(msg);
         }
 
+        public void ClearConsole()
+        {
+            consoleContent.Clear();
+            ConsoleText.text = consoleContent.ToString();
+        }
 
         private void ParseInput(string input)
         {
-            // Trim and remove zero-width space characters that can be added by TMP_InputField
             string sanitizedInput = input.Trim().Replace("\u200B", "");
             string[] commandSplitInput = Regex.Split(sanitizedInput, @"\s+");
 
@@ -149,6 +154,17 @@ namespace Console
                 List<string> args = commandSplitInput.ToList();
 
                 args.RemoveAt(0);
+
+                if(args.Contains("-help"))
+                {
+                    AddMessageToConsole("=================================");
+                    AddMessageToConsole(Commands[commandSplitInput[0]].Description);
+                    AddMessageToConsole("------------------");
+                    AddMessageToConsole(Commands[commandSplitInput[0]].Help);
+                    AddMessageToConsole("=================================\n");
+
+                    return;
+                }
 
                 Commands[commandSplitInput[0]].RunCommand(args.ToArray());
             }
