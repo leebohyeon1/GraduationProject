@@ -44,6 +44,31 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _normalSpeed = 2f;
     public float NormalSpeed => _normalSpeed;
     public Transform LaunchPoint;
+    public enum MonsterName
+    {
+        Brave,
+        Coward,
+        Cunning
+    }
+    public static Enemy_Type Spawn<Enemy_Type>(Transform parent, MonsterName MonsterPrefabName) where Enemy_Type : Enemy
+    {
+        GameObject prefabObject = GameObject.Instantiate(Resources.Load("MonsterPrefab/" + MonsterPrefabName)) as GameObject;
+
+        Enemy_Type enemy = prefabObject.GetComponent<Enemy_Type>();
+        if (enemy == null)
+        {
+            enemy = prefabObject.AddComponent<Enemy_Type>();
+        }
+        if (parent != null)
+        {
+            prefabObject.transform.SetParent(parent);
+        }
+        prefabObject.transform.localScale = Vector3.one * enemy.transform.localScale.x;
+
+        prefabObject.transform.localPosition = Vector3.zero;
+
+        return enemy;
+    }
     protected void Awake()
     {
         // TODO: 적 데이터에서 최대 체력 가져오기
