@@ -15,6 +15,9 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void Initialize(Enemy enemy)
     {
         _owner = enemy;
+        ClearStun();
+        IsParryable = false;
+        IsCounterable = false;
     }
     public void SetParryable(string value)
     {

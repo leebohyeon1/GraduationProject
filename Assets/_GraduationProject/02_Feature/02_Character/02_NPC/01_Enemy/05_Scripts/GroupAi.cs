@@ -6,7 +6,15 @@ public class GroupAi : MonoBehaviour
     List<Enemy> enemies = new List<Enemy>();
     public void GroupAdd(Enemy enemy)
     {
-        enemies.Add(enemy);
+        if (!enemies.Contains(enemy))
+        {
+            enemies.Add(enemy);
+
+        }
+        else
+        {
+            Debug.LogWarning($"이미 그룹에 존재하는 몬스터 {enemy.gameObject.GetInstanceID()}입니다.");
+        }
     }
     public void GroupRemove(Enemy enemy)
     {

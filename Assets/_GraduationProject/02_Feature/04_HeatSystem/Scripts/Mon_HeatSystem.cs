@@ -19,6 +19,7 @@ public class Monster_HeatSystem : HeatSystem
     public override void Init(ActorType actorType)
     {
         base.Init(actorType);
+        
         _enemy = GetComponent<Enemy>();
     }
 }

@@ -17,13 +17,14 @@ public class RandomPatrol : Node
 
     protected override NodeState OnUpdate()
     {
+        Debug.Log("RandomPatrol Running");
         if (brain._isCombat)
         {
             return NodeState.FAILURE;
         }
         if (!_hasTarget || (_aiPath != null && _aiPath.reachedDestination))
         {
-            Vector3 randomDirection = runner.PatrolOriginPoint + (Random.insideUnitSphere * 15);
+            Vector3 randomDirection = runner.StartPos + (Random.insideUnitSphere * 15);
 
             GraphNode graphNode = AstarPath.active.GetNearest(randomDirection).node;
 

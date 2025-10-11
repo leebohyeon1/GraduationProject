@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemySpecizalAbility : MonoBehaviour
+public class EnemySpecialAbility : MonoBehaviour
 {
     Enemy _owner;
     public Enemy owner => _owner;
@@ -10,6 +10,7 @@ public class EnemySpecizalAbility : MonoBehaviour
     public void Initialize(Enemy owner)
     {
         _owner = owner;
+        _abilityReady = false;
     }
     public void SetAbility(bool value)
     {
