@@ -45,6 +45,12 @@ namespace Console
                 return;
             }
 
+            if (!skill.SkillData.IsMainSkillsUnlock[(int)skillType])
+            {
+                DeveloperConsole.AddStaticMessageToConsole("=================");
+                DeveloperConsole.AddStaticMessageToConsole($"{Help}");
+            }
+
             skill.UnlockSkill(skillType);
         }
 
