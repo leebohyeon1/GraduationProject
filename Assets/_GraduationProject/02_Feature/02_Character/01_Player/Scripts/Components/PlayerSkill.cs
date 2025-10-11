@@ -71,6 +71,14 @@ public class PlayerSkill : MonoBehaviour, IDisposable
         }
     }
 
+    public void UnlockSkill(SkillType skillType)
+    {
+        if (!SkillData.IsMainSkillsUnlock[(int)skillType])
+        {
+            SkillData.IsMainSkillsUnlock[(int)skillType] = true;
+        }
+    }
+
     /// <summary>
     /// ��ų Ÿ���� �����մϴ�
     /// </summary>
@@ -85,6 +93,7 @@ public class PlayerSkill : MonoBehaviour, IDisposable
 
         _currentSkillType = skillType;
     }
+
     #region Enchant
     public void EnchantSkill(SkillType skillType, int level = -1)
     {

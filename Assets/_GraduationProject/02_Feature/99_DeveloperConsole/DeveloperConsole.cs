@@ -93,7 +93,6 @@ namespace Console
                 // Opening Console
                 _pausedTimeScale = Time.timeScale;
                 Time.timeScale = 0;
-                // ConsoleText.text = ""; // Clear console text to prevent freeze from large text
                 ConsoleCanvas.gameObject.SetActive(true);
                 ConsoleInputField.ActivateInputField();
             }
@@ -109,8 +108,11 @@ namespace Console
         private void CreateCommands()
         {
             CommandQuit.CreateCommand();
-            CommandEnchantSkill.CreateCommand();
             CommandClear.CreateCommand();
+
+            CommandEnchantSkill.CreateCommand();
+            CommandSelectSkill.CreateCommand();
+            CommandUnlockSkill.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)
@@ -135,6 +137,7 @@ namespace Console
         public void ClearConsole()
         {
             consoleContent.Clear();
+            consoleContent.AppendLine("=== Clear Console ===");
             ConsoleText.text = consoleContent.ToString();
         }
 
@@ -145,13 +148,13 @@ namespace Console
 
             if (commandSplitInput.Length == 0 || string.IsNullOrEmpty(commandSplitInput[0]))
             {
-                AddMessageToConsole("Command not recognized");
+                AddMessageToConsole("=== Command not recognized ===");
                 return;
             }
 
             if (!Commands.ContainsKey(commandSplitInput[0]))
             {
-                AddMessageToConsole("Command not recognized");
+                AddMessageToConsole("=== Command not recognized ===");
             }
             else
             {
@@ -184,10 +187,13 @@ namespace Console
                 RelatedServeTermsConsole.SetActive(false);   
                 return;
             }
-            
-            foreach(KeyValuePair<string, ConsoleCommand> command in Commands)
+
+            string sanitizedInput = input.Trim().Replace("\u200B", "");
+            string[] commandSplitInput = Regex.Split(sanitizedInput, @"\s+");
+
+            foreach (KeyValuePair<string, ConsoleCommand> command in Commands)
             {
-                if(command.Key.Contains(input))
+                if (command.Key.Contains(commandSplitInput[0]))
                 {
                     relatedSearveTermsContent.AppendLine(command.Key);
                 }

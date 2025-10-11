@@ -14,10 +14,10 @@ namespace Console
         public CommandEnchantSkill()
         {
             Name = "EnchantSkill";
-            Command = "enchantskill";
+            Command = "enchant-skill";
             Description = "Enchants a specified skill.";
-            Help = "Usage: enchant <SkillName> [Level] \n" +
-                "SkillName - Flash, Boost, TimeStop \n" + 
+            Help = "Usage: enchant-skill <SkillType> [Level] \n" +
+                "SkillType - Flash, Boost, TimeStop \n" + 
                 "Level - 0 ~ 2";
 
             AddCommandToConsole();
