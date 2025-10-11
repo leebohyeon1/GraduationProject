@@ -33,11 +33,17 @@ namespace Console
         [SerializeField] private InputReader _inputReader;
         public static Dictionary<string, ConsoleCommand> Commands { get; private set; }
 
+        private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
+        private System.Text.StringBuilder relatedSearveTermsContent = new System.Text.StringBuilder();
+
         [Header("UI")]
         public Canvas ConsoleCanvas;
         public TMP_Text ConsoleText;
         public TMP_Text InputText;
+
         public TMP_InputField ConsoleInputField;
+        public GameObject RelatedServeTermsConsole;
+        public TMP_Text RelatedSearveTerms;
 
         private float _pausedTimeScale;
 
@@ -87,7 +93,6 @@ namespace Console
                 // Opening Console
                 _pausedTimeScale = Time.timeScale;
                 Time.timeScale = 0;
-                // ConsoleText.text = ""; // Clear console text to prevent freeze from large text
                 ConsoleCanvas.gameObject.SetActive(true);
                 ConsoleInputField.ActivateInputField();
             }
@@ -103,7 +108,11 @@ namespace Console
         private void CreateCommands()
         {
             CommandQuit.CreateCommand();
+            CommandClear.CreateCommand();
+
             CommandEnchantSkill.CreateCommand();
+            CommandSelectSkill.CreateCommand();
+            CommandUnlockSkill.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)
@@ -114,11 +123,9 @@ namespace Console
             }
         }
 
-        private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();
-
         private void AddMessageToConsole(string msg)
         {
-            consoleContent.AppendLine(msg); // �� �ٿ� �޽��� �߰�
+            consoleContent.AppendLine(msg);
             ConsoleText.text = consoleContent.ToString();
         }
 
@@ -127,22 +134,27 @@ namespace Console
             Instance.AddMessageToConsole(msg);
         }
 
+        public void ClearConsole()
+        {
+            consoleContent.Clear();
+            consoleContent.AppendLine("=== Clear Console ===");
+            ConsoleText.text = consoleContent.ToString();
+        }
 
         private void ParseInput(string input)
         {
-            // Trim and remove zero-width space characters that can be added by TMP_InputField
             string sanitizedInput = input.Trim().Replace("\u200B", "");
             string[] commandSplitInput = Regex.Split(sanitizedInput, @"\s+");
 
             if (commandSplitInput.Length == 0 || string.IsNullOrEmpty(commandSplitInput[0]))
             {
-                AddMessageToConsole("Command not recognized");
+                AddMessageToConsole("=== Command not recognized ===");
                 return;
             }
 
             if (!Commands.ContainsKey(commandSplitInput[0]))
             {
-                AddMessageToConsole("Command not recognized");
+                AddMessageToConsole("=== Command not recognized ===");
             }
             else
             {
@@ -150,7 +162,48 @@ namespace Console
 
                 args.RemoveAt(0);
 
+                if(args.Contains("-help"))
+                {
+                    AddMessageToConsole("=================================");
+                    AddMessageToConsole(Commands[commandSplitInput[0]].Description);
+                    AddMessageToConsole("------------------");
+                    AddMessageToConsole(Commands[commandSplitInput[0]].Help);
+                    AddMessageToConsole("=================================\n");
+
+                    return;
+                }
+
                 Commands[commandSplitInput[0]].RunCommand(args.ToArray());
+            }
+        }
+
+        public void ViewRelatedSearveTerms(string input)
+        {
+            relatedSearveTermsContent.Clear();
+
+            if (string.IsNullOrEmpty(input))
+            {
+                RelatedSearveTerms.text = consoleContent.ToString();
+                RelatedServeTermsConsole.SetActive(false);   
+                return;
+            }
+
+            string sanitizedInput = input.Trim().Replace("\u200B", "");
+            string[] commandSplitInput = Regex.Split(sanitizedInput, @"\s+");
+
+            foreach (KeyValuePair<string, ConsoleCommand> command in Commands)
+            {
+                if (command.Key.Contains(commandSplitInput[0]))
+                {
+                    relatedSearveTermsContent.AppendLine(command.Key);
+                }
+            }
+
+            RelatedSearveTerms.text = relatedSearveTermsContent.ToString();
+            
+            if(!RelatedServeTermsConsole.activeSelf)
+            {
+                RelatedServeTermsConsole.SetActive(true);
             }
         }
     }
