@@ -28,6 +28,8 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public virtual void Init(ActorType actorType)
     {
         ActorType = actorType;
+        SetHeatLock(false);
+        SetHeat(0); 
         StatCalculator.Initialize(p_tierStatDatabase);
     }
 

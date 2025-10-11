@@ -73,7 +73,7 @@ public class EnemyMovement
     }
     public void StartOrUpdateChase(Vector3 newTarget,float speed = 2)
     {
-        if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise || CurrentState == EnemyState.Idle)
+        if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise )
         {
             StopMovement();
             return;

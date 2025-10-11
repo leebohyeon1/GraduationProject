@@ -92,7 +92,7 @@ namespace Console
             {
                 // Opening Console
                 _pausedTimeScale = Time.timeScale;
-                Time.timeScale = 0;
+                Time.timeScale = 1;
                 ConsoleCanvas.gameObject.SetActive(true);
                 ConsoleInputField.ActivateInputField();
             }
@@ -113,6 +113,8 @@ namespace Console
             CommandEnchantSkill.CreateCommand();
             CommandSelectSkill.CreateCommand();
             CommandUnlockSkill.CreateCommand();
+            CommandSpawn.CreateCommand();
+            CommandMonster.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)

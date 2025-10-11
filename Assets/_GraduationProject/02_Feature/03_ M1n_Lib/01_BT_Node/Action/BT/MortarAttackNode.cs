@@ -47,11 +47,11 @@ public class MortarAttackNode : Node
         Vector3 startPos = (launchPoint == null) ? runner.transform.position + (runner.transform.up * 3f) : launchPoint.position;
 
         Vector3? launchVelocity = CalculateLaunchVelocity(startPos, targetPositon);
-        Debug.Log(launchVelocity);
+
         if (launchVelocity.HasValue)
         {
             MortarProjectile projectile = Instantiate(projectilePrefab, startPos, Quaternion.identity);
-            Debug.Log(projectile.name);
+
             projectile.Launch(launchVelocity.Value, runner);
         }
     }

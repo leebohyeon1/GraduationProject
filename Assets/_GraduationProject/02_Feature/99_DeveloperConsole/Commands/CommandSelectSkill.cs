@@ -22,14 +22,13 @@ namespace Console
 
             AddCommandToConsole();
         }
-
         public override void RunCommand(string[] args)
         {
             PlayerSkill skill = GameObject.FindFirstObjectByType<PlayerSkill>();
             if (skill == null)
             {
                 DeveloperConsole.AddStaticMessageToConsole("PlayerSkill component could not be found.");
-                return; // ¸Þ¼­µå ½ÇÇà Áß´Ü
+                return; // ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß´ï¿½
             }
 
             if (args.Length == 0)
