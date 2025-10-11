@@ -6,6 +6,7 @@ public class Mon_Stiffness : StiffnessSystem
     public void Initialize(Enemy owner)
     {
         _owner = owner;
+        _currentStiffness = 0;
     }
     protected override void OnLightStagger()
     {

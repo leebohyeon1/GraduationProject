@@ -647,8 +647,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d94cc9f70e6d54293d94ca9def9130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeatBar
-  _heatBarSlider: {fileID: 642681948065860116}
-  _object: {fileID: 6373146046666775989}
+  p_object: {fileID: 0}
+  p_heatBarSlider: {fileID: 0}
 --- !u!1 &6373146046666775989
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,13 +669,16 @@ GameObject:
   - component: {fileID: 5261521688275219121}
   - component: {fileID: 752177572057586080}
   - component: {fileID: 5916054322661282055}
+  - component: {fileID: 7099564784680404080}
+  - component: {fileID: 5999671084452058782}
+  - component: {fileID: 3869800007174257126}
   m_Layer: 8
   m_Name: YaBi
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1158662138288912434
 Transform:
   m_ObjectHideFlags: 0
@@ -816,17 +819,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  deathSoundClip: {fileID: 0}
-  player: {fileID: 0}
-  animHandler: {fileID: 0}
-  _stunTime: 3
   wayPoints:
   - {x: 0, y: 0, z: 6.86}
   wayPointIndex: 0
   _CurrentStiffness: 4
   EnemyType: 2
-  _normalSpeed: 4
-  LastRushHitObject: {fileID: 0}
+  _normalSpeed: 6
+  LaunchPoint: {fileID: 0}
   _currentAttackRadius: 0
   _currentAttackOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &2590531397347450796
@@ -875,6 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6736d459c6da9b14f9d31147e8b96d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParrySystem
+  _stunTime: 3
 --- !u!114 &5261521688275219121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,7 +888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Monster_HeatSystem
   _maxHeat: 100
-  _currentHeat: 0
+  p_currentHeat: 0
   p_sourceMapDataBase: {fileID: 11400000, guid: 744deb5878a87404cb1c11afc8642bdc, type: 2}
   p_tierStatDatabase: {fileID: 11400000, guid: 92517f9db8e07ad41869362d88458b10, type: 2}
   LockTimer: 2
@@ -933,6 +933,57 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &7099564784680404080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373146046666775989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f2eee0e86c2774581291daf379defe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTakeDmg
+--- !u!114 &5999671084452058782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373146046666775989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73d385016bca2945909d233ee780cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpecizalAbility
+--- !u!114 &3869800007174257126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373146046666775989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560112f876f5746c780eca0d404e7139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.RVO.RVOController
+  version: 1073741824
+  radiusBackingField: 0.5
+  heightBackingField: 2
+  centerBackingField: 1
+  locked: 0
+  lockWhenNotMoving: 0
+  agentTimeHorizon: 2
+  obstacleTimeHorizon: 0.5
+  maxNeighbours: 10
+  layer: 1
+  collidesWith: -1
+  wallAvoidForce: 1
+  wallAvoidFalloff: 1
+  priority: 0.5
+  debug: 0
 --- !u!1 &6388907475150753840
 GameObject:
   m_ObjectHideFlags: 0

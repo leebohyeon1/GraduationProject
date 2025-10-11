@@ -10,7 +10,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public event Action OnDied;
     int _maxHealth = 100;
     public int Maxhealth => _maxHealth;
-
+    
     public bool IsInvincible => throw new NotImplementedException();
 
     Enemy _owner;
@@ -63,6 +63,8 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner = owner;
         MaxHealth = maxHealth;
         Health = maxHealth;
+        if(_owner.animator.GetBool("Die"))
+            _owner.animator.SetBool("Die", false);
     }
     
     public void Die()
@@ -72,6 +74,5 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.Movement.StopMovement();
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
-        Destroy(GetComponentInChildren<HeatBar>().gameObject);
     }
 }

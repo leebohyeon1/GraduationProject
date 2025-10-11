@@ -6,7 +6,7 @@ using System;
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))
-,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecizalAbility))]
+,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility))]
 public class Enemy : MonoBehaviour
 {
     public AiController _aiController{get;private set;}
@@ -19,13 +19,12 @@ public class Enemy : MonoBehaviour
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
     public Monster_HeatSystem heatSystem { get; private set; }
-    public Vector3 PatrolOriginPoint { get; private set; }
     public EnemyTakeDmg EnemyHealth { get; private set; }
-    public EnemySpecizalAbility specialAbility { get; private set; }
+    public EnemySpecialAbility specialAbility { get; private set; }
 
+    public Vector3 StartPos { get; private set; }
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
-    
     Rigidbody rb;
 
 
@@ -33,7 +32,8 @@ public class Enemy : MonoBehaviour
     public int wayPointIndex = 0;
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
-    [SerializeField]public Enemy_Type EnemyType;
+    [SerializeField] public Enemy_Type EnemyType;
+    public int MaxHealth;
     public enum Enemy_Type
     {
         Brave,
@@ -44,12 +44,38 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _normalSpeed = 2f;
     public float NormalSpeed => _normalSpeed;
     public Transform LaunchPoint;
+    public enum MonsterName
+    {
+        Brave,
+        Coward,
+        Cunning,
+        Fire
+    }
+    public static Enemy_Type Spawn<Enemy_Type>( Transform parent, MonsterName MonsterPrefabName, Vector3 position = default) where Enemy_Type : Enemy
+    {
+        GameObject prefabObject = GameObject.Instantiate(Resources.Load("MonsterPrefab/" + MonsterPrefabName)) as GameObject;
+
+        Enemy_Type enemy = prefabObject.GetComponent<Enemy_Type>();
+        if (enemy == null)
+        {
+            enemy = prefabObject.AddComponent<Enemy_Type>();
+        }
+        if (parent != null)
+        {
+            prefabObject.transform.SetParent(parent);
+        }
+        prefabObject.transform.localScale = Vector3.one * enemy.transform.localScale.x;
+
+        prefabObject.transform.position = position;
+
+        return enemy;
+    }
     protected void Awake()
     {
-        // TODO: 적 데이터에서 최대 체력 가져오기
         player = GameObject.FindFirstObjectByType<Player>();
         rb = GetComponent<Rigidbody>();
 
+        animator = GetComponent<Animator>();
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
@@ -60,21 +86,34 @@ public class Enemy : MonoBehaviour
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
         EnemyHealth = GetComponent<EnemyTakeDmg>();
-        EnemyHealth.InitializeHealth(100, this);
-        specialAbility = GetComponent<EnemySpecizalAbility>();
+        EnemyHealth.InitializeHealth(MaxHealth, this);
+        specialAbility = GetComponent<EnemySpecialAbility>();
         specialAbility.Initialize(this);
+        Movement = new EnemyMovement(this);
+        StartPos = transform.position;
     }
+    public void Init()
+    {
+        gameObject.SetActive(true);
+        transform.position = StartPos;
+        EnemyHealth.InitializeHealth(MaxHealth, this);
+        _aiController.Initialize(this);
+        StiffnessSystem.Initialize(this);
+        specialAbility.Initialize(this);
+        groupAi.GroupAdd(this);
+        heatSystem.Init(ActorType.Monster);
+        Movement.StopMovement();
+        SetState(EnemyState.Idle);
 
+    }
     void Start()
     {
-        animator = GetComponent<Animator>();
         aIPath = GetComponent<AIPath>();
         if (aIPath == null)
         {
             Debug.LogError("AIPath component not found in the scene.");
         }
-        Movement = new EnemyMovement(this);
-        PatrolOriginPoint = transform.position;
+        StartPos = transform.position;
         groupAi = FindFirstObjectByType<GroupAi>();
         if (groupAi == null)
         {
