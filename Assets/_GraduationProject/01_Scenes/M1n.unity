@@ -3705,6 +3705,83 @@ Transform:
   m_Children: []
   m_Father: {fileID: 228031590}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1401316369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1401316373}
+  - component: {fileID: 1401316372}
+  - component: {fileID: 1401316371}
+  - component: {fileID: 1401316370}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1401316370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401316369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de9503f02bea7c4eb2a43b6498ba2e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventListener
+  Event: {fileID: 11400000, guid: 88e9261c4445af44d8a07f8b0819ee15, type: 2}
+  EventMessage:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1401316371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401316369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea96fd53f5ed2e6458c9dc0ac99b5e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIInputHandler
+  _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
+--- !u!114 &1401316372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401316369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cc7f2c685170a48acee2e28929010c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  _input: {fileID: 1401316371}
+  _popUpOpenEventListener: {fileID: 1401316370}
+--- !u!4 &1401316373
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401316369}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20.22607, y: 6.5159, z: 23.52141}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1441131417
 GameObject:
   m_ObjectHideFlags: 0
@@ -3996,8 +4073,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d94cc9f70e6d54293d94ca9def9130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeatBar
-  _heatBarSlider: {fileID: 1627567439}
-  _object: {fileID: 0}
+  p_object: {fileID: 0}
+  p_heatBarSlider: {fileID: 0}
 --- !u!1 &1907230840
 GameObject:
   m_ObjectHideFlags: 0
@@ -4492,8 +4569,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d94cc9f70e6d54293d94ca9def9130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeatBar
-  _heatBarSlider: {fileID: 6045941448961880279}
-  _object: {fileID: 5425805248381078503}
+  p_object: {fileID: 0}
+  p_heatBarSlider: {fileID: 0}
 --- !u!114 &141966802727712163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5133,6 +5210,7 @@ MonoBehaviour:
   wayPointIndex: 0
   _CurrentStiffness: 4
   EnemyType: 1
+  MaxHealth: 100
   _normalSpeed: 4
   LaunchPoint: {fileID: 493267275}
   _currentAttackRadius: 0
@@ -5884,6 +5962,7 @@ SceneRoots:
   - {fileID: 1504142172}
   - {fileID: 379269630}
   - {fileID: 1907230841}
+  - {fileID: 1401316373}
   - {fileID: 933857410}
   - {fileID: 6335203}
   - {fileID: 614453522}
