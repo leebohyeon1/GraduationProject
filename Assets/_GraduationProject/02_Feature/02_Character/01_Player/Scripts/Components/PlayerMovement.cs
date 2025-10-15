@@ -200,6 +200,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// </summary>
     public void ClearTargetRotation()
     {
+        _targetRotation = Quaternion.Euler(Vector3.zero);
         _hasTargetRotation = false;
     }
     #endregion

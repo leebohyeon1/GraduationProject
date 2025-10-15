@@ -33,7 +33,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         if(p_context.Movement.HasTargetRotation)
         {
             p_context.Movement.RotateToTargetRotation();
-
         }
         else
         {
