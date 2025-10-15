@@ -55,7 +55,7 @@ public class PlayerChargeState : BaseState<Player>
         // 입력에 따른 상태 전환
         if (!p_context.Input.AttackHeldInput)
         {
-            if (_isCharged)
+            if (_isCharged && !p_context.Heat.IsOverHeat)
             {
                 p_stateMachine.ChangeState<PlayerChargeAttackState>();
             }
