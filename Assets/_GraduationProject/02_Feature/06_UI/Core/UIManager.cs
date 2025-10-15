@@ -65,13 +65,16 @@ public class UIManager : MonoBehaviour
             if (popUpUI != null)
             {
                 popUpUI.ClosePopUp();
-                _currentPopUpUI = _popUpUIStack.Peek();
             }
 
             if (_popUpUIStack.Count == 0)
             {
                 OnClearPopUpUI?.Invoke();
                 _currentPopUpUI = null;
+            }
+            else
+            {
+                _currentPopUpUI = _popUpUIStack.Peek();
             }
         }
     }
@@ -86,12 +89,12 @@ public class UIManager : MonoBehaviour
         if (_input.CancelInput)
         {
             CloseTopPopUp();
+            return;
         }
 
         switch (_currentPopUpUI.Type)
         {
             case PopUpType.SkillEnchant:
-
 
                 break;
         }
