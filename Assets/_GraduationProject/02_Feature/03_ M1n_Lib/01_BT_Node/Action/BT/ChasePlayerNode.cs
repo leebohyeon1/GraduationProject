@@ -20,14 +20,12 @@ public class ChasePlayerNode : Node
         {
             return NodeState.FAILURE;
         }
-        // ★ runner에게 추격을 시작 또는 갱신하라고 명령
-        runner.Movement.StartOrUpdateChase(runner.player.transform);
+        runner.Movement.StartOrUpdateChase(runner.player.transform, "Run");
         return NodeState.RUNNING;
     }
 
     public override void OnExit()
     {
-        // ★ runner에게 이동을 멈추라고 명령
         runner.Movement.StopMovement();
     }
 

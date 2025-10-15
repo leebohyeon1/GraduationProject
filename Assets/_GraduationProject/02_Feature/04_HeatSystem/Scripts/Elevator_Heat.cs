@@ -64,10 +64,8 @@ public class Elevator_Heat : HeatSystem
 
     void Decrease()
     {
-        if (_timer < Time.time && DecreaseHeat == null)
+        if (_timer < Time.time && DecreaseHeat == null && CurrentHeat > 0)
         {
-            Debug.Log("Decrease Heat");
-            Debug.Log(_timer);
             DecreaseHeat = DOTween.Sequence()
             .AppendCallback(() => ChangeHeat(-10))
             .SetDelay(0.2f)

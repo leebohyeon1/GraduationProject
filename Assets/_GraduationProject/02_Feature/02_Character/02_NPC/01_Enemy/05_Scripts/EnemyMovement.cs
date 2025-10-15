@@ -71,7 +71,7 @@ public class EnemyMovement
 
         StartOrUpdateChase(_runner.wayPoints[_runner.wayPointIndex], _normalSpeed);
     }
-    public void StartOrUpdateChase(Vector3 newTarget,float speed = 2)
+    public void StartOrUpdateChase(Vector3 newTarget,float speed = 2, string animationBool = "Walk")
     {
         if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise )
         {
@@ -81,7 +81,7 @@ public class EnemyMovement
         if (aIPath == null) return;
         if(_runner.CurrentState != EnemyState.Hit)
         _runner.SetState(EnemyState.Chase);
-        _runner.AnimationBool("Walk", true);
+        _runner.AnimationBool(animationBool, true);
         aIPath.enabled = true;
         CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
         aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
@@ -90,9 +90,9 @@ public class EnemyMovement
     }
 
     // Transform을 받는 오버로딩 버전도 유지
-    public void StartOrUpdateChase(Transform target)
+    public void StartOrUpdateChase(Transform target,string animationBool = "Walk")
     {
-        StartOrUpdateChase(target.position, _normalSpeed);
+        StartOrUpdateChase(target.position, _normalSpeed, animationBool);
     }
     public void StopMovement()
     {
@@ -117,6 +117,7 @@ public class EnemyMovement
         }
         if (_runner != null) 
         _runner.AnimationBool("Walk", false);
+        _runner.AnimationBool("Run", false);
         aIPath.enableRotation = true;
         
 

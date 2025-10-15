@@ -17,7 +17,6 @@ public class RandomPatrol : Node
 
     protected override NodeState OnUpdate()
     {
-        Debug.Log("RandomPatrol Running");
         if (brain._isCombat)
         {
             return NodeState.FAILURE;

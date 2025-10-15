@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     [SerializeField] public Enemy_Type EnemyType;
-    public int MaxHealth;
+    public int MaxHealth = 100;
     public enum Enemy_Type
     {
         Brave,
