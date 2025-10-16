@@ -11,7 +11,7 @@ public enum PopUpType
 public class PopUpUI : MonoBehaviour
 {
     [SerializeField] protected PopUpType p_type;
-    [SerializeField] protected EventSO p_openPopUP;
+    [SerializeField] protected EventSO<PopUpUI> p_openPopUP;
 
     public PopUpType Type => p_type;
 
@@ -20,13 +20,13 @@ public class PopUpUI : MonoBehaviour
         if(p_openPopUP == null)
         {
             AssetManager assetManager = DIContainer.Instance.Resolve<AssetManager>();
-            p_openPopUP = await assetManager.LoadAssetAsync<EventSO>("OnOpenPopUp", gameObject);
+            p_openPopUP = await assetManager.LoadAssetAsync<EventSO<PopUpUI>>("OnOpenPopUp", gameObject);
         }
     }
 
     public virtual void OpenPopUp()
     {
-        p_openPopUP.Publish(gameObject);
+        p_openPopUP.Publish(this);
     }
 
     public virtual void ClosePopUp() 

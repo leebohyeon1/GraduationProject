@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum SkillType
 {
@@ -13,7 +14,7 @@ public enum SkillType
     TimeStop = 2
 }
 
-public class PlayerSkill : MonoBehaviour, IDisposable
+public class PlayerSkill : MonoBehaviour, IDisposable, IEventListener<SkillType>
 {
     #region Private Fields
     private PlayerStats _stats;
@@ -25,10 +26,16 @@ public class PlayerSkill : MonoBehaviour, IDisposable
     private TimeStopSkillSO _timeStopSkillSO;
 
     [SerializeField] private SkillType _currentSkillType;
+    [SerializeField] private EventSO<bool> _onOpenSkillChangeUI;
+    [SerializeField] private EventSO<SkillType> _onSelectSkill;
+
+    private bool _isSkillChanging = false;  
     #endregion
 
     #region Properties
     public PlayerSkillData SkillData => _stats.SkillData;
+    public bool IsSkillChanging => _isSkillChanging;
+
     #endregion
 
     public void Initialize(PlayerStats stats, PlayerEvents events,
@@ -237,6 +244,15 @@ public class PlayerSkill : MonoBehaviour, IDisposable
     }
     #endregion
 
+    #region eventTrigger
+    public void TriggerOnOpenSKillChangeUI(bool isOpen)
+    {
+        _onOpenSkillChangeUI.Publish(isOpen);
+        _isSkillChanging = isOpen;
+    }
+
+    #endregion
+
     #region eventHandler
     private void HandleFlashFinsh(Vector3 position)
     {
@@ -246,5 +262,9 @@ public class PlayerSkill : MonoBehaviour, IDisposable
         }
     }
 
+    public void OnEventTrigger(SkillType skillType)
+    {
+        SetSkill(skillType);
+    }
     #endregion
 }

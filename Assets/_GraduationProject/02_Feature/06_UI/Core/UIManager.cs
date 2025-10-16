@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Register(LifetimeScope.Singleton)]
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IEventListener<PopUpUI>
 {
     [SerializeField] private UIInputHandler _input;
-    [SerializeField] private EventListener _popUpOpenEventListener;
+    [SerializeField] private EventSO<PopUpUI> _onOpenPopUp;
     private Stack<PopUpUI> _popUpUIStack;
     private PopUpUI _currentPopUpUI;
 
@@ -21,12 +21,8 @@ public class UIManager : MonoBehaviour
             _input = GetComponent<UIInputHandler>();   
         }
 
-        if( _popUpOpenEventListener == null)
-        {
-            _popUpOpenEventListener = GetComponent<EventListener>();
-        }
-
-        _popUpOpenEventListener.EventMessage.AddListener((popUpObject) => { OpenPopUp(popUpObject.GetComponent<PopUpUI>()); });
+        _onOpenPopUp.Subscribe(this);
+       
         _popUpUIStack = new Stack<PopUpUI>();
     }
 
@@ -42,7 +38,7 @@ public class UIManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        _popUpOpenEventListener.EventMessage.RemoveAllListeners();
+        _onOpenPopUp.Unsubscribe(this);
     }
 
     #region PopUp
@@ -98,6 +94,11 @@ public class UIManager : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void OnEventTrigger(PopUpUI popUpUI)
+    {
+        OpenPopUp(popUpUI.GetComponent<PopUpUI>());
     }
     #endregion
 }
