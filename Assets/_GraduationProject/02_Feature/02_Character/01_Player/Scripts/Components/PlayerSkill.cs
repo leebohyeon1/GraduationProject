@@ -50,11 +50,13 @@ public class PlayerSkill : MonoBehaviour, IDisposable, IEventListener<SkillType>
         _timeStopSkillSO = dataBaseSO.TimeStopSkill;
 
         _events.OnFlashFinish += HandleFlashFinsh;
+        _onSelectSkill.Subscribe(this);
     }
 
     public void Dispose()
     {
         _events.OnFlashFinish -= HandleFlashFinsh;
+        _onSelectSkill.Unsubscribe(this);
     }
 
     public void Tick()
@@ -93,7 +95,7 @@ public class PlayerSkill : MonoBehaviour, IDisposable, IEventListener<SkillType>
     public void SetSkill(SkillType skillType)
     {
         if (skillType == _currentSkillType
-            && SkillData.IsMainSkillsUnlock[(int)skillType])
+            && !SkillData.IsMainSkillsUnlock[(int)skillType])
         {
             return;
         }
