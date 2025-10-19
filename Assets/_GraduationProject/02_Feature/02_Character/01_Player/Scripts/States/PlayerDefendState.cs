@@ -57,10 +57,7 @@ public class PlayerDefendState : BaseState<Player>
 
         foreach (Collider collider in colliders)
         {
-            if(collider.TryGetComponent<IParryable>(out var parryable) && parryable.IsParryable)
-            {
-                p_context.Events.TriggerParryAffect(collider);
-            }
+            p_context.Events.TriggerParryAffect(collider);
         }
     }
 
