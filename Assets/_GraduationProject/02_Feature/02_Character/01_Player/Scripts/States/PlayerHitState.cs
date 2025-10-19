@@ -52,13 +52,14 @@ public class PlayerHitState : BaseState<Player>
         // 경직 시간이 지나면 상태 전환
         if (_hitTimer >= _hitDuration)
         {
-            if (p_context.Stats.IsDefending)
+            if (p_context.Input.DefendInput)
             {
                 p_stateMachine.RevertToPreviousState(); // 방어 중이었으면 이전 상태로 복귀
             }
             else
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
+                p_context.Combat.SetDefending(false);
             }
         }
     }
