@@ -38,10 +38,7 @@ public class MortarProjectile : MonoBehaviour
                 {
                     stat = _owner.heatSystem.CalculationHeat("Test", heatable.ActorType, _owner.heatSystem.GetTier(), damage);
                     SourceMap sourceMap = _owner.heatSystem.SourceMapDataBase.GetSourceMap("Test", heatable.ActorType, _owner.heatSystem.GetTier());
-                    Debug.Log($"SourceMap: {sourceMap}, actor: { heatable.ActorType}, tier: {_owner.heatSystem.GetTier()}");
-                    Debug.Log($"heatchange: {sourceMap.HeatChangeType}, delta: {sourceMap.DeltaHeat}");
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-                    Debug.Log($"Applying Heat: {deltaHeat} to {heatable}");
                     heatable.ChangeHeat(deltaHeat);
                 }
             if (hit.TryGetComponent<IDamageable>(out IDamageable damageable))
