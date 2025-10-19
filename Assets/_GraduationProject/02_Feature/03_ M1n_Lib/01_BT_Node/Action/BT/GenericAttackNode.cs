@@ -16,7 +16,6 @@ public class GenericAttackNode : Node
     [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
-    public MMF_Player attackFeedback;
     public override void OnEnter()
     {
         // 1. Enemy의 범용 플래그들을 리셋합니다.
@@ -65,7 +64,7 @@ public class GenericAttackNode : Node
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage( stat.FinalDamage, StiffenessAmount);
+                    Character.TakeDamage(stat.FinalDamage, StiffenessAmount);
                     // Character.TakeDamage(stat.FinalDamage);
                     
                     _didHitPlayer = true;

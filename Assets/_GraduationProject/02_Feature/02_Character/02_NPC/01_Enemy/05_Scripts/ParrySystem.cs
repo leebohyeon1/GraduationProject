@@ -48,7 +48,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _isStunned = true;
         _stunExitTime = Time.time + _stunTime;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
-        _owner.animator.SetTrigger("Stun"); // 스턴 애니메이션 트리거
+        _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
     }
     public void ApplyStun(float stunDuration)
     {
@@ -56,11 +56,12 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _isStunned = true;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
-        _owner.animator.SetTrigger("Stun"); // 스턴 애니메이션 트리거
+        _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
     }
 
     public void ClearStun()
     {
+        _owner.animator.SetBool("Stun", false);
         _isStunned = false;
     }
 

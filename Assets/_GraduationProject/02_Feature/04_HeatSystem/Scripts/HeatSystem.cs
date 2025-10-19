@@ -73,12 +73,10 @@ public class HeatSystem : MonoBehaviour, IHeatable
 
         if (p_currentHeat >= _maxHeat && !_isHeatLock)
         {
-            Debug.Log("과열 발생");
             OverHeat();
             SetHeatLock(true);
             Timer = Time.time + LockTimer; // 2초 동안 열기 잠금
         }
-        Debug.Log($"Heat Changed: {previousHeat} -> {p_currentHeat}");
     }
 
     /// <summary>
