@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 public class Enemy_AnimationEventHandler : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public bool IsActionFinished { get; private set; }
     public bool IsSound { get; private set; }
     public bool IsSuperArmor { get; private set; }
+    public MMF_Player[] attackFeedback;
 
     public void OpenHitWindow()
     {

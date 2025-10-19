@@ -1,5 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
+using MoreMountains.Feedbacks;
 
 [CreateAssetMenu(fileName = "GenericAttackNode", menuName = "BehaviorTree/Action/GenericAttackNode")]
 public class GenericAttackNode : Node
@@ -15,6 +16,7 @@ public class GenericAttackNode : Node
     [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
+    public MMF_Player attackFeedback;
     public override void OnEnter()
     {
         // 1. Enemy의 범용 플래그들을 리셋합니다.
