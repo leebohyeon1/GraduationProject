@@ -225,7 +225,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
-        SetHeat(0);
     }
 
     /// <summary>

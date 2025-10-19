@@ -90,8 +90,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         {
             p_context.Events.TriggerChargeAttackAffect(collider, p_context.Heat.CurrentTier);
         }
-
-        p_context.Heat.SetHeat(0);
     }
 
     /// <summary>
