@@ -3,19 +3,19 @@ using UnityEngine;
 
 namespace Console
 {
-    public class CommandMonster : ConsoleCommand
+    public class CommandMonsterClear : ConsoleCommand
     {
         public override string Name { get; protected set; }
         public override string Command { get; protected set; }
         public override string Description { get; protected set; }
         public override string Help { get; protected set; }
 
-        public CommandMonster()
+        public CommandMonsterClear()
         {
             Name = "Monster";
-            Command = "monster_init";
-            Description = "Monster Initialize";
-            Help = "Usage: Monster Init";
+            Command = "monster_clear";
+            Description = "Monster Clear";
+            Help = "Usage: Monster Clear";
 
             AddCommandToConsole();
         }
@@ -29,20 +29,14 @@ namespace Console
                 return;
             }
 
-            int initializedCount = 0;
-
             foreach (Enemy enemy in allEnemies)
             {
-                enemy.Init();
-                initializedCount++;
-                
+                GameObject.Destroy(enemy.gameObject);
             }
-
-            DeveloperConsole.AddStaticMessageToConsole($"{initializedCount}마리의 몬스터 AI를 초기화했습니다.");
         }
-        public static CommandMonster CreateCommand()
+        public static CommandMonsterClear CreateCommand()
         {
-            return new CommandMonster();
+            return new CommandMonsterClear();
         }
     }
 }
