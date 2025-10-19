@@ -54,7 +54,7 @@ public class PlayerHitState : BaseState<Player>
         {
             if (p_context.Input.DefendInput)
             {
-                p_stateMachine.RevertToPreviousState(); // 방어 중이었으면 이전 상태로 복귀
+                p_stateMachine.ChangeState<PlayerDefendState>() ; // 방어 중이었으면 이전 상태로 복귀
             }
             else
             {
