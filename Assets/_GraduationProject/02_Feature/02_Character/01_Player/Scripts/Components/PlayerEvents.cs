@@ -369,10 +369,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-        if (collider != null)
-        {
-            PlayFeedback(PlayerFeedbackType.ParrySuccess_FB, collider.transform.position);
-        }
+        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
     #endregion
 
