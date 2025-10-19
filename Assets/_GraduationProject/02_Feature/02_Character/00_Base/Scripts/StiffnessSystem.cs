@@ -24,7 +24,7 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     public virtual void AddStiffness(int amount)
     {
         _currentStiffness += amount;
-        
+        Debug.Log($"Current Stiffness: {_currentStiffness}/{_stiffnessThreshold}");
         // 경직 게이지가 가득 찼는지 확인
         if (_currentStiffness >= _stiffnessThreshold)
         {

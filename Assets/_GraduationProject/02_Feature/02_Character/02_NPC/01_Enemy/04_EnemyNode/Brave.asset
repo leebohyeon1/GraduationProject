@@ -32,7 +32,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 481, y: -7}
   nodes:
-  - {fileID: -7245226355301169087}
   - {fileID: -2870098089127236727}
   - {fileID: 8154655890788234342}
 --- !u!114 &-7974736735570412724
@@ -52,20 +51,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 512
---- !u!114 &-7561841866613344662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
-  m_Name: BackMove
-  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 465, y: -219}
-  subTreeToRun: {fileID: 11400000, guid: 68312d6d08a2794418652215506586bc, type: 2}
 --- !u!114 &-7510950722700951356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,9 +80,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Stun
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 752, y: -145}
+  position: {x: 250, y: -674}
   nodes:
-  - {fileID: 6343833873525823109}
+  - {fileID: 6642496446205168161}
   - {fileID: -3662235796367844752}
 --- !u!114 &-7071762007778814168
 MonoBehaviour:
@@ -142,6 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1, y: 90}
   nodes:
+  - {fileID: -7245226355301169087}
   - {fileID: -4138251438356461519}
   - {fileID: -4738368884081098000}
   - {fileID: 1196946236353706419}
@@ -239,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 955, y: -106}
+  position: {x: 453, y: -635}
   animationName: Stun
 --- !u!114 &-2923115925387942299
 MonoBehaviour:
@@ -420,7 +406,6 @@ MonoBehaviour:
   attackOffset: {x: 0, y: 1, z: 4}
   maintainAtk: 0
   StiffenessAmount: 10
-  attackFeedback: {fileID: 0}
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -524,19 +509,6 @@ MonoBehaviour:
   - {fileID: 8581566141182817877}
   - {fileID: 1742704995383000931}
   - {fileID: 8440268503078126261}
---- !u!114 &6343833873525823109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
-  m_Name: Condition_Is Stunned
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 955, y: -219}
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,6 +522,20 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -475}
+--- !u!114 &6642496446205168161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb61a2f022a08348863844546a7f551, type: 3}
+  m_Name: Condition_Runner State
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_RunnerState
+  position: {x: 453, y: -825}
+  requiredState: 7
 --- !u!114 &6816747113147883713
 MonoBehaviour:
   m_ObjectHideFlags: 0
