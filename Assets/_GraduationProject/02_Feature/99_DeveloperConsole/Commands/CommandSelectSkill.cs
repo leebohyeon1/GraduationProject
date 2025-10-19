@@ -50,7 +50,7 @@ namespace Console
                 DeveloperConsole.AddStaticMessageToConsole($"{Help}");
             }
 
-            skill.UnlockSkill(skillType);
+            skill.SetSkill(skillType);
         }
 
         public static CommandSelectSkill CreateCommand()

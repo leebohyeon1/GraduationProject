@@ -267,6 +267,15 @@ public class Player : DIMonoBehaviour
         {
             Interact.Interact();
         }
+
+        if(!Skill.IsSkillChanging && Input.SkillChangeInput)
+        {
+            Skill.TriggerOnOpenSKillChangeUI(true);
+        }
+        else if(Skill.IsSkillChanging && !Input.SkillChangeInput)
+        {
+            Skill.TriggerOnOpenSKillChangeUI(false);
+        }
     }
     
     /// <summary>

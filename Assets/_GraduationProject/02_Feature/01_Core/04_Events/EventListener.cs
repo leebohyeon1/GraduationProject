@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EventListener : MonoBehaviour
+public interface IEventListener<T>
 {
-    public EventSO Event;
+    void OnEventTrigger(T eventName);
+}
 
-    public UnityEvent<GameObject> EventMessage;
+public class EventListener<T> : MonoBehaviour, IEventListener<T>
+{
+    public EventSO<T> Event;
+
+    public UnityEvent<T> EventMessage;
 
     private void OnEnable()
     {
@@ -17,8 +22,8 @@ public class EventListener : MonoBehaviour
         Event?.Unsubscribe(this);
     }
 
-    public void OnEventTrigger(GameObject gameObject)
+    public void OnEventTrigger(T value)
     {
-        EventMessage.Invoke(gameObject);
+        EventMessage.Invoke(value);
     }
 }
