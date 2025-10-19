@@ -42,7 +42,6 @@ public class GenericAttackNode : Node
 
         if (directionToPlayer != Vector3.zero && !tracking)
         {
-            Debug.Log("Rotate Towards Player");
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
         if (Handler.IsSound)
