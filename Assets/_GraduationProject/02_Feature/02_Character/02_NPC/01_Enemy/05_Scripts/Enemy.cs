@@ -79,6 +79,7 @@ public class Enemy : MonoBehaviour
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
+        animHandler.Initalize();
         heatSystem = GetComponent<Monster_HeatSystem>();
         heatSystem.Init(ActorType.Monster);
         ParrySystem = GetComponent<ParrySystem>();
