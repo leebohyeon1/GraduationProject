@@ -191,25 +191,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
 
-        ProcessParryEnemies(hitEnemies);
-
         return hitEnemies;
     }
 
-    /// <summary>
-    /// 패리 성공 시 적들에게 효과를 적용합니다.
-    /// </summary>
-    /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
-    private void ProcessParryEnemies(Collider[] hitObjects)
-    {
-        foreach (Collider obj in hitObjects)
-        {
-            if (obj.TryGetComponent<IParryable>(out var parryable) && parryable.IsParryable)
-            {
-                parryable.Parry(gameObject);
-            }
-        }
-    }
     #endregion
 
     #region CounterAttack
