@@ -42,7 +42,7 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
         // 카운터 공격이 가능한 경우 카운터 상태로 전환
         // 카운터 가능 상태를 굳이 나한테 필요없을 지도
-        if (p_context.Combat.CanCounterAttack && p_context.Combat.CanIsScanCounterable())
+        if (!p_context.Heat.IsOverHeat && p_context.Combat.CanCounterAttack && p_context.Combat.CanIsScanCounterable())
         {
             p_stateMachine.ChangeState<PlayerFirstCounterAttackState>();
         }

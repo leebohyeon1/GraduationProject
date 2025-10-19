@@ -43,7 +43,7 @@ namespace Console
                 return;
             }
 
-            skill.SetSkill(skillType);
+            skill.UnlockSkill(skillType);
         }
 
         public static CommandUnlockSkill CreateCommand()

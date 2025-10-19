@@ -3,26 +3,25 @@ using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "New Event", menuName = "Events/Void Event")]
-public class EventSO : ScriptableObject
+public class EventSO<T> : ScriptableObject
 {
-    private List<EventListener> _listeners = new List<EventListener>();
+    private List<IEventListener<T>> _listeners = new List<IEventListener<T>>();
 
-    public void Subscribe(EventListener listener)
+    public void Subscribe(IEventListener<T> listener)
     {
         _listeners.Add(listener);
     }
 
-    public void Unsubscribe(EventListener listener) 
+    public void Unsubscribe(IEventListener<T> listener) 
     {
         _listeners.Remove(listener);
     }
 
-    public void Publish(GameObject owner)
+    public void Publish(T value)
     {
         foreach (var listener in _listeners)
         {
-            listener.OnEventTrigger(owner);
+            listener.OnEventTrigger(value);
         }
     }
 }
