@@ -75,9 +75,14 @@ public class AiBrain
         return -1f;
     }
     public bool _isCombat { get; private set; } = false;
+    
     public void CombatEnter()
     {
-        _isCombat = true;
+        if (!_isCombat)
+        {
+            _owner.animator.SetTrigger("Discover_Player");
+            _isCombat = true;
+        }
     }
     public bool _isStunned { get; private set; } = false;
 

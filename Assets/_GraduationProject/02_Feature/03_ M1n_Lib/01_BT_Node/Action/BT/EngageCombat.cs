@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using BehaviorTree;
+using andywiecko.BurstTriangulator;
 
 [CreateAssetMenu(fileName = "EngageCombatAction", menuName = "BehaviorTree/Action/EngageCombat")]
 public class Action_EngageCombat : Node
@@ -17,9 +18,16 @@ public class Action_EngageCombat : Node
     protected override NodeState OnUpdate()
     {
         // 이 행동은 상태를 바꾸는 즉시 완료됩니다.
-        return NodeState.SUCCESS;
+        if(Handler.IsActionFinished)
+        {
+            return NodeState.SUCCESS;
+        }
+        return NodeState.RUNNING;
     }
-    
+    public override void OnExit()
+    {
+        Handler.ResetAllFlags();
+    }
     public override Node Clone()
     {
         return Instantiate(this);

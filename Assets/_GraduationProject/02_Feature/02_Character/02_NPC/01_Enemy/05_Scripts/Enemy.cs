@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     [SerializeField] public Enemy_Type EnemyType;
-    public int MaxHealth;
+    public int MaxHealth = 100;
     public enum Enemy_Type
     {
         Brave,
@@ -79,6 +79,7 @@ public class Enemy : MonoBehaviour
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
+        animHandler.Initalize();
         heatSystem = GetComponent<Monster_HeatSystem>();
         heatSystem.Init(ActorType.Monster);
         ParrySystem = GetComponent<ParrySystem>();
