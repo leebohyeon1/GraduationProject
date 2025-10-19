@@ -14,6 +14,7 @@ public class EnemyMovement
     public EnemyMovement(Enemy enemy)
     {
         _runner = enemy;
+        _normalSpeed = _runner.NormalSpeed;
         aIPath = _runner.GetComponent<AIPath>();
         animator = _runner.animator;
         rb = _runner.GetComponent<Rigidbody>();

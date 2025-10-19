@@ -24,6 +24,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.SetState(Enemy.EnemyState.Hit);
         }
         Health -= amount;
+        _owner.animHandler.PlayFeedback("Damage_FB");
         Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
 
         if (Health <= 0)
