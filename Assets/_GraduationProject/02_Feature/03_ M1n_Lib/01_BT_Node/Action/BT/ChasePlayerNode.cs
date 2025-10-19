@@ -1,4 +1,3 @@
-// ChasePlayerNode.cs 파일
 using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
@@ -26,6 +25,7 @@ public class ChasePlayerNode : Node
 
     public override void OnExit()
     {
+        
         runner.Movement.StopMovement();
     }
 

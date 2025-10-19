@@ -114,7 +114,8 @@ namespace Console
             CommandSelectSkill.CreateCommand();
             CommandUnlockSkill.CreateCommand();
             CommandSpawn.CreateCommand();
-            CommandMonster.CreateCommand();
+            CommandMonsterInit.CreateCommand();
+            CommandMonsterClear.CreateCommand();
         }
 
         public static void AddCommandsToConsole(string name, ConsoleCommand command)
