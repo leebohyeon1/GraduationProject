@@ -1,4 +1,6 @@
+using BH_Lib.Log;
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
 /// <summary>
@@ -159,22 +161,29 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, transform.position.y);
-            if (groundPlane.Raycast(ray, out float distance))
-            {
-                Vector3 point = new Vector3(ray.GetPoint(distance).x, transform.position.y, ray.GetPoint(distance).z);
-                Vector3 direction = (ray.GetPoint(distance) - transform.position).normalized;
-                direction.y = 0;
-                if (direction.sqrMagnitude > 0.1f) return Quaternion.LookRotation(direction, Vector3.up);
-            }
+            float distance = Vector3.Distance(transform.position, _mainCamera.transform.position);
+            Vector3 point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
+           
+            Vector3 direction = point - transform.position;
+            direction.y = 0;
+            direction.Normalize();
+
+            return Quaternion.LookRotation(direction, Vector3.up);
         }
         else // Gamepad
         {
-            if (moveInput.sqrMagnitude < 0.1f || Camera.main == null) return transform.rotation;
-            Vector3 lookDirection = (Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
-            if (lookDirection.sqrMagnitude > 0.1f) return Quaternion.LookRotation(lookDirection, Vector3.up);
+            if (moveInput.sqrMagnitude < 0.1f || _mainCamera == null)
+            {
+                return transform.rotation;
+            }
+            
+            Vector3 lookDirection = (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
+            if (lookDirection.sqrMagnitude > 0.1f)
+            {
+                return Quaternion.LookRotation(lookDirection, Vector3.up);
+            }
         }
+
         return transform.rotation;
     }
 
@@ -200,6 +209,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// </summary>
     public void ClearTargetRotation()
     {
+        _targetRotation = Quaternion.Euler(Vector3.zero);
         _hasTargetRotation = false;
     }
     #endregion

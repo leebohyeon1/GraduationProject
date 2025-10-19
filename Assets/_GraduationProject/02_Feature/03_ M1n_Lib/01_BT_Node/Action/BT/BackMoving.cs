@@ -9,6 +9,7 @@ public class BackMoving : Node
     [Tooltip("이동을 멈출 목표 지점과의 허용 오차 거리입니다.")]
     public float acceptanceRadius = 0.5f;
 
+    [Tooltip("도망칠 때의 이동 속도입니다.")]
     public float runSpeed = 5;
 
     // 내부 변수

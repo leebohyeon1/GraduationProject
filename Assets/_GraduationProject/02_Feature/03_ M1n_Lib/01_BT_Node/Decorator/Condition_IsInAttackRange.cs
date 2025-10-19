@@ -5,7 +5,7 @@ using BehaviorTree;
 public class Condition_IsInAttackRange : ConditionNode
 {
     public bool heatRange = false;
-    [Tooltip("The range within which the AI can attack the player")]
+    [Tooltip("AI가 플레이어를 공격할 수 있는 범위")]
     [SerializeField] float _attackRange = 2f;
     CalculationResult stat;
     public override void OnEnter()
