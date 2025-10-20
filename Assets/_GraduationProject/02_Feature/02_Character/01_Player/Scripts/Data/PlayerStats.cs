@@ -223,7 +223,9 @@ public struct PlayerCombatData
     [Range(0f,1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
     public float LightStaggerDuration; // 약한 경직 시간
+    public float LightStaggerKnockbackDistance; // 약한 경직 이동 거리   
     public float HeavyStaggerDuration; // 강한 경직 시간
+    public float HeavyStaggerKnockbackDistance; // 강한 경직 이동 거리
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크

@@ -466,7 +466,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
                 case 1: OnTier1Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier1Down_FB); break;
                 case 2: OnTier2Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier2Down_FB); break;
                 case 3: OnTier3Down?.Invoke(); PlayFeedback(PlayerFeedbackType.Tier3Down_FB); break;
-                case 4: OnOverHeatFinish?.Invoke(); PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB); break;
             }
         }
     }
@@ -486,6 +485,15 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
                 OnOverHeat?.Invoke(overHeatDamage);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 오버히트 종료 피드백을 재생합니다.
+    /// </summary>
+    public void TriggerOverHeatFinish()
+    {
+        OnOverHeatFinish?.Invoke();
+        PlayFeedback(PlayerFeedbackType.OverHeatFinish_FB);
     }
     #endregion
 

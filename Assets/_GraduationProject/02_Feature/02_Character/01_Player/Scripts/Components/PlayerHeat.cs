@@ -150,6 +150,28 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     private void OverHeat()
     {
         if (_overheatSequence != null && _overheatSequence.IsActive()) return;
+        
+        Sequence decreaseHeatSequence = DOTween.Sequence()
+            .AppendInterval(1f)
+            .AppendCallback(() =>
+            {
+                int previousTier = GetTier();
+                int previousHeat = CurrentHeat;
+
+                int amount = Mathf.RoundToInt(MaxHeat / _overHeatData.DurationSecond);
+                _stats.CurrentHeat = Mathf.Clamp(CurrentHeat - amount, 0, MaxHeat);
+
+                if (previousHeat != CurrentHeat)
+                {
+                    OnHeatChanged?.Invoke(previousHeat, CurrentHeat);
+                }
+
+                int newTier = GetTier();
+                if (previousTier != newTier)
+                {
+                    OnTierChanged?.Invoke(previousTier, CurrentTier);
+                }
+            }).SetLoops(-1, LoopType.Restart).SetId(_overheatSequence);
 
         _overheatSequence = DOTween.Sequence();
         _overheatSequence.SetDelay(_overHeatData.DelaySecond)
@@ -158,7 +180,21 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
                 SetHeatLock(true);
                 _heatTierTimer = Time.time;
                 _stats.IsOverHeat = true;
+                decreaseHeatSequence.Play();
+            })
+            .AppendInterval(_overHeatData.DurationSecond)
+            .OnComplete(() => 
+            {
+                if (decreaseHeatSequence != null)
+                {
+                    decreaseHeatSequence.Kill();
+                }
+
+                _events.TriggerOverHeatFinish(); 
             });
+
+
+
     }
 
     /// <summary>
