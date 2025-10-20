@@ -243,6 +243,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeCancel()
     {
+        StopFeedback(PlayerFeedbackType.ChargeStart_FB);
         PlayFeedback(PlayerFeedbackType.ChargeCancel_FB);
     }
 
@@ -259,6 +260,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeAttackStart(int tier)
     {
+        StopFeedback(PlayerFeedbackType.ChargeStart_FB);
         OnAttackStart?.Invoke();
         switch (tier)
         {
@@ -297,7 +299,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeStart()
     {
-            PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB );
+        PlayFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB );
     }
 
     /// <summary>

@@ -43,8 +43,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         }
 
         StartAttackMovement();
-        int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.CurrentTier;
-        p_context.Events.TriggerChargeAttackStart(tier);
+
     }
 
     public override void OnExit()
