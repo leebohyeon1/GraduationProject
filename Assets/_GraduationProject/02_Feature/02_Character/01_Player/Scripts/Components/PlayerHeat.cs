@@ -15,7 +15,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     private OverHeatDataSO _overHeatData; // 과열 데이터
     private PlayerEvents _events; // 플레이어 이벤트
 
-
     private float _heatTierTimer; // 열기 티어 타이머
     private ActorType _actorType; // 액터 타입
 
@@ -36,6 +35,8 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
 
     public event Action<float> OnChargeGuageChanged;
 
+    private bool _isAttackAffect = false;
+
     /// <summary>
     /// 열기 시스템을 초기화합니다.
     /// </summary>
@@ -52,6 +53,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         // 이벤트 구독
         _events.OnBattleStateChaged += HandleBattleSateChanged;
         OnTierChanged += HandleHeatChanged;
+        _events.OnAttackStart += HandleAttackStart;
         _events.OnAttackAffect += HandleAttackAffect;
         _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         _events.OnParryAffect += HandleParryAffect;
@@ -69,6 +71,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         // 이벤트 구독 해제
         _events.OnBattleStateChaged -= HandleBattleSateChanged;
         OnTierChanged -= HandleHeatChanged;
+        _events.OnAttackStart -= HandleAttackStart;
         _events.OnAttackAffect -= HandleAttackAffect;
         _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
         _events.OnParryAffect -= HandleParryAffect;
@@ -192,13 +195,15 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// <summary>
     /// 근접 공격 시 대상의 열기를 증가시킵니다.
     /// </summary>
-    public void IncreaseHeatOnAttack(Collider collider)
+    public void IncreaseHeatOnAttack()
     {
-        if (collider.TryGetComponent<IHeatable>(out var heatable))
+        if (!_isAttackAffect)
         {
-            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnMeleeHit", heatable.ActorType, -1);
+            SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnMeleeHit", ActorType, -1);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-            heatable.ChangeHeat(deltaHeat);
+            ChangeHeat(deltaHeat);
+            
+            _isAttackAffect = true; 
         }
     }
 
@@ -337,12 +342,17 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         }
     }
 
+    private void HandleAttackStart()
+    {
+        _isAttackAffect = false;
+    }
+
     /// <summary>
     /// 근접 공격 피격 시 호출됩니다.
     /// </summary>
     private void HandleAttackAffect(Collider collider)
     {
-        IncreaseHeatOnAttack(collider);
+        IncreaseHeatOnAttack();
     }
 
     /// <summary>
