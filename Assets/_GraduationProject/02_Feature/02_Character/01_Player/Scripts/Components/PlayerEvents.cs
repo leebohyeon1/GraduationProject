@@ -246,6 +246,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeCancel()
     {
+        StopFeedback(PlayerFeedbackType.ChargeStart_FB);
         PlayFeedback(PlayerFeedbackType.ChargeCancel_FB);
     }
 
