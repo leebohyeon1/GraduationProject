@@ -41,6 +41,7 @@ public class GenericAttackNode : Node
 
         if (directionToPlayer != Vector3.zero && !tracking)
         {
+            Debug.Log("Rotate Toward Player");
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
         if (Handler.IsSound)
@@ -87,6 +88,14 @@ public class GenericAttackNode : Node
 
     public override void OnExit()
     {
+        tracking = false;
+        // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
+        Handler.ResetAllFlags();
+        runner.SetState(Enemy.EnemyState.Idle);
+    }
+    public override void Abort()
+    {
+        tracking = false;
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
