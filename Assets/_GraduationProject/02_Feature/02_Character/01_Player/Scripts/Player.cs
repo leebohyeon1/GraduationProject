@@ -75,7 +75,7 @@ public class Player : DIMonoBehaviour
     
     private void Update()
     {
-        OnUpdate();
+        OnUpdate(); 
         _stateMachine?.Update();
     }
     

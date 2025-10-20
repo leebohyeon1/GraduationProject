@@ -87,7 +87,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     /// <param name="damageAmount">데미지 양</param>
     /// <param name="stiffenessAmount">경직도 양</param>
-    public void TakeDamage(int damageAmount, int stiffenessAmount)
+    public void TakeDamage(int damageAmount, int stiffenessAmount, int heatTier = 0)
     {
         if (IsDead || IsInvincible) return;
 
@@ -187,4 +187,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             TakeDamage(damage);
         }
     }
+
+
 }
