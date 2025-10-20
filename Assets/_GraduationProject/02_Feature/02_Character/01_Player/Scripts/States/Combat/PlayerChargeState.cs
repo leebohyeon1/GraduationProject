@@ -57,7 +57,8 @@ public class PlayerChargeState : BaseState<Player>
         {
             if (_isCharged && !p_context.Heat.IsOverHeat)
             {
-                p_stateMachine.ChangeState<PlayerChargeAttackState>();
+                p_context.Heat.ChangeHeat(-Mathf.FloorToInt(_chargeGuage));
+                p_stateMachine.ChangeState<PlayerChargeAttackState>();   
             }
             else
             {
