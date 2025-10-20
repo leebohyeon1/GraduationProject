@@ -43,7 +43,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         }
 
         StartAttackMovement();
-        p_context.Events.TriggerChargeAttackStart();
+        p_context.Events.TriggerChargeAttackStart(p_context.Heat.CurrentTier);
     }
 
     public override void OnExit()
@@ -88,7 +88,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
         foreach (Collider collider in colliders)
         {
-            p_context.Events.TriggerChargeAttackAffect(collider, p_context.Heat.CurrentTier);
+            p_context.Events.TriggerChargeAttackAffect(collider);
         }
     }
 

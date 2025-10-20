@@ -15,17 +15,14 @@ public enum PlayerFeedbackType
     Move_FB, MoveStop_FB, DodgeStart_FB,
     DodgeFinish_FB, Landing_FB,
 
-    TakeDamage_Normal_FB,
-    TakeDamage_Strong_FB,
-    TakeDamage_Defend_FB,
+    TakeDamage_Normal_FB, TakeDamage_Strong_FB, TakeDamage_Defend_FB,
 
     FirstAttackStart_FB, SecondAttackStart_FB,
     ThirdAttackStart_FB, MeleeAttackHit_FB,
 
-    ChargeStart_FB, ChargeCancel_FB,
-    ChargeFinish_FB, ChargeAttackStart_FB,
-    ChargeAttackFinish_FB, Tier1ChargeAttackHit_FB,
-    Tier2ChargeAttackHit_FB, Tier3ChargeAttackHit_FB,
+    ChargeStart_FB, ChargeCancel_FB, ChargeFinish_FB, 
+    Tier1ChargeAttackStart_FB, Tier2ChargeAttackStart_FB, Tier3ChargeAttackStart_FB,
+    ChargeAttackFinish_FB,
 
     RangeAttackChargeStart_FB, RangeAttackCharging_FB,
     RangeAttackChargeCancel_FB, RangeAttackChargeFinish_FB,
@@ -260,10 +257,21 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 차지 공격 시작 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeAttackStart()
+    public void TriggerChargeAttackStart(int tier)
     {
         OnAttackStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.ChargeAttackStart_FB);
+        switch (tier)
+        {
+            case 1:
+                PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackStart_FB);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackStart_FB);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackStart_FB);
+                break;
+        }
     }
 
     /// <summary>
@@ -277,16 +285,9 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 차지 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeAttackAffect(Collider collider, int tier)
+    public void TriggerChargeAttackAffect(Collider collider)
     {
         OnChargeAttackAffect?.Invoke(collider);
-
-        switch (tier)
-        {
-            case 1: PlayFeedback(PlayerFeedbackType.Tier1ChargeAttackHit_FB, collider.transform.position); break;
-            case 2: PlayFeedback(PlayerFeedbackType.Tier2ChargeAttackHit_FB, collider.transform.position); break;
-            case 3: PlayFeedback(PlayerFeedbackType.Tier3ChargeAttackHit_FB, collider.transform.position); break;
-        }
     }
     #endregion
 
