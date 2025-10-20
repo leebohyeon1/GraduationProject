@@ -11,14 +11,13 @@ public class Stunned : Node
         // runner.parryied();
         runner.AnimationEvent(animationName);
         runner.SetState(Enemy.EnemyState.Stunned);
-        
+        Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
     protected override NodeState OnUpdate()
     {
         runner.Movement.StopMovement();
-        if (Time.time >= runner.ParrySystem.StunExitTime && runner.ParrySystem._isStunned)
+        if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
-            runner.ParrySystem.ClearStun();
             return NodeState.SUCCESS;
         }
         else
@@ -45,6 +44,7 @@ public class Stunned : Node
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);
         }
         runner.SetState(Enemy.EnemyState.Idle);
+        Handler.ResetAllFlags();
     }
     public override void Abort()
     {
@@ -55,6 +55,7 @@ public class Stunned : Node
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);
         }
         runner.SetState(Enemy.EnemyState.Idle);
+        Handler.ResetAllFlags();
     }
 
 
