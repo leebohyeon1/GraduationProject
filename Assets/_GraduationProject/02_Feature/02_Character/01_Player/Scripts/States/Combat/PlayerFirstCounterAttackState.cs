@@ -28,6 +28,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         p_context.Combat.SetCanCounterAttack(false);
         p_context.Stats.IsCounterAttack = true;
 
+        p_context.Heat.SetHeat(0);
         StartAttackMovement();
         p_context.Events.TriggerFirstCounterAttackStart();
     }
