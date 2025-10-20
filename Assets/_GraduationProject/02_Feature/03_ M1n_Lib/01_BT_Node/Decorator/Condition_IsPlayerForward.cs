@@ -3,6 +3,7 @@ using BehaviorTree;
 
 public class Condition_IsPlayerBehind : ConditionNode
 {
+    [Tooltip("플레이어가 뒤에 있다고 간주하는 각도 범위입니다.")]
     public float angleThreshold = 45f; // 플레이어가 뒤에 있다고 간주하는 각도 범위
 
     public override Node Clone()

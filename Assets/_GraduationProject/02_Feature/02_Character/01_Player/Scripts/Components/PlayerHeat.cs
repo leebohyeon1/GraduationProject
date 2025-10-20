@@ -88,7 +88,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     /// <param name="amount"> 열기 변화량 </param>
     public void ChangeHeat(int amount)
     {
-        if ( amount == 0 && IsHeatLock) return;
+        if ( amount == 0 || IsHeatLock) return;
 
         int previousTier = GetTier();
         int previousHeat = CurrentHeat;
