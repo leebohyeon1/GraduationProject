@@ -26,7 +26,7 @@ public class OnlyBackChase : Node
     private List<GraphNode> _affectedNodes = new List<GraphNode>();
     private float _timer = 0f;
     private const float LOGIC_UPDATE_INTERVAL = 0.25f;
-
+AIPath aiPath;
     public override void OnEnter()
     {
 
@@ -37,7 +37,8 @@ public class OnlyBackChase : Node
         {
             return;
         }
-
+        aiPath = runner.GetComponent<AIPath>();
+        aiPath.enableRotation = false;
         ConfigureTagPenalties();
         _timer = 0f;
         runner.SetState(Enemy.EnemyState.Chase);
@@ -91,11 +92,27 @@ public class OnlyBackChase : Node
 
         ClearAvoidanceZone();
 
+        aiPath.enableRotation = true;
         if (runner.Movement != null)
         {
             runner.Movement.StopMovement();
         }
-        
+
+        if (runner.CurrentState == Enemy.EnemyState.Chase)
+        {
+            runner.SetState(Enemy.EnemyState.Idle);
+        }
+    }
+    public override void Abort()
+    {
+        ClearAvoidanceZone();
+        aiPath.enableRotation = true;
+
+        if (runner.Movement != null)
+        {
+            runner.Movement.StopMovement();
+        }
+
         if (runner.CurrentState == Enemy.EnemyState.Chase)
         {
             runner.SetState(Enemy.EnemyState.Idle);
