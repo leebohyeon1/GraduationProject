@@ -4,6 +4,7 @@ using UnityEngine;
 public class OverHeatDataSO : ScriptableObject
 {
     public int TriggerHeat;
+    public float DurationSecond;    
     public float DelaySecond;
     public float TickSecond;
     public int DamagePerTick;

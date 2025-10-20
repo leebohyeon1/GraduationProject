@@ -48,7 +48,7 @@ public class PlayerChargeState : BaseState<Player>
             {
                 MinChargeFinish();
             }
-               
+            p_context.Events.TriggerBattleStateChanged(true);
             p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
         }
 
@@ -57,7 +57,7 @@ public class PlayerChargeState : BaseState<Player>
         {
             if (_isCharged && !p_context.Heat.IsOverHeat)
             {
-                int tier = p_context.Heat.CurrentTier == 4 ? 3 : p_context.Heat.GetTier();
+                int tier = Mathf.FloorToInt(_chargeGuage / 25f) == 4 ? 3 : Mathf.FloorToInt(_chargeGuage / 25f);
                 p_context.Events.TriggerChargeAttackStart(tier);
 
                 p_context.Heat.ChangeHeat(-Mathf.FloorToInt(_chargeGuage));
