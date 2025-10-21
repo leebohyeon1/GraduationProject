@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using MoreMountains.Feedbacks;
 using Pathfinding;
+using andywiecko.BurstTriangulator;
 
 [CreateAssetMenu(fileName = "GenericAttackNode", menuName = "BehaviorTree/Action/GenericAttackNode")]
 public class GenericAttackNode : Node
@@ -52,9 +53,12 @@ public class GenericAttackNode : Node
         {
             Handler.EndSound();
         }
-        if (Handler.IsHitWindowOpen)
+        if(Handler.IsHitWindowOpen)
         {
             tracking = true;
+        }
+        if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
+        {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
             {
@@ -70,7 +74,7 @@ public class GenericAttackNode : Node
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     Character.TakeDamage(stat.FinalDamage, 0,new DamageData(StiffenessAmount, runner.transform));
-                    // Character.TakeDamage(stat.FinalDamage);
+                     // Character.TakeDamage(stat.FinalDamage);
                     
                     _didHitPlayer = true;
                     if (!maintainAtk)
