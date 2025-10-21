@@ -42,7 +42,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     }
 
-    public void TakeDamage(int amount, int StiffenessAmount, int heatTier = 0)
+    public void TakeDamage(int amount, int heatTier, DamageData damageData)
     {
         if (Health <= 0) return;
         _owner.groupAi.CombatAll();
@@ -59,6 +59,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             Die();
         }
     }
+
     public void InitializeHealth(int maxHealth, Enemy owner)
     {
         _owner = owner;

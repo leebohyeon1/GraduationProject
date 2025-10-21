@@ -47,7 +47,7 @@ public class Projectile : MonoBehaviour
     {
         if (target == null || target.IsDead) return;
         
-        target.TakeDamage(_damage, 50);
+        target.TakeDamage(_damage, 0, new DamageData(50, transform));
         Log.Print($"투사체가 {target}에게 {_damage} 피해를 입혔습니다!");
     }
 

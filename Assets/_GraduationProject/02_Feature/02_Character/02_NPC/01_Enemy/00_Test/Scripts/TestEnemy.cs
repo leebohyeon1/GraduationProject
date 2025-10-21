@@ -64,7 +64,7 @@ public class TestEnemy : MonoBehaviour, IDamageable
         _currentHealth = MaxHealth;
     }
 
-    public void TakeDamage(int damageAmount, int StiffenessAmount, int heatTier = 0)
+    public void TakeDamage(int damageAmount, int heatTier, DamageData damageData)
     {
     }
 }
