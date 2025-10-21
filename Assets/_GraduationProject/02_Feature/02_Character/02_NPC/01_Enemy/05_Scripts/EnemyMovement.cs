@@ -87,6 +87,7 @@ public class EnemyMovement
         aIPath.enabled = true;
         CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
         aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
+        Debug.Log($"normal Speed: {_normalSpeed}, Tier Speed Mult: {stat.FinalSpeed}");
         aIPath.destination = newTarget;
         aIPath.isStopped = false;
     }

@@ -10,15 +10,7 @@ public struct CalculationResult
 }
 public static class StatCalculator
 {
-    private static TierStatDatabaseSO _tierStatDatabase;
-    public static TierStatDatabaseSO TierStatDatabase => _tierStatDatabase;
-    public static void Initialize(TierStatDatabaseSO tierDb)
-    {
-        if(_tierStatDatabase != null) return;
-        _tierStatDatabase = tierDb;
-    }
-    
-    public static CalculationResult CalculateStats(SourceMap data, int baseDamage)
+    public static CalculationResult CalculateStats(SourceMap data, int baseDamage,TierStatDatabaseSO _tierStatDatabase)
     {
         CalculationResult result = new CalculationResult();
 
@@ -40,7 +32,6 @@ public static class StatCalculator
         result.FinalAnimSpeed = 1.0f * tierStats.AnimSpeedMultiply;
         result.FinalRange = 1.0f * tierStats.RangeMultiply;
         result.FinalSpeed = 1.0f * tierStats.SpeedMultiply;
-        
         result.IsSuccess = true;
         return result;
     }

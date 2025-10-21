@@ -30,7 +30,6 @@ public class HeatSystem : MonoBehaviour, IHeatable
         ActorType = actorType;
         SetHeatLock(false);
         SetHeat(0); 
-        StatCalculator.Initialize(p_tierStatDatabase);
     }
 
 
@@ -41,11 +40,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 변화량 </param>
     public virtual void ChangeHeat(int amount)
     {
-        if (p_tierStatDatabase == null)
-        {
-            p_tierStatDatabase = StatCalculator.TierStatDatabase;
 
-        }
         if (IsHeatLock)
         {
             if (Time.time >= LockTimer)
@@ -120,7 +115,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
         SourceMap data = p_sourceMapDataBase.GetSourceMap(id, actorType, tier);
-        CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);
+        CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage,p_tierStatDatabase);
         return finalStats;
     }
 

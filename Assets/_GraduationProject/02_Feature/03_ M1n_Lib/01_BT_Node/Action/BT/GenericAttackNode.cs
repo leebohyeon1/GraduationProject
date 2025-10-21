@@ -53,10 +53,11 @@ public class GenericAttackNode : Node
         {
             Handler.EndSound();
         }
-        if(Handler.IsHitWindowOpen)
+        if (Handler.IsHitWindowOpen)
         {
             tracking = true;
         }
+        
         if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
         {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
@@ -69,6 +70,7 @@ public class GenericAttackNode : Node
                     SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                     heatable.ChangeHeat(deltaHeat);
+                    Debug.Log($"{damage} damage {stat.FinalDamage} finalDmg,  Tier{runner.heatSystem.GetTier()}");
                 }
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
