@@ -17,6 +17,11 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.OnParryPerform += HandleParryPerform;
         p_context.Events.OnParryAffect += HandleParryAffect;
 
+        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+        var moveInput = p_context.Input.MoveInput;
+        var mousePosition = p_context.Input.MousePosition;
+        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+
         p_context.Animator.SetBool("IsDefending", true);
         p_context.Combat.SetDefending(true);
         p_context.Events.TriggerBattleStateChanged(true);
