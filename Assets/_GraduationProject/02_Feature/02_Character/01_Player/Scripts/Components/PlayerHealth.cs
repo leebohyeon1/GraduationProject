@@ -87,10 +87,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     /// <param name="damageAmount">데미지 양</param>
     /// <param name="stiffenessAmount">경직도 양</param>
-    public void TakeDamage(int damageAmount, int stiffenessAmount, int heatTier = 0)
+    public void TakeDamage(int damageAmount, int heatTier, DamageData damageData)
     {
         if (IsDead || IsInvincible) return;
 
+        int stiffenessAmount = damageData.StiffnessAmount;
         if (_stats.IsDefending)
         {
             damageAmount = Mathf.RoundToInt(damageAmount * _stats.CombatData.DefendDamageReductionRate);

@@ -69,7 +69,7 @@ public class GenericAttackNode : Node
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage(stat.FinalDamage, StiffenessAmount);
+                    Character.TakeDamage(stat.FinalDamage, 0,new DamageData(StiffenessAmount, runner.transform));
                     // Character.TakeDamage(stat.FinalDamage);
                     
                     _didHitPlayer = true;

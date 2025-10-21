@@ -35,7 +35,7 @@ public interface IDamageable
     /// <param name="damageAmount">피해량</param>
     /// <param name="stiffenessAmount">경직도</param>
     /// <param name="heatTier">열기 단계</param>
-    public void TakeDamage(int damageAmount,int stiffenessAmount, int heatTier = 0);
+    public void TakeDamage(int damageAmount,int heatTier, DamageData damageData);
 
     /// <summary>
     /// 체력 변경 이벤트
@@ -46,4 +46,17 @@ public interface IDamageable
     /// 사망 이벤트
     /// </summary>
     public event Action OnDied;
+}
+
+[Serializable]
+public struct DamageData
+{
+    public int StiffnessAmount;
+    public Transform AttackerTransform;
+
+    public DamageData( int stiffnessAmount, Transform attackerTransform)
+    {
+        StiffnessAmount = stiffnessAmount;
+        AttackerTransform = attackerTransform;
+    }
 }
