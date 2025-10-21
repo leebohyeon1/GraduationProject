@@ -99,7 +99,11 @@ public class EnemyMovement
     public void StopMovement()
     {
         // 현재 상태가 Rush라면, 다른 노드가 중단되면서 호출하는 Stop 명령을 무시합니다.
-        if (CurrentState == EnemyState.Rush || CurrentState == EnemyState.Beam)
+        if (CurrentState == EnemyState.Rush || 
+            CurrentState == EnemyState.Beam ||
+            CurrentState == EnemyState.Stunned || 
+            CurrentState == EnemyState.Die ||   
+            CurrentState == EnemyState.Attack)    
         {
             aIPath.enabled = false;
             return;
@@ -117,7 +121,6 @@ public class EnemyMovement
         {
             return;
         }
-        if (_runner != null) 
         _runner.AnimationBool("Walk", false);
         _runner.AnimationBool("Run", false);
         aIPath.enableRotation = true;
