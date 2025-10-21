@@ -60,6 +60,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         public string name;
         public MMF_Player feedback;
         public Vector3 offset;
+        public int id;
     }
 
 

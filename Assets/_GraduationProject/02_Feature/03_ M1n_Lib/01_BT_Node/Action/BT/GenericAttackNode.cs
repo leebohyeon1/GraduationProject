@@ -1,6 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 using MoreMountains.Feedbacks;
+using Pathfinding;
 
 [CreateAssetMenu(fileName = "GenericAttackNode", menuName = "BehaviorTree/Action/GenericAttackNode")]
 public class GenericAttackNode : Node
@@ -16,14 +17,18 @@ public class GenericAttackNode : Node
     [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
+    AIPath aIPath;
     public override void OnEnter()
     {
+        aIPath = runner.GetComponent<AIPath>();
         // 1. Enemy의 범용 플래그들을 리셋합니다.
         Handler.ResetAllFlags();
         _didHitPlayer = false;
         // runner.Movement.StartOrUpdateChase(runner.player.transform.position);
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
+        // aIPath.enableRotation = false;
+        
         runner.AnimationEvent(AttackName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
@@ -41,7 +46,6 @@ public class GenericAttackNode : Node
 
         if (directionToPlayer != Vector3.zero && !tracking)
         {
-            Debug.Log("Rotate Toward Player");
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
         if (Handler.IsSound)
@@ -92,6 +96,7 @@ public class GenericAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        // runner.Movement.StopMovement();
     }
     public override void Abort()
     {
@@ -99,6 +104,11 @@ public class GenericAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        // runner.Movement.StopMovement();
+        // Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        // directionToPlayer.y = 0;
+        
+        // runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
     }
 
     public override Node Clone()

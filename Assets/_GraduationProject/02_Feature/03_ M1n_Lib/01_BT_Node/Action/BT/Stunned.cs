@@ -10,12 +10,12 @@ public class Stunned : Node
         base.OnEnter();
         // runner.parryied();
         runner.AnimationEvent(animationName);
+        runner.Movement.StopMovement();
         runner.SetState(Enemy.EnemyState.Stunned);
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
     protected override NodeState OnUpdate()
     {
-        runner.Movement.StopMovement();
         if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
             return NodeState.SUCCESS;
