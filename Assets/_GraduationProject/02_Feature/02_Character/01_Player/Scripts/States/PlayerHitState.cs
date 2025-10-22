@@ -1,5 +1,7 @@
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -15,13 +17,17 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnEnter()
     {
+        _hitDuration = p_context.Health.StiffnessDuration;
+
         // 피격 종류에 따라 다른 애니메이션 및 효과 재생
         if (p_context.Stats.IsHeavyHit)
         {
+            KnockbackMovement(p_context.Stats.CombatData.HeavyStaggerKnockbackDistance);
             p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
         }
         else if(p_context.Stats.IsLightHit)
         {
+            KnockbackMovement(p_context.Stats.CombatData.LightStaggerKnockbackDistance);
             if (p_context.Stats.IsDefending)
             {
                 p_context.Animator.SetTrigger("DefendHit");
@@ -36,11 +42,11 @@ public class PlayerHitState : BaseState<Player>
 
         p_context.Animator.SetBool("IsHit", true);
 
-        _hitDuration = p_context.Health.StiffnessDuration;
         _hitTimer = 0f;
 
-        p_context.Movement?.Move(Vector3.zero, 0f, 0f); // 피격 중 이동 정지
         p_context.Events.TriggerBattleStateChanged(true);
+
+  
     }
 
     public override void OnUpdate()
@@ -66,8 +72,31 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnExit()
     {
+        DOTween.Kill(this);
         p_context.Animator.SetBool("IsHit", false);
         p_context.Stats.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
+    }
+
+    private void KnockbackMovement(float distance)
+    {
+        Vector3 moveDirection = (p_context.transform.position - p_context.Health.DamageData.AttackerTransform.position).normalized;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (x - currentDistance);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            _hitDuration)
+            .SetEase(Ease.OutQuart)
+            .SetId(this)
+            .SetUpdate(UpdateType.Fixed);
+
+        Log.Print($"플레이어 넉백 이동: {moveDirection * distance}");
     }
 }
