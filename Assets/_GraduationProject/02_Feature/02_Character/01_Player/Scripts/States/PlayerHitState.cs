@@ -27,14 +27,17 @@ public class PlayerHitState : BaseState<Player>
         }
         else if(p_context.Stats.IsLightHit)
         {
-            KnockbackMovement(p_context.Stats.CombatData.LightStaggerKnockbackDistance);
+           
             if (p_context.Stats.IsDefending)
             {
+                KnockbackMovement(p_context.Stats.CombatData.DefendStaggerKnockbackDistance);
                 p_context.Animator.SetTrigger("DefendHit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
             }
             else
             {
+                KnockbackMovement(p_context.Stats.CombatData.LightStaggerKnockbackDistance);
+              
                 p_context.Animator.SetTrigger("Hit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
             }
