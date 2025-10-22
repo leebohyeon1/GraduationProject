@@ -113,10 +113,14 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     {
         float distance = p_AttackData.AttackMoveDistance;
 
+        Collider playerCollider = p_context.GetComponent<Collider>();
+
         // 전방에 장애물이 있으면 이동 거리 조정
-        if (Physics.Raycast(p_context.transform.position, p_context.transform.forward, 
-            out var hitInfo, p_AttackData.AttackMoveDistance,
-            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
+        if (Physics.BoxCast(p_context.transform.position, playerCollider.bounds.extents * 1.2f,
+            p_context.transform.forward, out var hitInfo,
+            p_context.transform.rotation, 
+            p_AttackData.AttackMoveDistance,
+            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }

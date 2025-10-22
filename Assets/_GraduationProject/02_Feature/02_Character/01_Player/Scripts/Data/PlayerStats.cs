@@ -222,6 +222,7 @@ public struct PlayerCombatData
     [Header("Damaged")]
     [Range(0f,1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
+    public float DefendStaggerKnockbackDistance; // 방어 시 경직 임계값
     public float LightStaggerDuration; // 약한 경직 시간
     public float LightStaggerKnockbackDistance; // 약한 경직 이동 거리   
     public float HeavyStaggerDuration; // 강한 경직 시간
@@ -240,6 +241,7 @@ public struct PlayerCombatData
 
     [Header("Parry")]
     public Vector3 ParryRadius; // 패링 범위
+    public float ParryMoveDistance; // 패링 성공 시 이동 거리   
 
     [Header("CounterAttack")]
     public float CounterAttackWindow; // 반격 가능 시간
@@ -256,13 +258,17 @@ public struct PlayerCombatData
             DodgeSpeed = DodgeSpeed,
             DodgeCooldown = DodgeCooldown,
             DefendDamageReductionRate = DefendDamageReductionRate,
+            DefendStaggerKnockbackDistance = DefendStaggerKnockbackDistance,
             LightStaggerDuration = LightStaggerDuration,
+            LightStaggerKnockbackDistance = LightStaggerKnockbackDistance,
             HeavyStaggerDuration = HeavyStaggerDuration,
+            HeavyStaggerKnockbackDistance = HeavyStaggerKnockbackDistance,
             AttackLayerMask = AttackLayerMask,
             LastAttackDelay = LastAttackDelay,
             ChargeAttackData = ChargeAttackData,
             RangedAttackData = RangedAttackData,
             ParryRadius = ParryRadius,
+            ParryMoveDistance = ParryMoveDistance,
             CounterAttackWindow = CounterAttackWindow
         };
 

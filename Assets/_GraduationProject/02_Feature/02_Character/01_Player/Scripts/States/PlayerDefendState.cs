@@ -49,6 +49,7 @@ public class PlayerDefendState : BaseState<Player>
         p_context.Events.OnParryPerform -= HandleParryPerform;
         p_context.Events.OnParryAffect -= HandleParryAffect;
 
+        DOTween.Kill(this);
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
     }
@@ -75,6 +76,28 @@ public class PlayerDefendState : BaseState<Player>
     /// </summary>
     private void HandleParryAffect(Collider collider)
     {
-       p_context.Combat.ToggleCanCounter(p_context.Stats.CombatData.CounterAttackWindow);
+        p_context.Combat.ToggleCanCounter(p_context.Stats.CombatData.CounterAttackWindow);
+        KnockbackMovement(collider.transform);
+    }
+
+
+    private void KnockbackMovement(Transform parryObject)
+    {
+        Vector3 moveDirection = (p_context.transform.position - parryObject.position).normalized;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (x - currentDistance);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            p_context.Stats.CombatData.ParryMoveDistance,
+            0.1f)
+            .SetEase(Ease.OutQuart)
+            .SetId(this)
+            .SetUpdate(UpdateType.Fixed);
     }
 }
