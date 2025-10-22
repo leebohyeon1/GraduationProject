@@ -27,7 +27,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <summary>
     /// 카운터 공격 가능 오브젝트
     /// </summary>
-    private Collider _counterableTarget = null;
+    private GameObject _counterableTarget = null;
     
     /// <summary>
     /// 마지막 전투 시간
@@ -46,7 +46,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region Properties
     public bool CanCounterAttack => _canCounterAttack; // 카운터 공격 가능 여부
-    public Collider CounterableTarget => _counterableTarget; // 카운터 공격 대상
+    public GameObject CounterableTarget => _counterableTarget; // 카운터 공격 대상
 
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
@@ -226,34 +226,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public bool CanIsScanCounterable()
     {
         Collider[] colliders = Physics.OverlapBox(transform.position, _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
-        
-        foreach (var t in colliders)
-        {
-            if (t.TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// 카운터 가능한 오브젝트를 스캔합니다.
-    /// </summary>
-    /// <returns>가장 가까운 카운터 가능한 오브젝트</returns>
-    public Collider ScanCounterableObject()
-    {
-        _counterableTarget = GetComponent<Collider>();
-        return GetComponent<Collider>();
-    }
-
-    /// <summary>
-    /// 첫 번째 카운터 공격을 실행합니다.
-    /// </summary>
-    public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
-    {
-        Collider[] colliders = Physics.OverlapBox(transform.position, _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
 
         float minDistance = Mathf.Infinity;
         Collider closestCollider = null;
@@ -270,8 +242,22 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             }
         }
 
-        _counterableTarget = closestCollider;
+        if (closestCollider != null)
+        {
+            _counterableTarget = closestCollider.gameObject;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
+    /// <summary>
+    /// 첫 번째 카운터 공격을 실행합니다.
+    /// </summary>
+    public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
+    {
         if (_counterableTarget != null)
         {
             _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();

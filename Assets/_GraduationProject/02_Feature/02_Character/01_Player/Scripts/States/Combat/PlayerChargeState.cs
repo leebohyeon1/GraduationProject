@@ -65,13 +65,11 @@ public class PlayerChargeState : BaseState<Player>
             }
             else
             {
-                p_context.Events.TriggerChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         }
         else if(p_context.Input.DodgeInput)
         {
-            p_context.Events.TriggerChargeCancel();
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
@@ -88,6 +86,7 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
+        p_context.Events.TriggerChargeCancel();
     }
 
     /// <summary>

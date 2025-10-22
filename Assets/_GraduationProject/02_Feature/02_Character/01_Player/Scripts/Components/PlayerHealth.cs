@@ -14,6 +14,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private int _currentStiffness; // 현재 경직도
     private int _stiffnessThreshold = 100; // 경직 임계값
     private float _stiffnessDuration; // 경직 지속 시간
+    private DamageData _damageData; // 데미지 데이터
 
     public event Action<bool> OnInvisibleChanged; // 무적 상태 변경 이벤트
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
@@ -28,6 +29,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public int MaxHealth => _stats.MaxHealth; // 최대 체력
     public bool IsDead => _stats.CurrentHealth <= 0; // 사망 여부
     public bool IsInvincible => _stats.IsInvincible; // 무적 여부
+
+    public DamageData DamageData => _damageData; // 데미지 데이터
     #endregion
 
     /// <summary>
@@ -90,6 +93,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void TakeDamage(int damageAmount, int heatTier, DamageData damageData)
     {
         if (IsDead || IsInvincible) return;
+
+        _damageData = damageData;
 
         int stiffenessAmount = damageData.StiffnessAmount;
         if (_stats.IsDefending)
@@ -189,5 +194,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         }
     }
 
-
+    /// <summary>
+    /// 데미지 데이터 초기화
+    /// </summary>
+    public void ResetDamageData()
+    {
+        _damageData = new DamageData();
+    }
 }
