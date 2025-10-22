@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using MoreMountains.Feedbacks;
 using Pathfinding;
+using andywiecko.BurstTriangulator;
 
 [CreateAssetMenu(fileName = "GenericAttackNode", menuName = "BehaviorTree/Action/GenericAttackNode")]
 public class GenericAttackNode : Node
@@ -55,6 +56,10 @@ public class GenericAttackNode : Node
         if (Handler.IsHitWindowOpen)
         {
             tracking = true;
+        }
+        
+        if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
+        {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
             {
@@ -65,12 +70,13 @@ public class GenericAttackNode : Node
                     SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                     heatable.ChangeHeat(deltaHeat);
+                    Debug.Log($"{damage} damage {stat.FinalDamage} finalDmg,  Tier{runner.heatSystem.GetTier()}");
                 }
 
                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     Character.TakeDamage(stat.FinalDamage, 0,new DamageData(StiffenessAmount, runner.transform));
-                    // Character.TakeDamage(stat.FinalDamage);
+                     // Character.TakeDamage(stat.FinalDamage);
                     
                     _didHitPlayer = true;
                     if (!maintainAtk)

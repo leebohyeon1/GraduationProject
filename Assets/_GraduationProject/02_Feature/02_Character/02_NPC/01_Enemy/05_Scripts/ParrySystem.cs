@@ -6,6 +6,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 {
     // Parry system implementation
     public bool IsParryable { get; private set; } = false;
+    public bool IsParry { get; private set; } = false;
     public bool IsCounterable { get; private set; } = false;
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
@@ -17,7 +18,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _owner = enemy;
         IsParryable = false;
         IsCounterable = false;
-        ClearStun();
+        ClearStun();IsParry = false;
     }
     public void SetParryable(string value)
     {
@@ -39,6 +40,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         SetParryable("false");
         Debug.Log(_owner.name + " was parried by " + parryInstigator.name);
         _owner.StiffnessSystem.AddStiffness(_owner.CurrentStiffness);
+        IsParry = true;
         return true;
     }
 
@@ -64,6 +66,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ClearStun()
     {
         _owner.animator.SetBool("Stun", false);
+        IsParry = false;
         _isStunned = false;
     }
 

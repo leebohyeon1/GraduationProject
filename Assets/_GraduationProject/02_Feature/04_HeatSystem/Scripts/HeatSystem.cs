@@ -2,7 +2,15 @@ using System;
 using BH_Lib.Log;
 using Unity.Collections;
 using UnityEngine;
-
+public struct CalculationResult
+{
+    public bool IsSuccess;
+    public int FinalDamage;
+    public float FinalAnimSpeed;
+    public float FinalRange;
+    public float FinalSpeed;
+    public float HeatGauage;
+}
 public class HeatSystem : MonoBehaviour, IHeatable
 {
     [SerializeField] private int _maxHeat = 100;
@@ -30,7 +38,6 @@ public class HeatSystem : MonoBehaviour, IHeatable
         ActorType = actorType;
         SetHeatLock(false);
         SetHeat(0); 
-        StatCalculator.Initialize(p_tierStatDatabase);
     }
 
 
@@ -41,11 +48,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     /// <param name="amount"> 열기 변화량 </param>
     public virtual void ChangeHeat(int amount)
     {
-        if (p_tierStatDatabase == null)
-        {
-            p_tierStatDatabase = StatCalculator.TierStatDatabase;
 
-        }
         if (IsHeatLock)
         {
             if (Time.time >= LockTimer)
@@ -120,7 +123,7 @@ public class HeatSystem : MonoBehaviour, IHeatable
     public CalculationResult CalculationHeat(string id, ActorType actorType, int tier, int baseDamage)
     {
         SourceMap data = p_sourceMapDataBase.GetSourceMap(id, actorType, tier);
-        CalculationResult finalStats = StatCalculator.CalculateStats(data, baseDamage);
+        CalculationResult finalStats = CalculateStats(data, baseDamage,p_tierStatDatabase);
         return finalStats;
     }
 
@@ -144,5 +147,30 @@ public class HeatSystem : MonoBehaviour, IHeatable
     protected virtual void TriggerOnTierChanged(int previousTier)
     {
         OnTierChanged?.Invoke(previousTier, CurrentTier);
+    }
+    public CalculationResult CalculateStats(SourceMap data, int baseDamage,TierStatDatabaseSO _tierStatDatabase)
+    {
+        CalculationResult result = new CalculationResult();
+
+        if (_tierStatDatabase == null || data == null)
+        {
+            result.IsSuccess = false;
+            return result;
+        }
+
+        TierStatData tierStats = _tierStatDatabase.GetTierStat(data.TierID);
+        if (tierStats == null)
+        {   
+            result.IsSuccess = false;
+            return result;
+        }
+
+        // --- 모든 계산을 여기서 한번에 수행 ---
+        result.FinalDamage = (int)(baseDamage * tierStats.DamageMultiply);
+        result.FinalAnimSpeed = 1.0f * tierStats.AnimSpeedMultiply;
+        result.FinalRange = 1.0f * tierStats.RangeMultiply;
+        result.FinalSpeed = 1.0f * tierStats.SpeedMultiply;
+        result.IsSuccess = true;
+        return result;
     }
 }
