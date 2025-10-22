@@ -29,10 +29,11 @@ MonoBehaviour:
     DodgeSpeed: 10
     DodgeCooldown: 2
     DefendDamageReductionRate: 0.7
+    DefendStaggerKnockbackDistance: 0.7
     LightStaggerDuration: 0.5
-    LightStaggerKnockbackDistance: 0
+    LightStaggerKnockbackDistance: 1
     HeavyStaggerDuration: 1
-    HeavyStaggerKnockbackDistance: 0
+    HeavyStaggerKnockbackDistance: 2
     AttackLayerMask:
       serializedVersion: 2
       m_Bits: 1280
@@ -186,6 +187,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       AttackDelay: 0.2
     ParryRadius: {x: 3, y: 1, z: 3}
+    ParryMoveDistance: 0.3
     CounterAttackWindow: 10
     CounterAttackDatas:
     - AttackMoveDistance: 0
