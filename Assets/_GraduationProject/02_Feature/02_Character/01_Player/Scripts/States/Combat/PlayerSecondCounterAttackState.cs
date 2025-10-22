@@ -90,7 +90,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     protected override void HandleAttackPerform()
     {
         p_context.Combat.ExcuteSecondCounterAttack(p_AttackData);
-        p_context.Events.TriggerSecondCounterAttackAffect(p_context.Combat.CounterableTarget, p_context.Heat.CurrentTier);
+        p_context.Events.TriggerSecondCounterAttackAffect(p_context.Combat.CounterableTarget.GetComponent<Collider>(), p_context.Heat.CurrentTier);
     }
 
     /// <summary>
