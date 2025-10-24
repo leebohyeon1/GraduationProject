@@ -18,6 +18,7 @@ public class GenericAttackNode : Node
     [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
+    bool parryEffectPlayed = false;
     AIPath aIPath;
     public override void OnEnter()
     {
@@ -25,6 +26,7 @@ public class GenericAttackNode : Node
         // 1. Enemy의 범용 플래그들을 리셋합니다.
         Handler.ResetAllFlags();
         _didHitPlayer = false;
+        parryEffectPlayed = false;  
         // runner.Movement.StartOrUpdateChase(runner.player.transform.position);
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
@@ -57,13 +59,13 @@ public class GenericAttackNode : Node
         {
             tracking = true;
         }
-        
+
         if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
         {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
             {
-                if(col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
+                if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
                 if (col.TryGetComponent<IHeatable>(out IHeatable heatable))
                 {
                     stat = runner.heatSystem.CalculationHeat(AttackName, heatable.ActorType, runner.heatSystem.GetTier(), damage);
@@ -73,11 +75,11 @@ public class GenericAttackNode : Node
                     Debug.Log($"{damage} damage {stat.FinalDamage} finalDmg,  Tier{runner.heatSystem.GetTier()}");
                 }
 
-               if (col.TryGetComponent<IDamageable>(out IDamageable Character))
+                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage(stat.FinalDamage, 0,new DamageData(StiffenessAmount, runner.transform));
-                     // Character.TakeDamage(stat.FinalDamage);
-                    
+                    Character.TakeDamage(stat.FinalDamage, 0, new DamageData(StiffenessAmount, runner.transform));
+                    // Character.TakeDamage(stat.FinalDamage);
+
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
@@ -85,7 +87,13 @@ public class GenericAttackNode : Node
                     }
                 }
             }
-            
+
+        }
+        
+        if(Handler.IsHitWindowOpen && runner.ParrySystem.IsParry && !parryEffectPlayed)
+        {
+            runner.ParrySystem.OnParry.Publish(true);
+            parryEffectPlayed = true;   
         }
 
         if (Handler.IsActionFinished)
@@ -110,11 +118,12 @@ public class GenericAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
-        // runner.Movement.StopMovement();
-        // Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
-        // directionToPlayer.y = 0;
         
-        // runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        if(runner.ParrySystem.IsParry && !parryEffectPlayed)
+        {
+            runner.ParrySystem.OnParry.Publish(true);
+            parryEffectPlayed = true;   
+        }
     }
 
     public override Node Clone()
