@@ -96,7 +96,7 @@ public class PlayerDefendState : BaseState<Player>
             },
             p_context.Stats.CombatData.ParryMoveDistance,
             0.1f)
-            .SetEase(Ease.OutQuart)
+            .SetEase(p_context.Stats.CombatData.KnockbackCurve)
             .SetId(this)
             .SetUpdate(UpdateType.Fixed);
     }

@@ -220,7 +220,8 @@ public struct PlayerCombatData
     public float DodgeCooldown; // 회피 쿨타임
 
     [Header("Damaged")]
-    [Range(0f,1f)]
+    public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
+    [Range(0f, 1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
     public float DefendStaggerKnockbackDistance; // 방어 시 경직 임계값
     public float LightStaggerDuration; // 약한 경직 시간
@@ -257,6 +258,7 @@ public struct PlayerCombatData
         {
             DodgeSpeed = DodgeSpeed,
             DodgeCooldown = DodgeCooldown,
+            KnockbackCurve = KnockbackCurve,
             DefendDamageReductionRate = DefendDamageReductionRate,
             DefendStaggerKnockbackDistance = DefendStaggerKnockbackDistance,
             LightStaggerDuration = LightStaggerDuration,

@@ -465,7 +465,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: fa57e4822ead0dd41ae7a4a04d19ecc6, type: 3}
+  - {fileID: 2100000, guid: 4419e4a48595a5f46938641c654291f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1891,6 +1891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a170f9b7ba6a19d4f9d07af853588ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerCombat
+  _onParry: {fileID: 11400000, guid: f993c4aa500e70e49898de4271c196e4, type: 2}
 --- !u!114 &3259499344088917303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2104,8 +2105,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.532}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7991569648605186652}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2612,6 +2613,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 960494586369411796}
     m_Modifications:
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
+      propertyPath: managedReferences[6863434526268588336].Sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: acd880415f4d54b419027943a57b8a7a, type: 3}
+    - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[6863434526268588285].InstantiateParticlesPosition
       value: 
       objectReference: {fileID: 2611155573014141996}
@@ -2765,6 +2770,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 960494586369411796}
     m_Modifications:
+    - target: {fileID: 2739933551082540409, guid: a587ea890366d444688a38626b43b86f, type: 3}
+      propertyPath: managedReferences[6863434526268588335].Sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 1c051810593da4d878348fe61170046f, type: 3}
     - target: {fileID: 8158659035823230755, guid: a587ea890366d444688a38626b43b86f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2961,6 +2970,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+      propertyPath: managedReferences[6863434526268588336].Sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: acd880415f4d54b419027943a57b8a7a, type: 3}
+    - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+      propertyPath: managedReferences[6863434526268588336].MaxPitch
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+      propertyPath: managedReferences[6863434526268588336].MinPitch
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[6863434526268588285].InstantiateParticlesPosition
       value: 
       objectReference: {fileID: 9074834459823218609}
@@ -3002,8 +3023,16 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1075820770573112843, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
+      propertyPath: managedReferences[6863434231624761656].ApplyScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075820770573112843, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
       propertyPath: managedReferences[6863434231624761656].PositionMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075820770573112843, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
+      propertyPath: managedReferences[6863434231624761653].TimeScaleDuration
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 1075820770573112843, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
       propertyPath: managedReferences[6863434231624761654].RemapIntensityOne
@@ -3129,6 +3158,18 @@ PrefabInstance:
     - target: {fileID: 1763245080760930700, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
+      propertyPath: managedReferences[6863434526268588336].Sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: acd880415f4d54b419027943a57b8a7a, type: 3}
+    - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
+      propertyPath: managedReferences[6863434526268588336].MaxPitch
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
+      propertyPath: managedReferences[6863434526268588336].MinPitch
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[6863434526268588285].InstantiateParticlesPosition
