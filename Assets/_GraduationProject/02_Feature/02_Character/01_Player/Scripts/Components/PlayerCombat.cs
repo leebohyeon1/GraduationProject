@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
 /// </summary>
-public class PlayerCombat : MonoBehaviour, IDisposable
+public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>    
 {
     #region Private Fields
     private PlayerStats _stats; // 플레이어 스탯
@@ -42,6 +42,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// 디버깅용 기즈모 표시 여부
     /// </summary>
     private bool _isDrawGizmos = false;
+
+    [SerializeField] private OnParry _onParry;
     #endregion
 
     #region Properties
@@ -65,6 +67,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.OnBattleStateChaged += HandleBattleStateChanged;
         _events.OnAttackStart += SetupCombatCenter;
         _events.OnParryPerform += SetupCombatCenter;
+
+        _onParry.Subscribe(this);
     }
 
     /// <summary>
@@ -76,6 +80,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
         _events.OnAttackStart -= SetupCombatCenter;
         _events.OnParryPerform -= SetupCombatCenter;
+
+        _onParry.Unsubscribe(this);
     }
 
     /// <summary>
@@ -323,6 +329,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero, radius);
         Gizmos.matrix = Matrix4x4.identity;
+    }
+
+    public void OnEventTrigger(bool eventName)
+    {
+        _events.PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
 #endif
 }
