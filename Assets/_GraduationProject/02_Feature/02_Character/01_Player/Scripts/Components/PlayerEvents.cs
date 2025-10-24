@@ -315,6 +315,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeCancel()
     {
+        StopFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB);
         PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB);
     }
 
