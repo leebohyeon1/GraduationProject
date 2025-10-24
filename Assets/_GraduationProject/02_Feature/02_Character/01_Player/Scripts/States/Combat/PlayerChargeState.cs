@@ -19,6 +19,7 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnEnter()
     {
         p_context.Heat.OnTierChanged += HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged += HandleChargeFinish;
 
         p_context.Animator.SetBool("IsCharge", true);
         SetupChargeSourceMap();
@@ -43,11 +44,6 @@ public class PlayerChargeState : BaseState<Player>
             _chargeTimer = 0;
             _chargeGuage += (int)_chargeSourceMap.HeatChangeType * _chargeSourceMap.DeltaHeat;
             
-            // 최소 차지량 도달 시
-            if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
-            {
-                MinChargeFinish();
-            }
             p_context.Events.TriggerBattleStateChanged(true);
             p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
         }
@@ -83,6 +79,8 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnExit()
     {
         p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged -= HandleChargeFinish;
+                
         p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
@@ -106,14 +104,10 @@ public class PlayerChargeState : BaseState<Player>
     }
 
     /// <summary>
-    /// 최소 차지 조건을 만족했을 때 호출됩니다.
+    /// 차지 조건을 만족했을 때 호출됩니다.
     /// </summary>
-    private void MinChargeFinish()
+    private void HandleChargeFinish(int previousTier, int currentTier)
     {
-        if(!_isCharged)
-        {
-            _isCharged = true;
-            p_context.Events.TriggerChargeFinish();
-        }
+        p_context.Events.TriggerChargeFinish(currentTier);
     }
 }
