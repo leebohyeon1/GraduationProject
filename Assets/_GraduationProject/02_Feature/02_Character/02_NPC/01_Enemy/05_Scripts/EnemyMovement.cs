@@ -99,13 +99,14 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
-        // 현재 상태가 Rush라면, 다른 노드가 중단되면서 호출하는 Stop 명령을 무시합니다.
         if (CurrentState == EnemyState.Rush || 
             CurrentState == EnemyState.Beam ||
             CurrentState == EnemyState.Stunned || 
             CurrentState == EnemyState.Die ||   
-            CurrentState == EnemyState.Attack)    
+            CurrentState == EnemyState.Attack)
         {
+            _runner.AnimationBool("Walk", false);
+            _runner.AnimationBool("Run", false);
             aIPath.enabled = false;
             return;
         }
@@ -115,8 +116,7 @@ public class EnemyMovement
         }
         if (rb != null)
         {
-            rb.linearVelocity = Vector3.zero; // Rigidbody의 속도를 0으로 설정하여 이동을 멈춥니다.
-            // rb.isKinematic = true; // Rigidbody를 Kinematic으로 설정하여 물리 효과를 비활성화
+            rb.linearVelocity = Vector3.zero; 
         }
         if (aIPath == null)
         {

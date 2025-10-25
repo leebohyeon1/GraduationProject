@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class EnemyTakeDmg : MonoBehaviour, IDamageable
 {
@@ -10,9 +12,13 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public event Action OnDied;
     int _maxHealth = 100;
     public int Maxhealth => _maxHealth;
-    
+    private CharacterController _characterController;
+    private Coroutine _KnockbackCoroutine;
+    [Header("Knockback Settings")]
+    [SerializeField] AnimationCurve _KnockbackCurve;
+    [SerializeField] float _KnockbackDuration = 0.5f;
     public bool IsInvincible => throw new NotImplementedException();
-
+    [SerializeField] float _KnockbackForce = 5f;
     Enemy _owner;
 
     public void TakeDamage(int amount)
@@ -50,25 +56,45 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         {
             _owner.SetState(Enemy.EnemyState.Hit);
         }
+        _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
-
+        Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+        knockbackDir.y = 0;
+        if(_KnockbackCoroutine != null)
+        {
+            StopCoroutine(_KnockbackCoroutine);
+        }
+        _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir));
         if (Health <= 0)
         {
             Health = 0;
             Die();
         }
     }
-
+    private IEnumerator KnockbackCoroutine(Vector3 direction)
+    {
+        float elapsedTime = 0;
+        while (elapsedTime < _KnockbackDuration)
+        {
+            float curveValue = _KnockbackCurve.Evaluate(elapsedTime / _KnockbackDuration);
+            Vector3 move = direction * _KnockbackForce * curveValue * Time.deltaTime;
+            _characterController.Move(move);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        _KnockbackCoroutine = null;
+    }
     public void InitializeHealth(int maxHealth, Enemy owner)
     {
         _owner = owner;
         MaxHealth = maxHealth;
         Health = maxHealth;
-        if(_owner.animator.GetBool("Die"))
+        if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
+        _characterController = _owner.GetComponent<CharacterController>();
     }
-    
+
     public void Die()
     {
         _owner.animator.SetBool("Die", true);
@@ -77,4 +103,5 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
     }
+    
 }
