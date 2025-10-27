@@ -108,6 +108,11 @@ public class PlayerChargeState : BaseState<Player>
     /// </summary>
     private void HandleChargeFinish(int previousTier, int currentTier)
     {
+        if (!_isCharged)
+        {
+            _isCharged = true;
+        }
+        
         p_context.Events.TriggerChargeFinish(currentTier);
     }
 }
