@@ -43,13 +43,11 @@ public class PlayerRangedChargeState : BaseState<Player>
             }
             else
             {
-                p_context.Events.TriggerRangedChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         }
         else if (p_context.Input.DodgeInput)
         {
-            p_context.Events.TriggerRangedChargeCancel();
             p_stateMachine.ChangeState<PlayerDodgeState>();
         }
 
@@ -62,6 +60,7 @@ public class PlayerRangedChargeState : BaseState<Player>
 
     public override void OnExit()
     {
+        p_context.Events.TriggerRangedChargeCancel();
         p_context.Animator.SetBool("IsRangedAttackCharging", false);
         p_context.Events.TriggerBattleStateChanged(true);
     }
