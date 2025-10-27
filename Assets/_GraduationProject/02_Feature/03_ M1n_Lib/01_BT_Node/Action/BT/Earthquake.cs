@@ -9,6 +9,7 @@ public class Earthquake : Node
     [SerializeField] float _maxRadius = 20f;
     [SerializeField] float _speed = 2f;
     [SerializeField] GameObject EarthquakeWave;
+    public string AnimationName = "ShockWave";
     public override Node Clone()
     {
         return Instantiate(this);
@@ -16,8 +17,7 @@ public class Earthquake : Node
     public override void OnEnter()
     {
         base.OnEnter();
-        runner.AnimationEvent("Attack");
-        Debug.Log("Earthquake OnEnter");
+        runner.AnimationEvent(AnimationName);
         runner.SetState(Enemy.EnemyState.Attack);
     }
     protected override NodeState OnUpdate()
