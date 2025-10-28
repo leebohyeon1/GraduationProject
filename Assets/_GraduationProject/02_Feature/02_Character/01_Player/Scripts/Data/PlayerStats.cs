@@ -223,11 +223,17 @@ public struct PlayerCombatData
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
     [Range(0f, 1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
-    public float DefendStaggerKnockbackDistance; // 방어 시 경직 임계값
+    public float DefendStaggerDuration; // 방어 시 경직 임계값
+    public float DefendKnockbackForce; // 방어 시 넉백 힘
+
+    [Space(10f)]
     public float LightStaggerDuration; // 약한 경직 시간
-    public float LightStaggerKnockbackDistance; // 약한 경직 이동 거리   
-    public float HeavyStaggerDuration; // 강한 경직 시간
-    public float HeavyStaggerKnockbackDistance; // 강한 경직 이동 거리
+    public float LightKnockbackForce; // 강한 경직 시간
+
+    // 강한 경직 시 적의 넉백 데이터 받음
+    //[Space(10f)]
+    //public float HeavyStaggerDuration; // 강한 경직 시간
+    //public float HeavyStaggerKnockbackDistance; // 강한 경직 이동 거리
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
@@ -242,7 +248,8 @@ public struct PlayerCombatData
 
     [Header("Parry")]
     public Vector3 ParryRadius; // 패링 범위
-    public float ParryMoveDistance; // 패링 성공 시 이동 거리   
+    public float ParryMoveDuration; // 패링 성공 시 이동 거리   
+    public float ParryMoveForce; // 패링 성공 시 이동 거리
 
     [Header("CounterAttack")]
     public float CounterAttackWindow; // 반격 가능 시간
@@ -259,18 +266,23 @@ public struct PlayerCombatData
             DodgeSpeed = DodgeSpeed,
             DodgeCooldown = DodgeCooldown,
             KnockbackCurve = KnockbackCurve,
+
             DefendDamageReductionRate = DefendDamageReductionRate,
-            DefendStaggerKnockbackDistance = DefendStaggerKnockbackDistance,
+            DefendStaggerDuration = DefendStaggerDuration,
+            DefendKnockbackForce = DefendKnockbackForce,
+
             LightStaggerDuration = LightStaggerDuration,
-            LightStaggerKnockbackDistance = LightStaggerKnockbackDistance,
-            HeavyStaggerDuration = HeavyStaggerDuration,
-            HeavyStaggerKnockbackDistance = HeavyStaggerKnockbackDistance,
+            LightKnockbackForce = LightKnockbackForce,
+
             AttackLayerMask = AttackLayerMask,
             LastAttackDelay = LastAttackDelay,
             ChargeAttackData = ChargeAttackData,
             RangedAttackData = RangedAttackData,
+            
             ParryRadius = ParryRadius,
-            ParryMoveDistance = ParryMoveDistance,
+            ParryMoveDuration = ParryMoveDuration,
+            ParryMoveForce = ParryMoveForce,
+            
             CounterAttackWindow = CounterAttackWindow
         };
 
@@ -318,7 +330,10 @@ public struct PlayerAttackData
     [Tooltip("공격 후 딜레이")]
     public float AttackDelay;
 
-
+    [Header("Knockback")]
+    public AnimationCurve KnockBackCurve;
+    public float KnockBackDuration;
+    public float KnockBackForce;
 }
 
 /// <summary>

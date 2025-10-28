@@ -10,6 +10,7 @@ using UnityEngine;
 public class PlayerHitState : BaseState<Player>
 {
     private float _hitDuration = 0.1f; // 피격 경직 시간
+    private float _hitForce = 0f;
     private float _hitTimer; // 피격 시간 타이머
 
     public PlayerHitState(Player context, StateMachine<Player> stateMachine) 
@@ -18,11 +19,12 @@ public class PlayerHitState : BaseState<Player>
     public override void OnEnter()
     {
         _hitDuration = p_context.Health.StiffnessDuration;
+        _hitForce = p_context.Health.KnockbackForce;
 
         // 피격 종류에 따라 다른 애니메이션 및 효과 재생
         if (p_context.Stats.IsHeavyHit)
         {
-            KnockbackMovement(p_context.Stats.CombatData.HeavyStaggerKnockbackDistance);
+            KnockbackMovement(_hitForce * _hitDuration);
             p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
         }
         else if(p_context.Stats.IsLightHit)
@@ -30,13 +32,13 @@ public class PlayerHitState : BaseState<Player>
            
             if (p_context.Stats.IsDefending)
             {
-                KnockbackMovement(p_context.Stats.CombatData.DefendStaggerKnockbackDistance);
+                KnockbackMovement(_hitForce * _hitDuration);
                 p_context.Animator.SetTrigger("DefendHit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Defend);
             }
             else
             {
-                KnockbackMovement(p_context.Stats.CombatData.LightStaggerKnockbackDistance);
+                KnockbackMovement(_hitForce * _hitDuration);
               
                 p_context.Animator.SetTrigger("Hit");
                 p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
@@ -96,7 +98,7 @@ public class PlayerHitState : BaseState<Player>
             },
             distance,
             _hitDuration)
-            .SetEase(p_context.Stats.CombatData.KnockbackCurve)
+            .SetEase(p_context.Health.DamageData.KnockbackCurve)
             .SetId(this)
             .SetUpdate(UpdateType.Fixed);
 
