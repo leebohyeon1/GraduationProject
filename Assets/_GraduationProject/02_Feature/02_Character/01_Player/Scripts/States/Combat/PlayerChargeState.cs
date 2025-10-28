@@ -86,7 +86,7 @@ public class PlayerChargeState : BaseState<Player>
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         }
-        else if(p_context.Input.DodgeInput)
+        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
         {
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
