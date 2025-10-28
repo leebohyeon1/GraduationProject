@@ -170,9 +170,19 @@ MonoBehaviour:
   AttackName: Attack
   damage: 3
   damageRadius: 3.5
-  attackOffset: {x: 0, y: 1, z: 4}
+  attackOffset: {x: 0, y: 1, z: 2}
   maintainAtk: 0
-  StiffenessAmount: 10
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
-  position: {x: 995, y: 589}
+  position: {x: 996, y: 589}
   checkName: RandomAtk
   cooldownDuration: 2.5
   successChance: 80
@@ -446,7 +456,17 @@ MonoBehaviour:
   damageRadius: 3.5
   attackOffset: {x: 0, y: 1, z: 4}
   maintainAtk: 0
-  StiffenessAmount: 10
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,6 +553,7 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC2DC "
   m_EditorClassIdentifier: 
   position: {x: 1023, y: -249}
+  viewAngle: 90
 --- !u!114 &5851155588711365391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,6 +629,7 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 457, y: 93}
+  viewAngle: 90
 --- !u!114 &6733767921067591588
 MonoBehaviour:
   m_ObjectHideFlags: 0
