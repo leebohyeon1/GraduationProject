@@ -96,7 +96,7 @@ public class PlayerHitState : BaseState<Player>
             },
             distance,
             _hitDuration)
-            .SetEase(Ease.OutQuart)
+            .SetEase(p_context.Stats.CombatData.KnockbackCurve)
             .SetId(this)
             .SetUpdate(UpdateType.Fixed);
 
