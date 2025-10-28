@@ -203,7 +203,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.93
+      value: -3.35
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
       propertyPath: m_LocalPosition.y
@@ -211,7 +211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -15.62
+      value: -20.85
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
       propertyPath: m_LocalRotation.w
@@ -467,6 +467,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 36797554}
+    - targetCorrespondingSourceObject: {fileID: -2269426126466299800, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2095667250}
   m_SourcePrefab: {fileID: 100100000, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
 --- !u!1 &36797552 stripped
 GameObject:
@@ -1377,10 +1380,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6502035142526053912, guid: 3d3543b031d3e1b468e3069e45713562, type: 3}
-      propertyPath: _onParry
-      value: 
-      objectReference: {fileID: 11400000, guid: f993c4aa500e70e49898de4271c196e4, type: 2}
     - target: {fileID: 7274864751189949029, guid: 3d3543b031d3e1b468e3069e45713562, type: 3}
       propertyPath: m_Name
       value: Player
@@ -10846,6 +10845,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efd0bd1cb7eaf6f4190d50955fa6f191, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BH_Lib.AssetManager.AssetManager
+--- !u!4 &1908249162 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2105772184958597038, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
+  m_PrefabInstance: {fileID: 36797551}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1909007920
 GameObject:
   m_ObjectHideFlags: 0
@@ -11758,6 +11762,81 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2088568331}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2095667248 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2269426126466299800, guid: f77b0890ca50fb34a84457f3af17c570, type: 3}
+  m_PrefabInstance: {fileID: 36797551}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2095667250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095667248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ac8d30c6a0d9642a11e5be4c440740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DynamicBone
+  m_Root: {fileID: 1908249162}
+  m_Roots: []
+  m_UpdateRate: 60
+  m_UpdateMode: 3
+  m_Damping: 0.7
+  m_DampingDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_Elasticity: 0.7
+  m_ElasticityDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_Stiffness: 0.7
+  m_StiffnessDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_Inert: 0
+  m_InertDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_Friction: 0
+  m_FrictionDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_Radius: 0
+  m_RadiusDistrib:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_EndLength: 0
+  m_EndOffset: {x: 0, y: 0, z: 0}
+  m_Gravity: {x: 0, y: 0, z: 0}
+  m_Force: {x: 0, y: 0, z: 0}
+  m_BlendWeight: 0.5
+  m_Colliders: []
+  m_Exclusions: []
+  m_FreezeAxis: 0
+  m_DistantDisable: 0
+  m_ReferenceObject: {fileID: 0}
+  m_DistanceToObject: 20
+  m_Multithread: 1
 --- !u!1001 &2124530112
 PrefabInstance:
   m_ObjectHideFlags: 0
