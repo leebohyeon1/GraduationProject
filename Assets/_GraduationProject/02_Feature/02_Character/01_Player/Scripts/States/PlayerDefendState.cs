@@ -94,7 +94,7 @@ public class PlayerDefendState : BaseState<Player>
                 p_context.Movement.ForceMove(displacement);
                 currentDistance = x;
             },
-            p_context.Stats.CombatData.ParryMoveDistance,
+            p_context.Stats.CombatData.ParryMoveForce * p_context.Stats.CombatData.ParryMoveDuration, 
             0.1f)
             .SetEase(p_context.Stats.CombatData.KnockbackCurve)
             .SetId(this)

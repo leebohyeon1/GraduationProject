@@ -14,6 +14,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private int _currentStiffness; // 현재 경직도
     private int _stiffnessThreshold = 100; // 경직 임계값
     private float _stiffnessDuration; // 경직 지속 시간
+    private float _knockbackForce; // 넉백 힘
     private DamageData _damageData; // 데미지 데이터
 
     public event Action<bool> OnInvisibleChanged; // 무적 상태 변경 이벤트
@@ -24,6 +25,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
     public int StiffnessThreshold => _stiffnessThreshold; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
+    public float KnockbackForce => _knockbackForce; // 넉백 힘 
 
     public int Health => _stats.CurrentHealth; // 현재 체력
     public int MaxHealth => _stats.MaxHealth; // 최대 체력
@@ -65,27 +67,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     }
 
     /// <summary>
-    /// 데미지를 받습니다. (경직도 없음)
-    /// </summary>
-    /// <param name="damageAmount">데미지 양</param>
-    public void TakeDamage(int damageAmount)
-    {
-        if (IsDead || IsInvincible) return;
-
-        if (_stats.IsDefending)
-        {
-            damageAmount = Mathf.RoundToInt(damageAmount * _stats.CombatData.DefendDamageReductionRate);
-        }
-
-        ChangeHealth(-damageAmount);
-
-        if (IsDead)
-        {
-            Die();
-        }
-    }
-
-    /// <summary>
     /// 데미지를 받습니다. (경직도 포함)
     /// </summary>
     /// <param name="damageAmount">데미지 양</param>
@@ -103,8 +84,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
         }
 
-        ChangeHealth(-damageAmount);
         AddStiffness(stiffenessAmount);
+        ChangeHealth(-damageAmount);
 
         if (IsDead)
         {
@@ -116,11 +97,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// 경직도를 추가하고 경직 상태를 결정합니다.
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
+    /// <param name="data">데미지 데이터</param>
     public void AddStiffness(int amount)
     {
         ChangeStiffness(amount);
 
-        if(_currentStiffness >= _stiffnessThreshold)
+        if (_currentStiffness >= _stiffnessThreshold)
         {
             ChangeStiffness(-_currentStiffness); // 경직도 초기화
             HeavyStagger(); // 강한 경직
@@ -144,8 +126,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void LightStagger()
     {
-        _stiffnessDuration = _stats.CombatData.LightStaggerDuration;
-        _stats.SetDamagedType(PlayerDamagedType.Normal);
+        _damageData.KnockbackCurve = _stats.CombatData.KnockbackCurve;
+
+        if (_stats.IsDefending)
+        {
+            _stiffnessDuration = _stats.CombatData.DefendStaggerDuration;
+            _knockbackForce = _stats.CombatData.DefendKnockbackForce;
+        }
+        else
+        {
+            _stiffnessDuration = _stats.CombatData.LightStaggerDuration;
+            _knockbackForce = _stats.CombatData.LightKnockbackForce;
+            _stats.SetDamagedType(PlayerDamagedType.Normal);
+        }
     }
 
     /// <summary>
@@ -153,7 +146,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void HeavyStagger()
     {
-        _stiffnessDuration = _stats.CombatData.HeavyStaggerDuration;
+        _stiffnessDuration = DamageData.KnockbackDuration;
+        _knockbackForce = DamageData.KnockbackForce;
         _stats.SetDamagedType(PlayerDamagedType.Strong);
     }
 
@@ -191,7 +185,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         if(_stats.IsOverHeat && !_stats.SkillData.IsMaxLevelBoost)
         {
-            TakeDamage(damage);
+            TakeDamage(damage, 0, new DamageData(0, transform));
         }
     }
 
