@@ -4,7 +4,7 @@ using BehaviorTree;
 public class SetAbility : Node
 {
     public bool Ability;
-
+    
     public override Node Clone()
     {
         SetAbility node = ScriptableObject.CreateInstance<SetAbility>();
@@ -16,6 +16,8 @@ public class SetAbility : Node
     {
         Debug.Log("Set Ability Node: " + Ability);
         runner.specialAbility.SetAbility(Ability);
+        runner.EnemyHealth.SetKnockbackable(false);
+
     }
 
     protected override NodeState OnUpdate()

@@ -99,14 +99,19 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
+        _runner.AnimationBool("Walk", false);
+        _runner.AnimationBool("Run", false);
+        aIPath.SetPath(null);
+        aIPath.enableRotation = true;
+        aIPath.isStopped = true;
+        
         if (CurrentState == EnemyState.Rush || 
             CurrentState == EnemyState.Beam ||
             CurrentState == EnemyState.Stunned || 
             CurrentState == EnemyState.Die ||   
             CurrentState == EnemyState.Attack)
         {
-            _runner.AnimationBool("Walk", false);
-            _runner.AnimationBool("Run", false);
+
             aIPath.enabled = false;
             return;
         }
@@ -122,12 +127,6 @@ public class EnemyMovement
         {
             return;
         }
-        _runner.AnimationBool("Walk", false);
-        _runner.AnimationBool("Run", false);
-        aIPath.enableRotation = true;
-        
 
-        aIPath.isStopped = true;
-        aIPath.SetPath(null);
     }
 }

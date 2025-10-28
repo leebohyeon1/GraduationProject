@@ -47,7 +47,11 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
     }
-
+    public bool Knockbackable { get; private set; } = true;
+    public void SetKnockbackable(bool value)
+    {
+        Knockbackable = value;
+    }
     public void TakeDamage(int amount, int heatTier, DamageData damageData)
     {
         if (Health <= 0) return;
@@ -59,13 +63,16 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
-        Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
-        knockbackDir.y = 0;
-        if(_KnockbackCoroutine != null)
+        if (Knockbackable)
         {
-            StopCoroutine(_KnockbackCoroutine);
+            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+            knockbackDir.y = 0;
+            if(_KnockbackCoroutine != null)
+            {
+                StopCoroutine(_KnockbackCoroutine);
+            }
+            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir));
         }
-        _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir));
         if (Health <= 0)
         {
             Health = 0;
@@ -93,6 +100,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
+        SetKnockbackable(true);
     }
 
     public void Die()
