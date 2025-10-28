@@ -21,24 +21,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     [SerializeField] float _KnockbackForce = 5f;
     Enemy _owner;
 
-    public void TakeDamage(int amount)
-    {
-        if (Health <= 0) return;
-        _owner.groupAi.CombatAll();
-        if (!_owner._aiController.IsActionable())
-        {
-            _owner.SetState(Enemy.EnemyState.Hit);
-        }
-        Health -= amount;
-        _owner.animHandler.PlayFeedback("Damage_FB");
-        Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
 
-        if (Health <= 0)
-        {
-            Health = 0;
-            Die();
-        }
-    }
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)
@@ -47,7 +30,11 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
     }
-
+    public bool Knockbackable { get; private set; } = true;
+    public void SetKnockbackable(bool value)
+    {
+        Knockbackable = value;
+    }
     public void TakeDamage(int amount, int heatTier, DamageData damageData)
     {
         if (Health <= 0) return;
@@ -59,26 +46,29 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
         Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
-        Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
-        knockbackDir.y = 0;
-        if(_KnockbackCoroutine != null)
+        if (Knockbackable)
         {
-            StopCoroutine(_KnockbackCoroutine);
+            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+            knockbackDir.y = 0;
+            if(_KnockbackCoroutine != null)
+            {
+                StopCoroutine(_KnockbackCoroutine);
+            }
+            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }
-        _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir));
         if (Health <= 0)
         {
             Health = 0;
             Die();
         }
     }
-    private IEnumerator KnockbackCoroutine(Vector3 direction)
+    private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
     {
         float elapsedTime = 0;
-        while (elapsedTime < _KnockbackDuration)
+        while (elapsedTime < damageData.KnockbackDuration)
         {
-            float curveValue = _KnockbackCurve.Evaluate(elapsedTime / _KnockbackDuration);
-            Vector3 move = direction * _KnockbackForce * curveValue * Time.deltaTime;
+            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
+            Vector3 move = direction * damageData.KnockbackForce * curveValue * Time.deltaTime;
             _characterController.Move(move);
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -93,6 +83,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
+        SetKnockbackable(true);
     }
 
     public void Die()
