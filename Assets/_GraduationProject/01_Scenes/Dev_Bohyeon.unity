@@ -638,6 +638,17 @@ MonoBehaviour:
   LockTimer: 2
   <ActorType>k__BackingField: 1
   _overheatTime: 2
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &36797562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2020,6 +2031,17 @@ MonoBehaviour:
   LockTimer: 2
   <ActorType>k__BackingField: 1
   _overheatTime: 2
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &213220100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8363,12 +8385,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84f182e224e97914e8c79672592fa36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHpUI
-  _playerHealth: {fileID: 0}
+  _playerHealth: {fileID: 1551558027}
   _hpImage:
-  - {fileID: 2002782423}
-  - {fileID: 1763263119}
-  - {fileID: 103310883}
   - {fileID: 347481086}
+  - {fileID: 103310883}
+  - {fileID: 1763263119}
+  - {fileID: 2002782423}
 --- !u!1 &1370644101
 GameObject:
   m_ObjectHideFlags: 0
@@ -9947,6 +9969,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 957fd9c059c30e1409fd5f0d8c141e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMana
+--- !u!114 &1551558027 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3259499344088917303, guid: 3d3543b031d3e1b468e3069e45713562, type: 3}
+  m_PrefabInstance: {fileID: 149703577}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123385718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b45b375080cdc4a9f205fcc9ef087e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
 --- !u!1 &1573899579
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,17 +22,14 @@ public class PlayerHpUI : MonoBehaviour
 
         for(int i = 0; i < _hpImage.Length; i++)
         {
-            if (Mathf.RoundToInt(i + 1/_hpImage.Length) < Mathf.RoundToInt(currentHp/_playerHealth.MaxHealth))
-            {
-                _hpImage[i].SetActive(false);
-            }
-            else
+            if ((float)(i) / _hpImage.Length < (float)currentHp /_playerHealth.MaxHealth)
             {
                 _hpImage[i].SetActive(true);
             }
+            else
+            {
+                _hpImage[i].SetActive(false);
+            }
         }
-
-
-        Log.Print( "Ã¼·Â" + Mathf.RoundToInt(currentHp/ _playerHealth.MaxHealth));
     }
 }
