@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC2DC\uC57C (Clone)"
   m_EditorClassIdentifier: 
   position: {x: 1020, y: -320}
+  viewAngle: 90
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +163,35 @@ MonoBehaviour:
   attackOffset: {x: 0, y: 1, z: 4}
   maintainAtk: 0
   StiffenessAmount: 50
+  damageData:
+    StiffnessAmount: 5
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -0.99996567
+        outSlope: -0.99996567
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0.000034332275
+        inSlope: -0.99996567
+        outSlope: -0.99996567
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0.5
+    KnockbackForce: 8
 --- !u!114 &1249779483165729958
 MonoBehaviour:
   m_ObjectHideFlags: 0

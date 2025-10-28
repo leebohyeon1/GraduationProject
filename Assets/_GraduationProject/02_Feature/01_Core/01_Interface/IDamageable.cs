@@ -53,10 +53,15 @@ public struct DamageData
 {
     public int StiffnessAmount;
     public Transform AttackerTransform;
-
-    public DamageData( int stiffnessAmount, Transform attackerTransform)
+    public AnimationCurve KnockbackCurve;
+    public float KnockbackDuration;
+    public float KnockbackForce;
+    public DamageData( int stiffnessAmount, Transform attackerTransform, AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f)
     {
         StiffnessAmount = stiffnessAmount;
         AttackerTransform = attackerTransform;
+        KnockbackCurve = knockbackCurve;
+        KnockbackDuration = knockbackDuration;
+        KnockbackForce = knockbackForce;
     }
 }

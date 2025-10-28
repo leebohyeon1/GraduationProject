@@ -15,15 +15,12 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
-    [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
     bool parryEffectPlayed = false;
-    AIPath aIPath;
+    public DamageData damageData;
     public override void OnEnter()
     {
-        aIPath = runner.GetComponent<AIPath>();
-        // 1. Enemy의 범용 플래그들을 리셋합니다.
         Handler.ResetAllFlags();
         _didHitPlayer = false;
         parryEffectPlayed = false;  
@@ -31,14 +28,14 @@ public class GenericAttackNode : Node
         runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
         // aIPath.enableRotation = false;
-        
+        damageData.AttackerTransform = runner.transform;
         runner.AnimationEvent(AttackName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
         stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
         initNode();
-        runner.SetStiffness(StiffenessAmount);
+        runner.SetStiffness(damageData.StiffnessAmount);
     }
 
     protected override NodeState OnUpdate()
@@ -72,13 +69,11 @@ public class GenericAttackNode : Node
                     SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                     heatable.ChangeHeat(deltaHeat);
-                    Debug.Log($"{damage} damage {stat.FinalDamage} finalDmg,  Tier{runner.heatSystem.GetTier()}");
                 }
 
                 if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage(stat.FinalDamage, 0, new DamageData(StiffenessAmount, runner.transform));
-                    // Character.TakeDamage(stat.FinalDamage);
+                    Character.TakeDamage(stat.FinalDamage, runner.heatSystem.GetTier(), damageData);
 
                     _didHitPlayer = true;
                     if (!maintainAtk)

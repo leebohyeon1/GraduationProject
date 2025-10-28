@@ -71,7 +71,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             {
                 StopCoroutine(_KnockbackCoroutine);
             }
-            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir));
+            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }
         if (Health <= 0)
         {
@@ -79,13 +79,13 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             Die();
         }
     }
-    private IEnumerator KnockbackCoroutine(Vector3 direction)
+    private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
     {
         float elapsedTime = 0;
-        while (elapsedTime < _KnockbackDuration)
+        while (elapsedTime < damageData.KnockbackDuration)
         {
-            float curveValue = _KnockbackCurve.Evaluate(elapsedTime / _KnockbackDuration);
-            Vector3 move = direction * _KnockbackForce * curveValue * Time.deltaTime;
+            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
+            Vector3 move = direction * damageData.KnockbackForce * curveValue * Time.deltaTime;
             _characterController.Move(move);
             elapsedTime += Time.deltaTime;
             yield return null;

@@ -53,7 +53,9 @@ public class DonutWave : MonoBehaviour
                 if (distanceToCenter >= worldInnerRadius)
                 {
                     // ToDo: 데미지 하드코딩 되어있음. 추후 수정 필요.
-                    player.TakeDamage(5); // 데미지 주기 (공격자 정보가 없으므로 null 전달)
+                    // player.TakeDamage(5); // 데미지 주기 (공격자 정보가 없으므로 null 전달)
+                    player.TakeDamage( 5,0, new DamageData(20, transform));
+
                     Debug.Log("Player Hit by DonutWave");
                     _hitColliders.Add(hit); //중복 공격 방지
                 }

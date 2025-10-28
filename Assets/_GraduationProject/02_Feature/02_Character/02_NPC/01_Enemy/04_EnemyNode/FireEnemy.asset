@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b984ef8c8b96f344959c5cc4c3fd456, type: 3}
   m_Name: Ability Bool
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBool
-  position: {x: 1305, y: -508}
+  position: {x: 1303, y: -431}
   Ability: 1
 --- !u!114 &-4753666918269421874
 MonoBehaviour:
@@ -481,7 +481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: RunawayToPlayer
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1118, y: -207}
+  position: {x: 1122, y: -260}
   nodes:
   - {fileID: 3713734425821449763}
   - {fileID: -1338340550000061126}
@@ -497,8 +497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52825fa9ae0ff0149967eb06cd58f356, type: 3}
   m_Name: Maintain Distance
   m_EditorClassIdentifier: Assembly-CSharp::MaintainDistance
-  position: {x: 1306, y: -207}
-  targetDistance: 8
+  position: {x: 1310, y: -260}
+  targetDistance: 12
   predictionTime: 0.5
   acceptanceRadius: 0.5
   RunSpeed: 7
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
   position: {x: 1305, y: -739}
-  minDistance: 7
+  minDistance: 10
   maxDistance: 20
 --- !u!114 &771837084432251439
 MonoBehaviour:
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
   m_Name: Stop Movement
   m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: 1305, y: -431}
+  position: {x: 1303, y: -585}
   juststop: 1
 --- !u!114 &1310698430826977512
 MonoBehaviour:
@@ -612,7 +612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
   m_Name: Animation Node
   m_EditorClassIdentifier: Assembly-CSharp::AnimationNode
-  position: {x: 1305, y: -585}
+  position: {x: 1303, y: -508}
   animationName: Anchor
   animationBool: 1
   enemyUseAnything: {fileID: 11400000, guid: 84cea14408442c64d9794a5b97f51ec7, type: 2}
@@ -711,7 +711,22 @@ MonoBehaviour:
   position: {x: 722, y: 230}
   nodes:
   - {fileID: -6046396257137404989}
+  - {fileID: 3155464616264379885}
   - {fileID: -2495515150341944186}
+--- !u!114 &3155464616264379885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
+  m_Name: Stop Movement
+  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
+  position: {x: 931, y: 112}
+  juststop: 1
 --- !u!114 &3190198380513302506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -765,7 +780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
-  position: {x: 1305, y: -284}
+  position: {x: 1309, y: -337}
   minDistance: 0
   maxDistance: 14
 --- !u!114 &4887522364135060110
@@ -1058,9 +1073,9 @@ MonoBehaviour:
   nodes:
   - {fileID: 671180339977474040}
   - {fileID: -6558497616718985206}
+  - {fileID: 1293369529446151032}
   - {fileID: 1921429767443403384}
   - {fileID: -5050252605814469623}
-  - {fileID: 1293369529446151032}
 --- !u!114 &8097750573212284376
 MonoBehaviour:
   m_ObjectHideFlags: 0
