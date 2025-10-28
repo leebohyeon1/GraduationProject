@@ -51,7 +51,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
     {
         SetParryable("false");
         Debug.Log(_owner.name + " was parried by " + parryInstigator.name);
-        _owner.StiffnessSystem.AddStiffness(_owner.CurrentStiffness);
+        _owner.StiffnessSystem.AddStiffness(50);
         IsParry = true;
         return true;
     }
