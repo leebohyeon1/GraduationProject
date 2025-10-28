@@ -4,8 +4,7 @@ using BehaviorTree;
 [CreateAssetMenu(fileName = "CanSeePlayer_Condition", menuName = "BehaviorTree/Condition/CanSeePlayer")]
 public class Condition_CanSeePlayer : ConditionNode
 {
-    // 이 데코레이터의 CheckCondition 함수는 
-    // "플레이어가 시야각과 탐지 범위 안에 있는가?"를 검사합니다.
+    public float viewAngle = 90f;
     protected override bool CheckCondition()
     {
         if (runner == null || runner.player == null)
@@ -17,7 +16,7 @@ public class Condition_CanSeePlayer : ConditionNode
 
         // 2. 적의 시야각(예: 90도) 안에 플레이어가 있는지 확인
         // runner.DetectionAngle 같은 변수가 Enemy.cs에 추가되어야 합니다.
-        if (Vector3.Angle(runner.transform.forward, toPlayer.normalized) > 90 * 0.5f)
+        if (Vector3.Angle(runner.transform.forward, toPlayer.normalized) > viewAngle * 0.5f)
         {
             return false;
         }

@@ -173,6 +173,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void Die()
     {
         OnDied?.Invoke();
+        gameObject.SetActive(false);
     }
 
     /// <summary>

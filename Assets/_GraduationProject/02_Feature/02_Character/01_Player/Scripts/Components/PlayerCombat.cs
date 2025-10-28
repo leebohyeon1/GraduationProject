@@ -270,7 +270,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
 
             if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
             {
-                damageable.TakeDamage(attackData.AttackDamage);
+                damageable.TakeDamage(attackData.AttackDamage,0, new DamageData(0, transform));
             }
         }
     }

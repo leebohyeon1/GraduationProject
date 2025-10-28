@@ -3,23 +3,42 @@ using BehaviorTree;
 public class AnimationNode : Node
 {
     public string animationName;
+    public enum AnimationType
+    {
+        Trigger,
+        True,
+        False
+    }
 
-
+    public AnimationType animationBool = AnimationType.Trigger;
+    public EnemyUseAnything enemyUseAnything;
     public override Node Clone()
     {
         AnimationNode node = ScriptableObject.CreateInstance<AnimationNode>();
         node.animationName = animationName;
+        node.animationBool = animationBool;
+        node.enemyUseAnything = enemyUseAnything;
         return node;
     }
     public override void OnEnter()
     {
+        enemyUseAnything?.OnEnter(runner);
+
         runner.Movement.StopMovement();
-        runner.AnimationEvent(animationName);
+        if(animationBool != AnimationType.Trigger)
+        {
+            runner.animator.SetBool(animationName, animationBool == AnimationType.True);
+        }
+        else
+        {
+            runner.AnimationEvent(animationName);
+        }
     }
 
     protected override NodeState OnUpdate()
     {
         Animator animator = runner.animator;
+        enemyUseAnything?.OnUpdate(runner);
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
         {
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f)
