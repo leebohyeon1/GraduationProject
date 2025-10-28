@@ -23,11 +23,6 @@ public interface IDamageable
     /// </summary>
     public bool IsInvincible { get; }  
 
-    /// <summary>
-    /// 피해를 받는 함수
-    /// </summary>
-    /// <param name="damageAmount">피해량</param>
-    public void TakeDamage(int damageAmount);
 
     /// <summary>
     /// 피해를 받는 함수

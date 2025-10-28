@@ -21,24 +21,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     [SerializeField] float _KnockbackForce = 5f;
     Enemy _owner;
 
-    public void TakeDamage(int amount)
-    {
-        if (Health <= 0) return;
-        _owner.groupAi.CombatAll();
-        if (!_owner._aiController.IsActionable())
-        {
-            _owner.SetState(Enemy.EnemyState.Hit);
-        }
-        Health -= amount;
-        _owner.animHandler.PlayFeedback("Damage_FB");
-        Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
 
-        if (Health <= 0)
-        {
-            Health = 0;
-            Die();
-        }
-    }
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)
