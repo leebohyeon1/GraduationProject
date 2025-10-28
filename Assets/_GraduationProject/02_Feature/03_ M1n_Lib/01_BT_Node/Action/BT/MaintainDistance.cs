@@ -95,7 +95,12 @@ public class MaintainDistance : Node
     {
         runner.Movement.StopMovement();
         aiPath.enableRotation = true;
-        runner.Movement.StartOrUpdateChase(runner.player.transform.position);
+        runner.SetState(Enemy.EnemyState.Idle);
+    }
+    public override void Abort()
+    {
+        runner.Movement.StopMovement();
+        aiPath.enableRotation = true;
         runner.SetState(Enemy.EnemyState.Idle);
     }
 }

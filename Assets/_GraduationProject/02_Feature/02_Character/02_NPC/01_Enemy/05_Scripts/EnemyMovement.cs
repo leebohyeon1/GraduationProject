@@ -87,7 +87,6 @@ public class EnemyMovement
         aIPath.enabled = true;
         CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
         aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
-        Debug.Log($"normal Speed: {_normalSpeed}, Tier Speed Mult: {stat.FinalSpeed}");
         aIPath.destination = newTarget;
         aIPath.isStopped = false;
     }
@@ -99,14 +98,20 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
+        Debug.Log("Stopping Movement");
+        aIPath.SetPath(null);
+        _runner.AnimationBool("Walk", false);
+        _runner.AnimationBool("Run", false);
+        aIPath.enableRotation = true;
+        aIPath.isStopped = true;
+        
         if (CurrentState == EnemyState.Rush || 
             CurrentState == EnemyState.Beam ||
             CurrentState == EnemyState.Stunned || 
             CurrentState == EnemyState.Die ||   
             CurrentState == EnemyState.Attack)
         {
-            _runner.AnimationBool("Walk", false);
-            _runner.AnimationBool("Run", false);
+
             aIPath.enabled = false;
             return;
         }
@@ -122,12 +127,6 @@ public class EnemyMovement
         {
             return;
         }
-        _runner.AnimationBool("Walk", false);
-        _runner.AnimationBool("Run", false);
-        aIPath.enableRotation = true;
-        
 
-        aIPath.isStopped = true;
-        aIPath.SetPath(null);
     }
 }
