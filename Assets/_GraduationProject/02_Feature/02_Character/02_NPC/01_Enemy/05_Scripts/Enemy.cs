@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
     {
         player = GameObject.FindFirstObjectByType<Player>();
         BillboardUI = GetComponentInChildren<BillboardUI>();
-        BillboardUI.Initialize();
+        BillboardUI?.Initialize();
         animator = GetComponent<Animator>();
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
