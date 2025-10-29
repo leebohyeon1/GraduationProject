@@ -50,8 +50,8 @@ public class PlayerHitState : BaseState<Player>
         _hitTimer = 0f;
 
         p_context.Events.TriggerBattleStateChanged(true);
+        p_context.Heat.TriggerChargeGuageChanged(0f);
 
-  
     }
 
     public override void OnUpdate()

@@ -86,8 +86,9 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action OnParryPerform; // 패링 수행 이벤트
     public event Action<Collider> OnParryAffect; // 패링 성공 이벤트
-    public event Action<Collider> OnFirstCounterAttackAffect; // 첫 번째 카운터 공격 피격 이벤트
-    public event Action<Collider> OnSecondCounterAttackAffect; // 두 번째 카운터 공격 피격 이벤트
+    public event Action<Collider> OnFirstCounterAttackAffect;
+    public event Action OnFirstCounterAttackExplosion; // 첫 번째 카운터 공격 피격 이벤트
+    public event Action<Collider> OnSecondCounterAttackAffect, OnSecondCounterAttackExplosion; // 두 번째 카운터 공격 피격 이벤트
 
     public event Action OnTier1Up, OnTier2Up, OnTier3Up, OnOverHeatStart; // 티어 상승, 과열 시작 이벤트
     public event Action OnTier1Down, OnTier2Down, OnTier3Down, OnOverHeatFinish; // 티어 하락, 과열 종료 이벤트
@@ -402,17 +403,17 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 첫 번째 카운터 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    public void TriggerFirstCounterAttackAffect(Collider collider, int tier)
+    public void TriggerFirstCounterAttackAffect(Collider collider)
     {
         OnFirstCounterAttackAffect?.Invoke(collider);
 
-        switch (tier)
-        {
-            case 1: PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, collider.transform.position); break;
-            case 2: PlayFeedback(PlayerFeedbackType.Tier2CounterAttackFirstHit_FB, collider.transform.position); break;
-            case 3: PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, collider.transform.position); break;
-        }
     }
+
+    public void TriggerFirstCounterAttackExplosion()
+    {
+        OnFirstCounterAttackExplosion?.Invoke();
+    }
+
 
     /// <summary>
     /// 두 번째 카운터 공격 시작 피드백을 재생합니다.
