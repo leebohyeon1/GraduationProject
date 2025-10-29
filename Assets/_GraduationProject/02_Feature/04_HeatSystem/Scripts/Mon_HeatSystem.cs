@@ -4,13 +4,13 @@ public class Monster_HeatSystem : HeatSystem
     private Enemy _enemy;
     [SerializeField] private int _overheatTime = 2;
     public bool IsOverHeat { get; private set; }
-    public DamageData damageData;
+    private DamageData damageData;
     public override void ChangeHeat(int amount)
     {
         base.ChangeHeat(amount);
         if (!_enemy.HealthBar)
         {
-            _enemy.BillboardUI.SetHealthBar(MaxHeat, CurrentHeat);
+            _enemy.BillboardUI.SetHealthBar(MaxHeat, p_currentHeat);
         }
     }
     protected override void OverHeat()
@@ -28,7 +28,14 @@ public class Monster_HeatSystem : HeatSystem
     public override void Init(ActorType actorType)
     {
         base.Init(actorType);
-        
+        damageData = new DamageData
+        {
+            StiffnessAmount = 0,
+            AttackerTransform = this.transform,
+            KnockbackCurve = AnimationCurve.Linear(0, 1, 1, 0),
+            KnockbackDuration = 0,
+            KnockbackForce = 0
+        };
         _enemy = GetComponent<Enemy>();
     }
 }

@@ -344,11 +344,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2213134092884944865, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
     - target: {fileID: 2837065262812316061, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2837065262812316061, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2850821918892655540, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2850821918892655540, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
@@ -2116,9 +2128,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1719527365681800889, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+      propertyPath: _maxHeat
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4420075098758782216, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
       propertyPath: m_Name
       value: Punch 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9195678753124876022, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+      propertyPath: HealthBar
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3799,6 +3819,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &885149915 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 938913517464650388, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+  m_PrefabInstance: {fileID: 858171439367372315}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &933834766
 GameObject:
   m_ObjectHideFlags: 0
@@ -4075,28 +4106,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1158662138288912434, guid: 0ce2d9121c877d645b452e0e635e62e6, type: 3}
   m_PrefabInstance: {fileID: 5575200776413201248}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &985284231 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4410393892908848465, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
-  m_PrefabInstance: {fileID: 858171439367372315}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &985284232 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1690190899477653304, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
   m_PrefabInstance: {fileID: 858171439367372315}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &985284236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985284231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84a4bed9139f15840b2c1aa3a63856c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1 &1009823308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5178,6 +5192,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456035152}
   m_CullTransparentMesh: 1
+--- !u!114 &1463737124 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6713034432117782544, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+  m_PrefabInstance: {fileID: 858171439367372315}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &1496638718
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,17 +5942,6 @@ MonoBehaviour:
   LockTimer: 2
   <ActorType>k__BackingField: 1
   _overheatTime: 2
-  damageData:
-    StiffnessAmount: 0
-    AttackerTransform: {fileID: 0}
-    KnockbackCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
 --- !u!1 &329893310984249053
 GameObject:
   m_ObjectHideFlags: 0
@@ -5987,6 +6001,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 455306470}
     m_Modifications:
+    - target: {fileID: 1094958587275838268, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: damageDelay
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1094958587275838268, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: damageSlider
+      value: 
+      objectReference: {fileID: 1463737124}
+    - target: {fileID: 1094958587275838268, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: healthSlider
+      value: 
+      objectReference: {fileID: 885149915}
+    - target: {fileID: 1094958587275838268, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: damageTweenDuration
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 1690190899477653304, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6079,9 +6109,13 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2958284224541732742, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
-      propertyPath: m_TargetGraphic
-      value: 
+    - target: {fileID: 2850821918892655540, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2850821918892655540, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4410393892908848465, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
       propertyPath: m_Name
@@ -6090,10 +6124,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4410393892908848465, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 985284236}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
 --- !u!1 &898049529971164174
 GameObject:
@@ -6672,6 +6703,7 @@ MonoBehaviour:
   MaxHealth: 100
   _normalSpeed: 2
   LaunchPoint: {fileID: 0}
+  HealthBar: 0
   _currentAttackRadius: 0
   _currentAttackOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &5425805248381078503
@@ -7704,6 +7736,10 @@ PrefabInstance:
     - target: {fileID: 7381576245482550553, guid: 71bb32572fd5b84498ca18b33d7362a1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 104.5739
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405386998860015963, guid: 71bb32572fd5b84498ca18b33d7362a1, type: 3}
+      propertyPath: HealthBar
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7822792826267595115, guid: 71bb32572fd5b84498ca18b33d7362a1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
