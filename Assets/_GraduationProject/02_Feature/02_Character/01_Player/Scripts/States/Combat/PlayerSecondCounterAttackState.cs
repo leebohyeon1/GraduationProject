@@ -50,7 +50,6 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // 전방에 장애물이 있으면 이동 거리 조정
         Collider playerCollider = p_context.GetComponent<Collider>();
 
         // 전방에 장애물이 있으면 이동 거리 조정
