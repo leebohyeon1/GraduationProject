@@ -91,8 +91,9 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             p_context.Events.TriggerChargeAttackAffect(collider);
         }
 
-        p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Heat.ChangeHeat(-Mathf.FloorToInt(p_context.Heat.CurrentChargeGuage));
+        p_context.Heat.TriggerChargeGuageChanged(0f);
+
     }
 
     /// <summary>
