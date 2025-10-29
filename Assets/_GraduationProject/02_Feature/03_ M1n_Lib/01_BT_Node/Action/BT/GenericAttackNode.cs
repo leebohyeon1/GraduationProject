@@ -15,28 +15,26 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
-    [SerializeField] private int StiffenessAmount = 10;
     CalculationResult stat;
     bool tracking = false;
-    AIPath aIPath;
+    bool parryEffectPlayed = false;
+    public DamageData damageData;
     public override void OnEnter()
     {
-        aIPath = runner.GetComponent<AIPath>();
-        // 1. Enemy의 범용 플래그들을 리셋합니다.
         Handler.ResetAllFlags();
         _didHitPlayer = false;
+        parryEffectPlayed = false;  
         // runner.Movement.StartOrUpdateChase(runner.player.transform.position);
-        runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
         // aIPath.enableRotation = false;
-        
+        damageData.AttackerTransform = runner.transform;
         runner.AnimationEvent(AttackName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
         stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
         initNode();
-        runner.SetStiffness(StiffenessAmount);
+        runner.SetStiffness(damageData.StiffnessAmount);
     }
 
     protected override NodeState OnUpdate()
@@ -56,28 +54,27 @@ public class GenericAttackNode : Node
         if (Handler.IsHitWindowOpen)
         {
             tracking = true;
+            runner.SetState(Enemy.EnemyState.Attack);
         }
-        
+
         if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
         {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
             {
-                if(col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
+                if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
                 if (col.TryGetComponent<IHeatable>(out IHeatable heatable))
                 {
                     stat = runner.heatSystem.CalculationHeat(AttackName, heatable.ActorType, runner.heatSystem.GetTier(), damage);
                     SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
                     int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
                     heatable.ChangeHeat(deltaHeat);
-                    Debug.Log($"{damage} damage {stat.FinalDamage} finalDmg,  Tier{runner.heatSystem.GetTier()}");
                 }
 
-               if (col.TryGetComponent<IDamageable>(out IDamageable Character))
+                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage(stat.FinalDamage, 0,new DamageData(StiffenessAmount, runner.transform));
-                     // Character.TakeDamage(stat.FinalDamage);
-                    
+                    Character.TakeDamage(stat.FinalDamage, runner.heatSystem.GetTier(), damageData);
+
                     _didHitPlayer = true;
                     if (!maintainAtk)
                     {
@@ -85,7 +82,14 @@ public class GenericAttackNode : Node
                     }
                 }
             }
-            
+
+        }
+        
+        if(Handler.IsHitWindowOpen && runner.ParrySystem.IsParry && !parryEffectPlayed)
+        {
+            Handler.CloseHitWindow();
+            runner.ParrySystem.OnParry.Publish(true);
+            parryEffectPlayed = true;   
         }
 
         if (Handler.IsActionFinished)
@@ -110,11 +114,12 @@ public class GenericAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
-        // runner.Movement.StopMovement();
-        // Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
-        // directionToPlayer.y = 0;
         
-        // runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        if(runner.ParrySystem.IsParry && !parryEffectPlayed)
+        {
+            runner.ParrySystem.OnParry.Publish(true);
+            parryEffectPlayed = true;   
+        }
     }
 
     public override Node Clone()

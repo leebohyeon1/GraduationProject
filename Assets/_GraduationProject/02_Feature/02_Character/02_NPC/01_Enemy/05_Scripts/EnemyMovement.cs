@@ -87,7 +87,6 @@ public class EnemyMovement
         aIPath.enabled = true;
         CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
         aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
-        Debug.Log($"normal Speed: {_normalSpeed}, Tier Speed Mult: {stat.FinalSpeed}");
         aIPath.destination = newTarget;
         aIPath.isStopped = false;
     }
@@ -99,13 +98,20 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
-        // 현재 상태가 Rush라면, 다른 노드가 중단되면서 호출하는 Stop 명령을 무시합니다.
+        Debug.Log("Stopping Movement");
+        aIPath.SetPath(null);
+        _runner.AnimationBool("Walk", false);
+        _runner.AnimationBool("Run", false);
+        aIPath.enableRotation = true;
+        aIPath.isStopped = true;
+        
         if (CurrentState == EnemyState.Rush || 
             CurrentState == EnemyState.Beam ||
             CurrentState == EnemyState.Stunned || 
             CurrentState == EnemyState.Die ||   
-            CurrentState == EnemyState.Attack)    
+            CurrentState == EnemyState.Attack)
         {
+
             aIPath.enabled = false;
             return;
         }
@@ -115,19 +121,12 @@ public class EnemyMovement
         }
         if (rb != null)
         {
-            rb.linearVelocity = Vector3.zero; // Rigidbody의 속도를 0으로 설정하여 이동을 멈춥니다.
-            // rb.isKinematic = true; // Rigidbody를 Kinematic으로 설정하여 물리 효과를 비활성화
+            rb.linearVelocity = Vector3.zero; 
         }
         if (aIPath == null)
         {
             return;
         }
-        _runner.AnimationBool("Walk", false);
-        _runner.AnimationBool("Run", false);
-        aIPath.enableRotation = true;
-        
 
-        aIPath.isStopped = true;
-        aIPath.SetPath(null);
     }
 }

@@ -51,9 +51,14 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
         float distance = p_AttackData.AttackMoveDistance;
 
         // 전방에 장애물이 있으면 이동 거리 조정
-        if (Physics.Raycast(p_context.transform.position, -p_context.transform.forward,
-            out var hitInfo, p_AttackData.AttackMoveDistance, 
-            p_context.Stats.CombatData.AttackLayerMask & p_context.Stats.ObstacleLayerMask))
+        Collider playerCollider = p_context.GetComponent<Collider>();
+
+        // 전방에 장애물이 있으면 이동 거리 조정
+        if (Physics.BoxCast(p_context.transform.position, playerCollider.bounds.extents * 1.2f,
+           -p_context.transform.forward, out var hitInfo, 
+           p_context.transform.rotation,
+            p_AttackData.AttackMoveDistance,
+            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
         {
             distance = hitInfo.distance + (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
@@ -85,7 +90,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     protected override void HandleAttackPerform()
     {
         p_context.Combat.ExcuteSecondCounterAttack(p_AttackData);
-        p_context.Events.TriggerSecondCounterAttackAffect(p_context.Combat.CounterableTarget, p_context.Heat.CurrentTier);
+        p_context.Events.TriggerSecondCounterAttackAffect(p_context.Combat.CounterableTarget.GetComponent<Collider>(), p_context.Heat.CurrentTier);
     }
 
     /// <summary>

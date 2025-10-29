@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: AttackorChase
   m_EditorClassIdentifier: 
-  position: {x: 481, y: -7}
+  position: {x: 491, y: -7}
   nodes:
   - {fileID: -2870098089127236727}
   - {fileID: 8154655890788234342}
@@ -64,7 +64,7 @@ MonoBehaviour:
   m_Name: Back Moving
   m_EditorClassIdentifier: Assembly-CSharp::BackMoving
   position: {x: 1524, y: 216}
-  targetDistance: 5
+  targetDistance: 7
   acceptanceRadius: 0.5
   runSpeed: 10
   timeout: 2
@@ -150,6 +150,21 @@ MonoBehaviour:
   - {fileID: 6545543868557049618}
   - {fileID: 5776244238602323464}
   - {fileID: 6816747113147883713}
+--- !u!114 &-5712504022543772185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1716, y: 221}
+  minDistance: 0
+  maxDistance: 0
 --- !u!114 &-4738368884081098000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 748, y: -7}
+  position: {x: 749, y: -7}
   subTreeToRun: {fileID: 11400000, guid: 72bb54cccae1b074d8e6b80e0318c461, type: 2}
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
@@ -266,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: 
-  position: {x: 465, y: -107}
+  position: {x: 491, y: -108}
 --- !u!114 &-1508998778064926519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 230, y: 167}
+  position: {x: 234, y: 166}
   subTreeToRun: {fileID: 11400000, guid: 9832662490adc0b4ca7ab4a5b49095da, type: 2}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
@@ -405,7 +420,17 @@ MonoBehaviour:
   damageRadius: 3.5
   attackOffset: {x: 0, y: 1, z: 4}
   maintainAtk: 0
-  StiffenessAmount: 10
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,6 +487,7 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC2DC "
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -221}
+  viewAngle: 90
 --- !u!114 &5214673368872433589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,6 +561,7 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -475}
+  viewAngle: 90
 --- !u!114 &6816747113147883713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,7 +587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 465, y: -450}
+  position: {x: 464, y: -450}
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 748, y: 157}
+  position: {x: 748, y: 90}
   subTreeToRun: {fileID: 11400000, guid: 56de0720fdefa7f4a8b86848eedcc6c3, type: 2}
 --- !u!114 &8246282568877846733
 MonoBehaviour:
@@ -663,6 +690,7 @@ MonoBehaviour:
   - {fileID: -6477674856501047169}
   - {fileID: 2422854897302023152}
   - {fileID: -7510950722700951356}
+  - {fileID: -5712504022543772185}
   - {fileID: 7593736862946206760}
   - {fileID: -7974736735570412724}
   - {fileID: -1508998778064926519}

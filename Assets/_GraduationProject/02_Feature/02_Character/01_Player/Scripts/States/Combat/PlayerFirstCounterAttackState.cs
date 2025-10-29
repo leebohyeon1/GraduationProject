@@ -32,6 +32,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         StartAttackMovement();
         p_context.Events.TriggerFirstCounterAttackStart();
     }
+
     public override void OnExit()
     {
         p_context.Events.OnAttackFinish -= HandleAttackFinish;
@@ -50,7 +51,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     protected override void HandleAttackPerform()
     {
         p_context.Combat.ExcuteFirstCounterAttack(p_AttackData);
-        p_context.Events.TriggerFirstCounterAttackAffect(p_context.Combat.CounterableTarget, p_context.Heat.CurrentTier);
+        p_context.Events.TriggerFirstCounterAttackAffect(p_context.Combat.CounterableTarget.GetComponent<Collider>(), p_context.Heat.CurrentTier);
     }
 
     /// <summary>
@@ -107,5 +108,13 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         }
     }
 
+    protected override void StartAttackMovement()
+    {
+        Vector3 targetPosition = new Vector3(p_context.Combat.CounterableTarget.transform.forward.x, p_context.transform.position.y, p_context.Combat.CounterableTarget.transform.forward.z);
+        p_context.Movement.ForceMove(targetPosition);
+
+        Quaternion targetRotation = Quaternion.LookRotation(-p_context.Combat.CounterableTarget.transform.forward);
+        p_context.Movement.SetRotation(targetRotation);
+    }
 
 }

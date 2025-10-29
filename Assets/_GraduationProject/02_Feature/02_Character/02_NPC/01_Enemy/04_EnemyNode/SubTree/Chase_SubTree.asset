@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Chase Player Node(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 256, y: 272}
+  position: {x: 257, y: 289}
 --- !u!114 &-3874928881060190215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,7 +25,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
   m_Name: Condition_Is Between Distances(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
-  position: {x: 256, y: 208}
+  position: {x: 259, y: 213}
   minDistance: 0.5
   maxDistance: 40
 --- !u!114 &11400000
@@ -41,6 +41,23 @@ MonoBehaviour:
   m_Name: Chase_SubTree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: 1930196143921872551}
+--- !u!114 &1659733415920129820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
+  m_Name: Back Moving
+  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
+  position: {x: 259, y: -90}
+  targetDistance: 0.4
+  acceptanceRadius: 0.5
+  runSpeed: 1
+  timeout: 1.8
 --- !u!114 &1930196143921872551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,8 +70,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Chase(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 77}
+  position: {x: -80, y: 86}
   nodes:
+  - {fileID: 1659733415920129820}
+  - {fileID: 4955177839541794897}
   - {fileID: 3189764860203440209}
   - {fileID: 5803028896792892781}
   - {fileID: -3874928881060190215}
@@ -73,6 +92,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RunnerState
   position: {x: 256, y: 65}
   requiredState: 10
+--- !u!114 &4955177839541794897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 261, y: -13}
+  waitTime: 1
 --- !u!114 &5803028896792892781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,4 +118,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
   m_Name: Condition_Is Actionable(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 256, y: 142}
+  position: {x: 258, y: 138}

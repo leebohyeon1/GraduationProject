@@ -49,9 +49,10 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
         else
         {
             p_context.Animator.SetTrigger(p_animationTrigger);
+
+            StartAttackMovement();
+            p_context.Events.TriggerFirstAttackStart();
         }
 
-        StartAttackMovement();
-        p_context.Events.TriggerFirstAttackStart();
     }
 }

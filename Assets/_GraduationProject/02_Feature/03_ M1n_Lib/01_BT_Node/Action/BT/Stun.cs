@@ -5,7 +5,11 @@ using BehaviorTree;
 public class Stun : Node
 {
     public int Damage = 30;
-
+    public DamageData damageData;
+    public override void OnEnter()
+    {
+        damageData.AttackerTransform = runner.transform;
+    }
     protected override NodeState OnUpdate()
     {
         // runner.player.ApplyStun(2);
@@ -15,7 +19,7 @@ public class Stun : Node
             runner.SetState(Enemy.EnemyState.Idle);
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
         }
-        runner.player.GetComponent<IDamageable>().TakeDamage(Damage);
+        runner.player.GetComponent<IDamageable>().TakeDamage(Damage, runner.heatSystem.GetTier(), damageData);
         Debug.Log("플레이어 기절함");
         return NodeState.SUCCESS;
     }

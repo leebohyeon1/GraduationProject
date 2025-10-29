@@ -18,7 +18,7 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Heat.OnTierChanged += HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged += HandleTierChanged;
 
         p_context.Animator.SetBool("IsCharge", true);
         SetupChargeSourceMap();
@@ -40,16 +40,34 @@ public class PlayerChargeState : BaseState<Player>
         // 일정 시간마다 차지 게이지 및 열기 증가
         if (_chargeTimer > _chargeSourceMap.TickSecond)
         {
+            float previousGuage = _chargeGuage;
+
             _chargeTimer = 0;
             _chargeGuage += (int)_chargeSourceMap.HeatChangeType * _chargeSourceMap.DeltaHeat;
-            
-            // 최소 차지량 도달 시
-            if(_chargeGuage >= p_context.DataBase.TierStatData.GetTierStat(1).HeatThrehold)
+
+            float currentGuage = Mathf.Clamp(_chargeGuage, 0f, 100f);
+
+            if(previousGuage != currentGuage)
             {
-                MinChargeFinish();
+                p_context.Events.TriggerBattleStateChanged(true);
+                p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
+
+                if (currentGuage >= 25 && !_isCharged)
+                {
+                    Log.Print("Charge Minimum Complete");
+                    _isCharged = true;
+                }
+
+                if (Mathf.FloorToInt(previousGuage / 25f) != Mathf.FloorToInt(currentGuage / 25f))
+                {
+                    
+                    int tier = Mathf.FloorToInt(currentGuage / 25f);
+                    Log.Print("Charge Tier Up: " + tier);
+                    p_context.Events.TriggerChargeFinish(tier);
+                }
             }
-            p_context.Events.TriggerBattleStateChanged(true);
-            p_context.Heat.IncreaseHeatOnCharge(_chargeSourceMap, _chargeGuage);
+
+           
         }
 
         // 입력에 따른 상태 전환
@@ -65,13 +83,11 @@ public class PlayerChargeState : BaseState<Player>
             }
             else
             {
-                p_context.Events.TriggerChargeCancel();
                 p_stateMachine.ChangeState<PlayerIdleState>();
             }
         }
-        else if(p_context.Input.DodgeInput)
+        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
         {
-            p_context.Events.TriggerChargeCancel();
             p_stateMachine.ChangeState <PlayerDodgeState>();
         }
 
@@ -84,16 +100,18 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Heat.OnTierChanged -= HandleSetupChargeSourceMap;
+        p_context.Heat.OnTierChanged -= HandleTierChanged;
+                
         p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
+        p_context.Events.TriggerChargeCancel();
     }
 
     /// <summary>
     /// 열기 티어 변경 시 차지 소스맵을 다시 설정합니다.
     /// </summary>
-    private void HandleSetupChargeSourceMap(int previousTier, int currentTier)
+    private void HandleTierChanged(int previousTier, int currentTier)
     {
         SetupChargeSourceMap();
     }
@@ -106,15 +124,4 @@ public class PlayerChargeState : BaseState<Player>
         _chargeSourceMap = p_context.DataBase.SourceMapData.GetSourceMap("OnCharge", p_context.Heat.CurrentTier);
     }
 
-    /// <summary>
-    /// 최소 차지 조건을 만족했을 때 호출됩니다.
-    /// </summary>
-    private void MinChargeFinish()
-    {
-        if(!_isCharged)
-        {
-            _isCharged = true;
-            p_context.Events.TriggerChargeFinish();
-        }
-    }
 }

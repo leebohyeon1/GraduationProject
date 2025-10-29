@@ -20,7 +20,8 @@ public enum PlayerFeedbackType
     FirstAttackStart_FB, SecondAttackStart_FB,
     ThirdAttackStart_FB, MeleeAttackHit_FB,
 
-    ChargeStart_FB, ChargeCancel_FB, ChargeFinish_FB, 
+    ChargeStart_FB, ChargeCancel_FB,
+    Tier1ChargeFinish_FB, Tier2ChargeFinish_FB, Tier3ChargeFinish_FB,
     Tier1ChargeAttackStart_FB, Tier2ChargeAttackStart_FB, Tier3ChargeAttackStart_FB,
     ChargeAttackFinish_FB,
 
@@ -250,9 +251,21 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 차지 완료 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeFinish()
+    public void TriggerChargeFinish(int tier)
     {
-        PlayFeedback(PlayerFeedbackType.ChargeFinish_FB);
+        switch (tier)
+        {
+            case 1:
+                PlayFeedback(PlayerFeedbackType.Tier1ChargeFinish_FB);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.Tier2ChargeFinish_FB);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.Tier3ChargeFinish_FB);
+                break;
+        }
+
     }
 
     /// <summary>
@@ -315,6 +328,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerRangedChargeCancel()
     {
+        StopFeedback(PlayerFeedbackType.RangeAttackChargeStart_FB);
         PlayFeedback(PlayerFeedbackType.RangeAttackChargeCancel_FB);
     }
 
@@ -372,7 +386,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
+        //PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
     #endregion
 

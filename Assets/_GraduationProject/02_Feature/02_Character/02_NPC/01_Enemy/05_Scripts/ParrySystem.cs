@@ -1,8 +1,9 @@
 
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ParrySystem : MonoBehaviour, IParryable, ICounterable
+public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListener<bool>
 {
     // Parry system implementation
     public bool IsParryable { get; private set; } = false;
@@ -11,15 +12,26 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
+    public OnParry OnParry => _onParry;
+
     [SerializeField] private float _stunTime = 3f;
+    [SerializeField] private OnParry _onParry;
     private Enemy _owner;
     public void Initialize(Enemy enemy)
     {
         _owner = enemy;
         IsParryable = false;
         IsCounterable = false;
-        ClearStun();IsParry = false;
+        ClearStun(); IsParry = false;
+
+        OnParry.Subscribe(this);
     }
+
+    private void OnDisable()
+    {
+        OnParry.Unsubscribe(this);
+    }
+
     public void SetParryable(string value)
     {
         IsParryable = value == "true" ? true : false;
@@ -39,7 +51,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     {
         SetParryable("false");
         Debug.Log(_owner.name + " was parried by " + parryInstigator.name);
-        _owner.StiffnessSystem.AddStiffness(_owner.CurrentStiffness);
+        _owner.StiffnessSystem.AddStiffness(50);
         IsParry = true;
         return true;
     }
@@ -66,8 +78,11 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ClearStun()
     {
         _owner.animator.SetBool("Stun", false);
-        IsParry = false;
         _isStunned = false;
     }
 
+    public void OnEventTrigger(bool eventName)
+    {
+        IsParry = false;
+    }
 }

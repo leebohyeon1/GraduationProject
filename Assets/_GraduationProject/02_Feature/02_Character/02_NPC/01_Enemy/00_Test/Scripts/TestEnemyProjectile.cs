@@ -6,6 +6,7 @@ public class TestEnemyProjectile : Projectile, IParryable
 {
     public bool IsParryable => true;
 
+    public OnParry OnParry => throw new System.NotImplementedException();
 
     public bool Parry(GameObject parryInstigator)
     {

@@ -20,10 +20,9 @@ MonoBehaviour:
   - {fileID: -6646918347980302632}
   - {fileID: -3727419619842135259}
   - {fileID: 861935333759378166}
-  - {fileID: -2570494360434994518}
+  - {fileID: -3679951281741201405}
   - {fileID: -8323296916998508572}
   - {fileID: -393768079901890297}
-  - {fileID: 1249779483165729958}
 --- !u!114 &-8323296916998508572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36,8 +35,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
   m_Name: Wait(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1016, y: 194}
-  waitTime: 1
+  position: {x: 1024, y: 214}
+  waitTime: 0.2
 --- !u!114 &-6646918347980302632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,9 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Is Skill Ready(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 1016, y: -99}
+  position: {x: 1015, y: -98}
   skillName: Attack
-  cooldownDuration: 3
+  cooldownDuration: 2
   HeatCooldown: 1
 --- !u!114 &-5799249064951715455
 MonoBehaviour:
@@ -66,9 +65,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
   m_Name: Condition_Is In Attack Range(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 1016, y: -172}
+  position: {x: 1015, y: -178}
   heatRange: 0
-  _attackRange: 4
+  _attackRange: 3.5
 --- !u!114 &-3727419619842135259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,9 +80,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 1016, y: -32}
+  position: {x: 1017, y: -33}
   skillName: Attack
---- !u!114 &-2570494360434994518
+--- !u!114 &-3679951281741201405
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,13 +92,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving(Clone)
+  m_Name: Back Moving
   m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 1016, y: 117}
-  targetDistance: 5
-  acceptanceRadius: 0.5
-  runSpeed: 10
-  timeout: 2
+  position: {x: 1021, y: 130}
+  targetDistance: 0
+  acceptanceRadius: 5
+  runSpeed: 3
+  timeout: 1
 --- !u!114 &-393768079901890297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
   m_Name: Condition_Check Object Behind(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
-  position: {x: 1013, y: 271}
+  position: {x: 1026, y: 297}
   checkDistance: 2
   layerMask:
     serializedVersion: 2
@@ -129,7 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
   m_Name: "\uAE30\uBCF8 \uC2DC\uC57C (Clone)"
   m_EditorClassIdentifier: 
-  position: {x: 1020, y: -320}
+  position: {x: 1015, y: -329}
+  viewAngle: 90
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,27 +155,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Generic Attack Node(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 1012, y: 45}
+  position: {x: 1017, y: 45}
   AttackName: Attack
   damage: 10
-  damageRadius: 3.5
-  attackOffset: {x: 0, y: 1, z: 4}
+  damageRadius: 2
+  attackOffset: {x: 0, y: 0, z: 1.5}
   maintainAtk: 0
-  StiffenessAmount: 50
---- !u!114 &1249779483165729958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
-  m_Name: Stop Movement(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: 1016, y: 348}
-  juststop: 0
+  damageData:
+    StiffnessAmount: 0
+    AttackerTransform: {fileID: 0}
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
 --- !u!114 &5192495525901186291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,4 +184,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
   m_Name: Condition_Is Actionable(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 1017, y: -247}
+  position: {x: 1013, y: -257}
