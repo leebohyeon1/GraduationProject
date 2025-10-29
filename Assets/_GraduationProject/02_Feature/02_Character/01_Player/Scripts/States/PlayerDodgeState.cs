@@ -49,7 +49,7 @@ public class PlayerDodgeState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.CombatData.DodgeSpeed);
+        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.DodgeSpeed);
     }
 
     public override void OnExit()

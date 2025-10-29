@@ -11,7 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.ChargeAttackData;
+    protected override PlayerAttackData p_AttackData => p_context.Stats.ChargeAttackData;
 
     private PlayerAttackData _playerAttackData;
 
@@ -106,7 +106,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             p_context.transform.forward, out var hitInfo,
             p_context.transform.rotation,
             p_AttackData.AttackMoveDistance,
-            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
+            p_context.Stats.BasePlayerDatasSO.CombatData.AttackLayerMask | p_context.Stats.BasePlayerDatasSO.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }

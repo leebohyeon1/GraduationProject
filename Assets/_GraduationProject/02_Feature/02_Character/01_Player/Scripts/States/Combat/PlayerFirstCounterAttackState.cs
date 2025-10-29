@@ -11,7 +11,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "FirstCounterAttack";
     protected override Type p_nextAttackState => typeof(PlayerSecondCounterAttackState);
-    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[0];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CounterAttackDatas[0];
 
     public PlayerFirstCounterAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -90,7 +90,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         {
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }

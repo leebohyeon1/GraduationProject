@@ -11,7 +11,7 @@ public class PlayerMana : MonoBehaviour, IDisposable
 
 
     public int CurrentMana => _stats.CurrentMana;
-    public int MaxMana => _stats.MaxMana;   
+    public int MaxMana => _stats.BasePlayerDatasSO.MaxMana;   
 
     public event Action<int, int> OnManaChange;
 
@@ -43,8 +43,8 @@ public class PlayerMana : MonoBehaviour, IDisposable
             return;
         }
 
-        _stats.CurrentMana = Mathf.Clamp(_stats.CurrentMana + amount, 0, _stats.MaxMana);
-        OnManaChange?.Invoke(_stats.CurrentMana, _stats.MaxMana);
+        _stats.CurrentMana = Mathf.Clamp(_stats.CurrentMana + amount, 0, MaxMana);
+        OnManaChange?.Invoke(_stats.CurrentMana, MaxMana);
     }
 
     private void SetCanChange(bool canChange)
