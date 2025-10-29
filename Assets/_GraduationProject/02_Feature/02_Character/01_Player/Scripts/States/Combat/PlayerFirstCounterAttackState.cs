@@ -145,7 +145,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
            -p_context.transform.forward, out var hitInfo,
            p_context.transform.rotation,
             p_AttackData.AttackMoveDistance,
-            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
+            p_context.Stats.BasePlayerDatasSO.CombatData.AttackLayerMask | p_context.Stats.BasePlayerDatasSO.ObstacleLayerMask))
         {
             distance = hitInfo.distance + (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
