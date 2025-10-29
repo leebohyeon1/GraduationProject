@@ -54,7 +54,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         Health -= amount;
         if (_owner.HealthBar)
         {
-            _owner.BillboardUI.SetHealthBar(Maxhealth,Health);
+            _owner.BillboardUI?.SetHealthBar(Maxhealth,Health);
         }
         if (Knockbackable)
         {
