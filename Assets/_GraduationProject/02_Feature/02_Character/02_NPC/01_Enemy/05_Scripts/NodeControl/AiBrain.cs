@@ -40,8 +40,6 @@ public class AiBrain
             case Enemy.EnemyState.Rush:
             case Enemy.EnemyState.Stunned:
             case Enemy.EnemyState.Die:
-            case Enemy.EnemyState.Beam:
-            case Enemy.EnemyState.Noise:
                 return true; // 이 상태에서는 행동을 중단할 수 없습니다.
             default:
                 return false; // Idle, Patrol 등은 행동을 중단할 수 있습니다.
@@ -81,6 +79,7 @@ public class AiBrain
         if (!_isCombat)
         {
             _owner.animator.SetTrigger("Discover_Player");
+            _owner.Movement.StopMovement();
             _isCombat = true;
         }
     }

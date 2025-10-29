@@ -43,9 +43,12 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         {
             _owner.SetState(Enemy.EnemyState.Hit);
         }
+        if (!_owner._aiController._aiBrain.IsActionable())
+        {
+            _owner.AnimationEvent("Hit");
+        }
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
-        Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
         if (Knockbackable)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
