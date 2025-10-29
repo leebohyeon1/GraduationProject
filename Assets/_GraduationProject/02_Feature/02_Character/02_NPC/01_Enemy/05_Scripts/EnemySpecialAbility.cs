@@ -14,7 +14,6 @@ public class EnemySpecialAbility : MonoBehaviour
     }
     public void SetAbility(bool value)
     {
-        Debug.Log("Set Ability: " + value);
         _abilityReady = value;
     }
 }

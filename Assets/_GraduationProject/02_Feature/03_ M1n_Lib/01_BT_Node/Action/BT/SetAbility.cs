@@ -14,7 +14,6 @@ public class SetAbility : Node
 
     public override void OnEnter()
     {
-        Debug.Log("Set Ability Node: " + Ability);
         runner.specialAbility.SetAbility(Ability);
         runner.EnemyHealth.SetKnockbackable(false);
 
