@@ -25,7 +25,6 @@ public class GenericAttackNode : Node
         _didHitPlayer = false;
         parryEffectPlayed = false;  
         // runner.Movement.StartOrUpdateChase(runner.player.transform.position);
-        runner.SetState(Enemy.EnemyState.Attack);
         runner.Movement.StopMovement();
         // aIPath.enableRotation = false;
         damageData.AttackerTransform = runner.transform;
@@ -55,6 +54,7 @@ public class GenericAttackNode : Node
         if (Handler.IsHitWindowOpen)
         {
             tracking = true;
+            runner.SetState(Enemy.EnemyState.Attack);
         }
 
         if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
