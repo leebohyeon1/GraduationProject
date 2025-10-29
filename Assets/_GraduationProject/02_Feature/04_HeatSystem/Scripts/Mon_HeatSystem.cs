@@ -10,7 +10,7 @@ public class Monster_HeatSystem : HeatSystem
         base.ChangeHeat(amount);
         if (!_enemy.HealthBar)
         {
-            _enemy.BillboardUI.SetHealthBar(MaxHeat, CurrentHeat);
+            _enemy.BillboardUI?.SetHealthBar(MaxHeat, CurrentHeat);
         }
     }
     protected override void OverHeat()
