@@ -81,6 +81,7 @@ public class AiBrain
         if (!_isCombat)
         {
             _owner.animator.SetTrigger("Discover_Player");
+            _owner.Movement.StopMovement();
             _isCombat = true;
         }
     }

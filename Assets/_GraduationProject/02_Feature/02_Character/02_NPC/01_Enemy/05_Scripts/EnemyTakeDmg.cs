@@ -42,6 +42,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         if (!_owner._aiController.IsActionable())
         {
             _owner.SetState(Enemy.EnemyState.Hit);
+            _owner.AnimationEvent("Hit");
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
