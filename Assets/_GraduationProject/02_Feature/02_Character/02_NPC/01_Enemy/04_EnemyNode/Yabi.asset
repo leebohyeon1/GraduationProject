@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1, y: 90}
   nodes:
-  - {fileID: -4138251438356461519}
+  - {fileID: 0}
   - {fileID: -4738368884081098000}
   - {fileID: -5895060802689115491}
   - {fileID: -7071762007778814168}
@@ -259,20 +259,6 @@ MonoBehaviour:
   nodes:
   - {fileID: -1995372082178178704}
   - {fileID: -8730112079219288532}
---- !u!114 &-4571666413586387207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 671, y: -592}
-  waitTime: 1
 --- !u!114 &-4553377999928142451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,24 +272,6 @@ MonoBehaviour:
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
   position: {x: 1023, y: -186}
---- !u!114 &-4138251438356461519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: TakeDamage
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 222, y: -538}
-  nodes:
-  - {fileID: 7027237538290763944}
-  - {fileID: 3383802295068753850}
-  - {fileID: 8246282568877846733}
-  - {fileID: -1456587011237061795}
 --- !u!114 &-3662235796367844752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,24 +328,6 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: 
   position: {x: 437, y: -199}
---- !u!114 &-1456587011237061795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: backstep
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 437, y: -456}
-  nodes:
-  - {fileID: 5883210979223998324}
-  - {fileID: -4571666413586387207}
-  - {fileID: 1514640868041876688}
-  - {fileID: 4418371570474132438}
 --- !u!114 &-1198667856612942049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,23 +400,6 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &1514640868041876688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
-  m_Name: Condition_Check Object Behind
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
-  position: {x: 671, y: -515}
-  checkDistance: 2
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &1742704995383000931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,19 +465,6 @@ MonoBehaviour:
   avoidanceRadius: 1
   penaltyTag: 1
   avoidancePenalty: 20000
---- !u!114 &3383802295068753850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d04602de3090e249a3d21a2bfdca92a, type: 3}
-  m_Name: Condition_Take Damage
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_TakeDamage
-  position: {x: 437, y: -612}
 --- !u!114 &4324966382876483621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,20 +478,6 @@ MonoBehaviour:
   m_Name: Condition_Opportunity Finder
   m_EditorClassIdentifier: Assembly-CSharp::Condition_OpportunityFinder
   position: {x: 1027, y: -61}
---- !u!114 &4418371570474132438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
-  m_Name: Stop Movement
-  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: 671, y: -438}
-  juststop: 0
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,23 +524,6 @@ MonoBehaviour:
   position: {x: 1023, y: 1148}
   heatRange: 0
   _attackRange: 3
---- !u!114 &5883210979223998324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 671, y: -669}
-  targetDistance: 5
-  acceptanceRadius: 0.5
-  runSpeed: 5
-  timeout: 1.8
 --- !u!114 &5987379538929135312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -754,19 +643,6 @@ MonoBehaviour:
   m_Name: Action_Engage Combat
   m_EditorClassIdentifier: 
   position: {x: 457, y: 232}
---- !u!114 &7027237538290763944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
-  m_Name: Condition_Is Actionable
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 437, y: -689}
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
