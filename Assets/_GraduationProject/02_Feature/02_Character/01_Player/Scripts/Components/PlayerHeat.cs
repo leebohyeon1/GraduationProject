@@ -317,8 +317,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
             SourceMap sourceMap = _sourceMapDataBase.GetSourceMap("OnCounterSuccess", heatable.ActorType, CurrentTier);
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
-
-            Log.Print(CurrentTier);
         }
     }
 

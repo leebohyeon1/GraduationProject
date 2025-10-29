@@ -13,7 +13,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     #region Private Fields
     private PlayerStats _stats; // 플레이어 스탯
     private PlayerEvents _events; // 플레이어 이벤트
-    private PlayerCombatData _combatData => _stats.CombatData; // 전투 데이터
     
     /// <summary>
     /// 전투 중심점의 위치
@@ -131,7 +130,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
 
         ProcessHitEnemies(attackData, hitEnemies);
 
@@ -163,13 +162,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// <param name="firePoint">발사 지점</param>
     public void FireProjectile(Transform firePoint)
     {
-        if (_combatData.RangedAttackData.ProjectilePrefab == null) return;
+        if (_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab == null) return;
 
-        GameObject projectileObj = Instantiate(_combatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
+        GameObject projectileObj = Instantiate(_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
 
         if (projectileObj.TryGetComponent<Projectile>(out var projectile))
         {
-            projectile.Initialize(_combatData.RangedAttackData.AttackDamage, _combatData.RangedAttackData.ProjectileSpeed, gameObject, _combatData.AttackLayerMask);
+            projectile.Initialize(_stats.RangedAttackData.AttackDamage, _stats.RangedAttackData.ProjectileSpeed, gameObject, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
         }
     }
     #endregion
@@ -196,7 +195,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
         Vector3 halfExtents = parryRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _combatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
 
         return hitEnemies;
     }
@@ -232,7 +231,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// <returns>카운터 가능한 적 존재 여부</returns>
     public bool CanIsScanCounterable()
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position, _combatData.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _combatData.AttackLayerMask);
+        Collider[] colliders = Physics.OverlapBox(transform.position, _stats.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
 
         float minDistance = Mathf.Infinity;
         Collider closestCollider = null;
@@ -316,12 +315,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         if (!_isDrawGizmos) return;
 
         // 공격 범위 기즈모
-        DrawActionGizmo(_combatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
-        DrawActionGizmo(_combatData.AttackDatas[1].AttackRadius, Color.orangeRed);
-        DrawActionGizmo(_combatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_combatData.ChargeAttackData.AttackRadius, Color.indianRed);
-        DrawActionGizmo(_combatData.ParryRadius, Color.green);
-        DrawActionGizmo(_combatData.CounterAttackDatas[0].AttackRadius, Color.beige);
+        DrawActionGizmo(_stats.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_stats.AttackDatas[1].AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_stats.AttackDatas[2].AttackRadius, Color.darkRed);
+        DrawActionGizmo(_stats.ChargeAttackData.AttackRadius, Color.indianRed);
+        DrawActionGizmo(_stats.BasePlayerDatasSO.CombatData.ParryRadius, Color.green);
+        DrawActionGizmo(_stats.CounterAttackDatas[0].AttackRadius, Color.beige);
     }
 
     private void DrawActionGizmo(Vector3 radius, Color color)

@@ -23,36 +23,36 @@ public class PlayerStats: IDisposable
     public bool IsBoost; // 증폭 상태인가?
 
     // Stat
-    public int MaxHealth; // 최대 체력
     public int CurrentHealth; // 현재 체력
-
-    public int MaxHeat; // 최대 열기
     public int CurrentHeat; // 현재 열기
-
-    public int MaxMana; // 최대 마나
     public int CurrentMana; // 현재 마나
 
     // Currency
     public int SkillPoint;
-
-    public LayerMask GroundLayerMask = 1 << 3; // 지면 레이어 마스크
-    public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
-    public float Gravity = -9.81f; // 중력
-    public float GroundCheckDistance = 0.1f; // 지면과의 거리 체크
     
     public float MoveSpeed; // 이동 속도
     public float RotateSpeed; // 회전 속도
 
     // Combat
-    public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
-    public PlayerCombatData CombatData = new PlayerCombatData(); // 전투 데이터
+    public float DodgeSpeed; // 회피 속도
 
+    public PlayerAttackData[] AttackDatas; // 일반 공격 데이터 배열
+    public float LastAttackDelay; // 마지막 공격 후 딜레이
+
+    public PlayerAttackData ChargeAttackData; // 차지 공격 데이터
+
+    public RangedAttackData RangedAttackData; // 원거리 공격 데이터
+
+    public PlayerAttackData[] CounterAttackDatas; // 반격 데이터 배열
     // Skill
     public PlayerSkillData SkillData;
 
     // Animation
     public float AnimatorSpeed; // 애니메이터 속도
     public event Action<float> OnAnimationSpeedChanged; // 애니메이터 속도 변경 이벤트
+
+    // Properties
+    public BasePlayerDatasSO BasePlayerDatasSO => _dataBase.BaseData;
 
     public PlayerStats(PlayerDataBaseSO baseData, PlayerEvents events)
     {
@@ -61,7 +61,7 @@ public class PlayerStats: IDisposable
 
         _events.OnDataUpdate += UpdateData;
 
-        ResetData();
+        InitializeData();
     }
 
     public void Dispose()
@@ -95,52 +95,52 @@ public class PlayerStats: IDisposable
         BasePlayerDatasSO baseData = _dataBase.BaseData;
         PlayerCombatData combatData = baseData.CombatData;
 
-        CombatData.DodgeSpeed = combatData.DodgeSpeed * tierStatData.SpeedMultiply;
+        DodgeSpeed = combatData.DodgeSpeed * tierStatData.SpeedMultiply;
 
         // 일반 공격
-        for(int i = 0; i < CombatData.AttackDatas.Length; i++)
+        for(int i = 0; i < AttackDatas.Length; i++)
         {
-            CombatData.AttackDatas[i].AttackDamage =
+            AttackDatas[i].AttackDamage =
                 Mathf.RoundToInt(combatData.AttackDatas[i].AttackDamage * tierStatData.DamageMultiply);
 
-            CombatData.AttackDatas[i].AttackRadius =
+            AttackDatas[i].AttackRadius =
                 combatData.AttackDatas[i].AttackRadius * tierStatData.RangeMultiply;
 
-            CombatData.AttackDatas[i].AttackMoveDuration =
+            AttackDatas[i].AttackMoveDuration =
                 combatData.AttackDatas[i].AttackMoveDuration / tierStatData.SpeedMultiply;
 
-            CombatData.AttackDatas[i].AttackDelay =
+            AttackDatas[i].AttackDelay =
                 combatData.AttackDatas[i].AttackDelay / tierStatData.SpeedMultiply;
         }
 
-        CombatData.LastAttackDelay = 
+        LastAttackDelay = 
             combatData.LastAttackDelay / tierStatData.SpeedMultiply;
 
         float BoostRangeMutiply = IsBoost ? SkillData.BoostRangeMultiply: 1f;
         float BoostDamageMultiply = IsBoost ? SkillData.BoostDamageMultiply : 1f;
 
         // 차징 공격
-        CombatData.ChargeAttackData.AttackDamage =
-             Mathf.RoundToInt(CombatData.ChargeAttackData.AttackDamage * tierStatData.DamageMultiply * BoostDamageMultiply);
+        ChargeAttackData.AttackDamage =
+             Mathf.RoundToInt(ChargeAttackData.AttackDamage * tierStatData.DamageMultiply * BoostDamageMultiply);
 
-        CombatData.ChargeAttackData.AttackRadius.z =
+        ChargeAttackData.AttackRadius.z =
              combatData.ChargeAttackData.AttackRadius.z * tierStatData.RangeMultiply * BoostRangeMutiply;
 
-        CombatData.ChargeAttackData.AttackMoveDistance =
+        ChargeAttackData.AttackMoveDistance =
             combatData.ChargeAttackData.AttackMoveDistance * tierStatData.RangeMultiply * BoostRangeMutiply;
 
-        CombatData.ChargeAttackData.AttackMoveDuration =
+        ChargeAttackData.AttackMoveDuration =
             combatData.ChargeAttackData.AttackMoveDuration / tierStatData.SpeedMultiply;
 
         // 원거리 공격
-        CombatData.RangedAttackData.AttackDamage =
+        RangedAttackData.AttackDamage =
             Mathf.RoundToInt(combatData.RangedAttackData.AttackDamage * tierStatData.DamageMultiply);
 
 
         // 반격 
-        for(int i = 0; i < CombatData.CounterAttackDatas.Length; i++)
+        for(int i = 0; i < CounterAttackDatas.Length; i++)
         {
-            CombatData.CounterAttackDatas[i].AttackDamage =
+            CounterAttackDatas[i].AttackDamage =
                    Mathf.RoundToInt(combatData.CounterAttackDatas[i].AttackDamage * tierStatData.DamageMultiply * BoostDamageMultiply);
         }
     }
@@ -148,33 +148,28 @@ public class PlayerStats: IDisposable
     /// <summary>
     /// 스탯을 기본 값으로 리셋합니다.
     /// </summary>
-    public void ResetData()
+    public void InitializeData()
     {
         BasePlayerDatasSO baseData = _dataBase.BaseData;
 
-        MaxHealth = baseData.MaxHealth;
-        CurrentHealth = MaxHealth;
-
-        MaxHeat = baseData.MaxHeat;
+        CurrentHealth = baseData.MaxHealth;
         CurrentHeat = 0;
-        
-        MaxMana = baseData.MaxMana;
         CurrentMana = 0;
 
-        GroundLayerMask = baseData.GroundLayerMask;
-        ObstacleLayerMask = baseData.ObstacleLayerMask;
-
-        Gravity = baseData.Gravity;
-        GroundCheckDistance = baseData.GroundCheckDistance;
-
         MoveSpeed = baseData.MoveSpeed;
-        RotateSpeed = baseData.RotateSpeed;
+        RotateSpeed = baseData.RotateSpeed;;
+        DodgeSpeed = baseData.CombatData.DodgeSpeed;
 
-        CombatData = baseData.CombatData.Clone();
+        AttackDatas = new PlayerAttackData[baseData.CombatData.AttackDatas.Length];
+        Array.Copy(baseData.CombatData.AttackDatas, AttackDatas, baseData.CombatData.AttackDatas.Length);
+        
+        ChargeAttackData = baseData.CombatData.ChargeAttackData;
+        RangedAttackData = baseData.CombatData.RangedAttackData;
+
+        CounterAttackDatas = new PlayerAttackData[baseData.CombatData.CounterAttackDatas.Length];
+        Array.Copy(baseData.CombatData.CounterAttackDatas, CounterAttackDatas, baseData.CombatData.CounterAttackDatas.Length);
 
         SkillData = new PlayerSkillData(_dataBase);
-
-
     }
 
     /// <summary>
@@ -209,3 +204,68 @@ public class PlayerStats: IDisposable
     #endregion
 }
 
+/// <summary>
+/// 플레이어의 스킬 데이터를 정의하는 구조체입니다.
+/// </summary>
+[Serializable]
+public class PlayerSkillData
+{
+    public List<bool> IsMainSkillsUnlock = new List<bool>(new bool[3]);
+    public List<bool> IsFlashSubSkillsUnlock = new List<bool>(new bool[3]);
+    public List<bool> IsBoostSubSkillsUnlock = new List<bool>(new bool[3]);
+    public List<bool> IsTimeStopSubSkillsUnlock = new List<bool>(new bool[3]);
+
+    public List<float> SkillCoolDown = new List<float>(new float[3]);
+    public List<float> SkillCoolDownTimer = new List<float>(new float[3]);
+
+    public List<int> SkillMaxCount = new List<int>(new int[3]);
+    public List<int> SkillCount = new List<int>(new int[3]);
+
+    #region Flash
+    [Header("Flash")]
+    public bool IsMaxLevelFlash = false;
+    #endregion
+
+    #region Boost
+    [Header("Boost")]
+    public float BoostRangeMultiply = 1f;
+    public float BoostDamageMultiply = 1f;
+    public bool IsMaxLevelBoost = false;
+    #endregion
+
+    public PlayerSkillData(PlayerDataBaseSO dataBase)
+    {
+        SkillCoolDown[(int)SkillType.Flash] = dataBase.FlashSkill.CoolDown;
+        SkillCoolDown[(int)SkillType.Boost] = dataBase.BoostSkill.CoolDown;
+        SkillCoolDown[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.CoolDown;
+
+        SkillMaxCount[(int)SkillType.Flash] = dataBase.FlashSkill.Count;
+        SkillMaxCount[(int)SkillType.Boost] = dataBase.BoostSkill.Count;
+        SkillMaxCount[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.Count;
+    }
+
+    #region FlashMethod
+    public void SetMaxLevelFlash(bool isMaxLevel)
+    {
+        IsMaxLevelFlash = isMaxLevel;
+    }
+
+    #endregion
+
+    #region BoostMethod
+    public void SetBoostRangeMultiply(float amount)
+    {
+        BoostRangeMultiply = amount;
+    }
+
+    public void SetBoostDamageMultiply(float amount)
+    {
+        BoostDamageMultiply = amount;
+    }
+
+    public void SetMaxLevelBoost(bool isMaxLevel)
+    {
+        IsMaxLevelBoost = isMaxLevel;
+    }
+    #endregion
+}
