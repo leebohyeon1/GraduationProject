@@ -109,6 +109,7 @@ namespace Console
         {
             CommandQuit.CreateCommand();
             CommandClear.CreateCommand();
+            CommandSceneLoad.CreateCommand();
 
             CommandEnchantSkill.CreateCommand();
             CommandSelectSkill.CreateCommand();
