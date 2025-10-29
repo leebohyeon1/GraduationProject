@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6741157212077406963
+--- !u!1 &6639491459085966124
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,37 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7345350943210741420}
-  - component: {fileID: 5667213039054155582}
+  - component: {fileID: 6446400725249779766}
+  - component: {fileID: 7007218044084949727}
   m_Layer: 7
-  m_Name: ChargeAttack_FB 1
+  m_Name: CounterAttack_Tier_2_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7345350943210741420
+--- !u!4 &6446400725249779766
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6741157212077406963}
+  m_GameObject: {fileID: 6639491459085966124}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5667213039054155582
+--- !u!114 &7007218044084949727
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6741157212077406963}
+  m_GameObject: {fileID: 6639491459085966124}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
@@ -135,11 +135,10 @@ MonoBehaviour:
   DebugActive: 0
   InScriptDrivenPause: 0
   FeedbacksList:
-  - rid: 6863434209850294496
-  - rid: 6863434209850294497
-  - rid: 6863434209850294498
-  - rid: 6863434209850294499
-  - rid: 6863434209850294500
+  - rid: 6863434341103960155
+  - rid: 6863434341103960156
+  - rid: 6863434341103960157
+  - rid: 6863434341103960158
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   RestoreInitialValuesOnDisable: 0
@@ -148,11 +147,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 6863434209850294496
+    - rid: 6863434341103960155
       type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: -1780004175
+        UniqueID: 368639137
         Label: Particles Instantiation
         OriginalLabel: Particles Instantiation
         ChannelMode: 0
@@ -169,7 +168,7 @@ MonoBehaviour:
           NumberOfRepeats: 0
           RepeatForever: 0
           DelayBetweenRepeats: 1
-          PlayCount: 13
+          PlayCount: 16
           LimitPlayCount: 0
           MaxPlayCount: 3
           SetPlayCountToZeroOnReset: 0
@@ -220,14 +219,14 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: 
-        Owner: {fileID: 5667213039054155582}
+        Owner: {fileID: 7007218044084949727}
         DebugActive: 0
-        Mode: 2
+        Mode: 0
         ObjectPoolSize: 5
         MutualizePools: 0
         ParentTransform: {fileID: 0}
         CachedRecycle: 1
-        ParticlesPrefab: {fileID: 4669246941398374868, guid: 8e0a2156ed2628c4d8286b0c13729756, type: 3}
+        ParticlesPrefab: {fileID: 1587977602617777461, guid: 4507921c786c3b040894354cf4d2eddf, type: 3}
         RandomParticlePrefabs: []
         MainParticlesPrefabWeight: 1
         RandomParticleWeights: 
@@ -245,93 +244,11 @@ MonoBehaviour:
         ApplyScale: 1
         ForceSimulationSpeed: 0
         ForcedSimulationSpeed: {x: 0.1, y: 1}
-    - rid: 6863434209850294497
-      type: {class: MMF_Pause, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
-      data:
-        Active: 0
-        UniqueID: -1124845354
-        Label: Pause
-        OriginalLabel: Pause
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          PlayCount: 13
-          LimitPlayCount: 0
-          MaxPlayCount: 3
-          SetPlayCountToZeroOnReset: 0
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        AutomaticShakerSetupButton:
-          ButtonText: 
-        Owner: {fileID: 5667213039054155582}
-        DebugActive: 0
-        PauseDuration: 0.2
-        RandomizePauseDuration: 0
-        MinPauseDuration: 1
-        MaxPauseDuration: 3
-        RandomizeOnEachPlay: 1
-        ScriptDriven: 0
-        AutoResume: 0
-        AutoResumeAfter: 0.25
-    - rid: 6863434209850294498
+    - rid: 6863434341103960156
       type: {class: MMF_FreezeFrame, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: -1492254035
+        UniqueID: -647930221
         Label: Freeze Frame
         OriginalLabel: Freeze Frame
         ChannelMode: 0
@@ -348,7 +265,7 @@ MonoBehaviour:
           NumberOfRepeats: 0
           RepeatForever: 0
           DelayBetweenRepeats: 1
-          PlayCount: 11
+          PlayCount: 16
           LimitPlayCount: 0
           MaxPlayCount: 3
           SetPlayCountToZeroOnReset: 0
@@ -399,15 +316,15 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: Automatic Shaker Setup
-        Owner: {fileID: 5667213039054155582}
+        Owner: {fileID: 7007218044084949727}
         DebugActive: 0
         FreezeFrameDuration: 0.1
         MinimumTimescaleThreshold: 0.1
-    - rid: 6863434209850294499
+    - rid: 6863434341103960157
       type: {class: MMF_Sound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: 1013044703
+        UniqueID: -658630445
         Label: Sound
         OriginalLabel: Sound
         ChannelMode: 0
@@ -424,7 +341,7 @@ MonoBehaviour:
           NumberOfRepeats: 0
           RepeatForever: 0
           DelayBetweenRepeats: 1
-          PlayCount: 11
+          PlayCount: 16
           LimitPlayCount: 0
           MaxPlayCount: 3
           SetPlayCountToZeroOnReset: 0
@@ -475,7 +392,7 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: Automatic Shaker Setup
-        Owner: {fileID: 5667213039054155582}
+        Owner: {fileID: 7007218044084949727}
         DebugActive: 0
         Sfx: {fileID: 8300000, guid: 5662004028321db4b89f10c8a7ea67aa, type: 3}
         RandomSfx: []
@@ -487,8 +404,8 @@ MonoBehaviour:
         PoolSize: 10
         UseLegacyEventsMode: 0
         StopSoundOnFeedbackStop: 1
-        MinVolume: 0.5
-        MaxVolume: 0.5
+        MinVolume: 0.3
+        MaxVolume: 0.3
         MinPitch: 1
         MaxPitch: 1
         SfxAudioMixerGroup: {fileID: 0}
@@ -528,11 +445,11 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-    - rid: 6863434209850294500
+    - rid: 6863434341103960158
       type: {class: MMF_CinemachineImpulse, ns: MoreMountains.FeedbacksForThirdParty, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: 131510095
+        UniqueID: 749809133
         Label: Cinemachine Impulse
         OriginalLabel: Cinemachine Impulse
         ChannelMode: 0
@@ -549,7 +466,7 @@ MonoBehaviour:
           NumberOfRepeats: 0
           RepeatForever: 0
           DelayBetweenRepeats: 1
-          PlayCount: 11
+          PlayCount: 16
           LimitPlayCount: 0
           MaxPlayCount: 3
           SetPlayCountToZeroOnReset: 0
@@ -600,7 +517,7 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: Automatic Shaker Setup
-        Owner: {fileID: 5667213039054155582}
+        Owner: {fileID: 7007218044084949727}
         DebugActive: 0
         m_ImpulseDefinition:
           ImpulseChannel: 1
@@ -633,7 +550,7 @@ MonoBehaviour:
               m_PostInfinity: 2
               m_RotationOrder: 4
             AttackTime: 0
-            SustainTime: 0.1
+            SustainTime: 0.05
             DecayTime: 0.7
             ScaleWithImpact: 1
             HoldForever: 0
@@ -642,6 +559,6 @@ MonoBehaviour:
           DissipationMode: 2
           DissipationDistance: 100
           PropagationSpeed: 343
-        Velocity: {x: 2, y: 2, z: 2}
-        ClearImpulseOnStop: 0
+        Velocity: {x: 1, y: 1, z: 1}
+        ClearImpulseOnStop: 1
         DrawGizmos: 0
