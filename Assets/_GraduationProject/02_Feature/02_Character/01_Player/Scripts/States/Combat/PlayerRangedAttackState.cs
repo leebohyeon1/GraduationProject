@@ -10,7 +10,7 @@ using UnityEngine;
 public class PlayerRangedAttackState : BaseState<Player>
 {
     private Type _nextState; // 다음 전환될 상태
-    private RangedAttackData _attackData => p_context.Stats.CombatData.RangedAttackData; // 원거리 공격 데이터
+    private RangedAttackData _attackData => p_context.Stats.RangedAttackData; // 원거리 공격 데이터
 
     public PlayerRangedAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
@@ -48,7 +48,7 @@ public class PlayerRangedAttackState : BaseState<Player>
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             _nextState = typeof(PlayerDodgeState);
         }

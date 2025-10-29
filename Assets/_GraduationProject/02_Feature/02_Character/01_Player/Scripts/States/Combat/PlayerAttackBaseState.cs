@@ -77,7 +77,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 다음 공격이 연계 공격이 아닐 경우 추가 딜레이
         if (p_nextState == null || !typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
-            sequence.SetDelay(p_context.Stats.CombatData.LastAttackDelay);
+            sequence.SetDelay(p_context.Stats.LastAttackDelay);
             p_context.Movement.ClearTargetRotation();
         }
 
@@ -120,7 +120,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             p_context.transform.forward, out var hitInfo,
             p_context.transform.rotation, 
             p_AttackData.AttackMoveDistance,
-            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
+            p_context.Stats.BasePlayerDatasSO.CombatData.AttackLayerMask | p_context.Stats.BasePlayerDatasSO.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
@@ -160,7 +160,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }

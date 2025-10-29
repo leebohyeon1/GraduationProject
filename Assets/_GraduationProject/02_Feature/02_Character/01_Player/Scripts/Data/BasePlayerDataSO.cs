@@ -24,6 +24,7 @@ public class BasePlayerDatasSO : ScriptableObject
     public float GroundCheckDistance = 0.1f; // 지면 체크 거리
 
     [Header("Combat")]
+    public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData; // 전투 관련 데이터
 }
 
@@ -32,7 +33,7 @@ public class BasePlayerDatasSO : ScriptableObject
 /// 플레이어의 전투 관련 데이터를 정의하는 구조체입니다.
 /// </summary>
 [Serializable]
-public struct PlayerCombatData
+public class PlayerCombatData
 {
     [Header("Dodge")]
     public float DodgeSpeed; // 회피 속도
@@ -181,68 +182,3 @@ public struct RangedAttackData
     public float AttackDelay; // 공격 후 딜레이
 }
 
-/// <summary>
-/// 플레이어의 스킬 데이터를 정의하는 구조체입니다.
-/// </summary>
-[Serializable]
-public class PlayerSkillData
-{
-    public List<bool> IsMainSkillsUnlock = new List<bool>(new bool[3]);
-    public List<bool> IsFlashSubSkillsUnlock = new List<bool>(new bool[3]);
-    public List<bool> IsBoostSubSkillsUnlock = new List<bool>(new bool[3]);
-    public List<bool> IsTimeStopSubSkillsUnlock = new List<bool>(new bool[3]);
-
-    public List<float> SkillCoolDown = new List<float>(new float[3]);
-    public List<float> SkillCoolDownTimer = new List<float>(new float[3]);
-
-    public List<int> SkillMaxCount = new List<int>(new int[3]);
-    public List<int> SkillCount = new List<int>(new int[3]);
-
-    #region Flash
-    [Header("Flash")]
-    public bool IsMaxLevelFlash = false;
-    #endregion
-
-    #region Boost
-    [Header("Boost")]
-    public float BoostRangeMultiply = 1f;
-    public float BoostDamageMultiply = 1f;
-    public bool IsMaxLevelBoost = false;
-    #endregion
-
-    public PlayerSkillData(PlayerDataBaseSO dataBase)
-    {
-        SkillCoolDown[(int)SkillType.Flash] = dataBase.FlashSkill.CoolDown;
-        SkillCoolDown[(int)SkillType.Boost] = dataBase.BoostSkill.CoolDown;
-        SkillCoolDown[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.CoolDown;
-
-        SkillMaxCount[(int)SkillType.Flash] = dataBase.FlashSkill.Count;
-        SkillMaxCount[(int)SkillType.Boost] = dataBase.BoostSkill.Count;
-        SkillMaxCount[(int)SkillType.TimeStop] = dataBase.TimeStopSkill.Count;
-    }
-
-    #region FlashMethod
-    public void SetMaxLevelFlash(bool isMaxLevel)
-    {
-        IsMaxLevelFlash = isMaxLevel;
-    }
-
-    #endregion
-
-    #region BoostMethod
-    public void SetBoostRangeMultiply(float amount)
-    {
-        BoostRangeMultiply = amount;
-    }
-
-    public void SetBoostDamageMultiply(float amount)
-    {
-        BoostDamageMultiply = amount;
-    }
-
-    public void SetMaxLevelBoost(bool isMaxLevel)
-    {
-        IsMaxLevelBoost = isMaxLevel;
-    }
-    #endregion
-}

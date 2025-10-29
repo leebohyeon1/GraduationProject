@@ -87,7 +87,7 @@ public class PlayerChargeState : BaseState<Player>
                 p_context.Heat.TriggerChargeGuageChanged(0f);
             }
         }
-        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             p_stateMachine.ChangeState <PlayerDodgeState>();
             p_context.Heat.TriggerChargeGuageChanged(0f);

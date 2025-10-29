@@ -28,7 +28,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public float KnockbackForce => _knockbackForce; // 넉백 힘 
 
     public int Health => _stats.CurrentHealth; // 현재 체력
-    public int MaxHealth => _stats.MaxHealth; // 최대 체력
+    public int MaxHealth => _stats.BasePlayerDatasSO.MaxHealth; // 최대 체력
     public bool IsDead => _stats.CurrentHealth <= 0; // 사망 여부
     public bool IsInvincible => _stats.IsInvincible; // 무적 여부
 
@@ -80,7 +80,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         int stiffenessAmount = damageData.StiffnessAmount;
         if (_stats.IsDefending)
         {
-            damageAmount = Mathf.RoundToInt(damageAmount * _stats.CombatData.DefendDamageReductionRate);
+            damageAmount = Mathf.RoundToInt(damageAmount * _stats.BasePlayerDatasSO.CombatData.DefendDamageReductionRate);
             stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
         }
 
@@ -126,17 +126,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void LightStagger()
     {
-        _damageData.KnockbackCurve = _stats.CombatData.KnockbackCurve;
+        _damageData.KnockbackCurve = _stats.BasePlayerDatasSO.CombatData.KnockbackCurve;
 
         if (_stats.IsDefending)
         {
-            _stiffnessDuration = _stats.CombatData.DefendStaggerDuration;
-            _knockbackForce = _stats.CombatData.DefendKnockbackForce;
+            _stiffnessDuration = _stats.BasePlayerDatasSO.CombatData.DefendStaggerDuration;
+            _knockbackForce = _stats.BasePlayerDatasSO.CombatData.DefendKnockbackForce;
         }
         else
         {
-            _stiffnessDuration = _stats.CombatData.LightStaggerDuration;
-            _knockbackForce = _stats.CombatData.LightKnockbackForce;
+            _stiffnessDuration = _stats.BasePlayerDatasSO.CombatData.LightStaggerDuration;
+            _knockbackForce = _stats.BasePlayerDatasSO.CombatData.LightKnockbackForce;
             _stats.SetDamagedType(PlayerDamagedType.Normal);
         }
     }

@@ -211,7 +211,7 @@ public class PlayerSkill : MonoBehaviour, IDisposable, IEventListener<SkillType>
         }
 
         if (Physics.Raycast(transform.position, moveDirection, out RaycastHit hitInfo,
-            _flashSkillSO.MoveDistance, _stats.ObstacleLayerMask))
+            _flashSkillSO.MoveDistance, _stats.BasePlayerDatasSO.ObstacleLayerMask))
         {
             distance = hitInfo.distance - (GetComponent<Collider>().bounds.size.z / 2);
         }
