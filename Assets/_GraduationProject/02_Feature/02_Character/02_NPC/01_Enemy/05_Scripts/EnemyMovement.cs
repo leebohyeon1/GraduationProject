@@ -98,7 +98,6 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
-        Debug.Log("Stopping Movement");
         aIPath.SetPath(null);
         _runner.AnimationBool("Walk", false);
         _runner.AnimationBool("Run", false);
