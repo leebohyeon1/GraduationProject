@@ -5,6 +5,14 @@ public class Monster_HeatSystem : HeatSystem
     [SerializeField] private int _overheatTime = 2;
     public bool IsOverHeat { get; private set; }
     public DamageData damageData;
+    public override void ChangeHeat(int amount)
+    {
+        base.ChangeHeat(amount);
+        if (!_enemy.HealthBar)
+        {
+            _enemy.BillboardUI.SetHealthBar(MaxHeat, CurrentHeat);
+        }
+    }
     protected override void OverHeat()
     {
         SetHeat(0);

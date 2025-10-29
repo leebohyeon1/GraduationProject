@@ -192,7 +192,8 @@ public class Enemy : MonoBehaviour
 
         }
     }
-
+    [Tooltip("체력 or 열기")]
+    public bool HealthBar;
 
     #region gizmo
     [Header("Attack Range")]

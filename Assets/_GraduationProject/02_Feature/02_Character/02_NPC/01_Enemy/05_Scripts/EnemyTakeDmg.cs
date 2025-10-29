@@ -35,6 +35,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
     }
+    
     public bool Knockbackable { get; private set; } = true;
     public void SetKnockbackable(bool value)
     {
@@ -51,7 +52,10 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
-        _owner.BillboardUI.SetHealthBar(Maxhealth,Health);
+        if (_owner.HealthBar)
+        {
+            _owner.BillboardUI.SetHealthBar(Maxhealth,Health);
+        }
         if (Knockbackable)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;

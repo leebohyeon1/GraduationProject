@@ -24,7 +24,7 @@ public class BillboardUI : MonoBehaviour
             return;
         }
         float ratio = (float)CurrentValue / MaxValue;
-        Debug.Log($"SliderValue: {slider.value}, ratio: {ratio}, MaxValue: {CurrentValue}");
+        Debug.Log($"SliderValue: {slider.value}, ratio: {ratio}, currentvalue: {CurrentValue}");
         slider.value = Mathf.Clamp01(ratio);
     }
     private void LateUpdate()
