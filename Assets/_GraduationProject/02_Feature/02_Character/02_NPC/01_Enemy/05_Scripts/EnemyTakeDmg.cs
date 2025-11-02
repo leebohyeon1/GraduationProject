@@ -14,13 +14,18 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public int Maxhealth => _maxHealth;
     private CharacterController _characterController;
     private Coroutine _KnockbackCoroutine;
-    [Header("Knockback Settings")]
-    [SerializeField] AnimationCurve _KnockbackCurve;
-    [SerializeField] float _KnockbackDuration = 0.5f;
     public bool IsInvincible => throw new NotImplementedException();
-    [SerializeField] float _KnockbackForce = 5f;
     Enemy _owner;
-
+    public void InitializeHealth(int maxHealth, Enemy owner)
+    {
+        _owner = owner;
+        _maxHealth = maxHealth;
+        Health = maxHealth;
+        if (_owner.animator.GetBool("Die"))
+            _owner.animator.SetBool("Die", false);
+        _characterController = _owner.GetComponent<CharacterController>();
+        SetKnockbackable(true);
+    }
 
     public void Attack(IDamageable target)
     {
@@ -30,6 +35,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
     }
+    
     public bool Knockbackable { get; private set; } = true;
     public void SetKnockbackable(bool value)
     {
@@ -46,7 +52,10 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
         Health -= amount;
-        Debug.Log($"Enemy took {amount} damage. Current Health: {Health}");
+        if (_owner.HealthBar)
+        {
+            _owner.BillboardUI?.SetHealthBar(Maxhealth,Health);
+        }
         if (Knockbackable)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
@@ -76,16 +85,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
         _KnockbackCoroutine = null;
     }
-    public void InitializeHealth(int maxHealth, Enemy owner)
-    {
-        _owner = owner;
-        MaxHealth = maxHealth;
-        Health = maxHealth;
-        if (_owner.animator.GetBool("Die"))
-            _owner.animator.SetBool("Die", false);
-        _characterController = _owner.GetComponent<CharacterController>();
-        SetKnockbackable(true);
-    }
+
 
     public void Die()
     {

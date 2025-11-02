@@ -11,7 +11,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "FirstCounterAttack";
     protected override Type p_nextAttackState => typeof(PlayerSecondCounterAttackState);
-    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[0];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CounterAttackDatas[0];
 
     public PlayerFirstCounterAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -20,6 +20,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     {
         p_context.Events.OnAttackFinish += HandleAttackFinish;
         p_context.Events.OnAttackPerform += HandleAttackPerform;
+        p_context.Events.OnFirstCounterAttackExplosion += HandleFirstCounterAttackExplosion;
 
         p_nextState = null;
 
@@ -28,7 +29,6 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         p_context.Combat.SetCanCounterAttack(false);
         p_context.Stats.IsCounterAttack = true;
 
-        p_context.Heat.SetHeat(0);
         StartAttackMovement();
         p_context.Events.TriggerFirstCounterAttackStart();
     }
@@ -37,6 +37,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     {
         p_context.Events.OnAttackFinish -= HandleAttackFinish;
         p_context.Events.OnAttackPerform -= HandleAttackPerform;
+        p_context.Events.OnFirstCounterAttackExplosion -= HandleFirstCounterAttackExplosion;
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
 
@@ -51,7 +52,9 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
     protected override void HandleAttackPerform()
     {
         p_context.Combat.ExcuteFirstCounterAttack(p_AttackData);
-        p_context.Events.TriggerFirstCounterAttackAffect(p_context.Combat.CounterableTarget.GetComponent<Collider>(), p_context.Heat.CurrentTier);
+        p_context.Events.TriggerFirstCounterAttackAffect(p_context.Combat.CounterableTarget.GetComponent<Collider>());
+
+        
     }
 
     /// <summary>
@@ -90,7 +93,7 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
         {
             p_nextState = p_nextAttackState;
         }
-        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if (p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             p_nextState = typeof(PlayerDodgeState);
         }
@@ -115,6 +118,57 @@ public class PlayerFirstCounterAttackState : PlayerAttackBaseState
 
         Quaternion targetRotation = Quaternion.LookRotation(-p_context.Combat.CounterableTarget.transform.forward);
         p_context.Movement.SetRotation(targetRotation);
+    }
+
+    private void HandleFirstCounterAttackExplosion()
+    {
+        Collider targetCollider = p_context.Combat.CounterableTarget.GetComponent<Collider>();
+        p_context.Heat.IncreaseHeatOnCounterAttack(targetCollider);
+        
+        switch (p_context.Heat.CurrentTier)
+        {
+            case 1: p_context.Events.PlayFeedback(PlayerFeedbackType.Tier1CounterAttackFirstHit_FB, targetCollider.transform.position); break;
+            case 2: p_context.Events.PlayFeedback(PlayerFeedbackType.Tier2CounterAttackFirstHit_FB, targetCollider.transform.position); break;
+            case 3: p_context.Events.PlayFeedback(PlayerFeedbackType.Tier3CounterAttackFirstHit_FB, targetCollider.transform.position); break;
+        }
+
+        p_context.Heat.SetHeat(0);
+
+        // 이동 시작
+
+        float distance = p_AttackData.AttackMoveDistance;
+
+        Collider playerCollider = p_context.GetComponent<Collider>();
+
+        // 전방에 장애물이 있으면 이동 거리 조정
+        if (Physics.BoxCast(p_context.transform.position, playerCollider.bounds.extents * 1.2f,
+           -p_context.transform.forward, out var hitInfo,
+           p_context.transform.rotation,
+            p_AttackData.AttackMoveDistance,
+            p_context.Stats.BasePlayerDatasSO.CombatData.AttackLayerMask | p_context.Stats.BasePlayerDatasSO.ObstacleLayerMask))
+        {
+            distance = hitInfo.distance + (p_context.GetComponent<Collider>().bounds.size.z / 2);
+        }
+
+        Vector3 moveDirection = -p_context.transform.forward;
+        float duration = p_AttackData.AttackMoveDuration;
+        AnimationCurve curve = p_AttackData.AttackMoveCurve;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 displacement = moveDirection * (currentDistance - x);
+                Log.Print(displacement);
+                p_context.Movement.ForceMove(displacement);
+                currentDistance = x;
+            },
+            distance,
+            duration)
+            .SetEase(curve)
+            .SetId(p_animationTrigger)
+            .SetUpdate(UpdateType.Fixed);
     }
 
 }

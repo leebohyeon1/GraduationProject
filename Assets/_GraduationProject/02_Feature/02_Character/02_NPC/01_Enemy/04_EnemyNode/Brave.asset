@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Stun
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 250, y: -674}
+  position: {x: 250, y: -239}
   nodes:
   - {fileID: 5214673368872433589}
   - {fileID: -3662235796367844752}
@@ -128,7 +128,6 @@ MonoBehaviour:
   position: {x: 1, y: 90}
   nodes:
   - {fileID: -7245226355301169087}
-  - {fileID: -4138251438356461519}
   - {fileID: -4738368884081098000}
   - {fileID: 1196946236353706419}
   - {fileID: -7071762007778814168}
@@ -211,23 +210,6 @@ MonoBehaviour:
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
   position: {x: 1525, y: -148}
---- !u!114 &-4138251438356461519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: TakeDamage
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 250, y: -299}
-  nodes:
-  - {fileID: 7027237538290763944}
-  - {fileID: 3383802295068753850}
-  - {fileID: 8246282568877846733}
 --- !u!114 &-3662235796367844752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 453, y: -635}
+  position: {x: 453, y: -200}
   animationName: Stun
 --- !u!114 &-2923115925387942299
 MonoBehaviour:
@@ -352,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 230, y: 167}
+  position: {x: 234, y: 166}
   subTreeToRun: {fileID: 11400000, guid: 9832662490adc0b4ca7ab4a5b49095da, type: 2}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
@@ -447,19 +429,6 @@ MonoBehaviour:
   skillName: Attack
   cooldownDuration: 3
   HeatCooldown: 1
---- !u!114 &3383802295068753850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d04602de3090e249a3d21a2bfdca92a, type: 3}
-  m_Name: Condition_Take Damage
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_TakeDamage
-  position: {x: 465, y: -373}
 --- !u!114 &4362508772626884377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
   m_Name: Condition_Is Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 440, y: -733}
+  position: {x: 440, y: -298}
 --- !u!114 &5529467211719327576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,19 +544,6 @@ MonoBehaviour:
   m_Name: Action_Engage Combat
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -336}
---- !u!114 &7027237538290763944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fca661cc87dc2d438133a02feffbc61, type: 3}
-  m_Name: Condition_Is Actionable
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
-  position: {x: 464, y: -450}
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,6 +598,8 @@ MonoBehaviour:
   m_Name: Take Damage
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
   position: {x: 465, y: -296}
+  runner: {fileID: 0}
+  SetEnter: 1
   animationName: Hit
 --- !u!114 &8440268503078126261
 MonoBehaviour:

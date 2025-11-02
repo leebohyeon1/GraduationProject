@@ -78,17 +78,19 @@ public class PlayerChargeState : BaseState<Player>
                 int tier = Mathf.FloorToInt(_chargeGuage / 25f) == 4 ? 3 : Mathf.FloorToInt(_chargeGuage / 25f);
                 p_context.Events.TriggerChargeAttackStart(tier);
 
-                p_context.Heat.ChangeHeat(-Mathf.FloorToInt(_chargeGuage));
+       
                 p_stateMachine.ChangeState<PlayerChargeAttackState>();   
             }
             else
             {
                 p_stateMachine.ChangeState<PlayerIdleState>();
+                p_context.Heat.TriggerChargeGuageChanged(0f);
             }
         }
-        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.CombatData.DodgeCooldown)
+        else if(p_context.Input.DodgeInput && Time.time - p_context.Movement.LastDodgeTime >= p_context.Stats.BasePlayerDatasSO.CombatData.DodgeCooldown)
         {
             p_stateMachine.ChangeState <PlayerDodgeState>();
+            p_context.Heat.TriggerChargeGuageChanged(0f);
         }
 
         // 조준 방향으로 회전
@@ -102,7 +104,6 @@ public class PlayerChargeState : BaseState<Player>
     {
         p_context.Heat.OnTierChanged -= HandleTierChanged;
                 
-        p_context.Heat.TriggerChargeGuageChanged(0f);
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerChargeCancel();

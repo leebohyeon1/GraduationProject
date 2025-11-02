@@ -25,8 +25,7 @@ public class Enemy : MonoBehaviour
     public Vector3 StartPos { get; private set; }
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
-    Rigidbody rb;
-
+    public BillboardUI BillboardUI{ get;  private set; }
 
     public Vector3[] wayPoints;
     public int wayPointIndex = 0;
@@ -73,8 +72,8 @@ public class Enemy : MonoBehaviour
     protected void Awake()
     {
         player = GameObject.FindFirstObjectByType<Player>();
-        rb = GetComponent<Rigidbody>();
-
+        BillboardUI = GetComponentInChildren<BillboardUI>();
+        BillboardUI?.Initialize();
         animator = GetComponent<Animator>();
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
@@ -105,6 +104,7 @@ public class Enemy : MonoBehaviour
         heatSystem.Init(ActorType.Monster);
         Movement.StopMovement();
         SetState(EnemyState.Idle);
+        BillboardUI?.Initialize();
 
     }
     void Start()
@@ -192,7 +192,8 @@ public class Enemy : MonoBehaviour
 
         }
     }
-
+    [Tooltip("체력 or 열기")]
+    public bool HealthBar;
 
     #region gizmo
     [Header("Attack Range")]

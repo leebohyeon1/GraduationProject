@@ -18,6 +18,10 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     private float _heatTierTimer; // 열기 티어 타이머
     private ActorType _actorType; // 액터 타입
 
+    private float _chargeGuage = 0f; // 차지 게이지
+    private bool _isAttackAffect = false;
+
+
     public bool IsOverHeat => _stats.IsOverHeat; // 과열 상태 여부
     public bool IsHeatLock => _stats.IsHeatlock; // 열기 변경 잠금 여부
     public ActorType ActorType => _actorType;
@@ -25,7 +29,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     public int MaxHeat => 100;  // 최대 열기
     public int CurrentHeat => _stats.CurrentHeat; // 현재 열기
     public int CurrentTier => GetTier();    // 현재 티어
-
+    public float CurrentChargeGuage => _chargeGuage; // 현재 차지 게이지
 
     private Sequence _overheatSequence; // 과열 시퀀스
     private Sequence _battleOutSequence; // 전투 종료 시퀀스
@@ -35,7 +39,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
 
     public event Action<float> OnChargeGuageChanged;
 
-    private bool _isAttackAffect = false;
 
     /// <summary>
     /// 열기 시스템을 초기화합니다.
@@ -58,9 +61,9 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         _events.OnChargeAttackAffect += HandleChargeAttackAffect;
         _events.OnParryAffect += HandleParryAffect;
         _events.OnRangedAttackAffect += HandleRangedAttackAffect;
-        _events.OnSecondCounterAttackAffect += HandleSecondCounterAttackAffect;
         _events.OnOverHeatFinish += HandleOverHeatFinish;
         _events.OnBoostStart += HandleBoostStart;
+        OnChargeGuageChanged += HandleChargeGuageChanged;
     } 
 
     /// <summary>
@@ -76,9 +79,9 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         _events.OnChargeAttackAffect -= HandleChargeAttackAffect;
         _events.OnParryAffect -= HandleParryAffect;
         _events.OnRangedAttackAffect -= HandleRangedAttackAffect;
-        _events.OnSecondCounterAttackAffect -= HandleSecondCounterAttackAffect;
         _events.OnOverHeatFinish -= HandleOverHeatFinish;
         _events.OnBoostStart -= HandleBoostStart;
+        OnChargeGuageChanged -= HandleChargeGuageChanged;
     }
 
     #region SetHeat
@@ -249,6 +252,7 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     public void IncreaseHeatOnCharge(SourceMap sourceMap, float chargeGuage)
     {
         OnChargeGuageChanged?.Invoke(chargeGuage);
+
         if (chargeGuage >= CurrentHeat)
         {
             SetHeat(Mathf.FloorToInt(chargeGuage));
@@ -314,7 +318,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
             int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
             heatable.ChangeHeat(deltaHeat);
         }
-
     }
 
     /// <summary>
@@ -340,6 +343,8 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     {
         OnChargeGuageChanged?.Invoke(guage);
     }
+
+
     #endregion
 
     #region Event Handlers
@@ -416,14 +421,6 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
     }
 
     /// <summary>
-    /// 카운터 공격 피격 시 호출됩니다.
-    /// </summary>
-    private void HandleSecondCounterAttackAffect(Collider collider)
-    {
-        IncreaseHeatOnCounterAttack(collider);
-    }
-
-    /// <summary>
     /// 과열 종료 시 호출됩니다.
     /// </summary>
     private void HandleOverHeatFinish()
@@ -437,6 +434,11 @@ public class PlayerHeat : MonoBehaviour, IHeatable ,  IDisposable
         {
             SetHeat(100);
         }
+    }
+
+    private void HandleChargeGuageChanged(float guage)
+    {
+        _chargeGuage = guage;
     }
     #endregion
 }

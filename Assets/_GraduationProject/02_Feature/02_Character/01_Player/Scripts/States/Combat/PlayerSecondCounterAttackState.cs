@@ -11,7 +11,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "SecondCounterAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackData p_AttackData => p_context.Stats.CombatData.CounterAttackDatas[1];
+    protected override PlayerAttackData p_AttackData => p_context.Stats.CounterAttackDatas[1];
 
     public PlayerSecondCounterAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -50,7 +50,6 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
     {
         float distance = p_AttackData.AttackMoveDistance;
 
-        // 전방에 장애물이 있으면 이동 거리 조정
         Collider playerCollider = p_context.GetComponent<Collider>();
 
         // 전방에 장애물이 있으면 이동 거리 조정
@@ -58,7 +57,7 @@ public class PlayerSecondCounterAttackState : PlayerAttackBaseState
            -p_context.transform.forward, out var hitInfo, 
            p_context.transform.rotation,
             p_AttackData.AttackMoveDistance,
-            p_context.Stats.CombatData.AttackLayerMask | p_context.Stats.ObstacleLayerMask))
+            p_context.Stats.BasePlayerDatasSO.CombatData.AttackLayerMask | p_context.Stats.BasePlayerDatasSO.ObstacleLayerMask))
         {
             distance = hitInfo.distance + (p_context.GetComponent<Collider>().bounds.size.z / 2);
         }
