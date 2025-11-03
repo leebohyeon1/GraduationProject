@@ -164,12 +164,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     {
         if (_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab == null) return;
 
-        GameObject projectileObj = Instantiate(_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
+        //GameObject projectileObj = Instantiate(_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
 
-        if (projectileObj.TryGetComponent<Projectile>(out var projectile))
-        {
-            projectile.Initialize(_stats.RangedAttackData.AttackDamage, _stats.RangedAttackData.ProjectileSpeed, gameObject, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
-        }
+        //if (projectileObj.TryGetComponent<Projectile>(out var projectile))
+        //{
+        //    projectile.Initialize(_stats.RangedAttackData.AttackDamage, _stats.RangedAttackData.ProjectileSpeed, gameObject, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
+        //}
     }
     #endregion
 
