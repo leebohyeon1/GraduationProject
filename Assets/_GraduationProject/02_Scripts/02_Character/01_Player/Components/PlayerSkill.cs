@@ -227,7 +227,7 @@ public class PlayerSkill : MonoBehaviour, IDisposable, IEventListener<SkillType>
         {
             if(collider.TryGetComponent<IDamageable>(out var damageable))
             {
-                damageable.TakeDamage(_flashSkillSO.FlashDamage, 0, new DamageData(0, transform));
+                //damageable.TakeDamage(_flashSkillSO.FlashDamage, 0, new DamageData(0, transform));
             }
         }
     }

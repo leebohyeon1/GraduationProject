@@ -148,8 +148,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         {
             if (obj.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
             {
-                damageable.TakeDamage(attackData.AttackDamage,0,new DamageData(0, transform, 
-                    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
+                //damageable.TakeDamage(attackData.AttackDamage,0,new DamageData(0, transform, 
+                //    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
             }
         }
     }
@@ -270,8 +270,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
 
             if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
             {
-                damageable.TakeDamage(attackData.AttackDamage,0, new DamageData(0, transform, 
-                    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
+                //damageable.TakeDamage(attackData.AttackDamage,0, new DamageData(0, transform, 
+                //    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
             }
         }
     }

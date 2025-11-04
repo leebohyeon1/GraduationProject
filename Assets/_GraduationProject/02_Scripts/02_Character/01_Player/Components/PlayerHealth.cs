@@ -185,7 +185,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         if(_stats.IsOverHeat && !_stats.SkillData.IsMaxLevelBoost)
         {
-            TakeDamage(damage, 0, new DamageData(0, transform));
+            //TakeDamage(new DamageData(0, transform));
         }
     }
 
@@ -195,5 +195,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void ResetDamageData()
     {
         _damageData = new DamageData();
+    }
+
+    public void TakeDamage(DamageData damageData)
+    {
+        throw new NotImplementedException();
     }
 }

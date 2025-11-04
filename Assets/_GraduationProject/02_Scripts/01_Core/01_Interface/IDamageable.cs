@@ -27,10 +27,7 @@ public interface IDamageable
     /// <summary>
     /// 피해를 받는 함수
     /// </summary>
-    /// <param name="damageAmount">피해량</param>
-    /// <param name="stiffenessAmount">경직도</param>
-    /// <param name="heatTier">열기 단계</param>
-    public void TakeDamage(int damageAmount,int heatTier, DamageData damageData);
+    public void TakeDamage(DamageData damageData);
 
     /// <summary>
     /// 체력 변경 이벤트
@@ -46,17 +43,34 @@ public interface IDamageable
 [Serializable]
 public struct DamageData
 {
-    public int StiffnessAmount;
     public Transform AttackerTransform;
+    public AttackType AttackType;
+    public int DamageAmount;
+    public int StiffnessAmount;
+    
     public AnimationCurve KnockbackCurve;
     public float KnockbackDuration;
     public float KnockbackForce;
-    public DamageData( int stiffnessAmount, Transform attackerTransform, AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f)
+
+
+    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f)
     {
-        StiffnessAmount = stiffnessAmount;
         AttackerTransform = attackerTransform;
+        AttackType = attackType;
+        DamageAmount = damageAmount;    
+        StiffnessAmount = stiffnessAmount;
         KnockbackCurve = knockbackCurve;
         KnockbackDuration = knockbackDuration;
         KnockbackForce = knockbackForce;
     }
 }
+
+[Serializable]
+public enum AttackType
+{
+    Light,
+    Middle,
+    Heavy,
+    Range
+}
+

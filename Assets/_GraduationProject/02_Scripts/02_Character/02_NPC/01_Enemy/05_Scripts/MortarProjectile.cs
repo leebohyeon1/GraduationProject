@@ -44,7 +44,7 @@ public class MortarProjectile : MonoBehaviour
                 }
             if (hit.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
-                damageable.TakeDamage(stat.FinalDamage, 0, new DamageData(20, _owner.transform));
+                // damageable.TakeDamage(stat.FinalDamage, 0, new DamageData(20, _owner.transform));
             }
 
         }

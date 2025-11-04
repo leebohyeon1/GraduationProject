@@ -95,5 +95,9 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
     }
-    
+
+    public void TakeDamage(DamageData damageData)
+    {
+        throw new NotImplementedException();
+    }
 }
