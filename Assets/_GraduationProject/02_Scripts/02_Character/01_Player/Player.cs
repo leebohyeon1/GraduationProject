@@ -177,7 +177,7 @@ public class Player : DIMonoBehaviour
     {
         // Hit 상태로의 전환 (모든 상태에서 가능)
         _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && !Stats.IsCounterAttack && Stats.IsDamaged);
+            !Health.IsDead && Stats.IsDamaged);
     
         // Idle 상태에서의 전환
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
@@ -238,10 +238,7 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void SubscribeToEvents()
     {
-        if (_stats != null)
-        {
-            _stats.OnAnimationSpeedChanged += HandleAnimationSpeedChanged;
-        }
+
     }
     
     /// <summary>
@@ -253,20 +250,6 @@ public class Player : DIMonoBehaviour
         Movement.Dispose();
         Health.Dispose();
         Combat.Dispose();
-
-        if (_stats != null)
-        {
-            _stats.OnAnimationSpeedChanged -= HandleAnimationSpeedChanged;
-        }
-    }
-
-    /// <summary>
-    /// 애니메이션 속도 변경을 처리합니다.
-    /// </summary>
-    /// <param name="speed">새로운 속도</param>
-    private void HandleAnimationSpeedChanged(float speed)
-    {
-        _animator.speed = speed;
     }
     #endregion
 }

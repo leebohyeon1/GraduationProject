@@ -57,14 +57,11 @@ public class PlayerCombatData
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
-    public PlayerAttackData[] AttackDatas; // 일반 공격 데이터 배열
+    public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
     public float LastAttackDelay; // 마지막 공격 후 딜레이
 
     [Header("ChargeAttack")]
-    public PlayerAttackData ChargeAttackData; // 차지 공격 데이터
-
-    [Header("RangedAttack")]
-    public RangedAttackData RangedAttackData; // 원거리 공격 데이터
+    public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
 
     [Header("Parry")]
     public Vector3 ParryRadius; // 패링 범위
@@ -73,53 +70,7 @@ public class PlayerCombatData
 
     [Header("CounterAttack")]
     public float CounterAttackWindow; // 반격 가능 시간
-    public PlayerAttackData[] CounterAttackDatas; // 반격 데이터 배열
-
-    /// <summary>
-    /// 깊은 복사를 위한 데이터 클론 생성
-    /// </summary>
-    /// <returns>깊은 복사된 전투 데이터</returns>
-    public PlayerCombatData Clone()
-    {
-        PlayerCombatData newCombatData = new PlayerCombatData
-        {
-            DodgeSpeed = DodgeSpeed,
-            DodgeCooldown = DodgeCooldown,
-            KnockbackCurve = KnockbackCurve,
-
-            DefendDamageReductionRate = DefendDamageReductionRate,
-            DefendStaggerDuration = DefendStaggerDuration,
-            DefendKnockbackForce = DefendKnockbackForce,
-
-            LightStaggerDuration = LightStaggerDuration,
-            LightKnockbackForce = LightKnockbackForce,
-
-            AttackLayerMask = AttackLayerMask,
-            LastAttackDelay = LastAttackDelay,
-            ChargeAttackData = ChargeAttackData,
-            RangedAttackData = RangedAttackData,
-
-            ParryRadius = ParryRadius,
-            ParryMoveDuration = ParryMoveDuration,
-            ParryMoveForce = ParryMoveForce,
-
-            CounterAttackWindow = CounterAttackWindow
-        };
-
-        if (AttackDatas != null)
-        {
-            newCombatData.AttackDatas = new PlayerAttackData[AttackDatas.Length];
-            Array.Copy(AttackDatas, newCombatData.AttackDatas, AttackDatas.Length);
-        }
-
-        if (CounterAttackDatas != null)
-        {
-            newCombatData.CounterAttackDatas = new PlayerAttackData[CounterAttackDatas.Length];
-            Array.Copy(CounterAttackDatas, newCombatData.CounterAttackDatas, CounterAttackDatas.Length);
-        }
-
-        return newCombatData;
-    }
+    public PlayerAttackDataSO[] CounterAttackDatas; // 반격 데이터 배열
 }
 
 /// <summary>
@@ -154,31 +105,5 @@ public struct PlayerAttackData
     public AnimationCurve KnockBackCurve;
     public float KnockBackDuration;
     public float KnockBackForce;
-}
-
-/// <summary>
-/// 플레이어의 원거리 공격 데이터를 정의하는 구조체입니다.
-/// 차지 시간, 발사체 속도, 데미지 등을 포함합니다.
-/// </summary>
-[Serializable]
-public struct RangedAttackData
-{
-    [Header("Charge Stats")]
-    [Tooltip("원거리 공격 차지 시간")]
-    public float ChargeTime;
-
-    [Header("Attack Stats")]
-    [Tooltip("원거리 공격 데미지")]
-    public int AttackDamage;
-
-    [Header("Projectile")]
-    public GameObject ProjectilePrefab; // 발사체 프리팹
-    [Tooltip("발사체 이동 속도")]
-    public float ProjectileSpeed;
-    [Tooltip("발사체 이동 애니메이션 커브 (가속/감속 등)")]
-    public AnimationCurve ProjectileMoveCurve;
-
-    [Header("Attack Timing")]
-    public float AttackDelay; // 공격 후 딜레이
 }
 

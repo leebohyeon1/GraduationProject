@@ -74,21 +74,20 @@ public class PlayerInputHandler : MonoBehaviour
 
         // 이벤트 구독
         _inputReader.MoveEvent += OnMove;
+        _inputReader.LookEvent += OnLook;
+        _inputReader.MousePositionEvent += OnMousePosition;
+
         _inputReader.AttackEvent += OnAttack;
         _inputReader.AttackHoldEvent += OnAttackHold;
         _inputReader.AttackCancelledEvent += OnAttackCancelled;
-        _inputReader.RangedAttackEvent += OnRangedAttack;
-        _inputReader.RangedAttackCancelledEvent += OnRangedAttackCancelled;
+
         _inputReader.DodgeEvent += OnDodge;
         _inputReader.DefendEvent += OnDefend;
         _inputReader.DefendCancelledEvent += OnDefendCancelled;
-        _inputReader.LookEvent += OnLook;
-        _inputReader.MousePositionEvent += OnMousePosition;
-        _inputReader.SkillEvent += OnSkill;
-        _inputReader.SkillChangeEvent += OnSkillChange;
-        _inputReader.SkillChangeCancelEvent += OnSkillChangeCancel;
+
+
         _inputReader.InteractEvent += OnInteract;
-        _inputReader.PotionEvent += OnPotion;
+
     }
     
     private void OnDisable()
@@ -100,21 +99,19 @@ public class PlayerInputHandler : MonoBehaviour
 
         // 이벤트 구독 해제
         _inputReader.MoveEvent -= OnMove;
+        _inputReader.LookEvent -= OnLook;
+        _inputReader.MousePositionEvent -= OnMousePosition;
+
         _inputReader.AttackEvent -= OnAttack;
         _inputReader.AttackHoldEvent -= OnAttackHold;
         _inputReader.AttackCancelledEvent -= OnAttackCancelled;
-        _inputReader.RangedAttackEvent -= OnRangedAttack;
-        _inputReader.RangedAttackCancelledEvent -= OnRangedAttackCancelled;
+
         _inputReader.DodgeEvent -= OnDodge;
         _inputReader.DefendEvent -= OnDefend;
         _inputReader.DefendCancelledEvent -= OnDefendCancelled;
-        _inputReader.LookEvent -= OnLook;
-        _inputReader.MousePositionEvent -= OnMousePosition;
-        _inputReader.SkillEvent -= OnSkill;
-        _inputReader.SkillChangeEvent -= OnSkillChange;
-        _inputReader.SkillChangeCancelEvent -= OnSkillChangeCancel;
+
+
         _inputReader.InteractEvent -= OnInteract;
-        _inputReader.PotionEvent -= OnPotion;
     }
     
     private void OnDestroy()
@@ -127,21 +124,18 @@ public class PlayerInputHandler : MonoBehaviour
 
     // 각 입력 이벤트에 대한 콜백 함수들
     private void OnMove(Vector2 moveInput) => _moveInput = moveInput;
+    private void OnLook(Vector2 lookInput) => _lookInput = lookInput;
+    private void OnMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
+
     private void OnAttack() => _attackInput = true;
     private void OnAttackHold() => _attackHeldInput = true;
     private void OnAttackCancelled() { _attackInput = false; _attackHeldInput = false; }
-    private void OnRangedAttack() => _rangedAttackInput = true;
-    private void OnRangedAttackCancelled() => _rangedAttackInput = false;
+    
     private void OnDodge() => _dodgeInput = true;
     private void OnDefend() => _defendInput = true;
     private void OnDefendCancelled() => _defendInput = false;
-    private void OnLook(Vector2 lookInput) => _lookInput = lookInput;
-    private void OnMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
-    private void OnSkill() => _skillInput = true;
-    private void OnSkillChange() => _skilChangeInput = true;
-    private void OnSkillChangeCancel() => _skilChangeInput = false;
+
     private void OnInteract() => _InteractInput = true;
-    private void OnPotion() => _potionInput = true;
 
     /// <summary>
     /// 매 프레임 마지막에 호출되어 일회성 입력 상태를 초기화합니다.

@@ -18,15 +18,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// 전투 중심점의 위치
     /// </summary>
     private Vector3 _combatCenter;
-
-    /// <summary>
-    /// 카운터 공격 가능 여부
-    /// </summary>
-    private bool _canCounterAttack;
-    /// <summary>
-    /// 카운터 공격 가능 오브젝트
-    /// </summary>
-    private GameObject _counterableTarget = null;
     
     /// <summary>
     /// 마지막 전투 시간
@@ -46,9 +37,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     #endregion
 
     #region Properties
-    public bool CanCounterAttack => _canCounterAttack; // 카운터 공격 가능 여부
-    public GameObject CounterableTarget => _counterableTarget; // 카운터 공격 대상
-
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
     #endregion
@@ -112,7 +100,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// 공격의 중심 위치를 계산합니다.
     /// </summary>
     /// <returns>공격 박스의 중심 위치</returns>
-    private Vector3 GetAttackCenter(PlayerAttackData attackData)
+    private Vector3 GetAttackCenter(PlayerAttackDataSO attackData)
     {
         return _combatCenter + transform.forward * (attackData.AttackRadius.z / 2);
     }
@@ -123,7 +111,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <returns>타격한 대상의 콜라이더 배열</returns>
-    public Collider[] ExecuteAttack(PlayerAttackData attackData)
+    public Collider[] ExecuteAttack(PlayerAttackDataSO attackData)
     {
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
@@ -140,7 +128,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
-    private void ProcessHitEnemies(PlayerAttackData attackData, Collider[] hitObjects)
+    private void ProcessHitEnemies(PlayerAttackDataSO attackData, Collider[] hitObjects)
     {
         foreach (Collider obj in hitObjects)
         {
@@ -150,24 +138,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
                 //    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
             }
         }
-    }
-    #endregion
-
-    #region RangedAttack
-    /// <summary>
-    /// 원거리 공격을 실행합니다.
-    /// </summary>
-    /// <param name="firePoint">발사 지점</param>
-    public void FireProjectile(Transform firePoint)
-    {
-        if (_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab == null) return;
-
-        //GameObject projectileObj = Instantiate(_stats.BasePlayerDatasSO.CombatData.RangedAttackData.ProjectilePrefab, firePoint.position, firePoint.rotation);
-
-        //if (projectileObj.TryGetComponent<Projectile>(out var projectile))
-        //{
-        //    projectile.Initialize(_stats.RangedAttackData.AttackDamage, _stats.RangedAttackData.ProjectileSpeed, gameObject, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
-        //}
     }
     #endregion
 
@@ -200,103 +170,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
 
     #endregion
 
-    #region CounterAttack
-    /// <summary>
-    /// 일정 시간 동안 카운터 공격 가능 상태를 활성화/비활성화합니다.
-    /// </summary>
-    /// <param name="delayTime">활성화 유지 시간</param>
-    public void ToggleCanCounter(float delayTime)
-    {
-        Sequence sequence = DOTween.Sequence();
-        sequence.AppendCallback(() => SetCanCounterAttack(true));
-        sequence.AppendInterval(delayTime);
-        sequence.AppendCallback(() => SetCanCounterAttack(false));
-        sequence.Play();
-    }
-
-    /// <summary>
-    /// 카운터 공격 가능 여부를 설정합니다.
-    /// </summary>
-    /// <param name="canCounterAttack">가능 여부</param>
-    public void SetCanCounterAttack(bool canCounterAttack)
-    {
-        _canCounterAttack = canCounterAttack;
-    }
-
-    /// <summary>
-    /// 주변에 카운터 가능한 적이 있는지 확인합니다.
-    /// </summary>
-    /// <returns>카운터 가능한 적 존재 여부</returns>
-    public bool CanIsScanCounterable()
-    {
-        Collider[] colliders = Physics.OverlapBox(transform.position, _stats.CounterAttackDatas[0].AttackRadius / 2, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
-
-        float minDistance = Mathf.Infinity;
-        Collider closestCollider = null;
-        foreach (var col in colliders)
-        {
-            if (col.TryGetComponent<ICounterable>(out var counterable) && counterable.IsCounterable)
-            {
-                float distance = Vector3.Distance(transform.position, col.transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestCollider = col;
-                }
-            }
-        }
-
-        if (closestCollider != null)
-        {
-            _counterableTarget = closestCollider.gameObject;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// 첫 번째 카운터 공격을 실행합니다.
-    /// </summary>
-    public void ExcuteFirstCounterAttack(PlayerAttackData attackData)
-    {
-        if (_counterableTarget != null)
-        {
-            _counterableTarget.GetComponent<ICounterable>().ExecuteCounterEffect();
-
-            if (_counterableTarget.TryGetComponent<IDamageable>(out var damageable))
-            {
-                //damageable.TakeDamage(attackData.AttackDamage,0, new DamageData(0, transform, 
-                //    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
-            }
-        }
-    }
-
-    /// <summary>
-    /// 두 번째 카운터 공격을 실행합니다. (현재 미구현)
-    /// </summary>
-    public void ExcuteSecondCounterAttack(PlayerAttackData attackData)
-    {
-        // TODO: 두 번째 카운터 공격 로직 구현
-    }
-
-    /// <summary>
-    /// 카운터 공격 대상을 초기화합니다.
-    /// </summary>
-    public void ClearCounterTarget()
-    {
-        _counterableTarget = null;
-    }
-
-    #endregion
-
-    private void HandleRangedAttack(Transform firePoint)
-    {
-        FireProjectile(firePoint);
-    }
-
     private void HandleBattleStateChanged(bool isBattleState)
     {
         if (isBattleState)
@@ -316,9 +189,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         DrawActionGizmo(_stats.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_stats.AttackDatas[1].AttackRadius, Color.orangeRed);
         DrawActionGizmo(_stats.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_stats.ChargeAttackData.AttackRadius, Color.indianRed);
         DrawActionGizmo(_stats.BasePlayerDatasSO.CombatData.ParryRadius, Color.green);
-        DrawActionGizmo(_stats.CounterAttackDatas[0].AttackRadius, Color.beige);
     }
 
     private void DrawActionGizmo(Vector3 radius, Color color)

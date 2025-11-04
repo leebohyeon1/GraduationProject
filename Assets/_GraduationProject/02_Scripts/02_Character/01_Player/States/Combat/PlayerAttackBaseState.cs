@@ -14,7 +14,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
     protected abstract string p_animationTrigger { get; } // 각 공격에 맞는 애니메이션 트리거
     protected abstract Type p_nextAttackState { get; } // 다음 연계 공격 상태
-    protected abstract PlayerAttackData p_AttackData { get; } // 현재 공격의 데이터
+    protected abstract PlayerAttackDataSO p_AttackData { get; } // 현재 공격의 데이터
 
     public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -77,7 +77,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         // 다음 공격이 연계 공격이 아닐 경우 추가 딜레이
         if (p_nextState == null || !typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState))
         { 
-            sequence.SetDelay(p_context.Stats.LastAttackDelay);
+            //sequence.SetDelay(p_context.Stats.LastAttackDelay);
             p_context.Movement.ClearTargetRotation();
         }
 

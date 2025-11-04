@@ -76,7 +76,6 @@ public class PlayerDefendState : BaseState<Player>
     /// </summary>
     private void HandleParryAffect(Collider collider)
     {
-        p_context.Combat.ToggleCanCounter(p_context.Stats.BasePlayerDatasSO.CombatData.CounterAttackWindow);
         KnockbackMovement(collider.transform);
     }
 

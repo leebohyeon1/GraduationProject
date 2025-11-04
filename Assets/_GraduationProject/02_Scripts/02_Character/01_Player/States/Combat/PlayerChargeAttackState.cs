@@ -11,9 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackData p_AttackData => p_context.Stats.ChargeAttackData;
-
-    private PlayerAttackData _playerAttackData;
+    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.BasePlayerDatasSO.CombatData.ChargeAttackData;
 
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -26,8 +24,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_nextState = null;
 
         p_context.Animator.SetTrigger(p_animationTrigger);
-
-        _playerAttackData = p_AttackData;
 
         // 목표 방향으로 회전
         if (p_context.Movement.HasTargetRotation)
@@ -84,7 +80,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void HandleAttackPerform()
     {
-        Collider[] colliders = p_context.Combat.ExecuteAttack(_playerAttackData);
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
 
         foreach (Collider collider in colliders)
         {
