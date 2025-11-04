@@ -1642,12 +1642,9 @@ GameObject:
   - component: {fileID: 1636207851185063661}
   - component: {fileID: 1000522476364963410}
   - component: {fileID: 560369078637628095}
-  - component: {fileID: 8830776819107811238}
   - component: {fileID: 6502035142526053912}
   - component: {fileID: 3259499344088917303}
   - component: {fileID: 7649532155660733297}
-  - component: {fileID: 4251063935005334939}
-  - component: {fileID: 3648089053170288629}
   - component: {fileID: 566038154503605085}
   - component: {fileID: 2860107599910697948}
   m_Layer: 7
@@ -1744,9 +1741,6 @@ MonoBehaviour:
   _health: {fileID: 3259499344088917303}
   _movement: {fileID: 7649532155660733297}
   _combat: {fileID: 6502035142526053912}
-  _heat: {fileID: 8830776819107811238}
-  _skill: {fileID: 4251063935005334939}
-  _mana: {fileID: 3648089053170288629}
   _interact: {fileID: 566038154503605085}
 --- !u!114 &1000522476364963410
 MonoBehaviour:
@@ -1794,95 +1788,7 @@ MonoBehaviour:
     Feedback: {fileID: 4317178882497497351}
   - type: 9
     Feedback: {fileID: 5781374720374394319}
-  - type: 10
-    Feedback: {fileID: 825451933107767818}
-  - type: 11
-    Feedback: {fileID: 0}
-  - type: 12
-    Feedback: {fileID: 4141623854028372028}
-  - type: 13
-    Feedback: {fileID: 0}
-  - type: 14
-    Feedback: {fileID: 5250725204841782520}
-  - type: 15
-    Feedback: {fileID: 8331376821565170931}
-  - type: 16
-    Feedback: {fileID: 3645261528448658068}
-  - type: 17
-    Feedback: {fileID: 5822908775547894716}
-  - type: 18
-    Feedback: {fileID: 2401871742772530652}
-  - type: 19
-    Feedback: {fileID: 2813266095146452467}
-  - type: 20
-    Feedback: {fileID: 0}
-  - type: 21
-    Feedback: {fileID: 0}
-  - type: 22
-    Feedback: {fileID: 0}
-  - type: 23
-    Feedback: {fileID: 0}
-  - type: 24
-    Feedback: {fileID: 0}
-  - type: 25
-    Feedback: {fileID: 0}
-  - type: 26
-    Feedback: {fileID: 0}
-  - type: 27
-    Feedback: {fileID: 0}
-  - type: 28
-    Feedback: {fileID: 2886536183242630320}
-  - type: 29
-    Feedback: {fileID: 6697809153599172136}
-  - type: 30
-    Feedback: {fileID: 0}
-  - type: 31
-    Feedback: {fileID: 6697809153599172136}
-  - type: 32
-    Feedback: {fileID: 6697809153599172136}
-  - type: 33
-    Feedback: {fileID: 6697809153599172136}
-  - type: 34
-    Feedback: {fileID: 0}
-  - type: 35
-    Feedback: {fileID: 0}
-  - type: 36
-    Feedback: {fileID: 0}
-  - type: 37
-    Feedback: {fileID: 0}
-  - type: 38
-    Feedback: {fileID: 126345591999994873}
-  - type: 39
-    Feedback: {fileID: 1323761767727860007}
-  - type: 40
-    Feedback: {fileID: 1991565178680869354}
-  - type: 41
-    Feedback: {fileID: 0}
-  - type: 42
-    Feedback: {fileID: 0}
-  - type: 43
-    Feedback: {fileID: 0}
-  - type: 44
-    Feedback: {fileID: 0}
-  - type: 45
-    Feedback: {fileID: 0}
-  - type: 46
-    Feedback: {fileID: 0}
-  - type: 47
-    Feedback: {fileID: 0}
   _rangedAttackStartPoint: {fileID: 4088683721708587602}
---- !u!114 &8830776819107811238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b58ce37b33b0ab245b673d663b519d24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerHeat
 --- !u!114 &6502035142526053912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1920,33 +1826,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81a725c12c0ae34caaf322fd9dd6bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveSystem
---- !u!114 &4251063935005334939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf6a5ddff7407e54599efc33548f5f9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkill
-  _currentSkillType: -1
-  _onOpenSkillChangeUI: {fileID: 11400000, guid: 1de0580ed5533544e95b024c89bb2b86, type: 2}
-  _onSelectSkill: {fileID: 11400000, guid: ccb1ce7549b76104cbbac485cbc88ac3, type: 2}
---- !u!114 &3648089053170288629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7274864751189949029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 957fd9c059c30e1409fd5f0d8c141e71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMana
 --- !u!114 &566038154503605085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4460,17 +4339,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4458056920140898382, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
   m_PrefabInstance: {fileID: 1865197294382644322}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3645261528448658068 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
-  m_PrefabInstance: {fileID: 1865197294382644322}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &2191806704352597122
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4552,17 +4420,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82567e5124c796648a9e5e89aa786cf6, type: 3}
---- !u!114 &5822908775547894716 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5667213039054155582, guid: 82567e5124c796648a9e5e89aa786cf6, type: 3}
-  m_PrefabInstance: {fileID: 2191806704352597122}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &8900574485177535022 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7345350943210741420, guid: 82567e5124c796648a9e5e89aa786cf6, type: 3}
@@ -4629,17 +4486,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a587ea890366d444688a38626b43b86f, type: 3}
---- !u!114 &4141623854028372028 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2739933551082540409, guid: a587ea890366d444688a38626b43b86f, type: 3}
-  m_PrefabInstance: {fileID: 2268745486638134597}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &7945848193840872038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8158659035823230755, guid: a587ea890366d444688a38626b43b86f, type: 3}
@@ -4722,17 +4568,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
---- !u!114 &5250725204841782520 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
-  m_PrefabInstance: {fileID: 2730630679253487504}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &9074834459823218609 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6347102390663811105, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
@@ -4820,17 +4655,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4334720076548454397, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
   m_PrefabInstance: {fileID: 2801551328554414779}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2886536183242630320 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1075820770573112843, guid: 3dfbd72615e71f048bd07d859406a8c3, type: 3}
-  m_PrefabInstance: {fileID: 2801551328554414779}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &3619142853449766792
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4901,17 +4725,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1763245080760930700, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
   m_PrefabInstance: {fileID: 3619142853449766792}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8331376821565170931 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
-  m_PrefabInstance: {fileID: 3619142853449766792}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &4453433718413425911
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4985,17 +4798,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 756b2659406dc564eb77d9249b815d38, type: 3}
---- !u!114 &6697809153599172136 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7007218044084949727, guid: 756b2659406dc564eb77d9249b815d38, type: 3}
-  m_PrefabInstance: {fileID: 4453433718413425911}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &7258660280770630849 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6446400725249779766, guid: 756b2659406dc564eb77d9249b815d38, type: 3}
@@ -8847,14 +8649,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7345350943210741420, guid: ec9d4e9b9f9856546973c8167fe3f168, type: 3}
   m_PrefabInstance: {fileID: 8066181834100810466}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2401871742772530652 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5667213039054155582, guid: ec9d4e9b9f9856546973c8167fe3f168, type: 3}
-  m_PrefabInstance: {fileID: 8066181834100810466}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player

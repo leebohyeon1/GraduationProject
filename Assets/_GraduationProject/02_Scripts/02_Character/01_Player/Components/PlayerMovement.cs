@@ -35,13 +35,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         _mainCamera = Camera.main;
 
         _events = events;
-
-        _events.OnFlashStart += HandleFlashStart;
     }
 
     public void Dispose()
     {
-        _events.OnFlashStart -= HandleFlashStart;
     }
 
     /// <summary>
@@ -215,22 +212,5 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     #endregion
 
     #region Event
-    public void HandleFlashStart(Vector2 input, float distance)
-    {
-        Vector3 Velocity;
-        if (input == Vector2.zero)
-        {
-            Velocity = transform.forward;
-        }
-        else
-        {
-            Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            Velocity = cameraForward * input.y + _mainCamera.transform.right * input.x;
-        }
-
-        Velocity *= distance;
-        ForceMove(Velocity);
-        _events.TriggerFlashSkillFinish(transform.position + Velocity);
-    }
     #endregion
 }

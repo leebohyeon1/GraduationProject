@@ -62,7 +62,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         _stats = combatData;
         _events = events;
 
-        _events.OnRangedAttackStart += HandleRangedAttack;
         _events.OnBattleStateChaged += HandleBattleStateChanged;
         _events.OnAttackStart += SetupCombatCenter;
         _events.OnParryPerform += SetupCombatCenter;
@@ -75,7 +74,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// </summary>
     public void Dispose()
     {
-        _events.OnRangedAttackStart -= HandleRangedAttack;
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
         _events.OnAttackStart -= SetupCombatCenter;
         _events.OnParryPerform -= SetupCombatCenter;
@@ -312,7 +310,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
 
     private void OnDrawGizmos()
     {
-        if (!_isDrawGizmos) return;
+        return;
 
         // 공격 범위 기즈모
         DrawActionGizmo(_stats.AttackDatas[0].AttackRadius, Color.mediumVioletRed);

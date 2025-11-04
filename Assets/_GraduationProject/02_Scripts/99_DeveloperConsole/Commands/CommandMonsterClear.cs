@@ -22,7 +22,7 @@ namespace Console
 
         public override void RunCommand(string[] args)
         {
-            Enemy[] allEnemies = GameObject.FindObjectsOfType<Enemy>();
+            Enemy[] allEnemies = GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
             if (allEnemies.Length == 0)
             {
                 DeveloperConsole.AddStaticMessageToConsole("씬에서 몬스터를 찾을 수 없습니다.");

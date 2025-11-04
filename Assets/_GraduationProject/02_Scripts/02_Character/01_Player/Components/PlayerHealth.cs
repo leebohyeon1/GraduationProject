@@ -42,8 +42,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stats = data;
         _events = evets;
-
-        _events.OnOverHeat += HandleOverHeat;
     }
 
     /// <summary>
@@ -51,7 +49,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     public void Dispose()
     {
-        _events.OnOverHeat -= HandleOverHeat;
     }
 
     /// <summary>
@@ -137,7 +134,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         {
             _stiffnessDuration = _stats.BasePlayerDatasSO.CombatData.LightStaggerDuration;
             _knockbackForce = _stats.BasePlayerDatasSO.CombatData.LightKnockbackForce;
-            _stats.SetDamagedType(PlayerDamagedType.Normal);
         }
     }
 
@@ -148,7 +144,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stiffnessDuration = DamageData.KnockbackDuration;
         _knockbackForce = DamageData.KnockbackForce;
-        _stats.SetDamagedType(PlayerDamagedType.Strong);
     }
 
     /// <summary>
@@ -176,17 +171,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void SetInvisible(bool isInvisible)
     {
         _stats.IsInvincible = isInvisible;
-    }
-
-    /// <summary>
-    /// 과열 상태일 때 지속적인 데미지를 처리합니다.
-    /// </summary>
-    private void HandleOverHeat(int damage)
-    {
-        if(_stats.IsOverHeat && !_stats.SkillData.IsMaxLevelBoost)
-        {
-            //TakeDamage(new DamageData(0, transform));
-        }
     }
 
     /// <summary>

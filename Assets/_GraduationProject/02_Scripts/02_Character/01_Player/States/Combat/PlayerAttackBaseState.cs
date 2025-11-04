@@ -172,9 +172,5 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerChargeState);
         }
-        else if (p_context.Input.RangedAttackInput)
-        {
-            p_nextState = typeof(PlayerRangedChargeState);
-        }
     }
 }

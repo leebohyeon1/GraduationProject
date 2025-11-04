@@ -50,8 +50,6 @@ public class PlayerHitState : BaseState<Player>
         _hitTimer = 0f;
 
         p_context.Events.TriggerBattleStateChanged(true);
-        p_context.Heat.TriggerChargeGuageChanged(0f);
-
     }
 
     public override void OnUpdate()
@@ -79,7 +77,6 @@ public class PlayerHitState : BaseState<Player>
     {
         DOTween.Kill(this);
         p_context.Animator.SetBool("IsHit", false);
-        p_context.Stats.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
