@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 namespace Console
 {
     public class CommandSpawn : ConsoleCommand
@@ -21,7 +23,7 @@ namespace Console
             AddCommandToConsole();
         }
 
-        public override void RunCommand(string[] args)
+        public override async void RunCommand(string[] args)
         {
 
             if (args.Length == 0)
@@ -36,27 +38,45 @@ namespace Console
                 return;
             }
 
-            MonsterSpawnController spawnController = new MonsterSpawnController();
-
-            for (int i = 0; i < args.Length; i += 2)
+            try
             {
-                string monsterName = args[i];
-                string countArg = args[i + 1];
-                if (!Enum.TryParse<Enemy.MonsterName>(monsterName, true, out Enemy.MonsterName monsterType))
+                var spawnController = GameObject.FindObjectOfType<MonsterSpawnController>();
+                if(spawnController == null)
                 {
-                    DeveloperConsole.AddStaticMessageToConsole($"Error: '{monsterName}' is not a valid monster type.");
-                    continue;
+                    spawnController = new GameObject().AddComponent<MonsterSpawnController>();
                 }
 
-                if (!int.TryParse(countArg, out int count) || count < 1)
+                for (int i = 0; i < args.Length; i += 2)
                 {
-                    DeveloperConsole.AddStaticMessageToConsole($"'{countArg}' is not a valid count (must be a positive number).");
-                    return;
-                }
+                    string monsterName = args[i];
+                    string countArg = args[i + 1];
+                    var locations = await Addressables.LoadResourceLocationsAsync(monsterName, typeof(GameObject)).Task;
+                    if (locations.Count == 0)
+                    {
+                        DeveloperConsole.AddStaticMessageToConsole($"Error: '{monsterName}' is not a valid monster type.");
+                        continue;
+                    }
 
-                spawnController.SpawnEnemy(monsterType, count);
-                DeveloperConsole.AddStaticMessageToConsole($"Spawned {count} {monsterType} monster(s).");
+                    if (!int.TryParse(countArg, out int count) || count < 1)
+                    {
+                        DeveloperConsole.AddStaticMessageToConsole($"'{countArg}' is not a valid count (must be a positive number).");
+                        return;
+                    }
+                    if (spawnController == null)
+                    {
+                        Debug.LogError("CommandSpawn: spawnController가 null입니다! [Inject] 실패!");
+                        DeveloperConsole.AddStaticMessageToConsole("Error: Spawn controller is not initialized.");
+                        return; // try 블록 실행 전에 즉시 종료
+                    }
+                    await spawnController.SpawnEnemies(monsterName, count);
+                    DeveloperConsole.AddStaticMessageToConsole($"Spawned {count} {monsterName} monster(s).");
+                }
             }
+            catch (Exception e)
+            {
+                DeveloperConsole.AddStaticMessageToConsole($"Error executing Spawn command: {e.Message}");
+            }
+
 
         }
         public static CommandSpawn CreateCommand()
