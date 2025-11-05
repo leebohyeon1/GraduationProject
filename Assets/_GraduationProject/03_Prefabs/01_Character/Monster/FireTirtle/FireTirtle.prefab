@@ -1849,7 +1849,7 @@ GameObject:
   - component: {fileID: 4830390814202974247}
   - component: {fileID: 5950778514871932329}
   m_Layer: 8
-  m_Name: FireLauncher
+  m_Name: FireTirtle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2031,8 +2031,10 @@ MonoBehaviour:
   <ActorType>k__BackingField: 1
   _overheatTime: 2
   damageData:
-    StiffnessAmount: 0
     AttackerTransform: {fileID: 0}
+    AttackType: 0
+    DamageAmount: 0
+    StiffnessAmount: 0
     KnockbackCurve:
       serializedVersion: 2
       m_Curve: []
@@ -2067,6 +2069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f2eee0e86c2774581291daf379defe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTakeDmg
+  enemyStat: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
 --- !u!114 &9222658210194266876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2091,12 +2094,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyStat: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
   wayPoints: []
   wayPointIndex: 0
   _CurrentStiffness: 4
-  EnemyType: 0
-  MaxHealth: 1000
-  _normalSpeed: 2
   LaunchPoint: {fileID: 1567546411654470433}
   HealthBar: 0
   _currentAttackRadius: 0
