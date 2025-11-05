@@ -23,19 +23,10 @@ public class PlayerStats: IDisposable
     public int CurrentHealth; // 현재 체력
     public int CurrentHeat; // 현재 열기
 
-    // Currency
-    
-    public float MoveSpeed; // 이동 속도
-    public float RotateSpeed; // 회전 속도
-
-    // Combat
-    public float DodgeSpeed; // 회피 속도
-
-    public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
-
-
     // Properties
-    public BasePlayerDatasSO BasePlayerDatasSO => _dataBase.BaseData;
+    public BasePlayerDatasSO Data => _dataBase.BaseData;
+
+    public PlayerAttackDataSO[] AttackDatas => _dataBase.BaseData.CombatData.AttackDatas;
 
     public PlayerStats(PlayerDataBaseSO baseData, PlayerEvents events)
     {

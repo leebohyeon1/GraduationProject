@@ -59,7 +59,7 @@ public class PlayerDefendState : BaseState<Player>
     /// </summary>
     private void HandleParryPerform()
     {
-        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.BasePlayerDatasSO.CombatData.ParryRadius);
+        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.Data.CombatData.ParryRadius);
 
         foreach (Collider collider in colliders)
         {
@@ -93,9 +93,9 @@ public class PlayerDefendState : BaseState<Player>
                 p_context.Movement.ForceMove(displacement);
                 currentDistance = x;
             },
-            p_context.Stats.BasePlayerDatasSO.CombatData.ParryMoveForce * p_context.Stats.BasePlayerDatasSO.CombatData.ParryMoveDuration, 
+            p_context.Stats.Data.CombatData.ParryMoveForce * p_context.Stats.Data.CombatData.ParryMoveDuration, 
             0.1f)
-            .SetEase(p_context.Stats.BasePlayerDatasSO.CombatData.KnockbackCurve)
+            .SetEase(p_context.Stats.Data.CombatData.KnockbackCurve)
             .SetId(this)
             .SetUpdate(UpdateType.Fixed);
     }

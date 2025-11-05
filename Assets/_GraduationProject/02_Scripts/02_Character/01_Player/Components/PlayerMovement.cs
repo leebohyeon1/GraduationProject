@@ -158,14 +158,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            float distance = Vector3.Distance(transform.position, _mainCamera.transform.position);
-            Vector3 point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
-           
-            Vector3 direction = point - transform.position;
-            direction.y = 0;
-            direction.Normalize();
-
-            return Quaternion.LookRotation(direction, Vector3.up);
+            return Quaternion.LookRotation(GetTargetDirection(deviceType, moveInput, mousePosition), Vector3.up);
         }
         else // Gamepad
         {
@@ -173,8 +166,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable
             {
                 return transform.rotation;
             }
-            
-            Vector3 lookDirection = (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
+
+            Vector3 lookDirection = GetTargetDirection(deviceType, moveInput, mousePosition);
             if (lookDirection.sqrMagnitude > 0.1f)
             {
                 return Quaternion.LookRotation(lookDirection, Vector3.up);
@@ -208,6 +201,26 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
         _targetRotation = Quaternion.Euler(Vector3.zero);
         _hasTargetRotation = false;
+    }
+
+    public Vector3 GetTargetDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
+    {
+        if (deviceType == InputDeviceType.KeyboardMouse)
+        {
+            float distance = Vector3.Distance(transform.position, _mainCamera.transform.position);
+            Vector3 point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
+
+            Vector3 direction = point - transform.position;
+            direction.y = 0;
+            direction.Normalize();
+
+            return direction;
+        }
+        else
+        {
+            Vector3 lookDirection = (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
+            return lookDirection;
+        }
     }
     #endregion
 

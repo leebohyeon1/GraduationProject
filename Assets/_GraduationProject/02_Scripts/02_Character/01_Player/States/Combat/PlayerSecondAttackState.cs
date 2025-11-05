@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using System;
 
 /// <summary>
@@ -16,6 +17,8 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
     public override void OnEnter()
     {
         base.OnEnter();
+
+        Log.Print("SecondAttack");
         p_context.Events.TriggerSecondAttackStart();
     }
 }

@@ -67,43 +67,4 @@ public class PlayerCombatData
     public Vector3 ParryRadius; // 패링 범위
     public float ParryMoveDuration; // 패링 성공 시 이동 거리   
     public float ParryMoveForce; // 패링 성공 시 이동 거리
-
-    [Header("CounterAttack")]
-    public float CounterAttackWindow; // 반격 가능 시간
-    public PlayerAttackDataSO[] CounterAttackDatas; // 반격 데이터 배열
 }
-
-/// <summary>
-/// 플레이어의 공격 데이터를 정의하는 구조체입니다.
-/// 공격 시 이동, 데미지, 범위, 딜레이 등을 포함합니다.
-/// </summary>
-[Serializable]
-public struct PlayerAttackData
-{
-    [Header("Attack Movement")]
-    [Tooltip("공격 시 전진하는 거리")]
-    public float AttackMoveDistance;
-
-    [Tooltip("공격 이동에 걸리는 시간")]
-    public float AttackMoveDuration;
-
-    [Tooltip("공격 이동 애니메이션 커브")]
-    public AnimationCurve AttackMoveCurve;
-
-    [Header("Attack Stats")]
-    [Tooltip("공격 데미지")]
-    public int AttackDamage;
-
-    [Tooltip("공격 범위")]
-    public Vector3 AttackRadius;
-
-    [Header("Attack Timing")]
-    [Tooltip("공격 후 딜레이")]
-    public float AttackDelay;
-
-    [Header("Knockback")]
-    public AnimationCurve KnockBackCurve;
-    public float KnockBackDuration;
-    public float KnockBackForce;
-}
-

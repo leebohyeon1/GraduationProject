@@ -183,7 +183,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
-            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.BasePlayerDatasSO.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.Data.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
@@ -195,7 +195,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
-            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.BasePlayerDatasSO.CombatData.DodgeCooldown);
+            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.Data.CombatData.DodgeCooldown);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
@@ -212,7 +212,7 @@ public class Player : DIMonoBehaviour
         _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
                     DataBase.BaseData.GroundLayerMask);
 
-        if (Time.time - Combat.LastBattleTime >= Stats.BasePlayerDatasSO.BattleOutTime && Combat.IsBattleState)
+        if (Time.time - Combat.LastBattleTime >= Stats.Data.BattleOutTime && Combat.IsBattleState)
         {
             Events.TriggerBattleStateChanged(false);
         }

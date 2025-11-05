@@ -116,7 +116,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
 
         ProcessHitEnemies(attackData, hitEnemies);
 
@@ -163,7 +163,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
         Vector3 halfExtents = parryRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.BasePlayerDatasSO.CombatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
 
         return hitEnemies;
     }
@@ -189,7 +189,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         DrawActionGizmo(_stats.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_stats.AttackDatas[1].AttackRadius, Color.orangeRed);
         DrawActionGizmo(_stats.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_stats.BasePlayerDatasSO.CombatData.ParryRadius, Color.green);
+        DrawActionGizmo(_stats.Data.CombatData.ParryRadius, Color.green);
     }
 
     private void DrawActionGizmo(Vector3 radius, Color color)

@@ -22,15 +22,14 @@ public class PlayerDodgeState : BaseState<Player>
         p_context.Events.OnDodgeFinish += HandleDodgeFinish;
 
         // 입력 방향에 따라 회피 방향 결정
-        if (p_context.Input.MoveInput != Vector2.zero)
+        if (p_context.Input.MoveInput == Vector2.zero)
         {
-            _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.RotateToDirection(_dodgeDirection);
+            return;
         }
-        else
-        {
-            _dodgeDirection = Vector3.zero; // 입력 없으면 전방으로
-        }
+
+
+        _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
+        p_context.Movement.RotateToDirection(_dodgeDirection);
 
         p_context.Health.SetInvisible(true); // 회피 중 무적
 
@@ -49,7 +48,7 @@ public class PlayerDodgeState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.DodgeSpeed);
+        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.Data.CombatData.DodgeSpeed);
     }
 
     public override void OnExit()

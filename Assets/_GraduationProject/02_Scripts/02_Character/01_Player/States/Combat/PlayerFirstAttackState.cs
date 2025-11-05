@@ -18,32 +18,9 @@ public class PlayerFirstAttackState : PlayerAttackBaseState
 
     public override void OnEnter()
     {
-        p_context.Events.OnAttackFinish += HandleAttackFinish;
-        p_context.Events.OnAttackPerform += HandleAttackPerform;
+        base.OnEnter();
 
-        p_nextState = null;
-     
-        p_context.Combat.SetupCombatCenter();
-
-        // 목표 방향으로 회전
-        if (p_context.Movement.HasTargetRotation)
-        {
-            p_context.Movement.RotateToTargetRotation();
-        }
-        else
-        {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Input.MoveInput;
-            var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-        }
-
-        p_context.Events.TriggerBattleStateChanged(true);
-
-        p_context.Animator.SetTrigger(p_animationTrigger);
-
-        StartAttackMovement();
+        Log.Print("FirstAttack");
         p_context.Events.TriggerFirstAttackStart();
-
     }
 }

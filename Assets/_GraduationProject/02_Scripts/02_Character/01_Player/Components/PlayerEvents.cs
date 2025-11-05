@@ -50,7 +50,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action OnAttackStart, OnAttackPerform; // 공격 시작, 공격 수행 이벤트
     public event Action<Collider> OnAttackAffect; // 공격 피격 이벤트
-    public event Action OnAttackFinish; // 공격 종료 이벤트
+    public event Action OnAttackInputWindowStart, OnAttackFinish; // 공격 종료 이벤트
 
     public event Action<Collider> OnChargeAttackAffect; // 차지 공격 피격 이벤트
 
@@ -133,6 +133,16 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerAttackPerform()
     {
         OnAttackPerform?.Invoke();
+    }
+
+    public void TriggerAttackInputWindowStart()
+    {
+        OnAttackInputWindowStart.Invoke();
+    }
+
+    public void TriggerAttackFinish()
+    {
+        OnAttackFinish?.Invoke(); 
     }
 
     #region Attack
