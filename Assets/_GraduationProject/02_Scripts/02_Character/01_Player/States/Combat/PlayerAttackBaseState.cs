@@ -80,9 +80,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     protected virtual void StartAttackMovement()
     {
         float distance = p_AttackData.AttackMoveDistance;
-
-        if (distance <= 0) return;
-
         float duration = p_AttackData.AttackMoveDuration;
         AnimationCurve curve = p_AttackData.AttackMoveCurve;
 

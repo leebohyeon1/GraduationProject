@@ -36,8 +36,10 @@ public class BasePlayerDatasSO : ScriptableObject
 public class PlayerCombatData
 {
     [Header("Dodge")]
-    public float DodgeSpeed; // 회피 속도
+    public float DodgeDistance; // 회피 거리
+    public float DodgeDuration; 
     public float DodgeRotateSpeed; // 회피 쿨타임
+    public AnimationCurve DodgeAnimationCurve;
 
     [Header("Damaged")]
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
@@ -50,15 +52,9 @@ public class PlayerCombatData
     public float LightStaggerDuration; // 약한 경직 시간
     public float LightKnockbackForce; // 강한 경직 시간
 
-    // 강한 경직 시 적의 넉백 데이터 받음
-    //[Space(10f)]
-    //public float HeavyStaggerDuration; // 강한 경직 시간
-    //public float HeavyStaggerKnockbackDistance; // 강한 경직 이동 거리
-
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
     public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
-    public float LastAttackDelay; // 마지막 공격 후 딜레이
 
     [Header("ChargeAttack")]
     public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
