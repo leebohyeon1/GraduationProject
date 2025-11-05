@@ -63,11 +63,11 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         p_context.Events.OnAttackFinish -= HandleAttackFinish;
         p_context.Events.OnAttackPerform -= HandleAttackPerform;
         p_context.Events.OnAttackInputWindowStart -= HandleAttackInputWindowStart;
+        DOTween.Kill(p_animationTrigger);
 
-        p_context.Animator.ResetTrigger("Attack");
+        p_context.Animator.ResetTrigger(p_animationTrigger);
         p_context.Events.TriggerBattleStateChanged(true);
 
-        DOTween.Kill(p_animationTrigger);
 
         _canInput = false;  
         p_nextState = null;

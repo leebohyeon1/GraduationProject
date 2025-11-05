@@ -32,6 +32,7 @@ public class PlayerStats: IDisposable
     {
         _dataBase = baseData;
         _events = events;
+     
     }
 
     public void Dispose()

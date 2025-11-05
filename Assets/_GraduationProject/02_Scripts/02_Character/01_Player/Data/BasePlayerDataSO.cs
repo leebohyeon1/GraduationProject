@@ -57,6 +57,7 @@ public class PlayerCombatData
     public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
+    public float ChargeDuration;
     public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
 
     [Header("Parry")]

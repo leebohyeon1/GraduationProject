@@ -20,10 +20,6 @@ public class PlayerAttackDataSO : ScriptableObject
     [Tooltip("공격 범위")]
     public Vector3 AttackRadius;
 
-    [Header("Attack Timing")]
-    [Tooltip("공격 후 딜레이")]
-    public float AttackDelay;
-
     [Header("Knockback")]
     public AnimationCurve KnockBackCurve;
     public float KnockBackDuration;

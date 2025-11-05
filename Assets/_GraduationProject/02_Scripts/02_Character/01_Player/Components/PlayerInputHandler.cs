@@ -9,7 +9,8 @@ using UnityEngine.Rendering;
 /// </summary>
 public class PlayerInputHandler : MonoBehaviour
 {
-    [Header("Input")][SerializeField] private InputReader _inputReader; // 입력 처리기
+    [Header("Input")]
+    [SerializeField] private InputReader _inputReader; // 입력 처리기
     private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
 
     // 입력 상태 변수
@@ -25,7 +26,6 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _skilChangeInput; // 스킬 변경 입렵
     private bool _InteractInput; // 상호작용 입력
     private bool _potionInput; // 포션 사용 입력
-    
 
     #region Properties
     public Vector2 MoveInput => _moveInput;
@@ -127,9 +127,21 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnLook(Vector2 lookInput) => _lookInput = lookInput;
     private void OnMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
 
-    private void OnAttack() => _attackInput = true;
-    private void OnAttackHold() => _attackHeldInput = true;
-    private void OnAttackCancelled() { _attackInput = false; _attackHeldInput = false; }
+    private void OnAttack() 
+    {
+        _attackInput = true; 
+    }
+
+    private void OnAttackHold()
+    {
+        _attackHeldInput = true;
+    }
+
+    private void OnAttackCancelled() 
+    {
+        _attackInput = false; 
+        _attackHeldInput = false;
+    }
     
     private void OnDodge() => _dodgeInput = true;
     private void OnDefend() => _defendInput = true;
