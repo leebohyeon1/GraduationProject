@@ -5,8 +5,9 @@ using UnityEngine.TextCore.Text;
 
 public class EnemyTakeDmg : MonoBehaviour, IDamageable
 {
-    public int Health { get; private set; }
-    public int MaxHealth { get; private set; }
+    [SerializeField] private EnemyStat enemyStat;
+    public int Health => enemyStat.CurrentHealth;
+    public int MaxHealth => enemyStat.Maxhealth;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
@@ -16,11 +17,10 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     private Coroutine _KnockbackCoroutine;
     public bool IsInvincible => throw new NotImplementedException();
     Enemy _owner;
-    public void InitializeHealth(int maxHealth, Enemy owner)
+    public void InitializeHealth( Enemy owner)
     {
         _owner = owner;
-        _maxHealth = maxHealth;
-        Health = maxHealth;
+        enemyStat.CurrentHealth = enemyStat.Maxhealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
@@ -51,7 +51,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.AnimationEvent("Hit");
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
-        Health -= amount;
+        enemyStat.CurrentHealth -= amount;
         if (_owner.HealthBar)
         {
             _owner.BillboardUI?.SetHealthBar(Maxhealth,Health);
@@ -68,7 +68,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
         if (Health <= 0)
         {
-            Health = 0;
             Die();
         }
     }

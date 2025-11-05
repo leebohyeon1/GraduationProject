@@ -9,6 +9,7 @@ using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요�
 ,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility))]
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]private EnemyStat enemyStat;
     public AiController _aiController{get;private set;}
     public Animator animator{ get;  private set; }
     
@@ -31,8 +32,7 @@ public class Enemy : MonoBehaviour
     public int wayPointIndex = 0;
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
-    [SerializeField] public Enemy_Type EnemyType;
-    public int MaxHealth = 100;
+    public Enemy_Type EnemyType { get; private set; }
     public enum Enemy_Type
     {
         Brave,
@@ -40,8 +40,7 @@ public class Enemy : MonoBehaviour
         Cunning
     }
     public GroupAi groupAi{get;private set;}
-    [SerializeField] private float _normalSpeed = 2f;
-    public float NormalSpeed => _normalSpeed;
+    public float NormalSpeed => enemyStat.MoveSpeed;
     public Transform LaunchPoint;
     public enum MonsterName
     {
@@ -50,25 +49,7 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-    public static Enemy_Type Spawn<Enemy_Type>( Transform parent, MonsterName MonsterPrefabName, Vector3 position = default) where Enemy_Type : Enemy
-    {
-        GameObject prefabObject = GameObject.Instantiate(Resources.Load("MonsterPrefab/" + MonsterPrefabName)) as GameObject;
-
-        Enemy_Type enemy = prefabObject.GetComponent<Enemy_Type>();
-        if (enemy == null)
-        {
-            enemy = prefabObject.AddComponent<Enemy_Type>();
-        }
-        if (parent != null)
-        {
-            prefabObject.transform.SetParent(parent);
-        }
-        prefabObject.transform.localScale = Vector3.one * enemy.transform.localScale.x;
-
-        prefabObject.transform.position = position;
-
-        return enemy;
-    }
+    
     protected void Awake()
     {
         player = GameObject.FindFirstObjectByType<Player>();
@@ -86,7 +67,7 @@ public class Enemy : MonoBehaviour
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
         EnemyHealth = GetComponent<EnemyTakeDmg>();
-        EnemyHealth.InitializeHealth(MaxHealth, this);
+        EnemyHealth.InitializeHealth( this);
         specialAbility = GetComponent<EnemySpecialAbility>();
         specialAbility.Initialize(this);
         Movement = new EnemyMovement(this);
@@ -96,7 +77,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.SetActive(true);
         transform.position = StartPos;
-        EnemyHealth.InitializeHealth(MaxHealth, this);
+        EnemyHealth.InitializeHealth( this);
         _aiController.Initialize(this);
         StiffnessSystem.Initialize(this);
         specialAbility.Initialize(this);
