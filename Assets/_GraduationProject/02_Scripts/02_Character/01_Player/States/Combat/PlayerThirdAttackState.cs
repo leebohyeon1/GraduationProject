@@ -13,12 +13,4 @@ public class PlayerThirdAttackState : PlayerAttackBaseState
     protected override string p_animationTrigger => "ThirdAttack";
     protected override Type p_nextAttackState => null; // 마지막 공격이므로 다음 연계 공격 없음
     protected override PlayerAttackDataSO p_AttackData => p_context.Stats.AttackDatas[2];
-
-    public override void OnEnter()
-    {
-        base.OnEnter();
-
-        Log.Print("ThirdAttack");
-        p_context.Events.TriggerThirdAttackStart();
-    }
 }

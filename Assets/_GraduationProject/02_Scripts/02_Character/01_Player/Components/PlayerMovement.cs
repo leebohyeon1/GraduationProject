@@ -1,6 +1,7 @@
 using BH_Lib.Log;
 using System;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -109,13 +110,15 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// <summary>
     /// 회피를 실행합니다.
     /// </summary>
-    public void Dodge(Vector3 direction, float dodgeSpeed)
+    public void Dodge(Vector3 direction, float dodgeSpeed, float rotateSpeed)
     {
-        Vector3 moveVector = direction != Vector3.zero
-            ? (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x).normalized
-            : transform.forward;
+        if (direction.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime);
+        }
 
-        Vector3 movement = moveVector * dodgeSpeed * Time.fixedDeltaTime;
+        Vector3 movement = transform.forward * dodgeSpeed * Time.fixedDeltaTime;
         movement.y = _velocity.y * Time.fixedDeltaTime;
         _characterController.Move(movement);
 

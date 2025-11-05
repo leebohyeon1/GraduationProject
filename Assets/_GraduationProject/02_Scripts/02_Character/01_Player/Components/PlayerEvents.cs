@@ -137,7 +137,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public void TriggerAttackInputWindowStart()
     {
-        OnAttackInputWindowStart.Invoke();
+        OnAttackInputWindowStart?.Invoke();
     }
 
     public void TriggerAttackFinish()

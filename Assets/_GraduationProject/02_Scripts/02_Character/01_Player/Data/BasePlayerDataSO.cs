@@ -37,7 +37,7 @@ public class PlayerCombatData
 {
     [Header("Dodge")]
     public float DodgeSpeed; // 회피 속도
-    public float DodgeCooldown; // 회피 쿨타임
+    public float DodgeRotateSpeed; // 회피 쿨타임
 
     [Header("Damaged")]
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브

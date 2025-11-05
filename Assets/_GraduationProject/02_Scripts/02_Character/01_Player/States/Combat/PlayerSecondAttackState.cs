@@ -13,12 +13,4 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
     protected override string p_animationTrigger => "SecondAttack";
     protected override Type p_nextAttackState => typeof(PlayerThirdAttackState);
     protected override PlayerAttackDataSO p_AttackData => p_context.Stats.AttackDatas[1];
-
-    public override void OnEnter()
-    {
-        base.OnEnter();
-
-        Log.Print("SecondAttack");
-        p_context.Events.TriggerSecondAttackStart();
-    }
 }

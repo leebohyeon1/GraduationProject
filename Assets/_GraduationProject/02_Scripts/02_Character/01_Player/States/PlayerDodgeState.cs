@@ -48,7 +48,8 @@ public class PlayerDodgeState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.Data.CombatData.DodgeSpeed);
+        _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
+        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.Data.CombatData.DodgeSpeed, p_context.Stats.Data.CombatData.DodgeRotateSpeed);
     }
 
     public override void OnExit()
@@ -82,6 +83,11 @@ public class PlayerDodgeState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
+        if (_nextState != null)
+        {
+            return;
+        }
+
         if (p_context.Input.DefendInput)
         {
             _nextState = typeof(PlayerDefendState);

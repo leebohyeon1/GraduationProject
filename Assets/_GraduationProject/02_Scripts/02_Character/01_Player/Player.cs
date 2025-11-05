@@ -183,7 +183,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
-            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.Data.CombatData.DodgeCooldown);
+            => Input.DodgeInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
@@ -195,7 +195,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
-            => Input.DodgeInput && Time.time - Movement.LastDodgeTime >= Stats.Data.CombatData.DodgeCooldown);
+            => Input.DodgeInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Input.AttackInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
