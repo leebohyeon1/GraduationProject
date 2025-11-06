@@ -18,7 +18,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private Animator _animator; // 애니메이터
     [SerializeField] private CharacterController _characterController; // 캐릭터 컨트롤러
 
-    [SerializeField] private PlayerDataBaseSO _dataBase; // 플레이어 데이터베이스
+    [SerializeField] private PlayerDataSO _dataBase; // 플레이어 데이터베이스
     private PlayerStats _stats; // 플레이어 스탯
     [SerializeField] private PlayerEvents _events; // 플레이어 이벤트
 
@@ -34,7 +34,7 @@ public class Player : DIMonoBehaviour
     #region Properties
     public Animator Animator => _animator;
 
-    public PlayerDataBaseSO DataBase => _dataBase;
+    public PlayerDataSO Data => _dataBase;
     public PlayerStats Stats => _stats;
     public PlayerEvents Events => _events;
     public PlayerInputHandler Input => _input;
@@ -107,10 +107,10 @@ public class Player : DIMonoBehaviour
     
         if (_dataBase == null)
         {
-            _dataBase = GetComponent<PlayerDataBaseSO>();
+            _dataBase = GetComponent<PlayerDataSO>();
         }
 
-        _stats = new PlayerStats(DataBase, _events);
+        _stats = new PlayerStats(Data, _events);
     
         if (_events == null)
         {
@@ -209,8 +209,8 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void OnUpdate()
     {
-        _movement.CheckGrounded(DataBase.BaseData.GroundCheckDistance,
-                    DataBase.BaseData.GroundLayerMask);
+        _movement.CheckGrounded(Data.GroundCheckDistance,
+                    Data.GroundLayerMask);
 
         if (Time.time - Combat.LastBattleTime >= Stats.Data.BattleOutTime && Combat.IsBattleState)
         {
@@ -228,7 +228,7 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void OnFixedUpdate()
     {
-        _movement.ApplyGravity(DataBase.BaseData.Gravity);
+        _movement.ApplyGravity(Data.Gravity);
     
     }
     

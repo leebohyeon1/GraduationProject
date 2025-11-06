@@ -6,12 +6,12 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 기본 데이터를 정의하는 ScriptableObject입니다.
 /// </summary>
-[CreateAssetMenu(fileName = "BasePlayerDatasSO", menuName = "Player/BasePlayerDatasSO")]
-public class BasePlayerDatasSO : ScriptableObject
+[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Player/PlayerDatasSO")]
+public class PlayerDataSO : ScriptableObject
 {
     [Header("Stats")]
     public int MaxHealth = 100; // 최대 체력
-    public int MaxHeat = 100;
+    public int MaxStamina = 100;
     public int MaxMana = 3;
 
     [Header("Movement")]

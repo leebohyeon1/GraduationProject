@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerStats: IDisposable
 {
     private PlayerEvents _events;
-    private PlayerDataBaseSO _dataBase;
+    private PlayerDataSO _data;
 
     // State
     public bool IsDefending; // 방어중인가?
@@ -21,18 +21,20 @@ public class PlayerStats: IDisposable
 
     // Stat
     public int CurrentHealth; // 현재 체력
-    public int CurrentHeat; // 현재 열기
+    public int CurrentStamina; // 현재 열기
 
     // Properties
-    public BasePlayerDatasSO Data => _dataBase.BaseData;
+    public PlayerDataSO Data => _data;
 
-    public PlayerAttackDataSO[] AttackDatas => _dataBase.BaseData.CombatData.AttackDatas;
+    public PlayerAttackDataSO[] AttackDatas => _data.CombatData.AttackDatas;
 
-    public PlayerStats(PlayerDataBaseSO baseData, PlayerEvents events)
+    public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
     {
-        _dataBase = baseData;
+        _data = baseData;
         _events = events;
-     
+
+        CurrentHealth = _data.MaxHealth;
+        CurrentStamina = _data.MaxStamina;
     }
 
     public void Dispose()
