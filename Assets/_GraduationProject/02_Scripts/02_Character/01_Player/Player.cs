@@ -171,7 +171,8 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
-    
+        _stateMachine.AddState(new PlayerParryState(this, _stateMachine));
+
         SetupStateTransitions();
     
         // 초기 상태를 Idle로 설정
@@ -190,25 +191,29 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
-            => Input.DodgeInput);
+            => Input.DodgeInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() 
             => Input.DefendInput);
+        _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
+            => Input.ParryInput && _stamina.CheckStamina());
     
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
-            => Input.DodgeInput);
+            => Input.DodgeInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() 
             => Input.DefendInput);
+        _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
+            => Input.ParryInput && _stamina.CheckStamina());
     }
     
     /// <summary>

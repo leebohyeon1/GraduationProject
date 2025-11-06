@@ -66,26 +66,29 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         }
     }
 
-    /// <summary>
-    /// 데미지를 받습니다. (경직도 포함)
-    /// </summary>
-    /// <param name="damageAmount">데미지 양</param>
-    /// <param name="stiffenessAmount">경직도 양</param>
-    public void TakeDamage(int damageAmount, int heatTier, DamageData damageData)
+    public void TakeDamage(DamageData damageData)
     {
         if (IsDead || IsInvincible) return;
+
+        if (_stats.IsParring && damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
+            damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        {
+            _stats.ParryableQueue.Enqueue(parryable);
+ 
+            return;
+        }
 
         _damageData = damageData;
 
         int stiffenessAmount = damageData.StiffnessAmount;
         if (_stats.IsDefending)
         {
-            damageAmount = Mathf.RoundToInt(damageAmount * _stats.Data.CombatData.DefendDamageReductionRate);
+            damageData.DamageAmount = Mathf.RoundToInt(damageData.DamageAmount * _stats.Data.CombatData.DefendDamageReductionRate);
             stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
         }
 
         AddStiffness(stiffenessAmount);
-        ChangeHealth(-damageAmount);
+        ChangeHealth(-damageData.DamageAmount);
 
         if (IsDead)
         {
@@ -184,8 +187,4 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _damageData = new DamageData();
     }
 
-    public void TakeDamage(DamageData damageData)
-    {
-        throw new NotImplementedException();
-    }
 }

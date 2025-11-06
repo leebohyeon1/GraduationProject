@@ -26,8 +26,9 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _skilChangeInput; // 스킬 변경 입렵
     private bool _InteractInput; // 상호작용 입력
     private bool _potionInput; // 포션 사용 입력
+    private bool _parryInput; // 패리 입력
 
-    private bool _canAttackHeldInput = true;
+    private bool _canAttackHeldInput = true; // 차징 중복 막기 위함
 
     #region Properties
     public Vector2 MoveInput => _moveInput;
@@ -42,6 +43,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool SkillChangeInput => _skilChangeInput;
     public bool InteractInput => _InteractInput;
     public bool PotionInput => _potionInput;
+    public bool ParryInput => _parryInput;  
     #endregion
 
     /// <summary>
@@ -88,7 +90,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DodgeEvent += OnDodge;
         _inputReader.DefendEvent += OnDefend;
         _inputReader.DefendCancelledEvent += OnDefendCancelled;
-
+        _inputReader.ParryEvent += OnParry;
 
         _inputReader.InteractEvent += OnInteract;
 
@@ -113,7 +115,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DodgeEvent -= OnDodge;
         _inputReader.DefendEvent -= OnDefend;
         _inputReader.DefendCancelledEvent -= OnDefendCancelled;
-
+        _inputReader.ParryEvent -= OnParry;
 
         _inputReader.InteractEvent -= OnInteract;
     }
@@ -159,19 +161,24 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnDodge() => _dodgeInput = true;
     private void OnDefend() => _defendInput = true;
     private void OnDefendCancelled() => _defendInput = false;
+    private void OnParry() => _parryInput = true;
 
     private void OnInteract() => _InteractInput = true;
+
+    
 
     /// <summary>
     /// 매 프레임 마지막에 호출되어 일회성 입력 상태를 초기화합니다.
     /// </summary>
     public void LateTick()
     {
+        _attackInput = false;
         _skillInput = false;
         _attackInput = false;
         _dodgeInput = false;
         _InteractInput = false;
         _potionInput = false;
+        _parryInput = false;
     }
 
     public void SetAttackHeldInput(bool isAttackHold)

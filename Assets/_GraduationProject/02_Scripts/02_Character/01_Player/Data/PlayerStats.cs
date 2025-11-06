@@ -14,6 +14,7 @@ public class PlayerStats: IDisposable
     // State
     public bool IsDefending; // 방어중인가?
     public bool IsInvincible; // 무적인가?
+    public bool IsParring; // 패리중인가?
 
     public bool IsLightHit; // 약한 피격중인가?
     public bool IsHeavyHit; // 강한 피격중인가?
@@ -24,6 +25,9 @@ public class PlayerStats: IDisposable
     // Stat
     public int CurrentHealth; // 현재 체력
     public float CurrentStamina; // 현재 열기
+
+    // Combat
+    public Queue<IParryable> ParryableQueue = new Queue<IParryable>();
 
     // Properties
     public PlayerDataSO Data => _data;

@@ -107,15 +107,7 @@ public class PlayerDodgeState : BaseState<Player>
             return;
         }
 
-        if (p_context.Input.DefendInput)
-        {
-            _nextState = typeof(PlayerDefendState);
-        }
-        else if (p_context.Input.AttackHeldInput)
-        {
-            _nextState = typeof(PlayerChargeState);
-        }
-        else if (p_context.Input.AttackInput)
+        else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
@@ -123,9 +115,13 @@ public class PlayerDodgeState : BaseState<Player>
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Input.MoveInput != Vector2.zero)
+        else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
-            _nextState = typeof(PlayerMoveState);
+            _nextState = typeof(PlayerDodgeState);
+        }
+        else if(p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
+        {
+            _nextState = typeof(PlayerParryState);
         }
     }
 }

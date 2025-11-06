@@ -54,8 +54,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action<Collider> OnChargeAttackAffect; // 차지 공격 피격 이벤트
 
-    public event Action OnParryFinish;    
-    public event Action OnParryStart; // 패링 수행 이벤트
+    public event Action OnParryStart, OnParryFinish;    
+    public event Action OnParryWindowStart, OnParryWindowFinish; // 패링 수행 이벤트
     public event Action<Collider> OnParryAffect; // 패링 성공 이벤트
 
     public event Action<bool> OnRegenStamina; // 스테미나 회복 이벤트
@@ -241,13 +241,20 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #region Parry
 
     /// <summary>
-    /// 패링 시작 이벤트  (애니메이션 이벤트로 호출)
+    /// 패링 시작 이벤트
     /// </summary>
     public void TriggerParryStart()
     {
         OnParryStart?.Invoke();
-        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.ParryStart_FB);
+    }
+
+    /// <summary>
+    /// 패링 검사 시작 (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerParryWindowStart()
+    {
+        OnParryWindowStart?.Invoke();
     }
 
     /// <summary>
@@ -256,13 +263,22 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
 
+    /// <summary>
+    /// 패링 검사 종료 (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerParryWindowFinish()
+    {
+        OnParryWindowFinish?.Invoke();
+    }    
+
+    /// <summary>
+    /// 패링 종료 시 호출 (애니메이션 이벤트로 호출)
+    /// </summary>
     public void TriggerParryFinish()
     {
         OnParryFinish?.Invoke();
-        TriggerRegenStamina(true);
     }
 
     #endregion

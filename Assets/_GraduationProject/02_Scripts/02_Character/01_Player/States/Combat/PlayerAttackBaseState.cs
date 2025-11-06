@@ -3,6 +3,7 @@ using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -118,7 +119,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             return;
         }
 
-        if (p_nextAttackState != null && p_context.Input.AttackInput)
+        if (p_nextAttackState != null && p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
@@ -127,7 +128,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             p_nextState = p_nextAttackState;
             p_stateMachine.ChangeState(p_nextState);
         }
-        else if (p_context.Input.DodgeInput)
+        else if (p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
             p_nextState = typeof(PlayerDodgeState);
         }
@@ -138,6 +139,10 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         else if (p_context.Input.AttackHeldInput)
         {
             p_nextState = typeof(PlayerChargeState);
+        }
+        else if (p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
+        {
+            p_nextState = typeof(PlayerParryState);
         }
     }
 

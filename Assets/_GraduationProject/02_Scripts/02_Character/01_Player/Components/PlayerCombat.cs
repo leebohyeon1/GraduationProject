@@ -2,6 +2,7 @@ using BH_Lib.Log;
 using DG.Tweening;
 using Pathfinding.Drawing;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
@@ -46,6 +47,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         _events = events;
 
         _events.OnBattleStateChaged += HandleBattleStateChanged;
+        _events.OnParryWindowStart += HandleParryWindowStart;
+        _events.OnParryWindowFinish += HandleParryWindowFinish;
 
         _onParry.Subscribe(this);
     }
@@ -56,6 +59,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     public void Dispose()
     {
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
+        _events.OnParryWindowStart -= HandleParryWindowStart;
+        _events.OnParryWindowFinish -= HandleParryWindowFinish;
 
         _onParry.Unsubscribe(this);
     }
@@ -136,22 +141,19 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     #endregion
 
     #region Parry
-    /// <summary>
-    /// 패리를 실행합니다.
-    /// </summary>
-    /// <param name="parryRadius">패리 범위</param>
-    /// <returns>패리에 영향을 받은 대상의 콜라이더 배열</returns>
-    public Collider[] ExecuteParry(Vector3 parryRadius)
-    {
-        Vector3 attackCenter = transform.position + transform.forward * (parryRadius.z / 2);
-        Vector3 halfExtents = parryRadius / 2f;
-
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
-
-        return hitEnemies;
-    }
+   
 
     #endregion
+
+    private void HandleParryWindowStart()
+    {
+        _stats.IsParring = true;    
+    }
+
+    private void HandleParryWindowFinish()
+    {
+        _stats.IsParring = false;
+    }
 
     private void HandleBattleStateChanged(bool isBattleState)
     {
@@ -186,7 +188,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
 
     public void OnEventTrigger(bool eventName)
     {
-        _events.PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
+      
     }
 #endif
 }
