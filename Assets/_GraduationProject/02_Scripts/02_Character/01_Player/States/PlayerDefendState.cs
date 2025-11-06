@@ -14,7 +14,7 @@ public class PlayerDefendState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Events.OnParryPerform += HandleParryPerform;
+        p_context.Events.OnParryStart += HandleParryPerform;
         p_context.Events.OnParryAffect += HandleParryAffect;
 
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
@@ -46,7 +46,7 @@ public class PlayerDefendState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Events.OnParryPerform -= HandleParryPerform;
+        p_context.Events.OnParryStart -= HandleParryPerform;
         p_context.Events.OnParryAffect -= HandleParryAffect;
 
         DOTween.Kill(this);

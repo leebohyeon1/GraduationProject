@@ -54,10 +54,11 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action<Collider> OnChargeAttackAffect; // 차지 공격 피격 이벤트
 
-    public event Action OnParryPerform; // 패링 수행 이벤트
+    public event Action OnParryFinish;    
+    public event Action OnParryStart; // 패링 수행 이벤트
     public event Action<Collider> OnParryAffect; // 패링 성공 이벤트
 
-    public event Action OnDataUpdate; // 데이터 업데이트 이벤트
+    public event Action<bool> OnRegenStamina; // 스테미나 회복 이벤트
     #endregion
 
     #region EventHandler
@@ -91,6 +92,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerDodgeStart()
     {
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.DodgeStart_FB, transform.position);
     }
 
@@ -100,6 +102,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerDodgeFinish()
     {
         OnDodgeFinish?.Invoke();
+        TriggerRegenStamina(true);
         PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
     }
 
@@ -142,7 +145,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public void TriggerAttackFinish()
     {
-        OnAttackFinish?.Invoke(); 
+        OnAttackFinish?.Invoke();
     }
 
     #region Attack
@@ -152,6 +155,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerFirstAttackStart()
     {
         OnAttackStart?.Invoke();
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB);
     }
 
@@ -161,6 +165,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerSecondAttackStart()
     {
         OnAttackStart?.Invoke();
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB);
     }
 
@@ -170,6 +175,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerThirdAttackStart()
     {
         OnAttackStart?.Invoke();
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB);
     }
 
@@ -190,6 +196,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerChargeStart()
     {
         OnAttackStart?.Invoke();
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.ChargeStart_FB);
     }
 
@@ -198,16 +205,9 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeCancel()
     {
+        TriggerRegenStamina(true);
         StopFeedback(PlayerFeedbackType.ChargeStart_FB);
         PlayFeedback(PlayerFeedbackType.ChargeCancel_FB);
-    }
-
-    /// <summary>
-    /// 차지 완료 피드백을 재생합니다.
-    /// </summary>
-    public void TriggerChargeFinish(int tier)
-    {
-
     }
 
     /// <summary>
@@ -215,6 +215,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeAttackStart(int tier)
     {
+        TriggerRegenStamina(false);
         StopFeedback(PlayerFeedbackType.ChargeStart_FB);
         OnAttackStart?.Invoke();
     }
@@ -224,6 +225,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerChargeAttackFinish()
     {
+        TriggerRegenStamina(true);
         PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB);
     }
 
@@ -237,12 +239,14 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     #endregion
 
     #region Parry
+
     /// <summary>
-    /// 패링 수행 이벤트를 발생시키고 피드백을 재생합니다. (애니메이션 이벤트로 호출)
+    /// 패링 시작 이벤트  (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerParryPerform()
+    public void TriggerParryStart()
     {
-        OnParryPerform?.Invoke();
+        OnParryStart?.Invoke();
+        TriggerRegenStamina(false);
         PlayFeedback(PlayerFeedbackType.ParryStart_FB);
     }
 
@@ -252,10 +256,21 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryAffect(Collider collider)
     {
         OnParryAffect?.Invoke(collider);
-        //PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
+        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
+
+    public void TriggerParryFinish()
+    {
+        OnParryFinish?.Invoke();
+        TriggerRegenStamina(true);
+    }
+
     #endregion
 
+    public void TriggerRegenStamina(bool canRegen)
+    {
+        OnRegenStamina?.Invoke(canRegen);
+    }
 
     #endregion
 }

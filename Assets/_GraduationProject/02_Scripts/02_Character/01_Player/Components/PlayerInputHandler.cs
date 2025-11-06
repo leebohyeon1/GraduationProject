@@ -27,7 +27,7 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _InteractInput; // 상호작용 입력
     private bool _potionInput; // 포션 사용 입력
 
-    private bool _canAttackHeldInput;
+    private bool _canAttackHeldInput = true;
 
     #region Properties
     public Vector2 MoveInput => _moveInput;
@@ -54,6 +54,8 @@ public class PlayerInputHandler : MonoBehaviour
         {
             _inputDeviceDetector.OnInputDeviceChanged.AddListener(OnInputDeviceDetectorChanged);
         }
+
+        _canAttackHeldInput = true;
     }
     
     /// <summary>

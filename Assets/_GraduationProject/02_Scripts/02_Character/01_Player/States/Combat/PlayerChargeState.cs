@@ -39,7 +39,6 @@ public class PlayerChargeState : BaseState<Player>
         // 입력에 따른 상태 전환
         if (!p_context.Input.AttackHeldInput)
         {
-
             p_stateMachine.ChangeState<PlayerFirstAttackState>();
         }
     }

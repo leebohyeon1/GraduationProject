@@ -18,7 +18,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private Animator _animator; // 애니메이터
     [SerializeField] private CharacterController _characterController; // 캐릭터 컨트롤러
 
-    [SerializeField] private PlayerDataSO _dataBase; // 플레이어 데이터베이스
+    [SerializeField] private PlayerDataSO _data; // 플레이어 데이터베이스
     private PlayerStats _stats; // 플레이어 스탯
     [SerializeField] private PlayerEvents _events; // 플레이어 이벤트
 
@@ -27,6 +27,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerMovement _movement; // 이동 컴포넌트
     [SerializeField] private PlayerCombat _combat; // 전투 컴포넌트
     [SerializeField] private PlayerInteract _interact; // 상호작용 컴포넌트
+    [SerializeField] private PlayerStamina _stamina; // 스테미나 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
@@ -34,7 +35,7 @@ public class Player : DIMonoBehaviour
     #region Properties
     public Animator Animator => _animator;
 
-    public PlayerDataSO Data => _dataBase;
+    public PlayerDataSO Data => _data;
     public PlayerStats Stats => _stats;
     public PlayerEvents Events => _events;
     public PlayerInputHandler Input => _input;
@@ -43,7 +44,7 @@ public class Player : DIMonoBehaviour
     public PlayerMovement Movement => _movement;
     public PlayerCombat Combat => _combat;
     public PlayerInteract Interact => _interact;
-
+    public PlayerStamina Stamina => _stamina;
 
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
@@ -105,9 +106,9 @@ public class Player : DIMonoBehaviour
             _characterController = GetComponent<CharacterController>();
         }
     
-        if (_dataBase == null)
+        if (_data == null)
         {
-            _dataBase = GetComponent<PlayerDataSO>();
+            _data = GetComponent<PlayerDataSO>();
         }
 
         _stats = new PlayerStats(Data, _events);
@@ -145,6 +146,12 @@ public class Player : DIMonoBehaviour
         {
             _interact = GetComponent<PlayerInteract>();
         }
+
+        if(_stamina == null)
+        {
+            _stamina = GetComponent<PlayerStamina>();
+        }
+        _stamina.Initialize(Stats, Events);
     }
     
     /// <summary>
@@ -185,7 +192,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
-            => Input.AttackInput);
+            => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() 
@@ -197,7 +204,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
-            => Input.AttackInput);
+            => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() 
@@ -250,6 +257,7 @@ public class Player : DIMonoBehaviour
         Movement.Dispose();
         Health.Dispose();
         Combat.Dispose();
+        Stamina.Dispose();
     }
     #endregion
 }

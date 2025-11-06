@@ -9,9 +9,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Player/PlayerDatasSO")]
 public class PlayerDataSO : ScriptableObject
 {
-    [Header("Stats")]
+    [Header("Health")]
     public int MaxHealth = 100; // 최대 체력
-    public int MaxStamina = 100;
+
+    [Header("Stamina")]
+    public float MaxStamina = 100;
+    public float StaminaRegenPerSecond = 5;
+
+    [Header("Mana")]
     public int MaxMana = 3;
 
     [Header("Movement")]
@@ -36,6 +41,7 @@ public class PlayerDataSO : ScriptableObject
 public class PlayerCombatData
 {
     [Header("Dodge")]
+    public float DodgeStamina = 10;
     public float DodgeDistance; // 회피 거리
     public float DodgeDuration; 
     public float DodgeRotateSpeed; // 회피 쿨타임
@@ -61,6 +67,7 @@ public class PlayerCombatData
     public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
 
     [Header("Parry")]
+    public float ParryStamina;
     public Vector3 ParryRadius; // 패링 범위
     public float ParryMoveDuration; // 패링 성공 시 이동 거리   
     public float ParryMoveForce; // 패링 성공 시 이동 거리

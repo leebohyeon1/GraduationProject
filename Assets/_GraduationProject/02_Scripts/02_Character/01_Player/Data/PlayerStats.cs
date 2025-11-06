@@ -19,9 +19,11 @@ public class PlayerStats: IDisposable
     public bool IsHeavyHit; // 강한 피격중인가?
     public bool IsDamaged => IsLightHit || IsHeavyHit; // 피격중인가?
 
+    public bool CanRegenStamina;
+
     // Stat
     public int CurrentHealth; // 현재 체력
-    public int CurrentStamina; // 현재 열기
+    public float CurrentStamina; // 현재 열기
 
     // Properties
     public PlayerDataSO Data => _data;

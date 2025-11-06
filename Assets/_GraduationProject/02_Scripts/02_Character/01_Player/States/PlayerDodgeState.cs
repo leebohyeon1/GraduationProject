@@ -42,7 +42,7 @@ public class PlayerDodgeState : BaseState<Player>
         }
 
         p_context.Events.TriggerDodgeStart();
-
+        p_context.Stamina.UseStamina(p_context.Stats.Data.CombatData.DodgeStamina);
 
         float distance = p_context.Stats.Data.CombatData.DodgeDistance;
         float duration = p_context.Stats.Data.CombatData.DodgeDuration;

@@ -28,11 +28,10 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         _canInput = false;
         p_nextState = null;
-
+        p_context.Stamina.UseStamina(p_AttackData.AttackStamina);
 
         // p_context.Animator.runtimeAnimatorController = p_AttackData.AnimOverrideController;
         p_context.Animator.SetTrigger(p_animationTrigger);
-        p_context.Combat.SetupCombatCenter();
 
         // 목표 방향으로 회전
         if(p_context.Movement.HasTargetRotation)
@@ -48,7 +47,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         }
             
         p_context.Events.TriggerBattleStateChanged(true);
-          
+        
         StartAttackMovement();
     }
 
@@ -67,7 +66,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
         p_context.Events.TriggerBattleStateChanged(true);
-
+        p_context.Events.TriggerRegenStamina(true);
 
         _canInput = false;  
         p_nextState = null;

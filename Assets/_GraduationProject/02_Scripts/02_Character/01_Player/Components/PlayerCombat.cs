@@ -15,11 +15,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     private PlayerEvents _events; // 플레이어 이벤트
     
     /// <summary>
-    /// 전투 중심점의 위치
-    /// </summary>
-    private Vector3 _combatCenter;
-    
-    /// <summary>
     /// 마지막 전투 시간
     /// </summary>
     private float _lastBattleTime;
@@ -51,8 +46,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         _events = events;
 
         _events.OnBattleStateChaged += HandleBattleStateChanged;
-        _events.OnAttackStart += SetupCombatCenter;
-        _events.OnParryPerform += SetupCombatCenter;
 
         _onParry.Subscribe(this);
     }
@@ -63,18 +56,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     public void Dispose()
     {
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
-        _events.OnAttackStart -= SetupCombatCenter;
-        _events.OnParryPerform -= SetupCombatCenter;
 
         _onParry.Unsubscribe(this);
-    }
-
-    /// <summary>
-    /// 전투 중심점을 설정합니다.
-    /// </summary>
-    public void SetupCombatCenter()
-    {
-        _combatCenter = transform.position;
     }
 
     #region BattleState
@@ -102,7 +85,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// <returns>공격 박스의 중심 위치</returns>
     private Vector3 GetAttackCenter(PlayerAttackDataSO attackData)
     {
-        return _combatCenter + transform.forward * (attackData.AttackRadius.z / 2);
+        return transform.position + transform.forward * (attackData.AttackRadius.z / 2);
     }
 
     /// <summary>
@@ -160,7 +143,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// <returns>패리에 영향을 받은 대상의 콜라이더 배열</returns>
     public Collider[] ExecuteParry(Vector3 parryRadius)
     {
-        Vector3 attackCenter = _combatCenter + transform.forward * (parryRadius.z / 2);
+        Vector3 attackCenter = transform.position + transform.forward * (parryRadius.z / 2);
         Vector3 halfExtents = parryRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);

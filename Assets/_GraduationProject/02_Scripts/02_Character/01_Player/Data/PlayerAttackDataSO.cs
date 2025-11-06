@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerAttackDataSO", menuName = "Player/AttackDatasSO")]
 public class PlayerAttackDataSO : ScriptableObject
 {
+    public float AttackStamina;
+
     [Header("Attack Movement")]
     [Tooltip("공격 시 전진하는 거리")]
     public float AttackMoveDistance;

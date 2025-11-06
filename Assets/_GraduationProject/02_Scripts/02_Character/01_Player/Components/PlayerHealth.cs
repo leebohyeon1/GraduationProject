@@ -60,7 +60,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         int previousHealth = Health;
         _stats.CurrentHealth = Mathf.Clamp(_stats.CurrentHealth + amount, 0, MaxHealth);
 
-        OnHealthChanged?.Invoke(previousHealth, Health);
+        if (previousHealth != Health)
+        {
+            OnHealthChanged?.Invoke(previousHealth, Health);
+        }
     }
 
     /// <summary>
