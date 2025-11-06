@@ -199,6 +199,23 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
     public void TakeDamage(DamageData damageData)
     {
-        throw new NotImplementedException();
+        if (IsDead || IsInvincible) return;
+
+        _damageData = damageData;
+
+        int stiffenessAmount = damageData.StiffnessAmount;
+        if (_stats.IsDefending)
+        {
+            damageData.DamageAmount = Mathf.RoundToInt(damageData.DamageAmount * _stats.BasePlayerDatasSO.CombatData.DefendDamageReductionRate);
+            stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
+        }
+
+        AddStiffness(stiffenessAmount);
+        ChangeHealth(-damageData.DamageAmount);
+
+        if (IsDead)
+        {
+            Die();
+        }
     }
 }

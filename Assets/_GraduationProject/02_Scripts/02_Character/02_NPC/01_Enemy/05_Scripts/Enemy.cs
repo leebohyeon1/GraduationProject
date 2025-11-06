@@ -49,15 +49,16 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-    
+    CharacterController controller;
+    private Vector3 _velocity; 
+    private float gravity = -12f;
     protected void Awake()
     {
         player = GameObject.FindFirstObjectByType<Player>();
         BillboardUI = GetComponentInChildren<BillboardUI>();
         BillboardUI?.Initialize();
         animator = GetComponent<Animator>();
-        _aiController = GetComponent<AiController>();
-        _aiController.Initialize(this);
+
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         animHandler.Initalize();
         heatSystem = GetComponent<Monster_HeatSystem>();
@@ -72,6 +73,10 @@ public class Enemy : MonoBehaviour
         specialAbility.Initialize(this);
         Movement = new EnemyMovement(this);
         StartPos = transform.position;
+        controller = GetComponent<CharacterController>();
+        _velocity = controller.velocity;
+        _aiController = GetComponent<AiController>();
+        _aiController.Initialize(this);
     }
     public void Init()
     {
@@ -103,6 +108,17 @@ public class Enemy : MonoBehaviour
             groupAi = groupObj.AddComponent<GroupAi>();
         }
         groupAi.GroupAdd(this);
+    }
+
+    void Update()
+    {
+        bool isGrounded = controller.isGrounded;
+        if (!isGrounded && _velocity.y <= 0)
+        {
+            _velocity.y = -2f;
+        } 
+        _velocity.y += gravity * Time.deltaTime;
+        // controller.Move(_velocity * Time.deltaTime);
     }
     public void SetStiffness(int amount)
     {

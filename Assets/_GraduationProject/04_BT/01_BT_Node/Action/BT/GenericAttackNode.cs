@@ -73,7 +73,7 @@ public class GenericAttackNode : Node
 
                 if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    // Character.TakeDamage(stat.FinalDamage, runner.heatSystem.GetTier(), damageData);
+                    Character.TakeDamage(damageData);
 
                     _didHitPlayer = true;
                     if (!maintainAtk)
