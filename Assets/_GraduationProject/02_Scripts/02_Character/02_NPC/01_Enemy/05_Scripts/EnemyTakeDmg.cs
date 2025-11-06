@@ -87,36 +87,28 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         GetComponent<Animator>().enabled = false;
 
     }
-    private IEnumerator DeathKnockbackCoroutine(Vector3 direction)
+    private IEnumerator DieSequence(Vector3 direction)
     {
-        float elapsedTime = 0;
-        Debug.Log("DEATH Knockback Start");
+    SetRagdollState(true);
+    
+    _characterController.enabled = false;
+    _owner.animator.enabled = false;
+    yield return new WaitForSeconds(0.1f);
+    Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
+    CombineAddForce(combinedForce, direction);
+    // centralRigidbody.AddForce(combinedForce, ForceMode.Impulse);
 
-        // Y값을 포함한 넉백 방향을 정규화합니다.
-        direction.Normalize();
+    Debug.Log($"AddForce 실행됨! {centralRigidbody.name}의 현재 속도: {centralRigidbody.linearVelocity}", this);
 
-        while (elapsedTime < KnockbackDuration) // 이 스크립트의 KnockbackDuration 사용
-        {
-            // 이 스크립트의 knockbackCurve 사용
-            float curveValue = knockbackCurve.Evaluate(elapsedTime / KnockbackDuration);
+    Debug.Log($"속력 (Magnitude): {centralRigidbody.linearVelocity.magnitude}", this);
 
-            // 이 스크립트의 KnockbackForce 사용
-            Vector3 move = direction * KnockbackForce * curveValue * Time.deltaTime;
 
-            // 중력은 항상 적용
-            if (!_characterController.isGrounded)
-            {
-                move.y += Physics.gravity.y * Time.deltaTime;
-            }
-
-            _characterController.Move(move);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        _KnockbackCoroutine = null;
-        Debug.Log("DEATH Knockback Finished");
-    }
+    // 소멸 이펙트(VFX) 재생 추가 기점
+    yield return new WaitForSeconds(1f);
+    centralRigidbody.linearVelocity = Vector3.zero;
+    SetRagdollState(true);
+    SetZeroJoint(false);
+}
     public void TakeDamage(DamageData damageData)
     {
         if (Health <= 0) return;
@@ -151,17 +143,42 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
                 StopCoroutine(_KnockbackCoroutine);
             }
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
-            knockbackDir.y = knockbackDirY;
             Die();
-            damageData.KnockbackDuration = KnockbackDuration;
-            damageData.KnockbackForce = KnockbackForce;
-            _KnockbackCoroutine = StartCoroutine(DeathKnockbackCoroutine(knockbackDir));
+            _KnockbackCoroutine = StartCoroutine(DieSequence(knockbackDir));
 
         }
     }
-    public AnimationCurve knockbackCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    public float knockbackDirY = 0.6f;
-    public float KnockbackDuration = 0.1f;
-    public int KnockbackForce = 30;
-    
+    private void SetRagdollState(bool isActive)
+    {
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            rb.isKinematic = !isActive;
+        }
+    }
+    private void CombineAddForce(Vector3 force, Vector3 direction)
+    {
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+        }
+    }
+    private Rigidbody[] ragdollRigidbodies;
+    private CharacterJoint[] ragdollCharacterJoints;
+    void Start()
+    {
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        ragdollCharacterJoints = GetComponentsInChildren<CharacterJoint>();
+        SetRagdollState(false);
+    }
+
+    public float KnockbackForce = 30f;
+    public float upwardForce = 5f;
+    public Rigidbody centralRigidbody;
+     private void SetZeroJoint(bool isActive)
+    {
+        foreach (CharacterJoint cj in ragdollCharacterJoints)
+        {
+            cj.swingLimitSpring = new SoftJointLimitSpring { damper = isActive ? 50 : 0 };
+        }
+    }
 }

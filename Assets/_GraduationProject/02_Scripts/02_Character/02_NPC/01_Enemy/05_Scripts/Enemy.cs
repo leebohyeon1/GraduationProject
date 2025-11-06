@@ -109,17 +109,6 @@ public class Enemy : MonoBehaviour
         }
         groupAi.GroupAdd(this);
     }
-
-    void Update()
-    {
-        bool isGrounded = controller.isGrounded;
-        if (!isGrounded && _velocity.y <= 0)
-        {
-            _velocity.y = -2f;
-        } 
-        _velocity.y += gravity * Time.deltaTime;
-        // controller.Move(_velocity * Time.deltaTime);
-    }
     public void SetStiffness(int amount)
     {
         _CurrentStiffness = amount;
