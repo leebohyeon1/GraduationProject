@@ -27,6 +27,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         {
             p_context.Events.TriggerChargeAttackAffect(collider);
         }
+
+        p_context.Input.SetAttackHeldInput(false);
     }
 
     /// <summary>

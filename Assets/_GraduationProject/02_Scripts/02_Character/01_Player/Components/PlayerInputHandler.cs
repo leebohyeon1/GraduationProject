@@ -27,6 +27,8 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _InteractInput; // 상호작용 입력
     private bool _potionInput; // 포션 사용 입력
 
+    private bool _canAttackHeldInput;
+
     #region Properties
     public Vector2 MoveInput => _moveInput;
     public Vector2 LookInput => _lookInput;
@@ -127,20 +129,29 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnLook(Vector2 lookInput) => _lookInput = lookInput;
     private void OnMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
 
-    private void OnAttack() 
+    private void OnAttack()
     {
-        _attackInput = true; 
+        _attackInput = true;
     }
 
     private void OnAttackHold()
     {
-        _attackHeldInput = true;
+        if (_canAttackHeldInput)
+        {
+            _attackHeldInput = true;
+            _canAttackHeldInput = false;
+        }
     }
 
     private void OnAttackCancelled() 
     {
-        _attackInput = false; 
-        _attackHeldInput = false;
+        _attackInput = false;
+
+        if (!_canAttackHeldInput)
+        {
+            _attackHeldInput = false;
+            _canAttackHeldInput = true;
+        }
     }
     
     private void OnDodge() => _dodgeInput = true;
@@ -159,5 +170,10 @@ public class PlayerInputHandler : MonoBehaviour
         _dodgeInput = false;
         _InteractInput = false;
         _potionInput = false;
+    }
+
+    public void SetAttackHeldInput(bool isAttackHold)
+    {
+        _attackHeldInput = isAttackHold;
     }
 }
