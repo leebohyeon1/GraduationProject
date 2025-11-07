@@ -16,9 +16,10 @@ public class PlayerStats: IDisposable
     public bool IsInvincible; // 무적인가?
     public bool IsParring; // 패리중인가?
 
-    public bool IsLightHit; // 약한 피격중인가?
-    public bool IsHeavyHit; // 강한 피격중인가?
-    public bool IsDamaged => IsLightHit || IsHeavyHit; // 피격중인가?
+    public bool IsMiddleHit; // 약한 피격중인가?
+    public bool IsHeavyHit;  // 강한 피격중인가?
+    public bool IsKnockDown;
+    public bool IsDamaged => IsMiddleHit || IsHeavyHit || IsKnockDown; // 피격중인가?
 
     public bool CanRegenStamina;
 
@@ -46,4 +47,6 @@ public class PlayerStats: IDisposable
     public void Dispose()
     {
     }
+
+
 }

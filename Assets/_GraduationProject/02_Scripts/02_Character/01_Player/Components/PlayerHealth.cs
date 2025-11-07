@@ -70,12 +70,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         if (IsDead || IsInvincible) return;
 
-        if (_stats.IsParring && damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
+
+        if (_stats.IsParring && Mathf.Acos(Vector3.Dot(transform.position, toEnemy)) >= (_stats.Data.CombatData.ParryAngle / 2f)  && 
+            damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
             damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
         {
-            _stats.ParryableQueue.Enqueue(parryable);
- 
-            return;
+                _stats.ParryableQueue.Enqueue(parryable);
         }
 
         _damageData = damageData;
@@ -105,15 +106,29 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         ChangeStiffness(amount);
 
-        if (_currentStiffness >= _stiffnessThreshold)
+        if(CurrentStiffness >= StiffnessThreshold)
         {
             ChangeStiffness(-_currentStiffness); // 경직도 초기화
-            HeavyStagger(); // 강한 경직
+
+            KnockDown();
+            return;
         }
-        else
+
+        switch(DamageData.AttackType)
         {
-            LightStagger(); // 약한 경직
+            case AttackType.Light:
+                break;
+            case AttackType.Middle:
+                MiddleStagger(); // 약한 경직
+                break;
+            case AttackType.Range:
+                MiddleStagger(); // 약한 경직
+                break;  
+            case AttackType.Heavy:
+                HeavyStagger(); // 강한 경직
+                break;
         }
+
     }
 
     /// <summary>
@@ -127,8 +142,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// <summary>
     /// 약한 경직 상태로 전환합니다.
     /// </summary>
-    private void LightStagger()
+    private void MiddleStagger()
     {
+        _stats.IsMiddleHit = true;
         _damageData.KnockbackCurve = _stats.Data.CombatData.KnockbackCurve;
 
         if (_stats.IsDefending)
@@ -138,8 +154,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         }
         else
         {
-            _stiffnessDuration = _stats.Data.CombatData.LightStaggerDuration;
-            _knockbackForce = _stats.Data.CombatData.LightKnockbackForce;
+            _stiffnessDuration = _stats.Data.CombatData.MiddleStaggerDuration;
+            _knockbackForce = _stats.Data.CombatData.MiddleKnockbackForce;
         }
     }
 
@@ -148,8 +164,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void HeavyStagger()
     {
+        _stats.IsHeavyHit = true; 
         _stiffnessDuration = DamageData.KnockbackDuration;
         _knockbackForce = DamageData.KnockbackForce;
+    }
+
+    private void KnockDown()
+    {
+        _stats.IsKnockDown = true;
     }
 
     /// <summary>
@@ -184,6 +206,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     public void ResetDamageData()
     {
+        _stats.IsMiddleHit = false;
+        _stats.IsHeavyHit = false;
         _damageData = new DamageData();
     }
 

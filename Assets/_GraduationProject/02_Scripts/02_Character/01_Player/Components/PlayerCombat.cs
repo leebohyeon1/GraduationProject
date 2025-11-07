@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
 /// </summary>
-public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>    
+public class PlayerCombat : MonoBehaviour, IDisposable
 {
     #region Private Fields
     private PlayerStats _stats; // 플레이어 스탯
@@ -24,12 +24,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// </summary>
     private bool _isBattleState;
 
-    /// <summary>
-    /// 디버깅용 기즈모 표시 여부
-    /// </summary>
-    private bool _isDrawGizmos = false;
-
-    [SerializeField] private OnParry _onParry;
     #endregion
 
     #region Properties
@@ -42,15 +36,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
     /// </summary>
     public void Initialize(PlayerStats combatData, PlayerEvents events)
     {
-        _isDrawGizmos = true;
         _stats = combatData;
         _events = events;
 
         _events.OnBattleStateChaged += HandleBattleStateChanged;
         _events.OnParryWindowStart += HandleParryWindowStart;
         _events.OnParryWindowFinish += HandleParryWindowFinish;
-
-        _onParry.Subscribe(this);
     }
 
     /// <summary>
@@ -61,8 +52,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         _events.OnBattleStateChaged -= HandleBattleStateChanged;
         _events.OnParryWindowStart -= HandleParryWindowStart;
         _events.OnParryWindowFinish -= HandleParryWindowFinish;
-
-        _onParry.Unsubscribe(this);
     }
 
     #region BattleState
@@ -122,8 +111,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         {
             if (obj.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
             {
-                //damageable.TakeDamage(attackData.AttackDamage,0,new DamageData(0, transform, 
-                //    attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
+                damageable.TakeDamage(new DamageData(transform, attackData.AttackType, attackData.AttackDamage
+                    ,attackData.StiffnessAmount, attackData.KnockBackCurve, attackData.KnockBackDuration, attackData.KnockBackForce));
             }
         }
     }
@@ -164,31 +153,4 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<bool>
         SetBattleState(isBattleState);
     }
 
-#if UNITY_EDITOR
-
-    private void OnDrawGizmos()
-    {
-        return;
-
-        // 공격 범위 기즈모
-        DrawActionGizmo(_stats.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
-        DrawActionGizmo(_stats.AttackDatas[1].AttackRadius, Color.orangeRed);
-        DrawActionGizmo(_stats.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_stats.Data.CombatData.ParryRadius, Color.green);
-    }
-
-    private void DrawActionGizmo(Vector3 radius, Color color)
-    {
-        Vector3 attackCenter = transform.position + transform.forward * (radius.z / 2);
-        Gizmos.color = color;
-        Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, radius);
-        Gizmos.matrix = Matrix4x4.identity;
-    }
-
-    public void OnEventTrigger(bool eventName)
-    {
-      
-    }
-#endif
 }

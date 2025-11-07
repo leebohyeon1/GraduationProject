@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
   MaxHealth: 100
-  MaxHeat: 100
+  MaxStamina: 100
+  StaminaRegenPerSecond: 15
   MaxMana: 3
   GroundLayerMask:
     serializedVersion: 2
@@ -27,6 +28,7 @@ MonoBehaviour:
   GroundCheckDistance: 0.1
   BattleOutTime: 8
   CombatData:
+    DodgeStamina: 10
     DodgeDistance: 12
     DodgeDuration: 1
     DodgeRotateSpeed: 5
@@ -117,8 +119,8 @@ MonoBehaviour:
     DefendDamageReductionRate: 0.7
     DefendStaggerDuration: 0.1
     DefendKnockbackForce: 7
-    LightStaggerDuration: 0.1
-    LightKnockbackForce: 10
+    MiddleStaggerDuration: 0
+    MiddleKnockbackForce: 0
     AttackLayerMask:
       serializedVersion: 2
       m_Bits: 1280
@@ -128,6 +130,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 81925a335a35a274dbe0f622cc493cdf, type: 2}
     ChargeDuration: 1
     ChargeAttackData: {fileID: 11400000, guid: d50b460660671084b9d25b859c41f6a5, type: 2}
-    ParryRadius: {x: 3, y: 1, z: 3}
+    ParryStamina: 1
     ParryMoveDuration: 0.1
     ParryMoveForce: 2

@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerAttackDataSO", menuName = "Player/AttackDatasSO")]
 public class PlayerAttackDataSO : ScriptableObject
 {
+    public AttackType AttackType;
     public float AttackStamina;
 
     [Header("Attack Movement")]
@@ -18,6 +19,7 @@ public class PlayerAttackDataSO : ScriptableObject
     [Header("Attack Stats")]
     [Tooltip("공격 데미지")]
     public int AttackDamage;
+    public int StiffnessAmount;
 
     [Tooltip("공격 범위")]
     public Vector3 AttackRadius;

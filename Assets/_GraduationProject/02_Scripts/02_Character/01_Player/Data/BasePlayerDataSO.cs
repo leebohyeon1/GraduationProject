@@ -55,8 +55,8 @@ public class PlayerCombatData
     public float DefendKnockbackForce; // 방어 시 넉백 힘
 
     [Space(10f)]
-    public float LightStaggerDuration; // 약한 경직 시간
-    public float LightKnockbackForce; // 강한 경직 시간
+    public float MiddleStaggerDuration; // 약한 경직 시간
+    public float MiddleKnockbackForce; // 강한 경직 시간
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
@@ -68,7 +68,7 @@ public class PlayerCombatData
 
     [Header("Parry")]
     public float ParryStamina;
-    public Vector3 ParryRadius; // 패링 범위
+    public float ParryAngle;
     public float ParryMoveDuration; // 패링 성공 시 이동 거리   
     public float ParryMoveForce; // 패링 성공 시 이동 거리
 }

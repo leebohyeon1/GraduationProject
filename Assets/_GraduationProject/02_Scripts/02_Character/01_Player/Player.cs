@@ -265,4 +265,28 @@ public class Player : DIMonoBehaviour
         Stamina.Dispose();
     }
     #endregion
+
+
+#if UNITY_EDITOR
+
+    private void OnDrawGizmos()
+    {
+        // 공격 범위 기즈모
+        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
+        DrawActionGizmo(_data.CombatData.ChargeAttackData.AttackRadius, Color.red);
+
+    }
+
+    private void DrawActionGizmo(Vector3 radius, Color color)
+    {
+        Vector3 attackCenter = transform.position + transform.forward * (radius.z / 2);
+        Gizmos.color = color;
+        Gizmos.matrix = Matrix4x4.TRS(attackCenter, transform.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, radius);
+        Gizmos.matrix = Matrix4x4.identity;
+    }
+#endif
+
 }

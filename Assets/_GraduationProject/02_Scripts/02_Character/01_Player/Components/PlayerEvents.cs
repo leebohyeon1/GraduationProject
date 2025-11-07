@@ -15,7 +15,7 @@ public enum PlayerFeedbackType
     Move_FB, MoveStop_FB, DodgeStart_FB,
     DodgeFinish_FB, Landing_FB,
 
-    TakeDamage_Normal_FB, TakeDamage_Strong_FB, TakeDamage_Defend_FB,
+    TakeDamage_Normal_FB, TakeDamage_Strong_FB, TakeDamage_Defend_FB, TakeDamage_KnockDown_FB,
 
     FirstAttackStart_FB, SecondAttackStart_FB,
     ThirdAttackStart_FB, MeleeAttackHit_FB,
@@ -33,7 +33,8 @@ public enum PlayerDamagedType
 {
     Normal = 0, // 일반 피격
     Strong = 1, // 강한 피격
-    Defend = 2 // 방어 중 피격
+    Defend = 2, // 방어 중 피격
+    KnockDown = 3
 }
 
 /// <summary>
@@ -123,9 +124,10 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         switch (damagedType)
         {
-            case PlayerDamagedType.Normal: PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB, transform.position); break;
-            case PlayerDamagedType.Strong: PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB, transform.position); break;
-            case PlayerDamagedType.Defend: PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB, transform.position); break;
+            case PlayerDamagedType.Normal: PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB); break;
+            case PlayerDamagedType.Strong: PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB); break;
+            case PlayerDamagedType.KnockDown: PlayFeedback(PlayerFeedbackType.TakeDamage_KnockDown_FB); break;
+            case PlayerDamagedType.Defend: PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB); break;
         }
     }
     #endregion
