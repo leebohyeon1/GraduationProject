@@ -21,13 +21,18 @@ public class PlayerHitState : BaseState<Player>
         _hitDuration = p_context.Health.StiffnessDuration;
         _hitForce = p_context.Health.KnockbackForce;
 
+        if (p_context.Stats.IsKnockDown)
+        {
+            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
+        }
+
         // 피격 종류에 따라 다른 애니메이션 및 효과 재생
         if (p_context.Stats.IsHeavyHit)
         {
             KnockbackMovement(_hitForce * _hitDuration);
             p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
         }
-        else if(p_context.Stats.IsLightHit)
+        else if(p_context.Stats.IsMiddleHit)
         {
            
             if (p_context.Stats.IsDefending)
@@ -50,8 +55,6 @@ public class PlayerHitState : BaseState<Player>
         _hitTimer = 0f;
 
         p_context.Events.TriggerBattleStateChanged(true);
-        p_context.Heat.TriggerChargeGuageChanged(0f);
-
     }
 
     public override void OnUpdate()
@@ -77,9 +80,10 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnExit()
     {
+        p_context.Health.ResetDamageData();
+
         DOTween.Kill(this);
         p_context.Animator.SetBool("IsHit", false);
-        p_context.Stats.ResetDamaged();
         p_context.Events.TriggerBattleStateChanged(true);
     }
 

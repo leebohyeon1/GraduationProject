@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cff0c7e55165ed4ebcd9871c1069362, type: 3}
+  m_Name: PlayerDatasSO
+  m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
+  MaxHealth: 100
+  MaxStamina: 100
+  StaminaRegenPerSecond: 15
+  MaxMana: 3
+  GroundLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  ObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 16
+  MoveSpeed: 10
+  RotateSpeed: 8
+  Gravity: -9.81
+  GroundCheckDistance: 0.1
+  BattleOutTime: 8
+  CombatData:
+    DodgeStamina: 10
+    DodgeDistance: 12
+    DodgeDuration: 1
+    DodgeRotateSpeed: 5
+    DodgeAnimationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 20.593813
+        outSlope: 20.593813
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.0624771
+      - serializedVersion: 3
+        time: 0.06240809
+        value: 0.55561405
+        inSlope: 3.558642
+        outSlope: 3.558642
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.375229
+        outWeight: 0.14629027
+      - serializedVersion: 3
+        time: 0.20426297
+        value: 0.81616026
+        inSlope: 0.7849388
+        outSlope: 0.7849388
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 5.086032
+        outSlope: 5.086032
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.23395222
+      - serializedVersion: 3
+        time: 0.032597594
+        value: 0.6086123
+        inSlope: 5.3881264
+        outSlope: 5.3881264
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.13374081
+      - serializedVersion: 3
+        time: 0.20329835
+        value: 0.9542558
+        inSlope: 0.19642727
+        outSlope: 0.19642727
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.46062127
+        outWeight: 0.072778724
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    DefendDamageReductionRate: 0.7
+    DefendStaggerDuration: 0.1
+    DefendKnockbackForce: 7
+    MiddleStaggerDuration: 0
+    MiddleKnockbackForce: 0
+    AttackLayerMask:
+      serializedVersion: 2
+      m_Bits: 1280
+    AttackDatas:
+    - {fileID: 11400000, guid: 7221cec205c389a46b5b1fc5e7063c0d, type: 2}
+    - {fileID: 11400000, guid: 35de1069e94a1c8479be749bb2efabad, type: 2}
+    - {fileID: 11400000, guid: 81925a335a35a274dbe0f622cc493cdf, type: 2}
+    ChargeDuration: 1
+    ChargeAttackData: {fileID: 11400000, guid: d50b460660671084b9d25b859c41f6a5, type: 2}
+    ParryStamina: 1
+    ParryMoveDuration: 0.1
+    ParryMoveForce: 2

@@ -111,9 +111,6 @@ namespace Console
             CommandClear.CreateCommand();
             CommandSceneLoad.CreateCommand();
 
-            CommandEnchantSkill.CreateCommand();
-            CommandSelectSkill.CreateCommand();
-            CommandUnlockSkill.CreateCommand();
             CommandSpawn.CreateCommand();
             CommandMonsterInit.CreateCommand();
             CommandMonsterClear.CreateCommand();

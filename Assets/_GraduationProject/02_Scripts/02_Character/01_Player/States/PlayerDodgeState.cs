@@ -1,5 +1,6 @@
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -22,24 +23,45 @@ public class PlayerDodgeState : BaseState<Player>
         p_context.Events.OnDodgeFinish += HandleDodgeFinish;
 
         // 입력 방향에 따라 회피 방향 결정
-        if (p_context.Input.MoveInput != Vector2.zero)
+        if (p_context.Input.MoveInput == Vector2.zero)
+        {
+            _dodgeDirection = p_context.transform.forward;
+        }
+        else
         {
             _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
             p_context.Movement.RotateToDirection(_dodgeDirection);
         }
-        else
-        {
-            _dodgeDirection = Vector3.zero; // 입력 없으면 전방으로
-        }
+
 
         p_context.Health.SetInvisible(true); // 회피 중 무적
 
-        if(p_context.Combat.IsBattleState)
+        if (p_context.Combat.IsBattleState)
         {
             p_context.Events.TriggerBattleStateChanged(true);
         }
 
         p_context.Events.TriggerDodgeStart();
+        p_context.Stamina.UseStamina(p_context.Stats.Data.CombatData.DodgeStamina);
+
+        float distance = p_context.Stats.Data.CombatData.DodgeDistance;
+        float duration = p_context.Stats.Data.CombatData.DodgeDuration;
+        AnimationCurve curve = p_context.Stats.Data.CombatData.DodgeAnimationCurve;
+
+        float currentDistance = 0f;
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
+                p_context.Movement?.Dodge(_dodgeDirection, distance/duration, p_context.Stats.Data.CombatData.DodgeRotateSpeed);
+
+                currentDistance = x;
+            },
+            distance, duration).
+            SetEase(curve).
+            SetId(this).
+            SetUpdate(UpdateType.Fixed);
     }
 
     public override void OnUpdate()
@@ -47,15 +69,12 @@ public class PlayerDodgeState : BaseState<Player>
         HandleInput();
     }
 
-    public override void OnFixedUpdate()
-    {
-        p_context.Movement?.Dodge(_dodgeDirection, p_context.Stats.DodgeSpeed);
-    }
-
     public override void OnExit()
     {
         p_context.Events.OnDodgeFinish -= HandleDodgeFinish;
         p_context.Health.SetInvisible(false); // 무적 해제
+        DOTween.Kill(this);
+
 
         if (p_context.Combat.IsBattleState)
         {
@@ -83,15 +102,12 @@ public class PlayerDodgeState : BaseState<Player>
     /// </summary>
     public void HandleInput()
     {
-        if (p_context.Input.DefendInput)
+        if (_nextState != null)
         {
-            _nextState = typeof(PlayerDefendState);
+            return;
         }
-        else if (p_context.Input.AttackHeldInput)
-        {
-            _nextState = typeof(PlayerChargeState);
-        }
-        else if (p_context.Input.AttackInput)
+
+        else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
@@ -99,13 +115,13 @@ public class PlayerDodgeState : BaseState<Player>
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             _nextState = typeof(PlayerFirstAttackState);
         }
-        else if (p_context.Input.RangedAttackInput)
+        else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
-            _nextState = typeof(PlayerRangedChargeState);
+            _nextState = typeof(PlayerDodgeState);
         }
-        else if (p_context.Input.MoveInput != Vector2.zero)
+        else if(p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
         {
-            _nextState = typeof(PlayerMoveState);
+            _nextState = typeof(PlayerParryState);
         }
     }
 }

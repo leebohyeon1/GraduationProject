@@ -14,9 +14,6 @@ public class PlayerDefendState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Events.OnParryPerform += HandleParryPerform;
-        p_context.Events.OnParryAffect += HandleParryAffect;
-
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
         var moveInput = p_context.Input.MoveInput;
         var mousePosition = p_context.Input.MousePosition;
@@ -29,7 +26,8 @@ public class PlayerDefendState : BaseState<Player>
 
     public override void OnUpdate()
     {
-        p_context.Movement?.Move(Vector3.zero, 0f, 0f);
+        Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
+        p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
 
         // 입력에 따른 상태 전환
         if (!p_context.Input.DefendInput)
@@ -46,58 +44,9 @@ public class PlayerDefendState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Events.OnParryPerform -= HandleParryPerform;
-        p_context.Events.OnParryAffect -= HandleParryAffect;
-
         DOTween.Kill(this);
         p_context.Animator.SetBool("IsDefending", false);
         p_context.Events.TriggerBattleStateChanged(true);
     }
 
-    /// <summary>
-    /// 패링 판정이 발생하는 시점에 호출됩니다.
-    /// </summary>
-    private void HandleParryPerform()
-    {
-        Collider[] colliders = p_context.Combat.ExecuteParry(p_context.Stats.BasePlayerDatasSO.CombatData.ParryRadius);
-
-        foreach (Collider collider in colliders)
-        {
-            if(collider.TryGetComponent<IParryable>(out var parryable))
-            {
-                parryable.Parry(p_context.gameObject);  
-                p_context.Events.TriggerParryAffect(collider);
-            }
-        }
-    }
-
-    /// <summary>
-    /// 패링 성공 시 호출됩니다.
-    /// </summary>
-    private void HandleParryAffect(Collider collider)
-    {
-        p_context.Combat.ToggleCanCounter(p_context.Stats.BasePlayerDatasSO.CombatData.CounterAttackWindow);
-        KnockbackMovement(collider.transform);
-    }
-
-
-    private void KnockbackMovement(Transform parryObject)
-    {
-        Vector3 moveDirection = (p_context.transform.position - parryObject.position).normalized;
-
-        float currentDistance = 0f;
-        DOTween.To(
-            () => currentDistance,
-            x =>
-            {
-                Vector3 displacement = moveDirection * (x - currentDistance);
-                p_context.Movement.ForceMove(displacement);
-                currentDistance = x;
-            },
-            p_context.Stats.BasePlayerDatasSO.CombatData.ParryMoveForce * p_context.Stats.BasePlayerDatasSO.CombatData.ParryMoveDuration, 
-            0.1f)
-            .SetEase(p_context.Stats.BasePlayerDatasSO.CombatData.KnockbackCurve)
-            .SetId(this)
-            .SetUpdate(UpdateType.Fixed);
-    }
 }

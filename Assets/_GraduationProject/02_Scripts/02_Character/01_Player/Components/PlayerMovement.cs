@@ -1,6 +1,7 @@
 using BH_Lib.Log;
 using System;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -35,13 +36,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         _mainCamera = Camera.main;
 
         _events = events;
-
-        _events.OnFlashStart += HandleFlashStart;
     }
 
     public void Dispose()
     {
-        _events.OnFlashStart -= HandleFlashStart;
     }
 
     /// <summary>
@@ -112,13 +110,15 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// <summary>
     /// 회피를 실행합니다.
     /// </summary>
-    public void Dodge(Vector3 direction, float dodgeSpeed)
+    public void Dodge(Vector3 direction, float dodgeSpeed, float rotateSpeed)
     {
-        Vector3 moveVector = direction != Vector3.zero
-            ? (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x).normalized
-            : transform.forward;
+        if (direction.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * direction.z + _mainCamera.transform.right * direction.x);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime);
+        }
 
-        Vector3 movement = moveVector * dodgeSpeed * Time.fixedDeltaTime;
+        Vector3 movement = transform.forward * dodgeSpeed * Time.fixedDeltaTime;
         movement.y = _velocity.y * Time.fixedDeltaTime;
         _characterController.Move(movement);
 
@@ -161,14 +161,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            float distance = Vector3.Distance(transform.position, _mainCamera.transform.position);
-            Vector3 point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
-           
-            Vector3 direction = point - transform.position;
-            direction.y = 0;
-            direction.Normalize();
-
-            return Quaternion.LookRotation(direction, Vector3.up);
+            return Quaternion.LookRotation(GetTargetDirection(deviceType, moveInput, mousePosition), Vector3.up);
         }
         else // Gamepad
         {
@@ -176,8 +169,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable
             {
                 return transform.rotation;
             }
-            
-            Vector3 lookDirection = (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
+
+            Vector3 lookDirection = GetTargetDirection(deviceType, moveInput, mousePosition);
             if (lookDirection.sqrMagnitude > 0.1f)
             {
                 return Quaternion.LookRotation(lookDirection, Vector3.up);
@@ -212,25 +205,28 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         _targetRotation = Quaternion.Euler(Vector3.zero);
         _hasTargetRotation = false;
     }
-    #endregion
 
-    #region Event
-    public void HandleFlashStart(Vector2 input, float distance)
+    public Vector3 GetTargetDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
     {
-        Vector3 Velocity;
-        if (input == Vector2.zero)
+        if (deviceType == InputDeviceType.KeyboardMouse)
         {
-            Velocity = transform.forward;
+            float distance = Vector3.Distance(transform.position, _mainCamera.transform.position);
+            Vector3 point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
+
+            Vector3 direction = point - transform.position;
+            direction.y = 0;
+            direction.Normalize();
+
+            return direction;
         }
         else
         {
-            Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            Velocity = cameraForward * input.y + _mainCamera.transform.right * input.x;
+            Vector3 lookDirection = (Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized * moveInput.y + Camera.main.transform.right * moveInput.x).normalized;
+            return lookDirection;
         }
-
-        Velocity *= distance;
-        ForceMove(Velocity);
-        _events.TriggerFlashSkillFinish(transform.position + Velocity);
     }
+    #endregion
+
+    #region Event
     #endregion
 }

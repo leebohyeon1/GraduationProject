@@ -28,7 +28,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public float KnockbackForce => _knockbackForce; // 넉백 힘 
 
     public int Health => _stats.CurrentHealth; // 현재 체력
-    public int MaxHealth => _stats.BasePlayerDatasSO.MaxHealth; // 최대 체력
+    public int MaxHealth => _stats.Data.MaxHealth; // 최대 체력
     public bool IsDead => _stats.CurrentHealth <= 0; // 사망 여부
     public bool IsInvincible => _stats.IsInvincible; // 무적 여부
 
@@ -42,8 +42,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stats = data;
         _events = evets;
-
-        _events.OnOverHeat += HandleOverHeat;
     }
 
     /// <summary>
@@ -51,7 +49,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     public void Dispose()
     {
-        _events.OnOverHeat -= HandleOverHeat;
     }
 
     /// <summary>
@@ -63,29 +60,37 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         int previousHealth = Health;
         _stats.CurrentHealth = Mathf.Clamp(_stats.CurrentHealth + amount, 0, MaxHealth);
 
-        OnHealthChanged?.Invoke(previousHealth, Health);
+        if (previousHealth != Health)
+        {
+            OnHealthChanged?.Invoke(previousHealth, Health);
+        }
     }
 
-    /// <summary>
-    /// 데미지를 받습니다. (경직도 포함)
-    /// </summary>
-    /// <param name="damageAmount">데미지 양</param>
-    /// <param name="stiffenessAmount">경직도 양</param>
-    public void TakeDamage(int damageAmount, int heatTier, DamageData damageData)
+    public void TakeDamage(DamageData damageData)
     {
         if (IsDead || IsInvincible) return;
+
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
+
+        if (_stats.IsParring && Mathf.Acos(Vector3.Dot(transform.position, toEnemy)) >= (_stats.Data.CombatData.ParryAngle / 2f)  && 
+            damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
+            damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        {
+            _stats.ParryableQueue.Enqueue(parryable);
+            return;
+        }
 
         _damageData = damageData;
 
         int stiffenessAmount = damageData.StiffnessAmount;
         if (_stats.IsDefending)
         {
-            damageAmount = Mathf.RoundToInt(damageAmount * _stats.BasePlayerDatasSO.CombatData.DefendDamageReductionRate);
+            damageData.DamageAmount = Mathf.RoundToInt(damageData.DamageAmount * _stats.Data.CombatData.DefendDamageReductionRate);
             stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
         }
 
         AddStiffness(stiffenessAmount);
-        ChangeHealth(-damageAmount);
+        ChangeHealth(-damageData.DamageAmount);
 
         if (IsDead)
         {
@@ -102,15 +107,29 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         ChangeStiffness(amount);
 
-        if (_currentStiffness >= _stiffnessThreshold)
+        if(CurrentStiffness >= StiffnessThreshold)
         {
             ChangeStiffness(-_currentStiffness); // 경직도 초기화
-            HeavyStagger(); // 강한 경직
+
+            KnockDown();
+            return;
         }
-        else
+
+        switch(DamageData.AttackType)
         {
-            LightStagger(); // 약한 경직
+            case AttackType.Light:
+                break;
+            case AttackType.Middle:
+                MiddleStagger(); // 약한 경직
+                break;
+            case AttackType.Range:
+                MiddleStagger(); // 약한 경직
+                break;  
+            case AttackType.Heavy:
+                HeavyStagger(); // 강한 경직
+                break;
         }
+
     }
 
     /// <summary>
@@ -124,20 +143,20 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// <summary>
     /// 약한 경직 상태로 전환합니다.
     /// </summary>
-    private void LightStagger()
+    private void MiddleStagger()
     {
-        _damageData.KnockbackCurve = _stats.BasePlayerDatasSO.CombatData.KnockbackCurve;
+        _stats.IsMiddleHit = true;
+        _damageData.KnockbackCurve = _stats.Data.CombatData.KnockbackCurve;
 
         if (_stats.IsDefending)
         {
-            _stiffnessDuration = _stats.BasePlayerDatasSO.CombatData.DefendStaggerDuration;
-            _knockbackForce = _stats.BasePlayerDatasSO.CombatData.DefendKnockbackForce;
+            _stiffnessDuration = _stats.Data.CombatData.DefendStaggerDuration;
+            _knockbackForce = _stats.Data.CombatData.DefendKnockbackForce;
         }
         else
         {
-            _stiffnessDuration = _stats.BasePlayerDatasSO.CombatData.LightStaggerDuration;
-            _knockbackForce = _stats.BasePlayerDatasSO.CombatData.LightKnockbackForce;
-            _stats.SetDamagedType(PlayerDamagedType.Normal);
+            _stiffnessDuration = _stats.Data.CombatData.MiddleStaggerDuration;
+            _knockbackForce = _stats.Data.CombatData.MiddleKnockbackForce;
         }
     }
 
@@ -146,9 +165,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void HeavyStagger()
     {
+        _stats.IsHeavyHit = true; 
         _stiffnessDuration = DamageData.KnockbackDuration;
         _knockbackForce = DamageData.KnockbackForce;
-        _stats.SetDamagedType(PlayerDamagedType.Strong);
+    }
+
+    private void KnockDown()
+    {
+        _stats.IsKnockDown = true;
     }
 
     /// <summary>
@@ -179,26 +203,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     }
 
     /// <summary>
-    /// 과열 상태일 때 지속적인 데미지를 처리합니다.
-    /// </summary>
-    private void HandleOverHeat(int damage)
-    {
-        if(_stats.IsOverHeat && !_stats.SkillData.IsMaxLevelBoost)
-        {
-            //TakeDamage(new DamageData(0, transform));
-        }
-    }
-
-    /// <summary>
     /// 데미지 데이터 초기화
     /// </summary>
     public void ResetDamageData()
     {
+        _stats.IsMiddleHit = false;
+        _stats.IsHeavyHit = false;
         _damageData = new DamageData();
     }
 
-    public void TakeDamage(DamageData damageData)
-    {
-        throw new NotImplementedException();
-    }
 }
