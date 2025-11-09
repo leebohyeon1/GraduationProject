@@ -11,7 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.Data.CombatData.ChargeAttackData;
+    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.Data.CombatData.ChargeAttackDatas[p_context.Stats.ChargeLevel].AttackData;
 
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }

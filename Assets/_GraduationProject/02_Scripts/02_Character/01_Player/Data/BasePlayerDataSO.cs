@@ -63,12 +63,20 @@ public class PlayerCombatData
     public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
-    public float ChargeDuration;
-    public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
+    public float ChargeStamina;
+    public PlayerChargeAttackData[] ChargeAttackDatas;
+    public float MaxChargeTime = 5f;
 
     [Header("Parry")]
     public float ParryStamina;
     public float ParryAngle;
     public float ParryMoveDuration; // 패링 성공 시 이동 거리   
     public float ParryMoveForce; // 패링 성공 시 이동 거리
+}
+
+[Serializable]
+public class PlayerChargeAttackData
+{
+    public float ChargeTime;
+    public PlayerAttackDataSO AttackData;
 }

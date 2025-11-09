@@ -29,6 +29,7 @@ public class PlayerStats: IDisposable
 
     // Combat
     public Queue<IParryable> ParryableQueue = new Queue<IParryable>();
+    public int ChargeLevel = 0;
 
     // Properties
     public PlayerDataSO Data => _data;
