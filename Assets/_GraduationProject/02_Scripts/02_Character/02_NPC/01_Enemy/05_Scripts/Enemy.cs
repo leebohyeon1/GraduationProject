@@ -49,15 +49,16 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-    
+    CharacterController controller;
+    private Vector3 _velocity; 
+    private float gravity = -12f;
     protected void Awake()
     {
         player = GameObject.FindFirstObjectByType<Player>();
         BillboardUI = GetComponentInChildren<BillboardUI>();
         BillboardUI?.Initialize();
         animator = GetComponent<Animator>();
-        _aiController = GetComponent<AiController>();
-        _aiController.Initialize(this);
+
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         animHandler.Initalize();
         heatSystem = GetComponent<Monster_HeatSystem>();
@@ -72,6 +73,10 @@ public class Enemy : MonoBehaviour
         specialAbility.Initialize(this);
         Movement = new EnemyMovement(this);
         StartPos = transform.position;
+        controller = GetComponent<CharacterController>();
+        _velocity = controller.velocity;
+        _aiController = GetComponent<AiController>();
+        _aiController.Initialize(this);
     }
     public void Init()
     {
