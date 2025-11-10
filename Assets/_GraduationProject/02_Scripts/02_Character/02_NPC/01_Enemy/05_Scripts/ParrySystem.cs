@@ -3,11 +3,9 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListener<bool>
+public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 {
     // Parry system implementation
-    public bool IsParryable { get; private set; } = false;
-    public bool IsParry { get; private set; } = false;
     public bool IsCounterable { get; private set; } = false;
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
@@ -18,19 +16,14 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
     public void Initialize(Enemy enemy)
     {
         _owner = enemy;
-        IsParryable = false;
         IsCounterable = false;
-        ClearStun(); IsParry = false;
+        ClearStun(); 
     }
 
     private void OnDisable()
     {
     }
 
-    public void SetParryable(string value)
-    {
-        IsParryable = value == "true" ? true : false;
-    }
     public void SetCounterAttack(bool value)
     {
         IsCounterable = value;
@@ -44,10 +37,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
 
     public bool Parry(GameObject parryInstigator)
     {
-        SetParryable("false");
         Debug.Log(_owner.name + " was parried by " + parryInstigator.name);
-        _owner.StiffnessSystem.AddStiffness(50);
-        IsParry = true;
+        _owner.StiffnessSystem.AddStiffness(100);
         return true;
     }
 
@@ -74,10 +65,5 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
     {
         _owner.animator.SetBool("Stun", false);
         _isStunned = false;
-    }
-
-    public void OnEventTrigger(bool eventName)
-    {
-        IsParry = false;
     }
 }
