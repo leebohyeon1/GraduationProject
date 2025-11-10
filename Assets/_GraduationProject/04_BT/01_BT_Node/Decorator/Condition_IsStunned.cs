@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsStunnedCondition", menuName = "BehaviorTree/Condition/IsStunned")]
 public class Condition_IsStunned : ConditionNode
 {
     // runner의 IsStunned() 함수를 호출하여

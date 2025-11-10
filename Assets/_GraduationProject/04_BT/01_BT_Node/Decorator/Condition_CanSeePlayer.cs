@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "CanSeePlayer_Condition", menuName = "BehaviorTree/Condition/CanSeePlayer")]
 public class Condition_CanSeePlayer : ConditionNode
 {
     public float viewAngle = 90f;

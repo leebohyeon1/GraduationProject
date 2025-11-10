@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsSkillReady_Condition", menuName = "BehaviorTree/Condition/IsSkillReady")]
 public class Condition_IsSkillReady : ConditionNode
 {
     [Tooltip("쿨타임을 확인할 스킬의 고유 이름입니다.")]

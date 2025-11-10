@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsInAttackRangeCondition", menuName = "BehaviorTree/Condition/IsInAttackRange")]
 public class Condition_IsInAttackRange : ConditionNode
 {
     public bool heatRange = false;

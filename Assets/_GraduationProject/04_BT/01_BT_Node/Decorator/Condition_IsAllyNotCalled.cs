@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsAllyNotCalledCondition", menuName = "BehaviorTree/Condition/IsAllyNotCalled")]
 public class Condition_IsAllyNotCalled : ConditionNode
 {
     protected override bool CheckCondition()

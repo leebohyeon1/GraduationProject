@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsInCombatCondition", menuName = "BehaviorTree/Condition/IsInCombat")]
 public class Condition_IsInCombat : ConditionNode
 {
     // runner의 IsCalling() (또는 IsInCombat()) 함수를 호출하여

@@ -206,7 +206,7 @@ public class Enemy : MonoBehaviour
         style.alignment = TextAnchor.MiddleCenter;
 
         // 1m부터 30m까지 원과 텍스트를 그립니다.
-         for (int i = 1; i <= 30; i++)
+        for (int i = 1; i <= 30; i++)
         {
             Handles.color = Color.Lerp(Color.green, Color.blue, i / 30f);
 
