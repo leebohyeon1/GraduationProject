@@ -87,14 +87,16 @@ public class PlayerDodgeState : BaseState<Player>
     /// </summary>
     public void HandleDodgeFinish()
     {
-        if (_nextState != null)
-        {
-            p_stateMachine.ChangeState(_nextState);
-        }
-        else
-        {
-            p_stateMachine.ChangeState<PlayerIdleState>();
-        }
+        p_stateMachine.ChangeState<PlayerIdleState>();
+        //if (_nextState != null)
+        //{
+        //    p_stateMachine.ChangeState(_nextState);
+        //    Log.Print(_nextState.ToString());
+        //}
+        //else
+        //{
+            
+        //}
     }
 
     /// <summary>

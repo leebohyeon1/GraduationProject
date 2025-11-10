@@ -180,6 +180,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private void KnockDown()
     {
         _stats.IsKnockDown = true;
+        _stiffnessDuration = 3f;
+        _knockbackForce = 0f;
     }
 
     /// <summary>
@@ -216,6 +218,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stats.IsMiddleHit = false;
         _stats.IsHeavyHit = false;
+        _stats.IsKnockDown = false;
         _damageData = new DamageData();
     }
 
