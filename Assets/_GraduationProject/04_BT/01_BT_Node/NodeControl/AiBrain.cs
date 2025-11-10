@@ -2,25 +2,55 @@ using UnityEngine;
 using BehaviorTree;
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using System;
+using System.Collections;
 public class AiBrain
 {
+    public BlackBoard blackboard { get; private set; }
     private Enemy _owner;
-    private ActionTree _behaviorTree;
+    private Player _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     public Enemy.EnemyState CurrentState => _owner.CurrentState;
-    public AiBrain(ActionTree behaviorTree, Enemy ai)
+    public AiBrain(Enemy ai)
     {
         _owner = ai;
-        _behaviorTree = behaviorTree.Clone();
-        _behaviorTree.SetRunner(ai,this);
-        _behaviorTree.rootNode?.initNode();
+
+        blackboard = new BlackBoard();
+        _player = _owner.player;
+
+        blackboard.SetValue("HomePosition", _owner.StartPos);
 
     }
     public void Tick(float deltaTime)
     {
-        _behaviorTree?.rootNode?.Evaluate();
+
+    }
+    private IEnumerator TickCoroutine()
+    {
+        while (true)
+        {
+            if (_player != null)
+            {
+                float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
+                blackboard.SetValue("DistanceBetween", distance);
+                bool canSee = CheckPlayerVisibility();
+                blackboard.SetValue("IsHasLOS", canSee);
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
+    private bool CheckPlayerVisibility()
+    {
+        Vector3 toPlayer = _player.transform.position - _owner.transform.position;
+
+        if (Vector3.Angle(_owner.transform.forward, toPlayer.normalized) > 90 * 0.5f)
+        {
+            return false;
+        }
+        blackboard.SetValue("LastPlayerPos", _player.transform.position);
+        return true;
+    }
 
     #region Behavior Tree Condition
     public bool IsSkillReady(string skillName, float cooldownDuration)
@@ -32,7 +62,7 @@ public class AiBrain
         return true;
     }
 
-        public bool IsActionable()
+    public bool IsActionable()
     {
         switch (CurrentState)
         {
@@ -49,7 +79,7 @@ public class AiBrain
 
     public bool IsInAttackRange(float atkRange)
     {
-        return Vector3.Distance(_owner.transform.position, _owner.player.transform.position) <= atkRange;
+        return Vector3.Distance(_owner.transform.position, _player.transform.position) <= atkRange;
     }
 
     // IsInDetectionRange, IsInChaseRange 등도 동일한 방식으로 이전
@@ -61,9 +91,6 @@ public class AiBrain
     }
 
 
-
-
-
     public float GetLastSkillUseTime(string skillName)
     {
         if (_lastUsedSkillTimes.TryGetValue(skillName, out float time))
@@ -73,7 +100,7 @@ public class AiBrain
         return -1f;
     }
     public bool _isCombat { get; private set; } = false;
-    
+
     public void CombatEnter()
     {
         if (!_isCombat)
@@ -81,6 +108,7 @@ public class AiBrain
             _owner.animator.SetTrigger("Discover_Player");
             _owner.Movement.StopMovement();
             _isCombat = true;
+            blackboard.SetValue("IsPlayerDetected", true);
         }
     }
     public bool _isStunned { get; private set; } = false;

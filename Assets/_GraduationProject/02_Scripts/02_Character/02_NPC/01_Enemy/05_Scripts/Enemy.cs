@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Enemy_Type EnemyType { get; private set; }
+    BlackBoard blackboard => _aiController._aiBrain.blackboard;
     public enum Enemy_Type
     {
         Brave,
@@ -127,6 +128,7 @@ public class Enemy : MonoBehaviour
     public void SetState(EnemyState state)
     {
         CurrentState = state;
+        blackboard.SetValue("CurrentStatus ", CurrentState);
     }
     #endregion
     
