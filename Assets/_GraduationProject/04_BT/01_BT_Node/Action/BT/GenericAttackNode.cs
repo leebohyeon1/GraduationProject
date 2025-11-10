@@ -57,7 +57,7 @@ public class GenericAttackNode : Node
             runner.SetState(Enemy.EnemyState.Attack);
         }
 
-        if (Handler.IsHitWindowOpen && !runner.ParrySystem.IsParry)
+        if (Handler.IsHitWindowOpen)
         {
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
             foreach (var col in hitColliders)
@@ -85,7 +85,7 @@ public class GenericAttackNode : Node
 
         }
         
-        if(Handler.IsHitWindowOpen && runner.ParrySystem.IsParry && !parryEffectPlayed)
+        if(Handler.IsHitWindowOpen && !parryEffectPlayed)
         {
             Handler.CloseHitWindow();
             parryEffectPlayed = true;   
@@ -114,7 +114,7 @@ public class GenericAttackNode : Node
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         
-        if(runner.ParrySystem.IsParry && !parryEffectPlayed)
+        if(!parryEffectPlayed)
         {
             parryEffectPlayed = true;   
         }
