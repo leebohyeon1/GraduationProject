@@ -57,7 +57,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
 
     public event Action OnParryStart, OnParryFinish;    
     public event Action OnParryWindowStart, OnParryWindowFinish; // 패링 수행 이벤트
-    public event Action<Collider> OnParryAffect; // 패링 성공 이벤트
+    public event Action<Transform> OnParryDamageAffect; // 패링 성공 이벤트
 
     public event Action<bool> OnRegenStamina; // 스테미나 회복 이벤트
     #endregion
@@ -262,9 +262,10 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerParryAffect(Collider collider)
+    public void TriggerParryDamageAffect(Transform transform)
     {
-        OnParryAffect?.Invoke(collider);
+        OnParryDamageAffect?.Invoke(transform);
+        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
 
     /// <summary>

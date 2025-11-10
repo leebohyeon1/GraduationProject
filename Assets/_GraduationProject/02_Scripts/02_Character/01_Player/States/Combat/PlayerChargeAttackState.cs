@@ -16,6 +16,22 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
+    public override void OnEnter()
+    {
+        p_context.Events.OnParryWindowFinish += HandleParryWindowFinish;
+        p_context.Events.OnParryDamageAffect += HandleParryDamageAffect;
+
+        base.OnEnter();
+    }
+
+    public override void OnExit()
+    {
+        p_context.Events.OnParryWindowFinish -= HandleParryWindowFinish;
+        p_context.Events.OnParryDamageAffect -= HandleParryDamageAffect;
+
+        base.OnExit();
+    }
+
     /// <summary>
     /// 공격 판정이 발생하는 시점에 호출됩니다.
     /// </summary>
@@ -25,6 +41,10 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
         foreach (Collider collider in colliders)
         {
+            if(collider.TryGetComponent<IParryable>(out var parryable))
+            {
+                p_context.Stats.ParrySet.Add(parryable);
+            }
             p_context.Events.TriggerChargeAttackAffect(collider);
         }
 
@@ -57,6 +77,26 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         else if (p_context.Input.DefendInput)
         {
             p_nextState = typeof(PlayerDefendState);
+        }
+    }
+
+    /// <summary>
+    /// 패링 검사가 종료되는 시점
+    /// </summary>
+    private void HandleParryWindowFinish()
+    {
+        if (p_context.Stats.ParrySet.Count > 0)
+        {
+            p_context.Stats.ParrySet.Clear();
+        }
+    }
+
+    private void HandleParryDamageAffect(Transform transform)
+    {
+        if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
+        {
+            damageable.TakeDamage(new DamageData(transform, p_AttackData.AttackType, p_AttackData.AttackDamage
+                , p_AttackData.StiffnessAmount, p_AttackData.KnockBackCurve, p_AttackData.KnockBackDuration, p_AttackData.KnockBackForce));
         }
     }
 }

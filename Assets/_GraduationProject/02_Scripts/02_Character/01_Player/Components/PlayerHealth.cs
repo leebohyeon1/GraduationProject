@@ -76,7 +76,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
             damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
         {
-            _stats.ParryableQueue.Enqueue(parryable);
+            if (!_stats.ParrySet.Contains(parryable))
+            {
+                _events.TriggerParryDamageAffect(damageData.AttackerTransform);
+                _stats.ParrySet.Add(parryable);
+            }
+            parryable.Parry(gameObject);
             return;
         }
 

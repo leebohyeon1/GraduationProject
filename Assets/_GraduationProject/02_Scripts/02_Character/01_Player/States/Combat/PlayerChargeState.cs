@@ -51,7 +51,7 @@ public class PlayerChargeState : BaseState<Player>
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, 0);
+            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.ChargeMoveSpeed, 0);
         }
 
         var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
