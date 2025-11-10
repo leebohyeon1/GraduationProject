@@ -14,7 +14,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     #region Private Fields
     private PlayerStats _stats; // 플레이어 스탯
     private PlayerEvents _events; // 플레이어 이벤트
-    
+
+    [SerializeField] private OnSwingMiss _onSwingMiss;
+
     /// <summary>
     /// 마지막 전투 시간
     /// </summary>
@@ -95,8 +97,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
 
-        ProcessHitEnemies(attackData, hitEnemies);
-
+        if (hitEnemies.Length > 0)
+        {
+            ProcessHitEnemies(attackData, hitEnemies);
+        }
+        else
+        {
+            _onSwingMiss.Publish(true);
+        }
+        
         return hitEnemies;
     }
 
