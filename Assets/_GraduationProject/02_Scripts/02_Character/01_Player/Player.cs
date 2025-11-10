@@ -171,7 +171,6 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerParryState(this, _stateMachine));
 
         SetupStateTransitions();
     
@@ -195,11 +194,9 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
-            => Input.AttackHeldInput);
+            => Input.AttackHeldInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() 
             => Input.DefendInput);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
-            => Input.ParryInput && _stamina.CheckStamina());
     
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
@@ -212,8 +209,6 @@ public class Player : DIMonoBehaviour
             => Input.AttackHeldInput);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() 
             => Input.DefendInput);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
-            => Input.ParryInput && _stamina.CheckStamina());
     }
     
     /// <summary>
@@ -275,7 +270,7 @@ public class Player : DIMonoBehaviour
         DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_data.CombatData.ChargeAttackData.AttackRadius, Color.red);
+        DrawActionGizmo(_data.CombatData.ChargeAttackDatas[0].AttackData.AttackRadius, Color.red);
 
     }
 

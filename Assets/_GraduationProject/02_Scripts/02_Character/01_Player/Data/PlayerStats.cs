@@ -28,7 +28,8 @@ public class PlayerStats: IDisposable
     public float CurrentStamina; // 현재 열기
 
     // Combat
-    public Queue<IParryable> ParryableQueue = new Queue<IParryable>();
+    public HashSet<IParryable> ParrySet = new HashSet<IParryable>();
+    public int ChargeLevel = 0;
 
     // Properties
     public PlayerDataSO Data => _data;

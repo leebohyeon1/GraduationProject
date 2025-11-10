@@ -136,13 +136,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerDefendState);
         }
-        else if (p_context.Input.AttackHeldInput)
+        else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
         {
             p_nextState = typeof(PlayerChargeState);
-        }
-        else if (p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
-        {
-            p_nextState = typeof(PlayerParryState);
         }
     }
 
