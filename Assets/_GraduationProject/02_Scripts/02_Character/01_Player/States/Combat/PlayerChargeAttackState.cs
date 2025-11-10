@@ -26,6 +26,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     public override void OnExit()
     {
+        p_context.Stats.IsParring = false;
         p_context.Events.OnParryWindowFinish -= HandleParryWindowFinish;
         p_context.Events.OnParryDamageAffect -= HandleParryDamageAffect;
 

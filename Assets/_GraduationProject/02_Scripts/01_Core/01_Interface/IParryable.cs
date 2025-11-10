@@ -11,6 +11,4 @@ public interface IParryable
     /// <param name="parryInstigator">패링을 시도한 주체 (예: 플레이어)의 GameObject입니다.</param>
     /// <returns>패링 성공 여부를 반환합니다.</returns>
     public bool Parry(GameObject parryInstigator);
-    
-    public OnParry OnParry { get; }
 }

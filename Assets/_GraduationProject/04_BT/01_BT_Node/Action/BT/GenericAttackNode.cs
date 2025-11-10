@@ -88,7 +88,6 @@ public class GenericAttackNode : Node
         if(Handler.IsHitWindowOpen && runner.ParrySystem.IsParry && !parryEffectPlayed)
         {
             Handler.CloseHitWindow();
-            runner.ParrySystem.OnParry.Publish(true);
             parryEffectPlayed = true;   
         }
 
@@ -117,7 +116,6 @@ public class GenericAttackNode : Node
         
         if(runner.ParrySystem.IsParry && !parryEffectPlayed)
         {
-            runner.ParrySystem.OnParry.Publish(true);
             parryEffectPlayed = true;   
         }
     }

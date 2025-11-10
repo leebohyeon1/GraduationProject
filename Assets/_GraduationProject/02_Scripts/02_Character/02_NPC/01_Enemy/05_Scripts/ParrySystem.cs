@@ -12,10 +12,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
-    public OnParry OnParry => _onParry;
 
     [SerializeField] private float _stunTime = 3f;
-    [SerializeField] private OnParry _onParry;
     private Enemy _owner;
     public void Initialize(Enemy enemy)
     {
@@ -23,13 +21,10 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable, IEventListen
         IsParryable = false;
         IsCounterable = false;
         ClearStun(); IsParry = false;
-
-        OnParry.Subscribe(this);
     }
 
     private void OnDisable()
     {
-        OnParry.Unsubscribe(this);
     }
 
     public void SetParryable(string value)
