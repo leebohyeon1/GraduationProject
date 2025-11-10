@@ -33,8 +33,10 @@ public class AiBrain
             {
                 float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
                 blackboard.SetValue("DistanceBetween", distance);
-                bool canSee = CheckPlayerVisibility();
-                blackboard.SetValue("IsHasLOS", canSee);
+                bool IsHasLOS = CheckPlayerVisibility();
+                blackboard.SetValue("IsHasLOS", IsHasLOS);
+                bool OnPlayerLooking = PlayerVisibilityEnemy();
+                blackboard.SetValue("OnPlayerLooking", OnPlayerLooking);
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -49,6 +51,16 @@ public class AiBrain
             return false;
         }
         blackboard.SetValue("LastPlayerPos", _player.transform.position);
+        return true;
+    }
+    private bool PlayerVisibilityEnemy()
+    {
+        Vector3 toPlayer = _owner.transform.position - _player.transform.position;
+
+        if (Vector3.Angle(_player.transform.forward, toPlayer.normalized) > 70 * 0.5f)
+        {
+            return false;
+        }
         return true;
     }
 
@@ -101,16 +113,22 @@ public class AiBrain
     }
     public bool _isCombat { get; private set; } = false;
 
-    public void CombatEnter()
+    public void CombatEnter(bool combat = true)
     {
+        _isCombat = combat;
         if (!_isCombat)
+        {
+            blackboard.SetValue("IsPlayerDetected", false);
+
+        }
+        if (_isCombat)
         {
             _owner.animator.SetTrigger("Discover_Player");
             _owner.Movement.StopMovement();
-            _isCombat = true;
             blackboard.SetValue("IsPlayerDetected", true);
         }
     }
+
     public bool _isStunned { get; private set; } = false;
 
     #endregion

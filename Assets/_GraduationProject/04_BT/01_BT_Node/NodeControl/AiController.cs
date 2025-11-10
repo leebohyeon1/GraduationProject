@@ -34,9 +34,9 @@ public class AiController : MonoBehaviour
         if (_aiBrain == null) return false;
         return _aiBrain.IsActionable();
     }
-    public void CombatEnter()
+    public void CombatEnter(bool combat = true)
     {
-        _aiBrain.CombatEnter();
+        _aiBrain.CombatEnter(combat);
     }
     
 
