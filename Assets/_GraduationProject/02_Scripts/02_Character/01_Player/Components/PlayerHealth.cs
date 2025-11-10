@@ -72,7 +72,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
 
-        if (_stats.IsParring && Mathf.Acos(Vector3.Dot(transform.position, toEnemy)) >= (_stats.Data.CombatData.ParryAngle / 2f)  && 
+        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.Data.CombatData.ParryAngle / 2f)  && 
             damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
             damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
         {

@@ -109,6 +109,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         foreach (Collider obj in hitObjects)
         {
+            if (obj.TryGetComponent<IParryable>(out var parryable) && _stats.ParrySet.Contains(parryable))
+            {
+                continue;
+            }
+
             if (obj.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
             {
                 damageable.TakeDamage(new DamageData(transform, attackData.AttackType, attackData.AttackDamage
