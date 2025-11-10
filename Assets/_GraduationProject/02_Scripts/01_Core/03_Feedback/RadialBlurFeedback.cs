@@ -29,7 +29,7 @@ public class RadialBlurFeedback : MonoBehaviour
         }
 
         // 볼륨 프로필에서 BlurSettings를 찾아옵니다.
-        if (!postProcessVolume.profile.TryGet(out blurSettings))
+        if (!postProcessVolume.profile.TryGet<BlurSettings>(out blurSettings))
         {
             Debug.LogError("할당된 Volume Profile에서 BlurSettings를 찾을 수 없습니다.");
             return;
