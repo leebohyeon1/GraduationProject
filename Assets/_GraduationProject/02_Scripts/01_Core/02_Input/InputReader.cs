@@ -13,22 +13,19 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
 {
     // Player Actions
     public event Action<Vector2> MoveEvent = delegate { };
+    public event Action<Vector2> LookEvent = delegate { };
+    public event Action<Vector2> MousePositionEvent = delegate { };
+
     public event Action AttackEvent = delegate { };
     public event Action AttackHoldEvent = delegate { };
     public event Action AttackCancelledEvent = delegate { };
-    public event Action RangedAttackEvent = delegate { };
-    public event Action RangedAttackCancelledEvent = delegate { };
+
     public event Action DodgeEvent = delegate { };
     public event Action DefendEvent = delegate { };
     public event Action DefendCancelledEvent = delegate { };
-    public event Action<Vector2> LookEvent = delegate { };
-    public event Action<Vector2> MousePositionEvent = delegate { };
-    public event Action<InputDeviceType> InputDeviceChangedEvent = delegate { };
-    public event Action SkillEvent = delegate { };
-    public event Action SkillChangeEvent = delegate { };
-    public event Action SkillChangeCancelEvent = delegate { };
+    public event Action ParryEvent = delegate { };
+
     public event Action InteractEvent = delegate { };
-    public event Action PotionEvent = delegate { };
 
     // UI Actions
     public event Action CancelEvent = delegate { };
@@ -43,6 +40,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     // Developer Actions;
     public event Action ToggleConsoleEvent = delegate { };  
     public event Action EnterEvent = delegate { };
+
+    public event Action<InputDeviceType> InputDeviceChangedEvent = delegate { };
 
     private InputSystem_Actions _inputActions;
 
@@ -108,6 +107,12 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         LookEvent.Invoke(lookValue);
     }
 
+    public void OnMousePosition(InputAction.CallbackContext context)
+    {
+        Vector2 mousePosition = context.ReadValue<Vector2>();
+        MousePositionEvent.Invoke(mousePosition);
+    }
+
     public void OnMeleeAttack(InputAction.CallbackContext context)
     {
         switch (context.phase)
@@ -124,19 +129,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
                 break;
             case InputActionPhase.Canceled:
                 AttackCancelledEvent.Invoke();
-                break;
-        }
-    }
-
-    public void OnRangedAttack(InputAction.CallbackContext context)
-    {
-        switch (context.phase)
-        {
-            case InputActionPhase.Performed:
-                RangedAttackEvent.Invoke();
-                break;
-            case InputActionPhase.Canceled:
-                RangedAttackCancelledEvent.Invoke();
                 break;
         }
     }
@@ -169,38 +161,12 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
                 break;
         }
     }
-    public void OnMousePosition(InputAction.CallbackContext context)
-    {
-        Vector2 mousePosition = context.ReadValue<Vector2>();
-        MousePositionEvent.Invoke(mousePosition);
-    }
 
-    public void OnSkill(InputAction.CallbackContext context)
+    public void OnParry(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            SkillEvent.Invoke();
-        }
-    }
-
-    public void OnSkillChange(InputAction.CallbackContext context)
-    {
-        switch (context.phase)
-        {
-            case InputActionPhase.Performed:
-                SkillChangeEvent.Invoke();
-                break;
-            case InputActionPhase.Canceled:
-                SkillChangeCancelEvent.Invoke();
-                break;
-        }
-    }
-
-    public void OnPotion(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            PotionEvent.Invoke();
+            ParryEvent.Invoke();    
         }
     }
 

@@ -187,7 +187,7 @@ namespace PixelsoftGames.PixelUI
                     instance = Instantiate(prefab, Selection.activeTransform, false);
                 else
                 {
-                    Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+                    Canvas canvas = GameObject.FindFirstObjectByType<Canvas>();
                     if (!canvas)
                         canvas = CreateBaseMenu.InstantiateCanvas().gameObject.GetComponent<Canvas>();
                     instance = Instantiate(prefab, canvas.transform, false);

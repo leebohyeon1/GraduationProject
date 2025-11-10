@@ -1,4 +1,5 @@
 using BH_Lib.FSM;
+using BH_Lib.Log;
 using System;
 
 /// <summary>
@@ -11,11 +12,5 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
 
     protected override string p_animationTrigger => "SecondAttack";
     protected override Type p_nextAttackState => typeof(PlayerThirdAttackState);
-    protected override PlayerAttackData p_AttackData => p_context.Stats.AttackDatas[1];
-
-    public override void OnEnter()
-    {
-        base.OnEnter();
-        p_context.Events.TriggerSecondAttackStart();
-    }
+    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.AttackDatas[1];
 }

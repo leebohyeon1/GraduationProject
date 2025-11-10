@@ -28,7 +28,7 @@ public class PlayerMoveState : BaseState<Player>
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.Move(moveDirection, p_context.Stats.MoveSpeed, p_context.Stats.RotateSpeed);
+            p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
         }
     }
 
