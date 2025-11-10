@@ -49,6 +49,7 @@ public class PlayerCombatData
 
     [Header("Damaged")]
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
+    public float DefendMoveSpeed; // 가드 중 이동 속도
     [Range(0f, 1f)]
     public float DefendDamageReductionRate; // 방어 시 데미지 감소율
     public float DefendStaggerDuration; // 방어 시 경직 임계값
@@ -63,12 +64,21 @@ public class PlayerCombatData
     public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
-    public float ChargeDuration;
-    public PlayerAttackDataSO ChargeAttackData; // 차지 공격 데이터
+    public float ChargeMoveSpeed; 
+    public float ChargeStamina;
+    public PlayerChargeAttackData[] ChargeAttackDatas;
+    public float MaxChargeTime = 5f;
 
     [Header("Parry")]
     public float ParryStamina;
     public float ParryAngle;
     public float ParryMoveDuration; // 패링 성공 시 이동 거리   
     public float ParryMoveForce; // 패링 성공 시 이동 거리
+}
+
+[Serializable]
+public class PlayerChargeAttackData
+{
+    public float ChargeTime;
+    public PlayerAttackDataSO AttackData;
 }

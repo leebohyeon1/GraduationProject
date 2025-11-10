@@ -27,7 +27,7 @@ public class PlayerDefendState : BaseState<Player>
     public override void OnUpdate()
     {
         Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-        p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
+        p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.DefendMoveSpeed, p_context.Stats.Data.RotateSpeed);
 
         // 입력에 따른 상태 전환
         if (!p_context.Input.DefendInput)

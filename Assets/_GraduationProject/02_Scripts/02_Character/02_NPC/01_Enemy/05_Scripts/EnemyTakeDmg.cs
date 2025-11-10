@@ -6,7 +6,7 @@ using UnityEngine.TextCore.Text;
 public class EnemyTakeDmg : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStat enemyStat;
-    public int Health => enemyStat.CurrentHealth;
+    public int Health => _maxHealth;
     public int MaxHealth => enemyStat.Maxhealth;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
@@ -20,7 +20,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public void InitializeHealth( Enemy owner)
     {
         _owner = owner;
-        enemyStat.CurrentHealth = enemyStat.Maxhealth;
+        _maxHealth = enemyStat.Maxhealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
@@ -41,50 +41,41 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     {
         Knockbackable = value;
     }
-    public void TakeDamage(int amount, int heatTier, DamageData damageData)
-    {
-        if (Health <= 0) return;
-        _owner.groupAi.CombatAll();
-        if (!_owner._aiController.IsActionable())
-        {
-            _owner.SetState(Enemy.EnemyState.Hit);
-            _owner.AnimationEvent("Hit");
-        }
-        _owner.animHandler.PlayFeedback("Damage_FB");
-        enemyStat.CurrentHealth -= amount;
-        if (_owner.HealthBar)
-        {
-            _owner.BillboardUI?.SetHealthBar(Maxhealth,Health);
-        }
-        if (Knockbackable)
-        {
-            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
-            knockbackDir.y = 0;
-            if(_KnockbackCoroutine != null)
-            {
-                StopCoroutine(_KnockbackCoroutine);
-            }
-            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
-        }
-        if (Health <= 0)
-        {
-            Die();
-        }
-    }
+   
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
+{
+    float elapsedTime = 0;
+    Debug.Log("Knockback Start" + damageData.KnockbackDuration);
+
+    Vector3 horizontalDirection = direction;
+    horizontalDirection.y = 0;
+    horizontalDirection.Normalize();
+
+    if (horizontalDirection.sqrMagnitude < 0.01f)
     {
-        float elapsedTime = 0;
-        while (elapsedTime < damageData.KnockbackDuration)
-        {
-            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
-            Vector3 move = direction * damageData.KnockbackForce * curveValue * Time.deltaTime;
-            _characterController.Move(move);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
         _KnockbackCoroutine = null;
+        yield break;
     }
 
+
+    while (elapsedTime < damageData.KnockbackDuration)
+    {
+        float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
+        
+        Vector3 move = horizontalDirection * damageData.KnockbackForce * curveValue * Time.deltaTime;
+
+        if (!_characterController.isGrounded)
+        {
+            move.y += Physics.gravity.y * Time.deltaTime; 
+        }
+
+        _characterController.Move(move);
+        
+        elapsedTime += Time.deltaTime;
+        yield return null;
+    }
+    _KnockbackCoroutine = null;
+}
 
     public void Die()
     {
@@ -93,10 +84,101 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.Movement.StopMovement();
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
-    }
+        GetComponent<Animator>().enabled = false;
 
+    }
+    private IEnumerator DieSequence(Vector3 direction)
+    {
+    SetRagdollState(true);
+    
+    _characterController.enabled = false;
+    _owner.animator.enabled = false;
+    yield return new WaitForSeconds(0.1f);
+    Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
+    CombineAddForce(combinedForce, direction);
+    // centralRigidbody.AddForce(combinedForce, ForceMode.Impulse);
+
+    Debug.Log($"AddForce 실행됨! {centralRigidbody.name}의 현재 속도: {centralRigidbody.linearVelocity}", this);
+
+    Debug.Log($"속력 (Magnitude): {centralRigidbody.linearVelocity.magnitude}", this);
+
+
+    // 소멸 이펙트(VFX) 재생 추가 기점
+    yield return new WaitForSeconds(1f);
+    centralRigidbody.linearVelocity = Vector3.zero;
+    SetRagdollState(true);
+    SetZeroJoint(false);
+}
     public void TakeDamage(DamageData damageData)
     {
-        throw new NotImplementedException();
+        if (Health <= 0) return;
+        Debug.Log($"Enemy Take Damage: {damageData.DamageAmount}");
+        Debug.Log($"Enemy Take Damage: {Health}");
+        _owner.groupAi.CombatAll();
+        if (!_owner._aiController.IsActionable())
+        {
+            _owner.SetState(Enemy.EnemyState.Hit);
+            _owner.AnimationEvent("Hit");
+        }
+        _owner.animHandler.PlayFeedback("Damage_FB");
+        _maxHealth -= damageData.DamageAmount;
+        if (_owner.HealthBar)
+        {
+            _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
+        }
+        if (Knockbackable)
+        {
+            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+            knockbackDir.y = 0;
+            if (_KnockbackCoroutine != null)
+            {
+                StopCoroutine(_KnockbackCoroutine);
+            }
+            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
+        }
+        if (Health <= 0)
+        {
+            if (_KnockbackCoroutine != null)
+            {
+                StopCoroutine(_KnockbackCoroutine);
+            }
+            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+            Die();
+            _KnockbackCoroutine = StartCoroutine(DieSequence(knockbackDir));
+
+        }
+    }
+    private void SetRagdollState(bool isActive)
+    {
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            rb.isKinematic = !isActive;
+        }
+    }
+    private void CombineAddForce(Vector3 force, Vector3 direction)
+    {
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+        }
+    }
+    private Rigidbody[] ragdollRigidbodies;
+    private CharacterJoint[] ragdollCharacterJoints;
+    void Start()
+    {
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        ragdollCharacterJoints = GetComponentsInChildren<CharacterJoint>();
+        SetRagdollState(false);
+    }
+
+    public float KnockbackForce = 30f;
+    public float upwardForce = 5f;
+    public Rigidbody centralRigidbody;
+     private void SetZeroJoint(bool isActive)
+    {
+        foreach (CharacterJoint cj in ragdollCharacterJoints)
+        {
+            cj.swingLimitSpring = new SoftJointLimitSpring { damper = isActive ? 50 : 0 };
+        }
     }
 }

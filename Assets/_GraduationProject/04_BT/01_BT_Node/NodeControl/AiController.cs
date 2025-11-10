@@ -20,7 +20,12 @@ public class AiController : MonoBehaviour
     }
     void Update()
     {
-        if(_enemy.EnemyHealth.IsDead) return;
+        if (_enemy.EnemyHealth.IsDead)
+        {
+            Debug.Log("EnemyHealth:" + _enemy.EnemyHealth.Health);
+            return;
+        } 
+            
         _aiBrain?.Tick(Time.deltaTime);
         _behaviorTree?.rootNode?.Evaluate();
     }

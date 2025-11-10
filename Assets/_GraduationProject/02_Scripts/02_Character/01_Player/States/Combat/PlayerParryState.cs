@@ -62,17 +62,17 @@ public class PlayerParryState : BaseState<Player>
     /// </summary>
     private void HandleParryWindowFinish()
     {
-        if(p_context.Stats.ParryableQueue.TryPeek(out var parryable))
-        {
-            for (int i = 0; i < p_context.Stats.ParryableQueue.Count; i++)
-            {
-                p_context.Stats.ParryableQueue.Dequeue().Parry(p_context.gameObject);
-            }
+        //if(p_context.Stats.ParrySet.TryPeek(out var parryable))
+        //{
+        //    for (int i = 0; i < p_context.Stats.ParrySet.Count; i++)
+        //    {
+        //        p_context.Stats.ParrySet.Dequeue().Parry(p_context.gameObject);
+        //    }
 
-            p_context.Stats.ParryableQueue.Clear();
+        //    p_context.Stats.ParrySet.Clear();
 
-            p_stateMachine.ChangeState<PlayerIdleState>();
-        }
+        //    p_stateMachine.ChangeState<PlayerIdleState>();
+        //}
     }
 
     private void HandleParryFinish()

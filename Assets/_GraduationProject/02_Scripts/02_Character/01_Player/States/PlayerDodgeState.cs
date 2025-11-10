@@ -119,9 +119,9 @@ public class PlayerDodgeState : BaseState<Player>
         {
             _nextState = typeof(PlayerDodgeState);
         }
-        else if(p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
+        else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
         {
-            _nextState = typeof(PlayerParryState);
+            _nextState = typeof(PlayerChargeState);
         }
     }
 }
