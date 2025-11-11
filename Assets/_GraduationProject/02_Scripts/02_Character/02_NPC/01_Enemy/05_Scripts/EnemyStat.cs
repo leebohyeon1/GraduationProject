@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EnemyStat", menuName = "ScriptableObjects/Character/EnemyStat")]
+[CreateAssetMenu(fileName = "EnemyStat", menuName = "Character/EnemyStat")]
 public class EnemyStat : ScriptableObject
 {
     public int Maxhealth;

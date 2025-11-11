@@ -1,6 +1,6 @@
 using BehaviorTree;
 using UnityEngine;
-[CreateAssetMenu(fileName = "Condition_OnlyCowardly", menuName = "BehaviorTree/Condition/OnlyCowardly")]
+
 public class Condition_OnlyCowardly : ConditionNode
 {
     public override Node Clone()

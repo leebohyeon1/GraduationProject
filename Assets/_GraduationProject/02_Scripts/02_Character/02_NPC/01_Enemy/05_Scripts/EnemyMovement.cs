@@ -11,6 +11,7 @@ public class EnemyMovement
     Rigidbody rb;
     Animator animator;
     private EnemyState CurrentState => _runner.CurrentState;
+    float _normalSpeed = 2f;
     public EnemyMovement(Enemy enemy)
     {
         _runner = enemy;
@@ -21,7 +22,6 @@ public class EnemyMovement
         _normalSpeed = _runner.NormalSpeed;
     }
 
-    float _normalSpeed = 2f;
     public void StartRush(Vector3 targetPosition, float rushSpeed)
     {
         if (aIPath == null)
@@ -35,22 +35,7 @@ public class EnemyMovement
         aIPath.isStopped = false;
 
     }
-    public void StartWallRush(float rushSpeed)
-    {
-        if (aIPath != null)
-        {
-            aIPath.enabled = false; // A* Pathfinding 비활성화
-        }
-        Vector3 lookAtPosition = _runner.player.transform.position;
-        lookAtPosition.y = _runner.transform.position.y;
-        // _runner.transform.LookAt(lookAtPosition);
-        // _runner.SetLastRushHitObject(null);
-        if (rb != null)
-        {
-            rb.isKinematic = false; // Rigidbody 물리 효과 활성화
-            rb.linearVelocity = _runner.transform.forward * rushSpeed; // 현재 바라보는 방향으로 속도 적용
-        }
-    }
+
     public Node.NodeState Patrols()
     {
         if (aIPath == null || _runner.wayPoints == null || _runner.wayPoints.Length == 0)
@@ -73,17 +58,17 @@ public class EnemyMovement
 
         StartOrUpdateChase(_runner.wayPoints[_runner.wayPointIndex], _normalSpeed);
     }
-    public void StartOrUpdateChase(Vector3 newTarget,float speed = 2, string animationBool = "Walk")
+    public void StartOrUpdateChase(Vector3 newTarget, float speed = 2)
     {
-        if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise )
+        if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise)
         {
             StopMovement();
             return;
         }
         if (aIPath == null) return;
-        if(_runner.CurrentState != EnemyState.Hit)
-        _runner.SetState(EnemyState.Chase);
-        _runner.AnimationBool(animationBool, true);
+        if (_runner.CurrentState != EnemyState.Hit)
+            _runner.SetState(EnemyState.Chase);
+        _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
         CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
         aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
@@ -92,22 +77,21 @@ public class EnemyMovement
     }
 
     // Transform을 받는 오버로딩 버전도 유지
-    public void StartOrUpdateChase(Transform target,string animationBool = "Walk")
+    public void StartOrUpdateChase(Transform target)
     {
-        StartOrUpdateChase(target.position, _normalSpeed, animationBool);
+        StartOrUpdateChase(target.position, _normalSpeed);
     }
     public void StopMovement()
     {
         aIPath.SetPath(null);
         _runner.AnimationBool("Walk", false);
-        _runner.AnimationBool("Run", false);
         aIPath.enableRotation = true;
         aIPath.isStopped = true;
-        
-        if (CurrentState == EnemyState.Rush || 
+
+        if (CurrentState == EnemyState.Rush ||
             CurrentState == EnemyState.Beam ||
-            CurrentState == EnemyState.Stunned || 
-            CurrentState == EnemyState.Die ||   
+            CurrentState == EnemyState.Stunned ||
+            CurrentState == EnemyState.Die ||
             CurrentState == EnemyState.Attack)
         {
 
@@ -120,7 +104,7 @@ public class EnemyMovement
         }
         if (rb != null)
         {
-            rb.linearVelocity = Vector3.zero; 
+            rb.linearVelocity = Vector3.zero;
         }
         if (aIPath == null)
         {
@@ -129,3 +113,19 @@ public class EnemyMovement
 
     }
 }
+    // public void StartWallRush(float rushSpeed)
+    // {
+    //     if (aIPath != null)
+    //     {
+    //         aIPath.enabled = false; // A* Pathfinding 비활성화
+    //     }
+    //     Vector3 lookAtPosition = _runner.player.transform.position;
+    //     lookAtPosition.y = _runner.transform.position.y;
+    //     // _runner.transform.LookAt(lookAtPosition);
+    //     // _runner.SetLastRushHitObject(null);
+    //     if (rb != null)
+    //     {
+    //         rb.isKinematic = false; // Rigidbody 물리 효과 활성화
+    //         rb.linearVelocity = _runner.transform.forward * rushSpeed; // 현재 바라보는 방향으로 속도 적용
+    //     }
+    // }

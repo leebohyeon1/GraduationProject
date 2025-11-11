@@ -9,7 +9,6 @@ public class GroupAi : MonoBehaviour
         if (!enemies.Contains(enemy))
         {
             enemies.Add(enemy);
-
         }
         else
         {
@@ -19,6 +18,7 @@ public class GroupAi : MonoBehaviour
     public void GroupRemove(Enemy enemy)
     {
         enemies.Remove(enemy);
+        enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
     }
     public bool OnlyCowardly()
     {
@@ -38,9 +38,16 @@ public class GroupAi : MonoBehaviour
     {
         foreach (var enemy in enemies)
         {
-            
             enemy._aiController.CombatEnter();
-            
+            enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
+        }
+    }
+    public void CombatReset()
+    {
+        foreach (var enemy in enemies)
+        {
+            enemy._aiController.CombatEnter(false);
+            enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
         }
     }
 }

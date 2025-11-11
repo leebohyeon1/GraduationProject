@@ -103,7 +103,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         }
         else
         {
-            _onSwingMiss.Publish(true);
+            _onSwingMiss.Publish("OnSwingMiss");
         }
         
         return hitEnemies;

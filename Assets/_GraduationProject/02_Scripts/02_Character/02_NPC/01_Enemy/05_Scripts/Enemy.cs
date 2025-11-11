@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Enemy_Type EnemyType { get; private set; }
+    BlackBoard blackboard => _aiController._aiBrain.blackboard;
     public enum Enemy_Type
     {
         Brave,
@@ -132,6 +133,7 @@ public class Enemy : MonoBehaviour
     public void SetState(EnemyState state)
     {
         CurrentState = state;
+        blackboard.SetValue("CurrentStatus ", CurrentState);
     }
     #endregion
     
@@ -204,7 +206,7 @@ public class Enemy : MonoBehaviour
         style.alignment = TextAnchor.MiddleCenter;
 
         // 1m부터 30m까지 원과 텍스트를 그립니다.
-         for (int i = 1; i <= 30; i++)
+        for (int i = 1; i <= 30; i++)
         {
             Handles.color = Color.Lerp(Color.green, Color.blue, i / 30f);
 

@@ -597,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 115205517}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 25, z: -27.599998}
+  m_LocalPosition: {x: 0, y: 25, z: -27.5}
   m_LocalScale: {x: 5, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2538,11 +2538,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49011b7653a295c4e873384dfdfbc9c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ManaBar
-  _manaLists:
-  - {fileID: 1009823310}
-  - {fileID: 933834768}
-  - {fileID: 1379632245}
-  _playerMana: {fileID: 1551558022}
 --- !u!1 &582849018
 GameObject:
   m_ObjectHideFlags: 0
@@ -3023,7 +3018,7 @@ Transform:
   m_GameObject: {fileID: 642879071}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 25, z: 27.5}
+  m_LocalPosition: {x: 0, y: 25, z: 27}
   m_LocalScale: {x: 5, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4726,6 +4721,18 @@ PrefabInstance:
       propertyPath: _feedbacks.Array.data[2].feedback
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7695267487245926767, guid: ec86ae2e19220c54398d7e1beeb58f1d, type: 3}
+      propertyPath: _behaviorTree
+      value: 
+      objectReference: {fileID: 11400000, guid: ba8784bd69425844a832a2d7e276e50c, type: 2}
+    - target: {fileID: 7695267487245926767, guid: ec86ae2e19220c54398d7e1beeb58f1d, type: 3}
+      propertyPath: _onHealingEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 9acfedbe409228b4da69bbcfbdee6653, type: 2}
+    - target: {fileID: 7695267487245926767, guid: ec86ae2e19220c54398d7e1beeb58f1d, type: 3}
+      propertyPath: _onSwingMissEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 02c8d327e4c408d4fbad8f7b755f1298, type: 2}
     - target: {fileID: 7853407522946886089, guid: ec86ae2e19220c54398d7e1beeb58f1d, type: 3}
       propertyPath: m_MassScale
       value: 10
@@ -5176,11 +5183,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a67ed6b80af01349afd01a57607a07e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillChangeUI
-  _onOpenSkillChangeUI: {fileID: 11400000, guid: 1de0580ed5533544e95b024c89bb2b86, type: 2}
-  _onSelectSkill: {fileID: 11400000, guid: ccb1ce7549b76104cbbac485cbc88ac3, type: 2}
-  _playerTransform: {fileID: 1551558020}
-  _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
-  _skillChangeImage: {fileID: 881320637}
 --- !u!1 &1279026154
 GameObject:
   m_ObjectHideFlags: 0
@@ -5717,17 +5719,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 431287307262341145, guid: 3d3543b031d3e1b468e3069e45713562, type: 3}
   m_PrefabInstance: {fileID: 149703577}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1551558022 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3648089053170288629, guid: 3d3543b031d3e1b468e3069e45713562, type: 3}
-  m_PrefabInstance: {fileID: 149703577}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 329374365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 957fd9c059c30e1409fd5f0d8c141e71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMana
 --- !u!224 &1699435745 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1690190899477653304, guid: a20cc58d1c445794da149931834f3fe3, type: 3}
@@ -5785,9 +5776,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf4dc5a18e005842bb83664740aa825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHeatBar
-  p_object: {fileID: 329374365}
-  p_heatBarSlider: {fileID: 793712260}
-  _chargeGuageSlider: {fileID: 1360558631}
 --- !u!114 &1759771783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8465,7 +8453,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParrySystem
   _stunTime: 3
-  _onParry: {fileID: 0}
 --- !u!1 &2646781485832928410
 GameObject:
   m_ObjectHideFlags: 0
@@ -9449,6 +9436,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AiController
   _behaviorTree: {fileID: 11400000, guid: 9baead38227f3f84e9f136e40b3f3513, type: 2}
+  MaxTargetRange: 10
+  _onSwingMissEvent: {fileID: 0}
+  _onHealingEvent: {fileID: 0}
 --- !u!4 &6042165457725209191
 Transform:
   m_ObjectHideFlags: 0

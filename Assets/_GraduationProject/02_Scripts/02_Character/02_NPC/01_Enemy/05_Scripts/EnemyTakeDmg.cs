@@ -112,6 +112,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public void TakeDamage(DamageData damageData)
     {
         if (Health <= 0) return;
+        _owner._aiController._aiBrain.blackboard.SetValue("OnTakeHit", true);
         Debug.Log($"Enemy Take Damage: {damageData.DamageAmount}");
         Debug.Log($"Enemy Take Damage: {Health}");
         _owner.groupAi.CombatAll();
@@ -122,6 +123,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
         _maxHealth -= damageData.DamageAmount;
+        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", _maxHealth);
         if (_owner.HealthBar)
         {
             _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);

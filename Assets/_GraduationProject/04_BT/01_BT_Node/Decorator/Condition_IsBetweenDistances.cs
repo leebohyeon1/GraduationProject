@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "IsBetweenDistances_Condition", menuName = "BehaviorTree/Condition/IsBetweenDistances")]
 public class Condition_IsBetweenDistances : ConditionNode
 {
     [Tooltip("이 거리보다는 멀어야 합니다 (최소 거리).")]

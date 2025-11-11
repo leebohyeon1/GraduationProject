@@ -1,7 +1,7 @@
 using BehaviorTree;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "TakeDamage_Condition", menuName = "BehaviorTree/Condition/TakeDamage")]
+
 public class Condition_TakeDamage : ConditionNode
 {
     public override Node Clone()

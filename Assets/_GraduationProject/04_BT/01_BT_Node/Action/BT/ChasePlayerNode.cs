@@ -19,7 +19,7 @@ public class ChasePlayerNode : Node
         {
             return NodeState.FAILURE;
         }
-        runner.Movement.StartOrUpdateChase(runner.player.transform, "Run");
+        runner.Movement.StartOrUpdateChase(runner.player.transform);
         return NodeState.RUNNING;
     }
 

@@ -1,10 +1,5 @@
 using UnityEngine;
 using BehaviorTree;
-using MoreMountains.Feedbacks;
-using Pathfinding;
-using andywiecko.BurstTriangulator;
-
-[CreateAssetMenu(fileName = "GenericAttackNode", menuName = "BehaviorTree/Action/GenericAttackNode")]
 public class GenericAttackNode : Node
 {
     [Header("Attack Properties")]
