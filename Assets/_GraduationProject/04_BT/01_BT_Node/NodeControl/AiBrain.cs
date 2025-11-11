@@ -1,9 +1,7 @@
 using UnityEngine;
-using BehaviorTree;
-using MoreMountains.Tools;
 using System.Collections.Generic;
-using System;
 using System.Collections;
+using Unity.VisualScripting;
 public class AiBrain
 {
     public BlackBoard blackboard { get; private set; }
@@ -11,6 +9,7 @@ public class AiBrain
     private Player _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     public Enemy.EnemyState CurrentState => _owner.CurrentState;
+    public Coroutine lateUpdateCoroutine;
     public AiBrain(Enemy ai)
     {
         _owner = ai;
@@ -19,12 +18,14 @@ public class AiBrain
         _player = _owner.player;
 
         blackboard.SetValue("HomePosition", _owner.StartPos);
-
+        lateUpdateCoroutine = _owner.StartCoroutine(TickCoroutine());
     }
+
     public void Tick(float deltaTime)
     {
 
     }
+    int counter = 0;
     private IEnumerator TickCoroutine()
     {
         while (true)
@@ -37,6 +38,12 @@ public class AiBrain
                 blackboard.SetValue("IsHasLOS", IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();
                 blackboard.SetValue("OnPlayerLooking", OnPlayerLooking);
+                counter++;
+                if (counter >= 10)
+                {
+                    counter = 0;
+                    blackboard.LogAllValues();
+                }
             }
             yield return new WaitForSeconds(0.1f);
         }

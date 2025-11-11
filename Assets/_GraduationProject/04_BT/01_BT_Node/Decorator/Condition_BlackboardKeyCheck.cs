@@ -3,10 +3,19 @@ using BehaviorTree;
 
 public class Condition_BlackboardKeyCheck : ConditionNode
 {
+
+
     public string key = "";
-    public override bool CheckCondition()
+
+    protected override bool CheckCondition()
     {
-        bool keyValue = _aiController._aiBrain.blackboard.GetValue<bool>(key);
+        bool keyValue = brain.blackboard.GetValue<bool>(key);
         return keyValue;
+    }
+    public override Node Clone()
+    {
+        Condition_BlackboardKeyCheck node = new Condition_BlackboardKeyCheck();
+        node.key = this.key;
+        return node;
     }
 }

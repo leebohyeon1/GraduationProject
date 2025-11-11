@@ -17,8 +17,8 @@ public class AiController : MonoBehaviour,IEventListener<string>
         _behaviorTree = _behaviorTree.Clone();
         _behaviorTree.SetRunner(owner, _aiBrain);
         _behaviorTree.rootNode?.initNode();
-        _onSwingMissEvent.Subscribe(this);
-        _onHealingEvent.Subscribe(this);
+        // _onSwingMissEvent.Subscribe(this);
+        // _onHealingEvent.Subscribe(this);
     }
     private void OnDisable()
     {

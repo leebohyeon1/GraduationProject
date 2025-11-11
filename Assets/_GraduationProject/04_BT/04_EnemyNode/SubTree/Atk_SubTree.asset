@@ -14,15 +14,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 746, y: -99}
   nodes:
-  - {fileID: -360825156357793975}
+  - {fileID: 2189541146771138488}
   - {fileID: 5192495525901186291}
   - {fileID: -5799249064951715455}
+  - {fileID: -8352506910516755610}
   - {fileID: -6646918347980302632}
   - {fileID: -3727419619842135259}
   - {fileID: 861935333759378166}
   - {fileID: -3679951281741201405}
   - {fileID: -8323296916998508572}
   - {fileID: -393768079901890297}
+--- !u!114 &-8352506910516755610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 1296, y: -201}
+  floatCondition:
+    key: DistanceBetween
+    Operator: 1
+    value: 3.5
 --- !u!114 &-8323296916998508572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad06e4b18fce4644a79e16dd4356d0f, type: 3}
   m_Name: Condition_Is In Attack Range(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 1013, y: -201}
+  position: {x: 1011, y: -201}
   heatRange: 0
   _attackRange: 3.5
 --- !u!114 &-3727419619842135259
@@ -128,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014f59ae2586c0540a8e719ca3137765, type: 3}
   m_Name: "\uAE30\uBCF8 \uC2DC\uC57C (Clone)"
   m_EditorClassIdentifier: 
-  position: {x: 1013, y: -355}
+  position: {x: 1013, y: -340}
   viewAngle: 90
 --- !u!114 &11400000
 MonoBehaviour:
@@ -201,6 +219,20 @@ MonoBehaviour:
       m_RotationOrder: 4
     KnockbackDuration: 0.2
     KnockbackForce: 12
+--- !u!114 &2189541146771138488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 1222, y: -355}
+  key: IsHasLOS
 --- !u!114 &5192495525901186291
 MonoBehaviour:
   m_ObjectHideFlags: 0
