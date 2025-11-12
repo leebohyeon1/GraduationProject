@@ -90,8 +90,8 @@ public class Enemy : MonoBehaviour
         groupAi.GroupAdd(this);
         heatSystem.Init(ActorType.Monster);
         Movement.StopMovement();
-        SetState(EnemyState.Idle);
         BillboardUI?.Initialize();
+        SetState(EnemyState.Idle);
 
     }
     void Start()
@@ -129,11 +129,11 @@ public class Enemy : MonoBehaviour
         Hit,
         RunAway
     }
-    [SerializeField]public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
+    [SerializeField] public EnemyState CurrentState { get; private set; }
     public void SetState(EnemyState state)
     {
         CurrentState = state;
-        blackboard.SetValue("CurrentStatus ", CurrentState);
+        blackboard.SetValue("CurrentStatus", CurrentState);
     }
     #endregion
     
@@ -144,7 +144,6 @@ public class Enemy : MonoBehaviour
             animator.SetTrigger(eventName);
             CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
             animator.speed = stat.FinalAnimSpeed;
-
         }
     }
     public void AnimationBool(string boolName, bool value)

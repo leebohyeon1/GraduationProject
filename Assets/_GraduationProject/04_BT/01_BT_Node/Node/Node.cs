@@ -15,11 +15,7 @@ namespace BehaviorTree
         protected Enemy runner;
         protected AiBrain brain;
         protected Enemy_AnimationEventHandler Handler => runner.animHandler;
-        bool SetEnter = true;
-        public void SetBool(Node node, bool x)
-        {
-            node.SetEnter = x;
-        }
+
         public NodeState Evaluate()
         {
             if (!isEntered)

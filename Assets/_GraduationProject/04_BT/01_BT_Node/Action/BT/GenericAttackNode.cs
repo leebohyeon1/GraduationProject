@@ -10,10 +10,10 @@ public class GenericAttackNode : Node
     public bool maintainAtk;
 
     private bool _didHitPlayer;
-    CalculationResult stat;
     bool tracking = false;
     bool parryEffectPlayed = false;
     public DamageData damageData;
+    public float rotationSpeed = 15f; 
     public override void OnEnter()
     {
         Handler.ResetAllFlags();
@@ -21,64 +21,57 @@ public class GenericAttackNode : Node
         parryEffectPlayed = false;  
         // runner.Movement.StartOrUpdateChase(runner.player.transform.position);
         runner.Movement.StopMovement();
-        // aIPath.enableRotation = false;
         damageData.AttackerTransform = runner.transform;
         runner.AnimationEvent(AttackName);
         runner.SetCurrentAttackData(damageRadius, attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), damage);
         initNode();
         runner.SetStiffness(damageData.StiffnessAmount);
+        brain.blackboard.SetValue("IsAttacking", true);
     }
 
     protected override NodeState OnUpdate()
     {
+        runner.aIPath.enableRotation = false;
+
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(attackOffset);
+
+    if (Handler.IsSound)
+    {
+        Handler.EndSound();
+    }
+    if (Handler.IsActive)
+    {
+        tracking = true;
+        runner.SetState(Enemy.EnemyState.Attack);
+    }else
+    if (brain.blackboard.GetValue<Vector3>("LastPlayerPos", out Vector3 lastPlayerPos))
+    {
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
 
-        if (directionToPlayer != Vector3.zero && !tracking)
+        if (directionToPlayer.sqrMagnitude > 0.001f)
         {
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        }
-        if (Handler.IsSound)
-        {
-            Handler.EndSound();
-        }
-        if (Handler.IsHitWindowOpen)
-        {
-            tracking = true;
-            runner.SetState(Enemy.EnemyState.Attack);
-        }
-
-        if (Handler.IsHitWindowOpen)
-        {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, damageRadius * stat.FinalRange);
-            foreach (var col in hitColliders)
+            if (!tracking)
             {
-                if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
-                if (col.TryGetComponent<IHeatable>(out IHeatable heatable))
+                Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+
+                if (rotationSpeed > 0)
                 {
-                    stat = runner.heatSystem.CalculationHeat(AttackName, heatable.ActorType, runner.heatSystem.GetTier(), damage);
-                    SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AttackName, heatable.ActorType, runner.heatSystem.GetTier());
-                    int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-                    heatable.ChangeHeat(deltaHeat);
+                    runner.transform.rotation = Quaternion.Slerp(
+                        runner.transform.rotation, 
+                        targetRotation, 
+                        Time.deltaTime * rotationSpeed
+                    );
                 }
-
-                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
+                else
                 {
-                    Character.TakeDamage(damageData);
-
-                    _didHitPlayer = true;
-                    if (!maintainAtk)
-                    {
-                        Handler.CloseHitWindow();
-                    }
+                    runner.transform.rotation = targetRotation;
                 }
             }
-
         }
+    }
         
         if(Handler.IsHitWindowOpen && !parryEffectPlayed)
         {
@@ -96,15 +89,17 @@ public class GenericAttackNode : Node
 
     public override void OnExit()
     {
-        tracking = false;
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
+        Debug.Log("GenericAttackNode Exit");
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        brain.blackboard.SetValue("IsAttacking", false);
+        tracking = false;
         // runner.Movement.StopMovement();
     }
     public override void Abort()
     {
-        tracking = false;
+        Debug.Log("GenericAttackNode Aborted");
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
@@ -113,6 +108,7 @@ public class GenericAttackNode : Node
         {
             parryEffectPlayed = true;   
         }
+        tracking = false;
     }
 
     public override Node Clone()

@@ -16,7 +16,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             _feedbackDictionary[feedbackPlayer.name] = feedbackPlayer.feedback;
         }
     }
-
+    public void ActivateAction()
+    {
+        IsActive = true;
+    }
     public void OpenHitWindow()
     {
         IsHitWindowOpen = true;

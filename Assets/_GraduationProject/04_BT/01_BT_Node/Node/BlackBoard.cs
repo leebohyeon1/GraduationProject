@@ -40,7 +40,7 @@ public class BlackBoard
     public void LogAllValues()
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine("--- 📋 BlackBoard Contents ---");
+        sb.AppendLine("--- BlackBoard Contents ---");
 
         if (_data.Count == 0)
         {

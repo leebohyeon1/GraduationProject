@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: AttackorChase
   m_EditorClassIdentifier: 
-  position: {x: 491, y: -7}
+  position: {x: 357, y: -32}
   nodes:
   - {fileID: -2870098089127236727}
   - {fileID: 8154655890788234342}
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Stun
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 250, y: -239}
+  position: {x: 178, y: -277}
   nodes:
   - {fileID: 5214673368872433589}
   - {fileID: -3662235796367844752}
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: PatrolSequence
   m_EditorClassIdentifier: 
-  position: {x: 234, y: 436}
+  position: {x: 182, y: 248}
   nodes:
   - {fileID: -2923115925387942299}
 --- !u!114 &-6477674856501047169
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: 01Root
   m_EditorClassIdentifier: 
-  position: {x: 1, y: 90}
+  position: {x: 3, y: 76}
   nodes:
   - {fileID: -7245226355301169087}
   - {fileID: -4738368884081098000}
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: CombatNode
   m_EditorClassIdentifier: 
-  position: {x: 250, y: -31}
+  position: {x: 178, y: -70}
   nodes:
   - {fileID: -1995372082178178704}
   - {fileID: -8730112079219288532}
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 453, y: -200}
+  position: {x: 357, y: -238}
   animationName: Stun
 --- !u!114 &-2923115925387942299
 MonoBehaviour:
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: 465, y: 436}
+  position: {x: 419, y: 248}
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,8 +249,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 749, y: -7}
-  subTreeToRun: {fileID: 11400000, guid: 72bb54cccae1b074d8e6b80e0318c461, type: 2}
+  position: {x: 535, y: -85}
+  subTreeToRun: {fileID: 11400000, guid: b579aeab78e73324982e928a1518ef05, type: 2}
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,7 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: 
-  position: {x: 491, y: -108}
+  position: {x: 357, y: -133}
 --- !u!114 &-1508998778064926519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,8 +334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 234, y: 166}
-  subTreeToRun: {fileID: 11400000, guid: 9832662490adc0b4ca7ab4a5b49095da, type: 2}
+  position: {x: 178, y: 76}
+  subTreeToRun: {fileID: 11400000, guid: 62d96309f8322e94ebf0651af052c2df, type: 2}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,6 +415,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     KnockbackDuration: 0
     KnockbackForce: 0
+  rotationSpeed: 15
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,7 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
   m_Name: Condition_Is Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 440, y: -298}
+  position: {x: 357, y: -336}
 --- !u!114 &5529467211719327576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 749, y: 89}
-  subTreeToRun: {fileID: 11400000, guid: 56de0720fdefa7f4a8b86848eedcc6c3, type: 2}
+  position: {x: 535, y: 7}
+  subTreeToRun: {fileID: 11400000, guid: 34f8621e4853456408cbe6e443fea21a, type: 2}
 --- !u!114 &8246282568877846733
 MonoBehaviour:
   m_ObjectHideFlags: 0
