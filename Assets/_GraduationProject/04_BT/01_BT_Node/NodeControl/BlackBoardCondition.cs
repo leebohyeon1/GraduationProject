@@ -9,7 +9,12 @@ public enum ComparisonOperator
     GreaterOrEqual, // >= (크거나 같다)
     Greater        // > (크다)
 }
+public enum StateOperator
+{
+    Equal,         // == (같다)
+    NotEqual,      // != (다르다)
 
+}
 [System.Serializable]
 public class FloatCondition
 {
@@ -55,36 +60,50 @@ public class FloatCondition
 public class StateCondition
 {
     [Tooltip("비교할 블랙보드의 키 (예: CurrentState)")]
-    public string Key = "CurrentState"; // 기본값으로 설정
+    public string Key = "CurrentStatus"; // 기본값으로 설정
 
     [Tooltip("'Is' (같다) 또는 'IsNot' (다르다)")]
-    public ComparisonOperator Operator;
+    public StateOperator Operator;
 
     [Tooltip("비교할 대상 상태")]
     public Enemy.EnemyState TargetState; // Enemy.cs 안에 정의된 EnemyState Enum
 
     public bool isCondition(BlackBoard blackboard)
     {
-        // 1. 블랙보드에서 "CurrentState" 키로 값을 가져옵니다.
-        //    (타입을 Enemy.EnemyState로 요청)
+        if (!blackboard.HasKey(Key))
+        {
+            Debug.LogWarning($"[StateCondition] 키 '{Key}'가 블랙보드에 존재하지 않습니다.");
+            return false;
+        }
         if (!blackboard.GetValue<Enemy.EnemyState>(Key, out Enemy.EnemyState actualState))
         {
-            // 키가 없거나 타입이 다르면 실패
             Debug.LogWarning($"[StateCondition] 키 '{Key}'를 찾을 수 없거나 타입이 Enemy.EnemyState가 아닙니다.");
             return false;
         }
 
-        // 2. Operator에 따라 실제 상태(actualState)와 목표 상태(TargetState)를 비교
+        // actualState와 TargetState 를 비교
         switch (Operator)
         {
-            case ComparisonOperator.Equal:
-                return actualState == TargetState; // 예: (현재 상태) == (Idle)
-            
-            case ComparisonOperator.NotEqual:
-                return actualState != TargetState; // 예: (현재 상태) != (Die)
-            
+            case StateOperator.Equal:
+                return actualState == TargetState;
+
+            case StateOperator.NotEqual:
+                return actualState != TargetState;
+
             default:
                 return false;
         }
+    }
+}
+[System.Serializable]
+public class ExceptCondition
+{
+    [Tooltip("이게 작동하면 다른 거 무시하고 바로 작동하는 블랙보드 키")]
+    public string key;
+
+    public bool isCondition(BlackBoard blackboard)
+    {
+        bool keyValue = blackboard.GetValue<bool>(key);
+        return keyValue;
     }
 }

@@ -38,12 +38,12 @@ public class AiBrain
                 blackboard.SetValue("IsHasLOS", IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();
                 blackboard.SetValue("OnPlayerLooking", OnPlayerLooking);
-                counter++;
-                if (counter >= 10)
-                {
-                    counter = 0;
-                    blackboard.LogAllValues();
-                }
+                // counter++;
+                // if (counter >= 10)
+                // {
+                //     counter = 0;
+                //     blackboard.LogAllValues();
+                // }
             }
             yield return new WaitForSeconds(0.1f);
         }
