@@ -19,10 +19,7 @@ MonoBehaviour:
   - {fileID: -8352506910516755610}
   - {fileID: -6646918347980302632}
   - {fileID: -3727419619842135259}
-  - {fileID: 861935333759378166}
-  - {fileID: -3679951281741201405}
-  - {fileID: -8323296916998508572}
-  - {fileID: -393768079901890297}
+  - {fileID: -8048507766860801133}
 --- !u!114 &-8352506910516755610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,8 +38,8 @@ MonoBehaviour:
     Operator: 1
     value: 3.5
   exceptCondition:
-    key: IsAttacking
---- !u!114 &-8323296916998508572
+    key: 
+--- !u!114 &-8048507766860801133
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -51,11 +48,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 932, y: 184}
-  waitTime: 0.2
+  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
+  m_Name: Animation Node
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationNode
+  position: {x: 934, y: 30}
+  animationName: Attack
+  animationBool: 0
+  enemyUseAnything: {fileID: 11400000, guid: a2c2a956edca3e847bd3515ee3ecc2f9, type: 2}
 --- !u!114 &-6646918347980302632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Is Skill Ready(Clone)
   m_EditorClassIdentifier: 
-  position: {x: 932, y: -124}
+  position: {x: 934, y: -124}
   skillName: Attack
   cooldownDuration: 2
   HeatCooldown: 1
@@ -120,40 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 934, y: -47}
   skillName: Attack
---- !u!114 &-3679951281741201405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 932, y: 107}
-  targetDistance: 0
-  acceptanceRadius: 5
-  runSpeed: 3
-  timeout: 1
---- !u!114 &-393768079901890297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
-  m_Name: Condition_Check Object Behind(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
-  position: {x: 932, y: 261}
-  checkDistance: 2
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!114 &-360825156357793975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,67 +143,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
-  m_Name: ATK_Blackboard
+  m_Name: BoomberAtk
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -8799194612386173125}
---- !u!114 &861935333759378166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Generic Attack Node(Clone)
-  m_EditorClassIdentifier: 
-  position: {x: 934, y: 30}
-  AttackName: Attack
-  damage: 10
-  damageRadius: 2
-  attackOffset: {x: 0, y: 0, z: 1.5}
-  maintainAtk: 0
-  damageData:
-    AttackerTransform: {fileID: 0}
-    AttackType: 0
-    DamageAmount: 10
-    StiffnessAmount: 10
-    KnockbackCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.04597932
-        value: 0.567655
-        inSlope: 1.3330412
-        outSlope: 1.3330412
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    KnockbackDuration: 0.2
-    KnockbackForce: 12
 --- !u!114 &2189541146771138488
 MonoBehaviour:
   m_ObjectHideFlags: 0

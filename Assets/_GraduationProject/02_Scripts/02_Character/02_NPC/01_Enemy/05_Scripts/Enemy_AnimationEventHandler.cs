@@ -87,24 +87,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
         }
     }
-    // public void PlayFeedbackSound(string feedbackName)
-    // {
-    //     if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
-    //     {
-    //         if( feedback == null)
-    //         {
-    //             Debug.LogWarning($"피드백이 null {feedbackName}");
-    //             return;
-    //         }
 
-    //         feedback.PlayFeedbacks(transform.position);
-    //     }
-    //     else
-    //     {
-    //         Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
-    //     }
-    // }
-    
     public void StopFeedback(string feedbackName)
     {
         if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))

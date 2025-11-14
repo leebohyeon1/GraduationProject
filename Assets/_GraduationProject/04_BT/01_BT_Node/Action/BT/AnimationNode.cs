@@ -38,7 +38,11 @@ public class AnimationNode : Node
     protected override NodeState OnUpdate()
     {
         Animator animator = runner.animator;
-        enemyUseAnything?.OnUpdate(runner);
+        if (Handler.IsActive)
+        {
+            enemyUseAnything?.OnUpdate(runner);
+        }
+
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
         {
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f)

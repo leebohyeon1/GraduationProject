@@ -25,6 +25,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
+        _owner.tag = "Enemy";
     }
 
     public void Attack(IDamageable target)
@@ -45,8 +46,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
 {
     float elapsedTime = 0;
-    Debug.Log("Knockback Start" + damageData.KnockbackDuration);
-
     Vector3 horizontalDirection = direction;
     horizontalDirection.y = 0;
     horizontalDirection.Normalize();
@@ -85,7 +84,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
         GetComponent<Animator>().enabled = false;
-
+        _owner.tag = "DeadEnemy";
     }
     private IEnumerator DieSequence(Vector3 direction)
     {
@@ -96,14 +95,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     yield return new WaitForSeconds(0.1f);
     Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
     CombineAddForce(combinedForce, direction);
-    // centralRigidbody.AddForce(combinedForce, ForceMode.Impulse);
-
-    Debug.Log($"AddForce 실행됨! {centralRigidbody.name}의 현재 속도: {centralRigidbody.linearVelocity}", this);
-
-    Debug.Log($"속력 (Magnitude): {centralRigidbody.linearVelocity.magnitude}", this);
-
-
-    // 소멸 이펙트(VFX) 재생 추가 기점
     yield return new WaitForSeconds(1f);
     centralRigidbody.linearVelocity = Vector3.zero;
     SetRagdollState(true);
@@ -113,8 +104,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     {
         if (Health <= 0) return;
         _owner._aiController._aiBrain.blackboard.SetValue("OnTakeHit", true);
-        Debug.Log($"Enemy Take Damage: {damageData.DamageAmount}");
-        Debug.Log($"Enemy Take Damage: {Health}");
         _owner.groupAi.CombatAll();
         if (!_owner._aiController.IsActionable())
         {
