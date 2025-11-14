@@ -25,6 +25,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
+        _owner.tag = "Enemy";
     }
 
     public void Attack(IDamageable target)
@@ -85,7 +86,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.SetState(Enemy.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
         GetComponent<Animator>().enabled = false;
-
+        _owner.tag = "DeadEnemy";
     }
     private IEnumerator DieSequence(Vector3 direction)
     {
