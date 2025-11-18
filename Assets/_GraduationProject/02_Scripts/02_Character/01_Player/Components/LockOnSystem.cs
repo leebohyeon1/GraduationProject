@@ -1,7 +1,8 @@
-using BH_Lib.AssetManager;
+﻿using BH_Lib.AssetManager;
 using BH_Lib.DI;
 using BH_Lib.Log;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class LockOnSystem : MonoBehaviour
 {
@@ -56,7 +57,12 @@ public class LockOnSystem : MonoBehaviour
             }
         }
 
-        if(closest.TryGetComponent<IDamageable>(out var component))
+        if (_currentTarget != null && _currentTarget != this.transform)
+        {
+            LockOff(); // 이 함수는 내부적으로 SetTarget(this.transform)을 호출하므로, 아래 SetTarget이 필요 없음
+        }
+
+        if (closest.TryGetComponent<IDamageable>(out var component))
         {
             component.OnDied += LockOff;
         }
@@ -65,7 +71,7 @@ public class LockOnSystem : MonoBehaviour
             return false;
         }
 
-        // Ÿ�� ���� �� Ȱ��ȭ
+        // 타겟 지정 후 활성화
         SetTarget(closest.transform);
         LockOnIndicator.SetActive(true);
 
@@ -81,7 +87,7 @@ public class LockOnSystem : MonoBehaviour
             component.OnDied -= LockOff;
         }
 
-        // Ÿ�� ���� �� ��Ȱ��ȭ 
+        // 타겟 해제 후 비활성화 
         LockOnIndicator.SetActive(false);
         SetTarget(this.transform);
 
@@ -107,5 +113,16 @@ public class LockOnSystem : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position + _offset, _scanRadius);
+    }
+
+    private void OnDisable()
+    {
+        if (_currentTarget != null && _currentTarget != this.transform)
+        {
+            if (_currentTarget.TryGetComponent<IDamageable>(out var component))
+            {
+                component.OnDied -= LockOff;
+            }
+        }
     }
 }
