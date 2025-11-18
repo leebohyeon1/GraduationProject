@@ -48,7 +48,6 @@ public class LockOnSystem : MonoBehaviour
 
         for (int i = 1; i < hitCount; i++)
         {
-            Log.Print($"Found target: {_scanResults[i].name}");
             float dist = Vector3.Distance(transform.position + _offset, _scanResults[i].transform.position);
             if (dist < closestDistance)
             {
@@ -56,6 +55,16 @@ public class LockOnSystem : MonoBehaviour
                 closestDistance = dist;
             }
         }
+
+        // 이거 하면 너무 위험함, 변수가 너무 많음
+        //if(closest.TryGetComponent<IDamageable>(out var component))
+        //{
+        //    component.OnDied += LockOff;
+        //}
+        //else
+        //{
+        //    return false;
+        //}
 
         // 타겟 지정 후 활성화
         SetTarget(closest.transform);
