@@ -36,9 +36,10 @@ public class PlayerChargeState : BaseState<Player>
     {
         _chargeTimer += Time.deltaTime;
         if(_chargeLevel < p_context.Stats.Data.CombatData.ChargeAttackDatas.Length  && 
-            _chargeTimer > p_context.Stats.Data.CombatData.ChargeAttackDatas[_chargeLevel].ChargeTime)
+            _chargeTimer >= p_context.Stats.Data.CombatData.ChargeAttackDatas[_chargeLevel].ChargeTime)
         {
             p_context.Stats.ChargeLevel++;
+            p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
         }
         
         if(_chargeTimer >= p_context.Stats.Data.CombatData.MaxChargeTime)
@@ -68,6 +69,7 @@ public class PlayerChargeState : BaseState<Player>
             }
             else
             {
+                p_context.Stats.ChargeLevel = 0;
                 p_stateMachine.ChangeState<PlayerFirstAttackState>();
             }
         }
@@ -75,7 +77,6 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Stats.ChargeLevel = 0;
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerChargeCancel();
