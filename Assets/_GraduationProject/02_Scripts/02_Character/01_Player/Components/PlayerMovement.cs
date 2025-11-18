@@ -1,7 +1,5 @@
 using BH_Lib.Log;
 using System;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
