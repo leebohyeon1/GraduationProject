@@ -56,15 +56,14 @@ public class LockOnSystem : MonoBehaviour
             }
         }
 
-        // 이거 하면 너무 위험함, 변수가 너무 많음
-        //if(closest.TryGetComponent<IDamageable>(out var component))
-        //{
-        //    component.OnDied += LockOff;
-        //}
-        //else
-        //{
-        //    return false;
-        //}
+        if(closest.TryGetComponent<IDamageable>(out var component))
+        {
+            component.OnDied += LockOff;
+        }
+        else
+        {
+            return false;
+        }
 
         // 타겟 지정 후 활성화
         SetTarget(closest.transform);
@@ -77,6 +76,11 @@ public class LockOnSystem : MonoBehaviour
 
     public void LockOff()
     {
+        if (CurrentTarget.TryGetComponent<IDamageable>(out var component))
+        {
+            component.OnDied -= LockOff;
+        }
+
         // 타겟 해제 후 비활성화 
         LockOnIndicator.SetActive(false);
         SetTarget(this.transform);
