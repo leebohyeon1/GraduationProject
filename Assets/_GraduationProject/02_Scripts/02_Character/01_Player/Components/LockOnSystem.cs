@@ -34,11 +34,14 @@ public class LockOnSystem : MonoBehaviour
         _lockOnIndicator.SetActive(false);
     }
 
-    public void LockOn()
+    public bool LockOn()
     { 
         int hitCount = Physics.OverlapSphereNonAlloc(transform.position + _offset, _scanRadius, _scanResults, _lockOnLayer);
 
-        if (hitCount == 0) return;
+        if (hitCount == 0)
+        {
+            return false;
+        }
 
         Collider closest = _scanResults[0];
         float closestDistance = Vector3.Distance(transform.position + _offset, closest.transform.position);
@@ -59,6 +62,8 @@ public class LockOnSystem : MonoBehaviour
         LockOnIndicator.SetActive(true);
 
         _onLockOnEvent.Publish(true);
+
+        return true;
     }
 
     public void LockOff()

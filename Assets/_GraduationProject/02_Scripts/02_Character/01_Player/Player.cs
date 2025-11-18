@@ -250,8 +250,7 @@ public class Player : DIMonoBehaviour
         {
             if(!_stats.IsLockOn)
             {
-                _stats.IsLockOn = true;
-                _lockOnSystem.LockOn();
+                _stats.IsLockOn = _lockOnSystem.LockOn();
             }
             else
             {
