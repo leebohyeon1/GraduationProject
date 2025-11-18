@@ -378,7 +378,8 @@ MonoBehaviour:
   - {fileID: 7873459837232094686}
   - {fileID: -175243311059497303}
   - {fileID: 3147973789636830129}
-  m_RendererFeatureMap: ad6b866f10d7b46c165a5ec12fd70fe3e63f0194770cf250
+  - {fileID: 6686138968958426031}
+  m_RendererFeatureMap: ad6b866f10d7b46c165a5ec12fd70fe3e63f0194770cf250afdba9b3f7efc95c
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -631,6 +632,48 @@ MonoBehaviour:
   m_Name: Vortex
   m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.VortexFeature
   m_Active: 1
+--- !u!114 &6686138968958426031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
+  m_Name: LockOnIndicator Visible
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.RenderObjects
+  m_Active: 1
+  settings:
+    passTag: LockOnIndicator Visible
+    Event: 300
+    filterSettings:
+      RenderQueueType: 0
+      LayerMask:
+        serializedVersion: 2
+        m_Bits: 4096
+      PassNames: []
+    overrideMaterial: {fileID: 0}
+    overrideMaterialPassIndex: 0
+    overrideShader: {fileID: 0}
+    overrideShaderPassIndex: 0
+    overrideMode: 1
+    overrideDepthState: 1
+    depthCompareFunction: 8
+    enableWrite: 0
+    stencilSettings:
+      overrideStencilState: 0
+      stencilReference: 0
+      stencilCompareFunction: 8
+      passOperation: 0
+      failOperation: 0
+      zFailOperation: 0
+    cameraSettings:
+      overrideCamera: 0
+      restoreCamera: 1
+      offset: {x: 0, y: 0, z: 0, w: 0}
+      cameraFieldOfView: 60
 --- !u!114 &7312880057826916866
 MonoBehaviour:
   m_ObjectHideFlags: 0

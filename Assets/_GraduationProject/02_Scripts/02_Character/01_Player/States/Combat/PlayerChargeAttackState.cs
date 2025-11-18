@@ -11,13 +11,14 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.Data.CombatData.ChargeAttackDatas[p_context.Stats.ChargeLevel].AttackData;
-
+    protected override PlayerAttackDataSO p_AttackData => p_context.Stats.Data.CombatData.ChargeAttackDatas[p_context.Stats.ChargeLevel - 1].AttackData;
+     
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
 
     public override void OnEnter()
     {
+        Log.Print(p_context.Stats.ChargeLevel);
         p_context.Events.OnParryWindowFinish += HandleParryWindowFinish;
         p_context.Events.OnParryDamageAffect += HandleParryDamageAffect;
 
@@ -26,6 +27,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     public override void OnExit()
     {
+        p_context.Stats.ChargeLevel = 0;
+
         p_context.Stats.IsParring = false;
         p_context.Events.OnParryWindowFinish -= HandleParryWindowFinish;
         p_context.Events.OnParryDamageAffect -= HandleParryDamageAffect;
@@ -68,6 +71,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
+            
             p_nextState = p_nextAttackState;
             p_stateMachine.ChangeState(p_nextState);
         }

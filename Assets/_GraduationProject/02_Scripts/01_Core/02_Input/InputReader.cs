@@ -24,6 +24,7 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action DefendEvent = delegate { };
     public event Action DefendCancelledEvent = delegate { };
     public event Action ParryEvent = delegate { };
+    public event Action ToggleLockOnEvent = delegate { };
 
     public event Action InteractEvent = delegate { };
 
@@ -167,6 +168,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         if (context.phase == InputActionPhase.Performed)
         {
             ParryEvent.Invoke();    
+        }
+    }
+
+    public void OnToggleLockOn(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ToggleLockOnEvent.Invoke();
         }
     }
 

@@ -3,6 +3,7 @@ using BH_Lib.Log;
 using DG.Tweening;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 플레이어의 방어 상태입니다.
@@ -27,7 +28,19 @@ public class PlayerDefendState : BaseState<Player>
     public override void OnUpdate()
     {
         Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-        p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.DefendMoveSpeed, p_context.Stats.Data.RotateSpeed);
+        
+        if (p_context.Stats.IsLockOn)
+        {
+            Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
+            Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
+
+            p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
+            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.DefendMoveSpeed);
+        }
+        else
+        {
+            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.DefendMoveSpeed, p_context.Stats.Data.RotateSpeed);
+        }
 
         // 입력에 따른 상태 전환
         if (!p_context.Input.DefendInput)

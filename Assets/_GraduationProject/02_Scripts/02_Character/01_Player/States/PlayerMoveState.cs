@@ -28,7 +28,20 @@ public class PlayerMoveState : BaseState<Player>
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
+
+            if (p_context.Stats.IsLockOn)
+            {
+                Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
+                Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
+
+                p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
+                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed);
+            }
+            else
+            {
+                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
+            }
+              
         }
     }
 

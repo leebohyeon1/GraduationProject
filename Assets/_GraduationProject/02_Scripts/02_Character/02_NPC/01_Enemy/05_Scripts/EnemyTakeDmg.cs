@@ -78,6 +78,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        OnDied?.Invoke();
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
