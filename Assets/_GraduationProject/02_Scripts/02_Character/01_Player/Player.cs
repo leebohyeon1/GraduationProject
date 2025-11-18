@@ -29,6 +29,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerCombat _combat; // 전투 컴포넌트
     [SerializeField] private PlayerInteract _interact; // 상호작용 컴포넌트
     [SerializeField] private PlayerStamina _stamina; // 스테미나 컴포넌트
+    [SerializeField] private LockOnSystem _lockOnSystem; // 락온 시스템  
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
@@ -76,6 +77,7 @@ public class Player : DIMonoBehaviour
         SubscribeToEvents();
 
         _onCameraInitializeSO.Publish(transform);
+        _onCameraInitializeSO.Publish(_lockOnSystem.LockOnIndicator.transform);
     }
     
     private void Update()
@@ -237,6 +239,20 @@ public class Player : DIMonoBehaviour
         if(Input.InteractInput)
         {
             Interact.Interact();
+        }
+
+        if(Input.ToggleLockOnInput)
+        {
+            if(!_stats.IsLockOn)
+            {
+                _stats.IsLockOn = true;
+                _lockOnSystem.LockOn();
+            }
+            else
+            {
+                _stats.IsLockOn = false;
+                _lockOnSystem.LockOff();
+            }
         }
     }
     

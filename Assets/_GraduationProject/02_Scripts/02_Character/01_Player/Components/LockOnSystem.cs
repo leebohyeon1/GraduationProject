@@ -1,0 +1,82 @@
+using BH_Lib.AssetManager;
+using BH_Lib.DI;
+using BH_Lib.Log;
+using UnityEngine;
+
+public class LockOnSystem : MonoBehaviour
+{
+    [SerializeField] private GameObject _lockOnIndicator;
+
+    [Header("Scan Settings")]
+    [SerializeField] private LayerMask _lockOnLayer;
+    [SerializeField] private Vector3 _offset;
+    [SerializeField] private float _scanRadius = 10f;
+    private Collider[] _scanResults = new Collider[10];
+
+    [Header("Gizmos")]
+    [SerializeField] private bool _showGizmos = true;
+
+    public GameObject LockOnIndicator => _lockOnIndicator;
+
+    private async void OnEnable()
+    {
+        if(_lockOnIndicator == null)
+        {
+            AssetManager assetManager = DIContainer.Instance.Resolve<AssetManager>();
+            _lockOnIndicator = await assetManager.InstantiateAsync("LockOnIndicator", this.transform);
+        }
+        _lockOnIndicator.SetActive(false);
+    }
+
+    public void LockOn()
+    { 
+        int hitCount = Physics.OverlapSphereNonAlloc(transform.position + _offset, _scanRadius, _scanResults, _lockOnLayer);
+
+        if (hitCount == 0) return;
+
+        Collider closest = _scanResults[0];
+        float closestDistance = Vector3.Distance(transform.position + _offset, closest.transform.position);
+
+        for (int i = 1; i < hitCount; i++)
+        {
+            Log.Print($"Found target: {_scanResults[i].name}");
+            float dist = Vector3.Distance(transform.position + _offset, _scanResults[i].transform.position);
+            if (dist < closestDistance)
+            {
+                closest = _scanResults[i];
+                closestDistance = dist;
+            }
+        }
+
+        // 타겟 지정 후 활성화
+        SetTarget(closest.transform);
+        LockOnIndicator.SetActive(true);
+    }
+
+    public void LockOff()
+    {
+        // 타겟 해제 후 비활성화 
+        LockOnIndicator.SetActive(false);
+        SetTarget(this.transform);  
+    }
+
+    public void SetTarget(Transform target)
+    {
+        if(_lockOnIndicator != null)
+        {
+            LockOnIndicator.transform.parent = target;
+            LockOnIndicator.transform.localPosition = Vector3.zero;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!_showGizmos)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position + _offset, _scanRadius);
+    }
+}

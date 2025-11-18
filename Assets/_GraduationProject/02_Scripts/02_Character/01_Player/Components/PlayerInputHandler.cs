@@ -1,6 +1,7 @@
 using BH_Lib.DI;
 using BH_Lib.FSM;
 using BH_Lib.Log;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -27,6 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _InteractInput; // 상호작용 입력
     private bool _potionInput; // 포션 사용 입력
     private bool _parryInput; // 패리 입력
+    private bool _toggleLockOnInput; // 락온 토글 입력
 
     private bool _canAttackHeldInput = true; // 차징 중복 막기 위함
 
@@ -44,6 +46,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool InteractInput => _InteractInput;
     public bool PotionInput => _potionInput;
     public bool ParryInput => _parryInput;  
+    public bool ToggleLockOnInput => _toggleLockOnInput;
     #endregion
 
     /// <summary>
@@ -91,6 +94,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DefendEvent += OnDefend;
         _inputReader.DefendCancelledEvent += OnDefendCancelled;
         _inputReader.ParryEvent += OnParry;
+        _inputReader.ToggleLockOnEvent += ToggleLockOnEvent;
 
         _inputReader.InteractEvent += OnInteract;
 
@@ -116,6 +120,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DefendEvent -= OnDefend;
         _inputReader.DefendCancelledEvent -= OnDefendCancelled;
         _inputReader.ParryEvent -= OnParry;
+        _inputReader.ToggleLockOnEvent -= ToggleLockOnEvent;
 
         _inputReader.InteractEvent -= OnInteract;
     }
@@ -162,6 +167,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnDefend() => _defendInput = true;
     private void OnDefendCancelled() => _defendInput = false;
     private void OnParry() => _parryInput = true;
+    private void ToggleLockOnEvent() => _toggleLockOnInput = true;
 
     private void OnInteract() => _InteractInput = true;
 
@@ -179,6 +185,7 @@ public class PlayerInputHandler : MonoBehaviour
         _InteractInput = false;
         _potionInput = false;
         _parryInput = false;
+        _toggleLockOnInput = false;
     }
 
     public void SetAttackHeldInput(bool isAttackHold)
