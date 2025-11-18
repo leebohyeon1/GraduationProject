@@ -15,6 +15,7 @@ public class Player : DIMonoBehaviour
     #region Private Fields
     [Inject] private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
 
+    [Header("Components")]
     [SerializeField] private Animator _animator; // 애니메이터
     [SerializeField] private CharacterController _characterController; // 캐릭터 컨트롤러
 
@@ -31,7 +32,7 @@ public class Player : DIMonoBehaviour
 
     private StateMachine<Player> _stateMachine; // 상태 머신
     #endregion
-    
+
     #region Properties
     public Animator Animator => _animator;
 
@@ -55,6 +56,13 @@ public class Player : DIMonoBehaviour
     public Type CurrentPlayerState => _stateMachine.CurrentStateType;
     #endregion
 
+
+    #region EventSO
+    [Space(10f), Header("Event SO")]
+    [SerializeField] private OnCameraInitializeSO _onCameraInitializeSO; // 카메라 초기화 이벤트
+
+    #endregion
+
     protected override void Awake()
     {
         base.Awake();
@@ -66,6 +74,8 @@ public class Player : DIMonoBehaviour
     private void Start()
     {
         SubscribeToEvents();
+
+        _onCameraInitializeSO.Publish(transform);
     }
     
     private void Update()
@@ -117,7 +127,7 @@ public class Player : DIMonoBehaviour
         {
             _events = GetComponent<PlayerEvents>();
         }
-    
+
         if (_input == null)
         {
             _input = GetComponent<PlayerInputHandler>();
