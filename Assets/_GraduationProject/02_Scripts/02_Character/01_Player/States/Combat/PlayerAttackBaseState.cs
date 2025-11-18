@@ -3,6 +3,7 @@ using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 플레이어의 모든 공격 상태의 기반이 되는 추상 클래스입니다.
@@ -31,19 +32,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         // p_context.Animator.runtimeAnimatorController = p_AttackData.AnimOverrideController;
         p_context.Animator.SetTrigger(p_animationTrigger);
-
-        // 목표 방향으로 회전
-        if(p_context.Movement.HasTargetRotation)
-        {
-            p_context.Movement.RotateToTargetRotation();
-        }
-        else
-        {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Input.MoveInput;
-            var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-        }
             
         p_context.Events.TriggerBattleStateChanged(true);
         
@@ -86,12 +74,22 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             () => currentDistance,
             x =>
             {
-                var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-                var moveInput = p_context.Input.MoveInput;
-                var mousePosition = p_context.Input.MousePosition;
-                
-                p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-                
+                if (p_context.Stats.IsLockOn)
+                {
+                    Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
+                    Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
+
+                    p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_AttackData.RotateSpeed);
+                }
+                else
+                {
+                    var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+                    var moveInput = p_context.Input.MoveInput;
+                    var mousePosition = p_context.Input.MousePosition;
+
+                    p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_AttackData.RotateSpeed);
+                }
+
                 Vector3 moveDirection = p_context.transform.forward;
                 float deltaDistance = x - currentDistance;
                 Vector3 displacement = moveDirection * deltaDistance;

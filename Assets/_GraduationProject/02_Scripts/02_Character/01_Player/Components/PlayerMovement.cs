@@ -94,6 +94,23 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     }
 
     /// <summary>
+    /// 입력 방향으로 이동합니다. (회전 없음)
+    /// </summary>
+    public void Move(Vector3 direction, float moveSpeed)
+    {
+        if (_characterController == null || _mainCamera == null) return;
+
+        // 카메라 기준 방향 벡터 계산
+        Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 moveVector = (cameraForward * direction.z + _mainCamera.transform.right * direction.x).normalized;
+
+        // 이동 및 중력 적용
+        Vector3 movement = moveVector * moveSpeed * Time.fixedDeltaTime;
+        movement.y = _velocity.y * Time.fixedDeltaTime;
+        _characterController.Move(movement);
+    }
+
+    /// <summary>
     /// 외부에서 계산된 변위만큼 캐릭터를 강제로 이동시킵니다. 중력이 함께 적용됩니다.
     /// </summary>
     /// <param name="displacement">프레임당 이동할 변위</param>
@@ -134,11 +151,23 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     }
 
     /// <summary>
+    /// 입력 장치에 따라 목표 방향으로 회전합니다. (보간)
+    /// </summary>
+    public void RotateToDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition, float rotateSpeed)
+    {
+        SetRotation(GetTargetRotation(deviceType, moveInput, mousePosition), rotateSpeed);
+    }
+
+    /// <summary>
     /// 지정된 방향으로 즉시 회전합니다.
     /// </summary>
     public void RotateToDirection(Vector3 direction)
     {
-        if (transform == null) return;
+        if (transform == null)
+        {
+            return;
+        }
+
         Vector3 cameraForward = Vector3.Scale(_mainCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
         SetRotation(Quaternion.LookRotation(cameraForward * direction.z + _mainCamera.transform.right * direction.x));
     }
@@ -184,6 +213,14 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public void SetRotation(Quaternion rotation)
     {
         transform.rotation = rotation;
+    }
+
+    /// <summary>
+    /// 회전값 설정 (보간)
+    /// </summary>
+    public void SetRotation(Quaternion rotation, float rotateSpeed)
+    {
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
     }
 
     /// <summary>

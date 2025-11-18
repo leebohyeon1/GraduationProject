@@ -17,8 +17,13 @@ public class LockOnSystem : MonoBehaviour
     [Header("Gizmos")]
     [SerializeField] private bool _showGizmos = true;
 
-    public GameObject LockOnIndicator => _lockOnIndicator;
 
+    private Transform _currentTarget;
+
+    #region properties
+    public GameObject LockOnIndicator => _lockOnIndicator;
+    public Transform CurrentTarget => _currentTarget;
+    #endregion
     private async void OnEnable()
     {
         if(_lockOnIndicator == null)
@@ -67,7 +72,8 @@ public class LockOnSystem : MonoBehaviour
 
     public void SetTarget(Transform target)
     {
-        if(_lockOnIndicator != null)
+        _currentTarget = target;
+        if (_lockOnIndicator != null)
         {
             LockOnIndicator.transform.parent = target;
             LockOnIndicator.transform.localPosition = Vector3.zero;

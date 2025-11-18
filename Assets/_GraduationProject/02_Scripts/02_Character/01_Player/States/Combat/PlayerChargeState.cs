@@ -25,11 +25,7 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Events.TriggerChargeStart();
         p_context.Events.TriggerBattleStateChanged(true);
 
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Input.MoveInput;
-        var mousePosition = p_context.Input.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
-
+      
     }
 
     public override void OnUpdate()
@@ -49,16 +45,29 @@ public class PlayerChargeState : BaseState<Player>
 
         p_context.Stamina.UseStamina(p_context.Stats.Data.CombatData.ChargeStamina * Time.deltaTime);
 
+        // 회전 처리
+        if (p_context.Stats.IsLockOn)
+        {
+            Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
+            Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
+
+            p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
+        }
+        else
+        {
+            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var moveInput = p_context.Input.MoveInput;
+            var mousePosition = p_context.Input.MousePosition;
+            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+        }
+
+        // 이동 처리
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.ChargeMoveSpeed, 0);
+            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.ChargeMoveSpeed);
         }
 
-        var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-        var moveInput = p_context.Input.MoveInput;
-        var mousePosition = p_context.Input.MousePosition;
-        p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
 
         // 입력에 따른 상태 전환
         if (!p_context.Input.AttackHeldInput)

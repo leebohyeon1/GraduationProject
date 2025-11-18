@@ -47,7 +47,7 @@ public class Player : DIMonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerInteract Interact => _interact;
     public PlayerStamina Stamina => _stamina;
-
+    public LockOnSystem LockOnSystem => _lockOnSystem;
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     
@@ -164,6 +164,11 @@ public class Player : DIMonoBehaviour
             _stamina = GetComponent<PlayerStamina>();
         }
         _stamina.Initialize(Stats, Events);
+
+        if(_lockOnSystem == null)
+        {
+            _lockOnSystem = GetComponent<LockOnSystem>();
+        }
     }
     
     /// <summary>

@@ -9,6 +9,7 @@ public class PlayerAttackDataSO : ScriptableObject
     [Header("Attack Movement")]
     [Tooltip("공격 시 전진하는 거리")]
     public float AttackMoveDistance;
+    public float RotateSpeed;
 
     [Tooltip("공격 이동에 걸리는 시간")]
     public float AttackMoveDuration;
