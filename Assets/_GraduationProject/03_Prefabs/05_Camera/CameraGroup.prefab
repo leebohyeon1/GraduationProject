@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3925786328353640396}
   serializedVersion: 2
   m_LocalRotation: {x: 0.36607417, y: 0.35136032, z: -0.15163289, w: 0.84825885}
-  m_LocalPosition: {x: -16.793339, y: 0, z: -24.12173}
+  m_LocalPosition: {x: -21.119999, y: 12.73, z: -23.029999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68,7 +68,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -161,15 +161,15 @@ MonoBehaviour:
     Enabled: 0
     DefaultMode: 2
   DefaultBlend:
-    Style: 1
-    Time: 1
+    Style: 5
+    Time: 2
     CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  CustomBlends: {fileID: 0}
+  CustomBlends: {fileID: 11400000, guid: 4e63ed8e33cc0ba4595793e3401be9e0, type: 2}
 --- !u!1 &4102119808181941182
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 4102119808181941182}
   serializedVersion: 2
   m_LocalRotation: {x: 0.36607414, y: 0.35136038, z: -0.15163292, w: 0.84825885}
-  m_LocalPosition: {x: -12.987031, y: 0.5435333, z: -24.805847}
+  m_LocalPosition: {x: -8, y: 12, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -220,7 +220,7 @@ MonoBehaviour:
   Priority:
     Enabled: 0
     m_Value: 0
-  OutputChannel: 4
+  OutputChannel: 2
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
@@ -309,12 +309,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineGroupFraming
   FramingMode: 2
-  FramingSize: 0.8
+  FramingSize: 0.5
   CenterOffset: {x: 0, y: 0}
-  Damping: 0.5
+  Damping: 2
   SizeAdjustment: 2
   LateralAdjustment: 0
-  FovRange: {x: 30, y: 179}
+  FovRange: {x: 1, y: 100}
   DollyRange: {x: -100, y: 100}
   OrthoSizeRange: {x: 1, y: 1000}
 --- !u!1 &6492237290323439915
@@ -335,7 +335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5775447848678631036
 Transform:
   m_ObjectHideFlags: 0
@@ -345,7 +345,7 @@ Transform:
   m_GameObject: {fileID: 6492237290323439915}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3660742, y: 0.35136035, z: -0.1516329, w: 0.84825885}
-  m_LocalPosition: {x: -13.12, y: 0.72999954, z: -24.87}
+  m_LocalPosition: {x: -21.119999, y: 12.73, z: -23.029999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -365,8 +365,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
     Enabled: 0
-    m_Value: 0
-  OutputChannel: 3
+    m_Value: 1
+  OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
@@ -490,9 +490,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5abb5f8e09eaa304f80c9e206132a977, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraManager
+  _cinemachineBrain: {fileID: 2185351971615971036}
   _playerFollowCamera: {fileID: 7906223804623676572}
   _lockOnTargetGroup: {fileID: 9148600309209173732}
   _onCameraInitializeSO: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+  _onLockOnSO: {fileID: 11400000, guid: 9fa047050664545459617a430794e3b5, type: 2}
 --- !u!1 &9158191670717828509
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,7 +521,7 @@ Transform:
   m_GameObject: {fileID: 9158191670717828509}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.987031, y: -11.456467, z: -16.805847}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -540,11 +542,5 @@ MonoBehaviour:
   PositionMode: 0
   RotationMode: 0
   UpdateMethod: 2
-  Targets:
-  - Object: {fileID: 0}
-    Weight: 1
-    Radius: 0.7
-  - Object: {fileID: 0}
-    Weight: 1
-    Radius: 0.5
+  Targets: []
   m_LegacyTargets: []

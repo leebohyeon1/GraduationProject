@@ -6,6 +6,7 @@ using UnityEngine;
 public class LockOnSystem : MonoBehaviour
 {
     [SerializeField] private GameObject _lockOnIndicator;
+    [SerializeField] private OnLockOnSO _onLockOnEvent;
 
     [Header("Scan Settings")]
     [SerializeField] private LayerMask _lockOnLayer;
@@ -51,13 +52,17 @@ public class LockOnSystem : MonoBehaviour
         // 타겟 지정 후 활성화
         SetTarget(closest.transform);
         LockOnIndicator.SetActive(true);
+
+        _onLockOnEvent.Publish(true);
     }
 
     public void LockOff()
     {
         // 타겟 해제 후 비활성화 
         LockOnIndicator.SetActive(false);
-        SetTarget(this.transform);  
+        SetTarget(this.transform);
+
+        _onLockOnEvent.Publish(false);
     }
 
     public void SetTarget(Transform target)
