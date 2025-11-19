@@ -30,7 +30,7 @@ public class PlayerDodgeState : BaseState<Player>
         else
         {
             _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.RotateToDirection(_dodgeDirection);
+            //p_context.Movement.RotateToDirection(_dodgeDirection);
         }
 
 
@@ -54,8 +54,10 @@ public class PlayerDodgeState : BaseState<Player>
             x =>
             {
                 _dodgeDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-                p_context.Movement?.Dodge(_dodgeDirection, distance/duration, p_context.Stats.Data.CombatData.DodgeRotateSpeed);
+                float deltaDistance = x - currentDistance;
 
+                deltaDistance *= distance / duration;
+                p_context.Movement?.Dodge(_dodgeDirection, deltaDistance, p_context.Stats.Data.CombatData.DodgeRotateSpeed);
                 currentDistance = x;
             },
             distance, duration).
