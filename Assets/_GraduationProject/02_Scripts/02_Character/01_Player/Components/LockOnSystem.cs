@@ -20,6 +20,7 @@ public class LockOnSystem : MonoBehaviour
 
 
     private Transform _currentTarget;
+    private Camera _mainCamera;
 
     #region properties
     public GameObject LockOnIndicator => _lockOnIndicator;
@@ -35,7 +36,12 @@ public class LockOnSystem : MonoBehaviour
         _lockOnIndicator.SetActive(false);
     }
 
-    public bool LockOn()
+    private void Start()
+    {
+        _mainCamera = Camera.main;
+    }
+
+    public bool LockOn(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
     { 
         int hitCount = Physics.OverlapSphereNonAlloc(transform.position + _offset, _scanRadius, _scanResults, _lockOnLayer);
 
@@ -47,9 +53,23 @@ public class LockOnSystem : MonoBehaviour
         Collider closest = _scanResults[0];
         float closestDistance = Vector3.Distance(transform.position + _offset, closest.transform.position);
 
+        Vector3 point = transform.position;
+
+        switch (deviceType)
+        {
+            case InputDeviceType.KeyboardMouse:
+                float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
+                point = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distanceToCamera));
+                break;
+            case InputDeviceType.Gamepad:
+                point = transform.position + _offset;
+                break;
+        }
+
         for (int i = 1; i < hitCount; i++)
         {
-            float dist = Vector3.Distance(transform.position + _offset, _scanResults[i].transform.position);
+            float dist = Vector3.Distance(point, _scanResults[i].transform.position);
+
             if (dist < closestDistance)
             {
                 closest = _scanResults[i];

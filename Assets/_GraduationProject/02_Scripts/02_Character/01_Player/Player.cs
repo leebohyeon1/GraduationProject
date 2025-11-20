@@ -250,7 +250,11 @@ public class Player : DIMonoBehaviour
         {
             if(!_stats.IsLockOn)
             {
-                _stats.IsLockOn = _lockOnSystem.LockOn();
+                var deviceType = InputDeviceDetector.CurrentInputDevice;
+                var moveInput = Input.MoveInput;
+                var mousePosition = Input.MousePosition;
+
+                _stats.IsLockOn = _lockOnSystem.LockOn(deviceType, moveInput, mousePosition);
             }
             else
             {
