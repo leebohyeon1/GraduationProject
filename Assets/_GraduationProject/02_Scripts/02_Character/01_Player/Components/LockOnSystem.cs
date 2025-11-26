@@ -99,8 +99,8 @@ public class LockOnSystem : MonoBehaviour
         // 3. 최종 타겟 결정 (우선순위 타겟 존재 시 그걸 사용, 아니면 일반 가장 가까운 타겟)
         Collider finalTarget = (priorityTarget != null) ? priorityTarget : closestTarget;
 
-        // 유효성 검사 (IDamageable 등)
-        if (finalTarget == null || !finalTarget.TryGetComponent<IDamageable>(out var component))
+        // 유효성 검사
+        if (finalTarget == null || !finalTarget.TryGetComponent<ILockOnAble>(out var component))
         {
             return false;
         }
@@ -111,8 +111,8 @@ public class LockOnSystem : MonoBehaviour
             LockOff();
         }
 
-        component.OnDied -= LockOff; // 중복 구독 방지 (선택사항, 안전장치)
-        component.OnDied += LockOff;
+        component.OnLockReleased -= LockOff; // 중복 구독 방지 (선택사항, 안전장치)
+        component.OnLockReleased += LockOff;
 
         SetTarget(finalTarget.transform);
         LockOnIndicator.SetActive(true);
