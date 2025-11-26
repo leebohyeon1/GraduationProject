@@ -65,6 +65,7 @@ public class PlayerCombatData
 
     [Header("ChargeAttack")]
     public float ChargeMoveSpeed; 
+    public float ChargeRotateSpeed; 
     public float ChargeStamina;
     public PlayerChargeAttackData[] ChargeAttackDatas;
     public float MaxChargeTime = 5f;

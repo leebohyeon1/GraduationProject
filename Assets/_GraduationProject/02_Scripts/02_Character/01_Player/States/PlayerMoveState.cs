@@ -17,13 +17,22 @@ public class PlayerMoveState : BaseState<Player>
 
     public override void OnFixedUpdate()
     {
-        HandleMovement();
+        if(p_context.InputDeviceDetector.CurrentInputDevice == InputDeviceType.Gamepad)
+        {
+            p_context.Animator.SetFloat("MoveInput", p_context.Input.MoveInput.magnitude);
+            HandleMovement(p_context.Input.MoveInput.magnitude);
+        }
+        else
+        {
+            p_context.Animator.SetFloat("MoveInput", 1);
+            HandleMovement();
+        }
     }
 
     /// <summary>
     /// 이동 입력을 처리합니다.
     /// </summary>
-    private void HandleMovement()
+    private void HandleMovement(float speedMagnification = 1)
     {
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
@@ -35,13 +44,12 @@ public class PlayerMoveState : BaseState<Player>
                 Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
 
                 p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
-                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed);
+                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed * speedMagnification);
             }
             else
             {
-                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed, p_context.Stats.Data.RotateSpeed);
+                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed * speedMagnification, p_context.Stats.Data.RotateSpeed);
             }
-              
         }
     }
 
