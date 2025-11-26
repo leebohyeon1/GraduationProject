@@ -33,6 +33,10 @@ public class PlayerDodgeState : BaseState<Player>
             //p_context.Movement.RotateToDirection(_dodgeDirection);
         }
 
+        if(p_context.Stats.IsLockOn)
+        {
+            p_context.Movement.RotateToDirection(_dodgeDirection);
+        }
 
         p_context.Health.SetInvisible(true); // 회피 중 무적
 
@@ -90,15 +94,6 @@ public class PlayerDodgeState : BaseState<Player>
     public void HandleDodgeFinish()
     {
         p_stateMachine.ChangeState<PlayerIdleState>();
-        //if (_nextState != null)
-        //{
-        //    p_stateMachine.ChangeState(_nextState);
-        //    Log.Print(_nextState.ToString());
-        //}
-        //else
-        //{
-            
-        //}
     }
 
     /// <summary>

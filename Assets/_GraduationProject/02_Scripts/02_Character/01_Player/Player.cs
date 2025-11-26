@@ -32,6 +32,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private LockOnSystem _lockOnSystem; // 락온 시스템  
 
     private StateMachine<Player> _stateMachine; // 상태 머신
+
     #endregion
 
     #region Properties
@@ -250,12 +251,50 @@ public class Player : DIMonoBehaviour
         {
             if(!_stats.IsLockOn)
             {
-                _stats.IsLockOn = _lockOnSystem.LockOn();
+                var deviceType = InputDeviceDetector.CurrentInputDevice;
+                var moveInput = Input.LockOnTargetChangeVector2Input;
+                var mousePosition = Input.MousePosition;
+
+                _stats.IsLockOn = _lockOnSystem.LockOn(deviceType, moveInput, mousePosition);
             }
             else
             {
                 _stats.IsLockOn = false;
                 _lockOnSystem.LockOff();
+            }
+        }
+        else if(Input.LockOnTargetChangeInput && !_stats.IsLockOn)
+        {
+            var deviceType = InputDeviceDetector.CurrentInputDevice;
+            var moveInput = Input.LockOnTargetChangeVector2Input;
+            var mousePosition = Input.MousePosition;
+
+            _stats.IsLockOn = _lockOnSystem.LockOn(deviceType, moveInput, mousePosition);
+        }
+        else if(_stats.IsLockOn)
+        {
+            // 입력 강도가 일정 이상인지 확인 (0.5f ~ 0.8f 추천)
+            bool hasInput = Input.LockOnTargetChangeInput || Input.LockOnTargetChangeVector2Input.sqrMagnitude > 0.5f;
+
+            // 쿨타임이 지났는지 확인
+            bool isCooldownReady = Time.time >= Stats.LastTargetChangeTime + PlayerStats.TARGET_CHANGE_COOLDOWN;
+
+            if (hasInput && isCooldownReady)
+            {
+                var deviceType = InputDeviceDetector.CurrentInputDevice;
+                var moveInput = Input.LockOnTargetChangeVector2Input;
+                var mousePosition = Input.MousePosition;
+
+                // 타겟 변경 시도
+                _lockOnSystem.ChangeLockOnTarget(deviceType, moveInput, mousePosition);
+
+                // 변경 시도했으므로 시간 갱신
+                Stats.LastTargetChangeTime = Time.time;
+            }
+            else if (!hasInput)
+            {
+                // 스틱을 중립으로 놓으면 쿨타임을 조금 더 빨리 초기화
+                Stats.LastTargetChangeTime = 0f; 
             }
         }
     }

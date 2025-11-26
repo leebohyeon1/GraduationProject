@@ -29,6 +29,8 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _potionInput; // 포션 사용 입력
     private bool _parryInput; // 패리 입력
     private bool _toggleLockOnInput; // 락온 토글 입력
+    private bool _lockOnTargetChangeInput; // 락온 타겟 변경 입력
+    private Vector2 _lockOnTargetChangeVector2Input; // 락온 타겟 변경 벡터 입력
 
     private bool _canAttackHeldInput = true; // 차징 중복 막기 위함
 
@@ -47,6 +49,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool PotionInput => _potionInput;
     public bool ParryInput => _parryInput;  
     public bool ToggleLockOnInput => _toggleLockOnInput;
+    public bool LockOnTargetChangeInput => _lockOnTargetChangeInput;
+    public Vector2 LockOnTargetChangeVector2Input => _lockOnTargetChangeVector2Input;
     #endregion
 
     /// <summary>
@@ -95,6 +99,8 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DefendCancelledEvent += OnDefendCancelled;
         _inputReader.ParryEvent += OnParry;
         _inputReader.ToggleLockOnEvent += ToggleLockOnEvent;
+        _inputReader.LockOnTargetChangeEvent += LockOnTargetChangeEvent;
+        _inputReader.LockOnTargetChangeVector2Event += LockOnTargetChangeVector2Event;
 
         _inputReader.InteractEvent += OnInteract;
 
@@ -121,6 +127,8 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.DefendCancelledEvent -= OnDefendCancelled;
         _inputReader.ParryEvent -= OnParry;
         _inputReader.ToggleLockOnEvent -= ToggleLockOnEvent;
+        _inputReader.LockOnTargetChangeEvent -= LockOnTargetChangeEvent;
+        _inputReader.LockOnTargetChangeVector2Event -= LockOnTargetChangeVector2Event;
 
         _inputReader.InteractEvent -= OnInteract;
     }
@@ -168,6 +176,8 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnDefendCancelled() => _defendInput = false;
     private void OnParry() => _parryInput = true;
     private void ToggleLockOnEvent() => _toggleLockOnInput = true;
+    private void LockOnTargetChangeEvent() => _lockOnTargetChangeInput = true;
+    private void LockOnTargetChangeVector2Event(Vector2 vector2) => _lockOnTargetChangeVector2Input = vector2;
 
     private void OnInteract() => _InteractInput = true;
 
@@ -186,6 +196,7 @@ public class PlayerInputHandler : MonoBehaviour
         _potionInput = false;
         _parryInput = false;
         _toggleLockOnInput = false;
+        _lockOnTargetChangeInput = false;
     }
 
     public void SetAttackHeldInput(bool isAttackHold)

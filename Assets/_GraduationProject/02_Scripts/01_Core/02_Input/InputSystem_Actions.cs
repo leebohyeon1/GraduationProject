@@ -165,13 +165,31 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ToggleLockOn"",
+                    ""name"": ""LockOnForKeyboard"",
                     ""type"": ""Button"",
                     ""id"": ""a7232a5f-5855-4bef-8604-156cb55dcee0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleLockOnForGamepad"",
+                    ""type"": ""Button"",
+                    ""id"": ""d91e0bb1-8348-4777-bfaa-23558dd9f7b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LockOnTargetChangeForGamepad"",
+                    ""type"": ""Value"",
+                    ""id"": ""5454342e-3ca1-44b8-934b-b657ff5b43c0"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -377,21 +395,32 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""11cad33b-c877-4172-9cc7-59ed25e4050b"",
                     ""path"": ""<Keyboard>/t"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold,Press"",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""ToggleLockOn"",
+                    ""action"": ""LockOnForKeyboard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4db9992a-93fd-4871-b24a-4f3c97c150a3"",
+                    ""id"": ""6ba8d747-b688-4245-aa0e-9aa2f1046d14"",
                     ""path"": ""<Gamepad>/rightStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""ToggleLockOn"",
+                    ""action"": ""ToggleLockOnForGamepad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""89068336-ab5c-44a1-a17b-2f5057d372d1"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""LockOnTargetChangeForGamepad"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -885,7 +914,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
         m_Player_Parry = m_Player.FindAction("Parry", throwIfNotFound: true);
-        m_Player_ToggleLockOn = m_Player.FindAction("ToggleLockOn", throwIfNotFound: true);
+        m_Player_LockOnForKeyboard = m_Player.FindAction("LockOnForKeyboard", throwIfNotFound: true);
+        m_Player_ToggleLockOnForGamepad = m_Player.FindAction("ToggleLockOnForGamepad", throwIfNotFound: true);
+        m_Player_LockOnTargetChangeForGamepad = m_Player.FindAction("LockOnTargetChangeForGamepad", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -990,7 +1021,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Dodge;
     private readonly InputAction m_Player_Parry;
-    private readonly InputAction m_Player_ToggleLockOn;
+    private readonly InputAction m_Player_LockOnForKeyboard;
+    private readonly InputAction m_Player_ToggleLockOnForGamepad;
+    private readonly InputAction m_Player_LockOnTargetChangeForGamepad;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1035,9 +1068,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Parry => m_Wrapper.m_Player_Parry;
         /// <summary>
-        /// Provides access to the underlying input action "Player/ToggleLockOn".
+        /// Provides access to the underlying input action "Player/LockOnForKeyboard".
         /// </summary>
-        public InputAction @ToggleLockOn => m_Wrapper.m_Player_ToggleLockOn;
+        public InputAction @LockOnForKeyboard => m_Wrapper.m_Player_LockOnForKeyboard;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleLockOnForGamepad".
+        /// </summary>
+        public InputAction @ToggleLockOnForGamepad => m_Wrapper.m_Player_ToggleLockOnForGamepad;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/LockOnTargetChangeForGamepad".
+        /// </summary>
+        public InputAction @LockOnTargetChangeForGamepad => m_Wrapper.m_Player_LockOnTargetChangeForGamepad;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1088,9 +1129,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Parry.started += instance.OnParry;
             @Parry.performed += instance.OnParry;
             @Parry.canceled += instance.OnParry;
-            @ToggleLockOn.started += instance.OnToggleLockOn;
-            @ToggleLockOn.performed += instance.OnToggleLockOn;
-            @ToggleLockOn.canceled += instance.OnToggleLockOn;
+            @LockOnForKeyboard.started += instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.performed += instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.canceled += instance.OnLockOnForKeyboard;
+            @ToggleLockOnForGamepad.started += instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.performed += instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.canceled += instance.OnToggleLockOnForGamepad;
+            @LockOnTargetChangeForGamepad.started += instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.performed += instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.canceled += instance.OnLockOnTargetChangeForGamepad;
         }
 
         /// <summary>
@@ -1126,9 +1173,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Parry.started -= instance.OnParry;
             @Parry.performed -= instance.OnParry;
             @Parry.canceled -= instance.OnParry;
-            @ToggleLockOn.started -= instance.OnToggleLockOn;
-            @ToggleLockOn.performed -= instance.OnToggleLockOn;
-            @ToggleLockOn.canceled -= instance.OnToggleLockOn;
+            @LockOnForKeyboard.started -= instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.performed -= instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.canceled -= instance.OnLockOnForKeyboard;
+            @ToggleLockOnForGamepad.started -= instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.performed -= instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.canceled -= instance.OnToggleLockOnForGamepad;
+            @LockOnTargetChangeForGamepad.started -= instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.performed -= instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.canceled -= instance.OnLockOnTargetChangeForGamepad;
         }
 
         /// <summary>
@@ -1571,12 +1624,26 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnParry(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "ToggleLockOn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "LockOnForKeyboard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnToggleLockOn(InputAction.CallbackContext context);
+        void OnLockOnForKeyboard(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleLockOnForGamepad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleLockOnForGamepad(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "LockOnTargetChangeForGamepad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
