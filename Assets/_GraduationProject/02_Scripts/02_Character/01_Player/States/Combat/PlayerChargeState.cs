@@ -58,7 +58,7 @@ public class PlayerChargeState : BaseState<Player>
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition);
+            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_context.Stats.Data.CombatData.ChargeRotateSpeed);
         }
 
         // 이동 처리
@@ -66,6 +66,15 @@ public class PlayerChargeState : BaseState<Player>
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
             p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.ChargeMoveSpeed);
+            
+            Vector3 localMove = p_context.transform.InverseTransformDirection(moveDirection);
+            p_context.Animator.SetFloat("X", localMove.x);
+            p_context.Animator.SetFloat("Y", localMove.z);
+        }
+        else
+        {
+            p_context.Animator.SetFloat("X", 0);
+            p_context.Animator.SetFloat("Y", 0);
         }
 
 
