@@ -79,13 +79,31 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ToggleLockOn",
+                    "name": "LockOnForKeyboard",
                     "type": "Button",
                     "id": "a7232a5f-5855-4bef-8604-156cb55dcee0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleLockOnForGamepad",
+                    "type": "Button",
+                    "id": "d91e0bb1-8348-4777-bfaa-23558dd9f7b0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LockOnTargetChangeForGamepad",
+                    "type": "Value",
+                    "id": "5454342e-3ca1-44b8-934b-b657ff5b43c0",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -291,21 +309,32 @@
                     "name": "",
                     "id": "11cad33b-c877-4172-9cc7-59ed25e4050b",
                     "path": "<Keyboard>/t",
-                    "interactions": "",
+                    "interactions": "Hold,Press",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "ToggleLockOn",
+                    "action": "LockOnForKeyboard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "4db9992a-93fd-4871-b24a-4f3c97c150a3",
+                    "id": "6ba8d747-b688-4245-aa0e-9aa2f1046d14",
                     "path": "<Gamepad>/rightStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "ToggleLockOn",
+                    "action": "ToggleLockOnForGamepad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89068336-ab5c-44a1-a17b-2f5057d372d1",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "LockOnTargetChangeForGamepad",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

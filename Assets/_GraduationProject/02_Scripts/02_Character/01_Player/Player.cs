@@ -262,6 +262,14 @@ public class Player : DIMonoBehaviour
                 _lockOnSystem.LockOff();
             }
         }
+        else if(Input.LockOnTargetChangeInput && !_stats.IsLockOn)
+        {
+            var deviceType = InputDeviceDetector.CurrentInputDevice;
+            var moveInput = Input.MoveInput;
+            var mousePosition = Input.MousePosition;
+
+            _stats.IsLockOn = _lockOnSystem.LockOn(deviceType, moveInput, mousePosition);
+        }
     }
     
     /// <summary>

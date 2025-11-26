@@ -25,6 +25,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action DefendCancelledEvent = delegate { };
     public event Action ParryEvent = delegate { };
     public event Action ToggleLockOnEvent = delegate { };
+    public event Action LockOnTargetChangeEvent = delegate { };
+    public event Action<Vector2> LockOnTargetChangeVector2Event = delegate { };
 
     public event Action InteractEvent = delegate { };
 
@@ -171,13 +173,38 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         }
     }
 
-    public void OnToggleLockOn(InputAction.CallbackContext context)
+    public void OnLockOnForKeyboard(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                if (context.interaction is HoldInteraction)
+                {
+                    ToggleLockOnEvent.Invoke();
+                }
+                else
+                {
+                    LockOnTargetChangeEvent.Invoke();
+                }
+                break;
+        }
+    }
+
+    public void OnToggleLockOnForGamepad(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
             ToggleLockOnEvent.Invoke();
         }
     }
+
+    public void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context)
+    {
+        Vector2 lockOnInput = context.ReadValue<Vector2>();
+        LockOnTargetChangeVector2Event.Invoke(lockOnInput);
+    }
+
+
 
     // UI Action Implementations
     public void OnCancel(InputAction.CallbackContext context)
@@ -271,5 +298,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         _inputActions?.Dispose();
         _inputActions = null;
     }
+
 
 }
