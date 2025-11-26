@@ -24,6 +24,9 @@ public class PlayerStats: IDisposable
 
     public bool CanRegenStamina;
 
+    public float LastTargetChangeTime;
+    public const float TARGET_CHANGE_COOLDOWN = 0.25f; // 0.25초 딜레이
+
     // Stat
     public int CurrentHealth; // 현재 체력
     public float CurrentStamina; // 현재 열기
