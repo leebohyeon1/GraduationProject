@@ -45,6 +45,11 @@ public class LockOnSystem : MonoBehaviour
         _mainCamera = Camera.main;
     }
 
+    private void OnDisable()
+    {
+        LockOff();
+    }
+
     /// <summary>
     /// 락온
     /// </summary>
@@ -319,14 +324,4 @@ public class LockOnSystem : MonoBehaviour
         Gizmos.DrawLine(transform.position + _offset, transform.position + _offset + leftBoundary * _scanRadius);
     }
 
-    private void OnDisable()
-    {
-        if (_currentTarget != null && _currentTarget != this.transform)
-        {
-            if (_currentTarget.TryGetComponent<IDamageable>(out var component))
-            {
-                component.OnDied -= LockOff;
-            }
-        }
-    }
 }
