@@ -77,8 +77,8 @@ public class Player : DIMonoBehaviour
     {
         SubscribeToEvents();
 
-        _onCameraInitializeSO.Publish(transform);
-        _onCameraInitializeSO.Publish(_lockOnSystem.LockOnIndicator.transform);
+        _onCameraInitializeSO.Publish(new CameraTarget(0, transform, 5, 0.6f));
+        _onCameraInitializeSO.Publish(new CameraTarget(0, _lockOnSystem.LockOnIndicator.transform, 3, 0.4f));
     }
     
     private void Update()

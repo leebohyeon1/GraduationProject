@@ -1,9 +1,26 @@
 using BH_Lib.Log;
+using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour, IEventListener<Transform>, IEventListener<bool>
+public class CameraTarget
+{
+    public int Priority = 0;
+    public Transform Transform { get; private set; }
+    public float Radius { get; private set; }
+    public float Weight { get; private set; }
+
+    public CameraTarget(int priority, Transform transform, float radius = 2, float weight = 0.5f)
+    {
+        Priority = priority;
+        Transform = transform;
+        Radius = radius;
+        Weight = weight;
+    }
+}
+
+public class CameraManager : MonoBehaviour, IEventListener<CameraTarget>, IEventListener<bool>
 {
     [SerializeField] private CinemachineBrain _cinemachineBrain; // 시네머신 브레인    
     [SerializeField] private CinemachineCamera _playerFollowCamera; // 플레이어 추적 카메라
@@ -13,7 +30,7 @@ public class CameraManager : MonoBehaviour, IEventListener<Transform>, IEventLis
     [SerializeField] private OnLockOnSO _onLockOnSO; // 락온 이벤트
 
 
-    private List<Transform> _targetList = new List<Transform>();
+    private List<CameraTarget> _targetList = new List<CameraTarget>();
 
     private void OnEnable()
     {
@@ -28,16 +45,23 @@ public class CameraManager : MonoBehaviour, IEventListener<Transform>, IEventLis
     }
 
 
-    public void OnEventTrigger(Transform value)
+    public void OnEventTrigger(CameraTarget value)
     {
         _targetList.Add(value);
 
-        if (_playerFollowCamera.Target.TrackingTarget == null)
+        _targetList.Sort(new PriorityComparer());
+
+        _lockOnTargetGroup.Targets.Clear();
+        foreach (var target in _targetList)
         {
-            _playerFollowCamera.Target.TrackingTarget = value;
+            _lockOnTargetGroup.AddMember(target.Transform, target.Weight, target.Radius);
+
+            if (target.Transform.CompareTag("Player"))
+            {
+                _playerFollowCamera.Target.TrackingTarget = target.Transform;
+            }
         }
 
-        _lockOnTargetGroup.AddMember(value, 1f, 2f);
     }
 
     public void OnEventTrigger(bool value)
@@ -52,5 +76,18 @@ public class CameraManager : MonoBehaviour, IEventListener<Transform>, IEventLis
         {
             _cinemachineBrain.ChannelMask = OutputChannels.Default;
         }
+    }
+}
+
+public class PriorityComparer : IComparer<CameraTarget>
+{
+    public int Compare(CameraTarget x, CameraTarget y)
+    {
+        if (x == null || y == null)
+        {
+            return 0;
+        }
+
+        return x.Priority.CompareTo(y.Priority); // 내림차순
     }
 }
