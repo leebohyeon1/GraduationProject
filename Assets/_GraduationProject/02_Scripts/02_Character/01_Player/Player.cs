@@ -188,7 +188,6 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerDefendState(this, _stateMachine));
 
         SetupStateTransitions();
     
@@ -213,8 +212,6 @@ public class Player : DIMonoBehaviour
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerDefendState>(() 
-            => Input.DefendInput);
     
         // Move 상태에서의 전환
         _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
@@ -225,8 +222,6 @@ public class Player : DIMonoBehaviour
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerDefendState>(() 
-            => Input.DefendInput);
     }
     
     /// <summary>

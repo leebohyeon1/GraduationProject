@@ -95,7 +95,6 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AttackCancelledEvent += OnAttackCancelled;
 
         _inputReader.DodgeEvent += OnDodge;
-        _inputReader.DefendEvent += OnDefend;
         _inputReader.DefendCancelledEvent += OnDefendCancelled;
         _inputReader.ParryEvent += OnParry;
         _inputReader.ToggleLockOnEvent += ToggleLockOnEvent;
@@ -123,7 +122,6 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AttackCancelledEvent -= OnAttackCancelled;
 
         _inputReader.DodgeEvent -= OnDodge;
-        _inputReader.DefendEvent -= OnDefend;
         _inputReader.DefendCancelledEvent -= OnDefendCancelled;
         _inputReader.ParryEvent -= OnParry;
         _inputReader.ToggleLockOnEvent -= ToggleLockOnEvent;

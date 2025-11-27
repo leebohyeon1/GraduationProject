@@ -21,7 +21,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action AttackCancelledEvent = delegate { };
 
     public event Action DodgeEvent = delegate { };
-    public event Action DefendEvent = delegate { };
     public event Action DefendCancelledEvent = delegate { };
     public event Action ParryEvent = delegate { };
     public event Action ToggleLockOnEvent = delegate { };
@@ -149,19 +148,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         if (context.phase == InputActionPhase.Performed)
         {
             DodgeEvent.Invoke();
-        }
-    }
-
-    public void OnDefend(InputAction.CallbackContext context)
-    {
-        switch (context.phase)
-        {
-            case InputActionPhase.Performed:
-                DefendEvent.Invoke();
-                break;
-            case InputActionPhase.Canceled:
-                DefendCancelledEvent.Invoke();
-                break;
         }
     }
 
