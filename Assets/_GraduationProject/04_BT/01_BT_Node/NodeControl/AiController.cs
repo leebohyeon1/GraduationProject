@@ -10,6 +10,9 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private float MaxTargetRange = 10f;
     [SerializeField] private OnSwingMiss _onSwingMissEvent;
     [SerializeField] private OnHealing _onHealingEvent;
+
+    [SerializeField] EnemyAttackData[] enemyAttackDatas;
+
     public void Initialize(Enemy owner)
     {
         _enemy = owner;
@@ -17,6 +20,10 @@ public class AiController : MonoBehaviour,IEventListener<string>
         _behaviorTree = _behaviorTree.Clone();
         _behaviorTree.SetRunner(owner, _aiBrain);
         _behaviorTree.rootNode?.initNode();
+        for(int i = 0; i < enemyAttackDatas.Length; i++)
+        {
+            _aiBrain.AddEnemyAttackData(enemyAttackDatas[i]);
+        }
         // _onSwingMissEvent.Subscribe(this);
         // _onHealingEvent.Subscribe(this);
     }

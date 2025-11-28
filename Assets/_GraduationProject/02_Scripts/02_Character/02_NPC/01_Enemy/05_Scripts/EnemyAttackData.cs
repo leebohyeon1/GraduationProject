@@ -6,5 +6,6 @@ public class EnemyAttackData : ScriptableObject {
     public float damageRadius;
     public Vector3 attackOffset;
     public DamageData damageData;
-
+    public float Cooltime = 3f;
+    
 }

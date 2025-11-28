@@ -2,33 +2,56 @@ using UnityEngine;
 using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
-public class GenericAttackNode : Node
+public class NormalAttackNode : Node
 {
     [Header("Attack Properties")]
-    public EnemyAttackData AtkData;
+    public string attackKey;
     public bool maintainAtk;
     private bool _didHitPlayer;
+    private EnemyAttackData _data;
     bool tracking = false;
-    bool parryEffectPlayed = false;
+    bool _parryEffectPlayed = false;
+
+    bool _isCooldownDenied;
     public override void OnEnter()
     {
+        if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
+        {
+            Debug.LogError("No Attack Data Found for key: " + attackKey);
+            return;
+        }
+        _isCooldownDenied = false;
+        if(!brain.IsSkillReady(attackKey, _data.Cooltime))
+        {
+            Debug.Log("Skill on Cooldown: " + attackKey);
+            _isCooldownDenied = true;
+            return;
+        }
+
         Handler.ResetAllFlags();
+
+
         _didHitPlayer = false;
-        parryEffectPlayed = false;
+        _parryEffectPlayed = false;
         runner.Movement.StopMovement();
         runner.aIPath.enableRotation = false;
-        AtkData.damageData.AttackerTransform = runner.transform;
-        runner.AnimationEvent(AtkData.AttackName);
-        runner.SetCurrentAttackData(AtkData.damageRadius, AtkData.attackOffset);
+        _data.damageData.AttackerTransform = runner.transform;
+        
+        runner.AnimationEvent(_data.AttackName);
+        runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
         initNode();
-        runner.SetStiffness(AtkData.damageData.StiffnessAmount);
+        runner.SetStiffness(_data.damageData.StiffnessAmount);
     }
 
     protected override NodeState OnUpdate()
     {
-        Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(AtkData.attackOffset);
+        if(_data == null || _isCooldownDenied)
+        {
+            return NodeState.FAILURE;
+        }
+        Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
 
         if (brain.blackboard.GetValue<Vector3>("LastPlayerPos", out Vector3 lastPlayerPos))
         {
@@ -51,7 +74,8 @@ public class GenericAttackNode : Node
 
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, AtkData.damageRadius );
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, _data.damageRadius );
+            brain.blackboard.SetValue("IsAttacking", true);
             foreach (var col in hitColliders)
             {
                 if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
@@ -59,7 +83,7 @@ public class GenericAttackNode : Node
 
                 if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
-                    Character.TakeDamage(AtkData.damageData);
+                    Character.TakeDamage(_data.damageData);
 
                     _didHitPlayer = true;
                     if (!maintainAtk)
@@ -70,10 +94,10 @@ public class GenericAttackNode : Node
             }
         }
 
-        if (Handler.IsHitWindowOpen && !parryEffectPlayed)
+        if (Handler.IsHitWindowOpen && !_parryEffectPlayed)
         {
             Handler.CloseHitWindow();
-            parryEffectPlayed = true;
+            _parryEffectPlayed = true;
         }
 
         if (Handler.IsActionFinished)
@@ -88,8 +112,12 @@ public class GenericAttackNode : Node
     {
         tracking = false;
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
+            brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetStiffness(0);
+        if(!_isCooldownDenied)
+        brain.StartSkillCooldown(attackKey);
         // runner.Movement.StopMovement();
     }
     public override void Abort()
@@ -99,15 +127,18 @@ public class GenericAttackNode : Node
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
 
-        if (!parryEffectPlayed)
+        if (!_parryEffectPlayed)
         {
-            parryEffectPlayed = true;
+            _parryEffectPlayed = true;
         }
+        runner.SetStiffness(0);
     }
 
     public override Node Clone()
     {
         var node = Instantiate(this);
+        node.attackKey = this.attackKey;
+        node.maintainAtk = this.maintainAtk;
         return node;
     }
 }

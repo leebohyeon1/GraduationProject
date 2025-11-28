@@ -97,7 +97,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
         CombineAddForce(combinedForce, direction);
         yield return new WaitForSeconds(1f);
-        centralRigidbody.linearVelocity = Vector3.zero;
         SetRagdollState(true);
         SetZeroJoint(false);
         
@@ -165,7 +164,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
     public float KnockbackForce = 30f;
     public float upwardForce = 5f;
-    public Rigidbody centralRigidbody;
     private void SetZeroJoint(bool isActive)
     {
         foreach (CharacterJoint cj in ragdollCharacterJoints)
