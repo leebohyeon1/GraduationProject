@@ -15,11 +15,13 @@ public class GroupAi : MonoBehaviour
             Debug.LogWarning($"이미 그룹에 존재하는 몬스터 {enemy.gameObject.GetInstanceID()}입니다.");
         }
     }
+
     public void GroupRemove(Enemy enemy)
     {
         enemies.Remove(enemy);
         enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
     }
+
     public bool OnlyCowardly()
     {
         if (enemies.Count == 1)
@@ -34,6 +36,7 @@ public class GroupAi : MonoBehaviour
         }
         return false;
     }
+
     public void CombatAll()
     {
         foreach (var enemy in enemies)
@@ -42,6 +45,7 @@ public class GroupAi : MonoBehaviour
             enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
         }
     }
+
     public void CombatReset()
     {
         foreach (var enemy in enemies)
@@ -50,4 +54,5 @@ public class GroupAi : MonoBehaviour
             enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
         }
     }
+    
 }

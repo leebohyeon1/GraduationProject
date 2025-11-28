@@ -69,8 +69,6 @@ public class EnemyMovement
             _runner.SetState(EnemyState.Chase);
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
-        CalculationResult stat = _runner.heatSystem.CalculationHeat("Test", ActorType.Monster, _runner.heatSystem.GetTier(), 0);
-        aIPath.maxSpeed = speed * stat.FinalSpeed; // _normalSpeed 변수가 Enemy.cs에 선언되어 있어야 합니다.
         aIPath.destination = newTarget;
         aIPath.isStopped = false;
     }

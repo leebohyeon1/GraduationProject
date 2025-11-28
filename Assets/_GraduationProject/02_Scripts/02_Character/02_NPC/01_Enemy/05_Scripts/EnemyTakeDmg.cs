@@ -17,7 +17,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     private Coroutine _KnockbackCoroutine;
     public bool IsInvincible => throw new NotImplementedException();
     Enemy _owner;
-    public void InitializeHealth( Enemy owner)
+    public void InitializeHealth(Enemy owner)
     {
         _owner = owner;
         _maxHealth = enemyStat.Maxhealth;
@@ -36,45 +36,45 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
     }
-    
+
     public bool Knockbackable { get; private set; } = true;
     public void SetKnockbackable(bool value)
     {
         Knockbackable = value;
     }
-   
+
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
-{
-    float elapsedTime = 0;
-    Vector3 horizontalDirection = direction;
-    horizontalDirection.y = 0;
-    horizontalDirection.Normalize();
-
-    if (horizontalDirection.sqrMagnitude < 0.01f)
     {
-        _KnockbackCoroutine = null;
-        yield break;
-    }
+        float elapsedTime = 0;
+        Vector3 horizontalDirection = direction;
+        horizontalDirection.y = 0;
+        horizontalDirection.Normalize();
 
-
-    while (elapsedTime < damageData.KnockbackDuration)
-    {
-        float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
-        
-        Vector3 move = horizontalDirection * damageData.KnockbackForce * curveValue * Time.deltaTime;
-
-        if (!_characterController.isGrounded)
+        if (horizontalDirection.sqrMagnitude < 0.01f)
         {
-            move.y += Physics.gravity.y * Time.deltaTime; 
+            _KnockbackCoroutine = null;
+            yield break;
         }
 
-        _characterController.Move(move);
-        
-        elapsedTime += Time.deltaTime;
-        yield return null;
+
+        while (elapsedTime < damageData.KnockbackDuration)
+        {
+            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
+
+            Vector3 move = horizontalDirection * damageData.KnockbackForce * curveValue * Time.deltaTime;
+
+            if (!_characterController.isGrounded)
+            {
+                move.y += Physics.gravity.y * Time.deltaTime;
+            }
+
+            _characterController.Move(move);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        _KnockbackCoroutine = null;
     }
-    _KnockbackCoroutine = null;
-}
 
     public void Die()
     {
@@ -89,18 +89,19 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     }
     private IEnumerator DieSequence(Vector3 direction)
     {
-    SetRagdollState(true);
-    
-    _characterController.enabled = false;
-    _owner.animator.enabled = false;
-    yield return new WaitForSeconds(0.1f);
-    Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
-    CombineAddForce(combinedForce, direction);
-    yield return new WaitForSeconds(1f);
-    centralRigidbody.linearVelocity = Vector3.zero;
-    SetRagdollState(true);
-    SetZeroJoint(false);
-}
+        SetRagdollState(true);
+
+        _characterController.enabled = false;
+        _owner.animator.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
+        CombineAddForce(combinedForce, direction);
+        yield return new WaitForSeconds(1f);
+        centralRigidbody.linearVelocity = Vector3.zero;
+        SetRagdollState(true);
+        SetZeroJoint(false);
+        
+    }
     public void TakeDamage(DamageData damageData)
     {
         if (Health <= 0) return;
@@ -114,10 +115,9 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback("Damage_FB");
         _maxHealth -= damageData.DamageAmount;
         _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", _maxHealth);
-        if (_owner.HealthBar)
-        {
-            _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
-        }
+
+        _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
+
         if (Knockbackable)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
@@ -166,7 +166,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public float KnockbackForce = 30f;
     public float upwardForce = 5f;
     public Rigidbody centralRigidbody;
-     private void SetZeroJoint(bool isActive)
+    private void SetZeroJoint(bool isActive)
     {
         foreach (CharacterJoint cj in ragdollCharacterJoints)
         {
