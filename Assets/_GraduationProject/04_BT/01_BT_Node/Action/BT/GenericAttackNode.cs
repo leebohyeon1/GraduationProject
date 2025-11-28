@@ -8,7 +8,6 @@ public class GenericAttackNode : Node
     public EnemyAttackData AtkData;
     public bool maintainAtk;
     private bool _didHitPlayer;
-    CalculationResult stat;
     bool tracking = false;
     bool parryEffectPlayed = false;
     public override void OnEnter()
@@ -23,7 +22,6 @@ public class GenericAttackNode : Node
         runner.SetCurrentAttackData(AtkData.damageRadius, AtkData.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        stat = runner.heatSystem.CalculationHeat("Test", runner.heatSystem.ActorType, runner.heatSystem.GetTier(), AtkData.damageData.DamageAmount);
         initNode();
         runner.SetStiffness(AtkData.damageData.StiffnessAmount);
     }
@@ -53,17 +51,11 @@ public class GenericAttackNode : Node
 
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, AtkData.damageRadius * stat.FinalRange);
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, AtkData.damageRadius );
             foreach (var col in hitColliders)
             {
                 if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
-                if (col.TryGetComponent<IHeatable>(out IHeatable heatable))
-                {
-                    stat = runner.heatSystem.CalculationHeat(AtkData.AttackName, heatable.ActorType, runner.heatSystem.GetTier(), AtkData.damageData.DamageAmount);
-                    SourceMap sourceMap = runner.heatSystem.SourceMapDataBase.GetSourceMap(AtkData.AttackName, heatable.ActorType, runner.heatSystem.GetTier());
-                    int deltaHeat = (int)sourceMap.HeatChangeType * sourceMap.DeltaHeat;
-                    heatable.ChangeHeat(deltaHeat);
-                }
+
 
                 if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {

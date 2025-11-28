@@ -6,7 +6,7 @@ using System;
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))
-,RequireComponent(typeof(Monster_HeatSystem),typeof(Mon_Stiffness)),RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility))]
+,RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility),typeof(Mon_Stiffness))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField]private EnemyStat enemyStat;
@@ -19,7 +19,6 @@ public class Enemy : MonoBehaviour
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
-    public Monster_HeatSystem heatSystem { get; private set; }
     public EnemyTakeDmg EnemyHealth { get; private set; }
     public EnemySpecialAbility specialAbility { get; private set; }
 
@@ -50,9 +49,6 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-    CharacterController controller;
-    private Vector3 _velocity; 
-    private float gravity = -12f;
     protected void Awake()
     {
         player = GameObject.FindFirstObjectByType<Player>();
@@ -62,8 +58,6 @@ public class Enemy : MonoBehaviour
 
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         animHandler.Initalize();
-        heatSystem = GetComponent<Monster_HeatSystem>();
-        heatSystem.Init(ActorType.Monster);
         ParrySystem = GetComponent<ParrySystem>();
         ParrySystem.Initialize(this);
         StiffnessSystem = GetComponent<Mon_Stiffness>();
@@ -74,8 +68,6 @@ public class Enemy : MonoBehaviour
         specialAbility.Initialize(this);
         Movement = new EnemyMovement(this);
         StartPos = transform.position;
-        controller = GetComponent<CharacterController>();
-        _velocity = controller.velocity;
         _aiController = GetComponent<AiController>();
         _aiController.Initialize(this);
     }
@@ -88,7 +80,6 @@ public class Enemy : MonoBehaviour
         StiffnessSystem.Initialize(this);
         specialAbility.Initialize(this);
         groupAi.GroupAdd(this);
-        heatSystem.Init(ActorType.Monster);
         Movement.StopMovement();
         BillboardUI?.Initialize();
         SetState(EnemyState.Idle);
@@ -142,8 +133,6 @@ public class Enemy : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(eventName);
-            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
-            animator.speed = stat.FinalAnimSpeed;
         }
     }
     public void AnimationBool(string boolName, bool value)
@@ -151,8 +140,6 @@ public class Enemy : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool(boolName, value);
-            CalculationResult stat = heatSystem.CalculationHeat("Test", ActorType.Monster, heatSystem.GetTier(), 0);
-            animator.speed = stat.FinalAnimSpeed;
         }
     }
     private GameObject LastRushHitObject;
@@ -179,8 +166,7 @@ public class Enemy : MonoBehaviour
 
         }
     }
-    [Tooltip("체력 or 열기")]
-    public bool HealthBar;
+
 
     #region gizmo
     [Header("Attack Range")]
