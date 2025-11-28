@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System;
 
 public class AiBrain
 {
@@ -134,6 +135,11 @@ public class AiBrain
             _owner.Movement.StopMovement();
             blackboard.SetValue("IsPlayerDetected", true);
         }
+    }
+
+    internal void AddEnemyAttackData(EnemyAttackData enemyAttackData)
+    {
+        blackboard.SetValue(enemyAttackData.AttackName, enemyAttackData);
     }
 
     public bool _isStunned { get; private set; } = false;

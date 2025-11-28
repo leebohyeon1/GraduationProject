@@ -17,12 +17,7 @@ MonoBehaviour:
   - {fileID: 2189541146771138488}
   - {fileID: 6206707767781925471}
   - {fileID: -8352506910516755610}
-  - {fileID: -6646918347980302632}
-  - {fileID: -3727419619842135259}
-  - {fileID: 861935333759378166}
-  - {fileID: -3679951281741201405}
-  - {fileID: -8323296916998508572}
-  - {fileID: -393768079901890297}
+  - {fileID: -2435310113494866975}
 --- !u!114 &-8352506910516755610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,43 +30,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 932, y: -201}
+  position: {x: 958, y: -107}
   floatCondition:
     key: DistanceBetween
     Operator: 1
     value: 3.5
   exceptCondition:
     key: IsAttacking
---- !u!114 &-8323296916998508572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 932, y: 184}
-  waitTime: 0.2
---- !u!114 &-6646918347980302632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
-  m_Name: Condition_Is Skill Ready(Clone)
-  m_EditorClassIdentifier: 
-  position: {x: 932, y: -124}
-  skillName: Attack
-  cooldownDuration: 2
-  HeatCooldown: 1
 --- !u!114 &-5799249064951715455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +50,6 @@ MonoBehaviour:
   m_Name: Condition_Is In Attack Range(Clone)
   m_EditorClassIdentifier: 
   position: {x: 772, y: -421}
-  heatRange: 0
   _attackRange: 3.5
 --- !u!114 &-4546236291903362861
 MonoBehaviour:
@@ -99,14 +63,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1198, y: -328}
+  position: {x: 1224, y: -234}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 6
   exceptCondition:
     key: 
---- !u!114 &-3727419619842135259
+--- !u!114 &-2435310113494866975
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,45 +79,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown(Clone)
-  m_EditorClassIdentifier: 
-  position: {x: 934, y: -47}
-  skillName: Attack
---- !u!114 &-3679951281741201405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 932, y: 107}
-  targetDistance: 0
-  acceptanceRadius: 5
-  runSpeed: 3
-  timeout: 1
---- !u!114 &-393768079901890297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
-  m_Name: Condition_Check Object Behind(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
-  position: {x: 934, y: 261}
-  checkDistance: 2
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Normal Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
+  position: {x: 960, y: -22}
+  attackKey: Attack
+  maintainAtk: 0
 --- !u!114 &-360825156357793975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,21 +112,6 @@ MonoBehaviour:
   m_Name: ATK_Blackboard
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -8799194612386173125}
---- !u!114 &861935333759378166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Generic Attack Node(Clone)
-  m_EditorClassIdentifier: 
-  position: {x: 934, y: 30}
-  AtkData: {fileID: 0}
-  maintainAtk: 0
 --- !u!114 &2189541146771138488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 934, y: -344}
+  position: {x: 960, y: -250}
   key: IsHasLOS
   exceptCondition:
     key: IsAttacking
@@ -224,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1198, y: -251}
+  position: {x: 1224, y: -157}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -256,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: State Manage
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 934, y: -267}
+  position: {x: 960, y: -173}
   nodes:
   - {fileID: -4546236291903362861}
   - {fileID: 4887926444522249788}

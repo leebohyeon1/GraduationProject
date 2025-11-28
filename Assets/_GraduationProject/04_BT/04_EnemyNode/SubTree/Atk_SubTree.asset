@@ -41,6 +41,8 @@ MonoBehaviour:
     key: DistanceBetween
     Operator: 1
     value: 3.5
+  exceptCondition:
+    key: 
 --- !u!114 &-8323296916998508572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +86,6 @@ MonoBehaviour:
   m_Name: Condition_Is In Attack Range(Clone)
   m_EditorClassIdentifier: 
   position: {x: 1011, y: -201}
-  heatRange: 0
   _attackRange: 3.5
 --- !u!114 &-3727419619842135259
 MonoBehaviour:
@@ -174,51 +175,8 @@ MonoBehaviour:
   m_Name: Generic Attack Node(Clone)
   m_EditorClassIdentifier: 
   position: {x: 1013, y: 30}
-  AttackName: Attack
-  damage: 10
-  damageRadius: 2
-  attackOffset: {x: 0, y: 0, z: 1.5}
+  attackKey: 
   maintainAtk: 0
-  damageData:
-    AttackerTransform: {fileID: 0}
-    AttackType: 0
-    DamageAmount: 10
-    StiffnessAmount: 50
-    KnockbackCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.04597932
-        value: 0.567655
-        inSlope: 1.3330412
-        outSlope: 1.3330412
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    KnockbackDuration: 0.2
-    KnockbackForce: 12
 --- !u!114 &2189541146771138488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1222, y: -355}
   key: IsHasLOS
+  exceptCondition:
+    key: 
 --- !u!114 &5192495525901186291
 MonoBehaviour:
   m_ObjectHideFlags: 0
