@@ -43,9 +43,6 @@ public class CutoutController : MonoBehaviour
     private const float VALUE_VISIBLE = 0.0f;
     private const float VALUE_INVISIBLE = 1.0f;
 
-    // 전역 적용 시 현재 진행도 (0.0 ~ 1.0)
-    private float _globalProgress = 0.0f;
-
     // 개별 적용 시 각 Renderer의 "진행도(Progress)"를 저장하는 딕셔너리
     private Dictionary<Renderer, float> _renderersProgress = new Dictionary<Renderer, float>();
 
@@ -68,31 +65,7 @@ public class CutoutController : MonoBehaviour
         // 목표 높이 계산 (플레이어 위치 + 오프셋)
         float currentCutHeight = targetObject.position.y + heightOffset;
 
-        if (applyGlobally)
-        {
-            HandleGlobalCurve(currentCutHeight);
-        }
-        else
-        {
-            HandleOcclusionCurve(currentCutHeight);
-        }
-    }
-
-    // 방식 1: 전역 변수 커브 적용
-    void HandleGlobalCurve(float height)
-    {
-        // 높이 위치 갱신
-        Shader.SetGlobalFloat(cutHeightID, height);
-
-        // 애니메이션 진행 (항상 사라지는 방향 가정)
-        _globalProgress += Time.deltaTime / transitionDuration;
-        _globalProgress = Mathf.Clamp01(_globalProgress);
-
-        float curveValue = transitionCurve.Evaluate(_globalProgress);
-
-        // Dither 값 보간
-        float ditherValue = Mathf.Lerp(VALUE_VISIBLE, VALUE_INVISIBLE, curveValue);
-        Shader.SetGlobalFloat(ditherPropertyID, ditherValue);
+        HandleOcclusionCurve(currentCutHeight);
     }
 
     // 방식 2: 개별 벽 커브 적용
