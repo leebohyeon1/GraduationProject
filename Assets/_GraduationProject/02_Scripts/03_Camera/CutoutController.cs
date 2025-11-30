@@ -15,6 +15,9 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
 
     private HashSet<CutOutObject> _previouslyHitObjects = new HashSet<CutOutObject>();
 
+    public const float VALUE_VISIBLE = 0.0f;
+    public const float VALUE_INVISIBLE = 1.0f;
+
     private void Awake()
     {
         _onRegisterCutOutTargetSO.Subscribe(this);
