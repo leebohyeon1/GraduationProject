@@ -14,7 +14,6 @@ public class MaintainDistance : Node
 
     [Tooltip("이동을 멈출 목표 지점과의 허용 오차 거리입니다.")]
     public float acceptanceRadius = 0.5f;
-    public float RunSpeed = 5;
 
     // 내부 변수
     private Transform playerTransform;
@@ -66,7 +65,7 @@ public class MaintainDistance : Node
         }
 
         // A* 에이전트의 목표 지점 설정
-        runner.Movement.StartOrUpdateChase(targetPosition,RunSpeed);
+        runner.Movement.StartOrUpdateChase(targetPosition);
     
 
         // 목표 지점에 충분히 가까워졌는지 확인

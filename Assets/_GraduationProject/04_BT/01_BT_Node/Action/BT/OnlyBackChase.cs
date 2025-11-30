@@ -81,7 +81,7 @@ AIPath aiPath;
             
             Debug.DrawLine(runner.transform.position, behindPosition, Color.green, LOGIC_UPDATE_INTERVAL);
 
-            runner.Movement.StartOrUpdateChase(behindPosition, runner.NormalSpeed * 1.5f); // runner의 공식 이동 함수를 사용합니다.
+            runner.Movement.StartOrUpdateChase(behindPosition); // runner의 공식 이동 함수를 사용합니다.
         }
 
         return NodeState.RUNNING;
