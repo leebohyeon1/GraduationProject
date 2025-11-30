@@ -6,13 +6,14 @@ using UnityEngine.TextCore.Text;
 public class EnemyTakeDmg : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStat enemyStat;
-    public int Health => _maxHealth;
+    public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
+    int _maxHealth = 100;
+    int curHealth = 100;
+    public int Maxhealth => _maxHealth;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
-    int _maxHealth = 100;
-    public int Maxhealth => _maxHealth;
     private CharacterController _characterController;
     private Coroutine _KnockbackCoroutine;
     public bool IsInvincible => throw new NotImplementedException();
@@ -20,7 +21,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public void InitializeHealth(Enemy owner)
     {
         _owner = owner;
-        _maxHealth = enemyStat.Maxhealth;
+        _maxHealth = curHealth = enemyStat.Maxhealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
@@ -112,8 +113,8 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.AnimationEvent("Hit");
         }
         _owner.animHandler.PlayFeedback("Damage_FB");
-        _maxHealth -= damageData.DamageAmount;
-        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", _maxHealth);
+        curHealth -= damageData.DamageAmount;
+        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
 
         _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
 

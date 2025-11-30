@@ -48,7 +48,7 @@ public class BackMoving : Node
         fixedTargetPosition = runner.transform.position + directionFromInitialPlayer.normalized * targetDistance;
 
 
-        runner.Movement.StartOrUpdateChase(fixedTargetPosition, runSpeed);
+        runner.Movement.StartOrUpdateChase(fixedTargetPosition);
         startTime = Time.time;
     }
 

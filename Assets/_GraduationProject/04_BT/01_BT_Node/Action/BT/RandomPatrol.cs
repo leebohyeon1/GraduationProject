@@ -17,6 +17,11 @@ public class RandomPatrol : Node
 
     protected override NodeState OnUpdate()
     {
+        if(brain.blackboard.GetValue<bool>("DetectPlayer", out bool DetectPlayer) && DetectPlayer)
+        {
+            return NodeState.FAILURE;
+        }
+        Debug.Log("RandomPatrol 실행");
         if (brain._isCombat)
         {
             return NodeState.FAILURE;
@@ -35,7 +40,7 @@ public class RandomPatrol : Node
                 {
                     targetPos = hitInfo.point;
                 }
-                runner.Movement.StartOrUpdateChase(targetPos, runner.NormalSpeed);
+                runner.Movement.StartOrUpdateChase(targetPos);
                 _hasTarget = true;
             }
             if (_hasTarget)

@@ -51,6 +51,38 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &-7890590693621205949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 561, y: 139}
+  floatCondition:
+    key: DistanceBetween
+    Operator: 0
+    value: 20
+  exceptCondition:
+    key: 
+--- !u!114 &-7838016999849042360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df5f65294a787424a86eac31edc3f1db, type: 3}
+  m_Name: Patrol Target Node
+  m_EditorClassIdentifier: Assembly-CSharp::PatrolTargetNode
+  position: {x: 561, y: 216}
 --- !u!114 &-7510950722700951356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,21 +116,6 @@ MonoBehaviour:
   nodes:
   - {fileID: 5214673368872433589}
   - {fileID: -3662235796367844752}
---- !u!114 &-7071762007778814168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: PatrolSequence
-  m_EditorClassIdentifier: 
-  position: {x: 182, y: 248}
-  nodes:
-  - {fileID: -2923115925387942299}
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +147,7 @@ MonoBehaviour:
   - {fileID: -7245226355301169087}
   - {fileID: -4738368884081098000}
   - {fileID: 1196946236353706419}
-  - {fileID: -7071762007778814168}
+  - {fileID: 6188351110586605188}
 --- !u!114 &-5895060802689115491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: 419, y: 248}
+  position: {x: 363, y: 374}
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,7 +413,7 @@ MonoBehaviour:
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: 
   position: {x: 1521, y: 144}
-  AtkData: {fileID: 0}
+  attackKey: 
   maintainAtk: 0
 --- !u!114 &2962903648140353133
 MonoBehaviour:
@@ -502,6 +519,22 @@ MonoBehaviour:
   - {fileID: 8581566141182817877}
   - {fileID: 1742704995383000931}
   - {fileID: 8440268503078126261}
+--- !u!114 &6188351110586605188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 182, y: 325}
+  nodes:
+  - {fileID: 8847630421362044326}
+  - {fileID: -2923115925387942299}
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,6 +632,7 @@ MonoBehaviour:
   m_Name: Chase Player Node
   m_EditorClassIdentifier: 
   position: {x: 1546, y: -1011}
+  ChaseState: 2
 --- !u!114 &8581566141182817877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +671,22 @@ MonoBehaviour:
   - {fileID: 7593736862946206760}
   - {fileID: -7974736735570412724}
   - {fileID: -1508998778064926519}
+--- !u!114 &8847630421362044326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 363, y: 210}
+  nodes:
+  - {fileID: -7890590693621205949}
+  - {fileID: -7838016999849042360}
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0

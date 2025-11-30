@@ -35,29 +35,8 @@ public class EnemyMovement
 
     }
 
-    public Node.NodeState Patrols()
-    {
-        if (aIPath == null || _runner.wayPoints == null || _runner.wayPoints.Length == 0)
-        {
-            return Node.NodeState.FAILURE;
-        }
 
-        if (aIPath.reachedDestination)
-        {
-            _runner.wayPointIndex = (_runner.wayPointIndex + 1) % _runner.wayPoints.Length;
-            StartOrUpdateChase(_runner.wayPoints[_runner.wayPointIndex], _normalSpeed);
-        }
-
-        return Node.NodeState.RUNNING;
-    }
-
-    public void StartPatrol()
-    {
-        if (_runner.wayPoints == null || _runner.wayPoints.Length == 0) return;
-
-        StartOrUpdateChase(_runner.wayPoints[_runner.wayPointIndex], _normalSpeed);
-    }
-    public void StartOrUpdateChase(Vector3 newTarget, float speed = 2)
+    public void StartOrUpdateChase(Vector3 newTarget, EnemyState ChaseState = EnemyState.Chase)
     {
         if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise)
         {
@@ -66,17 +45,19 @@ public class EnemyMovement
         }
         if (aIPath == null) return;
         if (_runner.CurrentState != EnemyState.Hit)
-            _runner.SetState(EnemyState.Chase);
+            _runner.SetState(ChaseState);
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
         aIPath.destination = newTarget;
+        Debug.Log(newTarget + "로 이동 중");
+        Debug.Log(_runner.CurrentState + "상태 ");
         aIPath.isStopped = false;
     }
 
     // Transform을 받는 오버로딩 버전도 유지
     public void StartOrUpdateChase(Transform target)
     {
-        StartOrUpdateChase(target.position, _normalSpeed);
+        StartOrUpdateChase(target.position, EnemyState.Chase);
     }
     public void StopMovement()
     {
