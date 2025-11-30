@@ -22,6 +22,7 @@ public enum PlayerFeedbackType
 
     ChargeStart_FB, ChargeCancel_FB,
     ChargeLevel1_FB, ChargeLevel2_FB, ChargeLevel3_FB,
+    ChargeAttackStartLevel1_FB, ChargeAttackStartLevel2_FB, ChargeAttackStartLevel3_FB,
     ChargeAttackFinish_FB,
 
     ParryStart_FB, ParrySuccess_FB
@@ -236,6 +237,18 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         TriggerRegenStamina(false);
         StopFeedback(PlayerFeedbackType.ChargeStart_FB);
+        switch (tier)
+        {
+            case 1:
+                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel1_FB);
+                break;
+            case 2:
+                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel2_FB);
+                break;
+            case 3:
+                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel3_FB);
+                break;
+        }
         OnAttackStart?.Invoke();
     }
 
