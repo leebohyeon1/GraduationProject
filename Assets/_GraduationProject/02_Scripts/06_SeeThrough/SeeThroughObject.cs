@@ -1,7 +1,10 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class CutOutObject : MonoBehaviour
+/// <summary>
+/// 투명화되는 대상
+/// </summary>
+public class SeeThroughObject : MonoBehaviour
 {
     [Header("Target Settings")]
     [SerializeField] private Transform _targetObject;
@@ -71,7 +74,7 @@ public class CutOutObject : MonoBehaviour
             }
         }
 
-        float targetDither = isOccluded ? CutOutController.VALUE_INVISIBLE : CutOutController.VALUE_VISIBLE;
+        float targetDither = isOccluded ? SeeThroughController.VALUE_INVISIBLE : SeeThroughController.VALUE_VISIBLE;
 
         // 2. 트윈 실행
         _fadeTween = DOTween.To(

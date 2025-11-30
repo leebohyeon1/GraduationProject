@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransform>
+/// <summary>
+/// 장애물 투명화 컨트롤러
+/// </summary>
+public class SeeThroughController : MonoBehaviour, IEventListener<SeeThroughTargetTransform>
 {
-    [SerializeField] private OnRegisterCutOutTargetSO _onRegisterCutOutTargetSO;
+    [SerializeField] private OnRegisterSeeThroughTargetSO _onRegisterCutOutTargetSO;
 
     [Header("Target Settings")]
     private HashSet<Transform> _targetObjects = new HashSet<Transform>();
@@ -13,7 +16,7 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
 
     private Camera _mainCamera;
 
-    private HashSet<CutOutObject> _previouslyHitObjects = new HashSet<CutOutObject>();
+    private HashSet<SeeThroughObject> _previouslyHitObjects = new HashSet<SeeThroughObject>();
 
     public const float VALUE_VISIBLE = 0.0f;
     public const float VALUE_INVISIBLE = 1.0f;
@@ -28,12 +31,12 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
         _onRegisterCutOutTargetSO.Unsubscribe(this);
     }
 
-    void Start()
+    private void Start()
     {
         _mainCamera = Camera.main;
     }
 
-    void Update()
+    private void Update()
     {
         if (_targetObjects.Count == 0)
         {
@@ -45,7 +48,7 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
 
     void HandleOcclusionCurve()
     {
-        HashSet<CutOutObject> newHits = new HashSet<CutOutObject>();
+        HashSet<SeeThroughObject> newHits = new HashSet<SeeThroughObject>();
 
         foreach (var target in _targetObjects)
         {
@@ -56,7 +59,7 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
 
             foreach (RaycastHit hit in hits)
             {
-                CutOutObject cutOutObject = hit.collider.GetComponent<CutOutObject>();
+                SeeThroughObject cutOutObject = hit.collider.GetComponent<SeeThroughObject>();
                 if (cutOutObject != null)
                 {
                     newHits.Add(cutOutObject);
@@ -67,7 +70,7 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
         }
 
         // 이전 프레임에서는 감지되었지만, 현재 프레임에서는 감지되지 않은 오브젝트 처리
-        foreach (CutOutObject prevHit in _previouslyHitObjects)
+        foreach (SeeThroughObject prevHit in _previouslyHitObjects)
         {
             if (!newHits.Contains(prevHit))
             {
@@ -78,7 +81,7 @@ public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransf
         _previouslyHitObjects = newHits;
     }
     
-    public void OnEventTrigger(CutOutTargetTransform value)
+    public void OnEventTrigger(SeeThroughTargetTransform value)
     {
         if(value.IsRegister && !_targetObjects.Contains(value.Target))
         {
