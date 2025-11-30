@@ -108,10 +108,6 @@ public class PlayerDodgeState : BaseState<Player>
 
         else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Input.MoveInput;
-            var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             _nextState = typeof(PlayerFirstAttackState);
         }
         else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
