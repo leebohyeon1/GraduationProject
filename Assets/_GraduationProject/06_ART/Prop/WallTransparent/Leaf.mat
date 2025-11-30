@@ -13,17 +13,15 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
-  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Transparent
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - MOTIONVECTORS
-  - DepthOnly
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -110,33 +108,39 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AOStrength: 0.3
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 1
     - _AlphaCutoff: 0.5
-    - _AlphaToMask: 0
-    - _BendSpeed: 0.87
+    - _AlphaToMask: 1
+    - _BaseGlancingAngleCut: 1
+    - _Base_Glancing_Angle_Cut: 2
+    - _BendSpeed: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 0
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 0
-    - _CutHeight: 7.2
+    - _Cull: 2
+    - _CutHeight: 10
     - _Cutoff: 0.5
     - _DashSpacing: 20
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Dither: -0.05
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _Dither: -0.49
+    - _DstBlend: 0
+    - _DstBlendAlpha: 0
     - _EdgeSoftness: 2.47
+    - _EnableFlipNormal: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _LeadWindSpeed: 2
-    - _LeafWindScale: 0.29
+    - _Gradient_Offset: 0.44
+    - _IsFlipNormal: 0
+    - _LeadWindSpeed: 5
+    - _LeafWindScale: 0.13
     - _LeafWindSwing: 1.29
     - _MasksTileOverall: 1
     - _Metallic: 0
@@ -150,14 +154,17 @@ Material:
     - _ReceiveShadows: 1
     - _RoughnessMax: 1
     - _RoughnessMin: 0
+    - _SSS_Distortion: 0
+    - _SSS_Intensity: 0.2
+    - _SSS_Scattering: 4
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _Specular: 0.01
     - _SpecularHighlights: 1
     - _Speed: 1
-    - _SrcBlend: 5
+    - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Surface: 1
+    - _Surface: 0
     - _TextureTileOverall: 1
     - _Thickness: 0.01
     - _TileOverall: 200
@@ -166,23 +173,26 @@ Material:
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZTest: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     - _ZWriteControl: 0
     - _frequency: 33.7
     m_Colors:
-    - _BaseColor: {r: 0.5754717, g: 0, b: 0, a: 1}
-    - _BendDirection: {r: 1.59, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 0.017065406, g: 1, b: 0, a: 1}
+    - _BendDirection: {r: 3, g: 2, b: 0, a: 0}
     - _BendDirection_1: {r: 2, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color01: {r: 1, g: 1, b: 1, a: 0}
     - _Color02: {r: 1, g: 1, b: 1, a: 0}
     - _ColorOverall: {r: 1, g: 1, b: 1, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 0.028301895, g: 0.027641471, b: 0.0062744766, a: 1}
     - _FillColor: {r: 1, g: 1, b: 1, a: 0.3}
-    - _Offset: {r: -7.89, g: 81.84, b: 0, a: 0}
+    - _GradientColor: {r: 0.022427911, g: 0.2264151, b: 0.03471771, a: 1}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _OutlineBrightColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineDarkColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Section_Color: {r: 0.509434, g: 0.0744927, b: 0.0744927, a: 1}
+    - _SSS_Color: {r: 0.58431375, g: 0.49180242, b: 0.23529409, a: 1}
+    - _SSS_Distortion: {r: -1, g: -1, b: 0, a: 0}
+    - _Section_Color: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
