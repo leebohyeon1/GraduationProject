@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9214304647795314548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b472033e96396bf4898b7c042decdd2e, type: 3}
+  m_Name: Attack Player Node
+  m_EditorClassIdentifier: 
+  position: {x: 1537, y: 831}
+  damageRadius: 1.5
+  damage: 10
+  animationName: Attack1
+  maintainAtk: 0
+  attackOffset: 1
+--- !u!114 &-7894779255440262859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 926, y: 55}
+  floatCondition:
+    key: DistanceBetween
+    Operator: 1
+    value: 15
+  exceptCondition:
+    key: 
+--- !u!114 &-7743868738148549756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: SEQ_Idle
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 739, y: 618}
+  nodes:
+  - {fileID: -3175312994217453168}
+--- !u!114 &-7164390071499202392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Root
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 523, y: 358}
+  nodes:
+  - {fileID: -5929989317075811450}
+  - {fileID: -7743868738148549756}
+--- !u!114 &-5929989317075811450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: SEQ_Leash
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 740, y: 157}
+  nodes:
+  - {fileID: -7894779255440262859}
+  - {fileID: -4692079415337373325}
+  - {fileID: -4087971798776540034}
+--- !u!114 &-4692079415337373325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 927, y: 131}
+  child: {fileID: 5635324838269349420}
+--- !u!114 &-4087971798776540034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: DEC_IsLeash
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 927, y: 207}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 0
+    TargetState: 0
+  exceptCondition:
+    key: 
+--- !u!114 &-3175312994217453168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: DEC_IsIdle
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 942, y: 541}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 0
+    TargetState: 0
+  exceptCondition:
+    key: 
+--- !u!114 &-2924537150783865904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 942, y: 712}
+  key: IsHasLOS
+  exceptCondition:
+    key: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
+  m_Name: Brave_Test
+  m_EditorClassIdentifier: 
+  rootNode: {fileID: -7164390071499202392}
+--- !u!114 &118657109135459500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
+  m_Name: Condition_Is In Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
+  position: {x: 941, y: 792}
+--- !u!114 &5635324838269349420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 1081, y: 132}
+  key: IsHasLOS
+  exceptCondition:
+    key: 
+--- !u!114 &8246282568877846733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657e5e6952b4a564ea040a09afada9ab, type: 3}
+  m_Name: Take Damage
+  m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
+  position: {x: 465, y: -296}
+  runner: {fileID: 0}
+  SetEnter: 1
+  animationName: Hit
+--- !u!114 &8925219040377206200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b472033e96396bf4898b7c042decdd2e, type: 3}
+  m_Name: Attack Player Node
+  m_EditorClassIdentifier: 
+  position: {x: 1538, y: 908}
+  damageRadius: 2
+  damage: 10
+  animationName: Attack2
+  maintainAtk: 1
+  attackOffset: 0
