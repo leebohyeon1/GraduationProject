@@ -117,10 +117,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         if (p_nextAttackState != null && p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Input.MoveInput;
-            var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
             p_nextState = p_nextAttackState;
             p_stateMachine.ChangeState(p_nextState);
         }
@@ -128,10 +124,10 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_nextState = typeof(PlayerDodgeState);
         }
-        else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
-        {
-            p_nextState = typeof(PlayerChargeState);
-        }
+        //else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
+        //{
+        //    p_nextState = typeof(PlayerChargeState);
+        //}
     }
 
 
