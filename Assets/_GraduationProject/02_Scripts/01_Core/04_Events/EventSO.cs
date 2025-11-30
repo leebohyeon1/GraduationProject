@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
@@ -17,11 +18,23 @@ public class EventSO<T> : ScriptableObject
         _listeners.Remove(listener);
     }
 
-    public void Publish(T value)
+   public void Publish(T value)
     {
         foreach (var listener in _listeners)
         {
             listener.OnEventTrigger(value);
+        }
+    }
+
+    public void Publish(T value, float delay)
+    {
+        if (delay > 0)
+        {
+            DOVirtual.DelayedCall(delay, () => Publish(value));
+        }
+        else
+        {
+            Publish(value);
         }
     }
 }

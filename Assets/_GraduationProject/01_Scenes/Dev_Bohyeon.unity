@@ -657,7 +657,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5182173932367517873, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1417802206}
   m_SourcePrefab: {fileID: 100100000, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
 --- !u!1 &228031589
 GameObject:
@@ -1448,6 +1451,7 @@ GameObject:
   - component: {fileID: 425466954}
   - component: {fileID: 425466953}
   - component: {fileID: 425466952}
+  - component: {fileID: 425466955}
   m_Layer: 9
   m_Name: Column
   m_TagString: Untagged
@@ -1464,8 +1468,8 @@ Transform:
   m_GameObject: {fileID: 425466950}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.88, y: 3.57, z: -19.07}
-  m_LocalScale: {x: 2.2463, y: 6.7389, z: 2.2463}
+  m_LocalPosition: {x: -12.88, y: 3.81, z: -19.07}
+  m_LocalScale: {x: 2.2463, y: 7.24, z: 2.2463}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 228031590}
@@ -1547,6 +1551,56 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 425466950}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &425466955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425466950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutObject
+  targetObject: {fileID: 0}
+  heightOffset: 2
+  transitionDuration: 0.5
+  transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 7.832759
+      outSlope: 7.832759
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.06626806
+    - serializedVersion: 3
+      time: 0.15678157
+      value: 0.646065
+      inSlope: 1.2942199
+      outSlope: 1.2942199
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  cutHeightProperty: _CutHeight
+  ditherProperty: _Dither
 --- !u!1 &435208711
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2426,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &771509430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5182173932367517873, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+  m_PrefabInstance: {fileID: 2121581357}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &771509445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771509430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97d81e2e9fb1def42a88b4a84f38b8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutTarget
+  _onRegisterCutOutTargetSO: {fileID: 11400000, guid: f3d8c44a031fd55428f233efdf36272e, type: 2}
 --- !u!1 &798999566
 GameObject:
   m_ObjectHideFlags: 0
@@ -3264,6 +3336,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1417802191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5182173932367517873, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+  m_PrefabInstance: {fileID: 210508517}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1417802206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417802191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97d81e2e9fb1def42a88b4a84f38b8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutTarget
+  _onRegisterCutOutTargetSO: {fileID: 11400000, guid: f3d8c44a031fd55428f233efdf36272e, type: 2}
 --- !u!1 &1504142171
 GameObject:
   m_ObjectHideFlags: 0
@@ -3911,7 +4001,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5182173932367517873, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 771509445}
   m_SourcePrefab: {fileID: 100100000, guid: 2bfea3c185375f346984e21fa40dc551, type: 3}
 --- !u!114 &1115414757913042382 stripped
 MonoBehaviour:
@@ -4077,14 +4170,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8963941927131817678, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2766763728612695185}
+      addedObject: {fileID: 2766763728612695188}
   m_SourcePrefab: {fileID: 100100000, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
 --- !u!1 &2766763728612695184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8963941927131817678, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
   m_PrefabInstance: {fileID: 2766763728612695183}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2766763728612695185
+--- !u!114 &2766763728612695188
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4095,49 +4188,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5cff12ef678d39942a2741271b8a99c7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CutoutController
-  targetObject: {fileID: 9177399233748136030}
-  heightOffset: 2
-  transitionDuration: 0.7
-  transitionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.6704984
-      outSlope: 7.6704984
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.06623607
-    - serializedVersion: 3
-      time: 0.17646444
-      value: 0.6470708
-      inSlope: 1.0377996
-      outSlope: 1.0377996
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.24196492
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  wallLayer:
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutController
+  _onRegisterCutOutTargetSO: {fileID: 11400000, guid: f3d8c44a031fd55428f233efdf36272e, type: 2}
+  _wallLayer:
     serializedVersion: 2
     m_Bits: 512
-  cutHeightProperty: _CutHeight
-  ditherProperty: _Dither
-  applyGlobally: 0
 --- !u!1001 &4645918890836492596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4203,6 +4258,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1281766063680516867, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
+      propertyPath: _onRegisterCutOutTargetSO
+      value: 
+      objectReference: {fileID: 11400000, guid: f3d8c44a031fd55428f233efdf36272e, type: 2}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.54

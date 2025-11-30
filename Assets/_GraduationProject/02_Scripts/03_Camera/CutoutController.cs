@@ -1,165 +1,100 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class CutoutController : MonoBehaviour
+public class CutOutController : MonoBehaviour, IEventListener<CutOutTargetTransform>
 {
+    [SerializeField] private OnRegisterCutOutTargetSO _onRegisterCutOutTargetSO;
+
     [Header("Target Settings")]
-    [Tooltip("±âÁØÀÌ µÉ ¿ÀºêÁ§Æ® (¿¹: ÇÃ·¹ÀÌ¾î)")]
-    public Transform targetObject;
-
-    [Tooltip("¿ÀºêÁ§Æ® ¸Ó¸® À§·Î ¾ó¸¶³ª ¿©À¯¸¦ µÎ°í ÀÚ¸¦Áö ¼³Á¤ (Àß¸®´Â ³ôÀÌ °áÁ¤)")]
-    public float heightOffset = 2.0f;
-
-    [Header("Transition Settings")]
-    [Tooltip("º¯È¯¿¡ °É¸®´Â ½Ã°£ (ÃÊ ´ÜÀ§)")]
-    [Range(0.1f, 5.0f)]
-    public float transitionDuration = 0.5f;
-
-    [Tooltip("º¯È­ÀÇ ¿òÁ÷ÀÓ °î¼± (0: ºÒÅõ¸í/º¸ÀÓ, 1: Åõ¸í/»ç¶óÁü)")]
-    public AnimationCurve transitionCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    private HashSet<Transform> _targetObjects = new HashSet<Transform>();
 
     [Header("Layer Settings")]
-    [Tooltip("º®À¸·Î ÀÎ½ÄÇÒ ·¹ÀÌ¾î")]
-    public LayerMask wallLayer;
+    public LayerMask _wallLayer;
 
-    [Header("Material Property")]
-    [Tooltip("¼ÎÀÌ´õ¿¡¼­ Àß¸®´Â ³ôÀÌ¸¦ Á¦¾îÇÏ´Â ÇÁ·ÎÆÛÆ¼ ÀÌ¸§")]
-    [SerializeField]
-    private string cutHeightProperty = "_CutHeight";
+    private Camera _mainCamera;
 
-    [Tooltip("¼ÎÀÌ´õ¿¡¼­ µğ´õ¸µ/Åõ¸íµµ¸¦ Á¦¾îÇÏ´Â ÇÁ·ÎÆÛÆ¼ ÀÌ¸§ (¿¹: _Cutoff, _AlphaClipThreshold)")]
-    [SerializeField]
-    private string ditherProperty = "_Cutoff";
+    private HashSet<CutOutObject> _previouslyHitObjects = new HashSet<CutOutObject>();
 
-    [Tooltip("Ã¼Å©ÇÏ¸é ¾ÀÀÇ ¸ğµç º®¿¡ Àû¿ë (Àü¿ª º¯¼ö), ÇØÁ¦ÇÏ¸é °¡¸®´Â º®¸¸ °³º° Àû¿ë")]
-    public bool applyGlobally = false;
+    private void Awake()
+    {
+        _onRegisterCutOutTargetSO.Subscribe(this);
+    }
 
-    private Camera mainCamera;
-    private int cutHeightID;
-    private int ditherPropertyID;
-
-    // Dither °ª ¹üÀ§ (0: º¸ÀÓ, 1: »ç¶óÁü)
-    // ¼ÎÀÌ´õ ¼³Á¤¿¡ µû¶ó ¹İ´ëÀÏ ¼ö ÀÖÀ¸´Ï È®ÀÎ ÇÊ¿ä
-    private const float VALUE_VISIBLE = 0.0f;
-    private const float VALUE_INVISIBLE = 1.0f;
-
-    // °³º° Àû¿ë ½Ã °¢ RendererÀÇ "ÁøÇàµµ(Progress)"¸¦ ÀúÀåÇÏ´Â µñ¼Å³Ê¸®
-    private Dictionary<Renderer, float> _renderersProgress = new Dictionary<Renderer, float>();
+    private void OnDestroy()
+    {
+        _onRegisterCutOutTargetSO.Unsubscribe(this);
+    }
 
     void Start()
     {
-        mainCamera = Camera.main;
-        cutHeightID = Shader.PropertyToID(cutHeightProperty);
-        ditherPropertyID = Shader.PropertyToID(ditherProperty);
-
-        // ÃÊ±âÈ­: ¸ğµç º®À» º¸ÀÌ°Ô ¼³Á¤ (Dither 0)
-        Shader.SetGlobalFloat(ditherPropertyID, VALUE_VISIBLE);
-        // ³ôÀÌ´Â ±âº»°ªÀ¸·Î
-        Shader.SetGlobalFloat(cutHeightID, 1000.0f);
+        _mainCamera = Camera.main;
     }
 
     void Update()
     {
-        if (targetObject == null) return;
+        if (_targetObjects.Count == 0)
+        {
+            return;
+        }
 
-        // ¸ñÇ¥ ³ôÀÌ °è»ê (ÇÃ·¹ÀÌ¾î À§Ä¡ + ¿ÀÇÁ¼Â)
-        float currentCutHeight = targetObject.position.y + heightOffset;
-
-        HandleOcclusionCurve(currentCutHeight);
+        HandleOcclusionCurve();
     }
 
-    // ¹æ½Ä 2: °³º° º® Ä¿ºê Àû¿ë
-    void HandleOcclusionCurve(float height)
+    void HandleOcclusionCurve()
     {
-        Vector3 dir = targetObject.position - mainCamera.transform.position;
-        float dist = dir.magnitude;
+        HashSet<CutOutObject> newHits = new HashSet<CutOutObject>();
 
-        // 1. ÀÌ¹ø ÇÁ·¹ÀÓ¿¡ ·¹ÀÌÄ³½ºÆ®¿¡ °É¸° º®µéÀ» ½Äº°
-        HashSet<Renderer> currentHits = new HashSet<Renderer>();
-        RaycastHit[] hits = Physics.RaycastAll(mainCamera.transform.position, dir, dist, wallLayer);
-
-        foreach (RaycastHit hit in hits)
+        foreach (var target in _targetObjects)
         {
-            Renderer rend = hit.collider.GetComponent<Renderer>();
-            if (rend != null)
-            {
-                currentHits.Add(rend);
+            Vector3 dir = target.position - _mainCamera.transform.position;
+            float dist = dir.magnitude;
+            
+            RaycastHit[] hits = Physics.RaycastAll(_mainCamera.transform.position, dir, dist, _wallLayer);
 
-                if (!_renderersProgress.ContainsKey(rend))
+            foreach (RaycastHit hit in hits)
+            {
+                CutOutObject cutOutObject = hit.collider.GetComponent<CutOutObject>();
+                if (cutOutObject != null)
                 {
-                    _renderersProgress.Add(rend, 0.0f);
+                    newHits.Add(cutOutObject);
+                    cutOutObject.SetTarget(target); // íƒ€ê²Ÿ ì •ë³´ ì „ë‹¬
+                    cutOutObject.SetOcclusionStatus(true);
                 }
             }
         }
 
-        // 2. °ü¸® ÁßÀÎ ¸ğµç º® ¾÷µ¥ÀÌÆ®
-        List<Renderer> renderersToRemove = new List<Renderer>();
-        List<Renderer> keys = new List<Renderer>(_renderersProgress.Keys);
-
-        foreach (Renderer rend in keys)
+        // ì´ì „ í”„ë ˆì„ì—ì„œëŠ” ê°ì§€ë˜ì—ˆì§€ë§Œ, í˜„ì¬ í”„ë ˆì„ì—ì„œëŠ” ê°ì§€ë˜ì§€ ì•Šì€ ì˜¤ë¸Œì íŠ¸ ì²˜ë¦¬
+        foreach (CutOutObject prevHit in _previouslyHitObjects)
         {
-            if (rend == null)
+            if (!newHits.Contains(prevHit))
             {
-                renderersToRemove.Add(rend);
-                continue;
-            }
-
-            // A. CutHeight À§Ä¡ °»½Å (±¸¸ÛÀÌ ¶Õ¸± À§Ä¡´Â Ç×»ó ÇÃ·¹ÀÌ¾î À§¸¦ µû¶ó´Ù´Ô)
-            rend.material.SetFloat(cutHeightID, height);
-
-            // B. Dither ¾Ö´Ï¸ŞÀÌ¼Ç °è»ê
-            float currentProgress = _renderersProgress[rend];
-            bool isHit = currentHits.Contains(rend);
-
-            // È÷Æ®µÇ¸é ÁøÇàµµ Áõ°¡ (Åõ¸íÇØÁü), ¾Æ´Ï¸é °¨¼Ò (´Ù½Ã º¸ÀÓ)
-            if (isHit)
-            {
-                currentProgress += Time.deltaTime / transitionDuration;
-            }
-            else
-            {
-                currentProgress -= Time.deltaTime / transitionDuration;
-            }
-
-            currentProgress = Mathf.Clamp01(currentProgress);
-            _renderersProgress[rend] = currentProgress;
-
-            // Ä¿ºê Æò°¡ ¹× Dither °ª Àû¿ë
-            float curveValue = transitionCurve.Evaluate(currentProgress);
-            float finalDither = Mathf.Lerp(VALUE_VISIBLE, VALUE_INVISIBLE, curveValue);
-
-            rend.material.SetFloat(ditherPropertyID, finalDither);
-
-            // 3. ÃÖÀûÈ­: ¿ÏÀüÈ÷ º¸ÀÌ°í(0.0), ÇöÀç È÷Æ®µÇÁö ¾Ê°í ÀÖ´Ù¸é ¸ñ·Ï¿¡¼­ Á¦°Å
-            if (!isHit && currentProgress <= 0.0f)
-            {
-                // È®½ÇÇÏ°Ô ÃÊ±âÈ­
-                rend.material.SetFloat(ditherPropertyID, VALUE_VISIBLE);
-                renderersToRemove.Add(rend);
+                prevHit.SetOcclusionStatus(false);
             }
         }
-
-        // ¸ñ·Ï Á¤¸®
-        foreach (Renderer r in renderersToRemove)
+        
+        _previouslyHitObjects = newHits;
+    }
+    
+    public void OnEventTrigger(CutOutTargetTransform value)
+    {
+        if(value.IsRegister && !_targetObjects.Contains(value.Target))
         {
-            if (_renderersProgress.ContainsKey(r))
-            {
-                _renderersProgress.Remove(r);
-            }
+            _targetObjects.Add(value.Target);    
+        }
+        else
+        {
+            _targetObjects.Remove(value.Target);
         }
     }
-
+    
     private void OnDrawGizmos()
     {
-        if (targetObject != null && mainCamera != null)
+        if (_targetObjects != null && _mainCamera != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(mainCamera.transform.position, targetObject.position);
-
-            Gizmos.color = Color.red;
-            Vector3 center = targetObject.position;
-            center.y += heightOffset;
-            Gizmos.DrawWireCube(center, new Vector3(1, 0.05f, 1));
+            foreach (Transform t in _targetObjects) {
+                Gizmos.DrawLine(_mainCamera.transform.position, t.position);
+            } 
         }
     }
 }
