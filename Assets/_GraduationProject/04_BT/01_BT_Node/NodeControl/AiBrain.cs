@@ -33,8 +33,7 @@ public class AiBrain
         {
             if (_player != null)
             {
-                float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
-                blackboard.SetValue("DistanceBetween", distance);
+
                 bool IsHasLOS = CheckPlayerVisibility();
                 blackboard.SetValue("IsHasLOS", IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();
@@ -53,7 +52,14 @@ public class AiBrain
     private bool CheckPlayerVisibility()
     {
         Vector3 toPlayer = _player.transform.position - _owner.transform.position;
-
+        float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
+        blackboard.SetValue("DistanceBetween", distance);
+        Debug.Log("DistanceBetween: " + distance);
+        blackboard.SetValue("DetectPlayer", distance <= _owner.enemyStat.DetectRange);
+        if(distance > _owner.enemyStat.SeeRange)
+        {
+            return false;
+        }
         if (Vector3.Angle(_owner.transform.forward, toPlayer.normalized) > 90 * 0.5f)
         {
             return false;
