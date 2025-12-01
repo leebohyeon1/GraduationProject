@@ -32,11 +32,13 @@ public class NoiseActionNode : Node
             {
                 if (col.TryGetComponent<Enemy>(out Enemy enemy) && enemy != runner)
                 {
-                    brain.CombatEnter();
+                    if (!brain._isCombat)
+                    {
+                    brain.CombatEnter();    
+                    }
                 }
             }
             _hasCalled = true;
-            brain.CombatEnter(); // 전투 상태로 전환
             return NodeState.SUCCESS;
         }
         
