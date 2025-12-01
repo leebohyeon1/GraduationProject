@@ -15,7 +15,7 @@ public class PlayerHpUI : MonoBehaviour
     
     private void Start()
     {
-        _hpImage.fillAmount = _playerHealth.Health;
+        _hpImage.fillAmount = (float)_playerHealth.Health / _playerHealth.MaxHealth;
     }
 
     private void OnDisable()
@@ -33,7 +33,7 @@ public class PlayerHpUI : MonoBehaviour
             {
                 _hpImage.fillAmount = X;
             },
-            currentHp / _playerHealth.MaxHealth,
+            (float) currentHp / _playerHealth.MaxHealth,
             0.3f)
             .SetEase(Ease.Linear)
             .SetId(this);
