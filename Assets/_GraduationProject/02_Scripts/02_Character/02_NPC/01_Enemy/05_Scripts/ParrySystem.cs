@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -8,7 +9,13 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
-
+    public enum EnemyState
+    {
+        Normal,
+        Stunned,
+        StunnedExit
+    }
+    public EnemyState CurrentState { get; private set; } = EnemyState.Normal;
     [SerializeField] private float _stunTime = 3f;
     private Enemy _owner;
     public void Initialize(Enemy enemy)
@@ -16,6 +23,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _owner = enemy;
         IsCounterable = false;
         ClearStun(); 
+        CurrentState = EnemyState.Normal;
     }
 
     private void OnDisable()
@@ -47,6 +55,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _stunExitTime = Time.time + _stunTime;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
+        CurrentState = EnemyState.Stunned;
     }
     public void ApplyStun(float stunDuration)
     {
@@ -55,11 +64,17 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
+        CurrentState = EnemyState.Stunned;
     }
 
     public void ClearStun()
     {
         _owner.animator.SetBool("Stun", false);
         _isStunned = false;
+        CurrentState = EnemyState.StunnedExit;
+    }
+    public void StateNormal()
+    {
+        CurrentState = EnemyState.Normal;
     }
 }

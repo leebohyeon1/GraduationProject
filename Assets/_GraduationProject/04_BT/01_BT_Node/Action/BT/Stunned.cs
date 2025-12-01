@@ -4,12 +4,9 @@ using BehaviorTree;
 [CreateAssetMenu(fileName = "Stunned", menuName = "BehaviorTree/Stunned")]
 public class Stunned : Node
 {
-    public string animationName = "Do_Stun";
     public override void OnEnter()
     {
         base.OnEnter();
-        // runner.parryied();
-        runner.AnimationEvent(animationName);
         runner.Movement.StopMovement();
         runner.SetState(Enemy.EnemyState.Stunned);
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
@@ -20,6 +17,10 @@ public class Stunned : Node
         {
             Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
             return NodeState.SUCCESS;
+        }
+        if(!runner.ParrySystem._isStunned)
+        {
+            return NodeState.FAILURE;
         }
         else
         {
@@ -39,7 +40,7 @@ public class Stunned : Node
     public override void OnExit()
     {
         runner.ParrySystem.ClearStun();
-
+        Debug.Log("<color=red>--STUNNED--: OnExit Triggered</color>");
         runner.SetState(Enemy.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
