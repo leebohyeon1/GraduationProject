@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: IsStunned?
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1284, y: 228}
+  position: {x: 1293, y: 218}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -68,10 +68,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: SEQ_Idle
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 711, y: 723}
+  position: {x: 689, y: 729}
   nodes:
-  - {fileID: -3175312994217453168}
-  - {fileID: -3847457344941842185}
   - {fileID: 6189559012227279723}
   - {fileID: -1518522919861557844}
 --- !u!114 &-7535980755820170980
@@ -103,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: DEC_IsCombat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 912, y: 256}
+  position: {x: 910, y: 252}
 --- !u!114 &-7164390071499202392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,7 +116,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 517, y: 328}
   nodes:
-  - {fileID: -5929989317075811450}
   - {fileID: 4478406626759944568}
   - {fileID: -7743868738148549756}
 --- !u!114 &-6274149096972123673
@@ -148,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: SEQ_Leash
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 711, y: -108}
+  position: {x: 711, y: -117}
   nodes:
   - {fileID: -7894779255440262859}
   - {fileID: -4692079415337373325}
@@ -165,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: TASK_React
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1266, y: 822}
+  position: {x: 1268, y: 820}
   key: IsHasLOS
   exceptCondition:
     key: 
@@ -230,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: AnyState
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1108, y: 229}
+  position: {x: 1108, y: 228}
   nodes:
   - {fileID: 7879652743954597118}
   - {fileID: -8449237797359349334}
@@ -289,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1268, y: 899}
+  position: {x: 1268, y: 897}
   floatCondition:
     key: DistanceBetween
     Operator: 1
@@ -321,7 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: TASK_SetCombat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 1268, y: 977}
+  position: {x: 1268, y: 976}
 --- !u!114 &426837174303137141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: TASK_SetIdle
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 916, y: -31}
+  position: {x: 915, y: -31}
   stateCondition:
     Key: CurrentStatus
     Operator: 0
@@ -372,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: DEC_InRange
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1284, y: 328}
+  position: {x: 1284, y: 315}
   floatCondition:
     key: DistanceBetween
     Operator: 1
@@ -425,7 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: DEC_StrafeRange
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1281, y: 485}
+  position: {x: 1291, y: 485}
   floatCondition:
     key: DistanceBetween
     Operator: 1
@@ -489,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: IsDie?
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1287, y: 150}
+  position: {x: 1284, y: 151}
   stateCondition:
     Key: CurrentStatus
     Operator: 0
@@ -524,7 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: SEQ_Attack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1106, y: 328}
+  position: {x: 1108, y: 329}
   nodes:
   - {fileID: 1686395030529385185}
   - {fileID: -6274149096972123673}

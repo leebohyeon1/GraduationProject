@@ -38,22 +38,13 @@ public class Stunned : Node
     public override void OnExit()
     {
         runner.ParrySystem.ClearStun();
-        // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
-        {
-            runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-        }
+
         runner.SetState(Enemy.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
     public override void Abort()
     {
         base.Abort();
-        // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
-        {
-            runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-        }
         runner.SetState(Enemy.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
