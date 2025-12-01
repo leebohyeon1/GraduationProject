@@ -18,6 +18,7 @@ public class Stunned : Node
     {
         if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
+            Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
             return NodeState.SUCCESS;
         }
         else

@@ -14,7 +14,7 @@ public class Action_EngageCombat : Node
         // 여기서는 기존 함수를 그대로 사용하겠습니다.
         if (!brain._isCombat)
         {
-            brain.CombatEnter();    
+            brain.CombatEnter(); 
         }
     }
 
