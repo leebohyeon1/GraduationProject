@@ -18,7 +18,7 @@ public class PatrolTargetNode : Node
         {
             return NodeState.FAILURE;
         }
-        if(brain.blackboard.GetValue<bool>("DetectPlayer", out bool DetectPlayer) && !DetectPlayer)
+        if(brain.blackboard.GetValue<bool>("IsPlayerDetected", out bool DetectPlayer) && DetectPlayer)
         {
             return NodeState.FAILURE;
         }
