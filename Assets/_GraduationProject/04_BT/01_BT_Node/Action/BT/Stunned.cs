@@ -4,12 +4,9 @@ using BehaviorTree;
 [CreateAssetMenu(fileName = "Stunned", menuName = "BehaviorTree/Stunned")]
 public class Stunned : Node
 {
-    public string animationName = "Do_Stun";
     public override void OnEnter()
     {
         base.OnEnter();
-        // runner.parryied();
-        runner.AnimationEvent(animationName);
         runner.Movement.StopMovement();
         runner.SetState(Enemy.EnemyState.Stunned);
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
@@ -18,7 +15,12 @@ public class Stunned : Node
     {
         if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
+            Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
             return NodeState.SUCCESS;
+        }
+        if(!runner.ParrySystem._isStunned)
+        {
+            return NodeState.FAILURE;
         }
         else
         {
@@ -38,22 +40,13 @@ public class Stunned : Node
     public override void OnExit()
     {
         runner.ParrySystem.ClearStun();
-        // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
-        {
-            runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-        }
+        Debug.Log("<color=red>--STUNNED--: OnExit Triggered</color>");
         runner.SetState(Enemy.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
     public override void Abort()
     {
         base.Abort();
-        // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
-        {
-            runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-        }
         runner.SetState(Enemy.EnemyState.Idle);
         Handler.ResetAllFlags();
     }

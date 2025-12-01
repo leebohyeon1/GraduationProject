@@ -125,7 +125,6 @@ public class Enemy : MonoBehaviour
     {
         CurrentState = state;
         blackboard.SetValue("CurrentStatus", CurrentState);
-        Debug.Log($"[Enemy] {gameObject.name} 상태가 {CurrentState}로 변경되었습니다.");
     }
     #endregion
     
