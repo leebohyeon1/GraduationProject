@@ -15,13 +15,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     private Vector3 _velocity; // 현재 속도 (중력 포함)
     private bool _isGrounded; // 지면 접촉 여부
     private float _lastDodgeTime = -999f; // 마지막 회피 시간
-    private Quaternion _targetRotation; // 목표 회전값
     private bool _hasTargetRotation; // 목표 회전값 존재 여부
     #endregion
 
     #region Properties
     public float LastDodgeTime => _lastDodgeTime;
-    public Quaternion TargetRotation => _targetRotation;
     public bool HasTargetRotation => _hasTargetRotation;
     #endregion
 
@@ -173,15 +171,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 설정된 목표 회전값으로 회전합니다.
-    /// </summary>
-    public void RotateToTargetRotation()
-    {
-        SetRotation(TargetRotation);
-        ClearTargetRotation();
-    }
-
-    /// <summary>
     /// 입력에 따른 목표 회전값을 계산합니다.
     /// </summary>
     public Quaternion GetTargetRotation(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)
@@ -221,24 +210,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public void SetRotation(Quaternion rotation, float rotateSpeed)
     {
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
-    }
-
-    /// <summary>
-    /// 목표 회전값을 설정합니다.
-    /// </summary>
-    public void SetTargetRotation(Quaternion targetRotation)
-    {
-        _targetRotation = targetRotation;
-        _hasTargetRotation = true;
-    }
-
-    /// <summary>
-    /// 목표 회전값을 초기화합니다.
-    /// </summary>
-    public void ClearTargetRotation()
-    {
-        _targetRotation = Quaternion.Euler(Vector3.zero);
-        _hasTargetRotation = false;
     }
 
     public Vector3 GetTargetDirection(InputDeviceType deviceType, Vector2 moveInput, Vector2 mousePosition)

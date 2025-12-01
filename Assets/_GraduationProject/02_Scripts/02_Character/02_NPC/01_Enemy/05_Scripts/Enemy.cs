@@ -9,7 +9,7 @@ using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요�
 ,RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility),typeof(Mon_Stiffness))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]private EnemyStat enemyStat;
+    [field: SerializeField] public EnemyStat enemyStat{ get; private set; }
     public AiController _aiController{get;private set;}
     public Animator animator{ get;  private set; }
     
@@ -27,8 +27,6 @@ public class Enemy : MonoBehaviour
     public event Action OnDied;
     public BillboardUI BillboardUI{ get;  private set; }
 
-    public Vector3[] wayPoints;
-    public int wayPointIndex = 0;
     [SerializeField]private int _CurrentStiffness = 4;
     public int CurrentStiffness => _CurrentStiffness;
     public Enemy_Type EnemyType { get; private set; }
@@ -63,6 +61,7 @@ public class Enemy : MonoBehaviour
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
         EnemyHealth = GetComponent<EnemyTakeDmg>();
+        Debug.Log(EnemyHealth);
         EnemyHealth.InitializeHealth( this);
         specialAbility = GetComponent<EnemySpecialAbility>();
         specialAbility.Initialize(this);

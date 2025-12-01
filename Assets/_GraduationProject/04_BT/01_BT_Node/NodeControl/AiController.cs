@@ -36,7 +36,6 @@ public class AiController : MonoBehaviour,IEventListener<string>
     {
         if (_enemy.EnemyHealth.IsDead)
         {
-            Debug.Log("EnemyHealth:" + _enemy.EnemyHealth.Health);
             return;
         } 
             

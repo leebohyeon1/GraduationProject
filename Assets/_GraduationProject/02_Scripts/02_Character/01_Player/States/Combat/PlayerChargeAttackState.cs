@@ -68,11 +68,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
         if (p_nextAttackState != null && p_context.Input.AttackInput)
         {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
-            var moveInput = p_context.Input.MoveInput;
-            var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.SetTargetRotation(p_context.Movement.GetTargetRotation(deviceType, moveInput, mousePosition));
-            
             p_nextState = p_nextAttackState;
             p_stateMachine.ChangeState(p_nextState);
         }
