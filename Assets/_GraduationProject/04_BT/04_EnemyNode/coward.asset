@@ -332,12 +332,8 @@ MonoBehaviour:
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
   position: {x: 1833, y: 46}
-  AttackName: Attack
-  damage: 3
-  damageRadius: 3.5
-  attackOffset: {x: 0, y: 1, z: 4}
+  attackKey: 
   maintainAtk: 0
-  StiffenessAmount: 10
 --- !u!114 &929164364379773173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +347,6 @@ MonoBehaviour:
   m_Name: Condition_Is In Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInAttackRange
   position: {x: 1833, y: -86}
-  heatRange: 0
   _attackRange: 4
 --- !u!114 &1310698430826977512
 MonoBehaviour:
@@ -394,6 +389,7 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
   position: {x: 1833, y: -227}
+  viewAngle: 90
 --- !u!114 &2919154666137795031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +493,7 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC2DC "
   m_EditorClassIdentifier: 
   position: {x: 1832, y: 462}
+  viewAngle: 90
 --- !u!114 &4887522364135060110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,6 +616,7 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 456, y: 323}
+  viewAngle: 90
 --- !u!114 &6816747113147883713
 MonoBehaviour:
   m_ObjectHideFlags: 0
