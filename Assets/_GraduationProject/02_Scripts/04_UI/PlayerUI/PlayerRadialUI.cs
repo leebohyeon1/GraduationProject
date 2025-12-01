@@ -31,10 +31,7 @@ public class PlayerRadialUI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(gameObject.activeSelf)
-        {
-            _transform.position = _mainCamera.WorldToScreenPoint(_player.transform.position) + _followOffset;
-        }
+       FollowPlayer();
     }
 
     private void OnDestroy()
@@ -43,26 +40,11 @@ public class PlayerRadialUI : MonoBehaviour
         _player.Stamina.OnStaminaChanged -= HandleOnStaminaChanged;
     }
 
-    /// <summary>
-    /// 체력 변경 시 함수 호출
-    /// </summary>
-    private void HandleOnHealthChanged(int a, int b)
-    {
-        OnEventActivate((int) a, (int) b);
-    }
-
-    /// <summary>
-    /// 스테미나 변경 시 함수 호출
-    /// </summary>
-    private void HandleOnStaminaChanged(float a, float b)
-    {
-        OnEventActivate(a, b);   
-    }
 
     /// <summary>
     /// 활성화 이벤트
     /// </summary>
-    private void OnEventActivate(float a, float b)
+    private void OnActivateEvent(float a, float b)
     {
         // 코루틴 작동 중일 경우
         if(_disableCoroutine != null)
@@ -86,4 +68,45 @@ public class PlayerRadialUI : MonoBehaviour
         _disableCoroutine = null;
     }
 
+    #region Follow
+
+
+    private void FollowPlayer()
+    {
+        if (_player != null)
+        {
+            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_player.transform.position) + _followOffset;
+            _transform.position = screenPos;
+        }
+    }
+
+    #endregion
+
+    #region Events
+
+
+    private void HandleCameraPreCull(Camera cam)
+    {
+        if (cam == _mainCamera && gameObject.activeInHierarchy)
+        {
+            FollowPlayer();
+        }
+    }
+
+    /// <summary>
+    /// 체력 변경 시 함수 호출
+    /// </summary>
+    private void HandleOnHealthChanged(int a, int b)
+    {
+        OnActivateEvent((int)a, (int)b);
+    }
+
+    /// <summary>
+    /// 스테미나 변경 시 함수 호출
+    /// </summary>
+    private void HandleOnStaminaChanged(float a, float b)
+    {
+        OnActivateEvent(a, b);
+    }
+    #endregion
 }
