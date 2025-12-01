@@ -130,16 +130,14 @@ public class AiBrain
     public void CombatEnter(bool combat = true)
     {
         _isCombat = combat;
-        if (!_isCombat)
-        {
-            blackboard.SetValue("IsPlayerDetected", false);
 
-        }
+        blackboard.SetValue("IsPlayerDetected", _isCombat);
+
+        
         if (_isCombat)
         {
             _owner.animator.SetTrigger("Discover_Player");
             _owner.Movement.StopMovement();
-            blackboard.SetValue("IsPlayerDetected", true);
         }
     }
 
