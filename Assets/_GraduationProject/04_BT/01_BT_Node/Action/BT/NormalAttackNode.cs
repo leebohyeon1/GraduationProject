@@ -53,15 +53,13 @@ public class NormalAttackNode : Node
         }
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
 
-        if (brain.blackboard.GetValue<Vector3>("LastPlayerPos", out Vector3 lastPlayerPos))
+        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+        directionToPlayer.y = 0;
+        if (!tracking)
         {
-            Vector3 directionToPlayer = lastPlayerPos - runner.transform.position;
-            directionToPlayer.y = 0;
-            if (!tracking)
-            {
-                runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-            }
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
+
         if (Handler.IsSound)
         {
             Handler.EndSound();

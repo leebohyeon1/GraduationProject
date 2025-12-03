@@ -55,6 +55,10 @@ public class AiBrain
         float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
         blackboard.SetValue("DistanceBetween", distance);
         blackboard.SetValue("DetectPlayer", distance <= _owner.enemyStat.DetectRange);
+        if(distance > _owner.enemyStat.CircleSeeRange)
+        {
+            return true;
+        }
         if(distance > _owner.enemyStat.SeeRange)
         {
             return false;

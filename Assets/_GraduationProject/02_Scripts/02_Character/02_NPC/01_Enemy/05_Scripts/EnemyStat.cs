@@ -4,10 +4,10 @@ using UnityEngine;
 public class EnemyStat : ScriptableObject
 {
     public int Maxhealth;
-    public int CurrentHealth;
     public float MoveSpeed;
     public float SeeRange;
     public float DetectRange;
+    public float CircleSeeRange;
     // public int MaxHeat;
     // public int CurrentHeat;
     // public SourceMapDatabaseSO SourceMapDatabase;
