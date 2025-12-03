@@ -5,16 +5,26 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HpBar : DIMonoBehaviour
+public class HpBar : MonoBehaviour
 {
     [SerializeField] private Image _hpBarSlider;
     [SerializeField] private GameObject _object;
+    [SerializeField] private Vector3 _followOffset;
+    private Camera _mainCamera;
+    private RectTransform _transform;
     private IDamageable _damageable;
     
     private void Start()
     {
+        _mainCamera = Camera.main;
+        _transform = GetComponent<RectTransform>();
         _damageable = _object.GetComponent<IDamageable>();
         _damageable.OnHealthChanged += ChangeHpBar;
+    }
+    
+    private void FixedUpdate()
+    {
+        FollowObject();
     }
 
     private void OnDestroy()
@@ -35,4 +45,14 @@ public class HpBar : DIMonoBehaviour
                     .SetEase(Ease.Linear)
                     .SetId(_hpBarSlider);
     }
+
+    private void FollowObject()
+    {
+        if (_object != null)
+        {
+            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_object.transform.position) + _followOffset;
+            _transform.position = screenPos;
+        }
+    }
+
 }
