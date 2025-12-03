@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// 경직도를 가지고 있는 오브젝트에 넣는 인터페이스
@@ -25,4 +26,6 @@ public interface IStiffness
     /// </summary>
     /// <param name="amount"></param>
     void AddStiffness(int amount);
+    
+    event Action<int, int> OnStiffnessChanged;   
 } 
