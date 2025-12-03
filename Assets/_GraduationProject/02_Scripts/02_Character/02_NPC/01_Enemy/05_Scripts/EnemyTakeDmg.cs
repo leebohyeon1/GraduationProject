@@ -122,6 +122,9 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
 
+        _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
+
+
         if (Knockbackable)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;

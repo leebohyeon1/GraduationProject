@@ -19,6 +19,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public event Action<bool> OnInvisibleChanged; // 무적 상태 변경 이벤트
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
     public event Action OnDied; // 사망 이벤트
+    public event Action<int, int> OnStiffnessChanged;
 
     #region Properties
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
@@ -41,6 +42,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stats = data;
         _events = evets;
+
+        OnHealthChanged?.Invoke(Health, Health);
+        OnStiffnessChanged?.Invoke(0, 0);
     }
 
     /// <summary>
@@ -143,7 +147,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     private void ChangeStiffness(int amount)
     {
+        int previouseStiffness = _currentStiffness;
         _currentStiffness += amount;
+
+        if (previouseStiffness != _currentStiffness) 
+        {
+            OnStiffnessChanged?.Invoke(previouseStiffness, _currentStiffness);
+        }
     }
 
     /// <summary>
