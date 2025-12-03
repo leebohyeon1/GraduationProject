@@ -54,8 +54,11 @@ public class AiBrain
         Vector3 toPlayer = _player.transform.position - _owner.transform.position;
         float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
         blackboard.SetValue("DistanceBetween", distance);
-        Debug.Log("DistanceBetween: " + distance);
         blackboard.SetValue("DetectPlayer", distance <= _owner.enemyStat.DetectRange);
+        if(distance > _owner.enemyStat.CircleSeeRange)
+        {
+            return true;
+        }
         if(distance > _owner.enemyStat.SeeRange)
         {
             return false;
@@ -140,7 +143,10 @@ public class AiBrain
             _owner.Movement.StopMovement();
         }
     }
-
+    public void SurroundTarget()
+    {
+        
+    }
     internal void AddEnemyAttackData(EnemyAttackData enemyAttackData)
     {
         blackboard.SetValue(enemyAttackData.AttackName, enemyAttackData);

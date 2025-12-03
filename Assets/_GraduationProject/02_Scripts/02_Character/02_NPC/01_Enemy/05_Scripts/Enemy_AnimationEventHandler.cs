@@ -64,6 +64,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         public MMF_Player feedback;
         public Vector3 offset;
         public int id;
+        public AttackType HitType;
     }
 
 
@@ -80,6 +81,23 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
                 Debug.LogWarning($"피드백이 null {feedbackName}");
                 return;
             }
+            feedback.PlayFeedbacks(transform.position + _feedbacks.Find(f => f.name == feedbackName).offset);
+        }
+        else
+        {
+            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
+        }
+    }
+        public void PlayFeedback(string feedbackName, AttackType attackType)
+    {
+        if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback) && _feedbacks.Find(f => f.name == feedbackName).HitType == attackType)
+        {
+            if( feedback == null)
+            {
+                Debug.LogWarning($"피드백이 null {feedbackName}");
+                return;
+            }
+            
             feedback.PlayFeedbacks(transform.position + _feedbacks.Find(f => f.name == feedbackName).offset);
         }
         else
