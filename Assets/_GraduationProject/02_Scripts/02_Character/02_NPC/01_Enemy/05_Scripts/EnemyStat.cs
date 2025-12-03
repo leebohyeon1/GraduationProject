@@ -8,9 +8,5 @@ public class EnemyStat : ScriptableObject
     public float SeeRange;
     public float DetectRange;
     public float CircleSeeRange;
-    // public int MaxHeat;
-    // public int CurrentHeat;
-    // public SourceMapDatabaseSO SourceMapDatabase;
-    // public TierStatDatabaseSO TierStatDatabase;
 
 }
