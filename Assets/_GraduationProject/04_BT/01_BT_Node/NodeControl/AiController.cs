@@ -11,7 +11,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private OnSwingMiss _onSwingMissEvent;
     [SerializeField] private OnHealing _onHealingEvent;
 
-    [SerializeField] EnemyAttackData[] enemyAttackDatas;
+    [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
 
     public void Initialize(Enemy owner)
     {

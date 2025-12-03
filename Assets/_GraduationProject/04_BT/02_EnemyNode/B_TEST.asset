@@ -32,6 +32,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 357, y: -32}
   nodes:
+  - {fileID: 7889572963640276307}
   - {fileID: -2870098089127236727}
   - {fileID: 8154655890788234342}
 --- !u!114 &-7974736735570412724
@@ -66,7 +67,6 @@ MonoBehaviour:
   position: {x: 1524, y: 216}
   targetDistance: 7
   acceptanceRadius: 0.5
-  runSpeed: 10
   timeout: 2
 --- !u!114 &-7245226355301169087
 MonoBehaviour:
@@ -96,9 +96,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: PatrolSequence
   m_EditorClassIdentifier: 
-  position: {x: 182, y: 248}
+  position: {x: 191, y: 413}
   nodes:
   - {fileID: -2923115925387942299}
+--- !u!114 &-6714180020418740740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 721, y: -55}
+  key: IsSurrounding
+  exceptCondition:
+    key: 
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +180,21 @@ MonoBehaviour:
   position: {x: 1716, y: 221}
   minDistance: 0
   maxDistance: 0
+--- !u!114 &-5610244398616160024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 280645d191c9cfd41bd8ef1795767564, type: 3}
+  m_Name: Task_Strafe Around Target
+  m_EditorClassIdentifier: Assembly-CSharp::Task_StrafeAroundTarget
+  position: {x: 721, y: 172}
+  radius: 5
+  rotationSpeed: 5
 --- !u!114 &-4738368884081098000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,7 +266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: 384, y: 247}
+  position: {x: 379, y: 413}
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 535, y: -71}
+  position: {x: 535, y: 18}
   subTreeToRun: {fileID: 11400000, guid: b579aeab78e73324982e928a1518ef05, type: 2}
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
@@ -292,7 +323,6 @@ MonoBehaviour:
   position: {x: 1510, y: -881}
   targetDistance: 5
   acceptanceRadius: 0.5
-  runSpeed: 5
   timeout: 1.8
 --- !u!114 &11400000
 MonoBehaviour:
@@ -307,6 +337,21 @@ MonoBehaviour:
   m_Name: B_TEST
   m_EditorClassIdentifier: 
   rootNode: {fileID: -6419026422163123980}
+--- !u!114 &1078842771266368578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b6aa1ff065af34c9d0a6f542784987, type: 3}
+  m_Name: Task_Rotate Target
+  m_EditorClassIdentifier: Assembly-CSharp::Task_RotateTarget
+  position: {x: 721, y: 95}
+  radius: 5
+  rotationSpeed: 20
 --- !u!114 &1181089910128278886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,7 +378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 379, y: 77}
+  position: {x: 379, y: 204}
   subTreeToRun: {fileID: 11400000, guid: 62d96309f8322e94ebf0651af052c2df, type: 2}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
@@ -382,6 +427,20 @@ MonoBehaviour:
   position: {x: 1546, y: -1070}
   minDistance: 0.5
   maxDistance: 40
+--- !u!114 &2141469619500100927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600c7edd60e077d4e8e9e6602215ae29, type: 3}
+  m_Name: Task_Set Surrond
+  m_EditorClassIdentifier: Assembly-CSharp::Task_SetSurrond
+  position: {x: 721, y: 18}
+  surround: 1
 --- !u!114 &2422854897302023152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,7 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 206, y: 115}
+  position: {x: 206, y: 226}
   nodes:
   - {fileID: 1196946236353706419}
   - {fileID: 5755715455036596734}
@@ -496,7 +555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 379, y: 170}
+  position: {x: 379, y: 281}
   subTreeToRun: {fileID: 11400000, guid: 4175e02c697b45443819dd14a3636b01, type: 2}
 --- !u!114 &5776244238602323464
 MonoBehaviour:
@@ -585,6 +644,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 1524, y: 293}
   waitTime: 1
+--- !u!114 &7889572963640276307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 534, y: -59}
+  nodes:
+  - {fileID: -6714180020418740740}
+  - {fileID: 1078842771266368578}
 --- !u!114 &8154655890788234342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,7 +672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Run Sub Tree Node
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 535, y: 6}
+  position: {x: 535, y: 95}
   subTreeToRun: {fileID: 11400000, guid: 34f8621e4853456408cbe6e443fea21a, type: 2}
 --- !u!114 &8246282568877846733
 MonoBehaviour:

@@ -21,7 +21,6 @@ public class RandomPatrol : Node
         {
             return NodeState.FAILURE;
         }
-        Debug.Log("RandomPatrol 실행");
         if (brain._isCombat)
         {
             return NodeState.FAILURE;

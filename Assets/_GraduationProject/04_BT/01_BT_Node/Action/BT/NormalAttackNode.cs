@@ -16,23 +16,19 @@ public class NormalAttackNode : Node
     bool _isStunned;
     public override void OnEnter()
     {
-        Debug.Log("NormalAttackNode OnEnter called.");
         if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
             Debug.LogError("No Attack Data Found for key: " + attackKey);
             return;
         }
-        Debug.Log(runner.ParrySystem._isStunned);
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
             _isStunned = true;
-            Debug.Log("Attack Aborted due to Stun: " + _isStunned);
             return;
         }
         _isCooldownDenied = false;
         if(!brain.IsSkillReady(attackKey, _data.Cooltime))
         {
-            Debug.Log("Skill on Cooldown: " + attackKey);
             _isCooldownDenied = true;
             return;
         }
@@ -61,7 +57,6 @@ public class NormalAttackNode : Node
         }
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
-            Debug.Log("Attack Aborted due to Stun: " + _isStunned);
             return NodeState.FAILURE;
         }
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
@@ -121,16 +116,13 @@ public class NormalAttackNode : Node
 
     public override void OnExit()
     {
-        Debug.Log("NormalAttackNode OnExit called.");
         _isStunned = false;
         tracking = false;
-        // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         runner.ParrySystem.StateNormal();        
         brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         runner.SetStiffness(0);
-        if(!_isCooldownDenied)
         brain.StartSkillCooldown(attackKey);
         // runner.Movement.StopMovement();
     }
