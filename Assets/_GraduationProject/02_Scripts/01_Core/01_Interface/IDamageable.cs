@@ -71,6 +71,9 @@ public enum AttackType
     Light,
     Middle,
     Heavy,
-    Range
+    Range,
+    Charge1,
+    Charge2,
+    Charge3,
 }
 

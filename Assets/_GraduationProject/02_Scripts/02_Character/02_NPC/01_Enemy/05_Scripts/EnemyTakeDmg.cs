@@ -112,11 +112,18 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
             _owner.SetState(Enemy.EnemyState.Hit);
             _owner.AnimationEvent("Hit");
         }
+
+        int previousHealth = curHealth;
+
         _owner.animHandler.PlayFeedback("Damage_FB");
         curHealth -= damageData.DamageAmount;
         _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
 
+        OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
+
+        _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
+
 
         if (Knockbackable)
         {
