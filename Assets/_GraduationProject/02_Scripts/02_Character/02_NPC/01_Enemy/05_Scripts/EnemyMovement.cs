@@ -16,9 +16,9 @@ public class EnemyMovement
         _runner = enemy;
         _normalSpeed = _runner.NormalSpeed;
         aIPath = _runner.GetComponent<AIPath>();
+        aIPath.maxSpeed = _normalSpeed;
         animator = _runner.animator;
         rb = _runner.GetComponent<Rigidbody>();
-        _normalSpeed = _runner.NormalSpeed;
     }
 
     public void StartRush(Vector3 targetPosition, float rushSpeed)
