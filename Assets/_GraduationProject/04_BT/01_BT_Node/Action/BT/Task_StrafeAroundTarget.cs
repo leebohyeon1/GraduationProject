@@ -80,15 +80,12 @@ public class Task_StrafeAroundTarget : Node
     
     public override void OnExit()
     {
-        runner.groupAi.SurroundToggle(false);
         brain.blackboard.SetValue("IsSurrounding", false);
         Debug.Log("Exiting Strafe Around Target");
         runner.aIPath.enableRotation = true;
         _rvo.velocity = Vector3.zero;
         runner.Movement.StopMovement();
         _ai.Teleport(runner.transform.position);
-         // 필요 시 멈춤 처리
-         // if(_ai != null) _ai.destination = runner.transform.position;
     }
 
     public override Node Clone()

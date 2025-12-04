@@ -8,10 +8,7 @@ public class Task_SetSurrond : Node
     {
         return Instantiate(this);
     }
-    public override void OnEnter()
-    {
-        runner.groupAi.AssignSlots();
-    }
+
     protected override NodeState OnUpdate()
     {
         return NodeState.SUCCESS;
