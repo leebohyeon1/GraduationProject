@@ -8,43 +8,21 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// 플레이어의 피드백(이펙트, 사운드 등) 타입을 정의하는 열거형입니다.
-/// </summary>
-public enum PlayerFeedbackType
-{
-    Move_FB, MoveStop_FB, DodgeStart_FB,
-    DodgeFinish_FB, Landing_FB,
-
-    TakeDamage_Normal_FB, TakeDamage_Strong_FB, TakeDamage_Defend_FB, TakeDamage_KnockDown_FB,
-
-    FirstAttackStart_FB, SecondAttackStart_FB,
-    ThirdAttackStart_FB, MeleeAttackHit_FB,
-
-    ChargeStart_FB, ChargeCancel_FB,
-    ChargeLevel1_FB, ChargeLevel2_FB, ChargeLevel3_FB,
-    ChargeAttackStartLevel1_FB, ChargeAttackStartLevel2_FB, ChargeAttackStartLevel3_FB,
-    ChargeAttackFinish_FB,
-
-    ParryStart_FB, ParrySuccess_FB
-}
-
-/// <summary>
 /// 플레이어의 피격 타입을 정의하는 열거형입니다.
 /// </summary>
 public enum PlayerDamagedType
 {
     Normal = 0, // 일반 피격
     Strong = 1, // 강한 피격
-    Defend = 2, // 방어 중 피격
-    KnockDown = 3
+    KnockDown = 2
 }
 
 /// <summary>
 /// 플레이어의 모든 이벤트를 관리하고 피드백을 재생하는 클래스입니다.
 /// </summary>
-public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
+public class PlayerEvents : FeedbackPlayer<string>
 {
-    [SerializeField] private Transform _rangedAttackStartPoint;
+    private PlayerStats _stats;
 
     #region Events
     public event Action<bool> OnBattleStateChaged; // 전투 상태 변경 이벤트
@@ -64,6 +42,12 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public event Action<bool> OnRegenStamina; // 스테미나 회복 이벤트
     #endregion
 
+
+    public void Initialize(PlayerStats stats)
+    {
+        _stats = stats;
+    }
+
     #region EventHandler
     /// <summary>
     /// 전투 상태 변경 이벤트를 발생시킵니다.
@@ -74,21 +58,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     }
 
     #region Movement
-    /// <summary>
-    /// 이동 중 발자국 피드백을 재생합니다. (애니메이션 이벤트로 호출)
-    /// </summary>
-    public void TriggerMove()
-    {
-        PlayFeedback(PlayerFeedbackType.Move_FB, transform.position);
-    }
-
-    /// <summary>
-    /// 이동 멈춤 피드백을 재생합니다. (애니메이션 이벤트로 호출)
-    /// </summary>
-    public void TriggerMoveStop()
-    {
-        PlayFeedback(PlayerFeedbackType.MoveStop_FB, transform.position);
-    }
 
     /// <summary>
     /// 회피 시작 피드백을 재생합니다.
@@ -96,7 +65,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerDodgeStart()
     {
         TriggerRegenStamina(false);
-        PlayFeedback(PlayerFeedbackType.DodgeStart_FB, transform.position);
     }
 
     /// <summary>
@@ -106,7 +74,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnDodgeFinish?.Invoke();
         TriggerRegenStamina(true);
-        PlayFeedback(PlayerFeedbackType.DodgeFinish_FB, transform.position);
     }
 
     /// <summary>
@@ -114,7 +81,7 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// </summary>
     public void TriggerLanding()
     {
-        PlayFeedback(PlayerFeedbackType.Landing_FB, transform.position);
+        // PlayFeedback(PlayerFeedbackType.Landing_FB, transform.position);
     }
     #endregion
 
@@ -126,10 +93,15 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         switch (damagedType)
         {
-            case PlayerDamagedType.Normal: PlayFeedback(PlayerFeedbackType.TakeDamage_Normal_FB); break;
-            case PlayerDamagedType.Strong: PlayFeedback(PlayerFeedbackType.TakeDamage_Strong_FB); break;
-            case PlayerDamagedType.KnockDown: PlayFeedback(PlayerFeedbackType.TakeDamage_KnockDown_FB); break;
-            case PlayerDamagedType.Defend: PlayFeedback(PlayerFeedbackType.TakeDamage_Defend_FB); break;
+            case PlayerDamagedType.Normal: 
+                PlayFeedback("NormalHit_FB"); 
+                break;
+            case PlayerDamagedType.Strong: 
+                PlayFeedback("StrongHit_FB"); 
+                break;
+            case PlayerDamagedType.KnockDown: 
+                PlayFeedback("KnockDown_FB");
+                break;
         }
     }
     #endregion
@@ -160,7 +132,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnAttackStart?.Invoke();
         TriggerRegenStamina(false);
-        PlayFeedback(PlayerFeedbackType.FirstAttackStart_FB);
     }
 
     /// <summary>
@@ -170,7 +141,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnAttackStart?.Invoke();
         TriggerRegenStamina(false);
-        PlayFeedback(PlayerFeedbackType.SecondAttackStart_FB);
     }
 
     /// <summary>
@@ -180,7 +150,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnAttackStart?.Invoke();
         TriggerRegenStamina(false);
-        PlayFeedback(PlayerFeedbackType.ThirdAttackStart_FB);
     }
 
     /// <summary>
@@ -189,7 +158,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerAttackAffect(Collider collider)
     {
         OnAttackAffect?.Invoke(collider);
-        PlayFeedback(PlayerFeedbackType.MeleeAttackHit_FB, collider.transform.position);
     }
     #endregion
 
@@ -201,7 +169,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     {
         OnAttackStart?.Invoke();
         TriggerRegenStamina(false);
-        PlayFeedback(PlayerFeedbackType.ChargeStart_FB);
     }
 
     /// <summary>
@@ -210,8 +177,8 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerChargeCancel()
     {
         TriggerRegenStamina(true);
-        StopFeedback(PlayerFeedbackType.ChargeStart_FB);
-        PlayFeedback(PlayerFeedbackType.ChargeCancel_FB);
+        StopFeedback("ChargeStart_FB");
+        PlayFeedback("ChargeCancel_FB");
     }
 
     public void TriggerChargeLevelFeedback(int tier)
@@ -219,13 +186,13 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
         switch (tier)
         {
             case 1:
-                PlayFeedback(PlayerFeedbackType.ChargeLevel1_FB);
+                PlayFeedback("ChargeLevel1_FB");
                 break;
             case 2:
-                PlayFeedback(PlayerFeedbackType.ChargeLevel2_FB);
+                PlayFeedback("ChargeLevel2_FB");
                 break;
             case 3:
-                PlayFeedback(PlayerFeedbackType.ChargeLevel3_FB);
+                PlayFeedback("ChargeLevel3_FB");
                 break;
         }
     }
@@ -233,20 +200,20 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     /// <summary>
     /// 차지 공격 시작 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeAttackStart(int tier)
+    public void TriggerChargeAttackStart()
     {
         TriggerRegenStamina(false);
-        StopFeedback(PlayerFeedbackType.ChargeStart_FB);
-        switch (tier)
+        StopFeedback("ChargeStart_FB");
+        switch (_stats.ChargeLevel)
         {
             case 1:
-                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel1_FB);
+                PlayFeedback("ChargeAttackStartLevel1_FB");
                 break;
             case 2:
-                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel2_FB);
+                PlayFeedback("ChargeAttackStartLevel2_FB");
                 break;
             case 3:
-                PlayFeedback(PlayerFeedbackType.ChargeAttackStartLevel3_FB);
+                PlayFeedback("ChargeAttackStartLevel3_FB");
                 break;
         }
         OnAttackStart?.Invoke();
@@ -258,7 +225,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerChargeAttackFinish()
     {
         TriggerRegenStamina(true);
-        PlayFeedback(PlayerFeedbackType.ChargeAttackFinish_FB);
     }
 
     /// <summary>
@@ -278,7 +244,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryStart()
     {
         OnParryStart?.Invoke();
-        PlayFeedback(PlayerFeedbackType.ParryStart_FB);
     }
 
     /// <summary>
@@ -295,7 +260,6 @@ public class PlayerEvents : FeedbackPlayer<PlayerFeedbackType>
     public void TriggerParryDamageAffect(Transform transform)
     {
         OnParryDamageAffect?.Invoke(transform);
-        PlayFeedback(PlayerFeedbackType.ParrySuccess_FB);
     }
 
     /// <summary>
