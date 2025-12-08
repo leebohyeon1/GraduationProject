@@ -18,10 +18,9 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 
     public override void OnEnter()
     {
-        Log.Print(p_context.Stats.ChargeLevel);
         p_context.Events.OnParryWindowFinish += HandleParryWindowFinish;
         p_context.Events.OnParryDamageAffect += HandleParryDamageAffect;
-        p_context.Events.TriggerChargeAttackStart(p_context.Stats.ChargeLevel);
+        p_context.Events.TriggerChargeAttackStart();
 
         base.OnEnter();
     }
