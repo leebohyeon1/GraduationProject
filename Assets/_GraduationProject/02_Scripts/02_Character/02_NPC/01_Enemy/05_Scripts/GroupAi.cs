@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GroupAi : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class GroupAi : MonoBehaviour
             enemy._aiController.CombatEnter();
             enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
         }
+        AssignSlots();
     }
 
     public void CombatReset()
@@ -54,5 +56,19 @@ public class GroupAi : MonoBehaviour
             enemy._aiController._aiBrain.blackboard.SetValue("PeripheralColleagues", enemies.Count);
         }
     }
-    
+
+    public void AssignSlots()
+    {
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            if(enemies[i].EnemyType != Enemy.Enemy_Type.Cunning)
+            {
+                return;
+            }
+            // 2. 나의 고유 번호 (Slot Index)
+            enemies[i]._aiController._aiBrain.blackboard.SetValue("SquadSlotIndex", i);
+            // 3. 포위 명령
+            enemies[i]._aiController._aiBrain.blackboard.SetValue("IsSurrounding", true);
+        }
+    }
 }

@@ -18,9 +18,12 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     private Coroutine _KnockbackCoroutine;
     public bool IsInvincible => throw new NotImplementedException();
     Enemy _owner;
-    public void InitializeHealth(Enemy owner)
+    private float _knockbackResistance = 1f;
+    public void InitializeHealth(Enemy owner, EnemyStatMultiplierSO statMultiplier = default)
     {
         _owner = owner;
+        _knockbackResistance = statMultiplier?.KnockbackResistance ?? 1f;
+        enemyStat *= statMultiplier?.HealthMultiply;
         _maxHealth = curHealth = enemyStat.Maxhealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
@@ -62,7 +65,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         {
             float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
 
-            Vector3 move = horizontalDirection * damageData.KnockbackForce * curveValue * Time.deltaTime;
+            Vector3 move = horizontalDirection * damageData.KnockbackForce * _knockbackResistance * curveValue * Time.deltaTime;
 
             if (!_characterController.isGrounded)
             {
