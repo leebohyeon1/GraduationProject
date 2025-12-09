@@ -36,10 +36,10 @@ public class Task_StrafeAroundTarget : Node
         {
             return NodeState.SUCCESS;
         }
-        for(int i = 0; i < runner._aiController.enemyAttackDatas.Length; i++)
+        for(int i = 0; i < runner._aiController.inGameenemyAttackDatas.Length; i++)
         {
-            if(runner._aiController._aiBrain.IsSkillReady(runner._aiController.enemyAttackDatas[i].AttackName,
-            runner._aiController.enemyAttackDatas[i].Cooltime))
+            if(runner._aiController._aiBrain.IsSkillReady(runner._aiController.inGameenemyAttackDatas[i].AttackName,
+            runner._aiController.inGameenemyAttackDatas[i].Cooltime))
             {
                 return NodeState.SUCCESS;
             }
