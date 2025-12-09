@@ -25,7 +25,6 @@ public class PlayerDataSO : ScriptableObject
 
     public float MoveSpeed = 5f; // 이동 속도
     public float RotateSpeed = 5f; // 회전 속도
-    public float Gravity = -9.81f; // 중력 값
     public float GroundCheckDistance = 0.1f; // 지면 체크 거리
 
     [Header("Combat")]

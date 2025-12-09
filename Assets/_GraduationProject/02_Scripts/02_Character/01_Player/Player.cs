@@ -299,7 +299,7 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void OnFixedUpdate()
     {
-        _movement.ApplyGravity(Data.Gravity);
+        _movement.ApplyGravity();
     
     }
     

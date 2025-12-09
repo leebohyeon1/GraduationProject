@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// <summary>
     /// 중력을 적용합니다.
     /// </summary>
-    public void ApplyGravity(float gravityScale)
+    public void ApplyGravity()
     {
         if (_isGrounded && _velocity.y < 0)
         {
@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         }
         else
         {
-            _velocity.y += gravityScale * Time.fixedDeltaTime;
+            _velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한
