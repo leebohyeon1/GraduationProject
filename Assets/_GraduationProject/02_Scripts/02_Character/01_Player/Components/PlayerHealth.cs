@@ -11,7 +11,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private PlayerEvents _events; // 플레이어 이벤트
 
     private int _currentStiffness; // 현재 경직도
-    private int _stiffnessThreshold = 100; // 경직 임계값
     private float _stiffnessDuration; // 경직 지속 시간
     private float _knockbackForce; // 넉백 힘
     private DamageData _damageData; // 데미지 데이터
@@ -23,7 +22,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
     #region Properties
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
-    public int StiffnessThreshold => _stiffnessThreshold; // 경직 임계값
+    public int StiffnessThreshold => 100; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
     public float KnockbackForce => _knockbackForce; // 넉백 힘 
 
