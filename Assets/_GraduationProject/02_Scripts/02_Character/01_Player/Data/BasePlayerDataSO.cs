@@ -20,12 +20,10 @@ public class PlayerDataSO : ScriptableObject
     public int MaxMana = 3;
 
     [Header("Movement")]
-    public LayerMask GroundLayerMask = 1 << 3; // 지면으로 인식할 레이어 마스크
     public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
 
     public float MoveSpeed = 5f; // 이동 속도
     public float RotateSpeed = 5f; // 회전 속도
-    public float GroundCheckDistance = 0.1f; // 지면 체크 거리
 
     [Header("Combat")]
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
