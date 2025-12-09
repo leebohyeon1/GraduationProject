@@ -13,7 +13,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
 
-    public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
+    public void Initialize(Enemy owner,EnemyStatMultiplierSO statMultiplier = default)
     {
         _enemy = owner;
         _aiBrain = new AiBrain(owner);

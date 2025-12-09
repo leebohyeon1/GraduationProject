@@ -19,7 +19,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public bool IsInvincible => throw new NotImplementedException();
     Enemy _owner;
     private float _knockbackResistance = 1f;
-    public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
+    public void InitializeHealth(Enemy owner, EnemyStatMultiplierSO statMultiplier = default)
     {
         _owner = owner;
         _knockbackResistance = statMultiplier?.KnockbackResistance ?? 1f;
