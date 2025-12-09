@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +12,14 @@ public class SurvivorLikeWaveSO : ScriptableObject
     public List<SurvivorLikeWaveSO> NextWaves;
 }
 
+/// <summary>
+/// 웨이브에 소환되는 적 종류
+/// </summary>
 [Serializable]
 public struct SurvivorLikeWaveEntry
 {
     public GameObject EnemyPrefab;
     public int EnemyCount;
+
+    public EnemyStatMultiplier StatMultiplier;
 }

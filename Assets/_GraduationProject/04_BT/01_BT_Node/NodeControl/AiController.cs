@@ -25,7 +25,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
         for(int i = 0; i < enemyAttackDatas.Length; i++)
         {
             inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
-            inGameenemyAttackDatas[i].damageData.DamageAmount *= statMultiplier?.AttackMultiplier;
+            inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount *statMultiplier?.AttackMultiply);
             _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
         }
         

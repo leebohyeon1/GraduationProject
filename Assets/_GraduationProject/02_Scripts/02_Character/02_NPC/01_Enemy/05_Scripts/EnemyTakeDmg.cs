@@ -23,9 +23,9 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _owner = owner;
-        _knockbackResistance = statMultiplier?.KnockbackResistance ?? 1f;
+        _knockbackResistance = statMultiplier?.KnockbackMultiply ?? 1f;
         _maxHealth = enemyStat.Maxhealth;
-        _maxHealth *= statMultiplier?.HealthMultiply ?? 1f;
+        _maxHealth = (int)(_maxHealth * statMultiplier?.HealthMultiply ?? 1f);
         curHealth = _maxHealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
