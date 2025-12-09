@@ -12,18 +12,21 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private OnHealing _onHealingEvent;
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
+    public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
 
-    public void Initialize(Enemy owner,EnemyStatMultiplierSO statMultiplier = default)
+    public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
     {
         _enemy = owner;
         _aiBrain = new AiBrain(owner);
         _behaviorTree = _behaviorTree.Clone();
         _behaviorTree.SetRunner(owner, _aiBrain);
         _behaviorTree.rootNode?.initNode();
+        inGameenemyAttackDatas = new EnemyAttackData[enemyAttackDatas.Length];
         for(int i = 0; i < enemyAttackDatas.Length; i++)
         {
-            enemyAttackDatas[i].damageData.DamageAmount *= statMultiplier?.AttackMultiplier;
-            _aiBrain.AddEnemyAttackData(enemyAttackDatas[i]);
+            inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
+            inGameenemyAttackDatas[i].damageData.DamageAmount *= statMultiplier?.AttackMultiplier;
+            _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
         }
         
         // _onSwingMissEvent.Subscribe(this);
@@ -33,6 +36,13 @@ public class AiController : MonoBehaviour,IEventListener<string>
     {
         _onSwingMissEvent.Unsubscribe(this);
         _onHealingEvent.Unsubscribe(this);
+    }
+    void OnDestroy()
+    {
+        for(int i = 0; i < inGameenemyAttackDatas.Length; i++)
+        {
+            Destroy(inGameenemyAttackDatas[i]);
+        }
     }
     void Update()
     {

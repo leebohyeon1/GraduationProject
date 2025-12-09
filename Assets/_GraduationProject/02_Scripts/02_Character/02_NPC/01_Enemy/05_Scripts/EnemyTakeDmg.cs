@@ -8,9 +8,10 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStat enemyStat;
     public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
+    public int Maxhealth => _maxHealth;
+    
     int _maxHealth = 100;
     int curHealth = 100;
-    public int Maxhealth => _maxHealth;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
@@ -19,12 +20,13 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     public bool IsInvincible => throw new NotImplementedException();
     Enemy _owner;
     private float _knockbackResistance = 1f;
-    public void InitializeHealth(Enemy owner, EnemyStatMultiplierSO statMultiplier = default)
+    public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _owner = owner;
         _knockbackResistance = statMultiplier?.KnockbackResistance ?? 1f;
-        enemyStat *= statMultiplier?.HealthMultiply;
-        _maxHealth = curHealth = enemyStat.Maxhealth;
+        _maxHealth = enemyStat.Maxhealth;
+        _maxHealth *= statMultiplier?.HealthMultiply ?? 1f;
+        curHealth = _maxHealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
         _characterController = _owner.GetComponent<CharacterController>();
