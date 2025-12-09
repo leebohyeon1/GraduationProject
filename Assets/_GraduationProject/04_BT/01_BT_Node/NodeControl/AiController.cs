@@ -13,7 +13,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
 
-    public void Initialize(Enemy owner)
+    public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
     {
         _enemy = owner;
         _aiBrain = new AiBrain(owner);
@@ -22,8 +22,10 @@ public class AiController : MonoBehaviour,IEventListener<string>
         _behaviorTree.rootNode?.initNode();
         for(int i = 0; i < enemyAttackDatas.Length; i++)
         {
+            enemyAttackDatas[i].damageData.DamageAmount *= statMultiplier?.AttackMultiplier;
             _aiBrain.AddEnemyAttackData(enemyAttackDatas[i]);
         }
+        
         // _onSwingMissEvent.Subscribe(this);
         // _onHealingEvent.Subscribe(this);
     }
