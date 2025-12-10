@@ -114,18 +114,19 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
         int previousHealth = curHealth;
+        Debug.Log(damageData.AttackType);
         switch(damageData.AttackType)
         {
             case AttackType.Charge1:
-        _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge1);
+        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_1_FB", AttackType.Charge1);
                 // You can add armor calculation here
                 break;
             case AttackType.Charge2:
-        _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge2);
+        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_2_FB", AttackType.Charge2);
                 // You can add magic resistance calculation here
                 break;
             case AttackType.Charge3:
-        _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge3);
+        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_3_FB", AttackType.Charge3);
                 // You can add armor calculation here
                 break;
             case AttackType.Heavy:
