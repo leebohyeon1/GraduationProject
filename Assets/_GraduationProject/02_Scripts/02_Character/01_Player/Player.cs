@@ -130,6 +130,7 @@ public class Player : DIMonoBehaviour
         {
             _events = GetComponent<PlayerEvents>();
         }
+        _events.Initialize(_stats);
 
         if (_input == null)
         {

@@ -168,6 +168,7 @@ public class PlayerEvents : FeedbackPlayer<string>
     public void TriggerChargeStart()
     {
         OnAttackStart?.Invoke();
+        PlayFeedback("ChargeStart_FB");
         TriggerRegenStamina(false);
     }
 
@@ -260,6 +261,7 @@ public class PlayerEvents : FeedbackPlayer<string>
     public void TriggerParryDamageAffect(Transform transform)
     {
         OnParryDamageAffect?.Invoke(transform);
+        PlayFeedback("Parrying_Sucess_FB", transform.position);
     }
 
     /// <summary>
