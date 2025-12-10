@@ -123,10 +123,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             KnockDown();
             return;
         }
-
+        Debug.Log(DamageData.AttackType);
         switch(DamageData.AttackType)
         {
             case AttackType.Light:
+                MiddleStagger();
                 break;
             case AttackType.Middle:
                 MiddleStagger(); // 약한 경직
@@ -188,7 +189,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private void KnockDown()
     {
         _stats.IsKnockDown = true;
-        _stiffnessDuration = 3f;
+        _stiffnessDuration = 1.5f;
         _knockbackForce = 0f;
     }
 
