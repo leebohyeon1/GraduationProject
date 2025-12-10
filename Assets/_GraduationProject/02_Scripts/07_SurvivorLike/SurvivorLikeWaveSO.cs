@@ -10,6 +10,11 @@ public class SurvivorLikeWaveSO : ScriptableObject
 
     [Header("Next Waves")]
     public List<SurvivorLikeWaveSO> NextWaves;
+
+    public SurvivorLikeWaveSO GetNextWave()
+    {
+        return NextWaves[UnityEngine.Random.Range(0, NextWaves.Count - 1)];
+    }
 }
 
 /// <summary>

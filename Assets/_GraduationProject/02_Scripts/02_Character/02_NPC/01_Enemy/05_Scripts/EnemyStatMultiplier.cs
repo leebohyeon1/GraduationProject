@@ -10,13 +10,13 @@ public class EnemyStatMultiplier
     /// <summary>
     /// 체력 배율
     /// </summary>
-    public float HealthMultiply;
+    public float HealthMultiply = 1f;
     /// <summary>
     /// 공격력 배율
     /// </summary>
-    public float AttackMultiply;
+    public float AttackMultiply = 1f;
     /// <summary>
     /// 넉백 거리 배율
     /// </summary>
-    public float KnockbackMultiply;
+    public float KnockbackMultiply = 1f;
 }

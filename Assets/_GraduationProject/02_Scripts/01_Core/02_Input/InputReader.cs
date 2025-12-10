@@ -28,6 +28,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action<Vector2> LockOnTargetChangeVector2Event = delegate { };
 
     public event Action InteractEvent = delegate { };
+    public event Action InteractHoldEvent = delegate { };
+    public event Action InteractCancelEvent = delegate { };
 
     // UI Actions
     public event Action CancelEvent = delegate { };
@@ -137,9 +139,21 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        switch (context.phase)
         {
-            InteractEvent.Invoke();
+            case InputActionPhase.Performed:
+                if (context.interaction is HoldInteraction)
+                {
+                    InteractHoldEvent.Invoke();
+                }
+                else
+                {
+                    InteractEvent.Invoke();
+                }
+                break;
+            case InputActionPhase.Canceled:
+                InteractCancelEvent.Invoke();
+                break;
         }
     }
 
