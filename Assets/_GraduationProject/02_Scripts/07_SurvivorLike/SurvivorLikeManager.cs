@@ -1,4 +1,4 @@
-using BH_Lib.AssetManager;
+ï»¿using BH_Lib.AssetManager;
 using BH_Lib.DI;
 using DG.Tweening;
 using System;
@@ -48,7 +48,7 @@ public class SurvivorLikeManager : MonoBehaviour
 
 
     /// <summary>
-    /// ´ÙÀ½ ¿şÀÌºê
+    /// ë‹¤ìŒ ì›¨ì´ë¸Œ
     /// </summary>
     private void NextWave()
     {
@@ -64,9 +64,9 @@ public class SurvivorLikeManager : MonoBehaviour
                 _enemyPool.Add(enemyPrefab.name, new List<GameObject>());
             }
 
-            // ½ºÆùÇØ¾ßÇÒ Àû ¼ıÀÚ¿Í ÇöÀç Ç®¸µµÇ¾î ÀÖ´Â Àû ¼ıÀÚÀÇ Â÷
+            // ìŠ¤í°í•´ì•¼í•  ì  ìˆ«ìì™€ í˜„ì¬ í’€ë§ë˜ì–´ ìˆëŠ” ì  ìˆ«ìì˜ ì°¨
             different = entri.EnemyCount - pool.Count;
-            // ½ºÆùÇØ¾ßÇÒ Àû ¼ö°¡ ¸¹À¸¸é Àû ¼ÒÈ¯
+            // ìŠ¤í°í•´ì•¼í•  ì  ìˆ˜ê°€ ë§ìœ¼ë©´ ì  ì†Œí™˜
             if(different > 0)
             {
                 for (index = 0; index < different; index++)
@@ -77,7 +77,7 @@ public class SurvivorLikeManager : MonoBehaviour
                 }
             }
 
-            // ½ºÆùÇØ¾ßÇÒ ¼ö¸¸Å­ ½ºÆù
+            // ìŠ¤í°í•´ì•¼í•  ìˆ˜ë§Œí¼ ìŠ¤í°
             for (index = 0; index < entri.EnemyCount; index++)
             {
                 Spawn(pool[index]);
@@ -93,9 +93,9 @@ public class SurvivorLikeManager : MonoBehaviour
     }
     
     /// <summary>
-    /// ÀûÀ» ·£´ı À§Ä¡¿¡ ½ºÆù
+    /// ì ì„ ëœë¤ ìœ„ì¹˜ì— ìŠ¤í°
     /// </summary>
-    /// <param name="gameObject">½ºÆùÇÒ ¿ÀºêÁ§Æ®</param>
+    /// <param name="gameObject">ìŠ¤í°í•  ì˜¤ë¸Œì íŠ¸</param>
     private void Spawn(GameObject gameObject)
     {
         SurvivorLikeEnemyConfig config = gameObject.AddComponent<SurvivorLikeEnemyConfig>();
@@ -109,6 +109,10 @@ public class SurvivorLikeManager : MonoBehaviour
         _arriveEnemyList.Add(gameObject);
     }
 
+    /// <summary>
+    /// ì›¨ì´ë¸Œ ë„˜ì–´ê°€ëŠ” íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸
+    /// </summary>
+    /// <param name="isHold"></param>
     private void UpdateHoldTimer(bool isHold)
     {
         if(!_canSkipWave)
