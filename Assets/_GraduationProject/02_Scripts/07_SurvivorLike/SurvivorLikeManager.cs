@@ -1,8 +1,10 @@
 using BH_Lib.AssetManager;
 using BH_Lib.DI;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [Register(LifetimeScope.Singleton)]
 public class SurvivorLikeManager : MonoBehaviour
@@ -12,14 +14,15 @@ public class SurvivorLikeManager : MonoBehaviour
     [SerializeField] private int _waveIndex;
     [SerializeField] private float _nextWaveHoldDuration = 1f;
     private float _currentWaveHoldPercent = 0f;
-
-
+   
     [Header("Spawn")]
     [SerializeField] private Transform[] _spawnPoints;
 
     [Header("Input")]
     [SerializeField] private InputReader _inputReader;
 
+    [Header("Events")]
+    [SerializeField] private UpdateNextWaveHoldTimeEventSO UpdateNextWaveHoldTimeEvent;
 
     private Dictionary<string, List<GameObject>> _enemyPool = new Dictionary<string, List<GameObject>>();
 
@@ -104,6 +107,7 @@ public class SurvivorLikeManager : MonoBehaviour
             (X) =>
             {
                 _currentWaveHoldPercent = X;
+                UpdateNextWaveHoldTimeEvent.Publish(_currentWaveHoldPercent);
             },
             1f,
             _nextWaveHoldDuration)
@@ -117,6 +121,7 @@ public class SurvivorLikeManager : MonoBehaviour
               (X) =>
               {
                   _currentWaveHoldPercent = X;
+                  UpdateNextWaveHoldTimeEvent.Publish(_currentWaveHoldPercent);
               },
               0f,
               duration)
