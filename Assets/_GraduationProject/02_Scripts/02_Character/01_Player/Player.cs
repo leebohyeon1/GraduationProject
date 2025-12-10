@@ -299,7 +299,6 @@ public class Player : DIMonoBehaviour
     private void OnFixedUpdate()
     {
         _movement.ApplyGravity();
-    
     }
     
     #region Event

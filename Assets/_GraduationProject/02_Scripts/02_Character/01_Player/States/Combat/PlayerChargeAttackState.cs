@@ -14,24 +14,25 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     protected override PlayerAttackDataSO p_AttackData => p_context.Stats.Data.CombatData.ChargeAttackDatas[p_context.Stats.ChargeLevel - 1].AttackData;
      
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
-        : base(context, stateMachine) { }
+        : base(context, stateMachine) 
+    {
+        p_context.Events.ParrySucceeded += OnParrySucceeded;
+    }
+
+    ~PlayerChargeAttackState()
+    {
+        p_context.Events.ParrySucceeded -= OnParrySucceeded;
+    }
 
     public override void OnEnter()
     {
-        p_context.Events.OnParryWindowFinish += HandleParryWindowFinish;
-        p_context.Events.OnParryDamageAffect += HandleParryDamageAffect;
-        p_context.Events.TriggerChargeAttackStart();
-
         base.OnEnter();
     }
 
     public override void OnExit()
     {
         p_context.Stats.ChargeLevel = 0;
-
         p_context.Stats.IsParring = false;
-        p_context.Events.OnParryWindowFinish -= HandleParryWindowFinish;
-        p_context.Events.OnParryDamageAffect -= HandleParryDamageAffect;
 
         base.OnExit();
     }
@@ -39,7 +40,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// <summary>
     /// 공격 판정이 발생하는 시점에 호출됩니다.
     /// </summary>
-    protected override void HandleAttackPerform()
+    protected override void OnAttackPerformed()
     {
         Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
 
@@ -49,7 +50,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
             {
                 p_context.Stats.ParrySet.Add(parryable);
             }
-            p_context.Events.TriggerChargeAttackAffect(collider);
+            p_context.Events.TriggerChargeAttackAffected(collider);
         }
 
         p_context.Input.SetAttackHeldInput(false);
@@ -76,18 +77,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         }
     }
 
-    /// <summary>
-    /// 패링 검사가 종료되는 시점
-    /// </summary>
-    private void HandleParryWindowFinish()
-    {
-        if (p_context.Stats.ParrySet.Count > 0)
-        {
-            p_context.Stats.ParrySet.Clear();
-        }
-    }
-
-    private void HandleParryDamageAffect(Transform transform)
+    private void OnParrySucceeded(Transform transform)
     {
         if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
         {

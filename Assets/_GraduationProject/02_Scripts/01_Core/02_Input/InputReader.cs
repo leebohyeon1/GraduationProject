@@ -21,7 +21,6 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action AttackCancelledEvent = delegate { };
 
     public event Action DodgeEvent = delegate { };
-    public event Action DefendCancelledEvent = delegate { };
     public event Action ParryEvent = delegate { };
     public event Action ToggleLockOnEvent = delegate { };
     public event Action LockOnTargetChangeEvent = delegate { };

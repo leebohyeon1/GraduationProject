@@ -46,11 +46,6 @@ public class PlayerCombatData
 
     [Header("Damaged")]
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
-    public float DefendMoveSpeed; // 가드 중 이동 속도
-    [Range(0f, 1f)]
-    public float DefendDamageReductionRate; // 방어 시 데미지 감소율
-    public float DefendStaggerDuration; // 방어 시 경직 임계값
-    public float DefendKnockbackForce; // 방어 시 넉백 힘
 
     [Space(10f)]
     public float MiddleStaggerDuration; // 약한 경직 시간

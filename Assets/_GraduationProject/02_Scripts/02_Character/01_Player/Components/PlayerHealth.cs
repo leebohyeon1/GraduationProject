@@ -44,6 +44,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         OnHealthChanged?.Invoke(Health, Health);
         OnStiffnessChanged?.Invoke(0, 0);
+
+        _events.DodgeStarted += OnDodgeStarted;
     }
 
     /// <summary>
@@ -51,6 +53,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     public void Dispose()
     {
+        _events.DodgeStarted -= OnDodgeStarted;
     }
 
     /// <summary>
@@ -74,13 +77,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
 
-        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.Data.CombatData.ParryAngle / 2f)  && 
-            damageData.AttackType != AttackType.Heavy && damageData.AttackType != AttackType.Range &&
-            damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.Data.CombatData.ParryAngle / 2f) 
+            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
         {
             if (!_stats.ParrySet.Contains(parryable))
             {
-                _events.TriggerParryDamageAffect(damageData.AttackerTransform);
+                _events.TriggerParrySucceeded(damageData.AttackerTransform);
                 _stats.ParrySet.Add(parryable);
             }
 
@@ -91,14 +93,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         _damageData = damageData;
 
-        int stiffenessAmount = damageData.StiffnessAmount;
-        if (_stats.IsDefending)
-        {
-            damageData.DamageAmount = Mathf.RoundToInt(damageData.DamageAmount * _stats.Data.CombatData.DefendDamageReductionRate);
-            stiffenessAmount = Mathf.RoundToInt(stiffenessAmount * 0.5f);
-        }
-
-        AddStiffness(stiffenessAmount);
+        AddStiffness(damageData.StiffnessAmount);
         ChangeHealth(-damageData.DamageAmount);
 
         if (IsDead)
@@ -123,13 +118,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             KnockDown();
             return;
         }
-        Debug.Log(DamageData.AttackType);
+
         switch(DamageData.AttackType)
         {
-            case AttackType.Light:
-                MiddleStagger();
-                break;
-            case AttackType.Middle:
+            case AttackType.Normal:
                 MiddleStagger(); // 약한 경직
                 break;
             case AttackType.Range:
@@ -163,17 +155,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _stats.IsMiddleHit = true;
         _damageData.KnockbackCurve = _stats.Data.CombatData.KnockbackCurve;
-
-        if (_stats.IsDefending)
-        {
-            _stiffnessDuration = _stats.Data.CombatData.DefendStaggerDuration;
-            _knockbackForce = _stats.Data.CombatData.DefendKnockbackForce;
-        }
-        else
-        {
-            _stiffnessDuration = _stats.Data.CombatData.MiddleStaggerDuration;
-            _knockbackForce = _stats.Data.CombatData.MiddleKnockbackForce;
-        }
+        _stiffnessDuration = _stats.Data.CombatData.MiddleStaggerDuration;
+        _knockbackForce = _stats.Data.CombatData.MiddleKnockbackForce;
     }
 
     /// <summary>
@@ -231,4 +214,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _damageData = new DamageData();
     }
 
+
+    #region EventHandlers
+    /// <summary>
+    /// 구르기 시작 이벤트 핸들러
+    /// </summary>
+    private void OnDodgeStarted()
+    {
+        SetInvisible(true); // 회피 중 무적
+    }
+
+    #endregion
 }

@@ -68,8 +68,7 @@ public struct DamageData
 [Serializable]
 public enum AttackType
 {
-    Light,
-    Middle,
+    Normal,
     Heavy,
     Range,
     Charge1,

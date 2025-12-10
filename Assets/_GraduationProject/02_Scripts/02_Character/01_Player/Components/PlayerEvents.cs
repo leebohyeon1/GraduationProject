@@ -25,21 +25,20 @@ public class PlayerEvents : FeedbackPlayer<string>
     private PlayerStats _stats;
 
     #region Events
-    public event Action<bool> OnBattleStateChaged; // 전투 상태 변경 이벤트
+    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
 
-    public event Action OnDodgeFinish; // 회피 종료 이벤트
+    public event Action DodgeStarted, DodgeFinished; // 회피 종료 이벤트
 
-    public event Action OnAttackStart, OnAttackPerform; // 공격 시작, 공격 수행 이벤트
-    public event Action<Collider> OnAttackAffect; // 공격 피격 이벤트
-    public event Action OnAttackInputWindowStart, OnAttackFinish; // 공격 종료 이벤트
+    public event Action AttackStarted, AttackPerformed; // 공격 시작, 공격 수행 이벤트
+    public event Action<Collider> AttackAffected; // 공격 타격 이벤트
+    public event Action AttackInputWindowStarted, AttackFinished; // 공격 종료 이벤트
 
-    public event Action<Collider> OnChargeAttackAffect; // 차지 공격 피격 이벤트
+    public event Action<Collider> ChargeAttackAffected; // 차지 공격 타격 이벤트
 
-    public event Action OnParryStart, OnParryFinish;    
-    public event Action OnParryWindowStart, OnParryWindowFinish; // 패링 수행 이벤트
-    public event Action<Transform> OnParryDamageAffect; // 패링 성공 이벤트
+    public event Action ParryWindowStarted, ParryWindowFinished; // 패링 수행 이벤트
+    public event Action<Transform> ParrySucceeded; // 패링 성공 이벤트
 
-    public event Action<bool> OnRegenStamina; // 스테미나 회복 이벤트
+    public event Action<bool> RegenStamina; // 스테미나 회복 이벤트
     #endregion
 
 
@@ -54,25 +53,26 @@ public class PlayerEvents : FeedbackPlayer<string>
     /// </summary>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
-        OnBattleStateChaged?.Invoke(isBattleState);
+        BattleStateChaged?.Invoke(isBattleState);
     }
 
     #region Movement
 
     /// <summary>
-    /// 회피 시작 피드백을 재생합니다.
+    /// 회피 시작 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerDodgeStart()
+    public void TriggerDodgeStarted()
     {
+        DodgeStarted?.Invoke();
         TriggerRegenStamina(false);
     }
 
     /// <summary>
     /// 회피 종료 이벤트를 발생시키고 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerDodgeFinish()
+    public void TriggerDodgeFinished()
     {
-        OnDodgeFinish?.Invoke();
+        DodgeFinished?.Invoke();
         TriggerRegenStamina(true);
     }
 
@@ -89,7 +89,7 @@ public class PlayerEvents : FeedbackPlayer<string>
     /// <summary>
     /// 피격 타입에 맞는 피드백을 재생합니다.
     /// </summary>
-    public void TriggerTakeDamge(PlayerDamagedType damagedType)
+    public void TriggerTakeDamged(PlayerDamagedType damagedType)
     {
         switch (damagedType)
         {
@@ -106,82 +106,75 @@ public class PlayerEvents : FeedbackPlayer<string>
     }
     #endregion
 
+ 
+    #region Attack
+    /// <summary>
+    /// 공격 시작 피드백을 재생합니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackStarted()
+    {
+        AttackStarted?.Invoke();
+        TriggerRegenStamina(false);
+    }
+
     /// <summary>
     /// 공격 수행 이벤트를 발생시킵니다. (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerAttackPerform()
+    public void TriggerAttackPerformed()
     {
-        OnAttackPerform?.Invoke();
-    }
-
-    public void TriggerAttackInputWindowStart()
-    {
-        OnAttackInputWindowStart?.Invoke();
-    }
-
-    public void TriggerAttackFinish()
-    {
-        OnAttackFinish?.Invoke();
-    }
-
-    #region Attack
-    /// <summary>
-    /// 첫 번째 공격 시작 피드백을 재생합니다.
-    /// </summary>
-    public void TriggerFirstAttackStart()
-    {
-        OnAttackStart?.Invoke();
-        TriggerRegenStamina(false);
-    }
-
-    /// <summary>
-    /// 두 번째 공격 시작 피드백을 재생합니다.
-    /// </summary>
-    public void TriggerSecondAttackStart()
-    {
-        OnAttackStart?.Invoke();
-        TriggerRegenStamina(false);
-    }
-
-    /// <summary>
-    /// 세 번째 공격 시작 피드백을 재생합니다.
-    /// </summary>
-    public void TriggerThirdAttackStart()
-    {
-        OnAttackStart?.Invoke();
-        TriggerRegenStamina(false);
+        AttackPerformed?.Invoke();
     }
 
     /// <summary>
     /// 근접 공격 타격 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerAttackAffect(Collider collider)
+    public void TriggerAttackAffected(Collider collider)
     {
-        OnAttackAffect?.Invoke(collider);
+        AttackAffected?.Invoke(collider);
+    }  
+
+    /// <summary>
+    /// 공격 중 다음 입력을 받기 시작합니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackInputWindowStarted()
+    {
+        AttackInputWindowStarted?.Invoke();
     }
+
+    /// <summary>
+    /// 공격을 끝내고 다음 행동으로 넘어갑니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackFinished()
+    {
+        AttackFinished?.Invoke();
+    }
+
     #endregion
 
     #region ChargeAttack
     /// <summary>
-    /// 차지 시작 피드백을 재생합니다.
+    /// 차지 시작 피드백을 재생합니다.  (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerChargeStart()
+    public void TriggerChargeStarted()
     {
-        OnAttackStart?.Invoke();
         PlayFeedback("ChargeStart_FB");
         TriggerRegenStamina(false);
+        TriggerBattleStateChanged(true);
     }
 
     /// <summary>
     /// 차지 취소 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeCancel()
+    public void TriggerChargeCanceled()
     {
         TriggerRegenStamina(true);
         StopFeedback("ChargeStart_FB");
         PlayFeedback("ChargeCancel_FB");
     }
 
+    /// <summary>
+    /// 차지 레벨 전환 시 피드백 재생
+    /// </summary>
     public void TriggerChargeLevelFeedback(int tier)
     {
         switch (tier)
@@ -199,11 +192,10 @@ public class PlayerEvents : FeedbackPlayer<string>
     }
 
     /// <summary>
-    /// 차지 공격 시작 피드백을 재생합니다.
+    /// 차지 공격 시작 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerChargeAttackStart()
+    public void TriggerChargeAttackFeedbackStarted()
     {
-        TriggerRegenStamina(false);
         StopFeedback("ChargeStart_FB");
         switch (_stats.ChargeLevel)
         {
@@ -217,13 +209,12 @@ public class PlayerEvents : FeedbackPlayer<string>
                 PlayFeedback("ChargeAttackStartLevel3_FB");
                 break;
         }
-        OnAttackStart?.Invoke();
     }
 
     /// <summary>
-    /// 차지 공격 종료 피드백을 재생합니다.
+    /// 차지 공격 종료 피드백을 재생합니다. (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerChargeAttackFinish()
+    public void TriggerChargeAttackFinished()
     {
         TriggerRegenStamina(true);
     }
@@ -231,60 +222,43 @@ public class PlayerEvents : FeedbackPlayer<string>
     /// <summary>
     /// 차지 공격 피격 이벤트를 발생시키고 티어에 맞는 피드백을 재생합니다.
     /// </summary>
-    public void TriggerChargeAttackAffect(Collider collider)
+    public void TriggerChargeAttackAffected(Collider collider)
     {
-        OnChargeAttackAffect?.Invoke(collider);
+        ChargeAttackAffected?.Invoke(collider);
     }
     #endregion
 
     #region Parry
 
     /// <summary>
-    /// 패링 시작 이벤트
-    /// </summary>
-    public void TriggerParryStart()
-    {
-        OnParryStart?.Invoke();
-    }
-
-    /// <summary>
     /// 패링 검사 시작 (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerParryWindowStart()
+    public void TriggerParryWindowStarted()
     {
-        OnParryWindowStart?.Invoke();
+        ParryWindowStarted?.Invoke();
     }
 
     /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerParryDamageAffect(Transform transform)
+    public void TriggerParrySucceeded(Transform transform)
     {
-        OnParryDamageAffect?.Invoke(transform);
+        ParrySucceeded?.Invoke(transform);
         PlayFeedback("Parrying_Sucess_FB", transform.position);
     }
 
     /// <summary>
     /// 패링 검사 종료 (애니메이션 이벤트로 호출)
     /// </summary>
-    public void TriggerParryWindowFinish()
+    public void TriggerParryWindowFinished()
     {
-        OnParryWindowFinish?.Invoke();
+        ParryWindowFinished?.Invoke();
     }    
-
-    /// <summary>
-    /// 패링 종료 시 호출 (애니메이션 이벤트로 호출)
-    /// </summary>
-    public void TriggerParryFinish()
-    {
-        OnParryFinish?.Invoke();
-    }
-
     #endregion
 
     public void TriggerRegenStamina(bool canRegen)
     {
-        OnRegenStamina?.Invoke(canRegen);
+        RegenStamina?.Invoke(canRegen);
     }
 
     #endregion
