@@ -21,7 +21,7 @@ public class SurvivorLikeWaveSO : ScriptableObject
 /// 웨이브에 소환되는 적 종류
 /// </summary>
 [Serializable]
-public struct SurvivorLikeWaveEntry
+public class SurvivorLikeWaveEntry
 {
     public GameObject EnemyPrefab;
     public int EnemyCount;

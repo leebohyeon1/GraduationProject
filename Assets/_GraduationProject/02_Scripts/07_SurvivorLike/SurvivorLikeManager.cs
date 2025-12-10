@@ -1,9 +1,11 @@
 ﻿using BH_Lib.AssetManager;
 using BH_Lib.DI;
+using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
 
 [Register(LifetimeScope.Singleton)]
@@ -14,7 +16,7 @@ public class SurvivorLikeManager : MonoBehaviour
     [SerializeField] private int _waveIndex;
     [SerializeField] private float _nextWaveHoldDuration = 1f;
     private float _currentWaveHoldPercent = 0f;
-    private bool _canSkipWave = false;
+    private bool _canSkipWave = true;
 
     [Header("Spawn")]
     [SerializeField] private Transform[] _spawnPoints;
@@ -56,21 +58,27 @@ public class SurvivorLikeManager : MonoBehaviour
 
         int index = 0;
         int different = 0;
+        List<GameObject> pool = new List<GameObject>();
         foreach (var entri in _currentWave.Entries)
         {
             GameObject enemyPrefab = entri.EnemyPrefab;
-            if (!_enemyPool.TryGetValue(enemyPrefab.name, out List<GameObject> pool))
+            if (!_enemyPool.TryGetValue(enemyPrefab.name, out pool))
             {
+                Log.PrintColor(Color.beige, "풀 생성");
                 _enemyPool.Add(enemyPrefab.name, new List<GameObject>());
+                pool = _enemyPool[enemyPrefab.name];
             }
 
             // 스폰해야할 적 숫자와 현재 풀링되어 있는 적 숫자의 차
             different = entri.EnemyCount - pool.Count;
+            Log.Print("차이: " + different);
+
             // 스폰해야할 적 수가 많으면 적 소환
-            if(different > 0)
+            if (different > 0)
             {
                 for (index = 0; index < different; index++)
                 {
+                    Log.PrintColor(Color.beige, "오브젝트 생성");
                     GameObject newEnemy = Instantiate(enemyPrefab);
                     newEnemy.SetActive(false);
                     _enemyPool[enemyPrefab.name].Add(newEnemy);
@@ -80,7 +88,8 @@ public class SurvivorLikeManager : MonoBehaviour
             // 스폰해야할 수만큼 스폰
             for (index = 0; index < entri.EnemyCount; index++)
             {
-                Spawn(pool[index]);
+                Log.PrintColor(Color.beige, "스폰");
+                Spawn(pool[index], entri.StatMultiplier);
             }
         }
 
@@ -96,16 +105,24 @@ public class SurvivorLikeManager : MonoBehaviour
     /// 적을 랜덤 위치에 스폰
     /// </summary>
     /// <param name="gameObject">스폰할 오브젝트</param>
-    private void Spawn(GameObject gameObject)
+    private void Spawn(GameObject gameObject, EnemyStatMultiplier statMultiplier)
     {
+        Enemy enemy = gameObject.GetComponent<Enemy>(); 
+        // 적 스텟 배율 적용
+        gameObject.GetComponent<AiController>().Initialize(enemy, statMultiplier);
+        gameObject.GetComponent<EnemyTakeDmg>().InitializeHealth(enemy, statMultiplier);
+        
+        // 서바이벌 콘텐츠 전용 컴포넌트 적용
         SurvivorLikeEnemyConfig config = gameObject.AddComponent<SurvivorLikeEnemyConfig>();
         config.Died += OnEnemyDied;
-
+        
+        // 스폰 위치 설정
         int randomIndex = Random.Range(0, _spawnPoints.Length - 1);
         gameObject.transform.position = _spawnPoints[randomIndex].position;
 
         gameObject.SetActive(true);
 
+        // 살아있는 적 리스트에 등록
         _arriveEnemyList.Add(gameObject);
     }
 
