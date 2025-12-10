@@ -12,7 +12,6 @@ public class PlayerStats: IDisposable
     private PlayerDataSO _data;
 
     // State
-    public bool IsDefending; // 방어중인가?
     public bool IsInvincible; // 무적인가?
     public bool IsParring; // 패리중인가?
     public bool IsLockOn; // 락온중인가?
@@ -47,11 +46,23 @@ public class PlayerStats: IDisposable
 
         CurrentHealth = _data.MaxHealth;
         CurrentStamina = _data.MaxStamina;
+
+        _events.ParryWindowFinished += OnParryWindowFinished;
     }
 
     public void Dispose()
     {
+        _events.ParryWindowFinished -= OnParryWindowFinished;
     }
 
-
+    /// <summary>
+    /// 패링 검사가 종료되는 시점
+    /// </summary>
+    private void OnParryWindowFinished()
+    {
+        if (ParrySet.Count > 0)
+        {
+            ParrySet.Clear();
+        }
+    }
 }

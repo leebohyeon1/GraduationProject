@@ -20,12 +20,7 @@ public class PlayerChargeState : BaseState<Player>
         p_context.Animator.SetBool("IsCharge", true);
 
         p_context.Stats.ChargeLevel = 0;
-        _chargeTimer = 0f;
-
-        p_context.Events.TriggerChargeStart();
-        p_context.Events.TriggerBattleStateChanged(true);
-
-      
+        _chargeTimer = 0f;   
     }
 
     public override void OnUpdate()
@@ -97,7 +92,7 @@ public class PlayerChargeState : BaseState<Player>
     {
         p_context.Animator.SetBool("IsCharge", false);
         p_context.Events.TriggerBattleStateChanged(true);
-        p_context.Events.TriggerChargeCancel();
+        p_context.Events.TriggerChargeCanceled();
     }
 
 }

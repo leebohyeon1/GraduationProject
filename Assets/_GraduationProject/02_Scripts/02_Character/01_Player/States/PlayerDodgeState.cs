@@ -13,14 +13,23 @@ public class PlayerDodgeState : BaseState<Player>
     private Type _nextState; // 다음 전환될 상태
 
     public PlayerDodgeState(Player context, StateMachine<Player> stateMachine)
-    : base(context, stateMachine) { }
+    : base(context, stateMachine) 
+    {
+        p_context.Events.DodgeFinished += OnDodgeFinished;
+        p_context.Events.DodgeStarted += OnDodgeStarted;
+    }
+
+    ~PlayerDodgeState()
+    {
+        p_context.Events.DodgeFinished -= OnDodgeFinished;
+        p_context.Events.DodgeStarted -= OnDodgeStarted;
+    }
 
     public override void OnEnter()
     {
         _nextState = null;
 
         p_context.Animator.SetTrigger("Dodge");
-        p_context.Events.OnDodgeFinish += HandleDodgeFinish;
 
         // 입력 방향에 따라 회피 방향 결정
         if (p_context.Input.MoveInput == Vector2.zero)
@@ -37,17 +46,34 @@ public class PlayerDodgeState : BaseState<Player>
         {
             p_context.Movement.RotateToDirection(_dodgeDirection);
         }
+    }
 
-        p_context.Health.SetInvisible(true); // 회피 중 무적
+    public override void OnUpdate()
+    {
+        HandleInput();
+    }
 
+    public override void OnExit()
+    {
+        p_context.Health.SetInvisible(false); // 무적 해제
+        DOTween.Kill(this);
+
+        // 전투 상태일 때 구르기만 전투 상태 유지
+        if (p_context.Combat.IsBattleState)
+        {
+            p_context.Events.TriggerBattleStateChanged(true);
+        }
+    }
+
+    public void OnDodgeStarted()
+    {
+        // 전투 상태일 때 구르기만 전투 상태 유지
         if (p_context.Combat.IsBattleState)
         {
             p_context.Events.TriggerBattleStateChanged(true);
         }
 
-        p_context.Events.TriggerDodgeStart();
-        p_context.Stamina.UseStamina(p_context.Stats.Data.CombatData.DodgeStamina);
-
+        // 구르기 시작
         float distance = p_context.Stats.Data.CombatData.DodgeDistance;
         float duration = p_context.Stats.Data.CombatData.DodgeDuration;
         AnimationCurve curve = p_context.Stats.Data.CombatData.DodgeAnimationCurve;
@@ -70,28 +96,10 @@ public class PlayerDodgeState : BaseState<Player>
             SetUpdate(UpdateType.Fixed);
     }
 
-    public override void OnUpdate()
-    {
-        HandleInput();
-    }
-
-    public override void OnExit()
-    {
-        p_context.Events.OnDodgeFinish -= HandleDodgeFinish;
-        p_context.Health.SetInvisible(false); // 무적 해제
-        DOTween.Kill(this);
-
-
-        if (p_context.Combat.IsBattleState)
-        {
-            p_context.Events.TriggerBattleStateChanged(true);
-        }
-    }
-
     /// <summary>
     /// 회피 애니메이션 종료 시 호출됩니다.
     /// </summary>
-    public void HandleDodgeFinish()
+    public void OnDodgeFinished()
     {
         p_stateMachine.ChangeState<PlayerIdleState>();
     }

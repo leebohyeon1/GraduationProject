@@ -230,8 +230,6 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void OnUpdate()
     {
-        _movement.CheckGrounded(Data.GroundCheckDistance,
-                    Data.GroundLayerMask);
 
         if (Time.time - Combat.LastBattleTime >= Stats.Data.BattleOutTime && Combat.IsBattleState)
         {
@@ -300,8 +298,7 @@ public class Player : DIMonoBehaviour
     /// </summary>
     private void OnFixedUpdate()
     {
-        _movement.ApplyGravity(Data.Gravity);
-    
+        _movement.ApplyGravity();
     }
     
     #region Event

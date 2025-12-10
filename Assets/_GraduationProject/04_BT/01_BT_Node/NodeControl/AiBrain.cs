@@ -143,9 +143,9 @@ public class AiBrain
             _owner.Movement.StopMovement();
         }
     }
-    public void SurroundTarget()
+    public void SurroundTarget(bool surround = true)
     {
-        
+        blackboard.SetValue("IsSurrounding", surround);
     }
     internal void AddEnemyAttackData(EnemyAttackData enemyAttackData)
     {

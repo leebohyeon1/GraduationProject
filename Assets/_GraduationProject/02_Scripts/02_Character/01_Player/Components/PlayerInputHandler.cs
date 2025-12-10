@@ -22,7 +22,6 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _attackHeldInput; // 공격 홀드 입력
     private bool _rangedAttackInput; // 원거리 공격 입력
     private bool _dodgeInput; // 회피 입력
-    private bool _defendInput; // 방어 입력
     private bool _skillInput; // 스킬 입력
     private bool _skilChangeInput; // 스킬 변경 입렵
     private bool _InteractInput; // 상호작용 입력
@@ -42,7 +41,6 @@ public class PlayerInputHandler : MonoBehaviour
     public bool AttackHeldInput => _attackHeldInput;
     public bool RangedAttackInput => _rangedAttackInput;
     public bool DodgeInput => _dodgeInput;
-    public bool DefendInput => _defendInput;
     public bool SkillInput => _skillInput;
     public bool SkillChangeInput => _skilChangeInput;
     public bool InteractInput => _InteractInput;
@@ -95,7 +93,6 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AttackCancelledEvent += OnAttackCancelled;
 
         _inputReader.DodgeEvent += OnDodge;
-        _inputReader.DefendCancelledEvent += OnDefendCancelled;
         _inputReader.ParryEvent += OnParry;
         _inputReader.ToggleLockOnEvent += ToggleLockOnEvent;
         _inputReader.LockOnTargetChangeEvent += LockOnTargetChangeEvent;
@@ -122,7 +119,6 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AttackCancelledEvent -= OnAttackCancelled;
 
         _inputReader.DodgeEvent -= OnDodge;
-        _inputReader.DefendCancelledEvent -= OnDefendCancelled;
         _inputReader.ParryEvent -= OnParry;
         _inputReader.ToggleLockOnEvent -= ToggleLockOnEvent;
         _inputReader.LockOnTargetChangeEvent -= LockOnTargetChangeEvent;
@@ -137,6 +133,8 @@ public class PlayerInputHandler : MonoBehaviour
         {
             _inputDeviceDetector.OnInputDeviceChanged.RemoveListener(OnInputDeviceDetectorChanged);
         }
+
+        _inputReader.Dispose();
     }
 
     // 각 입력 이벤트에 대한 콜백 함수들
@@ -170,8 +168,6 @@ public class PlayerInputHandler : MonoBehaviour
     }
     
     private void OnDodge() => _dodgeInput = true;
-    private void OnDefend() => _defendInput = true;
-    private void OnDefendCancelled() => _defendInput = false;
     private void OnParry() => _parryInput = true;
     private void ToggleLockOnEvent() => _toggleLockOnInput = true;
     private void LockOnTargetChangeEvent() => _lockOnTargetChangeInput = true;

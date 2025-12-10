@@ -23,7 +23,7 @@ public class PlayerHitState : BaseState<Player>
         // 피격 종류에 따라 다른 애니메이션 및 효과 재생
         if (p_context.Stats.IsKnockDown)
         {
-            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
+            p_context.Events.TriggerTakeDamged(PlayerDamagedType.KnockDown);
             p_context.Animator.SetTrigger("KnockDownHit");
         }
         else if (p_context.Stats.IsHeavyHit)
@@ -31,14 +31,14 @@ public class PlayerHitState : BaseState<Player>
             KnockbackMovement(_hitForce * _hitDuration);
 
             p_context.Animator.SetTrigger("Hit");
-            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Strong);
+            p_context.Events.TriggerTakeDamged(PlayerDamagedType.Strong);
         }
         else if(p_context.Stats.IsMiddleHit)
         {
             KnockbackMovement(_hitForce * _hitDuration);
               
             p_context.Animator.SetTrigger("Hit");
-            p_context.Events.TriggerTakeDamge(PlayerDamagedType.Normal);
+            p_context.Events.TriggerTakeDamged(PlayerDamagedType.Normal);
         }
 
         p_context.Animator.SetBool("IsHit", true);
@@ -58,7 +58,6 @@ public class PlayerHitState : BaseState<Player>
         if (_hitTimer >= _hitDuration)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
-            p_context.Combat.SetDefending(false);
         }
     }
 
