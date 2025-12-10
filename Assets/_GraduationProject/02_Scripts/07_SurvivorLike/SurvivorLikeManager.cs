@@ -14,7 +14,8 @@ public class SurvivorLikeManager : MonoBehaviour
     [SerializeField] private int _waveIndex;
     [SerializeField] private float _nextWaveHoldDuration = 1f;
     private float _currentWaveHoldPercent = 0f;
-   
+    private bool _canSkipWave = false;
+
     [Header("Spawn")]
     [SerializeField] private Transform[] _spawnPoints;
 
@@ -25,6 +26,7 @@ public class SurvivorLikeManager : MonoBehaviour
     [SerializeField] private UpdateNextWaveHoldTimeEventSO UpdateNextWaveHoldTimeEvent;
 
     private Dictionary<string, List<GameObject>> _enemyPool = new Dictionary<string, List<GameObject>>();
+    private List<GameObject> _arriveEnemyList = new List<GameObject>();   
 
     private async void Start()
     {
@@ -83,6 +85,11 @@ public class SurvivorLikeManager : MonoBehaviour
         }
 
         _waveIndex++;
+
+        _canSkipWave = false;
+
+        _currentWaveHoldPercent = 0;
+        UpdateNextWaveHoldTimeEvent.Publish(_currentWaveHoldPercent);
     }
     
     /// <summary>
@@ -91,14 +98,24 @@ public class SurvivorLikeManager : MonoBehaviour
     /// <param name="gameObject">스폰할 오브젝트</param>
     private void Spawn(GameObject gameObject)
     {
+        SurvivorLikeEnemyConfig config = gameObject.AddComponent<SurvivorLikeEnemyConfig>();
+        config.Died += OnEnemyDied;
+
         int randomIndex = Random.Range(0, _spawnPoints.Length - 1);
         gameObject.transform.position = _spawnPoints[randomIndex].position;
 
         gameObject.SetActive(true);
+
+        _arriveEnemyList.Add(gameObject);
     }
 
     private void UpdateHoldTimer(bool isHold)
     {
+        if(!_canSkipWave)
+        {
+            return;
+        }
+
         DOTween.Kill(this);
 
         if(isHold)
@@ -139,6 +156,18 @@ public class SurvivorLikeManager : MonoBehaviour
     private void OnInteractCancel()
     {
         UpdateHoldTimer(false);
+    }
+
+    private void OnEnemyDied(GameObject gameObject)
+    {
+        _arriveEnemyList.Remove(gameObject);
+
+        if(_arriveEnemyList.Count <= 0)
+        {
+            _canSkipWave = true;
+        }
+
+        gameObject.GetComponent<SurvivorLikeEnemyConfig>().Died -= OnEnemyDied;
     }
 
     #endregion
