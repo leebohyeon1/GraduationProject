@@ -41,7 +41,7 @@ public class RadialBlurFeedback : MonoBehaviour
         blurSettings.strength.overrideState = true;
 
         // 블러 모드를 Radial로 강제 설정
-        blurSettings.blurMode.value = BlurMode.Radial;
+        //blurSettings.blurMode.value = BlurMode.Radial;
 
         // 시작할 때는 효과를 꺼둠
         blurSettings.active = false;
