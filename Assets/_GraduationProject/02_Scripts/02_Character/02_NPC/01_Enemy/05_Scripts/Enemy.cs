@@ -53,7 +53,6 @@ public class Enemy : MonoBehaviour
         BillboardUI = GetComponentInChildren<BillboardUI>();
         BillboardUI?.Initialize();
         animator = GetComponent<Animator>();
-
         animHandler = GetComponent<Enemy_AnimationEventHandler>();
         animHandler.Initalize();
         ParrySystem = GetComponent<ParrySystem>();
@@ -83,7 +82,7 @@ public class Enemy : MonoBehaviour
         Movement.StopMovement();
         BillboardUI?.Initialize();
         SetState(EnemyState.Idle);
-
+        
     }
     void Start()
     {

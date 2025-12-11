@@ -25,12 +25,15 @@ public class PlayerStamina : MonoBehaviour, IDisposable
         _stats = data;
         _events = evets;
 
-        _events.OnRegenStamina += HandleRegenStamina;
+        _events.DodgeStarted += OnDodgeStarted;
+        _events.RegenStamina += OnRegenStamina;
+
     }
 
     public void Dispose()
     {
-        _events.OnRegenStamina -= HandleRegenStamina;
+        _events.DodgeStarted -= OnDodgeStarted;
+        _events.RegenStamina -= OnRegenStamina;
     }
 
     /// <summary>
@@ -68,7 +71,41 @@ public class PlayerStamina : MonoBehaviour, IDisposable
         }
     }
 
- private void HandleRegenStamina(bool canRegen)
+    /// <summary>
+    /// 스테미나 재생 코루틴
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RegenStamina()
+    {
+        while (true)
+        {
+            yield return null;
+
+            ChangeStamina(_stats.Data.StaminaRegenPerSecond * Time.deltaTime);
+
+            if (Stamina >= MaxStamina)
+            {
+                ChangeStamina(MaxStamina - Stamina);
+                _regenStaminaCoroutine = null;
+                break;
+            }
+        }
+    }
+
+    #region EventHandlers
+    /// <summary>
+    /// 구르기 시작 이벤트 핸들러
+    /// </summary>
+    private void OnDodgeStarted()
+    {
+        UseStamina(_stats.Data.CombatData.DodgeStamina);
+    }    
+
+    /// <summary>
+    /// 스테미나 재생 이벤트 핸들러
+    /// </summary>
+    /// <param name="canRegen">재생 여부</param>
+    private void OnRegenStamina(bool canRegen)
     {
         if (canRegen)
         {
@@ -86,21 +123,5 @@ public class PlayerStamina : MonoBehaviour, IDisposable
             }
         }
     }
-
-    private IEnumerator RegenStamina()
-    {
-        while (true)
-        {
-            yield return null;
-
-            ChangeStamina(_stats.Data.StaminaRegenPerSecond * Time.deltaTime);
-
-            if (Stamina >= MaxStamina)
-            {
-                ChangeStamina(MaxStamina - Stamina);
-                _regenStaminaCoroutine = null;
-                break;
-            }
-        }
-    }
+    #endregion
 }

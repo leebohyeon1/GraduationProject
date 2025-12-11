@@ -40,9 +40,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _stats = combatData;
         _events = events;
 
-        _events.OnBattleStateChaged += HandleBattleStateChanged;
-        _events.OnParryWindowStart += HandleParryWindowStart;
-        _events.OnParryWindowFinish += HandleParryWindowFinish;
+        _events.BattleStateChaged += OnBattleStateChaged;
+        _events.ParryWindowStarted += OnParryWindowStarted;
+        _events.ParryWindowFinished += OnParryWindowFinished;
     }
 
     /// <summary>
@@ -50,9 +50,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void Dispose()
     {
-        _events.OnBattleStateChaged -= HandleBattleStateChanged;
-        _events.OnParryWindowStart -= HandleParryWindowStart;
-        _events.OnParryWindowFinish -= HandleParryWindowFinish;
+        _events.BattleStateChaged -= OnBattleStateChaged;
+        _events.ParryWindowStarted -= OnParryWindowStarted;
+        _events.ParryWindowFinished -= OnParryWindowFinished;
     }
 
     #region BattleState
@@ -117,6 +117,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         foreach (Collider obj in hitObjects)
         {
+            // 패링된 적일 경우 넘긴다.
             if (obj.TryGetComponent<IParryable>(out var parryable) && _stats.ParrySet.Contains(parryable))
             {
                 continue;
@@ -131,33 +132,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
     #endregion
 
-    #region Defend
-    /// <summary>
-    /// 방어 상태를 설정합니다.
-    /// </summary>
-    /// <param name="isDefending">방어 여부</param>
-    public void SetDefending(bool isDefending)
-    {
-        _stats.IsDefending = isDefending;
-    }
-    #endregion
-
-    #region Parry
-   
-
-    #endregion
-
-    private void HandleParryWindowStart()
+    private void OnParryWindowStarted()
     {
         _stats.IsParring = true;    
     }
 
-    private void HandleParryWindowFinish()
+    private void OnParryWindowFinished()
     {
         _stats.IsParring = false;
     }
 
-    private void HandleBattleStateChanged(bool isBattleState)
+    private void OnBattleStateChaged(bool isBattleState)
     {
         if (isBattleState)
         {

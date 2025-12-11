@@ -20,13 +20,10 @@ public class PlayerDataSO : ScriptableObject
     public int MaxMana = 3;
 
     [Header("Movement")]
-    public LayerMask GroundLayerMask = 1 << 3; // 지면으로 인식할 레이어 마스크
     public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
 
     public float MoveSpeed = 5f; // 이동 속도
     public float RotateSpeed = 5f; // 회전 속도
-    public float Gravity = -9.81f; // 중력 값
-    public float GroundCheckDistance = 0.1f; // 지면 체크 거리
 
     [Header("Combat")]
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
@@ -49,11 +46,6 @@ public class PlayerCombatData
 
     [Header("Damaged")]
     public AnimationCurve KnockbackCurve; // 피격 넉백 애니메이션 커브
-    public float DefendMoveSpeed; // 가드 중 이동 속도
-    [Range(0f, 1f)]
-    public float DefendDamageReductionRate; // 방어 시 데미지 감소율
-    public float DefendStaggerDuration; // 방어 시 경직 임계값
-    public float DefendKnockbackForce; // 방어 시 넉백 힘
 
     [Space(10f)]
     public float MiddleStaggerDuration; // 약한 경직 시간

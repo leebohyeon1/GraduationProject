@@ -49,8 +49,8 @@ public class EnemyMovement
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
         aIPath.destination = newTarget;
-        Debug.Log(newTarget + "로 이동 중");
-        Debug.Log(_runner.CurrentState + "상태 ");
+        
+        Debug.Log($"Chasing to Position: {newTarget} this object name: {_runner.name}");
         aIPath.isStopped = false;
     }
 

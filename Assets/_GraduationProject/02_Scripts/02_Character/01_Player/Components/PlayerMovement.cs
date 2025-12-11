@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     private PlayerEvents _events;
 
     private Vector3 _velocity; // 현재 속도 (중력 포함)
-    private bool _isGrounded; // 지면 접촉 여부
     private float _lastDodgeTime = -999f; // 마지막 회피 시간
     private bool _hasTargetRotation; // 목표 회전값 존재 여부
     #endregion
@@ -39,26 +38,17 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 지면 접촉 여부를 확인합니다.
-    /// </summary>
-    public void CheckGrounded(float groundCheckDistance, LayerMask groundLayerMask)
-    {
-        Vector3 rayOrigin = transform.position - new Vector3(0, _characterController.height / 2f, 0);
-        _isGrounded = Physics.Raycast(rayOrigin, Vector3.down, groundCheckDistance, groundLayerMask);
-    }
-
-    /// <summary>
     /// 중력을 적용합니다.
     /// </summary>
-    public void ApplyGravity(float gravityScale)
+    public void ApplyGravity()
     {
-        if (_isGrounded && _velocity.y < 0)
+        if (_characterController.isGrounded && _velocity.y < 0)
         {
             _velocity.y = -2f; // 지면에 붙어있도록 약간의 하향력 유지
         }
         else
         {
-            _velocity.y += gravityScale * Time.fixedDeltaTime;
+            _velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한

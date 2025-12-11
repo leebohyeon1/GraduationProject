@@ -22,9 +22,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Events.OnAttackFinish += HandleAttackFinish;
-        p_context.Events.OnAttackPerform += HandleAttackPerform;
-        p_context.Events.OnAttackInputWindowStart += HandleAttackInputWindowStart;
+        p_context.Events.AttackFinished += OnAttackFinished;
+        p_context.Events.AttackPerformed += OnAttackPerformed;
+        p_context.Events.AttackInputWindowStarted += OnAttackInputWindowStarted;
 
         _canInput = false;
         p_nextState = null;
@@ -46,9 +46,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
     public override void OnExit()
     {
-        p_context.Events.OnAttackFinish -= HandleAttackFinish;
-        p_context.Events.OnAttackPerform -= HandleAttackPerform;
-        p_context.Events.OnAttackInputWindowStart -= HandleAttackInputWindowStart;
+        p_context.Events.AttackFinished -= OnAttackFinished;
+        p_context.Events.AttackPerformed -= OnAttackPerformed;
+        p_context.Events.AttackInputWindowStarted -= OnAttackInputWindowStarted;
         DOTween.Kill(p_animationTrigger);
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
@@ -135,18 +135,18 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// <summary>
     /// 공격 판정이 발생하는 시점에 호출됩니다.
     /// </summary>
-    protected virtual void HandleAttackPerform()
+    protected virtual void OnAttackPerformed()
     {
         DOTween.Kill(p_animationTrigger);
 
         Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
         foreach (Collider collider in colliders)
         {
-            p_context.Events.TriggerAttackAffect(collider);
+            p_context.Events.TriggerAttackAffected(collider);
         }
     }
 
-    protected virtual void HandleAttackInputWindowStart()
+    protected virtual void OnAttackInputWindowStarted()
     {
         _canInput = true;
     }
@@ -154,7 +154,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// <summary>    
     /// 공격 애니메이션 종료 시 호출됩니다.  
     /// </summary>
-    protected virtual void HandleAttackFinish()
+    protected virtual void OnAttackFinished()
     {
         if (p_nextState != null)
         {
