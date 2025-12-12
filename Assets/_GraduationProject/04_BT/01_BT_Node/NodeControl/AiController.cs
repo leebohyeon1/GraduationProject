@@ -12,7 +12,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private OnHealing _onHealingEvent;
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
-    public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
+    [field: SerializeField] public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
 
     public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
     {
@@ -25,7 +25,8 @@ public class AiController : MonoBehaviour,IEventListener<string>
         for(int i = 0; i < enemyAttackDatas.Length; i++)
         {
             inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
-            inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount *statMultiplier?.AttackMultiply);
+            float c = statMultiplier != null ? statMultiplier.AttackMultiply:  1;
+            inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount *c);
             _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
         }
         
