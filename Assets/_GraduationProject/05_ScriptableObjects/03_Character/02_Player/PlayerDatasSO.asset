@@ -12,20 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cff0c7e55165ed4ebcd9871c1069362, type: 3}
   m_Name: PlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
-  MaxHealth: 5000
+  MaxHealth: 100
   MaxStamina: 100
   StaminaRegenPerSecond: 15
   MaxMana: 3
-  GroundLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 16
   MoveSpeed: 10
   RotateSpeed: 8
-  Gravity: -20
-  GroundCheckDistance: 0.1
   BattleOutTime: 8
   CombatData:
     DodgeStamina: 10
@@ -116,10 +111,6 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    DefendMoveSpeed: 5
-    DefendDamageReductionRate: 0.7
-    DefendStaggerDuration: 0.1
-    DefendKnockbackForce: 7
     MiddleStaggerDuration: 0.1
     MiddleKnockbackForce: 0.5
     AttackLayerMask:
