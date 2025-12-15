@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 765a3b927a6f2234da1c9a48584df25f, type: 3}
-  m_Name: EnemyAttackData
+  m_Name: TestBossEnemyAttackData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackData
   AttackName: Attack
-  damageRadius: 2
+  damageRadius: 7
   attackOffset: {x: 0, y: 0, z: 1}
   damageData:
     AttackerTransform: {fileID: 0}
     AttackType: 0
-    DamageAmount: 10
-    StiffnessAmount: 10
+    DamageAmount: 30
+    StiffnessAmount: 50
     KnockbackCurve:
       serializedVersion: 2
       m_Curve:
@@ -44,6 +44,6 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
+    KnockbackDuration: 0.1
+    KnockbackForce: 10
   Cooltime: 2
