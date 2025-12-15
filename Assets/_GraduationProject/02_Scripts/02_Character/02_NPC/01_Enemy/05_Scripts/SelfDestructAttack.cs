@@ -55,7 +55,7 @@ public class SelfDestructAttack : EnemyUseAnything
                 if (!string.IsNullOrEmpty(explosions[i].MonsterName))
                 {
                     DamageData damageData = explosions[i].damageData;
-                    damageData.DamageAmount = enemy.EnemyHealth.Maxhealth;
+                    damageData.DamageAmount = int.MaxValue;
                     enemy.EnemyHealth.TakeDamage(damageData);
                     await SpawnEnemies(explosions[i].MonsterName, 1, enemy.transform);
                 }

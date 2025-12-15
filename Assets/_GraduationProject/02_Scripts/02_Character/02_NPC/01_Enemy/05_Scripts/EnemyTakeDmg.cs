@@ -8,7 +8,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStat enemyStat;
     public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
-    public int Maxhealth => _maxHealth;
     
     int _maxHealth = 100;
     int curHealth = 100;
@@ -25,7 +24,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner = owner;
         _knockbackResistance = statMultiplier?.KnockbackMultiply ?? 1f;
         _maxHealth = enemyStat.Maxhealth;
-        _maxHealth = (int)(_maxHealth * statMultiplier?.HealthMultiply ?? 1f);
+        _maxHealth = (int)(_maxHealth * statMultiplier?.HealthMultiply ?? _maxHealth);
         curHealth = _maxHealth;
         if (_owner.animator.GetBool("Die"))
             _owner.animator.SetBool("Die", false);
@@ -146,7 +145,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
-        _owner.BillboardUI?.SetHealthBar(Maxhealth, Health);
+        _owner.BillboardUI?.SetHealthBar(_maxHealth, Health);
 
         _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
 

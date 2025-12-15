@@ -37,7 +37,6 @@ private void RotateTowards(Vector3 target)
         {
             return NodeState.FAILURE;
         }
-        Debug.Log("Chasing Player : "+ runner.name);
         runner.Movement.StartOrUpdateChase(runner.player.transform);
         RotateTowards(runner.player.transform.position);
         return NodeState.RUNNING;

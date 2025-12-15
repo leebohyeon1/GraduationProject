@@ -110,7 +110,6 @@ public class NormalAttackNode : Node
         {
             return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
         }
-
         return NodeState.RUNNING;
     }
 
@@ -118,13 +117,17 @@ public class NormalAttackNode : Node
     {
         _isStunned = false;
         tracking = false;
-        runner.ParrySystem.StateNormal();        
+        runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         runner.SetStiffness(0);
-        brain.StartSkillCooldown(attackKey);
-        // runner.Movement.StopMovement();
+        Debug.Log("작동중/");
+        if (!_isCooldownDenied)
+        {
+
+            brain.StartSkillCooldown(attackKey);
+        }// runner.Movement.StopMovement();
     }
     public override void Abort()
     {

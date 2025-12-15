@@ -50,7 +50,6 @@ public class EnemyMovement
         aIPath.enabled = true;
         aIPath.destination = newTarget;
         
-        Debug.Log($"Chasing to Position: {newTarget} this object name: {_runner.name}");
         aIPath.isStopped = false;
     }
 
