@@ -107,6 +107,8 @@ public class SurvivorLikeManager : MonoBehaviour
     /// <param name="gameObject">스폰할 오브젝트</param>
     private void Spawn(GameObject gameObject, EnemyStatMultiplier statMultiplier)
     {
+        gameObject.SetActive(true);
+
         Enemy enemy = gameObject.GetComponent<Enemy>(); 
         // 적 스텟 배율 적용
         gameObject.GetComponent<AiController>().Initialize(enemy, statMultiplier);
@@ -119,8 +121,6 @@ public class SurvivorLikeManager : MonoBehaviour
         // 스폰 위치 설정
         int randomIndex = Random.Range(0, _spawnPoints.Length - 1);
         gameObject.transform.position = _spawnPoints[randomIndex].position;
-
-        gameObject.SetActive(true);
 
         // 살아있는 적 리스트에 등록
         _arriveEnemyList.Add(gameObject);
