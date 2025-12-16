@@ -2,10 +2,8 @@
 using BH_Lib.DI;
 using BH_Lib.Log;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
 
 [Register(LifetimeScope.Singleton)]
@@ -97,8 +95,8 @@ public class SurvivorLikeManager : MonoBehaviour
 
         _canSkipWave = false;
 
-        _currentWaveHoldPercent = 0;
-        UpdateNextWaveHoldTimeEvent.Publish(_currentWaveHoldPercent);
+        _currentWaveHoldPercent = -1f;
+        UpdateNextWaveHoldTimeEvent.Publish(-1f);
     }
     
     /// <summary>
@@ -186,6 +184,7 @@ public class SurvivorLikeManager : MonoBehaviour
         if(_arriveEnemyList.Count <= 0)
         {
             _canSkipWave = true;
+            UpdateNextWaveHoldTimeEvent.Publish(0f);
         }
 
         gameObject.GetComponent<SurvivorLikeEnemyConfig>().Died -= OnEnemyDied;
