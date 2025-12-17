@@ -15,7 +15,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
     protected abstract string p_animationTrigger { get; } // 각 공격에 맞는 애니메이션 트리거
     protected abstract Type p_nextAttackState { get; } // 다음 연계 공격 상태
-    protected abstract PlayerAttackDataSO p_AttackData { get; } // 현재 공격의 데이터
+    protected abstract PlayerAttackData p_AttackData { get; } // 현재 공격의 데이터
 
     public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }

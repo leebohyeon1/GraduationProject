@@ -37,7 +37,7 @@ public class PlayerStats: IDisposable
     // Properties
     public PlayerDataSO Data => _data;
 
-    public PlayerAttackDataSO[] AttackDatas => _data.CombatData.AttackDatas;
+    public PlayerAttackData[] AttackDatas => _data.CombatData.AttackDatas;
 
     public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
     {

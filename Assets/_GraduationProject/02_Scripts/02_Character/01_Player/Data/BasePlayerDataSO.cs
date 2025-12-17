@@ -16,9 +16,6 @@ public class PlayerDataSO : ScriptableObject
     public float MaxStamina = 100;
     public float StaminaRegenPerSecond = 5;
 
-    [Header("Mana")]
-    public int MaxMana = 3;
-
     [Header("Movement")]
     public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
 
@@ -53,7 +50,7 @@ public class PlayerCombatData
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
-    public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
+    public PlayerAttackData[] AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
     public float ChargeMoveSpeed; 
@@ -73,5 +70,5 @@ public class PlayerCombatData
 public class PlayerChargeAttackData
 {
     public float ChargeTime;
-    public PlayerAttackDataSO AttackData;
+    public PlayerAttackData AttackData;
 }

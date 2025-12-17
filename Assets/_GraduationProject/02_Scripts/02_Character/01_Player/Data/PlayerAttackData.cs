@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerAttackDataSO", menuName = "Player/AttackDatasSO")]
-public class PlayerAttackDataSO : ScriptableObject
+[Serializable]
+public class PlayerAttackData
 {
     public AttackType AttackType;
     public float AttackStamina;
