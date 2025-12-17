@@ -340,6 +340,7 @@ public class Player : DIMonoBehaviour
         Health.Dispose();
         Combat.Dispose();
         Stamina.Dispose();
+        Ability.Dispose();
     }
     #endregion
 

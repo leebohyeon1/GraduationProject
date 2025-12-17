@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAbility : MonoBehaviour, IEventListener<AbilitySO>
+public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<AbilitySO>
 {
     [SerializeField] private AbilitySelectedSO _abilitySelectedSO;
     private List<AbilitySO> _acquiredAbilities = new List<AbilitySO>();
@@ -11,6 +12,12 @@ public class PlayerAbility : MonoBehaviour, IEventListener<AbilitySO>
     public void Initialize(PlayerStats stat)
     {
         _stats = stat;
+        _abilitySelectedSO.Subscribe(this);
+    }
+
+    public void Dispose()
+    {
+       _abilitySelectedSO.Unsubscribe(this);
     }
 
     public void OnEventTrigger(AbilitySO eventName)
@@ -24,8 +31,6 @@ public class PlayerAbility : MonoBehaviour, IEventListener<AbilitySO>
     /// <param name="ability">선택된 능력 데이터</param>
     public void AddAbility(AbilitySO ability)
     {
-        if (ability == null) return;
-
         _acquiredAbilities.Add(ability);
         ApplyAbilityEffect(ability);
     }
@@ -54,4 +59,5 @@ public class PlayerAbility : MonoBehaviour, IEventListener<AbilitySO>
                 break;
         }
     }
+
 }
