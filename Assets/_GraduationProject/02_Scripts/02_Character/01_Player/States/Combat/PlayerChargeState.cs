@@ -26,7 +26,7 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnUpdate()
     {
         _chargeTimer += Time.deltaTime;
-        if(_chargeLevel < p_context.Stats.Data.CombatData.ChargeAttackDatas.Length  && 
+        if(_chargeLevel < p_context.Stats.Data.CombatData.ChargeAttackDatas.Count  && 
             _chargeTimer >= p_context.Stats.Data.CombatData.ChargeAttackDatas[_chargeLevel].ChargeTime)
         {
             p_context.Stats.ChargeLevel++;

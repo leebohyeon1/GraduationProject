@@ -37,7 +37,7 @@ public class PlayerStats: IDisposable
     // Properties
     public PlayerDataSO Data => _data;
 
-    public PlayerAttackData[] AttackDatas => _data.CombatData.AttackDatas;
+    public List<PlayerAttackData> AttackDatas => _data.CombatData.AttackDatas;
 
     public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
     {
@@ -64,5 +64,46 @@ public class PlayerStats: IDisposable
         {
             ParrySet.Clear();
         }
+    }
+
+    public void StatUpgrade(PlusPlayerStat  stat)
+    {
+        _data.MaxHealth += stat.Health;
+        _data.MaxStamina += stat.Stamina;
+        _data.StaminaRegenPerSecond += stat.StaminaRegenPerSecond;
+
+        for(int i =0; i < stat.CombatData.AttackDatas.Count; i++)
+        {
+            var baseAttackData = _data.CombatData.AttackDatas[i];
+            var plusAttackData = stat.CombatData.AttackDatas[i];
+            baseAttackData.AttackDamage += plusAttackData.AttackDamage;
+            baseAttackData.AttackStamina += plusAttackData.AttackStamina;
+            baseAttackData.StiffnessAmount += plusAttackData.StiffnessAmount;
+            baseAttackData.AttackRadius += plusAttackData.AttackRadius;
+            baseAttackData.KnockBackDuration += plusAttackData.KnockBackDuration;
+            baseAttackData.KnockBackForce += plusAttackData.KnockBackForce;
+        }
+
+        _data.CombatData.ChargeStamina += stat.CombatData.ChargeStamina;
+
+        for (int i =0; i < stat.CombatData.ChargeAttackDatas.Count; i++)
+        {
+            var baseChargeAttackData = _data.CombatData.ChargeAttackDatas[i];
+            var plusChargeAttackData = stat.CombatData.ChargeAttackDatas[i];
+            baseChargeAttackData.AttackData.AttackDamage += plusChargeAttackData.AttackData.AttackDamage;
+            baseChargeAttackData.AttackData.AttackStamina += plusChargeAttackData.AttackData.AttackStamina;
+            baseChargeAttackData.AttackData.StiffnessAmount += plusChargeAttackData.AttackData.StiffnessAmount;
+            baseChargeAttackData.AttackData.AttackRadius += plusChargeAttackData.AttackData.AttackRadius;
+            baseChargeAttackData.AttackData.KnockBackDuration += plusChargeAttackData.AttackData.KnockBackDuration;
+            baseChargeAttackData.AttackData.KnockBackForce += plusChargeAttackData.AttackData.KnockBackForce;
+        }
+
+        for(int i = stat.CombatData.ChargeAttackDatas.Count; i < stat.CombatData.ChargeAttackDatas.Count; i++)
+        {
+            _data.CombatData.ChargeAttackDatas.Add(stat.CombatData.ChargeAttackDatas[i]);
+        }
+
+
+
     }
 }

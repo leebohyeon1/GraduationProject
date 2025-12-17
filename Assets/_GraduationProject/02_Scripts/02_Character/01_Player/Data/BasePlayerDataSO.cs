@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 기본 데이터를 정의하는 ScriptableObject입니다.
 /// </summary>
-[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Player/PlayerDatasSO")]
+[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Scriptable Objects/Player/PlayerDatasSO")]
 public class PlayerDataSO : ScriptableObject
 {
     [Header("Health")]
@@ -50,13 +50,13 @@ public class PlayerCombatData
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
-    public PlayerAttackData[] AttackDatas; // 일반 공격 데이터 배열
+    public List<PlayerAttackData> AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
     public float ChargeMoveSpeed; 
     public float ChargeRotateSpeed; 
     public float ChargeStamina;
-    public PlayerChargeAttackData[] ChargeAttackDatas;
+    public List<PlayerChargeAttackData> ChargeAttackDatas;
     public float MaxChargeTime = 5f;
 
     [Header("Parry")]

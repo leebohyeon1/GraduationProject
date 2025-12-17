@@ -30,6 +30,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerInteract _interact; // 상호작용 컴포넌트
     [SerializeField] private PlayerStamina _stamina; // 스테미나 컴포넌트
     [SerializeField] private LockOnSystem _lockOnSystem; // 락온 시스템  
+    [SerializeField] private PlayerAbility _ability; // 플레이어 능력 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
 
@@ -49,6 +50,7 @@ public class Player : DIMonoBehaviour
     public PlayerInteract Interact => _interact;
     public PlayerStamina Stamina => _stamina;
     public LockOnSystem LockOnSystem => _lockOnSystem;
+    public PlayerAbility Ability => _ability;   
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     
@@ -171,6 +173,12 @@ public class Player : DIMonoBehaviour
         {
             _lockOnSystem = GetComponent<LockOnSystem>();
         }
+
+        if(_ability == null)
+        {
+            _ability = GetComponent<PlayerAbility>();
+        }
+        _ability.Initialize(Stats);
     }
     
     /// <summary>

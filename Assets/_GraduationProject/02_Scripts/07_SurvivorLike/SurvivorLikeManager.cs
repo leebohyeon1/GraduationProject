@@ -2,12 +2,14 @@
 using BH_Lib.DI;
 using BH_Lib.Log;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 [Register(LifetimeScope.Singleton)]
-public class SurvivorLikeManager : MonoBehaviour
+public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
 {
     [Header("Wave")]
     [SerializeField] private SurvivorLikeWaveSO _currentWave;
@@ -19,6 +21,11 @@ public class SurvivorLikeManager : MonoBehaviour
     [Header("Spawn")]
     [SerializeField] private Transform[] _spawnPoints;
 
+    [Header("Ability")] 
+    [SerializeField] private AbilitySelectUI _abilitySelectUI;
+    [SerializeField] private List<AbilityList> _abilityList;
+    [SerializeField] private AbilitySelectedSO _abilitySelectSO;
+
     [Header("Input")]
     [SerializeField] private InputReader _inputReader;
 
@@ -26,24 +33,36 @@ public class SurvivorLikeManager : MonoBehaviour
     [SerializeField] private UpdateNextWaveHoldTimeEventSO UpdateNextWaveHoldTimeEvent;
 
     private Dictionary<string, List<GameObject>> _enemyPool = new Dictionary<string, List<GameObject>>();
-    private List<GameObject> _arriveEnemyList = new List<GameObject>();   
+    private List<GameObject> _arriveEnemyList = new List<GameObject>();
 
     private async void Start()
     {
-        if(!_inputReader)
+        if (!_inputReader)
         {
             _inputReader = await DIContainer.Instance.Resolve<AssetManager>().
-                LoadAssetAsync <InputReader>("InputReader", gameObject);
+                LoadAssetAsync<InputReader>("InputReader", gameObject);
         }
 
         _inputReader.InteractHoldEvent += OnInteractHold;
         _inputReader.InteractCancelEvent += OnInteractCancel;
+        _abilitySelectSO.Subscribe(this);
+
+        // 능력 선택 UI에 매니저 할당
+        if (_abilitySelectUI != null)
+        {
+            _abilitySelectUI.Manager = this;
+        }
+        else
+        {
+            Debug.LogError("AbilitySelectUI가 할당되지 않았습니다.");
+        }
     }
 
     private void OnDestroy()
     {
         _inputReader.InteractHoldEvent -= OnInteractHold;
         _inputReader.InteractCancelEvent -= OnInteractCancel;
+        _abilitySelectSO.Unsubscribe(this);
     }
 
 
@@ -67,11 +86,7 @@ public class SurvivorLikeManager : MonoBehaviour
                 pool = _enemyPool[enemyPrefab.name];
             }
 
-            // 스폰해야할 적 숫자와 현재 풀링되어 있는 적 숫자의 차
             different = entri.EnemyCount - pool.Count;
-            Log.Print("차이: " + different);
-
-            // 스폰해야할 적 수가 많으면 적 소환
             if (different > 0)
             {
                 for (index = 0; index < different; index++)
@@ -83,7 +98,6 @@ public class SurvivorLikeManager : MonoBehaviour
                 }
             }
 
-            // 스폰해야할 수만큼 스폰
             for (index = 0; index < entri.EnemyCount; index++)
             {
                 Log.PrintColor(Color.beige, "스폰");
@@ -92,52 +106,38 @@ public class SurvivorLikeManager : MonoBehaviour
         }
 
         _waveIndex++;
-
         _canSkipWave = false;
-
         _currentWaveHoldPercent = -1f;
         UpdateNextWaveHoldTimeEvent.Publish(-1f);
     }
-    
-    /// <summary>
-    /// 적을 랜덤 위치에 스폰
-    /// </summary>
-    /// <param name="gameObject">스폰할 오브젝트</param>
+
     private void Spawn(GameObject gameObject, EnemyStatMultiplier statMultiplier)
     {
         gameObject.SetActive(true);
 
-        Enemy enemy = gameObject.GetComponent<Enemy>(); 
-        // 적 스텟 배율 적용
+        Enemy enemy = gameObject.GetComponent<Enemy>();
         gameObject.GetComponent<AiController>().Initialize(enemy, statMultiplier);
         gameObject.GetComponent<EnemyTakeDmg>().InitializeHealth(enemy, statMultiplier);
-        
-        // 서바이벌 콘텐츠 전용 컴포넌트 적용
+
         SurvivorLikeEnemyConfig config = gameObject.AddComponent<SurvivorLikeEnemyConfig>();
         config.Died += OnEnemyDied;
-        
-        // 스폰 위치 설정
-        int randomIndex = Random.Range(0, _spawnPoints.Length - 1);
+
+        int randomIndex = Random.Range(0, _spawnPoints.Length);
         gameObject.transform.position = _spawnPoints[randomIndex].position;
 
-        // 살아있는 적 리스트에 등록
         _arriveEnemyList.Add(gameObject);
     }
 
-    /// <summary>
-    /// 웨이브 넘어가는 타이머 업데이트
-    /// </summary>
-    /// <param name="isHold"></param>
     private void UpdateHoldTimer(bool isHold)
     {
-        if(!_canSkipWave)
+        if (!_canSkipWave)
         {
             return;
         }
 
         DOTween.Kill(this);
 
-        if(isHold)
+        if (isHold)
         {
             DOTween.To(() => _currentWaveHoldPercent,
             (X) =>
@@ -163,9 +163,40 @@ public class SurvivorLikeManager : MonoBehaviour
               duration)
               .SetId(this);
         }
-
     }
 
+    /// <summary>
+    /// 웨이브 종료 후 능력 선택을 시작합니다.
+    /// </summary>
+    private void StartAbilitySelection()
+    {
+        _inputReader.EnableUIActions();
+        _inputReader.DisablePlayerActions();
+
+        _canSkipWave = false;
+        UpdateNextWaveHoldTimeEvent.Publish(-1f); // 다음 웨이브 UI 숨김
+
+        // 능력 풀에서 랜덤하게 3개 선택 (중복 없이)
+        int i = 0;
+        List<AbilitySO> randomAbilities = new List<AbilitySO>();
+        for (i = 0; i < 3; i++)
+        {
+            float rand = Random.Range(0f, 100f);
+            
+            foreach (var abilityList in _abilityList)
+            {
+                if (rand <= abilityList.Probability)
+                {
+                    AbilitySO randomAbility = abilityList.Abilities[Random.Range(0, abilityList.Abilities.Count)];
+                    randomAbilities.Add(randomAbility);
+                    break;
+                }
+            } 
+        }
+
+        _abilitySelectUI.Show(randomAbilities);
+    }
+    
     #region Event
     private void OnInteractHold()
     {
@@ -180,16 +211,33 @@ public class SurvivorLikeManager : MonoBehaviour
     private void OnEnemyDied(GameObject gameObject)
     {
         _arriveEnemyList.Remove(gameObject);
-
-        if(_arriveEnemyList.Count <= 0)
-        {
-            _canSkipWave = true;
-            UpdateNextWaveHoldTimeEvent.Publish(0f);
-        }
-
         gameObject.GetComponent<SurvivorLikeEnemyConfig>().Died -= OnEnemyDied;
+
+        if (_arriveEnemyList.Count <= 0)
+        {
+            StartAbilitySelection();
+        }
+    }
+
+    /// <summary>
+    /// 플레이어가 능력을 선택했을 때 호출됩니다.
+    /// </summary>
+    public void OnEventTrigger(AbilitySO eventName)
+    {
+        _inputReader.EnablePlayerActions();
+        _inputReader.DisableUIActions();
+
+        // 다음 웨이브로 넘어갈 수 있도록 설정
+        _canSkipWave = true;
+        UpdateNextWaveHoldTimeEvent.Publish(0f);
     }
 
     #endregion
-
 }
+
+[Serializable]
+public class AbilityList
+{
+    public float Probability;
+    public List<AbilitySO> Abilities;
+}   
