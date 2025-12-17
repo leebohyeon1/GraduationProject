@@ -9,7 +9,9 @@ using UnityEngine;
 public class PlayerStats: IDisposable
 {
     private PlayerEvents _events;
+    private PlayerDataSO _baseData;
     private PlayerDataSO _data;
+    private PlayerDataSO _runtimeData;
 
     // State
     public bool IsInvincible; // 무적인가?
@@ -35,13 +37,17 @@ public class PlayerStats: IDisposable
     public int ChargeLevel = 0;
 
     // Properties
-    public PlayerDataSO Data => _data;
+    public PlayerDataSO Data => _data;  
+    public PlayerDataSO RuntimeData => _runtimeData;
 
-    public List<PlayerAttackData> AttackDatas => _data.CombatData.AttackDatas;
+    public List<PlayerAttackData> AttackDatas => _runtimeData.CombatData.AttackDatas;
 
     public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
     {
-        _data = baseData;
+        _baseData = baseData;
+        _data = UnityEngine.Object.Instantiate(baseData);
+        _runtimeData = UnityEngine.Object.Instantiate(_data);
+
         _events = events;
 
         CurrentHealth = _data.MaxHealth;
@@ -66,15 +72,15 @@ public class PlayerStats: IDisposable
         }
     }
 
-    public void StatUpgrade(PlusPlayerStat  stat)
+    public void StatUpgrade(PlusPlayerStat stat)
     {
-        _data.MaxHealth += stat.Health;
-        _data.MaxStamina += stat.Stamina;
-        _data.StaminaRegenPerSecond += stat.StaminaRegenPerSecond;
+        _runtimeData.MaxHealth += stat.Health;
+        _runtimeData.MaxStamina += stat.Stamina;
+        _runtimeData.StaminaRegenPerSecond += stat.StaminaRegenPerSecond;
 
-        for(int i =0; i < stat.CombatData.AttackDatas.Count; i++)
+        for (int i = 0; i < stat.CombatData.AttackDatas.Count; i++)
         {
-            var baseAttackData = _data.CombatData.AttackDatas[i];
+            var baseAttackData = _runtimeData.CombatData.AttackDatas[i];
             var plusAttackData = stat.CombatData.AttackDatas[i];
             baseAttackData.AttackDamage += plusAttackData.AttackDamage;
             baseAttackData.AttackStamina += plusAttackData.AttackStamina;
@@ -84,11 +90,11 @@ public class PlayerStats: IDisposable
             baseAttackData.KnockBackForce += plusAttackData.KnockBackForce;
         }
 
-        _data.CombatData.ChargeStamina += stat.CombatData.ChargeStamina;
+        _runtimeData.CombatData.ChargeStamina += stat.CombatData.ChargeStamina;
 
-        for (int i =0; i < stat.CombatData.ChargeAttackDatas.Count; i++)
+        for (int i = 0; i < stat.CombatData.ChargeAttackDatas.Count; i++)
         {
-            var baseChargeAttackData = _data.CombatData.ChargeAttackDatas[i];
+            var baseChargeAttackData = _runtimeData.CombatData.ChargeAttackDatas[i];
             var plusChargeAttackData = stat.CombatData.ChargeAttackDatas[i];
             baseChargeAttackData.AttackData.AttackDamage += plusChargeAttackData.AttackData.AttackDamage;
             baseChargeAttackData.AttackData.AttackStamina += plusChargeAttackData.AttackData.AttackStamina;
@@ -98,12 +104,12 @@ public class PlayerStats: IDisposable
             baseChargeAttackData.AttackData.KnockBackForce += plusChargeAttackData.AttackData.KnockBackForce;
         }
 
-        for(int i = stat.CombatData.ChargeAttackDatas.Count; i < stat.CombatData.ChargeAttackDatas.Count; i++)
+        for (int i = stat.CombatData.ChargeAttackDatas.Count; i < stat.CombatData.ChargeAttackDatas.Count; i++)
         {
             _data.CombatData.ChargeAttackDatas.Add(stat.CombatData.ChargeAttackDatas[i]);
         }
-
-
-
     }
+
+
+
 }

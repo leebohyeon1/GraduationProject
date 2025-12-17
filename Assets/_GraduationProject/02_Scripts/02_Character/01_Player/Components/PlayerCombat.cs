@@ -94,7 +94,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.RuntimeData.CombatData.AttackLayerMask);
 
         if (hitEnemies.Length > 0)
         {

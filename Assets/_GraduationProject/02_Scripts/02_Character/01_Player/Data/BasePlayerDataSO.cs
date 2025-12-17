@@ -25,6 +25,22 @@ public class PlayerDataSO : ScriptableObject
     [Header("Combat")]
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData; // 전투 관련 데이터
+
+    /// <summary>
+    /// 데이터 값만 복사
+    /// </summary>
+    /// <param name="newData"></param>
+    public void SetData(PlayerDataSO newData)
+    {
+        MaxHealth = newData.MaxHealth;
+        MaxStamina = newData.MaxStamina;
+        StaminaRegenPerSecond = newData.StaminaRegenPerSecond;
+        ObstacleLayerMask = newData.ObstacleLayerMask;
+        MoveSpeed = newData.MoveSpeed;
+        RotateSpeed = newData.RotateSpeed;
+        BattleOutTime = newData.BattleOutTime;
+        CombatData = newData.CombatData;
+    }
 }
 
 

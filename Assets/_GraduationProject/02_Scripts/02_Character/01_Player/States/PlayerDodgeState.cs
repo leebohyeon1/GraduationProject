@@ -74,9 +74,9 @@ public class PlayerDodgeState : BaseState<Player>
         }
 
         // 구르기 시작
-        float distance = p_context.Stats.Data.CombatData.DodgeDistance;
-        float duration = p_context.Stats.Data.CombatData.DodgeDuration;
-        AnimationCurve curve = p_context.Stats.Data.CombatData.DodgeAnimationCurve;
+        float distance = p_context.Stats.RuntimeData.CombatData.DodgeDistance;
+        float duration = p_context.Stats.RuntimeData.CombatData.DodgeDuration;
+        AnimationCurve curve = p_context.Stats.RuntimeData.CombatData.DodgeAnimationCurve;
 
         float currentDistance = 0f;
         DOTween.To(
@@ -87,7 +87,7 @@ public class PlayerDodgeState : BaseState<Player>
                 float deltaDistance = x - currentDistance;
 
                 deltaDistance *= distance / duration;
-                p_context.Movement?.Dodge(_dodgeDirection, deltaDistance, p_context.Stats.Data.CombatData.DodgeRotateSpeed);
+                p_context.Movement?.Dodge(_dodgeDirection, deltaDistance, p_context.Stats.RuntimeData.CombatData.DodgeRotateSpeed);
                 currentDistance = x;
             },
             distance, duration).
