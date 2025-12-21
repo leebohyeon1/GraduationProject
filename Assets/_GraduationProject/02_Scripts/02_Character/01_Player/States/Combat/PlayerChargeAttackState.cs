@@ -10,8 +10,7 @@ using UnityEngine;
 public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
-    protected override Type p_nextAttackState => null;
-    protected override PlayerAttackData p_AttackData => p_context.Stats.RuntimeData.CombatData.ChargeAttackDatas[p_context.Stats.ChargeLevel - 1].AttackData;
+    protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentChargeAttackData.AttackConfig;
      
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) 
@@ -42,7 +41,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
-        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
 
         foreach (Collider collider in colliders)
         {
@@ -56,33 +55,13 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_context.Input.SetAttackHeldInput(false);
     }
 
-    /// <summary>
-    /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
-    /// </summary>
-    protected override void HandleInput()
-    {
-        if (p_nextState != null || !_canInput)
-        {
-            return;
-        }
-
-        if (p_nextAttackState != null && p_context.Input.AttackInput)
-        {
-            p_nextState = p_nextAttackState;
-            p_stateMachine.ChangeState(p_nextState);
-        }
-        else if (p_context.Input.DodgeInput)
-        {
-            p_nextState = typeof(PlayerDodgeState);
-        }
-    }
 
     private void OnParrySucceeded(Transform transform)
     {
         if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
         {
-            damageable.TakeDamage(new DamageData(transform, p_AttackData.AttackType, p_AttackData.AttackDamage
-                , p_AttackData.StiffnessAmount, p_AttackData.KnockBackCurve, p_AttackData.KnockBackDuration, p_AttackData.KnockBackForce));
+            damageable.TakeDamage(new DamageData(transform, p_AttackConfig.AttackType, p_AttackConfig.AttackDamage
+                , p_AttackConfig.StiffnessAmount, p_AttackConfig.KnockBackCurve, p_AttackConfig.KnockBackDuration, p_AttackConfig.KnockBackForce));
         }
     }
 }

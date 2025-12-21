@@ -47,7 +47,6 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<AbilityS
             case AbilityType.StatBoost:
                 Debug.Log($"스탯 강화 적용: {ability.AbilityName}");
                 _stats.StatUpgrade(ability.PlusStat);
-
                 break;
             case AbilityType.NewSkill:
                 Debug.Log($"새로운 스킬 획득: {ability.AbilityName}");

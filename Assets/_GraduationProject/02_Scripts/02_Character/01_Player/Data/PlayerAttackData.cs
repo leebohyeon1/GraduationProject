@@ -1,8 +1,27 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class PlayerAttackData
+{
+    public PlayerAttackConfig AttackConfig;
+
+    [Space(20f), Header("Charge")]
+    public List<PlayerChargeConfig> ChargeConfigs;
+
+}
+
+[Serializable]
+public class PlayerChargeConfig
+{
+    public float ChargeTime;
+    public PlayerAttackConfig AttackConfig;
+}
+
+[Serializable]
+public struct PlayerAttackConfig
 {
     public AttackType AttackType;
     public float AttackStamina;

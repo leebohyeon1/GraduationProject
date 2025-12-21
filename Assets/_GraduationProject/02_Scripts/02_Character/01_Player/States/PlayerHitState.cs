@@ -17,6 +17,10 @@ public class PlayerHitState : BaseState<Player>
 
     public override void OnEnter()
     {
+        // 오류 방지용 초기화
+        p_context.Stats.AttackComboIndex = 0;
+
+
         _hitDuration = p_context.Health.StiffnessDuration;
         _hitForce = p_context.Health.KnockbackForce;
 

@@ -203,9 +203,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
         _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerThirdAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
@@ -229,7 +227,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput && _stamina.CheckStamina());
@@ -239,7 +237,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
@@ -350,10 +348,10 @@ public class Player : DIMonoBehaviour
     private void OnDrawGizmos()
     {
         // 공격 범위 기즈모
-        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_data.CombatData.ChargeAttackDatas[0].AttackData.AttackRadius, Color.red);
+        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackConfig.AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackConfig.AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackConfig.AttackRadius, Color.darkRed);
+        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackConfig.AttackRadius, Color.red);
 
     }
 
