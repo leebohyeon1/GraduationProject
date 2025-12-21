@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "SurvivorLikeWaveSO", menuName = "SurvivorLike/SurvivorLikeWaveSO")]
+[CreateAssetMenu(fileName = "SurvivorLikeWaveSO", menuName = "Scriptable Objects/SurvivorLike/SurvivorLikeWaveSO")]
 public class SurvivorLikeWaveSO : ScriptableObject
 {
     [Header("Wave Entry")]

@@ -27,7 +27,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public float KnockbackForce => _knockbackForce; // 넉백 힘 
 
     public int Health => _stats.CurrentHealth; // 현재 체력
-    public int MaxHealth => _stats.Data.MaxHealth; // 최대 체력
+    public int MaxHealth => _stats.RuntimeData.MaxHealth; // 최대 체력
     public bool IsDead => _stats.CurrentHealth <= 0; // 사망 여부
     public bool IsInvincible => _stats.IsInvincible; // 무적 여부
 
@@ -77,7 +77,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
 
-        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.Data.CombatData.ParryAngle / 2f) 
+        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f) 
             && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
         {
             if (!_stats.ParrySet.Contains(parryable))
@@ -154,9 +154,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private void MiddleStagger()
     {
         _stats.IsMiddleHit = true;
-        _damageData.KnockbackCurve = _stats.Data.CombatData.KnockbackCurve;
-        _stiffnessDuration = _stats.Data.CombatData.MiddleStaggerDuration;
-        _knockbackForce = _stats.Data.CombatData.MiddleKnockbackForce;
+        _damageData.KnockbackCurve = _stats.RuntimeData.CombatData.KnockbackCurve;
+        _stiffnessDuration = _stats.RuntimeData.CombatData.MiddleStaggerDuration;
+        _knockbackForce = _stats.RuntimeData.CombatData.MiddleKnockbackForce;
     }
 
     /// <summary>

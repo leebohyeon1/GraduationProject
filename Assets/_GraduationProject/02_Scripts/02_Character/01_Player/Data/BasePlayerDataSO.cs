@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 기본 데이터를 정의하는 ScriptableObject입니다.
 /// </summary>
-[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Player/PlayerDatasSO")]
+[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Scriptable Objects/Player/PlayerDatasSO")]
 public class PlayerDataSO : ScriptableObject
 {
     [Header("Health")]
@@ -15,9 +15,6 @@ public class PlayerDataSO : ScriptableObject
     [Header("Stamina")]
     public float MaxStamina = 100;
     public float StaminaRegenPerSecond = 5;
-
-    [Header("Mana")]
-    public int MaxMana = 3;
 
     [Header("Movement")]
     public LayerMask ObstacleLayerMask = 1 << 4; // 장애물 레이어 마스크
@@ -28,6 +25,22 @@ public class PlayerDataSO : ScriptableObject
     [Header("Combat")]
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public PlayerCombatData CombatData; // 전투 관련 데이터
+
+    /// <summary>
+    /// 데이터 값만 복사
+    /// </summary>
+    /// <param name="newData"></param>
+    public void SetData(PlayerDataSO newData)
+    {
+        MaxHealth = newData.MaxHealth;
+        MaxStamina = newData.MaxStamina;
+        StaminaRegenPerSecond = newData.StaminaRegenPerSecond;
+        ObstacleLayerMask = newData.ObstacleLayerMask;
+        MoveSpeed = newData.MoveSpeed;
+        RotateSpeed = newData.RotateSpeed;
+        BattleOutTime = newData.BattleOutTime;
+        CombatData = newData.CombatData;
+    }
 }
 
 
@@ -53,13 +66,13 @@ public class PlayerCombatData
 
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
-    public PlayerAttackDataSO[] AttackDatas; // 일반 공격 데이터 배열
+    public List<PlayerAttackData> AttackDatas; // 일반 공격 데이터 배열
 
     [Header("ChargeAttack")]
     public float ChargeMoveSpeed; 
     public float ChargeRotateSpeed; 
     public float ChargeStamina;
-    public PlayerChargeAttackData[] ChargeAttackDatas;
+    public List<PlayerChargeAttackData> ChargeAttackDatas;
     public float MaxChargeTime = 5f;
 
     [Header("Parry")]
@@ -73,5 +86,5 @@ public class PlayerCombatData
 public class PlayerChargeAttackData
 {
     public float ChargeTime;
-    public PlayerAttackDataSO AttackData;
+    public PlayerAttackData AttackData;
 }

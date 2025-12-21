@@ -78,7 +78,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// 공격의 중심 위치를 계산합니다.
     /// </summary>
     /// <returns>공격 박스의 중심 위치</returns>
-    private Vector3 GetAttackCenter(PlayerAttackDataSO attackData)
+    private Vector3 GetAttackCenter(PlayerAttackData attackData)
     {
         return transform.position + transform.forward * (attackData.AttackRadius.z / 2);
     }
@@ -89,12 +89,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <returns>타격한 대상의 콜라이더 배열</returns>
-    public Collider[] ExecuteAttack(PlayerAttackDataSO attackData)
+    public Collider[] ExecuteAttack(PlayerAttackData attackData)
     {
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.Data.CombatData.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _stats.RuntimeData.CombatData.AttackLayerMask);
 
         if (hitEnemies.Length > 0)
         {
@@ -113,7 +113,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
-    private void ProcessHitEnemies(PlayerAttackDataSO attackData, Collider[] hitObjects)
+    private void ProcessHitEnemies(PlayerAttackData attackData, Collider[] hitObjects)
     {
         foreach (Collider obj in hitObjects)
         {

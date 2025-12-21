@@ -15,7 +15,6 @@ MonoBehaviour:
   MaxHealth: 100
   MaxStamina: 100
   StaminaRegenPerSecond: 15
-  MaxMana: 3
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 16
@@ -117,19 +116,337 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 1280
     AttackDatas:
-    - {fileID: 11400000, guid: 7221cec205c389a46b5b1fc5e7063c0d, type: 2}
-    - {fileID: 11400000, guid: 35de1069e94a1c8479be749bb2efabad, type: 2}
-    - {fileID: 11400000, guid: 81925a335a35a274dbe0f622cc493cdf, type: 2}
+    - AttackType: 1
+      AttackStamina: 10
+      AttackMoveDistance: 2
+      RotateSpeed: 20
+      AttackMoveDuration: 2
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 7.5406895
+          outSlope: 7.5406895
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.07695729
+        - serializedVersion: 3
+          time: 0.1687561
+          value: 0.6651011
+          inSlope: 1.2469034
+          outSlope: 1.2469034
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 10
+      StiffnessAmount: 10
+      AttackRadius: {x: 3, y: 2, z: 2.5}
+      KnockBackCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      KnockBackDuration: 0.1
+      KnockBackForce: 15
+    - AttackType: 1
+      AttackStamina: 10
+      AttackMoveDistance: 2
+      RotateSpeed: 20
+      AttackMoveDuration: 2
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 11.682758
+          outSlope: 11.682758
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.08800025
+        - serializedVersion: 3
+          time: 0.16564056
+          value: 0.8472258
+          inSlope: 0.59900326
+          outSlope: 0.59900326
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.24016804
+          outWeight: 0.13436297
+        - serializedVersion: 3
+          time: 1
+          value: 0.997242
+          inSlope: -0.032176975
+          outSlope: -0.032176975
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.088774726
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 15
+      StiffnessAmount: 10
+      AttackRadius: {x: 3, y: 2, z: 2.5}
+      KnockBackCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      KnockBackDuration: 0.1
+      KnockBackForce: 15
+    - AttackType: 1
+      AttackStamina: 10
+      AttackMoveDistance: 2
+      RotateSpeed: 20
+      AttackMoveDuration: 2
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 12.957241
+          outSlope: 12.957241
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.106611446
+        - serializedVersion: 3
+          time: 0.12181631
+          value: 0.72305155
+          inSlope: 1.075848
+          outSlope: 1.075848
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 20
+      StiffnessAmount: 10
+      AttackRadius: {x: 3, y: 2, z: 2.5}
+      KnockBackCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      KnockBackDuration: 0.1
+      KnockBackForce: 21
     ChargeMoveSpeed: 1
     ChargeRotateSpeed: 5
     ChargeStamina: 3
     ChargeAttackDatas:
     - ChargeTime: 1
-      AttackData: {fileID: 11400000, guid: d50b460660671084b9d25b859c41f6a5, type: 2}
+      AttackData:
+        AttackType: 3
+        AttackStamina: 20
+        AttackMoveDistance: 0
+        RotateSpeed: 0
+        AttackMoveDuration: 0
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 20
+        StiffnessAmount: 10
+        AttackRadius: {x: 3.45, y: 2, z: 3.45}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 21
     - ChargeTime: 2
-      AttackData: {fileID: 11400000, guid: 73e9e2abad3515745807608e1f056765, type: 2}
+      AttackData:
+        AttackType: 4
+        AttackStamina: 20
+        AttackMoveDistance: 0
+        RotateSpeed: 0
+        AttackMoveDuration: 0
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 50
+        StiffnessAmount: 25
+        AttackRadius: {x: 3.45, y: 2, z: 3.45}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 30
     - ChargeTime: 3
-      AttackData: {fileID: 11400000, guid: c67690097f62a944d87628cd11c0e116, type: 2}
+      AttackData:
+        AttackType: 5
+        AttackStamina: 20
+        AttackMoveDistance: 0
+        RotateSpeed: 0
+        AttackMoveDuration: 0
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 80
+        StiffnessAmount: 50
+        AttackRadius: {x: 3.45, y: 2, z: 3.45}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 35
     MaxChargeTime: 5
     ParryStamina: 1
     ParryAngle: 120
