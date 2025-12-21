@@ -10,7 +10,6 @@ using UnityEngine;
 public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
-    protected override Type p_nextAttackState => null;
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentChargeAttackData.AttackConfig;
      
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
@@ -56,26 +55,6 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
         p_context.Input.SetAttackHeldInput(false);
     }
 
-    /// <summary>
-    /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
-    /// </summary>
-    protected override void HandleInput()
-    {
-        if (p_nextState != null || !_canInput)
-        {
-            return;
-        }
-
-        if (p_nextAttackState != null && p_context.Input.AttackInput)
-        {
-            p_nextState = p_nextAttackState;
-            p_stateMachine.ChangeState(p_nextState);
-        }
-        else if (p_context.Input.DodgeInput)
-        {
-            p_nextState = typeof(PlayerDodgeState);
-        }
-    }
 
     private void OnParrySucceeded(Transform transform)
     {

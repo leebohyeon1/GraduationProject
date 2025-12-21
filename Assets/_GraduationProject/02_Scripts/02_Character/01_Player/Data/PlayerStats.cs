@@ -36,6 +36,7 @@ public class PlayerStats: IDisposable
     public HashSet<IParryable> ParrySet = new HashSet<IParryable>();
     public int ChargeLevel = 0;
     public int AttackComboIndex = 0;
+    public bool CanNextAttack => AttackComboIndex < AttackDatas.Count;
 
     // Properties
     public PlayerDataSO Data => _data;  
@@ -44,7 +45,7 @@ public class PlayerStats: IDisposable
     public List<PlayerAttackData> AttackDatas => _runtimeData.CombatData.AttackDatas;
 
     public PlayerAttackData CurrentAttackData => AttackDatas[AttackComboIndex];
-    public PlayerChargeConfig CurrentChargeAttackData => AttackDatas[AttackComboIndex].ChargeConfigs[ChargeLevel];
+    public PlayerChargeConfig CurrentChargeAttackData => AttackDatas[AttackComboIndex].ChargeConfigs[ChargeLevel - 1];
 
 
     public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
@@ -59,13 +60,13 @@ public class PlayerStats: IDisposable
         CurrentStamina = _data.MaxStamina;
 
         _events.ParryWindowFinished += OnParryWindowFinished;
-        _events.AttackFinished += OnAttackFinished;
+        _events.AttackPerformed    += OnAttackPerformed;
     }
 
     public void Dispose()
     {
         _events.ParryWindowFinished -= OnParryWindowFinished;
-        _events.AttackFinished -= OnAttackFinished;
+        _events.AttackPerformed -= OnAttackPerformed;
     }
 
     /// <summary>
@@ -118,7 +119,7 @@ public class PlayerStats: IDisposable
 
     }
 
-    private void OnAttackFinished()
+    private void OnAttackPerformed()
     {
         int nextIndex = AttackComboIndex + 1;
         int maxAttackIndex = AttackDatas.Count - 1;

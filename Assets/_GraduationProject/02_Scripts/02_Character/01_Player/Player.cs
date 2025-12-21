@@ -203,9 +203,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
         _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerThirdAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
@@ -229,7 +227,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput && _stamina.CheckStamina());
@@ -239,7 +237,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);

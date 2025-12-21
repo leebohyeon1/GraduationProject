@@ -13,6 +13,7 @@ public class PlayerIdleState : BaseState<Player>
 
     public override void OnEnter()
     {
+        p_context.Stats.AttackComboIndex = 0;
         p_context.Animator.SetBool("IsIdle", true);
     }
 

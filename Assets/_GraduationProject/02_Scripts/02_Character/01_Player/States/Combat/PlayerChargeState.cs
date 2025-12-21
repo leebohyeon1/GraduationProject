@@ -17,7 +17,9 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Animator.SetBool("IsCharge", true);
+        Debug.Log("Enter Charge State");
+        p_context.Animator.SetBool("IsCharging", true);
+
 
         p_context.Stats.ChargeLevel = 0;
         _chargeTimer = 0f;   
@@ -26,8 +28,8 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnUpdate()
     {
         _chargeTimer += Time.deltaTime;
-        if(_chargeLevel < p_context.Stats.CurrentAttackData.ChargeConfigs.Count  && 
-            _chargeTimer >= p_context.Stats.CurrentChargeAttackData.ChargeTime)
+        if(_chargeLevel < p_context.Stats.CurrentAttackData.ChargeConfigs.Count && 
+            _chargeTimer >= p_context.Stats.CurrentAttackData.ChargeConfigs[_chargeLevel].ChargeTime)
         {
             p_context.Stats.ChargeLevel++;
             p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
@@ -83,14 +85,15 @@ public class PlayerChargeState : BaseState<Player>
             else
             {
                 p_context.Stats.ChargeLevel = 0;
-                p_stateMachine.ChangeState<PlayerFirstAttackState>();
+                p_stateMachine.ChangeState<PlayerAttackState>();
             }
         }
     }
 
     public override void OnExit()
     {
-        p_context.Animator.SetBool("IsCharge", false);
+        p_context.Animator.SetBool("IsCharging", false);
+
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerChargeCanceled();
     }

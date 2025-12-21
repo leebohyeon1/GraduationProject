@@ -14,11 +14,13 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     protected bool _canInput = false;
 
     protected abstract string p_animationTrigger { get; } // 각 공격에 맞는 애니메이션 트리거
-    protected abstract Type p_nextAttackState { get; } // 다음 연계 공격 상태
     protected abstract PlayerAttackConfig p_AttackConfig { get; } // 현재 공격의 데이터
 
     public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
-        : base(context, stateMachine) { }
+        : base(context, stateMachine) 
+    {
+    }
+
 
     public override void OnEnter()
     {
@@ -30,7 +32,6 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         p_nextState = null;
         p_context.Stamina.UseStamina(p_AttackConfig.AttackStamina);
 
-        // p_context.Animator.runtimeAnimatorController = p_AttackData.AnimOverrideController;
         p_context.Animator.SetTrigger(p_animationTrigger);
             
         p_context.Events.TriggerBattleStateChanged(true);
@@ -52,8 +53,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         DOTween.Kill(p_animationTrigger);
 
         p_context.Animator.ResetTrigger(p_animationTrigger);
+
         p_context.Events.TriggerBattleStateChanged(true);
-        p_context.Events.TriggerRegenStamina(true);
+        p_context.Events.TriggerRegenStamina(true); 
 
         _canInput = false;  
         p_nextState = null;
@@ -115,22 +117,25 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
             return;
         }
 
-        if (p_nextAttackState != null && p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
+        if (p_context.Stats.CanNextAttack && p_context.Stamina.CheckStamina())
         {
-            p_nextState = p_nextAttackState;
-            p_stateMachine.ChangeState(p_nextState);
+            if(p_context.Input.AttackInput)
+            {
+                p_stateMachine.ChangeState(typeof(PlayerAttackState));
+            }
+            else if(p_context.Input.AttackHeldInput)
+            {
+                p_stateMachine.ChangeState(typeof(PlayerChargeState));
+            }
+               
         }
         else if (p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
+
             p_nextState = typeof(PlayerDodgeState);
         }
-        //else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
-        //{
-        //    p_nextState = typeof(PlayerChargeState);
-        //}
+
     }
-
-
 
     /// <summary>
     /// 공격 판정이 발생하는 시점에 호출됩니다.

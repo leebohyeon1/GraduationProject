@@ -29,6 +29,7 @@ public class PlayerDodgeState : BaseState<Player>
     {
         _nextState = null;
 
+        p_context.Stats.AttackComboIndex = 0;
         p_context.Animator.SetTrigger("Dodge");
 
         // 입력 방향에 따라 회피 방향 결정
@@ -55,6 +56,7 @@ public class PlayerDodgeState : BaseState<Player>
 
     public override void OnExit()
     {
+
         p_context.Health.SetInvisible(false); // 무적 해제
         DOTween.Kill(this);
 
@@ -113,10 +115,9 @@ public class PlayerDodgeState : BaseState<Player>
         {
             return;
         }
-
         else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
         {
-            _nextState = typeof(PlayerFirstAttackState);
+            _nextState = typeof(PlayerAttackState);
         }
         else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
@@ -126,5 +127,6 @@ public class PlayerDodgeState : BaseState<Player>
         {
             _nextState = typeof(PlayerChargeState);
         }
-    }
+
+     }
 }

@@ -7,12 +7,12 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 첫 번째 일반 공격 상태입니다.
 /// </summary>
-public class PlayerFirstAttackState : PlayerAttackBaseState
+public class PlayerAttackState : PlayerAttackBaseState
 {
-    public PlayerFirstAttackState(Player context, StateMachine<Player> stateMachine) 
+    public PlayerAttackState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine) { }
 
-    protected override string p_animationTrigger => "FirstAttack";
-    protected override Type p_nextAttackState => typeof(PlayerSecondAttackState);
+
+    protected override string p_animationTrigger => "Attack";
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
 }

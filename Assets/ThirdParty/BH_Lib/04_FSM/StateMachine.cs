@@ -82,11 +82,11 @@ namespace BH_Lib.FSM
                 return;
             }
 
-            // 현재 상태가 같은 상태면 무시
-            if (_currentState != null && _currentState.GetType() == stateType)
-            {
-                return;
-            }
+            //// 현재 상태가 같은 상태면 무시
+            //if (_currentState != null && _currentState.GetType() == stateType)
+            //{
+            //    return;
+            //}
 
             // 현재 상태를 히스토리에 저장
             if (CurrentState != null)
