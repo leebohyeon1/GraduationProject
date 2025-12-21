@@ -353,7 +353,7 @@ public class Player : DIMonoBehaviour
         DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_data.CombatData.ChargeAttackDatas[0].AttackData.AttackRadius, Color.red);
+        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackData.AttackRadius, Color.red);
 
     }
 

@@ -27,7 +27,7 @@ public class PlayerChargeState : BaseState<Player>
     {
         _chargeTimer += Time.deltaTime;
         if(_chargeLevel < p_context.Stats.RuntimeData.CombatData.ChargeAttackDatas.Count  && 
-            _chargeTimer >= p_context.Stats.RuntimeData.CombatData.ChargeAttackDatas[_chargeLevel].ChargeTime)
+            _chargeTimer >= p_context.Stats.CurrentChargeAttackData.ChargeTime)
         {
             p_context.Stats.ChargeLevel++;
             p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
