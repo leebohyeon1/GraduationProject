@@ -11,7 +11,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
 {
     protected override string p_animationTrigger => "ChargeAttack";
     protected override Type p_nextAttackState => null;
-    protected override PlayerAttackData p_AttackData => p_context.Stats.CurrentChargeAttackData.AttackData;
+    protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentChargeAttackData.AttackConfig;
      
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) 
@@ -42,7 +42,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
-        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
 
         foreach (Collider collider in colliders)
         {
@@ -81,8 +81,8 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     {
         if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
         {
-            damageable.TakeDamage(new DamageData(transform, p_AttackData.AttackType, p_AttackData.AttackDamage
-                , p_AttackData.StiffnessAmount, p_AttackData.KnockBackCurve, p_AttackData.KnockBackDuration, p_AttackData.KnockBackForce));
+            damageable.TakeDamage(new DamageData(transform, p_AttackConfig.AttackType, p_AttackConfig.AttackDamage
+                , p_AttackConfig.StiffnessAmount, p_AttackConfig.KnockBackCurve, p_AttackConfig.KnockBackDuration, p_AttackConfig.KnockBackForce));
         }
     }
 }

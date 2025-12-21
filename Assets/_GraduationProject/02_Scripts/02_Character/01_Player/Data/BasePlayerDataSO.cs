@@ -72,7 +72,6 @@ public class PlayerCombatData
     public float ChargeMoveSpeed; 
     public float ChargeRotateSpeed; 
     public float ChargeStamina;
-    public List<PlayerChargeAttackData> ChargeAttackDatas;
     public float MaxChargeTime = 5f;
 
     [Header("Parry")]
@@ -82,9 +81,4 @@ public class PlayerCombatData
     public float ParryMoveForce; // 패링 성공 시 이동 거리
 }
 
-[Serializable]
-public class PlayerChargeAttackData
-{
-    public float ChargeTime;
-    public PlayerAttackData AttackData;
-}
+

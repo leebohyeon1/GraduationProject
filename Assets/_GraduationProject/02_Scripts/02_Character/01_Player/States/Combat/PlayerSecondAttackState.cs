@@ -12,5 +12,5 @@ public class PlayerSecondAttackState : PlayerAttackBaseState
 
     protected override string p_animationTrigger => "SecondAttack";
     protected override Type p_nextAttackState => typeof(PlayerThirdAttackState);
-    protected override PlayerAttackData p_AttackData => p_context.Stats.AttackDatas[1];
+    protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
 }

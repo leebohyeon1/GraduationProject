@@ -350,10 +350,10 @@ public class Player : DIMonoBehaviour
     private void OnDrawGizmos()
     {
         // 공격 범위 기즈모
-        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackData.AttackRadius, Color.red);
+        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackConfig.AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackConfig.AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackConfig.AttackRadius, Color.darkRed);
+        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackConfig.AttackRadius, Color.red);
 
     }
 

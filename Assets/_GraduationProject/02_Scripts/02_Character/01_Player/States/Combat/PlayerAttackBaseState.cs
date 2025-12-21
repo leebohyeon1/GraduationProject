@@ -15,7 +15,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
     protected abstract string p_animationTrigger { get; } // 각 공격에 맞는 애니메이션 트리거
     protected abstract Type p_nextAttackState { get; } // 다음 연계 공격 상태
-    protected abstract PlayerAttackData p_AttackData { get; } // 현재 공격의 데이터
+    protected abstract PlayerAttackConfig p_AttackConfig { get; } // 현재 공격의 데이터
 
     public PlayerAttackBaseState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -28,7 +28,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
 
         _canInput = false;
         p_nextState = null;
-        p_context.Stamina.UseStamina(p_AttackData.AttackStamina);
+        p_context.Stamina.UseStamina(p_AttackConfig.AttackStamina);
 
         // p_context.Animator.runtimeAnimatorController = p_AttackData.AnimOverrideController;
         p_context.Animator.SetTrigger(p_animationTrigger);
@@ -65,9 +65,9 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     /// </summary>
     protected virtual void StartAttackMovement()
     {
-        float distance = p_AttackData.AttackMoveDistance;
-        float duration = p_AttackData.AttackMoveDuration;
-        AnimationCurve curve = p_AttackData.AttackMoveCurve;
+        float distance = p_AttackConfig.AttackMoveDistance;
+        float duration = p_AttackConfig.AttackMoveDuration;
+        AnimationCurve curve = p_AttackConfig.AttackMoveCurve;
 
         float currentDistance = 0f;
         DOTween.To(
@@ -79,7 +79,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
                     Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
                     Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
 
-                    p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_AttackData.RotateSpeed);
+                    p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_AttackConfig.RotateSpeed);
                 }
                 else
                 {
@@ -87,7 +87,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
                     var moveInput = p_context.Input.MoveInput;
                     var mousePosition = p_context.Input.MousePosition;
 
-                    p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_AttackData.RotateSpeed);
+                    p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_AttackConfig.RotateSpeed);
                 }
 
                 Vector3 moveDirection = p_context.transform.forward;
@@ -139,7 +139,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     {
         DOTween.Kill(p_animationTrigger);
 
-        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackData);
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
         foreach (Collider collider in colliders)
         {
             p_context.Events.TriggerAttackAffected(collider);
