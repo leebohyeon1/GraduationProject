@@ -22,6 +22,146 @@ MonoBehaviour:
   gain:
     m_OverrideState: 1
     m_Value: {x: 1, y: 1, z: 1, w: 0}
+--- !u!114 &-8681366950111842592
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c23c86827d01c849b9fa476fcb5807e, type: 3}
+  m_Name: FogSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.FogSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  distanceStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  startDistance:
+    m_OverrideState: 1
+    m_Value: 10
+  startDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  fullStrengthDistance:
+    m_OverrideState: 1
+    m_Value: 20
+  fullStrengthDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  distanceFalloff:
+    m_OverrideState: 1
+    m_Value: 1
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  startHeight:
+    m_OverrideState: 1
+    m_Value: 0
+  startHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  fullStrengthHeight:
+    m_OverrideState: 1
+    m_Value: -20
+  fullStrengthHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  useFogAtSkybox:
+    m_OverrideState: 1
+    m_Value: 1
+  skyboxHeight:
+    m_OverrideState: 1
+    m_Value: -100
+  heightFalloff:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-8437314480678752693
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71227a7e727fb84a8710842b018e658, type: 3}
+  m_Name: RetroSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.RetroSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  drawingMode:
+    m_OverrideState: 1
+    m_Value: 0
+  redLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  greenLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  blueLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  darkestColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.11, g: 0.21, b: 0.08, a: 1}
+  darkColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.24, g: 0.38, b: 0.21, a: 1}
+  lightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.57, g: 0.67, b: 0.21, a: 1}
+  lightestColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.75, g: 0.82, b: 0.46, a: 1}
+  powerRamp:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-8270506406425502121
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -44,6 +184,96 @@ MonoBehaviour:
   balance:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-8225525794638034442
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2994a6fdc1e614749b3c27256eadd852, type: 3}
+  m_Name: DebugMaskSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DebugMaskSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-8136256474324702927
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f41206b38f6379e4a8eddeb5320fca87, type: 3}
+  m_Name: DitherSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DitherSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  noiseTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  noiseSize:
+    m_OverrideState: 1
+    m_Value: 1
+  luminanceThreshold:
+    m_OverrideState: 1
+    m_Value: 0
+  darkColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  useSceneColor:
+    m_OverrideState: 1
+    m_Value: 0
+  lightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &-8104416584915340131
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -66,6 +296,76 @@ MonoBehaviour:
   p21:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-8078719630549373549
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76fc026c9c7b43848a53127cf2b989b6, type: 3}
+  m_Name: SynthwaveSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SynthwaveSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  useSceneColor:
+    m_OverrideState: 1
+    m_Value: 0
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  lineColor1:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  lineColor2:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  lineColorMix:
+    m_OverrideState: 1
+    m_Value: 1
+  lineWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  lineSoftness:
+    m_OverrideState: 1
+    m_Value: 0.05
+  gapWidth:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1}
+  lineOffset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0, z: 0}
+  startFadeoutDistance:
+    m_OverrideState: 1
+    m_Value: 15
+  endFadeoutDistance:
+    m_OverrideState: 1
+    m_Value: 30
+  axisMask:
+    m_OverrideState: 1
+    m_Value: 4
 --- !u!114 &-7750755424749557576
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -107,6 +407,43 @@ MonoBehaviour:
   clamp:
     m_OverrideState: 1
     m_Value: 0.05
+--- !u!114 &-7634169449177154783
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56dc6e7c71d5eb74aa1c145797f6a0c6, type: 3}
+  m_Name: KaleidoscopeSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.KaleidoscopeSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  segments:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-7274224791359825572
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -146,6 +483,189 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+--- !u!114 &-7234014638323050479
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2595f811f3925845bf526e9d9991575, type: 3}
+  m_Name: SharpenSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SharpenSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-7057895526417133903
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71227a7e727fb84a8710842b018e658, type: 3}
+  m_Name: RetroSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.RetroSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  drawingMode:
+    m_OverrideState: 1
+    m_Value: 0
+  redLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  greenLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  blueLevels:
+    m_OverrideState: 1
+    m_Value: 2
+  darkestColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.11, g: 0.21, b: 0.08, a: 1}
+  darkColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.24, g: 0.38, b: 0.21, a: 1}
+  lightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.57, g: 0.67, b: 0.21, a: 1}
+  lightestColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.75, g: 0.82, b: 0.46, a: 1}
+  powerRamp:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-6936886764594596455
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a98763bf01313540942740907e9dfc6, type: 3}
+  m_Name: ThermalSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ThermalSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  thermalMaskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskBlur:
+    m_OverrideState: 1
+    m_Value: 1
+  maskBlurStepSize:
+    m_OverrideState: 1
+    m_Value: 1
+  addBrightnessToMask:
+    m_OverrideState: 1
+    m_Value: 1
+  color0:
+    m_OverrideState: 1
+    m_Value: {r: 0.016, g: 0.028, b: 0.026, a: 1}
+  threshold0:
+    m_OverrideState: 1
+    m_Value: 0.2
+  color1:
+    m_OverrideState: 1
+    m_Value: {r: 0.105, g: 0.472, b: 0.313, a: 1}
+  threshold1:
+    m_OverrideState: 1
+    m_Value: 0.35
+  color2:
+    m_OverrideState: 1
+    m_Value: {r: 0.295, g: 0.792, b: 0.397, a: 1}
+  threshold2:
+    m_OverrideState: 1
+    m_Value: 0.5
+  color3:
+    m_OverrideState: 1
+    m_Value: {r: 0.734, g: 1, b: 0.137, a: 1}
+  threshold3:
+    m_OverrideState: 1
+    m_Value: 0.75
+  color4:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.058, b: 0, a: 1}
+  threshold4:
+    m_OverrideState: 1
+    m_Value: 0.95
+  color5:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &-6335409530604852063
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -199,6 +719,98 @@ MonoBehaviour:
   texture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
+--- !u!114 &-6260196070643208485
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9986aabbfd4ba6344a415ebae05cde38, type: 3}
+  m_Name: GlitchSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GlitchSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  usePointFilter:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetTiling:
+    m_OverrideState: 1
+    m_Value: 1
+  useSliceBandGlitches:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandJitter:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandMinDuration:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandMaxDuration:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandFrequency:
+    m_OverrideState: 1
+    m_Value: 0
+  useBlockArtifacts:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactTiling:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1}
+  blockArtifactChance:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactStrengthMin:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactStrengthMax:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactSpeed:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-6238609968729934239
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -221,6 +833,200 @@ MonoBehaviour:
   sampleCount:
     m_OverrideState: 1
     m_Value: 10
+--- !u!114 &-6194866655967396065
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e82cbd66e4ca9da42a416a5e072a0b74, type: 3}
+  m_Name: BlurSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.BlurSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  blurMode:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 1
+  blurStepSize:
+    m_OverrideState: 1
+    m_Value: 1
+  luminanceThreshold:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-6026546656390365883
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073f2c67048b5b6438c2b131561e05be, type: 3}
+  m_Name: GreyscaleSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GreyscaleSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5857655844175477110
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f303017185e9ccc42b1e57347215800e, type: 3}
+  m_Name: SepiaToneSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SepiaToneSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5754871063205695785
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2994a6fdc1e614749b3c27256eadd852, type: 3}
+  m_Name: DebugMaskSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DebugMaskSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-5537711557433599378
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4f60082e9527249ae1c4b5b8b2a54c, type: 3}
+  m_Name: ColorizeSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ColorizeSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 0}
 --- !u!114 &-5520245016509672950
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -261,6 +1067,56 @@ MonoBehaviour:
   maxNits:
     m_OverrideState: 1
     m_Value: 1000
+--- !u!114 &-5490461345347442349
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0844c7bc64db3499869d930dfe1f5d, type: 3}
+  m_Name: ScanlineSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ScanlineSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  scanlineTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  scanlineStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  scanlineSize:
+    m_OverrideState: 1
+    m_Value: 1
+  scanlineScrollSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  usePointFiltering:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-5360449096862653589
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -274,6 +1130,84 @@ MonoBehaviour:
   m_Name: VolumeComponentSupportedEverywhere
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Editor.Tests:UnityEngine.Rendering.Tests:VolumeComponentEditorSupportedOnTests/VolumeComponentSupportedEverywhere
   active: 1
+--- !u!114 &-5242628287497156420
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 782d51b427a49d14ab9ff03dd329df4a, type: 3}
+  m_Name: UnderwaterSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.UnderwaterSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  waveFlowMap:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  waveStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  waveFlowTiling:
+    m_OverrideState: 1
+    m_Value: 1
+  waveFlowSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  causticsMode:
+    m_OverrideState: 1
+    m_Value: 2
+  causticsTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  causticsTint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  causticsTiling1:
+    m_OverrideState: 1
+    m_Value: 0.5
+  causticsTiling2:
+    m_OverrideState: 1
+    m_Value: 0.5
+  causticsScrollVelocity1:
+    m_OverrideState: 1
+    m_Value: {x: 0.75, y: 0.25, z: 0}
+  causticsScrollVelocity2:
+    m_OverrideState: 1
+    m_Value: {x: 0.75, y: 0.25, z: 0}
+  causticsColorSeparation:
+    m_OverrideState: 1
+    m_Value: 0
+  causticsStartFade:
+    m_OverrideState: 1
+    m_Value: 25
+  causticsFadeFalloff:
+    m_OverrideState: 1
+    m_Value: 25
 --- !u!114 &-5139089513906902183
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -302,6 +1236,58 @@ MonoBehaviour:
   SunScatteringIntensity:
     m_OverrideState: 1
     m_Value: 2
+--- !u!114 &-4843406256154134264
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8251daab50667ae499a149a341d7c89b, type: 3}
+  m_Name: SilhouetteSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SilhouetteSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  useTextureRamp:
+    m_OverrideState: 1
+    m_Value: 0
+  textureRamp:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+  nearColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  farColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  powerRamp:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-4463884970436517307
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -321,6 +1307,468 @@ MonoBehaviour:
   cropToFit:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &-3587719721752682037
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 782d51b427a49d14ab9ff03dd329df4a, type: 3}
+  m_Name: UnderwaterSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.UnderwaterSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  waveFlowMap:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  waveStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  waveFlowTiling:
+    m_OverrideState: 1
+    m_Value: 1
+  waveFlowSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  causticsMode:
+    m_OverrideState: 1
+    m_Value: 2
+  causticsTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  causticsTint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  causticsTiling1:
+    m_OverrideState: 1
+    m_Value: 0.5
+  causticsTiling2:
+    m_OverrideState: 1
+    m_Value: 0.5
+  causticsScrollVelocity1:
+    m_OverrideState: 1
+    m_Value: {x: 0.75, y: 0.25, z: 0}
+  causticsScrollVelocity2:
+    m_OverrideState: 1
+    m_Value: {x: 0.75, y: 0.25, z: 0}
+  causticsColorSeparation:
+    m_OverrideState: 1
+    m_Value: 0
+  causticsStartFade:
+    m_OverrideState: 1
+    m_Value: 25
+  causticsFadeFalloff:
+    m_OverrideState: 1
+    m_Value: 25
+--- !u!114 &-3568624295641192430
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cff7ae1c113e66d418c2f8dfc551ecd3, type: 3}
+  m_Name: InvertSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.InvertSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-3506696089392378405
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f41206b38f6379e4a8eddeb5320fca87, type: 3}
+  m_Name: DitherSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DitherSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  noiseTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  noiseSize:
+    m_OverrideState: 1
+    m_Value: 1
+  luminanceThreshold:
+    m_OverrideState: 1
+    m_Value: 0
+  darkColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  useSceneColor:
+    m_OverrideState: 1
+    m_Value: 0
+  lightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &-3438352027540018709
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8251daab50667ae499a149a341d7c89b, type: 3}
+  m_Name: SilhouetteSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SilhouetteSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  useTextureRamp:
+    m_OverrideState: 1
+    m_Value: 0
+  textureRamp:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+  nearColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  farColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  powerRamp:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-2531250306674065341
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56dc6e7c71d5eb74aa1c145797f6a0c6, type: 3}
+  m_Name: KaleidoscopeSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.KaleidoscopeSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  segments:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-2005099107003774949
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9986aabbfd4ba6344a415ebae05cde38, type: 3}
+  m_Name: GlitchSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GlitchSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  usePointFilter:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  offsetTiling:
+    m_OverrideState: 1
+    m_Value: 1
+  useSliceBandGlitches:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandJitter:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandMinDuration:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandMaxDuration:
+    m_OverrideState: 1
+    m_Value: 0
+  sliceBandFrequency:
+    m_OverrideState: 1
+    m_Value: 0
+  useBlockArtifacts:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactTiling:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1}
+  blockArtifactChance:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactStrengthMin:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactStrengthMax:
+    m_OverrideState: 1
+    m_Value: 0
+  blockArtifactSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-1986190547622397222
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c23c86827d01c849b9fa476fcb5807e, type: 3}
+  m_Name: FogSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.FogSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  distanceStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  startDistance:
+    m_OverrideState: 1
+    m_Value: 10
+  startDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  fullStrengthDistance:
+    m_OverrideState: 1
+    m_Value: 20
+  fullStrengthDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  distanceFalloff:
+    m_OverrideState: 1
+    m_Value: 1
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  startHeight:
+    m_OverrideState: 1
+    m_Value: 0
+  startHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  fullStrengthHeight:
+    m_OverrideState: 1
+    m_Value: -20
+  fullStrengthHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  useFogAtSkybox:
+    m_OverrideState: 1
+    m_Value: 1
+  skyboxHeight:
+    m_OverrideState: 1
+    m_Value: -100
+  heightFalloff:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-1473851818383710140
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cff7ae1c113e66d418c2f8dfc551ecd3, type: 3}
+  m_Name: InvertSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.InvertSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-1410297666881709256
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -433,6 +1881,76 @@ MonoBehaviour:
   tint:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-1078250947932724164
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76fc026c9c7b43848a53127cf2b989b6, type: 3}
+  m_Name: SynthwaveSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SynthwaveSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  useSceneColor:
+    m_OverrideState: 1
+    m_Value: 0
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  lineColor1:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  lineColor2:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  lineColorMix:
+    m_OverrideState: 1
+    m_Value: 1
+  lineWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  lineSoftness:
+    m_OverrideState: 1
+    m_Value: 0.05
+  gapWidth:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1}
+  lineOffset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0, z: 0}
+  startFadeoutDistance:
+    m_OverrideState: 1
+    m_Value: 15
+  endFadeoutDistance:
+    m_OverrideState: 1
+    m_Value: 30
+  axisMask:
+    m_OverrideState: 1
+    m_Value: 4
 --- !u!114 &-581120513425526550
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -455,6 +1973,134 @@ MonoBehaviour:
   p31:
     m_OverrideState: 1
     m_Value: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &-318688737084071089
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a98763bf01313540942740907e9dfc6, type: 3}
+  m_Name: ThermalSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ThermalSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 0
+  thermalMaskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskBlur:
+    m_OverrideState: 1
+    m_Value: 1
+  maskBlurStepSize:
+    m_OverrideState: 1
+    m_Value: 1
+  addBrightnessToMask:
+    m_OverrideState: 1
+    m_Value: 1
+  color0:
+    m_OverrideState: 1
+    m_Value: {r: 0.016, g: 0.028, b: 0.026, a: 1}
+  threshold0:
+    m_OverrideState: 1
+    m_Value: 0.2
+  color1:
+    m_OverrideState: 1
+    m_Value: {r: 0.105, g: 0.472, b: 0.313, a: 1}
+  threshold1:
+    m_OverrideState: 1
+    m_Value: 0.35
+  color2:
+    m_OverrideState: 1
+    m_Value: {r: 0.295, g: 0.792, b: 0.397, a: 1}
+  threshold2:
+    m_OverrideState: 1
+    m_Value: 0.5
+  color3:
+    m_OverrideState: 1
+    m_Value: {r: 0.734, g: 1, b: 0.137, a: 1}
+  threshold3:
+    m_OverrideState: 1
+    m_Value: 0.75
+  color4:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.058, b: 0, a: 1}
+  threshold4:
+    m_OverrideState: 1
+    m_Value: 0.95
+  color5:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &-187385603105559533
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc19584103c1f384c88752834d9c953c, type: 3}
+  m_Name: VortexSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.VortexSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+  center:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5}
+  offset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  rotation:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,7 +2133,30 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
-  - {fileID: -6238609968729934239}
+  - {fileID: -8136256474324702927}
+  - {fileID: -8225525794638034442}
+  - {fileID: 1373938935483305952}
+  - {fileID: -8681366950111842592}
+  - {fileID: -6260196070643208485}
+  - {fileID: -7634169449177154783}
+  - {fileID: 1933797577638342334}
+  - {fileID: -7234014638323050479}
+  - {fileID: -1473851818383710140}
+  - {fileID: -3438352027540018709}
+  - {fileID: -5537711557433599378}
+  - {fileID: 2950341455834093391}
+  - {fileID: -8437314480678752693}
+  - {fileID: 5569200327800934766}
+  - {fileID: 1634372667442417103}
+  - {fileID: 1758365234087150508}
+  - {fileID: 5073580701872532064}
+  - {fileID: 4940254791091892060}
+  - {fileID: -6194866655967396065}
+  - {fileID: 4353529622695901358}
+  - {fileID: -5242628287497156420}
+  - {fileID: 7650380924030359784}
+  - {fileID: -318688737084071089}
+  - {fileID: -8078719630549373549}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -589,6 +2258,93 @@ MonoBehaviour:
   highlightsEnd:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &1373938935483305952
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f303017185e9ccc42b1e57347215800e, type: 3}
+  m_Name: SepiaToneSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SepiaToneSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &1634372667442417103
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0844c7bc64db3499869d930dfe1f5d, type: 3}
+  m_Name: ScanlineSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ScanlineSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  scanlineTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  scanlineStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  scanlineSize:
+    m_OverrideState: 1
+    m_Value: 1
+  scanlineScrollSpeed:
+    m_OverrideState: 1
+    m_Value: 0
+  usePointFiltering:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &1666464333004379222
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -778,6 +2534,49 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
+--- !u!114 &1758365234087150508
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c9f0ccfbc884e448b03bfcbeaa94e9, type: 3}
+  m_Name: PixelateSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.PixelateSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  downsampleSize:
+    m_OverrideState: 1
+    m_Value: 1
+  usePointFiltering:
+    m_OverrideState: 1
+    m_Value: 1
+  expandMask:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &1918650496244738858
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -796,6 +2595,132 @@ MonoBehaviour:
     m_Value: {fileID: 0}
     dimension: 1
   contribution:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &1933797577638342334
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb0f345af1ab70449002ff5ef843517, type: 3}
+  m_Name: DistortionSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DistortionSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+  smoothing:
+    m_OverrideState: 1
+    m_Value: 0.01
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &2950341455834093391
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc19584103c1f384c88752834d9c953c, type: 3}
+  m_Name: VortexSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.VortexSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+  center:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5}
+  offset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
+  rotation:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &3055124862668081198
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2595f811f3925845bf526e9d9991575, type: 3}
+  m_Name: SharpenSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.SharpenSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
     m_OverrideState: 1
     m_Value: 0
 --- !u!114 &3959858460715838825
@@ -860,6 +2785,46 @@ MonoBehaviour:
   param:
     m_OverrideState: 1
     m_Value: 123
+--- !u!114 &4353529622695901358
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22cad2889d6b976458ad8f6e329d90c9, type: 3}
+  m_Name: PaintingSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.PaintingSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  drawingMode:
+    m_OverrideState: 1
+    m_Value: 0
+  kernelSize:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &4644742534064026673
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -876,6 +2841,169 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &4940254791091892060
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d1f0d647b3a2744b8815ca36bd056a, type: 3}
+  m_Name: FilmicSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.FilmicSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  useFilmBars:
+    m_OverrideState: 1
+    m_Value: 0
+  aspectRatio:
+    m_OverrideState: 1
+    m_Value: {x: 16, y: 9}
+  filmBarColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  noiseStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  noiseSpeed:
+    m_OverrideState: 1
+    m_Value: 1
+  noiseSize:
+    m_OverrideState: 1
+    m_Value: 1
+  noiseInterpolation:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &5073580701872532064
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1513e5ea3748040995a9e1146f2361, type: 3}
+  m_Name: GlobalMaskSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GlobalMaskSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &5318929829137610535
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4f60082e9527249ae1c4b5b8b2a54c, type: 3}
+  m_Name: ColorizeSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.ColorizeSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 0}
+--- !u!114 &5569200327800934766
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073f2c67048b5b6438c2b131561e05be, type: 3}
+  m_Name: GreyscaleSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GreyscaleSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &6940869943325143175
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -889,6 +3017,61 @@ MonoBehaviour:
   m_Name: VolumeComponentSupportedOnAnySRP
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Editor.Tests:UnityEngine.Rendering.Tests:VolumeComponentEditorSupportedOnTests/VolumeComponentSupportedOnAnySRP
   active: 1
+--- !u!114 &6962826333754785513
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d1f0d647b3a2744b8815ca36bd056a, type: 3}
+  m_Name: FilmicSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.FilmicSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  useFilmBars:
+    m_OverrideState: 1
+    m_Value: 0
+  aspectRatio:
+    m_OverrideState: 1
+    m_Value: {x: 16, y: 9}
+  filmBarColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  noiseStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  noiseSpeed:
+    m_OverrideState: 1
+    m_Value: 1
+  noiseSize:
+    m_OverrideState: 1
+    m_Value: 1
+  noiseInterpolation:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &7173750748008157695
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -917,6 +3100,49 @@ MonoBehaviour:
   rounded:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &7210601588288862001
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9871c42e32ee54a409a9f483a9820ff0, type: 3}
+  m_Name: DotMatrixSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DotMatrixSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  gapWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  dotSize:
+    m_OverrideState: 1
+    m_Value: 1
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &7518938298396184218
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -945,6 +3171,255 @@ MonoBehaviour:
   scale:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &7638315419324977440
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb0f345af1ab70449002ff5ef843517, type: 3}
+  m_Name: DistortionSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DistortionSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
+  smoothing:
+    m_OverrideState: 1
+    m_Value: 0.01
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &7650380924030359784
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9871c42e32ee54a409a9f483a9820ff0, type: 3}
+  m_Name: DotMatrixSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.DotMatrixSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  gapWidth:
+    m_OverrideState: 1
+    m_Value: 0
+  dotSize:
+    m_OverrideState: 1
+    m_Value: 1
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &7893933562461133689
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e82cbd66e4ca9da42a416a5e072a0b74, type: 3}
+  m_Name: BlurSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.BlurSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  blurMode:
+    m_OverrideState: 1
+    m_Value: 0
+  strength:
+    m_OverrideState: 1
+    m_Value: 1
+  blurStepSize:
+    m_OverrideState: 1
+    m_Value: 1
+  luminanceThreshold:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &8802862320222125896
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22cad2889d6b976458ad8f6e329d90c9, type: 3}
+  m_Name: PaintingSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.PaintingSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  drawingMode:
+    m_OverrideState: 1
+    m_Value: 0
+  kernelSize:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &8811657552432235035
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c9f0ccfbc884e448b03bfcbeaa94e9, type: 3}
+  m_Name: PixelateSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.PixelateSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  downsampleSize:
+    m_OverrideState: 1
+    m_Value: 1
+  usePointFiltering:
+    m_OverrideState: 1
+    m_Value: 1
+  expandMask:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8939790397667756255
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1513e5ea3748040995a9e1146f2361, type: 3}
+  m_Name: GlobalMaskSettings
+  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.GlobalMaskSettings
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 1
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &9001657382290151224
 MonoBehaviour:
   m_ObjectHideFlags: 3
