@@ -103,70 +103,6 @@ MonoBehaviour:
   gain:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}
---- !u!114 &-4487281252131301647
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e71227a7e727fb84a8710842b018e658, type: 3}
-  m_Name: RetroSettings
-  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.RetroSettings
-  active: 0
-  renderPassEvent:
-    m_OverrideState: 0
-    m_Value: 550
-  maskMode:
-    m_OverrideState: 0
-    m_Value: 0
-  maskSettings:
-    m_OverrideState: 1
-    m_Value:
-      layerMask:
-        serializedVersion: 2
-        m_Bits: 4294967295
-      renderingLayerMask:
-        serializedVersion: 0
-        m_Bits: 4294967295
-      lightModes: 0000000002000000
-      renderQueue: 0
-      drawSkyboxToMask: 0
-  invertMask:
-    m_OverrideState: 0
-    m_Value: 0
-  enabled:
-    m_OverrideState: 0
-    m_Value: 1
-  drawingMode:
-    m_OverrideState: 0
-    m_Value: 0
-  redLevels:
-    m_OverrideState: 0
-    m_Value: 2
-  greenLevels:
-    m_OverrideState: 0
-    m_Value: 2
-  blueLevels:
-    m_OverrideState: 0
-    m_Value: 2
-  darkestColor:
-    m_OverrideState: 0
-    m_Value: {r: 0.11, g: 0.21, b: 0.08, a: 1}
-  darkColor:
-    m_OverrideState: 0
-    m_Value: {r: 0.24, g: 0.38, b: 0.21, a: 1}
-  lightColor:
-    m_OverrideState: 0
-    m_Value: {r: 0.57, g: 0.67, b: 0.21, a: 1}
-  lightestColor:
-    m_OverrideState: 0
-    m_Value: {r: 0.75, g: 0.82, b: 0.46, a: 1}
-  powerRamp:
-    m_OverrideState: 0
-    m_Value: 1
 --- !u!114 &-3793724364597242088
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -525,6 +461,73 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
+--- !u!114 &-1162834793561484933
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074ec59f6e910b4e8c49f57e56cf95a, type: 3}
+  m_Name: VolumetricFogVolumeComponent
+  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricFogVolumeComponent
+  active: 1
+  distance:
+    m_OverrideState: 0
+    m_Value: 64
+  baseHeight:
+    m_OverrideState: 1
+    m_Value: 0
+  maximumHeight:
+    m_OverrideState: 1
+    m_Value: 50
+  enableGround:
+    m_OverrideState: 1
+    m_Value: 0
+  groundHeight:
+    m_OverrideState: 0
+    m_Value: 0
+  density:
+    m_OverrideState: 0
+    m_Value: 0.2
+  attenuationDistance:
+    m_OverrideState: 0
+    m_Value: 128
+  enableAPVContribution:
+    m_OverrideState: 1
+    m_Value: 0
+  APVContributionWeight:
+    m_OverrideState: 0
+    m_Value: 1
+  enableMainLightContribution:
+    m_OverrideState: 1
+    m_Value: 1
+  anisotropy:
+    m_OverrideState: 1
+    m_Value: 0.4
+  scattering:
+    m_OverrideState: 1
+    m_Value: 0.37
+  tint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  enableAdditionalLightsContribution:
+    m_OverrideState: 1
+    m_Value: 0
+  maxSteps:
+    m_OverrideState: 0
+    m_Value: 128
+  blurIterations:
+    m_OverrideState: 0
+    m_Value: 2
+  enabled:
+    m_OverrideState: 1
+    m_Value: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,8 +559,7 @@ MonoBehaviour:
   - {fileID: -9218447606875904880}
   - {fileID: -3793724364597242088}
   - {fileID: 5766031652779664557}
-  - {fileID: 6757257246661871567}
-  - {fileID: -4487281252131301647}
+  - {fileID: -1162834793561484933}
 --- !u!114 &1394822372662551209
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -784,82 +786,6 @@ MonoBehaviour:
   dirtIntensity:
     m_OverrideState: 0
     m_Value: 0
---- !u!114 &6757257246661871567
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c23c86827d01c849b9fa476fcb5807e, type: 3}
-  m_Name: FogSettings
-  m_EditorClassIdentifier: Assembly-CSharp::DanielIlett.SnapshotShaders2.URP.FogSettings
-  active: 1
-  renderPassEvent:
-    m_OverrideState: 0
-    m_Value: 550
-  maskMode:
-    m_OverrideState: 0
-    m_Value: 0
-  maskSettings:
-    m_OverrideState: 1
-    m_Value:
-      layerMask:
-        serializedVersion: 2
-        m_Bits: 4294967295
-      renderingLayerMask:
-        serializedVersion: 0
-        m_Bits: 4294967295
-      lightModes: 0000000002000000
-      renderQueue: 0
-      drawSkyboxToMask: 0
-  invertMask:
-    m_OverrideState: 0
-    m_Value: 0
-  distanceStrength:
-    m_OverrideState: 0
-    m_Value: 0.097
-  startDistance:
-    m_OverrideState: 0
-    m_Value: 28.2
-  startDistanceColor:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-  fullStrengthDistance:
-    m_OverrideState: 0
-    m_Value: 9.82
-  fullStrengthDistanceColor:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-  distanceFalloff:
-    m_OverrideState: 0
-    m_Value: 0.01
-  heightStrength:
-    m_OverrideState: 0
-    m_Value: 0.071
-  startHeight:
-    m_OverrideState: 1
-    m_Value: 7.49
-  startHeightColor:
-    m_OverrideState: 1
-    m_Value: {r: 0.20502408, g: 0.09251513, b: 0.7264151, a: 1}
-  fullStrengthHeight:
-    m_OverrideState: 1
-    m_Value: -13.02
-  fullStrengthHeightColor:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-  useFogAtSkybox:
-    m_OverrideState: 0
-    m_Value: 1
-  skyboxHeight:
-    m_OverrideState: 1
-    m_Value: 25.5
-  heightFalloff:
-    m_OverrideState: 1
-    m_Value: 0.35
 --- !u!114 &7639525346556893995
 MonoBehaviour:
   m_ObjectHideFlags: 3
