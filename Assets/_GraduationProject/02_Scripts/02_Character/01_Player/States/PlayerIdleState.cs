@@ -13,6 +13,7 @@ public class PlayerIdleState : BaseState<Player>
 
     public override void OnEnter()
     {
+        p_context.Stats.AttackComboIndex = 0;
         p_context.Animator.SetBool("IsIdle", true);
     }
 
@@ -23,7 +24,7 @@ public class PlayerIdleState : BaseState<Player>
             Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
             Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
 
-            p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
+            p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.RuntimeData.RotateSpeed);
         }
 
         // 대기 상태에서는 움직이지 않음

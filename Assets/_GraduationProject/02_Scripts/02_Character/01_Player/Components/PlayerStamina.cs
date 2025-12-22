@@ -14,7 +14,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
     #region Properties
     public float Stamina => _stats.CurrentStamina;
-    public float MaxStamina => _stats.Data.MaxStamina;
+    public float MaxStamina => _stats.RuntimeData.MaxStamina;
     #endregion
 
     /// <summary>
@@ -81,7 +81,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
         {
             yield return null;
 
-            ChangeStamina(_stats.Data.StaminaRegenPerSecond * Time.deltaTime);
+            ChangeStamina(_stats.RuntimeData.StaminaRegenPerSecond * Time.deltaTime);
 
             if (Stamina >= MaxStamina)
             {
@@ -98,7 +98,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// </summary>
     private void OnDodgeStarted()
     {
-        UseStamina(_stats.Data.CombatData.DodgeStamina);
+        UseStamina(_stats.RuntimeData.CombatData.DodgeStamina);
     }    
 
     /// <summary>

@@ -17,7 +17,9 @@ public class PlayerChargeState : BaseState<Player>
 
     public override void OnEnter()
     {
-        p_context.Animator.SetBool("IsCharge", true);
+        Debug.Log("Enter Charge State");
+        p_context.Animator.SetBool("IsCharging", true);
+
 
         p_context.Stats.ChargeLevel = 0;
         _chargeTimer = 0f;   
@@ -26,19 +28,19 @@ public class PlayerChargeState : BaseState<Player>
     public override void OnUpdate()
     {
         _chargeTimer += Time.deltaTime;
-        if(_chargeLevel < p_context.Stats.Data.CombatData.ChargeAttackDatas.Length  && 
-            _chargeTimer >= p_context.Stats.Data.CombatData.ChargeAttackDatas[_chargeLevel].ChargeTime)
+        if(_chargeLevel < p_context.Stats.CurrentAttackData.ChargeConfigs.Count && 
+            _chargeTimer >= p_context.Stats.CurrentAttackData.ChargeConfigs[_chargeLevel].ChargeTime)
         {
             p_context.Stats.ChargeLevel++;
             p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
         }
         
-        if(_chargeTimer >= p_context.Stats.Data.CombatData.MaxChargeTime)
+        if(_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
         {
             p_stateMachine.ChangeState<PlayerChargeAttackState>();
         }
 
-        p_context.Stamina.UseStamina(p_context.Stats.Data.CombatData.ChargeStamina * Time.deltaTime);
+        p_context.Stamina.UseStamina(p_context.Stats.RuntimeData.CombatData.ChargeStamina * Time.deltaTime);
 
         // 회전 처리
         if (p_context.Stats.IsLockOn)
@@ -46,21 +48,21 @@ public class PlayerChargeState : BaseState<Player>
             Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
             Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
 
-            p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
+            p_context.Movement.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.RuntimeData.RotateSpeed);
         }
         else
         {
             var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
-            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_context.Stats.Data.CombatData.ChargeRotateSpeed);
+            p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_context.Stats.RuntimeData.CombatData.ChargeRotateSpeed);
         }
 
         // 이동 처리
         if (p_context.Movement != null && p_context.Input.MoveInput != Vector2.zero)
         {
             Vector3 moveDirection = new Vector3(p_context.Input.MoveInput.x, 0, p_context.Input.MoveInput.y).normalized;
-            p_context.Movement.Move(moveDirection, p_context.Stats.Data.CombatData.ChargeMoveSpeed);
+            p_context.Movement.Move(moveDirection, p_context.Stats.RuntimeData.CombatData.ChargeMoveSpeed);
             
             Vector3 localMove = p_context.transform.InverseTransformDirection(moveDirection);
             p_context.Animator.SetFloat("X", localMove.x);
@@ -83,14 +85,15 @@ public class PlayerChargeState : BaseState<Player>
             else
             {
                 p_context.Stats.ChargeLevel = 0;
-                p_stateMachine.ChangeState<PlayerFirstAttackState>();
+                p_stateMachine.ChangeState<PlayerAttackState>();
             }
         }
     }
 
     public override void OnExit()
     {
-        p_context.Animator.SetBool("IsCharge", false);
+        p_context.Animator.SetBool("IsCharging", false);
+
         p_context.Events.TriggerBattleStateChanged(true);
         p_context.Events.TriggerChargeCanceled();
     }

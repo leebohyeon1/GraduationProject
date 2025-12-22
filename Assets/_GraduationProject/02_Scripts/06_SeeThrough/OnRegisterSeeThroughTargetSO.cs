@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 투명화 컨트롤러에 탐지 타겟을 등록하는 스크립터블 오브젝트 이벤트
 /// </summary>
-[CreateAssetMenu(fileName = "OnRegisterSeeThroughTarget", menuName = "Events/OnRegisterSeeThroughTarget")]
+[CreateAssetMenu(fileName = "OnRegisterSeeThroughTarget", menuName = "Scriptable Objects/Events/OnRegisterSeeThroughTarget")]
 public class OnRegisterSeeThroughTargetSO : EventSO<SeeThroughTargetTransform>
 {
     

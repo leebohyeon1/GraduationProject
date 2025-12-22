@@ -5386,6 +5386,7 @@ GameObject:
   - component: {fileID: 6762247131494143912}
   - component: {fileID: 8864815167107620252}
   - component: {fileID: 1281766063680516867}
+  - component: {fileID: 7584183168185193458}
   - component: {fileID: 2677758183589702779}
   m_Layer: 7
   m_Name: Player
@@ -5480,6 +5481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e4aba7f7c24fe8499d9ed2ee92c0c3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  _saveDuringPlay: 0
   _animator: {fileID: 5465638030384625449}
   _characterController: {fileID: 1890978879368711845}
   _data: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
@@ -5491,6 +5493,7 @@ MonoBehaviour:
   _interact: {fileID: 7045531422154869315}
   _stamina: {fileID: 6762247131494143912}
   _lockOnSystem: {fileID: 8864815167107620252}
+  _ability: {fileID: 7584183168185193458}
   _onCameraInitializeSO: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
 --- !u!114 &2938692540566714052
 MonoBehaviour:
@@ -5643,6 +5646,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutOutTarget
   _onRegisterCutOutTargetSO: {fileID: 11400000, guid: f3d8c44a031fd55428f233efdf36272e, type: 2}
+--- !u!114 &7584183168185193458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406303703004210642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 995a56e1ea87c1b4594087e4158be987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbility
+  _abilitySelectedSO: {fileID: 11400000, guid: c3f357a0da13df544a8fe467f2a4934d, type: 2}
 --- !u!114 &2677758183589702779
 MonoBehaviour:
   m_ObjectHideFlags: 0

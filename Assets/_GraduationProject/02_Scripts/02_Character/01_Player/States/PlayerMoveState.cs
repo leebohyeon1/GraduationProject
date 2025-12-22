@@ -12,6 +12,7 @@ public class PlayerMoveState : BaseState<Player>
 
     public override void OnEnter()
     {
+        p_context.Stats.AttackComboIndex = 0;
         p_context.Animator.SetBool("IsMoving", true);
     }
 
@@ -43,12 +44,12 @@ public class PlayerMoveState : BaseState<Player>
                 Vector3 targetPosition = new Vector3(p_context.LockOnSystem.CurrentTarget.position.x, 0, p_context.LockOnSystem.CurrentTarget.position.z);
                 Vector3 directionToTarget = (targetPosition - new Vector3(p_context.transform.position.x, 0, p_context.transform.position.z)).normalized;
 
-                p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.Data.RotateSpeed);
-                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed * speedMagnification);
+                p_context.Movement?.SetRotation(Quaternion.LookRotation(directionToTarget), p_context.Stats.RuntimeData.RotateSpeed);
+                p_context.Movement.Move(moveDirection, p_context.Stats.RuntimeData.MoveSpeed * speedMagnification);
             }
             else
             {
-                p_context.Movement.Move(moveDirection, p_context.Stats.Data.MoveSpeed * speedMagnification, p_context.Stats.Data.RotateSpeed);
+                p_context.Movement.Move(moveDirection, p_context.Stats.RuntimeData.MoveSpeed * speedMagnification, p_context.Stats.RuntimeData.RotateSpeed);
             }
         }
     }
