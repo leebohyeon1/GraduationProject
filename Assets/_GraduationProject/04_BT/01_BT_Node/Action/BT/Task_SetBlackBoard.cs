@@ -18,6 +18,7 @@ public class Task_SetBlackBoard : Node
     public bool boolValue;
     public Vector3 vector3Value;
     public string stringValue;
+    public GameObject transformObjectValue;
     public override Node Clone()
     {
         var node = Instantiate(this);
@@ -28,6 +29,7 @@ public class Task_SetBlackBoard : Node
         node.boolValue = this.boolValue;
         node.vector3Value = this.vector3Value;
         node.stringValue = this.stringValue;
+        node.transformObjectValue = this.transformObjectValue;
         return node;
     }
     public override void OnEnter()
@@ -44,6 +46,11 @@ public class Task_SetBlackBoard : Node
                 brain.blackboard.SetValue(key, boolValue);
                 break;
             case ValueType.Vector3:
+            if( transformObjectValue != null)
+                {
+                    brain.blackboard.SetValue(key, transformObjectValue.transform);
+                    break;
+                }
                 brain.blackboard.SetValue(key, vector3Value);
                 break;
             case ValueType.String:
