@@ -3,6 +3,7 @@ using BH_Lib.FSM;
 using BH_Lib.Log;
 using DG.Tweening;
 using System;
+using Unity.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,10 @@ public class Player : DIMonoBehaviour
 {
     #region Private Fields
     [Inject] private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
+
+    [Header("Development")]
+    [SerializeField] private bool _saveDuringPlay = false; // 플레이 중 변경 사항 저장 여부
+     private PlayerDataSO _runtimePlayerData; // 런타임 플레이어 데이터 (디버그용) 
 
     [Header("Components")]
     [SerializeField] private Animator _animator; // 애니메이터
@@ -30,6 +35,7 @@ public class Player : DIMonoBehaviour
     [SerializeField] private PlayerInteract _interact; // 상호작용 컴포넌트
     [SerializeField] private PlayerStamina _stamina; // 스테미나 컴포넌트
     [SerializeField] private LockOnSystem _lockOnSystem; // 락온 시스템  
+    [SerializeField] private PlayerAbility _ability; // 플레이어 능력 컴포넌트
 
     private StateMachine<Player> _stateMachine; // 상태 머신
 
@@ -49,6 +55,7 @@ public class Player : DIMonoBehaviour
     public PlayerInteract Interact => _interact;
     public PlayerStamina Stamina => _stamina;
     public LockOnSystem LockOnSystem => _lockOnSystem;
+    public PlayerAbility Ability => _ability;   
 
     public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
     
@@ -101,6 +108,11 @@ public class Player : DIMonoBehaviour
     
     private void OnDestroy()
     {
+        if(_saveDuringPlay)
+        {
+            _data.SetData(_stats.Data);
+        }
+
         UnsubscribeToEvents();
     }
     
@@ -125,7 +137,9 @@ public class Player : DIMonoBehaviour
         }
 
         _stats = new PlayerStats(Data, _events);
-    
+        _runtimePlayerData = _stats.Data;
+
+
         if (_events == null)
         {
             _events = GetComponent<PlayerEvents>();
@@ -171,6 +185,12 @@ public class Player : DIMonoBehaviour
         {
             _lockOnSystem = GetComponent<LockOnSystem>();
         }
+
+        if(_ability == null)
+        {
+            _ability = GetComponent<PlayerAbility>();
+        }
+        _ability.Initialize(Stats);
     }
     
     /// <summary>
@@ -183,9 +203,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerIdleState(this, _stateMachine));
         _stateMachine.AddState(new PlayerMoveState(this, _stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerFirstAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerSecondAttackState(this, _stateMachine));
-        _stateMachine.AddState(new PlayerThirdAttackState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
@@ -209,7 +227,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput != Vector2.zero);
         _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput && _stamina.CheckStamina());
@@ -219,7 +237,7 @@ public class Player : DIMonoBehaviour
             => Input.MoveInput == Vector2.zero);
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerMoveState, PlayerFirstAttackState>(()
+        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
@@ -231,7 +249,7 @@ public class Player : DIMonoBehaviour
     private void OnUpdate()
     {
 
-        if (Time.time - Combat.LastBattleTime >= Stats.Data.BattleOutTime && Combat.IsBattleState)
+        if (Time.time - Combat.LastBattleTime >= Stats.RuntimeData.BattleOutTime && Combat.IsBattleState)
         {
             Events.TriggerBattleStateChanged(false);
         }
@@ -320,6 +338,7 @@ public class Player : DIMonoBehaviour
         Health.Dispose();
         Combat.Dispose();
         Stamina.Dispose();
+        Ability.Dispose();
     }
     #endregion
 
@@ -329,10 +348,10 @@ public class Player : DIMonoBehaviour
     private void OnDrawGizmos()
     {
         // 공격 범위 기즈모
-        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackRadius, Color.mediumVioletRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackRadius, Color.orangeRed);
-        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackRadius, Color.darkRed);
-        DrawActionGizmo(_data.CombatData.ChargeAttackDatas[0].AttackData.AttackRadius, Color.red);
+        DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackConfig.AttackRadius, Color.mediumVioletRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackConfig.AttackRadius, Color.orangeRed);
+        DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackConfig.AttackRadius, Color.darkRed);
+        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackConfig.AttackRadius, Color.red);
 
     }
 

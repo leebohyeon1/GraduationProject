@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: PlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
   MaxHealth: 100
-  MaxStamina: 100
+  MaxStamina: 9999
   StaminaRegenPerSecond: 15
-  MaxMana: 3
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 16
@@ -117,19 +116,729 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 1280
     AttackDatas:
-    - {fileID: 11400000, guid: 7221cec205c389a46b5b1fc5e7063c0d, type: 2}
-    - {fileID: 11400000, guid: 35de1069e94a1c8479be749bb2efabad, type: 2}
-    - {fileID: 11400000, guid: 81925a335a35a274dbe0f622cc493cdf, type: 2}
+    - AttackConfig:
+        AttackType: 0
+        AttackStamina: 20
+        AttackMoveDistance: 2
+        RotateSpeed: 20
+        AttackMoveDuration: 2
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 10
+        StiffnessAmount: 10
+        AttackRadius: {x: 3, y: 2, z: 2.5}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 15
+      ChargeConfigs:
+      - ChargeTime: 0.7
+        AttackConfig:
+          AttackType: 3
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 1.4
+        AttackConfig:
+          AttackType: 4
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 2
+        AttackConfig:
+          AttackType: 5
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+    - AttackConfig:
+        AttackType: 0
+        AttackStamina: 20
+        AttackMoveDistance: 2
+        RotateSpeed: 20
+        AttackMoveDuration: 2
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 10
+        StiffnessAmount: 10
+        AttackRadius: {x: 3, y: 2, z: 2.5}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 15
+      ChargeConfigs:
+      - ChargeTime: 0.7
+        AttackConfig:
+          AttackType: 3
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 1.4
+        AttackConfig:
+          AttackType: 4
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 2
+        AttackConfig:
+          AttackType: 5
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+    - AttackConfig:
+        AttackType: 0
+        AttackStamina: 20
+        AttackMoveDistance: 2
+        RotateSpeed: 20
+        AttackMoveDuration: 2
+        AttackMoveCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        AttackDamage: 10
+        StiffnessAmount: 10
+        AttackRadius: {x: 3, y: 2, z: 2.5}
+        KnockBackCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        KnockBackDuration: 0.1
+        KnockBackForce: 15
+      ChargeConfigs:
+      - ChargeTime: 0.7
+        AttackConfig:
+          AttackType: 3
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 1.4
+        AttackConfig:
+          AttackType: 4
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
+      - ChargeTime: 2
+        AttackConfig:
+          AttackType: 5
+          AttackStamina: 25
+          AttackMoveDistance: 0
+          RotateSpeed: 0
+          AttackMoveDuration: 0
+          AttackMoveCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          AttackDamage: 20
+          StiffnessAmount: 10
+          AttackRadius: {x: 3.45, y: 2, z: 3.45}
+          KnockBackCurve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          KnockBackDuration: 0.1
+          KnockBackForce: 21
     ChargeMoveSpeed: 1
     ChargeRotateSpeed: 5
     ChargeStamina: 3
-    ChargeAttackDatas:
-    - ChargeTime: 1
-      AttackData: {fileID: 11400000, guid: d50b460660671084b9d25b859c41f6a5, type: 2}
-    - ChargeTime: 2
-      AttackData: {fileID: 11400000, guid: 73e9e2abad3515745807608e1f056765, type: 2}
-    - ChargeTime: 3
-      AttackData: {fileID: 11400000, guid: c67690097f62a944d87628cd11c0e116, type: 2}
     MaxChargeTime: 5
     ParryStamina: 1
     ParryAngle: 120
