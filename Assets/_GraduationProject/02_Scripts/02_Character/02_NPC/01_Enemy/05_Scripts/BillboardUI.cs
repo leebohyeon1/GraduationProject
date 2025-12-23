@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class BillboardUI : MonoBehaviour
 {
-    Camera camera;
+    new Camera camera;
     Slider slider;
     void Start()
     {

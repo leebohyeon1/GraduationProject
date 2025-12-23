@@ -26,7 +26,6 @@ public class AiBrain
     {
 
     }
-    int counter = 0;
     private IEnumerator TickCoroutine()
     {
         while (true)
