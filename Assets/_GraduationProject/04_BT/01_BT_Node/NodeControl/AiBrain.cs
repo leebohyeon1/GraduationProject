@@ -86,8 +86,6 @@ public class AiBrain
     {
         if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
         {
-            Debug.Log($"Skill: {skillName}, LastUsedTime: {lastUsedTime}, CurrentTime: {Time.time}, CooldownDuration: {cooldownDuration}");
-            Debug.Log(Time.time >= lastUsedTime + cooldownDuration);
             return Time.time >= lastUsedTime + cooldownDuration;
         }
         return true;
