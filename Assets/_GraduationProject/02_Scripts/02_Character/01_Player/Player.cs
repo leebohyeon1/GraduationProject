@@ -137,7 +137,7 @@ public class Player : DIMonoBehaviour
         }
 
         _stats = new PlayerStats(Data, _events);
-        _runtimePlayerData = _stats.Data;
+        _runtimePlayerData = _stats.RuntimeData;
 
 
         if (_events == null)
