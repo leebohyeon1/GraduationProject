@@ -8,7 +8,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStat enemyStat;
     public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
-    
+
     int _maxHealth = 100;
     int curHealth = 100;
     public bool IsDead => Health <= 0;
@@ -104,7 +104,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(1f);
         SetRagdollState(true);
         SetZeroJoint(false);
-        
+
     }
     public void TakeDamage(DamageData damageData)
     {
@@ -118,27 +118,22 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         }
 
         int previousHealth = curHealth;
-        Debug.Log(damageData.AttackType);
-        switch(damageData.AttackType)
+        switch (damageData.AttackType)
         {
             case AttackType.Charge1:
-        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_1_FB", AttackType.Charge1);
-                // You can add armor calculation here
+                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_1_FB", AttackType.Charge1);
                 break;
             case AttackType.Charge2:
-        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_2_FB", AttackType.Charge2);
-                // You can add magic resistance calculation here
+                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_2_FB", AttackType.Charge2);
                 break;
             case AttackType.Charge3:
-        _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_3_FB", AttackType.Charge3);
-                // You can add armor calculation here
+                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_3_FB", AttackType.Charge3);
                 break;
             case AttackType.Heavy:
-        _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy);
-                // You can add magic resistance calculation here
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy);
                 break;
             default:
-        _owner.animHandler.PlayFeedback("Damage_FB");
+                _owner.animHandler.PlayFeedback("Damage_FB");
                 break;
         }
         curHealth -= damageData.DamageAmount;

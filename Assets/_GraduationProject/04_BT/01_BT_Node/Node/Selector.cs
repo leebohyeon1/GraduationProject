@@ -11,6 +11,8 @@ namespace BehaviorTree
 
         protected override NodeState OnUpdate()
         {
+            UpdateServices();
+
             for (int i = 0; i < nodes.Length; i++)
             {
                 NodeState state = nodes[i].Evaluate();
