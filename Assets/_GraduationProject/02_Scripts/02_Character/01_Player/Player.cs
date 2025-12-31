@@ -137,7 +137,7 @@ public class Player : DIMonoBehaviour
         }
 
         _stats = new PlayerStats(Data, _events);
-        _runtimePlayerData = _stats.Data;
+        _runtimePlayerData = _stats.RuntimeData;
 
 
         if (_events == null)
@@ -351,7 +351,7 @@ public class Player : DIMonoBehaviour
         DrawActionGizmo(_data.CombatData.AttackDatas[0].AttackConfig.AttackRadius, Color.mediumVioletRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[1].AttackConfig.AttackRadius, Color.orangeRed);
         DrawActionGizmo(_data.CombatData.AttackDatas[2].AttackConfig.AttackRadius, Color.darkRed);
-        DrawActionGizmo(_stats.CurrentChargeAttackData.AttackConfig.AttackRadius, Color.red);
+        //DrawActionGizmo(_stats.CurrentChargeAttackData.AttackConfig.AttackRadius, Color.red);
 
     }
 

@@ -32,31 +32,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<AbilityS
     public void AddAbility(AbilitySO ability)
     {
         _acquiredAbilities.Add(ability);
-        ApplyAbilityEffect(ability);
-    }
-
-    private void ApplyAbilityEffect(AbilitySO ability)
-    {
-        if (_stats == null)
-        {
-            return;
-        }
-
-        switch (ability.Type)
-        {
-            case AbilityType.StatBoost:
-                Debug.Log($"스탯 강화 적용: {ability.AbilityName}");
-                _stats.StatUpgrade(ability.PlusStat);
-                break;
-            case AbilityType.NewSkill:
-                Debug.Log($"새로운 스킬 획득: {ability.AbilityName}");
-                // 예시: if (ability.SkillPrefab != null) Instantiate(ability.SkillPrefab, transform);
-                break;
-            case AbilityType.WeaponUpgrade:
-                Debug.Log($"무기 업그레이드: {ability.AbilityName}");
-                // 예시: GetComponent<WeaponController>().UpgradeWeapon(ability);
-                break;
-        }
+        ability.ApplyAbility(gameObject);
     }
 
 }
