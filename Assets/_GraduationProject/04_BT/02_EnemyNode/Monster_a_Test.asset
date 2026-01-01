@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
   m_Name: Task_IdleNode
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: 1177, y: 1083}
+  position: {x: 1175, y: 1051}
   idleTime: 2
 --- !u!114 &-6922852319528742735
 MonoBehaviour:
@@ -44,9 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Patrol Logic
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 1002, y: 985}
-  nodes:
-  - {fileID: -985568362494294826}
+  position: {x: 989, y: 967}
+  nodes: []
   services: []
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
@@ -77,7 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
   position: {x: 1026, y: 428}
   angleThreshold: 360
---- !u!114 &-3704871853680115825
+--- !u!114 &-4809855304411792179
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,28 +85,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
-  m_Name: Idle Node
-  m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: 1330, y: 417}
-  idleTime: 2
---- !u!114 &-3646592520830900333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_Idle
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 772, y: 575}
-  nodes:
-  - {fileID: 7466136720702443088}
-  - {fileID: 67096107768974935}
-  services: []
+  m_Script: {fileID: 11500000, guid: 534b25f725490fb4b88f9cd33e65596e, type: 3}
+  m_Name: Condition_Can See Player_Angle
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
+  position: {x: 1370, y: 575}
+  viewAngle: 120
 --- !u!114 &-1358499126709324301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_EngageCombat
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: 1174, y: 897}
+  position: {x: 1368, y: 884}
 --- !u!114 &-985568362494294826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Task_RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: 1175, y: 985}
+  position: {x: 1176, y: 967}
   Radius: 15
   Delay: 1.5
 --- !u!114 &-863582271964667917
@@ -162,7 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
-  rootNode: {fileID: -3646592520830900333}
+  rootNode: {fileID: 8528858799201161977}
 --- !u!114 &67096107768974935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,12 +157,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Idle Logic
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 995, y: 662}
+  position: {x: 990, y: 576}
   nodes:
   - {fileID: 6687508356558074572}
-  - {fileID: 3183379932989251384}
-  - {fileID: 5445571187359176217}
-  - {fileID: -1358499126709324301}
   services: []
 --- !u!114 &1302873751428950995
 MonoBehaviour:
@@ -197,6 +176,23 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &1489547564618910223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Patrol Logic.1
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 989, y: 1054}
+  nodes:
+  - {fileID: -985568362494294826}
+  - {fileID: -7119843831666780124}
+  services: []
 --- !u!114 &3183379932989251384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 1171, y: 739}
+  position: {x: 1367, y: 726}
   IsSee: 1
   rotationSpeed: 5
 --- !u!114 &4748238847309724425
@@ -226,6 +222,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1023, y: -249}
   viewAngle: 90
+--- !u!114 &5113324852708281202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Can See Player_Value
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 1368, y: 651}
+  floatCondition:
+    key: DistanceToPlayer
+    Operator: 1
+    value: 10
+  exceptCondition:
+    key: 
 --- !u!114 &5445571187359176217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
   m_Name: Task_Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1173, y: 816}
+  position: {x: 1369, y: 806}
   waitTime: 0.5
 --- !u!114 &5851155588711365391
 MonoBehaviour:
@@ -281,8 +296,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Detect
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1171, y: 661}
-  nodes: []
+  position: {x: 1173, y: 576}
+  nodes:
+  - {fileID: -4809855304411792179}
+  - {fileID: 5113324852708281202}
+  - {fileID: 3183379932989251384}
+  - {fileID: 5445571187359176217}
+  - {fileID: -1358499126709324301}
   services: []
 --- !u!114 &7438793480988635909
 MonoBehaviour:
@@ -297,25 +317,6 @@ MonoBehaviour:
   m_Name: Condition_Is Ally Not Called
   m_EditorClassIdentifier: 
   position: {x: 457, y: 16}
---- !u!114 &7466136720702443088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: Condition_SetIdle
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 993, y: 575}
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 0
-    TargetState: 0
-  exceptCondition:
-    key: 
 --- !u!114 &8246282568877846733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,6 +331,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
   position: {x: 436, y: -535}
   animationName: Hit
+--- !u!114 &8528858799201161977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Selector_Idle
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 792, y: 577}
+  nodes:
+  - {fileID: 67096107768974935}
+  - {fileID: 1489547564618910223}
+  services: []
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0
