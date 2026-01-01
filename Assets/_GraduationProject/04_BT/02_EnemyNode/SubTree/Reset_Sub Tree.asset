@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8568143490428568719
+--- !u!114 &-3540609349949679334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,29 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
-  m_Name: Stop Movement(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: 629, y: -462}
-  juststop: 0
---- !u!114 &-4259755244667844025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80aebfd47212e8c4390308b66ab874de, type: 3}
-  m_Name: Condition_Check Object Behind(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
-  position: {x: 622, y: -539}
-  checkDistance: 2
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
---- !u!114 &-979965867964269551
+  m_Script: {fileID: 11500000, guid: cbc8fd77e1b05e44a9c97c3686a40484, type: 3}
+  m_Name: Task_Return Home(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ReturnHome
+  position: {x: 1202, y: 281}
+--- !u!114 &-3518189676552276124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,10 +23,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait(Clone)
+  m_Name: Task_Wait(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 622, y: -616}
-  waitTime: 1
+  position: {x: 1202, y: 203}
+  waitTime: 0.2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55,10 +37,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
-  m_Name: BackMove
+  m_Name: Reset_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
-  rootNode: {fileID: 11115176485496723}
---- !u!114 &11115176485496723
+  rootNode: {fileID: 4177625311108921}
+--- !u!114 &4177625311108921
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -68,15 +50,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: BackMoving(Clone)
+  m_Name: Sequence_Reset(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 444, y: -616}
+  position: {x: 992, y: 127}
   nodes:
-  - {fileID: 7211638497777530706}
-  - {fileID: -979965867964269551}
-  - {fileID: -4259755244667844025}
-  - {fileID: -8568143490428568719}
---- !u!114 &7211638497777530706
+  - {fileID: 5379365606300909886}
+  - {fileID: -3518189676552276124}
+  - {fileID: -3540609349949679334}
+  services: []
+--- !u!114 &5379365606300909886
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,11 +67,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 622, y: -693}
-  targetDistance: 5
-  acceptanceRadius: 0.5
-  runSpeed: 5
-  timeout: 1.8
+  m_Script: {fileID: 11500000, guid: b09f6cfc9fd3d7d41aeba729b58f5d3f, type: 3}
+  m_Name: Condition_Check Leash(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckLeash
+  position: {x: 1200, y: 127}
+  leashDistance: 20

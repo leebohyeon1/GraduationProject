@@ -19,6 +19,7 @@ public class AiBrain
         _player = _owner.player;
 
         blackboard.SetValue("HomePosition", _owner.StartPos);
+        blackboard.SetValue("Self", _owner.gameObject);
         lateUpdateCoroutine = _owner.StartCoroutine(TickCoroutine());
     }
 
@@ -26,14 +27,13 @@ public class AiBrain
     {
 
     }
-    int counter = 0;
     private IEnumerator TickCoroutine()
     {
         while (true)
         {
             if (_player != null)
             {
-
+                
                 bool IsHasLOS = CheckPlayerVisibility();
                 blackboard.SetValue("IsHasLOS", IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();

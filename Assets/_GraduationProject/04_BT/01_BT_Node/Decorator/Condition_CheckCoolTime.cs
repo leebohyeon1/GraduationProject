@@ -1,14 +1,13 @@
 using UnityEngine;
 using BehaviorTree;
 
-public class Condition_IsSkillReady : ConditionNode
+public class Condition_CheckCoolTime : ConditionNode
 {
     [Tooltip("쿨타임을 확인할 스킬의 고유 이름입니다.")]
     public string skillName;
 
     [Tooltip("이 스킬의 쿨타임 시간(초)입니다.")]
     public float cooldownDuration;
-    public bool HeatCooldown = false;
     public override void OnEnter()
     {
         base.OnEnter();
@@ -28,7 +27,6 @@ public class Condition_IsSkillReady : ConditionNode
         var node = Instantiate(this);
         node.skillName = this.skillName;
         node.cooldownDuration = this.cooldownDuration;
-        node.HeatCooldown = this.HeatCooldown;
         return node;
     }
 }

@@ -17,6 +17,7 @@ MonoBehaviour:
   - {fileID: 8656888805184373649}
   - {fileID: -1401877485150607530}
   - {fileID: 6108192575178470743}
+  services: []
 --- !u!114 &-7318633564920998782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +35,7 @@ MonoBehaviour:
   - {fileID: 4512279385457269350}
   - {fileID: -3009282149071957395}
   - {fileID: 3820833301815679370}
+  services: []
 --- !u!114 &-7245226355301169087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,6 +52,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 6343833873525823109}
   - {fileID: -3662235796367844752}
+  services: []
 --- !u!114 &-7071762007778814168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +69,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -5091929620939849768}
   - {fileID: -2923115925387942299}
+  services: []
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +102,7 @@ MonoBehaviour:
   - {fileID: 5742173602548847007}
   - {fileID: -5895060802689115491}
   - {fileID: -7071762007778814168}
+  services: []
 --- !u!114 &-5895060802689115491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,10 +118,11 @@ MonoBehaviour:
   position: {x: 177, y: 320}
   nodes:
   - {fileID: -4753666918269421874}
-  - {fileID: 7438793480988635909}
-  - {fileID: 6545543868557049618}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 5776244238602323464}
   - {fileID: 6816747113147883713}
+  services: []
 --- !u!114 &-5868491133412455019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,9 +137,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1482, y: -547}
   nodes:
-  - {fileID: 3328858872078899426}
+  - {fileID: 0}
   - {fileID: 3190198380513302506}
   - {fileID: 8097750573212284376}
+  services: []
 --- !u!114 &-5164429530539259904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +212,7 @@ MonoBehaviour:
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
   position: {x: 1280, y: 107}
-  child: {fileID: 8887713463563181787}
+  child: {fileID: 0}
 --- !u!114 &-3662235796367844752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +226,6 @@ MonoBehaviour:
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
   position: {x: 404, y: -540}
-  animationName: Stun
 --- !u!114 &-3513379610591772175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,6 +267,8 @@ MonoBehaviour:
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
   position: {x: 488, y: 777}
+  Radius: 15
+  Delay: 2
 --- !u!114 &-1995372082178178704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,6 +298,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -4314379429372193041}
   - {fileID: -8730112079219288532}
+  services: []
 --- !u!114 &-1401877485150607530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +315,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 3713734425821449763}
   - {fileID: -1338340550000061126}
+  services: []
 --- !u!114 &-1338340550000061126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +332,6 @@ MonoBehaviour:
   targetDistance: 18.5
   predictionTime: 0.5
   acceptanceRadius: 0.5
-  RunSpeed: 5
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,12 +358,8 @@ MonoBehaviour:
   m_Name: Generic Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::GenericAttackNode
   position: {x: 1833, y: 128}
-  AttackName: Attack
-  damage: 3
-  damageRadius: 3.5
-  attackOffset: {x: 0, y: 1, z: 4}
+  attackKey: 
   maintainAtk: 0
-  StiffenessAmount: 10
 --- !u!114 &929164364379773173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,12 +430,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1634, y: -227}
   nodes:
-  - {fileID: 2275272310736513893}
+  - {fileID: 0}
   - {fileID: 8479167246048659318}
-  - {fileID: 929164364379773173}
+  - {fileID: 0}
   - {fileID: 4887522364135060110}
   - {fileID: 7500717222779531911}
   - {fileID: 486735361095925541}
+  services: []
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,7 +479,7 @@ MonoBehaviour:
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
   position: {x: 1801, y: -662}
-  child: {fileID: 6631976132736815560}
+  child: {fileID: 0}
 --- !u!114 &3328858872078899426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,6 +580,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 6109460383839203443}
   - {fileID: -1697670017218233401}
+  services: []
 --- !u!114 &5742173602548847007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,6 +597,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -1995372082178178704}
   - {fileID: 5310562535509485433}
+  services: []
 --- !u!114 &5776244238602323464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +630,7 @@ MonoBehaviour:
   - {fileID: 8581566141182817877}
   - {fileID: 1742704995383000931}
   - {fileID: 8440268503078126261}
+  services: []
 --- !u!114 &6109460383839203443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -636,8 +645,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1229, y: -68}
   nodes:
-  - {fileID: -3513379610591772175}
+  - {fileID: 0}
   - {fileID: 7306122503323757220}
+  services: []
 --- !u!114 &6343833873525823109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -706,6 +716,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 2919154666137795031}
   - {fileID: -7318633564920998782}
+  services: []
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -747,6 +758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
   position: {x: 1801, y: -521}
   IsSee: 1
+  rotationSpeed: 5
 --- !u!114 &8440268503078126261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815,12 +827,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1558, y: 616}
   nodes:
-  - {fileID: 4748238847309724425}
+  - {fileID: 0}
   - {fileID: -4553377999928142451}
   - {fileID: 8503346464321683557}
   - {fileID: 2962903648140353133}
   - {fileID: -5164429530539259904}
   - {fileID: -6477674856501047169}
+  services: []
 --- !u!114 &8887713463563181787
 MonoBehaviour:
   m_ObjectHideFlags: 0

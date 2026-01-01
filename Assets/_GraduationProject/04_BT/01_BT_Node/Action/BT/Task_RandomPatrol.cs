@@ -7,12 +7,17 @@ public class RandomPatrol : Node
 {
     AIPath _aiPath;
     bool _hasTarget = false;
-
+    bool _isWaiting = false;
+    float _waitTimer = 0f;
+    public float Radius = 15f;
+    public float Delay = 2f;
     public override void OnEnter()
     {
         runner.SetState(Enemy.EnemyState.Patrol);
         _aiPath = runner.GetComponent<AIPath>();
         _hasTarget = false;
+        _isWaiting = false;
+        _waitTimer = 0f;
     }
 
     protected override NodeState OnUpdate()
@@ -25,9 +30,22 @@ public class RandomPatrol : Node
         {
             return NodeState.FAILURE;
         }
+        if( _isWaiting)
+        {
+            _waitTimer += Time.deltaTime;
+            if(_waitTimer >= Delay)
+            {
+                _isWaiting = false;
+                _hasTarget = false; // 대기 후 새로운 목표 지점 설정
+            }
+            else
+            {
+                return NodeState.RUNNING;
+            }
+        }
         if (!_hasTarget || (_aiPath != null && _aiPath.reachedDestination))
         {
-            Vector3 randomDirection = runner.StartPos + (Random.insideUnitSphere * 15);
+            Vector3 randomDirection = runner.StartPos + (Random.insideUnitSphere * Radius);
 
             GraphNode graphNode = AstarPath.active.GetNearest(randomDirection).node;
 
@@ -49,6 +67,12 @@ public class RandomPatrol : Node
                 {
                     _hasTarget = false; // 장애물이 감지되면 새로운 목표 지점을 설정하도록 플래그를 재설정
                 }
+            }
+            if(_hasTarget && !_isWaiting && _aiPath != null && _aiPath.reachedDestination)
+            {
+                _isWaiting = true; // 도착 후 대기 상태로 전환
+                _waitTimer = 0f;
+                runner.Movement.StopMovement();
             }
         }
         return NodeState.RUNNING;
