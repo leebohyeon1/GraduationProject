@@ -32,7 +32,12 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         SetKnockbackable(true);
         _owner.tag = "Enemy";
     }
+    public void SetRecovery(bool value)
+    {
 
+        curHealth = _maxHealth;
+        
+    }
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)

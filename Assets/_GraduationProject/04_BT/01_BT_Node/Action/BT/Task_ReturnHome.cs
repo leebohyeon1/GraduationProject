@@ -6,6 +6,7 @@ public class Task_ReturnHome : Node
 {
     AIPath  _aiPath;
     bool _hasDestination = false;
+    Vector3 HomePosition;
     public override Node Clone()
     {
         Task_ReturnHome newNode = Instantiate(this);
@@ -15,6 +16,7 @@ public class Task_ReturnHome : Node
     {
         brain.CombatEnter(false);
         _aiPath = runner.GetComponent<AIPath>();
+        HomePosition = brain.blackboard.GetValue<Vector3>("HomePosition");
     }
     protected override NodeState OnUpdate()
     {
@@ -27,8 +29,7 @@ public class Task_ReturnHome : Node
             _hasDestination = true;
             return NodeState.SUCCESS;
         }
-        // if(brain.blackboard.GetValue<bool>())
-        runner.Movement.StartOrUpdateChase(brain.blackboard.GetValue<Vector3>("HomePosition"), Enemy.EnemyState.Patrol);
+        runner.Movement.StartOrUpdateChase(HomePosition, Enemy.EnemyState.Patrol);
         return NodeState.RUNNING;
     }
     public override void OnExit()
