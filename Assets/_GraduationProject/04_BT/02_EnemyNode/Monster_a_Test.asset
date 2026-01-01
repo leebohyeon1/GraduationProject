@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
   m_Name: Task_IdleNode
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: 1175, y: 1051}
+  position: {x: 1177, y: 1049}
   idleTime: 2
 --- !u!114 &-6922852319528742735
 MonoBehaviour:
@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Name: Patrol Logic
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 989, y: 967}
-  nodes: []
+  nodes:
+  - {fileID: -985568362494294826}
+  - {fileID: -7119843831666780124}
   services: []
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
@@ -102,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_EngageCombat
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: 1368, y: 884}
+  position: {x: 1370, y: 878}
 --- !u!114 &-985568362494294826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,8 +117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Task_RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: 1176, y: 967}
-  Radius: 15
+  position: {x: 1178, y: 967}
+  Radius: 10
   Delay: 1.5
 --- !u!114 &-863582271964667917
 MonoBehaviour:
@@ -176,23 +178,6 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &1489547564618910223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Patrol Logic.1
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 989, y: 1054}
-  nodes:
-  - {fileID: -985568362494294826}
-  - {fileID: -7119843831666780124}
-  services: []
 --- !u!114 &3183379932989251384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
   m_Name: Task_Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1369, y: 806}
+  position: {x: 1369, y: 802}
   waitTime: 0.5
 --- !u!114 &5851155588711365391
 MonoBehaviour:
@@ -346,7 +331,7 @@ MonoBehaviour:
   position: {x: 792, y: 577}
   nodes:
   - {fileID: 67096107768974935}
-  - {fileID: 1489547564618910223}
+  - {fileID: -6922852319528742735}
   services: []
 --- !u!114 &8925219040377206200
 MonoBehaviour:
