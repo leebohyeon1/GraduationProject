@@ -18,20 +18,6 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
---- !u!114 &-8961570941651033016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
-  m_Name: Idle/Patrol
-  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 908, y: 848}
-  subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,6 +33,20 @@ MonoBehaviour:
   position: {x: 1022, y: 505}
   heatRange: 1
   _attackRange: 3
+--- !u!114 &-6086253846591415056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Task_Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 1779, y: 1341}
+  skillName: Do_BackStep
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,11 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Combat
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1152, y: 1022}
+  position: {x: 1153, y: 1022}
   nodes:
   - {fileID: -2169847181082004984}
   - {fileID: 6055799875146286108}
-  services: []
+  services:
+  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
-  rootNode: {fileID: -8961570941651033016}
+  rootNode: {fileID: -760453713604586534}
 --- !u!114 &463780409530894017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,8 +133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1586, y: 1102}
   nodes:
-  - {fileID: 3698075416105282935}
   - {fileID: 2885761746193138462}
+  - {fileID: 5598936112123752856}
+  - {fileID: -6086253846591415056}
   services: []
 --- !u!114 &1302873751428950995
 MonoBehaviour:
@@ -162,10 +164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1787, y: 1188}
-  skillName: BackStep
+  position: {x: 1776, y: 1169}
+  skillName: Do_BackStep
   cooldownDuration: 3
-  HeatCooldown: 0
 --- !u!114 &3698075416105282935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1783, y: 1102}
+  position: {x: 1775, y: 1088}
   key: IsPlayerAimingMe
   exceptCondition:
     key: 
@@ -196,6 +197,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1023, y: -249}
   viewAngle: 90
+--- !u!114 &5598936112123752856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
+  m_Name: Task_Back Step
+  m_EditorClassIdentifier: Assembly-CSharp::Action_BackStep
+  position: {x: 1780, y: 1255}
+  backStepSpeed: 30
+  duration: 0.2
+  animationTrigger: Do_BackStep
+  wallCheckDist: 1
 --- !u!114 &5851155588711365391
 MonoBehaviour:
   m_ObjectHideFlags: 0
