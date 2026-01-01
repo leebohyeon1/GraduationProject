@@ -13,7 +13,9 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     int curHealth = 100;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
-    public event Action<bool> OnRecoveryHealth;
+    public Action<bool> OnRecoveryHealth;
+    public int healthPerSecond = 20; // 초당 회복량
+    private Coroutine _recoveryCoroutine;
     public event Action OnDied;
     private CharacterController _characterController;
     private Coroutine _KnockbackCoroutine;
@@ -32,14 +34,55 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
         _owner.tag = "Enemy";
-        OnRecoveryHealth += SetRecovery;
     }
-    public void SetRecovery(bool value)
+    void OnDisable()
     {
-
-        curHealth = _maxHealth;
-        
+        OnRecoveryHealth -= SetRecovery;
     }
+    public void SetRecovery(bool isRecovering)
+    {
+        if (isRecovering)
+        {
+            // 이미 회복 중이 아닐 때만 코루틴 시작
+            if (_recoveryCoroutine == null)
+            {
+                _recoveryCoroutine = StartCoroutine(RecoveryRoutine());
+            }
+        }
+        else
+        {
+            // 회복 중이라면 중단
+            if (_recoveryCoroutine != null)
+            {
+                StopCoroutine(_recoveryCoroutine);
+                _recoveryCoroutine = null;
+            }
+        }
+    }
+
+    // 4. 점진적 회복 코루틴
+    private IEnumerator RecoveryRoutine()
+    {
+        while (curHealth < _maxHealth)
+        {
+            curHealth += (int)(healthPerSecond * Time.deltaTime);
+
+            // 최대 체력 초과 방지
+            if (curHealth > _maxHealth)
+            {
+                curHealth = _maxHealth;
+            }
+            
+            // UI 갱신 등이 필요하다면 여기서 호출
+            // Debug.Log($"Recovering... {curHealth}");
+
+            yield return null; // 다음 프레임 대기
+        }
+
+        // 체력이 다 차면 코루틴 종료 및 변수 초기화
+        _recoveryCoroutine = null;
+    }
+
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)
@@ -101,17 +144,12 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     }
     private IEnumerator DieSequence(Vector3 direction)
     {
-        SetRagdollState(true);
 
         _characterController.enabled = false;
         _owner.animator.enabled = false;
         yield return new WaitForSeconds(0.1f);
         Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
-        CombineAddForce(combinedForce, direction);
         yield return new WaitForSeconds(1f);
-        SetRagdollState(true);
-        SetZeroJoint(false);
-
     }
     public void TakeDamage(DamageData damageData)
     {
@@ -151,6 +189,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
         _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
 
+        OnRecoveryHealth?.Invoke(false);
 
         if (Knockbackable)
         {
@@ -174,36 +213,15 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
         }
     }
-    private void SetRagdollState(bool isActive)
+    void OnEnable()
     {
-        foreach (Rigidbody rb in ragdollRigidbodies)
-        {
-            rb.isKinematic = !isActive;
-        }
+        OnRecoveryHealth += SetRecovery;
     }
-    private void CombineAddForce(Vector3 force, Vector3 direction)
-    {
-        foreach (Rigidbody rb in ragdollRigidbodies)
-        {
-            rb.AddForce(force, ForceMode.Impulse);
-        }
-    }
-    private Rigidbody[] ragdollRigidbodies;
-    private CharacterJoint[] ragdollCharacterJoints;
     void Start()
     {
-        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-        ragdollCharacterJoints = GetComponentsInChildren<CharacterJoint>();
-        SetRagdollState(false);
     }
 
     public float KnockbackForce = 30f;
     public float upwardForce = 5f;
-    private void SetZeroJoint(bool isActive)
-    {
-        foreach (CharacterJoint cj in ragdollCharacterJoints)
-        {
-            cj.swingLimitSpring = new SoftJointLimitSpring { damper = isActive ? 50 : 0 };
-        }
-    }
+
 }
