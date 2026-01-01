@@ -93,7 +93,7 @@ public class Task_Pressure : Node
 
     public override Node Clone()
     {
-        var node = ScriptableObject.CreateInstance<Action_MoveToPosition>();
+        var node = ScriptableObject.CreateInstance<Task_Pressure>();
         node.Pos_Key = this.Pos_Key;
         node.MoveSpeed = this.MoveSpeed;
         node.StoppingDist = this.StoppingDist;

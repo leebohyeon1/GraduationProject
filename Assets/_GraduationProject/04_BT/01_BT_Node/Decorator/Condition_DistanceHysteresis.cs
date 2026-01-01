@@ -30,7 +30,7 @@ public class Condition_DistanceHysteresis : ConditionNode
     // Clone 시 런타임 변수 초기화
     public override Node Clone()
     {
-        Decorator_DistanceHysteresis node = Instantiate(this);
+        Condition_DistanceHysteresis node = Instantiate(this);
         node.target = this.target; // 외부에서 주입된 타겟이 있다면 복사
         node.minRange = this.minRange;
         node.maxRange = this.maxRange;
