@@ -18,6 +18,19 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
+--- !u!114 &-7644493554629440225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc8fd77e1b05e44a9c97c3686a40484, type: 3}
+  m_Name: Task_Return Home
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ReturnHome
+  position: {x: 1037, y: 6}
 --- !u!114 &-7164390071499202392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,7 +66,7 @@ MonoBehaviour:
   BlockedWaitTime: 0.5
   Pos_Key: PressurePos
   Dir_Key: StrafeDir
---- !u!114 &-4913614134141080922
+--- !u!114 &-2338096776723561330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,14 +75,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
-  m_Name: Action_Move To Position
-  m_EditorClassIdentifier: Assembly-CSharp::Action_MoveToPosition
-  position: {x: 960, y: 23}
-  Pos_Key: PressurePos
-  MoveSpeed: 6
-  StoppingDist: 0.5
-  RotationSpeed: 5
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1037, y: 83}
+  waitTime: 2
 --- !u!114 &-2032485381125347692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,10 +94,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 859, y: -54}
   nodes:
-  - {fileID: -4913614134141080922}
+  - {fileID: -213169557185132209}
+  - {fileID: -7644493554629440225}
+  - {fileID: -2338096776723561330}
   services:
   - {fileID: -5141413489336803078}
   - {fileID: 4599626038524749311}
+--- !u!114 &-213169557185132209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1037, y: -71}
+  waitTime: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
