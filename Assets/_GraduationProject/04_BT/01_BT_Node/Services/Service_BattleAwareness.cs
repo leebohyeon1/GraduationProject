@@ -9,8 +9,8 @@ public class Service_BattleAwareness : ServiceNode
     private int _threatTagHash = Animator.StringToHash("Threat");
     private int _chanceTagHash = Animator.StringToHash("Chance");
     public float Threat_Angle = 25f;
-    public string Vuln_Key = "IsTargetVulnerable";
-    public string Aim_Key = "IsTargetAimingMe"; 
+    public string Vuln_Key = "IsPlayerVulnerable";
+    public string Aim_Key = "IsPlayerAimingMe"; 
 
     public override void OnEnter()
     {
