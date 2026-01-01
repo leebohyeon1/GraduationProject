@@ -48,8 +48,8 @@ public class Task_Pressure : Node
         currentTargetDebug = targetPos; // 기즈모 그리기용 저장
 
         // 2. 목적지 설정 및 로그
-        aiAgent.destination = targetPos;
-
+        // aiAgent.destination = targetPos;
+        runner.Movement.StartOrUpdateChase(targetPos);
         RotateTowardsPlayer();
         
         // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)
