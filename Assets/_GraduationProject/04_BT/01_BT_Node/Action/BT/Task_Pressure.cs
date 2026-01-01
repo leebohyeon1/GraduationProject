@@ -2,7 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
-public class Action_MoveToPosition : Node
+public class Task_Pressure : Node
 {
     public string Pos_Key = "PressurePos";
     public float MoveSpeed = 4.0f;

@@ -1,8 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 
-[CreateAssetMenu(fileName = "Decorator_DistanceHysteresis", menuName = "BehaviorTree/Decorator/DistanceHysteresis")]
-public class Decorator_DistanceHysteresis : ConditionNode
+public class Condition_DistanceHysteresis : ConditionNode
 {
     public enum CheckType
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 
-public class Condition_IsSkillReady : ConditionNode
+public class Condition_CheckCoolTime : ConditionNode
 {
     [Tooltip("쿨타임을 확인할 스킬의 고유 이름입니다.")]
     public string skillName;

@@ -13,6 +13,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     int curHealth = 100;
     public bool IsDead => Health <= 0;
     public event Action<int, int> OnHealthChanged;
+    public event Action<bool> OnRecoveryHealth;
     public event Action OnDied;
     private CharacterController _characterController;
     private Coroutine _KnockbackCoroutine;
@@ -31,6 +32,7 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
         _owner.tag = "Enemy";
+        OnRecoveryHealth += SetRecovery;
     }
     public void SetRecovery(bool value)
     {

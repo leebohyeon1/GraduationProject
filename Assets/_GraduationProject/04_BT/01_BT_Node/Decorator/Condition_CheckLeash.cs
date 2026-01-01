@@ -1,7 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 
-public class Decorator_CheckLeash : ConditionNode
+public class Condition_CheckLeash : ConditionNode
 {
     [Header("Settings")]
     public float leashDistance = 20.0f; // 이 거리보다 멀어지면 복귀 시작
