@@ -8,7 +8,6 @@ public class Condition_CheckCoolTime : ConditionNode
 
     [Tooltip("이 스킬의 쿨타임 시간(초)입니다.")]
     public float cooldownDuration;
-    public bool HeatCooldown = false;
     public override void OnEnter()
     {
         base.OnEnter();
@@ -28,7 +27,6 @@ public class Condition_CheckCoolTime : ConditionNode
         var node = Instantiate(this);
         node.skillName = this.skillName;
         node.cooldownDuration = this.cooldownDuration;
-        node.HeatCooldown = this.HeatCooldown;
         return node;
     }
 }
