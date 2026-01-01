@@ -34,7 +34,6 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
         _owner.tag = "Enemy";
-        OnRecoveryHealth += SetRecovery;
     }
     void OnDisable()
     {
@@ -145,17 +144,12 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
     }
     private IEnumerator DieSequence(Vector3 direction)
     {
-        SetRagdollState(true);
 
         _characterController.enabled = false;
         _owner.animator.enabled = false;
         yield return new WaitForSeconds(0.1f);
         Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
-        CombineAddForce(combinedForce, direction);
         yield return new WaitForSeconds(1f);
-        SetRagdollState(true);
-        SetZeroJoint(false);
-
     }
     public void TakeDamage(DamageData damageData)
     {
@@ -219,36 +213,15 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
 
         }
     }
-    private void SetRagdollState(bool isActive)
+    void OnEnable()
     {
-        foreach (Rigidbody rb in ragdollRigidbodies)
-        {
-            rb.isKinematic = !isActive;
-        }
+        OnRecoveryHealth += SetRecovery;
     }
-    private void CombineAddForce(Vector3 force, Vector3 direction)
-    {
-        foreach (Rigidbody rb in ragdollRigidbodies)
-        {
-            rb.AddForce(force, ForceMode.Impulse);
-        }
-    }
-    private Rigidbody[] ragdollRigidbodies;
-    private CharacterJoint[] ragdollCharacterJoints;
     void Start()
     {
-        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-        ragdollCharacterJoints = GetComponentsInChildren<CharacterJoint>();
-        SetRagdollState(false);
     }
 
     public float KnockbackForce = 30f;
     public float upwardForce = 5f;
-    private void SetZeroJoint(bool isActive)
-    {
-        foreach (CharacterJoint cj in ragdollCharacterJoints)
-        {
-            cj.swingLimitSpring = new SoftJointLimitSpring { damper = isActive ? 50 : 0 };
-        }
-    }
+
 }
