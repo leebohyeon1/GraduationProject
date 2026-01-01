@@ -2,8 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
-[CreateAssetMenu(fileName = "Action_BackStep", menuName = "BehaviorTree/Action/BackStep")]
-public class Action_BackStep : Node
+public class Task_BackStep : Node
 {
     [Header("Settings")]
     [Tooltip("백스텝 속도 (빠르게 설정)")]
@@ -97,7 +96,7 @@ public class Action_BackStep : Node
 
     public override Node Clone()
     {
-        Action_BackStep node = Instantiate(this);
+        Task_BackStep node = Instantiate(this);
         node.backStepSpeed = this.backStepSpeed;
         node.duration = this.duration;
         node.animationTrigger = this.animationTrigger;
