@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Task_Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1782, y: 1319}
+  position: {x: 1789, y: 1306}
   skillName: Do_BackStep
 --- !u!114 &-5667558639043742383
 MonoBehaviour:
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 1379, y: 999}
+  position: {x: 1383, y: 993}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Defense
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1588, y: 1094}
+  position: {x: 1595, y: 1079}
   nodes:
   - {fileID: 3698075416105282935}
   - {fileID: 2885761746193138462}
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1776, y: 1169}
+  position: {x: 1783, y: 1156}
   skillName: Do_BackStep
   cooldownDuration: 3
 --- !u!114 &3698075416105282935
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1776, y: 1092}
+  position: {x: 1783, y: 1079}
   key: IsPlayerAimingMe
   exceptCondition:
     key: 
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
   m_Name: Task_Back Step
   m_EditorClassIdentifier: Assembly-CSharp::Action_BackStep
-  position: {x: 1781, y: 1244}
+  position: {x: 1788, y: 1231}
   backStepSpeed: 30
   duration: 0.2
   animationTrigger: Do_BackStep
@@ -259,8 +259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_CombatTactics
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 1374, y: 1080}
+  position: {x: 1382, y: 1078}
   nodes:
+  - {fileID: 463780409530894017}
   - {fileID: -5667558639043742383}
   services: []
 --- !u!114 &6545543868557049618
