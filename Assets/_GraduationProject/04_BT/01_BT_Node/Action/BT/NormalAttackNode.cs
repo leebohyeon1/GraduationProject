@@ -45,6 +45,7 @@ public class NormalAttackNode : Node
         directionToPlayer.y = 0;
         initNode();
         runner.SetStiffness(_data.damageData.StiffnessAmount);
+        Debug.Log($"[Action_Enter] {runner.name} Normal Attack '{attackKey}' 시작.");
     }
 
     protected override NodeState OnUpdate()
@@ -119,7 +120,6 @@ public class NormalAttackNode : Node
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         runner.SetStiffness(0);
-        Debug.Log("작동중/");
         if (!_isCooldownDenied)
         {
 
