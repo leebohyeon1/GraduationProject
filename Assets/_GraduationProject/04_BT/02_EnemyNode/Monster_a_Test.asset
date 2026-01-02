@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_PressureMove
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1589, y: 1424}
+  position: {x: 1592, y: 1426}
   nodes:
   - {fileID: 7383990784071887038}
   services:
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 1383, y: 993}
+  position: {x: 1384, y: 996}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +215,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1023, y: -249}
   viewAngle: 90
+--- !u!114 &5284442261549467373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Normal Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
+  position: {x: 1795, y: 1576}
+  attackKey: 
+  maintainAtk: 0
 --- !u!114 &5598936112123752856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_CombatTactics
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 1382, y: 1078}
+  position: {x: 1383, y: 1078}
   nodes:
   - {fileID: 463780409530894017}
   - {fileID: -5667558639043742383}
@@ -290,11 +305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Task_Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 1792, y: 1424}
+  position: {x: 1801, y: 1427}
   Pos_Key: PressurePos
   MoveSpeed: 4
   StoppingDist: 0.5
-  RotationSpeed: 5
+  RotationSpeed: 2
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0

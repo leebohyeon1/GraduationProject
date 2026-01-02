@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Root
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 588, y: -23}
+  position: {x: 666, y: -55}
   nodes:
   - {fileID: -2032485381125347692}
   services: []
@@ -59,14 +59,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
   m_Name: Service_Pressure Move
   m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
-  position: {x: 770, y: -196}
+  position: {x: 1124, y: -250}
   UpdateInterval: 0.1
   MinDistance: 5
   MaxDistance: 6
-  Change_Dir_MinTime: 2
-  Change_Dir_MaxTime: 3
+  Change_Dir_MinTime: 5
+  Change_Dir_MaxTime: 6
   BlockedWaitTime: 0.5
-  FrontAngle: 40
+  FrontAngle: 80
   Pos_Key: PressurePos
   Dir_Key: StrafeDir
 --- !u!114 &-2338096776723561330
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6355361d175b4e4fa3628d1d194d171, type: 3}
   m_Name: Service_Battle Awareness
   m_EditorClassIdentifier: Assembly-CSharp::Service_BattleAwareness
-  position: {x: 783, y: -270}
+  position: {x: 777, y: -251}
   UpdateInterval: 0.1
   Threat_Angle: 50
   Vuln_Key: IsPlayerVulnerable
