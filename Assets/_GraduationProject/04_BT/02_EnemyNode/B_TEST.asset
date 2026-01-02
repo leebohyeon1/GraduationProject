@@ -34,6 +34,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -2870098089127236727}
   - {fileID: 8154655890788234342}
+  services: []
 --- !u!114 &-7974736735570412724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,9 +48,9 @@ MonoBehaviour:
   m_Name: Condition_Check Object Behind
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
   position: {x: 1524, y: 370}
+  runner: {fileID: 0}
   checkDistance: 3
   layerMask:
-    serializedVersion: 2
     m_Bits: 512
 --- !u!114 &-7510950722700951356
 MonoBehaviour:
@@ -83,6 +84,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 5214673368872433589}
   - {fileID: -3662235796367844752}
+  services: []
 --- !u!114 &-7071762007778814168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +100,7 @@ MonoBehaviour:
   position: {x: 191, y: 413}
   nodes:
   - {fileID: -2923115925387942299}
+  services: []
 --- !u!114 &-6714180020418740740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +149,7 @@ MonoBehaviour:
   - {fileID: -4738368884081098000}
   - {fileID: 2818389067996432150}
   - {fileID: -7071762007778814168}
+  services: []
 --- !u!114 &-5895060802689115491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,10 +164,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1294, y: -478}
   nodes:
-  - {fileID: 7438793480988635909}
-  - {fileID: 6545543868557049618}
-  - {fileID: 5776244238602323464}
   - {fileID: 6816747113147883713}
+  services: []
 --- !u!114 &-5712504022543772185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +212,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -1995372082178178704}
   - {fileID: -8730112079219288532}
+  services: []
 --- !u!114 &-4658805496766147155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,9 +226,9 @@ MonoBehaviour:
   m_Name: Condition_Check Object Behind
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckObjectBehind
   position: {x: 1510, y: -727}
+  runner: {fileID: 0}
   checkDistance: 2
   layerMask:
-    serializedVersion: 2
     m_Bits: 512
 --- !u!114 &-4553377999928142451
 MonoBehaviour:
@@ -266,6 +269,8 @@ MonoBehaviour:
   m_Name: Random Patrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
   position: {x: 379, y: 413}
+  Radius: 15
+  Delay: 2
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,6 +397,7 @@ MonoBehaviour:
   m_Name: Condition_Is In Attack Range
   m_EditorClassIdentifier: 
   position: {x: 1524, y: -71}
+  runner: {fileID: 0}
   _attackRange: 4
 --- !u!114 &1490446169605551076
 MonoBehaviour:
@@ -409,8 +415,8 @@ MonoBehaviour:
   nodes:
   - {fileID: -893005759850448870}
   - {fileID: 5529467211719327576}
-  - {fileID: -4658805496766147155}
   - {fileID: 1181089910128278886}
+  services: []
 --- !u!114 &1742704995383000931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,6 +476,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 1196946236353706419}
   - {fileID: 5755715455036596734}
+  services: []
 --- !u!114 &2962903648140353133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +506,7 @@ MonoBehaviour:
   m_Name: Condition_Runner State
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RunnerState
   position: {x: 1546, y: -1213}
+  runner: {fileID: 0}
   requiredState: 10
 --- !u!114 &4748238847309724425
 MonoBehaviour:
@@ -513,6 +521,7 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC2DC "
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -221}
+  runner: {fileID: 0}
   viewAngle: 90
 --- !u!114 &5214673368872433589
 MonoBehaviour:
@@ -570,6 +579,27 @@ MonoBehaviour:
   position: {x: 1528, y: -401}
   minDistance: 0
   maxDistance: 5
+--- !u!114 &6037020714689537487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cf483bf3506bee42806cc0f982b4618, type: 3}
+  m_Name: Task_Set Black Board
+  m_EditorClassIdentifier: Assembly-CSharp::Task_SetBlackBoard
+  position: {x: 579, y: -212}
+  key: Distance
+  valueType: 3
+  intValue: 0
+  floatValue: 0
+  boolValue: 0
+  vector3Value: {x: 0, y: 0, z: 0}
+  stringValue: 
+  transformObjectValue: {fileID: 0}
 --- !u!114 &6108192575178470743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,10 +614,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1294, y: -1108}
   nodes:
-  - {fileID: 4362508772626884377}
-  - {fileID: 8581566141182817877}
-  - {fileID: 1742704995383000931}
   - {fileID: 8440268503078126261}
+  services: []
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +629,7 @@ MonoBehaviour:
   m_Name: Condition_Can See Player
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -475}
+  runner: {fileID: 0}
   viewAngle: 90
 --- !u!114 &6816747113147883713
 MonoBehaviour:
@@ -628,6 +657,7 @@ MonoBehaviour:
   m_Name: Condition_Is Ally Not Called
   m_EditorClassIdentifier: 
   position: {x: 1528, y: -552}
+  runner: {fileID: 0}
 --- !u!114 &7593736862946206760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -658,6 +688,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -6714180020418740740}
   - {fileID: 1078842771266368578}
+  services: []
 --- !u!114 &8154655890788234342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,17 +759,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1294, y: -1}
   nodes:
-  - {fileID: 4748238847309724425}
-  - {fileID: -4553377999928142451}
-  - {fileID: 1302873751428950995}
   - {fileID: 2962903648140353133}
   - {fileID: -6477674856501047169}
   - {fileID: 2422854897302023152}
   - {fileID: -7510950722700951356}
-  - {fileID: -5712504022543772185}
   - {fileID: 7593736862946206760}
-  - {fileID: -7974736735570412724}
   - {fileID: -1508998778064926519}
+  services: []
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0

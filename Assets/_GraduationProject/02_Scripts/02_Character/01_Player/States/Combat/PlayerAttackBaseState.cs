@@ -116,15 +116,17 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             return;
         }
-
+        
         if (p_context.Stats.CanNextAttack && p_context.Stamina.CheckStamina())
         {
-            if(p_context.Input.AttackInput)
+            if (p_context.Input.AttackInput)
             {
+                p_context.Events.TriggerChangedNextAttackState();
                 p_stateMachine.ChangeState(typeof(PlayerAttackState));
             }
             else if(p_context.Input.AttackHeldInput)
             {
+                p_context.Events.TriggerChangedNextAttackState();
                 p_stateMachine.ChangeState(typeof(PlayerChargeState));
             }
                

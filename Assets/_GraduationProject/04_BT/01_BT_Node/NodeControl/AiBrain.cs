@@ -19,6 +19,7 @@ public class AiBrain
         _player = _owner.player;
 
         blackboard.SetValue("HomePosition", _owner.StartPos);
+        blackboard.SetValue("Self", _owner.gameObject);
         lateUpdateCoroutine = _owner.StartCoroutine(TickCoroutine());
     }
 
@@ -26,14 +27,13 @@ public class AiBrain
     {
 
     }
-    int counter = 0;
     private IEnumerator TickCoroutine()
     {
         while (true)
         {
             if (_player != null)
             {
-
+                
                 bool IsHasLOS = CheckPlayerVisibility();
                 blackboard.SetValue("IsHasLOS", IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();
@@ -86,8 +86,6 @@ public class AiBrain
     {
         if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
         {
-            Debug.Log($"Skill: {skillName}, LastUsedTime: {lastUsedTime}, CurrentTime: {Time.time}, CooldownDuration: {cooldownDuration}");
-            Debug.Log(Time.time >= lastUsedTime + cooldownDuration);
             return Time.time >= lastUsedTime + cooldownDuration;
         }
         return true;
