@@ -18,6 +18,25 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
+--- !u!114 &-7233709124812250915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 1853, y: 1155}
+  floatCondition:
+    key: 
+    Operator: 0
+    value: 0
+  exceptCondition:
+    key: 
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33,37 +52,6 @@ MonoBehaviour:
   position: {x: 1022, y: 505}
   heatRange: 1
   _attackRange: 3
---- !u!114 &-6086253846591415056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Task_Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1826, y: 829}
-  skillName: Do_BackStep
---- !u!114 &-5667558639043742383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_PressureMove
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1616, y: 1686}
-  nodes:
-  - {fileID: 7383990784071887038}
-  services:
-  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,9 +78,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_CloseAttack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1638, y: 1014}
+  position: {x: 1626, y: 1083}
   nodes:
-  - {fileID: -2341744408323280474}
   - {fileID: 8541541301239562437}
   - {fileID: 5284442261549467373}
   services: []
@@ -108,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1846, y: 1012}
+  position: {x: 1841, y: 1071}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -166,29 +153,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
-  m_Name: Monster_a_Test
+  m_Name: TestNode
   m_EditorClassIdentifier: 
   rootNode: {fileID: -760453713604586534}
---- !u!114 &463780409530894017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_Defense
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1632, y: 602}
-  nodes:
-  - {fileID: 3698075416105282935}
-  - {fileID: 2885761746193138462}
-  - {fileID: 5598936112123752856}
-  - {fileID: -6086253846591415056}
-  services:
-  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,37 +171,6 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &2885761746193138462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
-  m_Name: Condition_Check Cool Time
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1820, y: 679}
-  skillName: Do_BackStep
-  cooldownDuration: 3
---- !u!114 &3698075416105282935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_IsPlayerAimingMe
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1820, y: 602}
-  key: IsPlayerAimingMe
-  exceptCondition:
-    key: 
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,26 +197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_NormalAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1848, y: 1173}
+  position: {x: 1843, y: 1240}
   attackKey: Attack01_a
   maintainAtk: 0
---- !u!114 &5598936112123752856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
-  m_Name: Task_Back Step
-  m_EditorClassIdentifier: Assembly-CSharp::Action_BackStep
-  position: {x: 1825, y: 754}
-  backStepSpeed: 30
-  duration: 0.2
-  animationTrigger: Do_BackStep
-  wallCheckDist: 1
 --- !u!114 &5851155588711365391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,10 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_CombatTactics
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 1383, y: 1078}
+  position: {x: 1392, y: 1083}
   nodes:
-  - {fileID: 463780409530894017}
-  - {fileID: -5667558639043742383}
+  - {fileID: -5377811131846093197}
   services: []
 --- !u!114 &6545543868557049618
 MonoBehaviour:
@@ -327,23 +245,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 457, y: 93}
   viewAngle: 180
---- !u!114 &7383990784071887038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
-  m_Name: Task_Pressure
-  m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 1829, y: 1686}
-  Pos_Key: PressurePos
-  MoveSpeed: 4
-  StoppingDist: 0.5
-  RotationSpeed: 2
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1848, y: 1091}
+  position: {x: 2227, y: 1095}
   target: {fileID: 8406303703004210642, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
   minRange: 0.1
   maxRange: 5
