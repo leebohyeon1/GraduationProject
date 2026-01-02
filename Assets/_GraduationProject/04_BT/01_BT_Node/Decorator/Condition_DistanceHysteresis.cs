@@ -47,6 +47,7 @@ public class Condition_DistanceHysteresis : ConditionNode
         // 타겟이 할당되지 않았다면 플레이어로 초기화 시도
         if (target == null && runner != null)
         {
+            target = runner.player.gameObject;
             // 주의: 여기서 할당하면 Clone된 인스턴스에만 적용되므로 안전함
             // 하지만 GameObject는 씬 객체이므로 SO에 저장되지 않게 주의 (Clone이므로 괜찮음)
             // 명시적으로 변수에 넣지 않고 CheckCondition에서 처리하는 것이 더 깔끔할 수 있음
