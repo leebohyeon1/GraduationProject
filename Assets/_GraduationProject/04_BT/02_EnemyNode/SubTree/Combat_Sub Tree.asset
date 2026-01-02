@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 721, y: -84}
+  position: {x: 726, y: -91}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerVulnerable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 722, y: -10}
+  position: {x: 727, y: -17}
   key: IsPlayerVulnerable
   exceptCondition:
     key: 
@@ -172,7 +172,8 @@ MonoBehaviour:
   - {fileID: -4140156646422702466}
   - {fileID: -3955425885467282472}
   - {fileID: 7513341714229683203}
-  services: []
+  services:
+  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &-1894843701333497225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,11 +234,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Combat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -17, y: -2}
+  position: {x: -67, y: -13}
   nodes:
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
-  services: []
+  services:
+  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  - {fileID: 8279960542052063534}
 --- !u!114 &-335546641203014191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,7 +258,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 2554010000721168745}
   services:
-  - {fileID: 0}
+  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,13 +284,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Defense(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 462, y: -449}
+  position: {x: 461, y: -453}
   nodes:
   - {fileID: -1894843701333497225}
   - {fileID: -1487819243410853138}
   - {fileID: -746903831637876013}
   - {fileID: 4004705957746359045}
-  services: []
+  services:
+  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &2554010000721168745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,10 +418,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_LeapAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 723, y: 66}
+  position: {x: 729, y: 57}
   attackKey: Attack02_a
   maintainAtk: 0
   SO: {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
+--- !u!114 &8279960542052063534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
+  m_Name: Service_Update Combat Vars
+  m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
+  position: {x: -64, y: 169}
+  UpdateInterval: 0.1
+  CurrentTarget: {fileID: 0}
+  DistanceToTarget: DistanceToTarget
+  LocationKey: TargetLocation
 --- !u!114 &8335210479689113784
 MonoBehaviour:
   m_ObjectHideFlags: 0
