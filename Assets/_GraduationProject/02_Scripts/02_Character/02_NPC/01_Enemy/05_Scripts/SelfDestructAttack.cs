@@ -73,6 +73,11 @@ public class SelfDestructAttack : EnemyUseAnything
         }
         await spawnController.SpawnEnemies(monsterName, count, transform);
     }
+
+    public override T OnExit<T>(T runner)
+    {
+        throw new System.NotImplementedException();
+    }
 }
 [System.Serializable]
 public class Explosion
