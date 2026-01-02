@@ -18,6 +18,25 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
+--- !u!114 &-8537491138553592923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 1858, y: 1398}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
 --- !u!114 &-7233709124812250915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,9 +99,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 1626, y: 1083}
   nodes:
+  - {fileID: 5515830447173293293}
   - {fileID: -2341744408323280474}
+  - {fileID: 8541541301239562437}
   - {fileID: 5284442261549467373}
   services: []
+--- !u!114 &-2385146489958339335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Task_ChargeAttack
+  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
+  position: {x: 1861, y: 1632}
+  attackKey: Attack01_a
+  maintainAtk: 0
+  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
 --- !u!114 &-2341744408323280474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1852, y: 1083}
+  position: {x: 1868, y: 1148}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -171,6 +208,58 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &2177831103656452826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
+  m_Name: Condition_Distance Hysteresis
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
+  position: {x: 1856, y: 1552}
+  target: {fileID: 0}
+  minRange: 6
+  maxRange: 10
+  checkType: 1
+--- !u!114 &3396972902417628168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence_LongAttack
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 1643, y: 1399}
+  nodes:
+  - {fileID: -8537491138553592923}
+  - {fileID: 4007096408327054323}
+  - {fileID: 2177831103656452826}
+  - {fileID: -2385146489958339335}
+  services: []
+--- !u!114 &4007096408327054323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_HasAttackToken
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 1856, y: 1475}
+  key: HasAttackToken
+  exceptCondition:
+    key: 
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,9 +286,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_NormalAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1853, y: 1243}
+  position: {x: 1868, y: 1308}
   attackKey: Attack01_a
   maintainAtk: 0
+  SO: {fileID: 0}
+--- !u!114 &5515830447173293293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 1867, y: 1063}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
 --- !u!114 &5851155588711365391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +339,7 @@ MonoBehaviour:
   position: {x: 1392, y: 1083}
   nodes:
   - {fileID: -5377811131846093197}
+  - {fileID: 3396972902417628168}
   services: []
 --- !u!114 &6545543868557049618
 MonoBehaviour:
@@ -284,10 +394,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 2312, y: 1244}
-  target: {fileID: 8406303703004210642, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
-  minRange: 0.1
-  maxRange: 5
+  position: {x: 1869, y: 1226}
+  target: {fileID: 0}
+  minRange: 5
+  maxRange: 7
   checkType: 0
 --- !u!114 &8925219040377206200
 MonoBehaviour:
