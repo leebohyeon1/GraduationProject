@@ -40,7 +40,7 @@ public class NormalAttackNode : Node
             runner.Movement.StopMovement();
         runner.aIPath.enableRotation = false;
         _data.damageData.AttackerTransform = runner.transform;
-        
+        runner.SetState(Enemy.EnemyState.Attack);
         runner.AnimationEvent(_data.AttackName);
         runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
@@ -155,6 +155,12 @@ public class NormalAttackNode : Node
                 if (SO != null)
         {
             SO.OnExit(runner);
+        }
+        var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
+        if (RVO != null)
+        {
+            RVO.locked = false;
+            RVO.lockWhenNotMoving = true;
         }
     }
 

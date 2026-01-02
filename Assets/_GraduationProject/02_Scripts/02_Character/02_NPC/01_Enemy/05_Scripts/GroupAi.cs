@@ -183,6 +183,7 @@ public class GroupAi : MonoBehaviour
             {
                 giveToken = true;
                 tokenGivenCount++;
+                Debug.Log($"[GroupAi] {candidate.enemy.gameObject.name}에게 공격 토큰 부여");
             }
 
             // 블랙보드에 반영

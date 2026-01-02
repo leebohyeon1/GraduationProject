@@ -144,10 +144,16 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         if (ai != null)
         {
             ai.canMove = true;      
-            ai.isStopped = true;    
+            ai.isStopped = false;    
             ai.maxSpeed = enemy.Movement._normalSpeed; 
             
             if (ai is AIPath aiPath) aiPath.enableRotation = true;
+        }
+        var Rvo = enemy.GetComponent<Pathfinding.RVO.RVOController>();
+        if (Rvo != null)
+        {
+            Rvo.locked = false;
+            Rvo.lockWhenNotMoving = true;
         }
     }
 }

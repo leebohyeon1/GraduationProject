@@ -32,7 +32,6 @@ MonoBehaviour:
   nodes:
   - {fileID: -2665602925450961708}
   - {fileID: 699357593409438883}
-  - {fileID: 4489605913624550641}
   services: []
 --- !u!114 &-6030631403478375727
 MonoBehaviour:
@@ -48,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 459, y: 193}
   nodes:
-  - {fileID: -7154228387633228831}
   - {fileID: 367630320732258265}
   - {fileID: 3428122175870849780}
   services: []
@@ -148,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1034, y: 70}
+  position: {x: 1034, y: 60}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -290,6 +288,7 @@ MonoBehaviour:
   - {fileID: 3325441546977679017}
   - {fileID: 8335210479689113784}
   - {fileID: 2818379902901682789}
+  - {fileID: 4489605913624550641}
   services: []
 --- !u!114 &699357593409438883
 MonoBehaviour:
@@ -305,7 +304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1034, y: 148}
   floatCondition:
-    key: 5
+    key: 3
     Operator: 1
     value: 0
   exceptCondition:
@@ -342,7 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1366, y: 230}
+  position: {x: 1363, y: 96}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -378,7 +377,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_ChasePlayer
   m_EditorClassIdentifier: Assembly-CSharp::ChasePlayerNode
-  position: {x: 1374, y: 470}
+  position: {x: 1366, y: 332}
+  Distance: 2
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1369, y: 309}
+  position: {x: 1366, y: 175}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_NormalAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1035, y: 229}
+  position: {x: 1348, y: 402}
   attackKey: Attack01_a
   maintainAtk: 0
   SO: {fileID: 0}
@@ -521,7 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1367, y: 389}
+  position: {x: 1364, y: 255}
   target: {fileID: 0}
   minRange: 3
   maxRange: 5
