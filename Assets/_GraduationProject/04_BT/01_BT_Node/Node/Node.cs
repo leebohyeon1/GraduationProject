@@ -30,7 +30,7 @@ namespace BehaviorTree
                 isEntered = false;
             }
              // if(currentState == NodeState.SUCCESS)
-            // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
+            Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
             return currentState;
         }
 
@@ -48,7 +48,11 @@ namespace BehaviorTree
         public virtual void OnExit(){}
         protected abstract NodeState OnUpdate();
 
-        public abstract Node Clone();
+        public virtual Node Clone()
+        {
+            return Instantiate(this);
+            
+        }
         public virtual void initNode() { isEntered = false; }
         public virtual void SetRunner(Enemy runner, AiBrain brain) { this.runner = runner; this.brain = brain; }
     }

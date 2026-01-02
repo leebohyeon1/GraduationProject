@@ -39,6 +39,7 @@ public class PlayerEvents : FeedbackPlayer<string>
     public event Action<Transform> ParrySucceeded; // 패링 성공 이벤트
 
     public event Action<bool> RegenStamina; // 스테미나 회복 이벤트
+    public event Action ChangedNextAttackState; // 다음 공격 상태 변경 이벤트
     #endregion
 
 
@@ -259,6 +260,11 @@ public class PlayerEvents : FeedbackPlayer<string>
     public void TriggerRegenStamina(bool canRegen)
     {
         RegenStamina?.Invoke(canRegen);
+    }
+
+    public void TriggerChangedNextAttackState()
+    {
+        ChangedNextAttackState?.Invoke();
     }
 
     #endregion

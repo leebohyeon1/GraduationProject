@@ -13,7 +13,6 @@ public class NormalAttackNode : Node
     bool _parryEffectPlayed = false;
 
     bool _isCooldownDenied;
-    bool _isStunned;
     public override void OnEnter()
     {
         if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -23,7 +22,6 @@ public class NormalAttackNode : Node
         }
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
-            _isStunned = true;
             return;
         }
         _isCooldownDenied = false;
@@ -115,7 +113,6 @@ public class NormalAttackNode : Node
 
     public override void OnExit()
     {
-        _isStunned = false;
         tracking = false;
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue("IsAttacking", false);

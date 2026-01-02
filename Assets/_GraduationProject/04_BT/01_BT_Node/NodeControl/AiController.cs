@@ -7,7 +7,6 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private ActionTree _behaviorTree;
     public AiBrain _aiBrain { get; private set; }
     Enemy _enemy;
-    [SerializeField] private float MaxTargetRange = 10f;
     [SerializeField] private OnSwingMiss _onSwingMissEvent;
     [SerializeField] private OnHealing _onHealingEvent;
 

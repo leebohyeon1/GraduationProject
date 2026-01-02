@@ -60,13 +60,13 @@ public class PlayerStats: IDisposable
         CurrentStamina = _data.MaxStamina;
 
         _events.ParryWindowFinished += OnParryWindowFinished;
-        _events.AttackPerformed    += OnAttackPerformed;
+        _events.ChangedNextAttackState += OnAttackPerformed;
     }
 
     public void Dispose()
     {
         _events.ParryWindowFinished -= OnParryWindowFinished;
-        _events.AttackPerformed -= OnAttackPerformed;
+        _events.ChangedNextAttackState -= OnAttackPerformed;
     }
 
     /// <summary>
@@ -82,16 +82,9 @@ public class PlayerStats: IDisposable
 
     private void OnAttackPerformed()
     {
-        int nextIndex = AttackComboIndex + 1;
-        int maxAttackIndex = AttackDatas.Count - 1;
+        AttackComboIndex++;
 
-        if (nextIndex >= maxAttackIndex)
-        {
-            AttackComboIndex = maxAttackIndex;
-            return;
-        }
-
-        AttackComboIndex = nextIndex;
+        Debug.Log(CanNextAttack);
     }
 
 }

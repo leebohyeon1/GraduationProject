@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
+using UnityEngine.PlayerLoop;
 namespace BehaviorTree
 {
     [CreateAssetMenu(fileName = "SequenceNode", menuName = "BehaviorTree/Sequence")]
@@ -19,6 +20,7 @@ namespace BehaviorTree
 
         protected override NodeState OnUpdate()
         {
+            UpdateServices();
             // 이전에 실행 중이던 자식부터 이어서 검사합니다.
             for (int i = _currentChildIndex; i < nodes.Length; i++)
             {
