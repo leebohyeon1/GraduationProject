@@ -147,6 +147,8 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
             rvo.enabled = true;          // 다시 켜주기 (다음 행동을 위해)
             
             rvo.velocity = Vector3.zero; // RVO 내부 속도 초기화
+            rvo.locked = false;       // 잠금 해제
+            rvo.lockWhenNotMoving = true;
         }
 
         // 4. A* AI 복구 (다음 행동을 위해)
