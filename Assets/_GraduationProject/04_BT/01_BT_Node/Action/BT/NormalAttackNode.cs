@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
+using Pathfinding;
 public class NormalAttackNode : Node
 {
     [Header("Attack Properties")]
@@ -33,15 +34,15 @@ public class NormalAttackNode : Node
             return;
         }
         Handler.ResetAllFlags();
-
         _didHitPlayer = false;
         _parryEffectPlayed = false;
         if(SO==null)
             runner.Movement.StopMovement();
         runner.aIPath.enableRotation = false;
         _data.damageData.AttackerTransform = runner.transform;
-        runner.SetState(Enemy.EnemyState.Attack);
         runner.AnimationEvent(_data.AttackName);
+        runner.SetState(Enemy.EnemyState.Attack);
+        Debug.Log($"state {runner.CurrentState}");
         runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
@@ -50,8 +51,10 @@ public class NormalAttackNode : Node
                 if(SO != null)
         {
             SO.OnEnter(runner);
-        }
+            tracking = true;
 
+        }
+        runner.GetComponent<AIPath>().enableRotation = false;
     }
 
     protected override NodeState OnUpdate()
@@ -72,10 +75,10 @@ public class NormalAttackNode : Node
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        if (!tracking)
-        {
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        }
+        // if (!tracking)
+        // {
+        //     runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        // }
 
         if (Handler.IsSound)
         {
@@ -139,9 +142,12 @@ public class NormalAttackNode : Node
 
             brain.StartSkillCooldown(attackKey);
         }// runner.Movement.StopMovement();
+        runner.GetComponent<AIPath>().enableRotation = true;
+
     }
     public override void Abort()
     {
+        Debug.Log("[NormalAttackNode] Abort called.");
         tracking = false;
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();

@@ -154,6 +154,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         {
             Rvo.locked = false;
             Rvo.lockWhenNotMoving = true;
+            Rvo.velocity = Vector3.zero;
         }
     }
 }

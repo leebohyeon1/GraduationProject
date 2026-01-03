@@ -11,7 +11,7 @@ public class ChasePlayerNode : Node
     {
         aIPath = runner.GetComponent<AIPath>();
         runner.SetState(Enemy.EnemyState.Chase);
-
+        aIPath.enableRotation = false;
 
     }
     protected override NodeState OnUpdate()
@@ -34,6 +34,7 @@ public class ChasePlayerNode : Node
     {
         
         runner.Movement.StopMovement();
+        aIPath.enableRotation = true;
     }
 
     public override Node Clone()
