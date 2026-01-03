@@ -64,12 +64,19 @@ public class SelfDestructAttack : EnemyUseAnything
     }
     public async Task SpawnEnemies(string monsterName, int count, Transform transform = default)
     {
-        var spawnController = GameObject.FindObjectOfType<MonsterSpawnController>();
+#pragma warning disable CS0618 // 형식 또는 멤버는 사용되지 않습니다.
+        var spawnController = FindObjectOfType<MonsterSpawnController>();
+#pragma warning restore CS0618 // 형식 또는 멤버는 사용되지 않습니다.
         if (spawnController == null)
         {
             spawnController = new GameObject().AddComponent<MonsterSpawnController>();
         }
         await spawnController.SpawnEnemies(monsterName, count, transform);
+    }
+
+    public override T OnExit<T>(T runner)
+    {
+        throw new System.NotImplementedException();
     }
 }
 [System.Serializable]

@@ -11,9 +11,10 @@ public class NormalAttackNode : Node
     private EnemyAttackData _data;
     bool tracking = false;
     bool _parryEffectPlayed = false;
+    public EnemyUseAnything SO = null;
 
     bool _isCooldownDenied;
-    bool _isStunned;
+
     public override void OnEnter()
     {
         if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -23,7 +24,6 @@ public class NormalAttackNode : Node
         }
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
-            _isStunned = true;
             return;
         }
         _isCooldownDenied = false;
@@ -34,10 +34,10 @@ public class NormalAttackNode : Node
         }
         Handler.ResetAllFlags();
 
-
         _didHitPlayer = false;
         _parryEffectPlayed = false;
-        runner.Movement.StopMovement();
+        if(SO==null)
+            runner.Movement.StopMovement();
         runner.aIPath.enableRotation = false;
         _data.damageData.AttackerTransform = runner.transform;
         
@@ -47,6 +47,11 @@ public class NormalAttackNode : Node
         directionToPlayer.y = 0;
         initNode();
         runner.SetStiffness(_data.damageData.StiffnessAmount);
+                if(SO != null)
+        {
+            SO.OnEnter(runner);
+        }
+
     }
 
     protected override NodeState OnUpdate()
@@ -58,6 +63,10 @@ public class NormalAttackNode : Node
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
             return NodeState.FAILURE;
+        }
+        if(SO != null)
+        {
+            SO.OnUpdate(runner);
         }
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
 
@@ -115,14 +124,16 @@ public class NormalAttackNode : Node
 
     public override void OnExit()
     {
-        _isStunned = false;
         tracking = false;
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         runner.SetStiffness(0);
-        Debug.Log("작동중/");
+        if (SO != null)
+        {
+            SO.OnExit(runner);
+        }
         if (!_isCooldownDenied)
         {
 
@@ -141,6 +152,10 @@ public class NormalAttackNode : Node
             _parryEffectPlayed = true;
         }
         runner.SetStiffness(0);
+                if (SO != null)
+        {
+            SO.OnExit(runner);
+        }
     }
 
     public override Node Clone()

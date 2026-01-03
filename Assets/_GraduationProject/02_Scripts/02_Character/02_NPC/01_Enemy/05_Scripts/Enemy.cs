@@ -23,8 +23,6 @@ public class Enemy : MonoBehaviour
     public EnemySpecialAbility specialAbility { get; private set; }
 
     public Vector3 StartPos { get; private set; }
-    public event Action<int, int> OnHealthChanged;
-    public event Action OnDied;
     public BillboardUI BillboardUI{ get;  private set; }
 
     [SerializeField]private int _CurrentStiffness = 4;
@@ -37,7 +35,7 @@ public class Enemy : MonoBehaviour
         Cowardly,
         Cunning
     }
-    public GroupAi groupAi{get;private set;}
+    public GroupAi groupAi;
     public float NormalSpeed => enemyStat.MoveSpeed;
     public Transform LaunchPoint;
     public enum MonsterName
