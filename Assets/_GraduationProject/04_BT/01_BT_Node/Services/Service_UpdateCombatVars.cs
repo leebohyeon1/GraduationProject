@@ -19,4 +19,5 @@ public class Service_UpdateCombatVars : ServiceNode
         runner._aiController._aiBrain.blackboard.SetValue(DistanceToTarget, distance);
         runner._aiController._aiBrain.blackboard.SetValue(LocationKey, CurrentTarget.transform.position);
     }
+ 
 }

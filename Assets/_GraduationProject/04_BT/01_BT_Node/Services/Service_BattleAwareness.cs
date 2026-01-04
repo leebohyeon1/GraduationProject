@@ -16,7 +16,6 @@ public class Service_BattleAwareness : ServiceNode
     {
         base.OnEnter();
         _animator = runner.player.Animator;
-        Debug.Log($"[Service_Enter] {runner.name} 전투 인식 서비스 시작.");
     }
     protected override void OnServiceLogic()
     {

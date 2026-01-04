@@ -50,9 +50,6 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         // 5. 방향 회전 (시작 시 딱 한번)
         enemy.transform.rotation = Quaternion.LookRotation(dir);
 
-        // 6. RVO(밀림 방지) 해제 - 돌진 중엔 내가 짱이다
-        var rvo = enemy.GetComponent<Pathfinding.RVO.RVOController>();
-        if (rvo != null) rvo.enabled = false;
 
         Debug.Log($"[Rush] 직접 이동 시작! 목표: {finalDestination}");
         return runner;
@@ -141,23 +138,23 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         }
 
         // 3. [추가] RVO(회피) 속도 강제 제거
-        var rvo = enemy.GetComponent<Pathfinding.RVO.RVOController>();
-        if (rvo != null)
-        {
-            rvo.enabled = true;          // 다시 켜주기 (다음 행동을 위해)
-            
-            rvo.velocity = Vector3.zero; // RVO 내부 속도 초기화
-        }
 
         // 4. A* AI 복구 (다음 행동을 위해)
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
         if (ai != null)
         {
             ai.canMove = true;      
-            ai.isStopped = true;    
+            ai.isStopped = false;    
             ai.maxSpeed = enemy.Movement._normalSpeed; 
             
             if (ai is AIPath aiPath) aiPath.enableRotation = true;
+        }
+        var Rvo = enemy.GetComponent<Pathfinding.RVO.RVOController>();
+        if (Rvo != null)
+        {
+            Rvo.locked = false;
+            Rvo.lockWhenNotMoving = true;
+            Rvo.velocity = Vector3.zero;
         }
     }
 }

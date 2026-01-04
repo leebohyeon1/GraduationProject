@@ -16,7 +16,6 @@ public class Task_Pressure : Node
         base.OnEnter();
         aiAgent = runner.GetComponent<IAstarAI>();
         
-            Debug.Log($"tets");
 
         if (aiAgent == null)
         {
@@ -32,8 +31,16 @@ public class Task_Pressure : Node
 
     protected override NodeState OnUpdate()
     {
+        if(runner.CurrentState == Enemy.EnemyState.Attack)
+        {
+            return NodeState.FAILURE;
+        }
+        if(runner.animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        {
+            return NodeState.FAILURE;
+        }   
         if (aiAgent == null) return NodeState.FAILURE;
-        Debug.Log($"[Action_Update] {runner.name} 압박 이동 노드 실행 중.");
+        
         // 1. 블랙보드 값 확인
         object val = brain.blackboard.GetValue<Vector3>(Pos_Key);
         if (val == null)
@@ -62,7 +69,12 @@ public class Task_Pressure : Node
 
         return NodeState.RUNNING;
     }
-    
+    public override void Abort()
+    {
+        base.Abort();
+        Debug.Log($"[Action_Abort] {runner.name} 압박 이동 노드 중단됨.");
+        runner.Movement.StopMovement();
+    }
     private void RotateTowardsPlayer()
     {
         if (runner.player == null) return;
