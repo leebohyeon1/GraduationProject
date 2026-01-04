@@ -20,7 +20,12 @@ namespace BehaviorTree
             {
                 // 서비스의 Evaluate를 호출하여 OnEnter -> OnUpdate 사이클을 돌립니다.
                 // 반환값(Success/Failure)은 무시합니다. (흐름에 영향 X)
+                if(services[i] != null)
+                {
                 services[i].Evaluate();
+            // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{services[i].name}</color>");
+
+                }
             }
         }
         public override Node Clone()
@@ -32,15 +37,18 @@ namespace BehaviorTree
                 if (nodes[i] != null) newNode.nodes[i] = nodes[i].Clone();
             }
             newNode.services = new List<ServiceNode>();
-            foreach(var service in services)
+            if (services != null)
             {
-                if(service != null)
+                foreach(var service in services)
                 {
-                newNode.services.Add((ServiceNode)service.Clone());
-                    
+                    if(service != null)
+                    {
+                    newNode.services.Add((ServiceNode)service.Clone());
+                        
+                    }
                 }
             }
-            return newNode;
+                return newNode;
         }
 
         public override void initNode()
@@ -52,20 +60,34 @@ namespace BehaviorTree
             }
             foreach (var service in services)
             {
+                if(service != null)
+                {
                 service.initNode();
+                    
+                }
             }
         }
 
         public override void SetRunner(Enemy runner, AiBrain brain)
         {
             base.SetRunner(runner, brain);
+            if (nodes != null)
+            {
             foreach (var node in nodes)
             {
                 node.SetRunner(runner, brain);
             }
-            foreach (var service in services)
+            }
+            if(services != null)
             {
-                service.SetRunner(runner, brain);
+                foreach (var service in services)
+                {
+                    if(service != null)
+                    {
+                    service.SetRunner(runner, brain);
+                        
+                    }
+                }
             }
         }
         public override void OnExit()
@@ -73,6 +95,7 @@ namespace BehaviorTree
             base.OnExit();
             foreach (var service in services)
             {
+                if(service != null)
                 service.Abort();
             }
         }

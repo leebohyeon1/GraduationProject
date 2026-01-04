@@ -84,7 +84,6 @@ public class PlayerStats: IDisposable
     {
         AttackComboIndex++;
 
-        Debug.Log(CanNextAttack);
     }
 
 }

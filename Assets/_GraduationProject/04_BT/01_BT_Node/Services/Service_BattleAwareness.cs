@@ -16,38 +16,37 @@ public class Service_BattleAwareness : ServiceNode
     {
         base.OnEnter();
         _animator = runner.player.Animator;
-        Debug.Log($"[Service_Enter] {runner.name} 전투 인식 서비스 시작.");
     }
     protected override void OnServiceLogic()
     {
+        if(!runner._aiController._aiBrain._isCombat)return;
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         //플레이어 - 내 위치 벡터 내위치에서 플레이어 바라보기
-        Vector3 directionToPlayer = (runner.player.transform.position - runner.transform.position).normalized;
+        Vector3 directionToPlayer = (runner.transform.position - runner.player.transform.position).normalized;
         //내 앞벡터와 플레이어 방향 벡터의 내적
-        float dot = Vector3.Dot(runner.transform.forward, directionToPlayer);
+        float dot = Vector3.Dot(runner.player.transform.forward, directionToPlayer);
         //각도 비교
         runner._aiController._aiBrain.blackboard.SetValue("ZigZag", dot);
         //태그 확인중
-        if (stateInfo.tagHash == _threatTagHash && (dot >= Mathf.Cos(Threat_Angle * Mathf.Deg2Rad)) && runner._aiController._aiBrain.blackboard.GetValue<bool>(Aim_Key) == false)
+        if (stateInfo.tagHash == _threatTagHash && (dot >= Mathf.Cos(Threat_Angle * Mathf.Deg2Rad)) )
         {
             runner._aiController._aiBrain.blackboard.SetValue(Aim_Key, true);
         }
         else
         {
-            if(runner._aiController._aiBrain.blackboard.GetValue<bool>(Aim_Key))
             runner._aiController._aiBrain.blackboard.SetValue(Aim_Key, false);
         }
 
 
 
 
-        if(stateInfo.tagHash == _chanceTagHash && runner._aiController._aiBrain.blackboard.GetValue<bool>(Vuln_Key) == false)
+        if(stateInfo.tagHash == _chanceTagHash )
         {
             runner._aiController._aiBrain.blackboard.SetValue(Vuln_Key, true);
         }
         else
         {
-            if(runner._aiController._aiBrain.blackboard.GetValue<bool>(Vuln_Key))
+            
                 runner._aiController._aiBrain.blackboard.SetValue(Vuln_Key, false);
         }
     }

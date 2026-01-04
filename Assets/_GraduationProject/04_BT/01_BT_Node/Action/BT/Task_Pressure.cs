@@ -16,11 +16,9 @@ public class Task_Pressure : Node
         base.OnEnter();
         aiAgent = runner.GetComponent<IAstarAI>();
         
-            Debug.Log($"tets");
 
         if (aiAgent == null)
         {
-            Debug.LogError($"[Action_Error] {runner.name}에 AIPath/RichAI 컴포넌트가 없습니다!");
             return;
         }
 
@@ -29,11 +27,18 @@ public class Task_Pressure : Node
             aiPath.endReachedDistance = StoppingDist;
             aiPath.enableRotation = false;
         }
-        Debug.Log($"[Action_Enter] {runner.name} 이동 시작. 속도: {MoveSpeed}");
     }
 
     protected override NodeState OnUpdate()
     {
+        if(runner.CurrentState == Enemy.EnemyState.Attack)
+        {
+            return NodeState.FAILURE;
+        }
+        if(runner.animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        {
+            return NodeState.FAILURE;
+        }   
         if (aiAgent == null) return NodeState.FAILURE;
         
         // 1. 블랙보드 값 확인
@@ -64,7 +69,12 @@ public class Task_Pressure : Node
 
         return NodeState.RUNNING;
     }
-    
+    public override void Abort()
+    {
+        base.Abort();
+        Debug.Log($"[Action_Abort] {runner.name} 압박 이동 노드 중단됨.");
+        runner.Movement.StopMovement();
+    }
     private void RotateTowardsPlayer()
     {
         if (runner.player == null) return;
@@ -90,7 +100,6 @@ public class Task_Pressure : Node
             Gizmos.DrawLine(runner.transform.position, currentTargetDebug.Value); // 내 위치 -> 목표 선
         }
     }
-
     public override Node Clone()
     {
         var node = ScriptableObject.CreateInstance<Task_Pressure>();

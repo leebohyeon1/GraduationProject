@@ -10,7 +10,7 @@ public class EnemyMovement
     Rigidbody rb;
     Animator animator;
     private EnemyState CurrentState => _runner.CurrentState;
-    float _normalSpeed = 2f;
+    public float _normalSpeed {get; private set; } = 2f;
     public EnemyMovement(Enemy enemy)
     {
         _runner = enemy;
