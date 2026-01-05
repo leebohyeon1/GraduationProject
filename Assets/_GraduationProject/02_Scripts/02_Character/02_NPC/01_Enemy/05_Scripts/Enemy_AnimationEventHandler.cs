@@ -9,6 +9,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public bool IsActionFinished { get; private set; }
     public bool IsSound { get; private set; }
     public bool IsSuperArmor { get; private set; }
+    public bool IsActionSO { get; private set; }
     public void Initalize()
     {
          foreach (var feedbackPlayer in _feedbacks)
@@ -32,7 +33,14 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         IsActionFinished = true;
     }
-
+    public void ActionSO()
+    {
+        IsActionSO = true;
+    }
+    public void EndSO()
+    {
+        IsActionSO = false;
+    }
     public void StartSound()
     {
         IsSound = true;
