@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 /// <summary>
 /// 플레이어의 현재 상태와 스탯을 관리하는 클래스입니다.
@@ -12,6 +13,7 @@ public class PlayerStats: IDisposable
     private PlayerDataSO _baseData;
     private PlayerDataSO _data;
     private PlayerDataSO _runtimeData;
+    private Player _owner;
 
     // State
     public bool IsInvincible; // 무적인가?
@@ -48,13 +50,14 @@ public class PlayerStats: IDisposable
     public PlayerChargeConfig CurrentChargeAttackData => AttackDatas[AttackComboIndex].ChargeConfigs[ChargeLevel - 1];
 
 
-    public PlayerStats(PlayerDataSO baseData, PlayerEvents events)
+    public PlayerStats(PlayerDataSO baseData, PlayerEvents events, Player player)
     {
         _baseData = baseData;
         _data = UnityEngine.Object.Instantiate(baseData);
         _runtimeData = UnityEngine.Object.Instantiate(_data);
 
         _events = events;
+        _owner = player;
 
         CurrentHealth = _data.MaxHealth;
         CurrentStamina = _data.MaxStamina;
@@ -84,6 +87,7 @@ public class PlayerStats: IDisposable
     {
         AttackComboIndex++;
 
+        _owner.Animator.SetInteger("ComboIndex", AttackComboIndex);
     }
 
 }

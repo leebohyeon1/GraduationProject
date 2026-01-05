@@ -118,21 +118,9 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
 
     public void OnMeleeAttack(InputAction.CallbackContext context)
     {
-        switch (context.phase)
+        if (context.phase == InputActionPhase.Performed)
         {
-            case InputActionPhase.Performed:
-                if (context.interaction is HoldInteraction)
-                {
-                    AttackHoldEvent.Invoke();
-                }
-                else
-                {
-                    AttackEvent.Invoke();
-                }
-                break;
-            case InputActionPhase.Canceled:
-                AttackCancelledEvent.Invoke();
-                break;
+            AttackEvent.Invoke();
         }
     }
 
@@ -166,9 +154,21 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
 
     public void OnParry(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        switch (context.phase)
         {
-            ParryEvent.Invoke();    
+            case InputActionPhase.Performed:
+                if (context.interaction is HoldInteraction)
+                {
+                    AttackHoldEvent.Invoke();
+                }
+                else
+                {
+                    ParryEvent.Invoke();
+                }
+                break;
+            case InputActionPhase.Canceled:
+                AttackCancelledEvent.Invoke();
+                break;
         }
     }
 

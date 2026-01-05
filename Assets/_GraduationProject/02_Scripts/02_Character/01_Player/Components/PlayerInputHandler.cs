@@ -158,7 +158,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnAttackCancelled() 
     {
-        _attackInput = false;
+        _parryInput = false;
 
         if (!_canAttackHeldInput)
         {

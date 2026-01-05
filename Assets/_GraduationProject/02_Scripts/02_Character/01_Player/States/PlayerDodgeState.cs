@@ -30,6 +30,8 @@ public class PlayerDodgeState : BaseState<Player>
         _nextState = null;
 
         p_context.Stats.AttackComboIndex = 0;
+        p_context.Animator.SetInteger("ComboIndex", p_context.Stats.AttackComboIndex);
+
         p_context.Animator.SetTrigger("Dodge");
 
         // 입력 방향에 따라 회피 방향 결정
