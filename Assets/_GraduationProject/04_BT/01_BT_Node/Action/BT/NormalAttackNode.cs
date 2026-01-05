@@ -79,7 +79,14 @@ public class NormalAttackNode : Node
         // {
         //     runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         // }
-
+        if(Handler.IsActionSO)
+        {
+            if(SO != null)
+            {
+                SO.OnEnter(runner);
+            }
+            Handler.EndSO();
+        }
         if (Handler.IsSound)
         {
             Handler.EndSound();
