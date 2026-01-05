@@ -10,9 +10,15 @@ using UnityEngine;
 public class PlayerParryState : PlayerAttackBaseState
 {
     public PlayerParryState(Player context, StateMachine<Player> stateMachine) 
-        : base(context, stateMachine) { }
+        : base(context, stateMachine)
+    {
+        p_context.Events.ParrySucceeded += OnParrySucceeded;
+    }
 
-
+    ~PlayerParryState()
+    {
+        p_context.Events.ParrySucceeded -= OnParrySucceeded;
+    }
     protected override string p_animationTrigger => "Parry";
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
 
@@ -31,7 +37,6 @@ public class PlayerParryState : PlayerAttackBaseState
         {
             if (p_context.Input.AttackInput)
             {
-                p_context.Events.TriggerChangedNextAttackState();
                 p_stateMachine.ChangeState(typeof(PlayerAttackState));
             }
             else if (p_context.Input.AttackHeldInput)
@@ -50,5 +55,35 @@ public class PlayerParryState : PlayerAttackBaseState
             p_nextState = typeof(PlayerDodgeState);
         }
 
+    }
+
+
+    /// <summary>
+    /// 공격 판정이 발생하는 시점에 호출됩니다.
+    /// </summary>
+    protected override void OnAttackPerformed()
+    {
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.TryGetComponent<IParryable>(out var parryable))
+            {
+                p_context.Stats.ParrySet.Add(parryable);
+            }
+            p_context.Events.TriggerChargeAttackAffected(collider);
+        }
+
+        p_context.Input.SetAttackHeldInput(false);
+    }
+
+
+    private void OnParrySucceeded(Transform transform)
+    {
+        if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
+        {
+            damageable.TakeDamage(new DamageData(transform, p_AttackConfig.AttackType, p_AttackConfig.AttackDamage
+                , p_AttackConfig.StiffnessAmount, p_AttackConfig.KnockBackCurve, p_AttackConfig.KnockBackDuration, p_AttackConfig.KnockBackForce));
+        }
     }
 }
