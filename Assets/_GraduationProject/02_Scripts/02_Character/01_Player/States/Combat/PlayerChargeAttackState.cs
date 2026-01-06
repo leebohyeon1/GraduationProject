@@ -32,7 +32,7 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     {
         p_context.Stats.ChargeLevel = 0;
         p_context.Stats.IsParring = false;
-
+        p_context.Stats.ClearParrySet();
         base.OnExit();
     }
 

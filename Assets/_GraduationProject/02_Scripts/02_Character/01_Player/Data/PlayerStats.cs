@@ -79,7 +79,7 @@ public class PlayerStats: IDisposable
     {
         if (ParrySet.Count > 0)
         {
-            ParrySet.Clear();
+            ClearParrySet();
         }
     }
 
@@ -88,6 +88,11 @@ public class PlayerStats: IDisposable
         AttackComboIndex++;
 
         _owner.Animator.SetInteger("ComboIndex", AttackComboIndex);
+    }
+
+    public void ClearParrySet()
+    {
+        ParrySet.Clear();
     }
 
 }

@@ -23,6 +23,18 @@ public class PlayerParryState : PlayerAttackBaseState
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
 
 
+    public override void OnEnter()
+    {
+        base.OnEnter();
+    }
+
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        p_context.Stats.ClearParrySet();
+    }
+
     /// <summary>
     /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
     /// </summary>
