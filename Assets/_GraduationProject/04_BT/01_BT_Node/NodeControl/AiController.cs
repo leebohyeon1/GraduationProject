@@ -19,15 +19,16 @@ public class AiController : MonoBehaviour,IEventListener<string>
         _aiBrain = new AiBrain(owner);
         _behaviorTree = _behaviorTree.Clone();
         _behaviorTree.SetRunner(owner, _aiBrain);
-        _behaviorTree.rootNode?.initNode();
         inGameenemyAttackDatas = new EnemyAttackData[enemyAttackDatas.Length];
         for(int i = 0; i < enemyAttackDatas.Length; i++)
         {
             inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
             float c = statMultiplier != null ? statMultiplier.AttackMultiply:  1;
             inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount *c);
+            Debug.Log($"[AiController] {owner.name} Attack Data {inGameenemyAttackDatas[i].name} Damage set to {inGameenemyAttackDatas[i].damageData.DamageAmount}");
             _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
         }
+        _behaviorTree.rootNode?.initNode();
         
         // _onSwingMissEvent.Subscribe(this);
         // _onHealingEvent.Subscribe(this);

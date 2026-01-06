@@ -14,7 +14,7 @@ public class NormalAttackNode : Node
     bool _parryEffectPlayed = false;
     public EnemyUseAnything SO = null;
 
-    bool _isCooldownDenied;
+    bool _isCooldownDenied = false;
 
     public override void OnEnter()
     {
@@ -27,10 +27,9 @@ public class NormalAttackNode : Node
         {
             return;
         }
-        _isCooldownDenied = false;
         if(!brain.IsSkillReady(attackKey, _data.Cooltime))
         {
-            _isCooldownDenied = true;
+           _isCooldownDenied = true;
             return;
         }
         Handler.ResetAllFlags();
@@ -99,16 +98,18 @@ public class NormalAttackNode : Node
 
         if (Handler.IsHitWindowOpen)
         {
+            Debug.Log("[NormalAttackNode] Hit Window Opened.");
+            Debug.Log("attackorigin: " + attackOrigin);
             Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, _data.damageRadius );
             brain.blackboard.SetValue("IsAttacking", true);
             foreach (var col in hitColliders)
             {
                 if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
-
-
+                Debug.Log("[NormalAttackNode] Checking collision with " + col.gameObject.name);
                 if (col.TryGetComponent<IDamageable>(out IDamageable Character))
                 {
                     Character.TakeDamage(_data.damageData);
+                    Debug.Log("[NormalAttackNode] Hit " + Character);
 
                     _didHitPlayer = true;
                     if (!maintainAtk)
@@ -134,11 +135,13 @@ public class NormalAttackNode : Node
 
     public override void OnExit()
     {
+        Debug.Log("OnExit?");
         tracking = false;
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
         if (SO != null)
         {
@@ -146,10 +149,8 @@ public class NormalAttackNode : Node
         }
         if (!_isCooldownDenied)
         {
-
             brain.StartSkillCooldown(attackKey);
-        }// runner.Movement.StopMovement();
-        runner.GetComponent<AIPath>().enableRotation = true;
+        }
 
     }
     public override void Abort()
@@ -159,6 +160,7 @@ public class NormalAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        runner.aIPath.enableRotation = true;
 
         if (!_parryEffectPlayed)
         {

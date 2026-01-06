@@ -14,7 +14,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
     public float rushDuration = 1.0f;   // 돌진이 지속될 총 시간 (초)
     // X축: 0~1 (시간 비율), Y축: 속도 배율 (예: 0에서 시작해서 1로 갔다가 0으로 떨어짐)
     public AnimationCurve rushCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1.5f), new Keyframe(1, 0)); 
-
+    public float turnSpeed = 10f;      // 회전 속도 (도/초)
     // 블랙보드 키
     private const string KEY_RUSH_DEST = "RushDestination";
     private const string KEY_RUSHBOOL = "RushBool";
@@ -55,6 +55,13 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
 
         // 4. 방향 회전
         enemy.transform.rotation = Quaternion.LookRotation(dir);
+        if (dir != Vector3.zero) // 방향 벡터가 0이 아닐 때만 회전
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            
+            // 현재 각도에서 목표 각도로 turnSpeed * Time.deltaTime 만큼 부드럽게 회전
+            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
 
         Debug.Log($"[Rush] 곡선 이동 시작! 목표: {finalDestination}");
         return runner;
