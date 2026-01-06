@@ -9,19 +9,25 @@ using UnityEngine;
 /// </summary>
 public class PlayerParryState : PlayerAttackBaseState
 {
-    public PlayerParryState(Player context, StateMachine<Player> stateMachine) 
-        : base(context, stateMachine)
-    {
-        p_context.Events.ParrySucceeded += OnParrySucceeded;
-    }
-
-    ~PlayerParryState()
-    {
-        p_context.Events.ParrySucceeded -= OnParrySucceeded;
-    }
     protected override string p_animationTrigger => "Parry";
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
 
+    public PlayerParryState(Player context, StateMachine<Player> stateMachine) 
+        : base(context, stateMachine) { }
+
+    public override void OnEnter()
+    {
+        p_context.Events.ParrySucceeded += OnParrySucceeded;
+        base.OnEnter();
+    }
+
+    public override void OnExit()
+    {
+        p_context.Stats.IsParring = false;
+        p_context.Events.ParrySucceeded -= OnParrySucceeded;
+
+        base.OnExit();
+    }
 
     /// <summary>
     /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
