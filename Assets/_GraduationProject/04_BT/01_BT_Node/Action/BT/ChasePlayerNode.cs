@@ -11,7 +11,7 @@ public class ChasePlayerNode : Node
     {
         aIPath = runner.GetComponent<AIPath>();
         runner.SetState(Enemy.EnemyState.Chase);
-
+        runner.aIPath.enableRotation = true;
     }
     protected override NodeState OnUpdate()
     {

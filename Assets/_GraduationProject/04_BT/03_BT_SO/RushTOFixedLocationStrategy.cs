@@ -52,18 +52,10 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
+        
+        runner.aIPath.enableRotation = false;
 
-        // 4. 방향 회전
-        enemy.transform.rotation = Quaternion.LookRotation(dir);
-        if (dir != Vector3.zero) // 방향 벡터가 0이 아닐 때만 회전
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            
-            // 현재 각도에서 목표 각도로 turnSpeed * Time.deltaTime 만큼 부드럽게 회전
-            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
-        }
-
-        Debug.Log($"[Rush] 곡선 이동 시작! 목표: {finalDestination}");
+        runner.Movement.StopMovement();
         return runner;
     }
 
@@ -107,6 +99,14 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         
         // [벽 체크] (기존 로직 유지)
         Vector3 moveDir = (nextPos - currentPos).normalized;
+        moveDir.y = 0; // 높이 차이 무시 (평지 이동 시)
+
+        if (moveDir != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            // 돌진 중에는 조금 더 빠르게 회전해서 방향을 잡도록 보정 (turnSpeed * 2f 등 조절 가능)
+            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRot, turnSpeed * Time.deltaTime * 5f);
+        }
         float moveDist = Vector3.Distance(currentPos, nextPos);
 
         // 이동 거리가 아주 작으면(속도가 0인 구간 등) 레이캐스트 생략 가능
