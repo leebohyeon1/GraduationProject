@@ -12,12 +12,12 @@ public class PlayerParryState : PlayerAttackBaseState
     public PlayerParryState(Player context, StateMachine<Player> stateMachine) 
         : base(context, stateMachine)
     {
-        p_context.Events.ParrySucceeded += OnParrySucceeded;
+
     }
 
     ~PlayerParryState()
     {
-        p_context.Events.ParrySucceeded -= OnParrySucceeded;
+
     }
     protected override string p_animationTrigger => "Parry";
     protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
@@ -25,14 +25,17 @@ public class PlayerParryState : PlayerAttackBaseState
 
     public override void OnEnter()
     {
+        p_context.Events.ParrySucceeded += OnParrySucceeded;
         base.OnEnter();
     }
 
 
     public override void OnExit()
     {
-        base.OnExit();
+        p_context.Events.ParrySucceeded -= OnParrySucceeded;
         p_context.Stats.ClearParrySet();
+        base.OnExit();
+
     }
 
     /// <summary>
