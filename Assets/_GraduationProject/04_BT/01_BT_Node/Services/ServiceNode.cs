@@ -14,7 +14,7 @@ namespace BehaviorTree
         public override Node Clone()
         {
             // 자식 클래스에서 Instantiate(this)로 처리하므로 이 기본 함수는 호출되지 않아야 합니다.
-            return null; 
+            return Instantiate(this); 
         }
 
         protected override NodeState OnUpdate()

@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
+using Pathfinding;
 public class NormalAttackNode : Node
 {
     [Header("Attack Properties")]
@@ -11,8 +12,10 @@ public class NormalAttackNode : Node
     private EnemyAttackData _data;
     bool tracking = false;
     bool _parryEffectPlayed = false;
+    public EnemyUseAnything SO = null;
 
     bool _isCooldownDenied;
+
     public override void OnEnter()
     {
         if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -31,20 +34,27 @@ public class NormalAttackNode : Node
             return;
         }
         Handler.ResetAllFlags();
-
-
         _didHitPlayer = false;
         _parryEffectPlayed = false;
-        runner.Movement.StopMovement();
+        if(SO==null)
+            runner.Movement.StopMovement();
         runner.aIPath.enableRotation = false;
         _data.damageData.AttackerTransform = runner.transform;
-        
         runner.AnimationEvent(_data.AttackName);
+        runner.SetState(Enemy.EnemyState.Attack);
+        Debug.Log($"state {runner.CurrentState}");
         runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
         initNode();
         runner.SetStiffness(_data.damageData.StiffnessAmount);
+                if(SO != null)
+        {
+            SO.OnEnter(runner);
+            tracking = true;
+
+        }
+        runner.GetComponent<AIPath>().enableRotation = false;
     }
 
     protected override NodeState OnUpdate()
@@ -57,15 +67,26 @@ public class NormalAttackNode : Node
         {
             return NodeState.FAILURE;
         }
+        if(SO != null)
+        {
+            SO.OnUpdate(runner);
+        }
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        if (!tracking)
+        // if (!tracking)
+        // {
+        //     runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        // }
+        if(Handler.IsActionSO)
         {
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+            if(SO != null)
+            {
+                SO.OnEnter(runner);
+            }
+            Handler.EndSO();
         }
-
         if (Handler.IsSound)
         {
             Handler.EndSound();
@@ -119,15 +140,21 @@ public class NormalAttackNode : Node
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
         runner.SetStiffness(0);
-        Debug.Log("작동중/");
+        if (SO != null)
+        {
+            SO.OnExit(runner);
+        }
         if (!_isCooldownDenied)
         {
 
             brain.StartSkillCooldown(attackKey);
         }// runner.Movement.StopMovement();
+        runner.GetComponent<AIPath>().enableRotation = true;
+
     }
     public override void Abort()
     {
+        Debug.Log("[NormalAttackNode] Abort called.");
         tracking = false;
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
@@ -138,6 +165,16 @@ public class NormalAttackNode : Node
             _parryEffectPlayed = true;
         }
         runner.SetStiffness(0);
+                if (SO != null)
+        {
+            SO.OnExit(runner);
+        }
+        var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
+        if (RVO != null)
+        {
+            RVO.locked = false;
+            RVO.lockWhenNotMoving = true;
+        }
     }
 
     public override Node Clone()

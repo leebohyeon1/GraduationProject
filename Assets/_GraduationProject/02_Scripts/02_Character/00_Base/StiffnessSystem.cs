@@ -28,7 +28,6 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     {
         int previousStiffness = _currentStiffness;  
         _currentStiffness += amount;
-        Debug.Log($"Current Stiffness: {_currentStiffness}/{_stiffnessThreshold}");
 
         OnStiffnessChanged?.Invoke(previousStiffness, _currentStiffness);
 

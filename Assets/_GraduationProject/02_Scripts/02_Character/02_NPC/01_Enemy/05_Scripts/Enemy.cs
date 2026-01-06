@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
         Cowardly,
         Cunning
     }
-    public GroupAi groupAi{get;private set;}
+    public GroupAi groupAi;
     public float NormalSpeed => enemyStat.MoveSpeed;
     public Transform LaunchPoint;
     public enum MonsterName
