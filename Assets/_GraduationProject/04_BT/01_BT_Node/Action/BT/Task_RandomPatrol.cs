@@ -11,6 +11,7 @@ public class RandomPatrol : Node
     float _waitTimer = 0f;
     public float Radius = 15f;
     public float Delay = 2f;
+    public float MoveSpeed = 6.0f;
     public override void OnEnter()
     {
         runner.SetState(Enemy.EnemyState.Patrol);
@@ -57,7 +58,7 @@ public class RandomPatrol : Node
                 {
                     targetPos = hitInfo.point;
                 }
-                runner.Movement.StartOrUpdateChase(targetPos);
+                runner.Movement.StartOrUpdateChase(targetPos, Enemy.EnemyState.Patrol, MoveSpeed);
                 _hasTarget = true;
             }
             if (_hasTarget)
