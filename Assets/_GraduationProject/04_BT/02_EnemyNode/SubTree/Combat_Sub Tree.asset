@@ -85,6 +85,7 @@ MonoBehaviour:
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1032, y: 691}
+  target: {fileID: 0}
   minRange: 7
   maxRange: 9
   checkType: 0
@@ -321,9 +322,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Task_Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 934, y: 911}
+  position: {x: 944, y: 911}
   Pos_Key: PressurePos
-  MoveSpeed: 2
+  MoveSpeed: 5
   StoppingDist: 0.5
   RotationSpeed: 5
 --- !u!114 &2818379902901682789
@@ -340,6 +341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChasePlayerNode
   position: {x: 1348, y: 332}
   Distance: 2
+  speed: 4
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1348, y: 174}
+  position: {x: 1346, y: 174}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -536,7 +538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1348, y: 252}
+  position: {x: 1348, y: 251}
+  target: {fileID: 0}
   minRange: 3
   maxRange: 5
   checkType: 0
