@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 719, y: 757}
+  position: {x: 723, y: 834}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -31,7 +31,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_ChargeAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1032, y: 768}
+  position: {x: 1052, y: 752}
   attackKey: Attack03_a
   maintainAtk: 0
   SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_CloseAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 717, y: 191}
+  position: {x: 737, y: 230}
   nodes:
   - {fileID: 1811496777038547811}
   - {fileID: 3325441546977679017}
@@ -55,6 +55,22 @@ MonoBehaviour:
   - {fileID: 2818379902901682789}
   - {fileID: 4489605913624550641}
   services: []
+--- !u!114 &-6173970801696772430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 905, y: -382}
+  key: IsAttacking
+  exceptCondition:
+    key: 
 --- !u!114 &-6030631403478375727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1032, y: 691}
+  position: {x: 1052, y: 675}
   target: {fileID: 0}
   minRange: 7
   maxRange: 9
@@ -101,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1031, y: 536}
+  position: {x: 1051, y: 520}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -136,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1031, y: 614}
+  position: {x: 1051, y: 598}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -187,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 719, y: -450}
+  position: {x: 726, y: -623}
   key: IsPlayerAimingMe
   exceptCondition:
     key: 
@@ -203,9 +219,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_CheckCoolTime(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 721, y: -373}
+  position: {x: 728, y: -546}
   skillName: BackStep
   cooldownDuration: 2
+--- !u!114 &-1073687104156895232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 732, y: -382}
+  child: {fileID: -6173970801696772430}
 --- !u!114 &-746903831637876013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
   m_Name: Task_Back Step(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_BackStep
-  position: {x: 721, y: -292}
+  position: {x: 734, y: -298}
   backStepSpeed: 15
   duration: 0.2
   animationTrigger: BackStep
@@ -253,7 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Pressure(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 719, y: 834}
+  position: {x: 723, y: 911}
   nodes:
   - {fileID: 2554010000721168745}
   services:
@@ -271,6 +301,22 @@ MonoBehaviour:
   m_Name: Combat_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -700661456820620682}
+--- !u!114 &1593061948588107566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
+  m_Name: Condition_Random Chance
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
+  position: {x: 729, y: -467}
+  checkName: BackStep
+  cooldownDuration: 0
+  successChance: 30
 --- !u!114 &1681072726047148729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,6 +334,8 @@ MonoBehaviour:
   - {fileID: 5785559906818792379}
   - {fileID: -1894843701333497225}
   - {fileID: -1487819243410853138}
+  - {fileID: 1593061948588107566}
+  - {fileID: -1073687104156895232}
   - {fileID: -746903831637876013}
   - {fileID: 4004705957746359045}
   services: []
@@ -303,7 +351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1363, y: 98}
+  position: {x: 1350, y: 91}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -353,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1366, y: 175}
+  position: {x: 1353, y: 168}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -369,7 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_LongAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 719, y: 537}
+  position: {x: 739, y: 521}
   nodes:
   - {fileID: -4747025815022784661}
   - {fileID: -4091383270736508263}
@@ -388,7 +436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Condition_StartSkillCooldonw(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 721, y: -215}
+  position: {x: 733, y: -221}
   skillName: BackStep
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -469,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 721, y: -567}
+  position: {x: 723, y: -705}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -504,7 +552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 474, y: 680}
+  position: {x: 479, y: 866}
   nodes:
   - {fileID: -8069466620819224126}
   - {fileID: -335546641203014191}
@@ -538,7 +586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1363, y: 255}
+  position: {x: 1350, y: 248}
   target: {fileID: 0}
   minRange: 3
   maxRange: 5
