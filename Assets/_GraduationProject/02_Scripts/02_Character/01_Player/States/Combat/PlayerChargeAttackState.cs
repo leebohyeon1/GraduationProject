@@ -15,24 +15,26 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     public PlayerChargeAttackState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) 
     {
-        p_context.Events.ParrySucceeded += OnParrySucceeded;
+
     }
 
     ~PlayerChargeAttackState()
     {
-        p_context.Events.ParrySucceeded -= OnParrySucceeded;
+
     }
 
     public override void OnEnter()
     {
+        p_context.Events.ParrySucceeded += OnParrySucceeded;
         base.OnEnter();
     }
 
     public override void OnExit()
     {
+        p_context.Events.ParrySucceeded -= OnParrySucceeded;
         p_context.Stats.ChargeLevel = 0;
         p_context.Stats.IsParring = false;
-
+        p_context.Stats.ClearParrySet();
         base.OnExit();
     }
 

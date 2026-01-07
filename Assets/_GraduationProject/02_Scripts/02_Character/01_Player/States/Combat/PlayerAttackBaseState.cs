@@ -129,11 +129,16 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
                 p_context.Events.TriggerChangedNextAttackState();
                 p_stateMachine.ChangeState(typeof(PlayerChargeState));
             }
+            else if(p_context.Input.ParryInput)
+            {
+                p_context.Events.TriggerChangedNextAttackState();
+                p_stateMachine.ChangeState(typeof(PlayerParryState));
+            }
                
         }
         else if (p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
         {
-
+ 
             p_nextState = typeof(PlayerDodgeState);
         }
 
@@ -151,6 +156,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
         {
             p_context.Events.TriggerAttackAffected(collider);
         }
+
     }
 
     protected virtual void OnAttackInputWindowStarted()

@@ -3,7 +3,7 @@ using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
 using Pathfinding;
-public class NormalAttackNode : Node
+public class Task_NormalAttackNode : Node
 {
     [Header("Attack Properties")]
     public string attackKey;
@@ -14,11 +14,11 @@ public class NormalAttackNode : Node
     bool _parryEffectPlayed = false;
     public EnemyUseAnything SO = null;
 
-    bool _isCooldownDenied;
+    bool _isCooldownDenied = false;
 
     public override void OnEnter()
     {
-        if(!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
+        if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
             Debug.LogError("No Attack Data Found for key: " + attackKey);
             return;
@@ -27,8 +27,7 @@ public class NormalAttackNode : Node
         {
             return;
         }
-        _isCooldownDenied = false;
-        if(!brain.IsSkillReady(attackKey, _data.Cooltime))
+        if (!brain.IsSkillReady(attackKey, _data.Cooltime))
         {
             _isCooldownDenied = true;
             return;
@@ -36,30 +35,21 @@ public class NormalAttackNode : Node
         Handler.ResetAllFlags();
         _didHitPlayer = false;
         _parryEffectPlayed = false;
-        if(SO==null)
-            runner.Movement.StopMovement();
-        runner.aIPath.enableRotation = false;
-        _data.damageData.AttackerTransform = runner.transform;
-        runner.AnimationEvent(_data.AttackName);
-        runner.SetState(Enemy.EnemyState.Attack);
-        Debug.Log($"state {runner.CurrentState}");
-        runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
-        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
-        directionToPlayer.y = 0;
-        initNode();
-        runner.SetStiffness(_data.damageData.StiffnessAmount);
-                if(SO != null)
-        {
-            SO.OnEnter(runner);
-            tracking = true;
 
-        }
-        runner.GetComponent<AIPath>().enableRotation = false;
+        _data.damageData.AttackerTransform = runner.transform;
+        runner.SetState(Enemy.EnemyState.Attack);
+        runner.AnimationEvent(_data.AttackName);
+        runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
+
+        runner.SetStiffness(_data.damageData.StiffnessAmount);
+
+        runner.Movement.StopMovement();
+
     }
 
     protected override NodeState OnUpdate()
     {
-        if(_data == null || _isCooldownDenied)
+        if (_data == null || _isCooldownDenied)
         {
             return NodeState.FAILURE;
         }
@@ -67,7 +57,7 @@ public class NormalAttackNode : Node
         {
             return NodeState.FAILURE;
         }
-        if(SO != null)
+        if (SO != null)
         {
             SO.OnUpdate(runner);
         }
@@ -75,13 +65,10 @@ public class NormalAttackNode : Node
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        // if (!tracking)
-        // {
-        //     runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        // }
-        if(Handler.IsActionSO)
+
+        if (Handler.IsActionSO)
         {
-            if(SO != null)
+            if (SO != null)
             {
                 SO.OnEnter(runner);
             }
@@ -96,19 +83,27 @@ public class NormalAttackNode : Node
             tracking = true;
             runner.SetState(Enemy.EnemyState.Attack);
         }
+        else
+        {
+            tracking = false;
+        }
+        if (!tracking )
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
 
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, _data.damageRadius );
+            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, _data.damageRadius);
             brain.blackboard.SetValue("IsAttacking", true);
             foreach (var col in hitColliders)
             {
                 if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
-
-
-                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
+                Debug.Log("[NormalAttackNode] Checking collision with " + col.gameObject.name);
+                if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
                 {
                     Character.TakeDamage(_data.damageData);
+                    Debug.Log("[NormalAttackNode] Hit " + Character);
 
                     _didHitPlayer = true;
                     if (!maintainAtk)
@@ -139,6 +134,7 @@ public class NormalAttackNode : Node
         brain.blackboard.SetValue("IsAttacking", false);
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
         if (SO != null)
         {
@@ -146,10 +142,8 @@ public class NormalAttackNode : Node
         }
         if (!_isCooldownDenied)
         {
-
             brain.StartSkillCooldown(attackKey);
-        }// runner.Movement.StopMovement();
-        runner.GetComponent<AIPath>().enableRotation = true;
+        }
 
     }
     public override void Abort()
@@ -159,13 +153,14 @@ public class NormalAttackNode : Node
         // 노드가 중단될 경우를 대비해 플래그를 다시 한번 리셋
         Handler.ResetAllFlags();
         runner.SetState(Enemy.EnemyState.Idle);
+        runner.aIPath.enableRotation = true;
 
         if (!_parryEffectPlayed)
         {
             _parryEffectPlayed = true;
         }
         runner.SetStiffness(0);
-                if (SO != null)
+        if (SO != null)
         {
             SO.OnExit(runner);
         }

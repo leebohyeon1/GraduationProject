@@ -136,7 +136,7 @@ public class Player : DIMonoBehaviour
             _data = GetComponent<PlayerDataSO>();
         }
 
-        _stats = new PlayerStats(Data, _events);
+        _stats = new PlayerStats(Data, _events, this);
         _runtimePlayerData = _stats.RuntimeData;
 
 
@@ -207,6 +207,7 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerChargeState(this, _stateMachine));
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerParryState(this, _stateMachine));
 
         SetupStateTransitions();
     
@@ -229,6 +230,8 @@ public class Player : DIMonoBehaviour
             => Input.DodgeInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
             => Input.AttackInput && _stamina.CheckStamina());
+        _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
+            => Input.ParryInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
             => Input.AttackHeldInput && _stamina.CheckStamina());
     
@@ -238,7 +241,9 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
             => Input.DodgeInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
-            => Input.AttackInput && _stamina.CheckStamina());
+            => Input.AttackInput && _stamina.CheckStamina()); 
+        _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
+            => Input.ParryInput && _stamina.CheckStamina());
         _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
             => Input.AttackHeldInput);
     }

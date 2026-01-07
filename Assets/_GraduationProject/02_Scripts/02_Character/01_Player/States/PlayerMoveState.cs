@@ -13,6 +13,7 @@ public class PlayerMoveState : BaseState<Player>
     public override void OnEnter()
     {
         p_context.Stats.AttackComboIndex = 0;
+        p_context.Animator.SetInteger("ComboIndex", p_context.Stats.AttackComboIndex);
         p_context.Animator.SetBool("IsMoving", true);
     }
 
