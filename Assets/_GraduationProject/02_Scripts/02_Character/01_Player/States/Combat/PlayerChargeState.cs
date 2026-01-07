@@ -85,7 +85,7 @@ public class PlayerChargeState : BaseState<Player>
             else
             {
                 p_context.Stats.ChargeLevel = 0;
-                p_stateMachine.ChangeState<PlayerAttackState>();
+                p_stateMachine.ChangeState<PlayerParryState>();
             }
         }
     }

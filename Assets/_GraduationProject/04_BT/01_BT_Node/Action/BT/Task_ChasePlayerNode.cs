@@ -3,16 +3,16 @@ using BehaviorTree;
 using Pathfinding;
 
 [CreateAssetMenu(fileName = "ChasePlayerNode", menuName = "BehaviorTree/ChasePlayerNode")]
-public class ChasePlayerNode : Node
+public class Task_ChasePlayerNode : Node
 {
     AIPath aIPath;
     public float Distance = 3;
+    public float speed = 4;
     public override void OnEnter()
     {
         aIPath = runner.GetComponent<AIPath>();
         runner.SetState(Enemy.EnemyState.Chase);
-        aIPath.enableRotation = false;
-
+        runner.aIPath.enableRotation = true;
     }
     protected override NodeState OnUpdate()
     {
@@ -20,7 +20,7 @@ public class ChasePlayerNode : Node
         {
             return NodeState.FAILURE;
         }
-        runner.Movement.StartOrUpdateChase(runner.player.transform);
+        runner.Movement.StartOrUpdateChase(runner.player.transform.position, Enemy.EnemyState.Chase, speed);
         float distance = Vector3.Distance(runner.transform.position, runner.player.transform.position);
         if(distance <= Distance)
         {
@@ -34,7 +34,6 @@ public class ChasePlayerNode : Node
     {
         
         runner.Movement.StopMovement();
-        aIPath.enableRotation = true;
     }
 
     public override Node Clone()

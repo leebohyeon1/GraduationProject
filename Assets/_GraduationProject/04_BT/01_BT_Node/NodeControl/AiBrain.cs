@@ -147,9 +147,18 @@ public class AiBrain
     {
         blackboard.SetValue("IsSurrounding", surround);
     }
-    internal void AddEnemyAttackData(EnemyAttackData enemyAttackData)
+    public void AddEnemyAttackData(EnemyAttackData enemyAttackData)
     {
         blackboard.SetValue(enemyAttackData.AttackName, enemyAttackData);
+        
+        if (_lastUsedSkillTimes.ContainsKey(enemyAttackData.AttackName))
+    {
+        _lastUsedSkillTimes[enemyAttackData.AttackName] = -9999f;
+    }
+    else
+    {
+        _lastUsedSkillTimes.Add(enemyAttackData.AttackName, -9999f);
+    }
     }
 
     public bool _isStunned { get; private set; } = false;

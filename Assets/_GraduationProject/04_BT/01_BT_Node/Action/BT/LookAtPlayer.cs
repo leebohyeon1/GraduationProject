@@ -9,7 +9,12 @@ public class Action_LookAtPlayer : Node
 
     public bool IsSee = true;
     public float rotationSpeed = 5f;
-
+    float realRotationSpeed = 0f;
+    override public void OnEnter()
+    {
+        base.OnEnter();
+        realRotationSpeed = rotationSpeed;
+    }
     protected override NodeState OnUpdate()
     {
         
@@ -27,13 +32,17 @@ public class Action_LookAtPlayer : Node
             runner.transform.rotation = Quaternion.Slerp(
                 runner.transform.rotation, 
                 targetRotation, 
-                rotationSpeed * Time.deltaTime
+                realRotationSpeed * Time.deltaTime
             );
         }
         
         return IsSee ? NodeState.SUCCESS : NodeState.FAILURE;
     }
-
+    public override void OnExit()
+    {
+        base.OnExit();
+        realRotationSpeed = 0f;
+    }
     public override Node Clone()
     {
         Action_LookAtPlayer newNode = Instantiate(this);

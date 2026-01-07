@@ -19,7 +19,7 @@ public class PlayerHitState : BaseState<Player>
     {
         // 오류 방지용 초기화
         p_context.Stats.AttackComboIndex = 0;
-
+        p_context.Animator.SetInteger("ComboIndex", p_context.Stats.AttackComboIndex);
 
         _hitDuration = p_context.Health.StiffnessDuration;
         _hitForce = p_context.Health.KnockbackForce;
