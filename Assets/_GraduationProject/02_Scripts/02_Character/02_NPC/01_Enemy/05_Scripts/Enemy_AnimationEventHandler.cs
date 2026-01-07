@@ -21,6 +21,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         IsActive = true;
     }
+    public void DeactivateAction()
+    {
+        IsActive = false;
+    }
     public void OpenHitWindow()
     {
         IsHitWindowOpen = true;

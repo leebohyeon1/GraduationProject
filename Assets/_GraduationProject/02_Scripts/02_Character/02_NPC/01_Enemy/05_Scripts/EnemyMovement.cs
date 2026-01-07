@@ -36,7 +36,7 @@ public class EnemyMovement
     }
 
 
-    public void StartOrUpdateChase(Vector3 newTarget, EnemyState ChaseState = EnemyState.Chase)
+    public void StartOrUpdateChase(Vector3 newTarget, EnemyState ChaseState = EnemyState.Chase, float chaseSpeed = 4)
     {
         if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise)
         {
@@ -48,15 +48,16 @@ public class EnemyMovement
             _runner.SetState(ChaseState);
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
+        aIPath.maxSpeed = chaseSpeed;
         aIPath.destination = newTarget;
         
         aIPath.isStopped = false;
     }
 
     // Transform을 받는 오버로딩 버전도 유지
-    public void StartOrUpdateChase(Transform target)
+    public void StartOrUpdateChase(Vector3 target)
     {
-        StartOrUpdateChase(target.position, EnemyState.Chase);
+        StartOrUpdateChase(target, EnemyState.Chase);
     }
     public void StopMovement()
     {

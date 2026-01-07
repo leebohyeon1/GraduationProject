@@ -3,7 +3,7 @@ using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
 using Pathfinding;
-public class NormalAttackNode : Node
+public class Task_NormalAttackNode : Node
 {
     [Header("Attack Properties")]
     public string attackKey;
@@ -37,18 +37,14 @@ public class NormalAttackNode : Node
         _parryEffectPlayed = false;
 
         _data.damageData.AttackerTransform = runner.transform;
-        runner.AnimationEvent(_data.AttackName);
         runner.SetState(Enemy.EnemyState.Attack);
-        Debug.Log($"state {runner.CurrentState}");
+        runner.AnimationEvent(_data.AttackName);
         runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
 
         runner.SetStiffness(_data.damageData.StiffnessAmount);
 
         runner.Movement.StopMovement();
-        if(SO != null)
-        {
-            tracking = true;
-        }
+
     }
 
     protected override NodeState OnUpdate()
@@ -69,10 +65,7 @@ public class NormalAttackNode : Node
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
-        if (!tracking && SO == null)
-        {
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        }
+
         if (Handler.IsActionSO)
         {
             if (SO != null)
@@ -90,6 +83,14 @@ public class NormalAttackNode : Node
             tracking = true;
             runner.SetState(Enemy.EnemyState.Attack);
         }
+        else
+        {
+            tracking = false;
+        }
+        if (!tracking )
+        {
+            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
 
         if (Handler.IsHitWindowOpen)
         {
@@ -99,7 +100,7 @@ public class NormalAttackNode : Node
             {
                 if (col.gameObject == runner.gameObject) continue; // 자기 자신은 무시
                 Debug.Log("[NormalAttackNode] Checking collision with " + col.gameObject.name);
-                if (col.TryGetComponent<IDamageable>(out IDamageable Character))
+                if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
                 {
                     Character.TakeDamage(_data.damageData);
                     Debug.Log("[NormalAttackNode] Hit " + Character);

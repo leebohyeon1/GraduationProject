@@ -101,12 +101,12 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         Vector3 moveDir = (nextPos - currentPos).normalized;
         moveDir.y = 0; // 높이 차이 무시 (평지 이동 시)
 
-        if (moveDir != Vector3.zero)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(moveDir);
-            // 돌진 중에는 조금 더 빠르게 회전해서 방향을 잡도록 보정 (turnSpeed * 2f 등 조절 가능)
-            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRot, turnSpeed * Time.deltaTime * 5f);
-        }
+        // if (moveDir != Vector3.zero)
+        // {
+        //     Quaternion targetRot = Quaternion.LookRotation(moveDir);
+        //     // 돌진 중에는 조금 더 빠르게 회전해서 방향을 잡도록 보정 (turnSpeed * 2f 등 조절 가능)
+        //     enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRot, turnSpeed * Time.deltaTime * 5f);
+        // }
         float moveDist = Vector3.Distance(currentPos, nextPos);
 
         // 이동 거리가 아주 작으면(속도가 0인 구간 등) 레이캐스트 생략 가능

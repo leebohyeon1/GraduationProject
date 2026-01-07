@@ -10,6 +10,7 @@ public class Task_Pressure : Node
     public float RotationSpeed = 5.0f;
     private IAstarAI aiAgent;
     private Vector3? currentTargetDebug; // 디버그용 그림 그리기 변수
+    public float speed = 6;
 
     public override void OnEnter()
     {
@@ -54,7 +55,7 @@ public class Task_Pressure : Node
 
         // 2. 목적지 설정 및 로그
         // aiAgent.destination = targetPos;
-        runner.Movement.StartOrUpdateChase(targetPos);
+        runner.Movement.StartOrUpdateChase(targetPos, Enemy.EnemyState.Chase, speed);
         RotateTowardsPlayer();
         
         // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)
