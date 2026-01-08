@@ -21,13 +21,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Monster_a 1
-  m_Shader: {fileID: -6465566751694194690, guid: 5c7c0d7d73f249f4c991322cd23a3fec, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 79e85552f7143784eb20b823b3483587, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - INVERT_DIRECTION_ON
   - _ALPHATEST_ON
-  - _AXIS_Y
   - _TRIPLANAR_SPACE_OBJECT
   - _USE_DISSOLVE
   - _USE_TRIPLANAR_UVS
@@ -35,7 +33,7 @@ Material:
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
+  m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: TransparentCutout
   disabledShaderPasses:
@@ -128,9 +126,10 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DissolveAmount: 1
+    - _DissolveAmount: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _EdgeWidth: 0.00259
     - _Ember_Hardness: 0.466
     - _Ember_Width: 1.4
     - _EnvironmentReflections: 1
@@ -139,6 +138,7 @@ Material:
     - _GlossyReflections: 0
     - _GuideStrength: 3
     - _GuideTilling: 2.9
+    - _Hardness: 0
     - _Lerp_Scroll_Speed: 0
     - _Lerp_Tiling: 0
     - _MaxValue: 14.54
@@ -161,6 +161,7 @@ Material:
     - _Strength: 1
     - _Surface: 0
     - _TRIPLANAR_SPACE: 1
+    - _USE_BACK_COLOR: 0
     - _USE_DISSOLVE: 1
     - _USE_TRIPLANAR_UVS: 1
     - _USE_VERTEX_DISPLACEMENT: 0
@@ -172,13 +173,14 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _Back_Color: {r: 766.9961, g: 68.26667, b: 8.031373, a: 1}
+    - _Back_Color: {r: 4, g: 1.239216, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Burn_Color: {r: 20.02094, g: 6.870761, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveColor: {r: 29.508846, g: 0, b: 1.2359726, a: 1}
     - _Ember_Color: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 3.031433, g: 3.031433, b: 3.031433, a: 1}
-    - _Emission_Back_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Emission_Back_Color: {r: 4, g: 1.239216, b: 0, a: 0}
     - _Rotation_Vector: {r: 0, g: 1, b: 0, a: 0}
     - _Rotation_Vector_Lerp: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

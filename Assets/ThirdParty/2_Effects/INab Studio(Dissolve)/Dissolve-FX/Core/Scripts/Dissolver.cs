@@ -99,7 +99,8 @@ namespace INab.Dissolve
 
             if (materials.Count == 0)
             {
-                FindMaterials();
+                FindMaterialsInChildren();
+               // FindMaterials();
             }
 
             if (initialState == DissolveState.Dissolved)
