@@ -69,7 +69,6 @@ namespace INab.Dissolve
 
         #endregion
 
-
         [Tooltip("Materials the effect will be performed on.")]
         public List<Material> materials = new List<Material>();
 
@@ -97,10 +96,7 @@ namespace INab.Dissolve
         {
             updateValues = true;
 
-            if (materials.Count == 0)
-            {
-                FindMaterials();
-            }
+            FindMaterialsInChildren();
 
             if (initialState == DissolveState.Dissolved)
             {

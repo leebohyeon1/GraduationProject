@@ -166,13 +166,13 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
         switch (damageData.AttackType)
         {
             case AttackType.Charge1:
-                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_1_FB", AttackType.Charge1);
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge1);
                 break;
             case AttackType.Charge2:
-                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_2_FB", AttackType.Charge2);
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge2);
                 break;
             case AttackType.Charge3:
-                _owner.animHandler.PlayFeedback("Charge_Attack_Damaged_3_FB", AttackType.Charge3);
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Charge3);
                 break;
             case AttackType.Heavy:
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy);
@@ -182,10 +182,10 @@ public class EnemyTakeDmg : MonoBehaviour, IDamageable
                 break;
         }
         curHealth -= damageData.DamageAmount;
-        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
-        _owner.BillboardUI?.SetHealthBar(_maxHealth, Health);
+        _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
+        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
 
         _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
 

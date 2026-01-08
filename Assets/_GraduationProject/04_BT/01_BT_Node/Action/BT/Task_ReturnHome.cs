@@ -7,6 +7,7 @@ public class Task_ReturnHome : Node
     AIPath  _aiPath;
     bool _hasDestination = false;
     Vector3 HomePosition;
+    public float MoveSpeed = 6.0f;
     public override Node Clone()
     {
         Task_ReturnHome newNode = Instantiate(this);
@@ -31,7 +32,7 @@ public class Task_ReturnHome : Node
             _hasDestination = true;
             return NodeState.SUCCESS;
         }
-        runner.Movement.StartOrUpdateChase(HomePosition, Enemy.EnemyState.Patrol);
+        runner.Movement.StartOrUpdateChase(HomePosition, Enemy.EnemyState.Patrol, MoveSpeed);
         return NodeState.RUNNING;
     }
     public override void OnExit()
