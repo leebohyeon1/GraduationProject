@@ -37,7 +37,6 @@ public class Task_NormalAttackNode : Node
         _parryEffectPlayed = false;
 
         _data.damageData.AttackerTransform = runner.transform;
-        runner.SetState(Enemy.EnemyState.Attack);
         runner.AnimationEvent(_data.AttackName);
         runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
 
@@ -170,6 +169,7 @@ public class Task_NormalAttackNode : Node
             RVO.locked = false;
             RVO.lockWhenNotMoving = true;
         }
+        runner.ParrySystem.DeactivateImmunity();
     }
 
     public override Node Clone()

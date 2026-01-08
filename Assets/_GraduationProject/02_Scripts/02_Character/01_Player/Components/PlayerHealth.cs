@@ -87,7 +87,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             }
 
             Log.PrintColor(Color.yellow, "상쇄");
-            parryable.Parry(gameObject);
+            parryable.Parry(damageData.AttackType);
             return;
         }
 
