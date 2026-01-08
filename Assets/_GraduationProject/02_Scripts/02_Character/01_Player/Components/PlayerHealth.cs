@@ -77,18 +77,37 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
 
-        if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f) 
-            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        if(damageData.AttackType == AttackType.Heavy && _stats.IsChage)
         {
-            if (!_stats.ParrySet.Contains(parryable))
-            {
-                _events.TriggerParrySucceeded(damageData.AttackerTransform);
-                _stats.ParrySet.Add(parryable);
-            }
+            if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
+             && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+                {
+                    if (!_stats.ParrySet.Contains(parryable))
+                    {
+                        _events.TriggerParrySucceeded(damageData.AttackerTransform);
+                        _stats.ParrySet.Add(parryable);
+                    }
 
-            Log.PrintColor(Color.yellow, "상쇄");
-            parryable.Parry(damageData.AttackType);
-            return;
+                    Log.PrintColor(Color.yellow, "상쇄");
+                    parryable.Parry(damageData.AttackType);
+                    return;
+                }
+        }
+        else if(damageData.AttackType != AttackType.Heavy)
+        {
+            if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
+            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+            {
+                if (!_stats.ParrySet.Contains(parryable))
+                {
+                    _events.TriggerParrySucceeded(damageData.AttackerTransform);
+                    _stats.ParrySet.Add(parryable);
+                }
+
+                Log.PrintColor(Color.yellow, "상쇄");
+                parryable.Parry(damageData.AttackType);
+                return;
+            }
         }
 
         _damageData = damageData;
