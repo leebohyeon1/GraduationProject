@@ -117,7 +117,7 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
 
         Enemy enemy = gameObject.GetComponent<Enemy>();
         gameObject.GetComponent<AiController>().Initialize(enemy, statMultiplier);
-        gameObject.GetComponent<EnemyTakeDmg>().InitializeHealth(enemy, statMultiplier);
+        gameObject.GetComponent<EnemyHealth>().InitializeHealth(enemy, statMultiplier);
 
         SurvivorLikeEnemyConfig config = gameObject.AddComponent<SurvivorLikeEnemyConfig>();
         config.Died += OnEnemyDied;
