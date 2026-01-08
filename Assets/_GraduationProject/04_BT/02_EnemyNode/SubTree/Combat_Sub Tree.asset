@@ -51,6 +51,7 @@ MonoBehaviour:
   attackKey: Attack03_a
   maintainAtk: 0
   SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  ExceptKey: IsAttacking
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +87,6 @@ MonoBehaviour:
   position: {x: 459, y: 230}
   nodes:
   - {fileID: -7154228387633228831}
-  - {fileID: 3428122175870849780}
   services: []
 --- !u!114 &-5794056097246212893
 MonoBehaviour:
@@ -139,7 +139,7 @@ MonoBehaviour:
   position: {x: 722, y: -374}
   checkName: BackStep
   cooldownDuration: 1
-  successChance: 50
+  successChance: 100
 --- !u!114 &-4140156646422702466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +188,21 @@ MonoBehaviour:
   key: IsPlayerVulnerable
   exceptCondition:
     key: 
+--- !u!114 &-3464193829027797276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378550fb37b63ed4181f0555a9f98a90, type: 3}
+  m_Name: Condition_Is Between Distances
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
+  position: {x: 1216, y: -462}
+  minDistance: 0
+  maxDistance: 0
 --- !u!114 &-2165811004991647136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 721, y: -616}
+  position: {x: 732, y: -706}
   key: IsPlayerAimingMe
   exceptCondition:
     key: 
@@ -235,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_CheckCoolTime(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 723, y: -539}
+  position: {x: 734, y: -629}
   skillName: BackStep
   cooldownDuration: 2
 --- !u!114 &-746903831637876013
@@ -250,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
   m_Name: Task_Back Step(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_BackStep
-  position: {x: 721, y: -292}
+  position: {x: 726, y: -297}
   backStepSpeed: 15
   duration: 0.2
   animationTrigger: BackStep
@@ -320,6 +335,7 @@ MonoBehaviour:
   - {fileID: 5785559906818792379}
   - {fileID: -1894843701333497225}
   - {fileID: -1487819243410853138}
+  - {fileID: 4441881582081485876}
   - {fileID: 6499966363312988759}
   - {fileID: -4692035725226766666}
   - {fileID: -746903831637876013}
@@ -444,6 +460,25 @@ MonoBehaviour:
   - {fileID: -6030631403478375727}
   - {fileID: 8237416307744218084}
   services: []
+--- !u!114 &4441881582081485876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 731, y: -545}
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 1
+    value: 6
+  exceptCondition:
+    key: 
 --- !u!114 &4489605913624550641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,6 +495,7 @@ MonoBehaviour:
   attackKey: Attack01_a
   maintainAtk: 0
   SO: {fileID: 11400000, guid: a2c2a956edca3e847bd3515ee3ecc2f9, type: 2}
+  ExceptKey: IsAttacking
 --- !u!114 &5099860071830320573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,7 +540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 719, y: -696}
+  position: {x: 730, y: -786}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -541,6 +577,7 @@ MonoBehaviour:
   attackKey: Attack02_a
   maintainAtk: 0
   SO: {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
+  ExceptKey: IsAttacking
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
