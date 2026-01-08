@@ -124,6 +124,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void Die()
     {
         OnDied?.Invoke();
+        _owner.animHandler.PlayFeedback("Die");
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
