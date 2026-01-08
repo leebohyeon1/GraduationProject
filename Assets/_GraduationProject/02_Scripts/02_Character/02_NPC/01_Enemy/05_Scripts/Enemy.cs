@@ -6,7 +6,7 @@ using System;
 using UnityEditor; // Handles 클래스를 사용하기 위해 반드시 필요합니다.
 #endif
 [RequireComponent(typeof(AIPath),typeof(AiController)),RequireComponent(typeof(Enemy_AnimationEventHandler),typeof(ParrySystem))
-,RequireComponent(typeof(EnemyTakeDmg),typeof(EnemySpecialAbility),typeof(Mon_Stiffness))]
+,RequireComponent(typeof(EnemyHealth),typeof(EnemySpecialAbility),typeof(Mon_Stiffness))]
 public class Enemy : MonoBehaviour
 {
     [field: SerializeField] public EnemyStat enemyStat{ get; private set; }
@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     public Mon_Stiffness StiffnessSystem { get; private set; }
     public ParrySystem ParrySystem { get; private set; }
     public EnemyMovement Movement { get; private set; }
-    public EnemyTakeDmg EnemyHealth { get; private set; }
+    public EnemyHealth EnemyHealth { get; private set; }
     public EnemySpecialAbility specialAbility { get; private set; }
 
     public Vector3 StartPos { get; private set; }
@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
         ParrySystem.Initialize(this);
         StiffnessSystem = GetComponent<Mon_Stiffness>();
         StiffnessSystem.Initialize(this);
-        EnemyHealth = GetComponent<EnemyTakeDmg>();
+        EnemyHealth = GetComponent<EnemyHealth>();
         Debug.Log(EnemyHealth);
         EnemyHealth.InitializeHealth( this);
         specialAbility = GetComponent<EnemySpecialAbility>();

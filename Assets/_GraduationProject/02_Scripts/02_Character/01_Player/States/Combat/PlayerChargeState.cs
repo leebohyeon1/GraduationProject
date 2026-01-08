@@ -19,7 +19,7 @@ public class PlayerChargeState : BaseState<Player>
     {
         Debug.Log("Enter Charge State");
         p_context.Animator.SetBool("IsCharging", true);
-
+        p_context.Stats.IsChage = true;
 
         p_context.Stats.ChargeLevel = 0;
         _chargeTimer = 0f;   
@@ -85,6 +85,7 @@ public class PlayerChargeState : BaseState<Player>
             else
             {
                 p_context.Stats.ChargeLevel = 0;
+                p_context.Stats.IsChage = false;
                 p_stateMachine.ChangeState<PlayerParryState>();
             }
         }

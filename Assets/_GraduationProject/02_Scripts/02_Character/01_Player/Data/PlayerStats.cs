@@ -19,6 +19,7 @@ public class PlayerStats: IDisposable
     public bool IsInvincible; // 무적인가?
     public bool IsParring; // 패리중인가?
     public bool IsLockOn; // 락온중인가?
+    public bool IsChage;
 
     public bool IsMiddleHit; // 약한 피격중인가?
     public bool IsHeavyHit;  // 강한 피격중인가?
@@ -81,6 +82,8 @@ public class PlayerStats: IDisposable
         {
             ClearParrySet();
         }
+
+        IsChage = false;
     }
 
     private void OnAttackPerformed()
