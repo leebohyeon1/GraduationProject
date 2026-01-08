@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 896, y: -457}
+  position: {x: 903, y: -457}
   key: IsAttacking
   exceptCondition:
     key: 
@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
-  position: {x: 722, y: -374}
+  position: {x: 721, y: -374}
   checkName: BackStep
   cooldownDuration: 1
   successChance: 100
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
   position: {x: 926, y: 909}
   Pos_Key: PressurePos
-  MoveSpeed: 2
+  MoveSpeed: 3
   StoppingDist: 0.5
   RotationSpeed: 5
 --- !u!114 &2818379902901682789
@@ -389,9 +389,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_ChasePlayer
   m_EditorClassIdentifier: Assembly-CSharp::ChasePlayerNode
-  position: {x: 1348, y: 332}
-  Distance: 2
-  speed: 4
+  position: {x: 1349, y: 332}
+  Distance: 4
+  speed: 6
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +476,7 @@ MonoBehaviour:
   floatCondition:
     key: DistanceToTarget
     Operator: 1
-    value: 6
+    value: 5
   exceptCondition:
     key: 
 --- !u!114 &4489605913624550641
@@ -491,10 +491,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_NormalAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1348, y: 409}
+  position: {x: 1351, y: 409}
   attackKey: Attack01_a
   maintainAtk: 0
-  SO: {fileID: 11400000, guid: a2c2a956edca3e847bd3515ee3ecc2f9, type: 2}
+  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
   ExceptKey: IsAttacking
 --- !u!114 &5099860071830320573
 MonoBehaviour:
@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1348, y: 252}
+  position: {x: 1348, y: 251}
   target: {fileID: 0}
-  minRange: 3
-  maxRange: 5
+  minRange: 5
+  maxRange: 7
   checkType: 0
