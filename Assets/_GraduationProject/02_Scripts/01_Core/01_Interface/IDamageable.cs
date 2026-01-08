@@ -69,6 +69,7 @@ public struct DamageData
 public enum AttackType
 {
     Normal,
+    NormalCounter,
     Heavy,
     Range,
     Charge1,

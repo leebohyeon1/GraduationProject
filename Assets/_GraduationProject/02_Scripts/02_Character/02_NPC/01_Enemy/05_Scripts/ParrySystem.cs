@@ -1,7 +1,12 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
-
+    public enum ImmunityLevel
+{
+    None,       // 면역 없음
+    Minor,      // 소경직 면역 (기본 공격 무시)
+    Major,      // 대경직/차지 공격 면역 (기본 + 차지 공격 무시)
+}
 public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 {
     // Parry system implementation
@@ -41,10 +46,17 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         // _owner.TakeDamage(30); // 카운터 공격 시 데미지 적용 
     }
 
-    public bool Parry(GameObject parryInstigator)
+    public bool Parry(AttackType attackType)
     {
-        Debug.Log(_owner.name + " was parried by " + parryInstigator.name);
+        if(_owner.EnemyHealth.CheckStunImmunity!= null)
+        {
+            if(_owner.EnemyHealth.CheckStunImmunity(attackType))
+            {
+                return false;
+            }
+        }   
         _owner.StiffnessSystem.AddStiffness(100);
+        DeactivateImmunity();
         return true;
     }
 
@@ -76,5 +88,22 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void StateNormal()
     {
         CurrentState = EnemyState.Normal;
+    }
+    public void ActivateMinorImmunity()
+    {
+        // 소경직 면역 활성화
+        _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.Minor);
+    }
+
+    public void ActivateMajorImmunity()
+    {
+        // 차지 공격 면역 활성화
+        _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.Major);
+    }
+
+    public void DeactivateImmunity()
+    {
+        // 면역 해제
+        _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.None);
     }
 }
