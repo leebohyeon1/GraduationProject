@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.Interactions;
 using BH_Lib.Log;
 using System;
 using Unity.AppUI.UI;
+using UnityEngine.SceneManagement;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
@@ -203,7 +204,14 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         LockOnTargetChangeVector2Event.Invoke(lockOnInput);
     }
 
-
+    public void OnSceneLoad1(InputAction.CallbackContext context)
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void OnSceneLoad2(InputAction.CallbackContext context)
+    {
+        SceneManager.LoadScene(1);
+    }
 
     // UI Action Implementations
     public void OnCancel(InputAction.CallbackContext context)
