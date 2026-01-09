@@ -50,7 +50,7 @@ public class Task_NormalAttackNode : Node
         
         runner.AnimationEvent(_data.AttackName);
         
-        runner.SetCurrentAttackData(_data.damageRadius, _data.attackOffset);
+        runner.SetCurrentAttackData(_data);
         runner.SetStiffness(_data.damageData.StiffnessAmount);
         runner.Movement.StopMovement();
     }
@@ -129,7 +129,8 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsHitWindowOpen)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(attackOrigin, _data.damageRadius);
+            
+            Collider[] hitColliders = GetHitColliders(attackOrigin);
             brain.blackboard.SetValue(ExceptKey, true);
             
             foreach (var col in hitColliders)
@@ -164,7 +165,46 @@ public class Task_NormalAttackNode : Node
 
         return NodeState.RUNNING;
     }
+private Collider[] GetHitColliders(Vector3 origin)
+    {
+        List<Collider> validHits = new List<Collider>();
+        Collider[] rawHits = null;
 
+        switch (_data.shape)
+        {
+            case AttackShape.Sphere:
+                return Physics.OverlapSphere(origin, _data.damageRadius);
+
+            case AttackShape.Box:
+                // OverlapBox는 HalfExtents(사이즈의 절반)를 받습니다.
+                // 회전은 공격자(runner)의 회전을 따라갑니다.
+                return Physics.OverlapBox(origin, _data.boxSize * 0.5f, runner.transform.rotation);
+
+            case AttackShape.Fan:
+                // 1차로 구체 범위 내의 적을 모두 찾습니다.
+                rawHits = Physics.OverlapSphere(origin, _data.damageRadius);
+                
+                foreach (var col in rawHits)
+                {
+                    // 각도 계산을 위해 적의 방향 벡터를 구합니다.
+                    Vector3 directionToTarget = (col.transform.position - origin).normalized;
+                    
+                    // 내 정면(transform.forward)과 적 방향 사이의 각도를 구합니다.
+                    // (높이차 무시를 위해 y를 0으로 할 수도 있음)
+                    float angleToTarget = Vector3.Angle(runner.transform.forward, directionToTarget);
+
+                    // 설정한 각도의 절반 이내에 있다면 범위 안입니다.
+                    if (angleToTarget <= _data.fanAngle * 0.5f)
+                    {
+                        validHits.Add(col);
+                    }
+                }
+                return validHits.ToArray();
+            
+            default:
+                return new Collider[0];
+        }
+    }
     public override void OnExit()
     {
         
