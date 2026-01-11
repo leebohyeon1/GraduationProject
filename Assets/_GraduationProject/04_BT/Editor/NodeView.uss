@@ -1,0 +1,86 @@
+#node-state {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+}
+
+.running #node-state {
+    background-color: rgba(255, 255, 0, 0.4);
+}
+
+.success #node-state {
+    background-color: rgba(0, 255, 0, 0.4);
+}
+
+.failure #node-state {
+    background-color: rgba(255, 0, 0, 0.4);
+}
+
+/* --- Selection & Hover Feedback --- */
+
+#selection-border {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+    border-width: 0px;
+    border-color: transparent;
+}
+
+/* Mouse Hover */
+:hover > #selection-border {
+    border-width: 1px;
+    border-color: rgba(68, 192, 255, 0.5);
+}
+
+/* Selected */
+:selected > #selection-border {
+    border-width: 2px;
+    border-color: #44C0FF;
+}
+
+/* Selected + Hover */
+:selected:hover > #selection-border {
+    border-width: 3px;
+    border-color: #44C0FF;
+}
+
+/* --- Default Node Styling --- */
+
+#title {
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+#description {
+    font-size: 10px;
+    max-width: 150px;
+    white-space: normal;
+}
+
+#divider {
+    min-height: 1px;
+    background-color: #3e3e3e;
+}
+
+/* Node Type Colors (Optional) */
+.action #title {
+    color: #FF8888;
+}
+
+.composite #title {
+    color: #88FF88;
+}
+
+.decorator #title {
+    color: #8888FF;
+}
+
+.condition #title {
+    color: #FFFF88;
+}

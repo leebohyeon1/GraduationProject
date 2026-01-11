@@ -1,5 +1,3 @@
-// --- FILE: Node.cs ---
-
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using UnityEngine;
@@ -8,7 +6,9 @@ namespace BehaviorTree
 {
     public abstract class Node : ScriptableObject
     {
-        public Vector2 position;
+        [HideInInspector] public string guid;
+        [HideInInspector] public Vector2 position;
+
         public enum NodeState { SUCCESS, FAILURE, RUNNING }
 
         [System.NonSerialized] protected bool isEntered = false;
@@ -29,8 +29,6 @@ namespace BehaviorTree
                 OnExit();
                 isEntered = false;
             }
-             // if(currentState == NodeState.SUCCESS)
-            // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{currentState}</color>");
             return currentState;
         }
 
@@ -51,7 +49,6 @@ namespace BehaviorTree
         public virtual Node Clone()
         {
             return Instantiate(this);
-            
         }
         public virtual void initNode() { isEntered = false; }
         public virtual void SetRunner(Enemy runner, AiBrain brain) { this.runner = runner; this.brain = brain; }
