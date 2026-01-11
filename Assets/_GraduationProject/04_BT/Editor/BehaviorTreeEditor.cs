@@ -2,26 +2,32 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.Callbacks;
-using BehaviorTree;
+using BehaviorTree; // Changed namespace
+using System.Reflection;
 
-namespace BehaviorTree.Editor
+namespace BehaviorTree.Editor // Changed namespace
 {
     public class BehaviorTreeEditor : EditorWindow
     {
         BehaviorTreeView treeView;
         InspectorView inspectorView;
 
-        [MenuItem("BehaviorTree/Graph Editor")]
+        public static BehaviorTreeEditor ActiveWindow { get; private set; }
+        public BehaviorTreeView TreeView => treeView;
+
+        [MenuItem("AI/BehaviorTree Editor")]
         public static void OpenWindow()
         {
             BehaviorTreeEditor wnd = GetWindow<BehaviorTreeEditor>();
-            wnd.titleContent = new GUIContent("BT Graph Editor");
+            wnd.titleContent = new GUIContent("BehaviorTreeEditor");
+            ActiveWindow = wnd;
+            wnd.Focus();
         }
 
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceId, int line)
         {
-            if (Selection.activeObject is ActionTree)
+            if (Selection.activeObject is ActionTree) // Changed to ActionTree
             {
                 OpenWindow();
                 return true;
@@ -33,44 +39,69 @@ namespace BehaviorTree.Editor
         {
             VisualElement root = rootVisualElement;
 
-            // --- Programmatic Layout (No UXML dependency) ---
-            
-            // 1. Tree View (Main Graph Area)
-            treeView = new BehaviorTreeView();
-            treeView.style.flexGrow = 1; 
-            root.Add(treeView);
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/_GraduationProject/04_BT/Editor/BehaviorTreeEditor.uxml");
+            visualTree.CloneTree(root);
 
-            // 2. Inspector View (Side Panel)
-            inspectorView = new InspectorView();
-            inspectorView.style.width = 300;
-            inspectorView.style.backgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-            inspectorView.style.borderLeftColor = new Color(0.1f, 0.1f, 0.1f, 1f);
-            inspectorView.style.borderLeftWidth = 2;
-            
-            // Use absolute positioning to dock to right
-            inspectorView.style.position = Position.Absolute;
-            inspectorView.style.right = 0;
-            inspectorView.style.top = 0;
-            inspectorView.style.bottom = 0;
-            
-            root.Add(inspectorView);
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/_GraduationProject/04_BT/Editor/BehaviorTreeEditor.uss");
+            root.styleSheets.Add(styleSheet);
 
-            // --- Initialization ---
+            treeView = root.Q<BehaviorTreeView>();
+            inspectorView = root.Q<InspectorView>();
+            
             treeView.Init(this);
             treeView.OnNodeSelected = inspectorView.UpdateSelection;
 
             OnSelectionChange();
         }
 
+        // Standard Command Handling for Copy/Paste/Delete
+        private void OnGUI()
+        {
+            Event e = Event.current;
+            
+            if (e.type == EventType.ValidateCommand)
+            {
+                if (e.commandName == "Copy" || e.commandName == "Paste" || e.commandName == "Delete" || e.commandName == "SoftDelete")
+                {
+                    e.Use();
+                }
+            }
+            else if (e.type == EventType.ExecuteCommand)
+            {
+                if (e.commandName == "Copy")
+                {
+                    treeView.CopySelection();
+                    e.Use();
+                }
+                else if (e.commandName == "Paste")
+                {
+                    treeView.Paste();
+                    e.Use();
+                }
+                else if (e.commandName == "Delete" || e.commandName == "SoftDelete")
+                {
+                    treeView.DeleteSelection();
+                    e.Use();
+                }
+            }
+        }
+
         private void OnEnable()
         {
+            ActiveWindow = this;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+        
+        private void OnFocus()
+        {
+            ActiveWindow = this;
         }
 
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            if (ActiveWindow == this) ActiveWindow = null;
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange obj)
@@ -80,18 +111,38 @@ namespace BehaviorTree.Editor
 
         private void OnSelectionChange()
         {
-            ActionTree tree = Selection.activeObject as ActionTree;
+            ActionTree tree = Selection.activeObject as ActionTree; // Changed to ActionTree
             if (!tree)
             {
                 if (Selection.activeGameObject)
                 {
-                    // Handle Runner selection if needed
+                    // Adapted for AiController
+                    var runner = Selection.activeGameObject.GetComponent<AiController>();
+                    if (runner)
+                    {
+                        // Reflect to get private _behaviorTree
+                        FieldInfo field = typeof(AiController).GetField("_behaviorTree", BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (field != null)
+                        {
+                            tree = field.GetValue(runner) as ActionTree;
+                        }
+                    }
                 }
             }
 
-            if (tree && treeView != null)
+            if (Application.isPlaying)
             {
-                treeView.PopulateView(tree);
+                if (tree && treeView != null) 
+                {
+                    treeView.PopulateView(tree);
+                }
+            }
+            else
+            {
+                if (tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID()))
+                {
+                    treeView?.PopulateView(tree);
+                }
             }
         }
 

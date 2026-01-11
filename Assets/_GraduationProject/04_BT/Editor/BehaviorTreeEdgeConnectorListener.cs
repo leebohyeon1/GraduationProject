@@ -21,18 +21,17 @@ namespace BehaviorTree.Editor
         {
             EditorWindow window = graphView.GetWindow();
             
+            // 1. Calculate Absolute Screen Position from Event Position
             Vector2 screenPos = GUIUtility.GUIToScreenPoint(position);
+
+            // 2. Calculate Window-Relative Position (Top-Left of the window content)
+            Vector2 windowLocalPos = screenPos - window.position.position;
             
-            // Simplified position handling for search window
-            // If window is null (shouldn't be), fallback to screen center logic
+            // 3. Transform from Window Root -> GraphView Content Container (Handles Inspector offset + Zoom/Pan)
+            Vector2 localPos = window.rootVisualElement.ChangeCoordinatesTo(graphView.contentViewContainer, windowLocalPos);
+
+            searchWindow.Init(window, graphView, localPos, edge.output);
             
-            // Just use screenPos for context menu, and pass local pos to CreateNode later
-            // We need to calculate graph-local position for spawning
-            Vector2 localPos = position; // This is usually local to graph view or window?
-            // The position from OnDropOutsidePort is usually in GraphView coordinates already or needs conversion.
-            // Let's rely on SearchWindowContext position for opening, and use a safe spawn point.
-            
-            searchWindow.Init(window, graphView, position); // Using position from event directly
             SearchWindow.Open(new SearchWindowContext(screenPos), searchWindow);
         }
 

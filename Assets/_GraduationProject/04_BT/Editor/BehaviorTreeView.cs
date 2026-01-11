@@ -1,25 +1,39 @@
-using System;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEditor.Experimental.GraphView;
+using BehaviorTree;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine.UIElements;
-using UnityEngine;
-using BehaviorTree;
+using System;
 
 namespace BehaviorTree.Editor
 {
     public class BehaviorTreeView : GraphView
     {
-        public Action<NodeView> OnNodeSelected;
-        public ActionTree tree;
+        public new class UxmlFactory : UxmlFactory<BehaviorTreeView, GraphView.UxmlTraits> { }
+
+        ActionTree tree;
+        NodeSearchWindow searchWindow;
+        EditorWindow window;
+        
+        public BehaviorTreeEdgeConnectorListener connectorListener;
+
+        [Serializable]
+        public class CopyPasteData
+        {
+            public List<string> nodeTypeNames = new List<string>();
+            public List<string> jsonDatas = new List<string>();
+        }
 
         public BehaviorTreeView()
         {
-            Insert(0, new GridBackground());
+            this.focusable = true;
 
-            this.AddManipulator(new ContentZoomer());
+            Insert(0, new GridBackground());
+            
             this.AddManipulator(new ContentDragger());
+            this.AddManipulator(new ContentZoomer());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
 
@@ -27,50 +41,129 @@ namespace BehaviorTree.Editor
             styleSheets.Add(styleSheet);
 
             Undo.undoRedoPerformed += OnUndoRedo;
-            
-            // [Fix] Enable Spacebar Search Window
-            this.nodeCreationRequest = (context) => OpenSearchWindow(context);
         }
 
-        private void OpenSearchWindow(NodeCreationContext context)
+        // --- Public API for EditorWindow ---
+        public void CopySelection()
         {
-            var searchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
-            var window = EditorWindow.GetWindow<BehaviorTreeEditor>();
-            
-            // SearchWindow needs Screen Position for the popup
-            // But CreateNode needs Graph Local Position for spawning
-            
-            // The SearchWindow.Init expects 'spawnPosition'. 
-            // We need to pass the LOCAL position corresponding to the mouse.
-            // context.screenMousePosition is Screen Space.
-            
-            // Convert Screen -> Window -> Graph Local
-            Vector2 windowMousePos = context.screenMousePosition - window.position.position;
-            Vector2 graphMousePos = contentViewContainer.WorldToLocal(windowMousePos);
+            if (selection.Count > 0)
+            {
+                string data = SerializeGraphElementsImpl(selection);
+                GUIUtility.systemCopyBuffer = data;
+                Debug.Log($"[BehaviorTreeView] Copied {selection.Count} nodes.");
+            }
+        }
 
-            // Pass the graph local position to Init so nodes spawn correctly
-            searchWindow.Init(window, this, graphMousePos);
+        public void Paste()
+        {
+            string data = GUIUtility.systemCopyBuffer;
+            if (!string.IsNullOrEmpty(data))
+            {
+                UnserializeAndPasteImpl("Paste", data);
+                Debug.Log($"[BehaviorTreeView] Pasted nodes.");
+            }
+        }
+        // -----------------------------------
+
+        public void Init(EditorWindow editorWindow)
+        {
+            window = editorWindow;
+            searchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
             
-            SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
+            searchWindow.Init(window, this, Vector2.zero);
+            
+            connectorListener = new BehaviorTreeEdgeConnectorListener(this, searchWindow);
+
+            nodeCreationRequest = context => 
+            {
+                Vector2 windowMousePosition = context.screenMousePosition - window.position.position;
+                Vector2 graphMousePosition = contentViewContainer.WorldToLocal(windowMousePosition);
+                
+                searchWindow.Init(window, this, graphMousePosition);
+                SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
+            };
+        }
+
+        string SerializeGraphElementsImpl(IEnumerable<ISelectable> elements)
+        {
+            CopyPasteData copyData = new CopyPasteData();
+            
+            foreach (var element in elements)
+            {
+                if (element is NodeView nodeView)
+                {
+                    copyData.nodeTypeNames.Add(nodeView.node.GetType().AssemblyQualifiedName);
+                    copyData.jsonDatas.Add(JsonUtility.ToJson(nodeView.node));
+                }
+            }
+
+            return JsonUtility.ToJson(copyData);
+        }
+
+        void UnserializeAndPasteImpl(string operationName, string data)
+        {
+            if (tree == null) return;
+            
+            CopyPasteData copyData;
+            try
+            {
+                copyData = JsonUtility.FromJson<CopyPasteData>(data);
+            }
+            catch
+            {
+                return;
+            }
+
+            if (copyData == null || copyData.nodeTypeNames.Count == 0) return;
+
+            ClearSelection();
+
+            Vector2 pasteOffset = new Vector2(30, 30);
+
+            for (int i = 0; i < copyData.nodeTypeNames.Count; i++)
+            {
+                string typeName = copyData.nodeTypeNames[i];
+                string json = copyData.jsonDatas[i];
+                
+                System.Type type = System.Type.GetType(typeName);
+                if (type == null) continue;
+
+                Node newNode = tree.CreateNode(type);
+                
+                string newGuid = newNode.guid;
+
+                JsonUtility.FromJsonOverwrite(json, newNode);
+
+                newNode.guid = newGuid;
+                newNode.position += pasteOffset;
+
+                CreateNodeView(newNode);
+                
+                NodeView nodeView = FindNodeView(newNode);
+                AddToSelection(nodeView);
+            }
+            
+            AssetDatabase.SaveAssets();
+        }
+
+        public void UpdateNodeStates()
+        {
+            nodes.ForEach(n => {
+                NodeView view = n as NodeView;
+                view.UpdateState();
+            });
         }
 
         private void OnUndoRedo()
         {
-            if(tree != null) PopulateView(tree);
-            AssetDatabase.SaveAssets();
+            if (tree)
+            {
+                PopulateView(tree);
+                AssetDatabase.SaveAssets();
+            }
         }
 
-        public void Init(EditorWindow window)
-        {
-
-        }
-
-        public EditorWindow GetWindow() 
-        { 
-            return EditorWindow.GetWindow<BehaviorTreeEditor>(); 
-        }
-
-        NodeView FindNodeView(Node node)
+        public NodeView FindNodeView(Node node)
         {
             return GetNodeByGuid(node.guid) as NodeView;
         }
@@ -83,50 +176,41 @@ namespace BehaviorTree.Editor
             DeleteElements(graphElements);
             graphViewChanged += OnGraphViewChanged;
 
-            if (tree.rootNode == null)
+            // Handle Root Node Logic:
+            // ActionTree relies on rootNode field. If null, user must start somewhere.
+            // Unlike original editor, we don't auto-create a specific 'RootNode' type because Target system doesn't enforce it.
+            // But we can check if nodes list is empty.
+            if (tree.rootNode == null && tree.nodes.Count > 0)
             {
-                // Root handling logic if needed
+                // Try to find root
+                tree.FindAndSetRoot();
             }
 
             // Create Node Views
-            if (tree.nodes != null)
-            {
-                tree.nodes.ForEach(n => 
-                {
-                    if(n != null) CreateNodeView(n);
-                });
-            }
+            tree.nodes.ForEach(n => CreateNodeView(n));
 
             // Create Edges
-            if (tree.nodes != null)
-            {
-                tree.nodes.ForEach(n => 
-                {
-                    if (n != null)
+            tree.nodes.ForEach(n => {
+                var children = tree.GetChildren(n);
+                children.ForEach(c => {
+                    NodeView parentView = FindNodeView(n);
+                    NodeView childView = FindNodeView(c);
+
+                    if (parentView != null && childView != null)
                     {
-                        var children = tree.GetChildren(n);
-                        children.ForEach(c => 
-                        {
-                            NodeView parentView = FindNodeView(n);
-                            NodeView childView = FindNodeView(c);
-                            
-                            if (parentView != null && childView != null)
-                            {
-                                Edge edge = parentView.output.ConnectTo(childView.input);
-                                AddElement(edge);
-                            }
-                        });
+                        Edge edge = parentView.output.ConnectTo(childView.input);
+                        AddElement(edge);
                     }
                 });
-            }
+            });
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
             return ports.ToList().Where(endPort =>
             {
-                if (startPort.direction == endPort.direction) return false;
-                if (startPort.node == endPort.node) return false;
+                if (endPort.direction == startPort.direction) return false;
+                if (endPort.node == startPort.node) return false;
                 return true;
             }).ToList();
         }
@@ -135,12 +219,12 @@ namespace BehaviorTree.Editor
         {
             if (graphViewChange.elementsToRemove != null)
             {
-                graphViewChange.elementsToRemove.ForEach(elem =>
-                {
+                graphViewChange.elementsToRemove.ForEach(elem => {
                     if (elem is NodeView nodeView)
                     {
                         tree.DeleteNode(nodeView.node);
                     }
+
                     if (elem is Edge edge)
                     {
                         NodeView parentView = edge.output.node as NodeView;
@@ -152,8 +236,7 @@ namespace BehaviorTree.Editor
 
             if (graphViewChange.edgesToCreate != null)
             {
-                graphViewChange.edgesToCreate.ForEach(edge =>
-                {
+                graphViewChange.edgesToCreate.ForEach(edge => {
                     NodeView parentView = edge.output.node as NodeView;
                     NodeView childView = edge.input.node as NodeView;
                     tree.AddChild(parentView.node, childView.node);
@@ -162,47 +245,54 @@ namespace BehaviorTree.Editor
             
             if (graphViewChange.movedElements != null)
             {
-                if (nodes != null)
-                {
-                    nodes.ForEach((n) => 
-                    {
-                        NodeView view = n as NodeView;
-                        if(view != null) view.SortChildren();
-                    });
-                }
+                nodes.ForEach((n) => {
+                    NodeView view = n as NodeView;
+                    view.SortChildren();
+                });
             }
 
             return graphViewChange;
         }
-
-        // [Fix] Removed BuildContextualMenu to prioritize SearchWindow
-        // If you want Right-Click menu too, you can keep BuildContextualMenu,
-        // but SearchWindow is better for Spacebar.
-        // I removed it to avoid conflict or dual systems. Spacebar will use OpenSearchWindow.
-
-        public void CreateNode(System.Type type, Vector2 position)
+        
+        public Node CreateNode(System.Type type)
         {
-            if (tree == null) return;
-            
+            if (tree == null) return null;
+            Node node = tree.CreateNode(type);
+            CreateNodeView(node);
+            return node;
+        }
+
+        public Node CreateNode(System.Type type, Vector2 position)
+        {
+            if (tree == null) return null;
             Node node = tree.CreateNode(type);
             node.position = position;
             CreateNodeView(node);
+            return node;
         }
-
+        
         void CreateNodeView(Node node)
         {
-            NodeView nodeView = new NodeView(node);
+            NodeView nodeView = new NodeView(node, this); 
             nodeView.OnNodeSelected = OnNodeSelected;
             AddElement(nodeView);
         }
-
-        public void UpdateNodeStates()
+        
+        public void ConnectPorts(Port sourcePort, Node targetNode)
         {
-            nodes.ForEach(n => 
+            NodeView targetView = FindNodeView(targetNode);
+            if (targetView == null || targetView.input == null) return;
+
+            Edge edge = sourcePort.ConnectTo(targetView.input);
+            AddElement(edge);
+            
+            if (sourcePort.node is NodeView sourceView && sourceView.node != null && tree != null)
             {
-                NodeView view = n as NodeView;
-                if(view != null) view.UpdateState();
-            });
+                tree.AddChild(sourceView.node, targetNode);
+            }
         }
+
+        public Action<NodeView> OnNodeSelected;
+        public EditorWindow GetWindow() { return window; }
     }
 }

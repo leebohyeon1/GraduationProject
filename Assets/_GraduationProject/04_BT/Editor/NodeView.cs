@@ -1,23 +1,27 @@
 using System;
-using System.Linq;
-using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using BehaviorTree;
+using System.Reflection;
 
 namespace BehaviorTree.Editor
 {
     public class NodeView : UnityEditor.Experimental.GraphView.Node
     {
         public Action<NodeView> OnNodeSelected;
-        public Node node;
+        public BehaviorTree.Node node;
         public Port input;
         public Port output;
+        
+        private BehaviorTreeView treeView;
 
-        public NodeView(Node node) : base("Assets/_GraduationProject/04_BT/Editor/NodeView.uxml")
+        public NodeView(BehaviorTree.Node node, BehaviorTreeView treeView) : base("Assets/_GraduationProject/04_BT/Editor/NodeView.uxml")
         {
             this.node = node;
+            this.treeView = treeView;
             this.title = node.name;
             this.viewDataKey = node.guid;
 
@@ -27,42 +31,80 @@ namespace BehaviorTree.Editor
             CreateInputPorts();
             CreateOutputPorts();
             SetupClasses();
+            
+            capabilities |= Capabilities.Snappable | Capabilities.Movable | Capabilities.Deletable;
         }
 
         private void SetupClasses()
         {
-            if (node is CompositeNode)
+            if (node is ActionNode)
+            {
+                AddToClassList("action");
+            }
+            else if (node is ConditionNode) 
+            {
+                AddToClassList("condition");
+            }
+            else if (node is CompositeNode)
             {
                 AddToClassList("composite");
             }
-            else if (node is Decorator_Inverter)
+            else if (HasChildField(node))
             {
                 AddToClassList("decorator");
             }
-            else
+        }
+        
+        private bool HasChildField(Node node)
+        {
+             return node.GetType().GetField("child") != null;
+        }
+        
+        public void UpdateState()
+        {
+            RemoveFromClassList("running");
+            RemoveFromClassList("failure");
+            RemoveFromClassList("success");
+
+            if (Application.isPlaying)
             {
-                AddToClassList("action");
+                // Use reflection to get protected isEntered
+                var field = typeof(BehaviorTree.Node).GetField("isEntered", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (field != null)
+                {
+                    bool isEntered = (bool)field.GetValue(node);
+                    if (isEntered) 
+                    {
+                        AddToClassList("running");
+                    }
+                }
             }
         }
 
         private void CreateInputPorts()
         {
-            // All nodes get an input port
+            // All nodes can have parents
             input = InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
+
             if (input != null)
             {
                 input.portName = "";
+                input.style.flexDirection = FlexDirection.Column;
                 inputContainer.Add(input);
             }
         }
 
         private void CreateOutputPorts()
         {
-            if (node is CompositeNode)
+            if (node is ActionNode || node is ConditionNode)
+            {
+                // Leaves have no output
+            }
+            else if (node is CompositeNode)
             {
                 output = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
             }
-            else if (HasChildField(node)) 
+            else if (HasChildField(node))
             {
                 output = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
             }
@@ -70,14 +112,15 @@ namespace BehaviorTree.Editor
             if (output != null)
             {
                 output.portName = "";
+                output.style.flexDirection = FlexDirection.ColumnReverse;
+                
+                if (treeView != null && treeView.connectorListener != null)
+                {
+                    output.AddManipulator(new EdgeConnector<Edge>(treeView.connectorListener));
+                }
+                
                 outputContainer.Add(output);
             }
-        }
-
-        private bool HasChildField(Node node)
-        {
-            // Decorator_Inverter has 'child' field
-            return node is Decorator_Inverter;
         }
 
         public override void SetPosition(Rect newPos)
@@ -104,16 +147,9 @@ namespace BehaviorTree.Editor
             {
                 if (composite.nodes != null)
                 {
-                    composite.nodes = composite.nodes.OrderBy(c => c.position.x).ToArray();
+                    System.Array.Sort(composite.nodes, (left, right) => left.position.x < right.position.x ? -1 : 1);
                 }
             }
-        }
-
-        public void UpdateState()
-        {
-            RemoveFromClassList("running");
-            RemoveFromClassList("failure");
-            RemoveFromClassList("success");
         }
     }
 }

@@ -32,7 +32,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
   guid: 
   position: {x: 261, y: 158}
-  subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
+  subTreeToRun: {fileID: 0}
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
   guid: 
   position: {x: 261, y: -12}
-  subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
+  subTreeToRun: {fileID: 0}
 --- !u!114 &-5667558639043742383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,12 +182,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b2bd3fdc5ecc1844b404f16eb2135d0, type: 3}
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
-  rootNode: {fileID: 1254360389698641468}
+  rootNode: {fileID: 0}
   treeState: 2
-  nodes: []
+  nodes:
+  - {fileID: 2744660848506042777}
+  - {fileID: 8252121878231186870}
+  - {fileID: 1093107920418380475}
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +205,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
   guid: 
   position: {x: 258, y: 81}
-  subTreeToRun: {fileID: 11400000, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
+  subTreeToRun: {fileID: 0}
+--- !u!114 &1093107920418380475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: 561ae0d9e08c11a4cb79f80a5f734d59
+  position: {x: 0, y: 0}
+  nodes: []
+  services: []
 --- !u!114 &1254360389698641468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,6 +260,23 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &2744660848506042777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
+  m_Name: BackMoving
+  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
+  guid: a468f49ecfc290e4bade221dee1bc51f
+  position: {x: 99, y: 132}
+  targetDistance: 5
+  acceptanceRadius: 0.5
+  timeout: 1.8
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +381,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
   position: {x: 436, y: -535}
   animationName: Hit
+--- !u!114 &8252121878231186870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ea0c29e01e74249967229efaf21727, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  guid: 1eda256835bf5bd4aa081aaeca903788
+  position: {x: 173, y: 251}
+  nodes: []
+  services: []
 --- !u!114 &8701554609853382117
 MonoBehaviour:
   m_ObjectHideFlags: 0
