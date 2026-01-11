@@ -3,6 +3,7 @@ using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
 using Pathfinding;
+using UnityEditorInternal;
 
 public class Task_NormalAttackNode : Node
 {
@@ -77,9 +78,14 @@ public class Task_NormalAttackNode : Node
         }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
-
+        // if(!stateInfo.IsTag("Attack") )
+        // {
+        //     Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 공격 태그가 아닙니다: {stateInfo.fullPathHash}");
+        //     return NodeState.FAILURE; 
+        // }
         if (stateInfo.IsTag("Attack") && !stateInfo.IsName(_data.AttackName))
         {
+            Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다: {stateInfo.fullPathHash}");
             return NodeState.FAILURE; 
         }
 
@@ -156,58 +162,16 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionFinished)
         {
-            // 애니메이션이 확실히 내 것일 때만 종료 처리 (선택 사항)
-            if (stateInfo.IsName(_data.AttackName)) 
-            {
+            Debug.Log($"[Task_NormalAttackNode] Action Finished: {this.name}");
                 return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
-            }
+            
         }
 
         return NodeState.RUNNING;
     }
-private Collider[] GetHitColliders(Vector3 origin)
-    {
-        List<Collider> validHits = new List<Collider>();
-        Collider[] rawHits = null;
-
-        switch (_data.shape)
-        {
-            case AttackShape.Sphere:
-                return Physics.OverlapSphere(origin, _data.damageRadius);
-
-            case AttackShape.Box:
-                // OverlapBox는 HalfExtents(사이즈의 절반)를 받습니다.
-                // 회전은 공격자(runner)의 회전을 따라갑니다.
-                return Physics.OverlapBox(origin, _data.boxSize * 0.5f, runner.transform.rotation);
-
-            case AttackShape.Fan:
-                // 1차로 구체 범위 내의 적을 모두 찾습니다.
-                rawHits = Physics.OverlapSphere(origin, _data.damageRadius);
-                
-                foreach (var col in rawHits)
-                {
-                    // 각도 계산을 위해 적의 방향 벡터를 구합니다.
-                    Vector3 directionToTarget = (col.transform.position - origin).normalized;
-                    
-                    // 내 정면(transform.forward)과 적 방향 사이의 각도를 구합니다.
-                    // (높이차 무시를 위해 y를 0으로 할 수도 있음)
-                    float angleToTarget = Vector3.Angle(runner.transform.forward, directionToTarget);
-
-                    // 설정한 각도의 절반 이내에 있다면 범위 안입니다.
-                    if (angleToTarget <= _data.fanAngle * 0.5f)
-                    {
-                        validHits.Add(col);
-                    }
-                }
-                return validHits.ToArray();
-            
-            default:
-                return new Collider[0];
-        }
-    }
     public override void OnExit()
     {
-        
+        Debug.Log($"[Task_NormalAttackNode] OnExit: {this.name}");
         tracking = false;
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
@@ -268,5 +232,45 @@ private Collider[] GetHitColliders(Vector3 origin)
         // SO는 ScriptableObject라 공유되어도 되지만, 필요하다면 복제
         // node.SO = this.SO; 
         return node;
+    }
+private Collider[] GetHitColliders(Vector3 origin)
+    {
+        List<Collider> validHits = new List<Collider>();
+        Collider[] rawHits = null;
+
+        switch (_data.shape)
+        {
+            case AttackShape.Sphere:
+                return Physics.OverlapSphere(origin, _data.damageRadius);
+
+            case AttackShape.Box:
+                // OverlapBox는 HalfExtents(사이즈의 절반)를 받습니다.
+                // 회전은 공격자(runner)의 회전을 따라갑니다.
+                return Physics.OverlapBox(origin, _data.boxSize * 0.5f, runner.transform.rotation);
+
+            case AttackShape.Fan:
+                // 1차로 구체 범위 내의 적을 모두 찾습니다.
+                rawHits = Physics.OverlapSphere(origin, _data.damageRadius);
+                
+                foreach (var col in rawHits)
+                {
+                    // 각도 계산을 위해 적의 방향 벡터를 구합니다.
+                    Vector3 directionToTarget = (col.transform.position - origin).normalized;
+                    
+                    // 내 정면(transform.forward)과 적 방향 사이의 각도를 구합니다.
+                    // (높이차 무시를 위해 y를 0으로 할 수도 있음)
+                    float angleToTarget = Vector3.Angle(runner.transform.forward, directionToTarget);
+
+                    // 설정한 각도의 절반 이내에 있다면 범위 안입니다.
+                    if (angleToTarget <= _data.fanAngle * 0.5f)
+                    {
+                        validHits.Add(col);
+                    }
+                }
+                return validHits.ToArray();
+            
+            default:
+                return new Collider[0];
+        }
     }
 }
