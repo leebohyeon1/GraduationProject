@@ -11,7 +11,7 @@ public class IdleNode : Node
 
     public override void OnEnter()
     {
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.Movement.StopMovement();
     }
 

@@ -28,7 +28,7 @@ public class BackMoving : Node
             return;
         }
 
-        runner.SetState(Enemy.EnemyState.RunAway);
+        runner.SetState(EnemyStateController.EnemyState.RunAway);
         aiPath.enableRotation = false; // 회전은 수동으로 제어
         
         startTime = Time.time;
@@ -93,7 +93,7 @@ public class BackMoving : Node
         if (runner != null && aiPath != null)
         {
             runner.Movement.StopMovement(); 
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
         }
     }
 

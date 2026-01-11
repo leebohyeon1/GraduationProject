@@ -32,7 +32,7 @@ public class Task_ReturnHome : Node
             _hasDestination = true;
             return NodeState.SUCCESS;
         }
-        runner.Movement.StartOrUpdateChase(HomePosition, Enemy.EnemyState.Patrol, MoveSpeed);
+        runner.Movement.StartOrUpdateChase(HomePosition, EnemyStateController.EnemyState.Patrol, MoveSpeed);
         return NodeState.RUNNING;
     }
     public override void OnExit()

@@ -19,7 +19,7 @@ public class RushToPlayer : Node
         _targetPosition = runner.player.transform.position;
         _targetPosition.y = runner.transform.position.y;
         
-        runner.SetState(Enemy.EnemyState.Rush);
+        runner.SetState(EnemyStateController.EnemyState.Rush);
         runner.Movement.StartRush(_targetPosition, _rushSpeed);
     }
 
@@ -50,9 +50,9 @@ public class RushToPlayer : Node
 
     // StopMovement()를 호출하기 전에, 자신의 상태를 먼저 변경하여 
     // StopMovement()의 보호 로직을 정상적으로 통과할 수 있게 합니다.
-    if (runner.CurrentState == Enemy.EnemyState.Rush)
+    if (runner.CurrentState == EnemyStateController.EnemyState.Rush)
     {
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
     }
     // ★★★ 여기까지 추가 ★★★
 

@@ -41,7 +41,7 @@ AIPath aiPath;
         aiPath.enableRotation = false;
         ConfigureTagPenalties();
         _timer = 0f;
-        runner.SetState(Enemy.EnemyState.Chase);
+        runner.SetState(EnemyStateController.EnemyState.Chase);
     }
 
     protected override NodeState OnUpdate()
@@ -98,9 +98,9 @@ AIPath aiPath;
             runner.Movement.StopMovement();
         }
 
-        if (runner.CurrentState == Enemy.EnemyState.Chase)
+        if (runner.CurrentState == EnemyStateController.EnemyState.Chase)
         {
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
         }
     }
     public override void Abort()
@@ -113,9 +113,9 @@ AIPath aiPath;
             runner.Movement.StopMovement();
         }
 
-        if (runner.CurrentState == Enemy.EnemyState.Chase)
+        if (runner.CurrentState == EnemyStateController.EnemyState.Chase)
         {
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
         }
     }
 

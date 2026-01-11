@@ -26,7 +26,7 @@ public class BeamAttack : Node
     public override void OnEnter()
     {
         runner.Movement.StopMovement();
-        runner.SetState(Enemy.EnemyState.Beam); // 방해 불가 상태로 설정
+        runner.SetState(EnemyStateController.EnemyState.Beam); // 방해 불가 상태로 설정
         runner.AnimationEvent("Do_Beam");         // 빔 공격 애니메이션 트리거
         
         // Enemy에게 "조준 경고 이펙트 시작" 명령 (기획서의 Evt_SBWarn)

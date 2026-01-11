@@ -49,7 +49,7 @@ public class RushUntilWall : Node
         // 중력 변수 초기화
         _verticalVelocity.y = 0;
 
-        runner.SetState(Enemy.EnemyState.Rush);
+        runner.SetState(EnemyStateController.EnemyState.Rush);
         runner.AnimationEvent("Do_Rush");
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
@@ -113,7 +113,7 @@ public class RushUntilWall : Node
     public override void OnExit()
     {
         runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
 
         if (_aiPath != null)
         {

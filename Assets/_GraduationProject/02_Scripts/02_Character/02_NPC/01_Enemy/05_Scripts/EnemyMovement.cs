@@ -9,7 +9,7 @@ public class EnemyMovement
     AIPath aIPath;
     Rigidbody rb;
     Animator animator;
-    private EnemyState CurrentState => _runner.CurrentState;
+    private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
     public float _normalSpeed {get; private set; } = 2f;
     public EnemyMovement(Enemy enemy)
     {
@@ -36,15 +36,15 @@ public class EnemyMovement
     }
 
 
-    public void StartOrUpdateChase(Vector3 newTarget, EnemyState ChaseState = EnemyState.Chase, float chaseSpeed = 4)
+    public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
-        if (CurrentState == EnemyState.Stunned || CurrentState == EnemyState.Attack || CurrentState == EnemyState.Die || CurrentState == EnemyState.Noise)
+        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Attack || CurrentState == EnemyStateController.EnemyState.Die || CurrentState == EnemyStateController.EnemyState.Noise)
         {
             StopMovement();
             return;
         }
         if (aIPath == null) return;
-        if (_runner.CurrentState != EnemyState.Hit)
+        if (_runner.CurrentState != EnemyStateController.EnemyState.Hit)
             _runner.SetState(ChaseState);
         _runner.AnimationBool("Walk", true);
         aIPath.enabled = true;
@@ -57,7 +57,7 @@ public class EnemyMovement
     // Transform을 받는 오버로딩 버전도 유지
     public void StartOrUpdateChase(Vector3 target)
     {
-        StartOrUpdateChase(target, EnemyState.Chase);
+        StartOrUpdateChase(target, EnemyStateController.EnemyState.Chase);
     }
     public void StopMovement()
     {
@@ -66,11 +66,11 @@ public class EnemyMovement
         aIPath.enableRotation = true;
         aIPath.isStopped = true;
 
-        if (CurrentState == EnemyState.Rush ||
-            CurrentState == EnemyState.Beam ||
-            CurrentState == EnemyState.Stunned ||
-            CurrentState == EnemyState.Die ||
-            CurrentState == EnemyState.Attack)
+        if (CurrentState == EnemyStateController.EnemyState.Rush ||
+            CurrentState == EnemyStateController.EnemyState.Beam ||
+            CurrentState == EnemyStateController.EnemyState.Stunned ||
+            CurrentState == EnemyStateController.EnemyState.Die ||
+            CurrentState == EnemyStateController.EnemyState.Attack)
         {
 
             aIPath.enabled = false;

@@ -13,7 +13,7 @@ public class GroupAi : MonoBehaviour
     public string KEY_THREAT = "IsTargetAimingMe";
     public string KEY_TARGET_LOC = "TargetLocation";
     public string KEY_COLLEAGUES = "PeripheralColleagues";
-
+    [SerializeField]public BlackBoardUtils blackBoardUtils;
     // [설정] 업데이트 주기 (매 프레임 계산은 낭비일 수 있음)
     private class EnemyCandidate
     {

@@ -121,7 +121,7 @@ public class Task_NormalAttackNode : Node
         if (Handler.IsActive)
         {
             tracking = true;
-            runner.SetState(Enemy.EnemyState.Attack);
+            runner.SetState(EnemyStateController.EnemyState.Attack);
         }
         else
         {
@@ -176,7 +176,7 @@ public class Task_NormalAttackNode : Node
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
         Handler.ResetAllFlags();
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
         
@@ -201,7 +201,7 @@ public class Task_NormalAttackNode : Node
         tracking = false;
         Handler.ResetAllFlags();
         runner.ParrySystem.StateNormal();
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
         brain.blackboard.SetValue(ExceptKey, false);
         runner.aIPath.enableRotation = true;
 

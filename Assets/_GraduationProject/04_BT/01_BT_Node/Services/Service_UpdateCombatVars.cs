@@ -10,6 +10,7 @@ public class Service_UpdateCombatVars : ServiceNode
         base.OnEnter();
         if(CurrentTarget == null)
         {
+            Debug.Log($"Runner Defiened Target as Player: {runner.player}");
             CurrentTarget = runner.player.gameObject;
         }
     }

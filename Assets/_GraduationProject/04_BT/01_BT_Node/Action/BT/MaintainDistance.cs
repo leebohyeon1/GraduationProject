@@ -29,7 +29,7 @@ public class MaintainDistance : Node
         {
             Debug.LogError("AIPath 컴포넌트를 찾을 수 없습니다!", runner);
         }
-        runner.SetState(Enemy.EnemyState.RunAway);
+        runner.SetState(EnemyStateController.EnemyState.RunAway);
         aiPath.enableRotation = false;
     }
 
@@ -94,12 +94,12 @@ public class MaintainDistance : Node
     {
         runner.Movement.StopMovement();
         aiPath.enableRotation = true;
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
     }
     public override void Abort()
     {
         runner.Movement.StopMovement();
         aiPath.enableRotation = true;
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
     }
 }
