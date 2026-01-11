@@ -51,16 +51,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (_currentImmunityLevel >= ImmunityLevel.Minor)
         {
-            if (incomingAttackType == AttackType.Normal) return true;
+            if (incomingAttackType == AttackType.Normal) return false;
         }
 
         if (_currentImmunityLevel >= ImmunityLevel.Major)
         {
-            if (incomingAttackType == AttackType.NormalCounter) return true;
+            if (incomingAttackType == AttackType.NormalCounter) return false;
         }
 
 
-        return false;
+        return true;
     }
     void OnDisable()
     {

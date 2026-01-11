@@ -78,7 +78,10 @@ public class PlayerParryState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
-        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
+        PlayerAttackConfig attackConfig = p_AttackConfig;
+        attackConfig.AttackType = AttackType.NormalCounter;
+
+        Collider[] colliders = p_context.Combat.ExecuteAttack(attackConfig);
 
         foreach (Collider collider in colliders)
         {
