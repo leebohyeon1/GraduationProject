@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerStamina _stamina; // 스테미나 컴포넌트
     [SerializeField] private LockOnSystem _lockOnSystem; // 락온 시스템  
     [SerializeField] private PlayerAbility _ability; // 플레이어 능력 컴포넌트
+    [SerializeField] private PlayerPotion _potion;
 
     private StateMachine<Player> _stateMachine; // 상태 머신
 
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour
     public PlayerStamina Stamina => _stamina;
     public LockOnSystem LockOnSystem => _lockOnSystem;
     public PlayerAbility Ability => _ability;
+    public PlayerPotion Potion => _potion;
 
     public IInputDeviceDetector DeviceDetector => InputDeviceDetector.Instance;
     
@@ -184,6 +186,12 @@ public class Player : MonoBehaviour
             _ability = GetComponent<PlayerAbility>();
         }
         _ability.Initialize(Stats);
+
+        if (_potion == null)
+        {
+            _potion = GetComponent<PlayerPotion>();
+        }
+        _potion.Initialize(Stats);
     }
     
     /// <summary>
@@ -205,40 +213,7 @@ public class Player : MonoBehaviour
         // 초기 상태를 Idle로 설정
         _stateMachine.ChangeState<PlayerIdleState>();
     }
-    ///// <summary>
-    ///// 상태 전이 조건을 설정합니다.
-    ///// </summary>
-    //private void SetupStateTransitions()
-    //{
-    //    // Hit 상태로의 전환 (모든 상태에서 가능)
-    //    _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-    //        !Health.IsDead && Stats.IsDamaged);
-    
-    //    // Idle 상태에서의 전환
-    //    _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
-    //        => Input.MoveInput != Vector2.zero);
-    //    _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
-    //        => Input.DodgeInput && _stamina.CheckStamina());
-    //    _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
-    //        => Input.AttackInput && _stamina.CheckStamina());
-    //    _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
-    //        => Input.ParryInput && _stamina.CheckStamina());
-    //    _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
-    //        => Input.AttackHeldInput && _stamina.CheckStamina());
-    
-    //    // Move 상태에서의 전환
-    //    _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
-    //        => Input.MoveInput == Vector2.zero);
-    //    _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
-    //        => Input.DodgeInput && _stamina.CheckStamina());
-    //    _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
-    //        => Input.AttackInput && _stamina.CheckStamina()); 
-    //    _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
-    //        => Input.ParryInput && _stamina.CheckStamina());
-    //    _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
-    //        => Input.AttackHeldInput);
-    //}
-    
+
     /// <summary>
     /// 매 프레임 호출되는 업데이트 함수입니다.
     /// </summary>
@@ -253,6 +228,12 @@ public class Player : MonoBehaviour
         if(Input.InteractInput)
         {
             Interact.Interact();
+        }
+
+        if(Input.PotionInput && Potion.CurrentPotion > 0)
+        {
+            Health.Heal(Stats.RuntimeData.PotionHealAmount);
+            Potion.UsePotion();
         }
 
         if(Input.ToggleLockOnInput)
