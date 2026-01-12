@@ -32,8 +32,13 @@ public class PlayerChargeState : State<Player>
             p_context.Stats.ChargeLevel++;
             p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
         }
+
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
         
-        if(_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
+        if (_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
         {
             p_stateMachine.ChangeState<PlayerChargeAttackState>();
         }
@@ -50,7 +55,7 @@ public class PlayerChargeState : State<Player>
         }
         else
         {
-            var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+            var deviceType = p_context.DeviceDetector.CurrentInputDevice;
             var moveInput = p_context.Input.MoveInput;
             var mousePosition = p_context.Input.MousePosition;
             p_context.Movement.RotateToDirection(deviceType, moveInput, mousePosition, p_context.Stats.RuntimeData.CombatData.ChargeRotateSpeed);

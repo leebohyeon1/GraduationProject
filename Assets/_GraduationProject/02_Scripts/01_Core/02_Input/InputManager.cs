@@ -10,25 +10,39 @@ public enum ActionMapType
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager Instance { get; private set; }
+
     [SerializeField] private InputReader _inputReader;
 
-    private UIManager _uiManager;
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
 
-    private async void OnEnable()
+    }
+
+    private async void Start()
     {
         if(_inputReader == null)
         {
             _inputReader = await Addressables.LoadAssetAsync<InputReader>("InputReader").Task;            
         }
 
-        _uiManager.OnOpenFirstPopUpUI += HandleOpenPopUpUI;
-        _uiManager.OnClearPopUpUI += HandleClearPopUpUI;    
+        UIManager.Instance.OnOpenFirstPopUpUI += HandleOpenPopUpUI;
+        UIManager.Instance.OnClearPopUpUI += HandleClearPopUpUI;    
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        _uiManager.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
-        _uiManager.OnClearPopUpUI -= HandleClearPopUpUI;
+        UIManager.Instance.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
+        UIManager.Instance.OnClearPopUpUI -= HandleClearPopUpUI;
     }
 
     public void ChangeActionMap(ActionMapType type)

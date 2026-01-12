@@ -15,9 +15,38 @@ public class PlayerMoveState : State<Player>
         p_context.Animator.SetBool("IsMoving", true);
     }
 
+    public override void OnUpdate()
+    {
+        if(!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+
+        if (p_context.Input.MoveInput == Vector2.zero)
+        {
+            p_stateMachine.ChangeState<PlayerIdleState>();
+        }
+        else if (p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
+        else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerAttackState>();
+        }
+        else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerChargeState>();
+        }
+        else if (p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerParryState>();
+        }
+    }
+
     public override void OnFixedUpdate()
     {
-        if(p_context.InputDeviceDetector.CurrentInputDevice == InputDeviceType.Gamepad)
+        if(p_context.DeviceDetector.CurrentInputDevice == InputDeviceType.Gamepad)
         {
             p_context.Animator.SetFloat("MoveInput", p_context.Input.MoveInput.magnitude);
             HandleMovement(p_context.Input.MoveInput.magnitude);

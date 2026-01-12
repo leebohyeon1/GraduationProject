@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 {
+    public static InputDeviceDetector Instance;
+
     private InputDeviceType _currentInputDevice = InputDeviceType.KeyboardMouse;
     private bool _isDetectionActive = false;
 
@@ -22,6 +24,16 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         // 초기 입력 기기 설정
         DetectInitialInputDevice();
     }

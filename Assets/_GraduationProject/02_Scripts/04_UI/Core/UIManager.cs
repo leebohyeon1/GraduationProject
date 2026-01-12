@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class UIManager : MonoBehaviour, IEventListener<PopUpUI>
 {
+    public static UIManager Instance { get; private set; }
+
     [SerializeField] private UIInputHandler _input;
     [SerializeField] private EventSO<PopUpUI> _onOpenPopUp;
     private Stack<PopUpUI> _popUpUIStack;
@@ -11,6 +14,19 @@ public class UIManager : MonoBehaviour, IEventListener<PopUpUI>
 
     public event Action OnOpenFirstPopUpUI;
     public event Action OnClearPopUpUI;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {

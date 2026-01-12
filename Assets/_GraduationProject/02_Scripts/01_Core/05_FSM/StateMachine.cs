@@ -58,9 +58,11 @@ public class StateMachine<T>
             return;
         }
 
-        CurrentState.OnExit();
-
-        _previousState = _states[CurrentState.GetType()];
+        if(CurrentState != null)
+        {
+            CurrentState?.OnExit();
+            _previousState = _states[CurrentState.GetType()];
+        }
 
         _currentState = _states[stateType];
 

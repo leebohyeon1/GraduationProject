@@ -27,6 +27,13 @@ public class PlayerParryState : PlayerAttackBaseState
         base.OnEnter();
     }
 
+    public override void OnUpdate()
+    {
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+    }
 
     public override void OnExit()
     {

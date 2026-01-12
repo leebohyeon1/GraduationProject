@@ -51,6 +51,11 @@ public class PlayerInputHandler : MonoBehaviour
     /// </summary>
     public void Initialize(IInputDeviceDetector inputDeviceDetector)
     {
+        if (_inputReader != null)
+        {
+            _inputReader.Initialize();
+        }
+
         _inputDeviceDetector = inputDeviceDetector;
         if (_inputDeviceDetector != null)
         {

@@ -10,7 +10,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region Private Fields
-    private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
 
     [Header("Development")]
     [SerializeField] private bool _saveDuringPlay = false; // 플레이 중 변경 사항 저장 여부
@@ -51,9 +50,9 @@ public class Player : MonoBehaviour
     public PlayerInteract Interact => _interact;
     public PlayerStamina Stamina => _stamina;
     public LockOnSystem LockOnSystem => _lockOnSystem;
-    public PlayerAbility Ability => _ability;   
+    public PlayerAbility Ability => _ability;
 
-    public IInputDeviceDetector InputDeviceDetector => _inputDeviceDetector;
+    public IInputDeviceDetector DeviceDetector => InputDeviceDetector.Instance;
     
     /// <summary>
     /// 현재 플레이어 상태를 나타냅니다.
@@ -144,7 +143,7 @@ public class Player : MonoBehaviour
         {
             _input = GetComponent<PlayerInputHandler>();
         }
-        _input.Initialize(_inputDeviceDetector);
+        _input.Initialize(DeviceDetector);
     
         if (_health == null)
         {
@@ -260,7 +259,7 @@ public class Player : MonoBehaviour
         {
             if(!_stats.IsLockOn)
             {
-                var deviceType = InputDeviceDetector.CurrentInputDevice;
+                var deviceType = DeviceDetector.CurrentInputDevice;
                 var moveInput = Input.LockOnTargetChangeVector2Input;
                 var mousePosition = Input.MousePosition;
 
@@ -274,7 +273,7 @@ public class Player : MonoBehaviour
         }
         else if(Input.LockOnTargetChangeInput && !_stats.IsLockOn)
         {
-            var deviceType = InputDeviceDetector.CurrentInputDevice;
+            var deviceType = DeviceDetector.CurrentInputDevice;
             var moveInput = Input.LockOnTargetChangeVector2Input;
             var mousePosition = Input.MousePosition;
 
@@ -290,7 +289,7 @@ public class Player : MonoBehaviour
 
             if (hasInput && isCooldownReady)
             {
-                var deviceType = InputDeviceDetector.CurrentInputDevice;
+                var deviceType = DeviceDetector.CurrentInputDevice;
                 var moveInput = Input.LockOnTargetChangeVector2Input;
                 var mousePosition = Input.MousePosition;
 

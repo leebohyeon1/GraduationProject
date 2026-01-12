@@ -40,6 +40,13 @@ public abstract class PlayerAttackBaseState : State<Player>
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+
+
         HandleInput();
     }
 
@@ -83,7 +90,7 @@ public abstract class PlayerAttackBaseState : State<Player>
                 }
                 else
                 {
-                    var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+                    var deviceType = p_context.DeviceDetector.CurrentInputDevice;
                     var moveInput = p_context.Input.MoveInput;
                     var mousePosition = p_context.Input.MousePosition;
 
