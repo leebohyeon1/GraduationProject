@@ -172,9 +172,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private void MiddleStagger()
     {
         _stats.IsMiddleHit = true;
-        _damageData.KnockbackCurve = _stats.RuntimeData.CombatData.KnockbackCurve;
-        _stiffnessDuration = _stats.RuntimeData.CombatData.MiddleStaggerDuration;
-        _knockbackForce = _stats.RuntimeData.CombatData.MiddleKnockbackForce;
+        _stiffnessDuration = DamageData.KnockbackDuration;
+        _knockbackForce = DamageData.KnockbackForce;
     }
 
     /// <summary>

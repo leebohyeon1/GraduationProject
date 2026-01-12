@@ -209,6 +209,7 @@ public class Player : MonoBehaviour
         _stateMachine.AddState(new PlayerChargeAttackState(this, _stateMachine));
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerParryState(this, _stateMachine));
+        _stateMachine.AddState(new PlayerDraggedState(this, _stateMachine));
 
         // 초기 상태를 Idle로 설정
         _stateMachine.ChangeState<PlayerIdleState>();
@@ -302,7 +303,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void SubscribeToEvents()
     {
-
+        Movement.Dragged += OnDragged;
     }
     
     /// <summary>
@@ -317,6 +318,19 @@ public class Player : MonoBehaviour
         Stamina.Dispose();
         Ability.Dispose();
     }
+
+    private void OnDragged(bool value)
+    {
+        if (value)
+        {
+            _stateMachine.ChangeState<PlayerDraggedState>();
+        }
+        else
+        {
+            _stateMachine.ChangeState<PlayerIdleState>();    
+        }
+    }
+
     #endregion
 
 
