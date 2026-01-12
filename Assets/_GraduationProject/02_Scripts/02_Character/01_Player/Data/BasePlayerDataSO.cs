@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +11,8 @@ public class PlayerDataSO : ScriptableObject
 {
     [Header("Health")]
     public int MaxHealth = 100; // 최대 체력
+    public int MaxPotion = 3;
+    public int PotionHealAmount = 40;
 
     [Header("Stamina")]
     public float MaxStamina = 100;

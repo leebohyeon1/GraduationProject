@@ -183,18 +183,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""SceneLoad1"",
+                    ""name"": ""Potion"",
                     ""type"": ""Button"",
-                    ""id"": ""250a38c0-76db-4476-a0a2-da0e2e56554d"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SceneLoad2"",
-                    ""type"": ""Button"",
-                    ""id"": ""d49c6cf4-6c13-4326-81b8-750999013b7c"",
+                    ""id"": ""b8cdb602-bd08-4c36-9c74-8c418e59e24c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -293,7 +284,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""143bb1cd-cc10-4eca-a2f0-a3664166fe91"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -359,7 +350,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8bf5d019-6444-4773-ab97-6665e2f83b92"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -413,23 +404,23 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""76234c20-cfbb-4e94-9f84-696e54a49b98"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""id"": ""73616fb0-da73-4fd6-bf13-45b8e9255a40"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SceneLoad1"",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Potion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4a8b8f3a-cd30-4de2-bdbf-cc93bc7e2ff4"",
-                    ""path"": ""<Keyboard>/2"",
+                    ""id"": ""c24b310c-208c-4a8e-a57c-ff9ef0572def"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SceneLoad2"",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Potion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -925,8 +916,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_LockOnForKeyboard = m_Player.FindAction("LockOnForKeyboard", throwIfNotFound: true);
         m_Player_ToggleLockOnForGamepad = m_Player.FindAction("ToggleLockOnForGamepad", throwIfNotFound: true);
         m_Player_LockOnTargetChangeForGamepad = m_Player.FindAction("LockOnTargetChangeForGamepad", throwIfNotFound: true);
-        m_Player_SceneLoad1 = m_Player.FindAction("SceneLoad1", throwIfNotFound: true);
-        m_Player_SceneLoad2 = m_Player.FindAction("SceneLoad2", throwIfNotFound: true);
+        m_Player_Potion = m_Player.FindAction("Potion", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1033,8 +1023,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LockOnForKeyboard;
     private readonly InputAction m_Player_ToggleLockOnForGamepad;
     private readonly InputAction m_Player_LockOnTargetChangeForGamepad;
-    private readonly InputAction m_Player_SceneLoad1;
-    private readonly InputAction m_Player_SceneLoad2;
+    private readonly InputAction m_Player_Potion;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1087,13 +1076,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @LockOnTargetChangeForGamepad => m_Wrapper.m_Player_LockOnTargetChangeForGamepad;
         /// <summary>
-        /// Provides access to the underlying input action "Player/SceneLoad1".
+        /// Provides access to the underlying input action "Player/Potion".
         /// </summary>
-        public InputAction @SceneLoad1 => m_Wrapper.m_Player_SceneLoad1;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/SceneLoad2".
-        /// </summary>
-        public InputAction @SceneLoad2 => m_Wrapper.m_Player_SceneLoad2;
+        public InputAction @Potion => m_Wrapper.m_Player_Potion;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1150,12 +1135,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @LockOnTargetChangeForGamepad.started += instance.OnLockOnTargetChangeForGamepad;
             @LockOnTargetChangeForGamepad.performed += instance.OnLockOnTargetChangeForGamepad;
             @LockOnTargetChangeForGamepad.canceled += instance.OnLockOnTargetChangeForGamepad;
-            @SceneLoad1.started += instance.OnSceneLoad1;
-            @SceneLoad1.performed += instance.OnSceneLoad1;
-            @SceneLoad1.canceled += instance.OnSceneLoad1;
-            @SceneLoad2.started += instance.OnSceneLoad2;
-            @SceneLoad2.performed += instance.OnSceneLoad2;
-            @SceneLoad2.canceled += instance.OnSceneLoad2;
+            @Potion.started += instance.OnPotion;
+            @Potion.performed += instance.OnPotion;
+            @Potion.canceled += instance.OnPotion;
         }
 
         /// <summary>
@@ -1197,12 +1179,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @LockOnTargetChangeForGamepad.started -= instance.OnLockOnTargetChangeForGamepad;
             @LockOnTargetChangeForGamepad.performed -= instance.OnLockOnTargetChangeForGamepad;
             @LockOnTargetChangeForGamepad.canceled -= instance.OnLockOnTargetChangeForGamepad;
-            @SceneLoad1.started -= instance.OnSceneLoad1;
-            @SceneLoad1.performed -= instance.OnSceneLoad1;
-            @SceneLoad1.canceled -= instance.OnSceneLoad1;
-            @SceneLoad2.started -= instance.OnSceneLoad2;
-            @SceneLoad2.performed -= instance.OnSceneLoad2;
-            @SceneLoad2.canceled -= instance.OnSceneLoad2;
+            @Potion.started -= instance.OnPotion;
+            @Potion.performed -= instance.OnPotion;
+            @Potion.canceled -= instance.OnPotion;
         }
 
         /// <summary>
@@ -1659,19 +1638,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "SceneLoad1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Potion" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSceneLoad1(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "SceneLoad2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSceneLoad2(InputAction.CallbackContext context);
+        void OnPotion(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -28,6 +28,8 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     public event Action InteractHoldEvent = delegate { };
     public event Action InteractCancelEvent = delegate { };
 
+    public event Action PotionEvent = delegate { };
+
     // UI Actions
     public event Action CancelEvent = delegate { };
     public event Action<Vector2> NavigateEvent = delegate { };
@@ -207,13 +209,12 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
         LockOnTargetChangeVector2Event.Invoke(lockOnInput);
     }
 
-    public void OnSceneLoad1(InputAction.CallbackContext context)
+    public void OnPotion(InputAction.CallbackContext context)
     {
-        SceneManager.LoadScene(0);
-    }
-    public void OnSceneLoad2(InputAction.CallbackContext context)
-    {
-        SceneManager.LoadScene(1);
+        if(context.phase == InputActionPhase.Performed)
+        {
+            PotionEvent.Invoke();
+        }
     }
 
     // UI Action Implementations
@@ -297,4 +298,5 @@ public class InputReader : ScriptableObject, InputSystem_Actions.IPlayerActions,
     {
         InputDeviceChangedEvent?.Invoke(deviceType);
     }
+
 }
