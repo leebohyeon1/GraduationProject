@@ -1,11 +1,5 @@
-﻿using BH_Lib.AssetManager;
-using BH_Lib.DI;
-using BH_Lib.Log;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.AddressableAssets;
 
 public class LockOnSystem : MonoBehaviour
 {
@@ -34,8 +28,7 @@ public class LockOnSystem : MonoBehaviour
     {
         if(_lockOnIndicator == null)
         {
-            AssetManager assetManager = DIContainer.Instance.Resolve<AssetManager>();
-            _lockOnIndicator = await assetManager.InstantiateAsync("LockOnIndicator", this.transform);
+            _lockOnIndicator = await Addressables.InstantiateAsync("LockOnIndicator").Task;
         }
         _lockOnIndicator.SetActive(false);
     }

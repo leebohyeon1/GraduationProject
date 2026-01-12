@@ -1,4 +1,3 @@
-using BH_Lib.Log;
 using System;
 using UnityEngine;
 
@@ -88,7 +87,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
                         _stats.ParrySet.Add(parryable);
                     }
 
-                    Log.PrintColor(Color.yellow, "상쇄");
+                   Debug.Log("상쇄");
                     parryable.Parry(damageData.AttackType);
                     return;
                 }
@@ -104,7 +103,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
                     _stats.ParrySet.Add(parryable);
                 }
 
-                Log.PrintColor(Color.yellow, "상쇄");
+                Debug.Log("상쇄");
                 parryable.Parry(damageData.AttackType);
                 return;
             }

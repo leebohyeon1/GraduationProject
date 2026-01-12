@@ -1,5 +1,3 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using UnityEngine;
@@ -7,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 회피 상태입니다.
 /// </summary>
-public class PlayerDodgeState : BaseState<Player>
+public class PlayerDodgeState : State<Player>
 {
     private Vector3 _dodgeDirection; // 회피 방향
     private Type _nextState; // 다음 전환될 상태
@@ -54,6 +52,12 @@ public class PlayerDodgeState : BaseState<Player>
     public override void OnUpdate()
     {
         HandleInput();
+
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+
     }
 
     public override void OnExit()

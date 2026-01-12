@@ -1,7 +1,7 @@
-using BH_Lib.AssetManager;
-using BH_Lib.DI;
-using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public enum PopUpType
 {
@@ -19,8 +19,8 @@ public class PopUpUI : MonoBehaviour
     {
         if(p_openPopUP == null)
         {
-            AssetManager assetManager = DIContainer.Instance.Resolve<AssetManager>();
-            p_openPopUP = await assetManager.LoadAssetAsync<EventSO<PopUpUI>>("OnOpenPopUp", gameObject);
+            var handle = Addressables.LoadAssetAsync<EventSO<PopUpUI>>("OnOpenPopUp");
+            p_openPopUP = await handle.Task;
         }
     }
 

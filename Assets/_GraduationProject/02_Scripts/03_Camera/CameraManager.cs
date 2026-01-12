@@ -1,5 +1,3 @@
-using BH_Lib.Log;
-using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -22,12 +20,12 @@ public class CameraTarget
 
 public class CameraManager : MonoBehaviour, IEventListener<CameraTarget>, IEventListener<bool>
 {
-    [SerializeField] private CinemachineBrain _cinemachineBrain; // ½Ã³×¸Ó½Å ºê·¹ÀÎ    
-    [SerializeField] private CinemachineCamera _playerFollowCamera; // ÇÃ·¹ÀÌ¾î ÃßÀû Ä«¸Ş¶ó
-    [SerializeField] private CinemachineTargetGroup _lockOnTargetGroup; // ¶ô¿Â ¸ñÇ¥ ±×·ì
+    [SerializeField] private CinemachineBrain _cinemachineBrain; // ì‹œë„¤ë¨¸ì‹  ë¸Œë ˆì¸    
+    [SerializeField] private CinemachineCamera _playerFollowCamera; // í”Œë ˆì´ì–´ ì¶”ì  ì¹´ë©”ë¼
+    [SerializeField] private CinemachineTargetGroup _lockOnTargetGroup; // ë½ì˜¨ ëª©í‘œ ê·¸ë£¹
 
-    [SerializeField] private OnCameraInitializeSO _onCameraInitializeSO; // Ä«¸Ş¶ó ÃÊ±âÈ­ ÀÌº¥Æ®
-    [SerializeField] private OnLockOnSO _onLockOnSO; // ¶ô¿Â ÀÌº¥Æ®
+    [SerializeField] private OnCameraInitializeSO _onCameraInitializeSO; // ì¹´ë©”ë¼ ì´ˆê¸°í™” ì´ë²¤íŠ¸
+    [SerializeField] private OnLockOnSO _onLockOnSO; // ë½ì˜¨ ì´ë²¤íŠ¸
 
 
     private List<CameraTarget> _targetList = new List<CameraTarget>();
@@ -68,7 +66,7 @@ public class CameraManager : MonoBehaviour, IEventListener<CameraTarget>, IEvent
     {
         if(value)
         {
-            // ¶ô¿Â ¸ğµå
+            // ë½ì˜¨ ëª¨ë“œ
             _cinemachineBrain.ChannelMask = OutputChannels.Channel01;
             return;
         }
@@ -88,6 +86,6 @@ public class PriorityComparer : IComparer<CameraTarget>
             return 0;
         }
 
-        return x.Priority.CompareTo(y.Priority); // ³»¸²Â÷¼ø
+        return x.Priority.CompareTo(y.Priority); // ë‚´ë¦¼ì°¨ìˆœ
     }
 }
