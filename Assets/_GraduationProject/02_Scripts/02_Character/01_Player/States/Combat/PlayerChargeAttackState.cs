@@ -54,6 +54,39 @@ public class PlayerChargeAttackState : PlayerAttackBaseState
     }
 
 
+    /// <summary>
+    /// 공격 중 입력을 처리하여 다음 상태를 결정합니다.
+    /// </summary>
+    protected override void HandleInput()
+    {
+        if (p_nextState != null || !_canInput)
+        {
+            return;
+        }
+
+        if (p_context.Stats.CanNextAttack && p_context.Stamina.CheckStamina())
+        {
+            if (p_context.Input.AttackInput)
+            {
+                p_stateMachine.ChangeState(typeof(PlayerAttackState));
+            }
+            else if (p_context.Input.AttackHeldInput)
+            {
+                p_stateMachine.ChangeState(typeof(PlayerChargeState));
+            }
+            else if (p_context.Input.ParryInput)
+            {
+                p_stateMachine.ChangeState(typeof(PlayerParryState));
+            }
+
+        }
+        else if (p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
+        {
+
+            p_nextState = typeof(PlayerDodgeState);
+        }
+
+    }
     private void OnParrySucceeded(Transform transform)
     {
         if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)

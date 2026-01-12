@@ -124,19 +124,25 @@ public abstract class PlayerAttackBaseState : State<Player>
         
         if (p_context.Stats.CanNextAttack && p_context.Stamina.CheckStamina())
         {
-            if (p_context.Input.AttackInput)
+            if (p_context.Stats.AttackComboIndex < 2 && p_context.Input.AttackInput)
             {
                 p_context.Events.TriggerChangedNextAttackState();
                 p_stateMachine.ChangeState(typeof(PlayerAttackState));
             }
             else if(p_context.Input.AttackHeldInput)
             {
-                p_context.Events.TriggerChangedNextAttackState();
+                if(p_context.Stats.AttackComboIndex < 2)
+                {
+                    p_context.Events.TriggerChangedNextAttackState();
+                }
                 p_stateMachine.ChangeState(typeof(PlayerChargeState));
             }
             else if(p_context.Input.ParryInput)
             {
-                p_context.Events.TriggerChangedNextAttackState();
+                if (p_context.Stats.AttackComboIndex < 2)
+                {
+                    p_context.Events.TriggerChangedNextAttackState();
+                }
                 p_stateMachine.ChangeState(typeof(PlayerParryState));
             }
                

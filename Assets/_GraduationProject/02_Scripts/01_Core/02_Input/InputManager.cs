@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
         UIManager.Instance.OnClearPopUpUI += HandleClearPopUpUI;    
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         UIManager.Instance.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
         UIManager.Instance.OnClearPopUpUI -= HandleClearPopUpUI;
