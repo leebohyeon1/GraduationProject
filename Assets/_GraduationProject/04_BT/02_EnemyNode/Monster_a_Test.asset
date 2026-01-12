@@ -18,22 +18,6 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
---- !u!114 &-8818150647920502965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5ea0c29e01e74249967229efaf21727, type: 3}
-  m_Name: Selector
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  guid: 1005d378ecd86dc49865f71035aa36d7
-  position: {x: 669.8398, y: 64.84159}
-  nodes: []
-  services: []
 --- !u!114 &-8433408208377359767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +93,7 @@ MonoBehaviour:
   m_Name: Condition_CanSeePlayer
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
   guid: 9ddf86cb4f2552e40b385060ee58b95a
-  position: {x: 1628.7161, y: 779.01135}
+  position: {x: 1526.8125, y: 774.75696}
   viewAngle: 120
 --- !u!114 &-6917002160429715404
 MonoBehaviour:
@@ -124,7 +108,7 @@ MonoBehaviour:
   m_Name: RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
   guid: d2f093c14d0f01540a0b55a6ed4a0483
-  position: {x: 2101.7156, y: 773.01135}
+  position: {x: 1999.8126, y: 768.75696}
   Radius: 15
   Delay: 2
   MoveSpeed: 6
@@ -174,7 +158,7 @@ MonoBehaviour:
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   guid: c906b90312440844e845cad3dbe8d965
-  position: {x: 1970.7157, y: 512.01135}
+  position: {x: 1868.8125, y: 507.75693}
   nodes:
   - {fileID: -5198480312190253987}
   - {fileID: -1258612756136996}
@@ -225,7 +209,7 @@ MonoBehaviour:
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
   guid: 80f442c98a7520b4bbe082f5a92c58cb
-  position: {x: 577.2006, y: 540.4036}
+  position: {x: 592.5627, y: 655.0656}
 --- !u!114 &-5717269597686315248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,7 +294,7 @@ MonoBehaviour:
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   guid: 5e1e5cd9fd8bbed4db6b139fcdb51302
-  position: {x: 1775.7158, y: 645.01135}
+  position: {x: 1673.8125, y: 640.75696}
   nodes:
   - {fileID: -7487917602779013640}
   - {fileID: 8918750266894633931}
@@ -398,7 +382,7 @@ MonoBehaviour:
   m_Name: IdleNode
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
   guid: 35e888acc7ad4174cb217f4d0d4214ce
-  position: {x: 2217.7156, y: 775.01135}
+  position: {x: 2115.8123, y: 770.7569}
   idleTime: 2
 --- !u!114 &-2407993802177057151
 MonoBehaviour:
@@ -413,7 +397,7 @@ MonoBehaviour:
   m_Name: Condition_IsStunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
   guid: e4037aba55bfb5941808d54a5a37349b
-  position: {x: 387.3876, y: 535.841}
+  position: {x: 399.56265, y: 658.0656}
 --- !u!114 &-2370183225047254142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,7 +488,7 @@ MonoBehaviour:
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   guid: f5478ea82cef17e49b030d2e8ee3a6fd
-  position: {x: 1387.7296, y: 505.833}
+  position: {x: 1359.2708, y: 512.251}
   nodes:
   - {fileID: 2107984322209860564}
   - {fileID: 8440683141374760925}
@@ -609,7 +593,7 @@ MonoBehaviour:
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   guid: 889fb4aad8e507e4ea95777be0f9c8cb
-  position: {x: 2164.7156, y: 641.01135}
+  position: {x: 2062.8123, y: 636.75696}
   nodes:
   - {fileID: -6917002160429715404}
   - {fileID: -3230481333235330710}
@@ -664,7 +648,6 @@ MonoBehaviour:
   - {fileID: 7781392752390456587}
   - {fileID: -712269739463635056}
   - {fileID: -4336526947768680597}
-  - {fileID: -8818150647920502965}
   - {fileID: -5198480312190253987}
   - {fileID: -7487917602779013640}
   - {fileID: -1553814093565818794}
@@ -675,6 +658,7 @@ MonoBehaviour:
   - {fileID: -1258612756136996}
   - {fileID: -6917002160429715404}
   - {fileID: -3230481333235330710}
+  - {fileID: 6710318744813092174}
 --- !u!114 &392198514301603739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,7 +797,7 @@ MonoBehaviour:
   m_Name: Condition_IsInCombat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
   guid: 6d8782b4d8621a24198e1a055dfe9638
-  position: {x: 1267.2684, y: 635.8131}
+  position: {x: 1243.0079, y: 651.00793}
 --- !u!114 &2673136619778358838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,6 +966,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 457, y: 93}
   viewAngle: 180
+--- !u!114 &6710318744813092174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: cee3dd773029ba54bb815bf231c664bd
+  position: {x: 525.5627, y: 530.0656}
+  nodes:
+  - {fileID: -2407993802177057151}
+  - {fileID: -6063786690352801468}
+  services: []
 --- !u!114 &7383990784071887038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,9 +1078,16 @@ MonoBehaviour:
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   guid: 1eda256835bf5bd4aa081aaeca903788
-  position: {x: 1174, y: 70}
-  nodes: []
-  services: []
+  position: {x: 1152.0386, y: 347.076}
+  nodes:
+  - {fileID: 6710318744813092174}
+  - {fileID: 1093107920418380475}
+  - {fileID: -1553814093565818794}
+  - {fileID: -6555100326548741927}
+  services:
+  - {fileID: 4599626038524749311, guid: 315e1b783d21a8440b2af511f42e7f54, type: 2}
+  - {fileID: -5141413489336803078, guid: 315e1b783d21a8440b2af511f42e7f54, type: 2}
+  - {fileID: 8279960542052063534, guid: 1fbd6b976e4283f409cabc8d082bf7b7, type: 2}
 --- !u!114 &8440683141374760925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,7 +1101,7 @@ MonoBehaviour:
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   guid: 636643463843db74788023c2d5d34dcb
-  position: {x: 1470.0199, y: 635.66003}
+  position: {x: 1441.2709, y: 642.251}
   nodes:
   - {fileID: -2309589762897278274}
   - {fileID: -2192937327043153820}
@@ -1193,7 +1202,7 @@ MonoBehaviour:
   m_Name: Condition_BlackboardFloatKeyCheck
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   guid: f3e3632114b71ae4f944a226df6c4802
-  position: {x: 1823.7161, y: 776.0112}
+  position: {x: 1721.8124, y: 771.75684}
   floatCondition:
     key: DistanceToTarget
     Operator: 1
