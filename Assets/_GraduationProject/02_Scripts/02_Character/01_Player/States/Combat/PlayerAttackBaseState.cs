@@ -1,14 +1,12 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
+
 
 /// <summary>
 /// 플레이어의 모든 공격 상태의 기반이 되는 추상 클래스입니다.
 /// </summary>
-public abstract class PlayerAttackBaseState : BaseState<Player>
+public abstract class PlayerAttackBaseState : State<Player>
 {
     protected Type p_nextState; // 다음 전환될 상태
     protected bool _canInput = false;

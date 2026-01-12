@@ -1,7 +1,6 @@
 using UnityEngine;
-using BH_Lib.DI;
-using BH_Lib.AssetManager;
 using System.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 
 public enum ActionMapType
 {
@@ -9,21 +8,17 @@ public enum ActionMapType
     UI = 1
 }
 
-[Register(LifetimeScope.Singleton)]
-public class InputManager : DIMonoBehaviour
+public class InputManager : MonoBehaviour
 {
     [SerializeField] private InputReader _inputReader;
 
-    [Inject] private AssetManager _assetManager;
-    [Inject] private UIManager _uiManager;
+    private UIManager _uiManager;
 
-    protected override async void OnEnable()
+    private async void OnEnable()
     {
-        base.OnEnable();
-
         if(_inputReader == null)
         {
-            _inputReader = await _assetManager.LoadAssetAsync<InputReader>("InputReader", gameObject);            
+            _inputReader = await Addressables.LoadAssetAsync<InputReader>("InputReader").Task;            
         }
 
         _uiManager.OnOpenFirstPopUpUI += HandleOpenPopUpUI;

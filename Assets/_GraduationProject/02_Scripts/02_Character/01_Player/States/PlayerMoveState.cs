@@ -1,11 +1,9 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 이동 상태입니다.
 /// </summary>
-public class PlayerMoveState : BaseState<Player>
+public class PlayerMoveState : State<Player>
 {
     public PlayerMoveState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }

@@ -1,6 +1,3 @@
-using BH_Lib.DI;
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using Unity.Collections;
@@ -10,11 +7,10 @@ using UnityEngine;
 /// 플레이어의 메인 클래스입니다.
 /// 모든 플레이어 관련 컴포넌트들을 관리하고 상태 머신을 통해 플레이어의 행동을 제어합니다.
 /// </summary>
-[Register(LifetimeScope.Transient)]
-public class Player : DIMonoBehaviour
+public class Player : MonoBehaviour
 {
     #region Private Fields
-    [Inject] private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
+    private IInputDeviceDetector _inputDeviceDetector; // 입력 장치 감지기
 
     [Header("Development")]
     [SerializeField] private bool _saveDuringPlay = false; // 플레이 중 변경 사항 저장 여부
@@ -62,7 +58,7 @@ public class Player : DIMonoBehaviour
     /// <summary>
     /// 현재 플레이어 상태를 나타냅니다.
     /// </summary>
-    public Type CurrentPlayerState => _stateMachine.CurrentStateType;
+    public Type CurrentPlayerState => _stateMachine.CurrentState?.GetType();
     #endregion
 
 
@@ -72,10 +68,8 @@ public class Player : DIMonoBehaviour
 
     #endregion
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         InitializeReference();
         InitializeStateMachine();
     }
@@ -209,44 +203,42 @@ public class Player : DIMonoBehaviour
         _stateMachine.AddState(new PlayerHitState(this, _stateMachine));
         _stateMachine.AddState(new PlayerParryState(this, _stateMachine));
 
-        SetupStateTransitions();
-    
         // 초기 상태를 Idle로 설정
         _stateMachine.ChangeState<PlayerIdleState>();
     }
-    /// <summary>
-    /// 상태 전이 조건을 설정합니다.
-    /// </summary>
-    private void SetupStateTransitions()
-    {
-        // Hit 상태로의 전환 (모든 상태에서 가능)
-        _stateMachine.AddAnyTransition<PlayerHitState>(() =>
-            !Health.IsDead && Stats.IsDamaged);
+    ///// <summary>
+    ///// 상태 전이 조건을 설정합니다.
+    ///// </summary>
+    //private void SetupStateTransitions()
+    //{
+    //    // Hit 상태로의 전환 (모든 상태에서 가능)
+    //    _stateMachine.AddAnyTransition<PlayerHitState>(() =>
+    //        !Health.IsDead && Stats.IsDamaged);
     
-        // Idle 상태에서의 전환
-        _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
-            => Input.MoveInput != Vector2.zero);
-        _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
-            => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
-            => Input.AttackInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
-            => Input.ParryInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
-            => Input.AttackHeldInput && _stamina.CheckStamina());
+    //    // Idle 상태에서의 전환
+    //    _stateMachine.AddTransition<PlayerIdleState, PlayerMoveState>(() 
+    //        => Input.MoveInput != Vector2.zero);
+    //    _stateMachine.AddTransition<PlayerIdleState, PlayerDodgeState>(() 
+    //        => Input.DodgeInput && _stamina.CheckStamina());
+    //    _stateMachine.AddTransition<PlayerIdleState, PlayerAttackState>(()
+    //        => Input.AttackInput && _stamina.CheckStamina());
+    //    _stateMachine.AddTransition<PlayerIdleState, PlayerParryState>(()
+    //        => Input.ParryInput && _stamina.CheckStamina());
+    //    _stateMachine.AddTransition<PlayerIdleState, PlayerChargeState>(() 
+    //        => Input.AttackHeldInput && _stamina.CheckStamina());
     
-        // Move 상태에서의 전환
-        _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
-            => Input.MoveInput == Vector2.zero);
-        _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
-            => Input.DodgeInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
-            => Input.AttackInput && _stamina.CheckStamina()); 
-        _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
-            => Input.ParryInput && _stamina.CheckStamina());
-        _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
-            => Input.AttackHeldInput);
-    }
+    //    // Move 상태에서의 전환
+    //    _stateMachine.AddTransition<PlayerMoveState, PlayerIdleState>(() 
+    //        => Input.MoveInput == Vector2.zero);
+    //    _stateMachine.AddTransition<PlayerMoveState, PlayerDodgeState>(() 
+    //        => Input.DodgeInput && _stamina.CheckStamina());
+    //    _stateMachine.AddTransition<PlayerMoveState, PlayerAttackState>(()
+    //        => Input.AttackInput && _stamina.CheckStamina()); 
+    //    _stateMachine.AddTransition<PlayerMoveState, PlayerParryState>(()
+    //        => Input.ParryInput && _stamina.CheckStamina());
+    //    _stateMachine.AddTransition<PlayerMoveState, PlayerChargeState>(() 
+    //        => Input.AttackHeldInput);
+    //}
     
     /// <summary>
     /// 매 프레임 호출되는 업데이트 함수입니다.

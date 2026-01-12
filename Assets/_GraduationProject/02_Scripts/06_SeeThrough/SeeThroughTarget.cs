@@ -1,9 +1,8 @@
-using BH_Lib.AssetManager;
-using BH_Lib.DI;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 /// <summary>
-/// Åõ¸íÈ­ ÄÁÆ®·Ñ·¯°¡ Å½ÁöÇØ¾ßÇÒ ´ë»ó
+/// íˆ¬ëª…í™” ì»¨íŠ¸ë¡¤ëŸ¬ê°€ íƒì§€í•´ì•¼í•  ëŒ€ìƒ
 /// </summary>
 public class SeeThroughTarget : MonoBehaviour
 {
@@ -13,8 +12,8 @@ public class SeeThroughTarget : MonoBehaviour
     {
         if( _onRegisterCutOutTargetSO == null )
         {
-            _onRegisterCutOutTargetSO = await DIContainer.Instance.Resolve<AssetManager>()
-                .LoadAssetAsync<OnRegisterSeeThroughTargetSO>("OnRegisterCutOutTarget", this.gameObject);
+            var handle = Addressables.LoadAssetAsync<OnRegisterSeeThroughTargetSO>("OnRegisterCutOutTarget");
+            _onRegisterCutOutTargetSO = await handle.Task;
         }
 
         _onRegisterCutOutTargetSO.Publish(new SeeThroughTargetTransform(transform), 0.1f);

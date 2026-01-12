@@ -1,5 +1,3 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using System.Collections;
 using Unity.InferenceEngine;
 using UnityEngine;
@@ -7,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 차지 상태입니다.
 /// </summary>
-public class PlayerChargeState : BaseState<Player>
+public class PlayerChargeState : State<Player>
 {
     private int _chargeLevel => p_context.Stats.ChargeLevel;
     private float _chargeTimer = 0f;

@@ -1,12 +1,10 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 대기 상태입니다.
 /// </summary>
-public class PlayerIdleState : BaseState<Player>
+public class PlayerIdleState : State<Player>
 {
     public PlayerIdleState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }

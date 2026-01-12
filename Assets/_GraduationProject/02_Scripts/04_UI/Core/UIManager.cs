@@ -1,9 +1,7 @@
-using BH_Lib.DI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Register(LifetimeScope.Singleton)]
 public class UIManager : MonoBehaviour, IEventListener<PopUpUI>
 {
     [SerializeField] private UIInputHandler _input;

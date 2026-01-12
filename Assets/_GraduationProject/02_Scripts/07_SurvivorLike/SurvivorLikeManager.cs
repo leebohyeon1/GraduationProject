@@ -1,14 +1,11 @@
-﻿using BH_Lib.AssetManager;
-using BH_Lib.DI;
-using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
-[Register(LifetimeScope.Singleton)]
 public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
 {
     [Header("Wave")]
@@ -39,8 +36,7 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
     {
         if (!_inputReader)
         {
-            _inputReader = await DIContainer.Instance.Resolve<AssetManager>().
-                LoadAssetAsync<InputReader>("InputReader", gameObject);
+            _inputReader = await Addressables.LoadAssetAsync<InputReader>("InputReader").Task;
         }
 
         _inputReader.InteractHoldEvent += OnInteractHold;
@@ -81,7 +77,6 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
             GameObject enemyPrefab = entri.EnemyPrefab;
             if (!_enemyPool.TryGetValue(enemyPrefab.name, out pool))
             {
-                Log.PrintColor(Color.beige, "풀 생성");
                 _enemyPool.Add(enemyPrefab.name, new List<GameObject>());
                 pool = _enemyPool[enemyPrefab.name];
             }
@@ -91,7 +86,6 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
             {
                 for (index = 0; index < different; index++)
                 {
-                    Log.PrintColor(Color.beige, "오브젝트 생성");
                     GameObject newEnemy = Instantiate(enemyPrefab);
                     newEnemy.SetActive(false);
                     _enemyPool[enemyPrefab.name].Add(newEnemy);
@@ -100,7 +94,6 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
 
             for (index = 0; index < entri.EnemyCount; index++)
             {
-                Log.PrintColor(Color.beige, "스폰");
                 Spawn(pool[index], entri.StatMultiplier);
             }
         }
