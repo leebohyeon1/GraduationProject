@@ -18,6 +18,37 @@ MonoBehaviour:
   animationName: Attack1
   maintainAtk: 0
   attackOffset: 1
+--- !u!114 &-8818150647920502965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ea0c29e01e74249967229efaf21727, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  guid: 1005d378ecd86dc49865f71035aa36d7
+  position: {x: 335.4996, y: 261.86426}
+  nodes: []
+  services: []
+--- !u!114 &-8433408208377359767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adffd62f69955a84d9177d888a1b403b, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  guid: 8636647bad84ea54f9f83e54e659d7f7
+  position: {x: -170.64798, y: 538.98865}
+  waitTime: 1
 --- !u!114 &-8025809362345536030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,6 +96,39 @@ MonoBehaviour:
   - {fileID: 8701554609853382117}
   - {fileID: -7778356412862204304}
   services: []
+--- !u!114 &-7487917602779013640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534b25f725490fb4b88f9cd33e65596e, type: 3}
+  m_Name: Condition_CanSeePlayer
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
+  guid: 9ddf86cb4f2552e40b385060ee58b95a
+  position: {x: 293.07834, y: 730.40656}
+  viewAngle: 90
+--- !u!114 &-6836648223920151082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Task_NormalAttackNode
+  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
+  guid: e4757619209d6b84583d5f40d53aa0a0
+  position: {x: 3068, y: 1090}
+  attackKey: Attack03_a
+  maintainAtk: 0
+  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  ExceptKey: IsAttacking
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,6 +144,24 @@ MonoBehaviour:
   position: {x: 1022, y: 505}
   heatRange: 1
   _attackRange: 3
+--- !u!114 &-6469037860938568525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ea0c29e01e74249967229efaf21727, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  guid: 93e0dc27a0101044ea9469e1277c8b02
+  position: {x: 2299.8853, y: 775.2391}
+  nodes:
+  - {fileID: -5637289146704815515}
+  - {fileID: 3411060387033075431}
+  services: []
 --- !u!114 &-6392910978480185069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,6 +177,38 @@ MonoBehaviour:
   guid: 
   position: {x: 261, y: -12}
   subTreeToRun: {fileID: 0}
+--- !u!114 &-6063786690352801468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
+  m_Name: Stunned
+  m_EditorClassIdentifier: Assembly-CSharp::Stunned
+  guid: 80f442c98a7520b4bbe082f5a92c58cb
+  position: {x: 845.70013, y: 247.5}
+--- !u!114 &-5717269597686315248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Task_NormalAttackNode
+  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
+  guid: 5b50a32f9da4f144399e71ecee87ae55
+  position: {x: 1071.749, y: 1081.9563}
+  attackKey: Attack02_a
+  maintainAtk: 0
+  SO: {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
+  ExceptKey: IsAttacking
 --- !u!114 &-5667558639043742383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +227,27 @@ MonoBehaviour:
   - {fileID: 7383990784071887038}
   services:
   - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+--- !u!114 &-5637289146704815515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: c3b78701cbb9e7f43aa7d20dce9cd36f
+  position: {x: 1808.5184, y: 929.494}
+  nodes:
+  - {fileID: -2370183225047254142}
+  - {fileID: 4485496211308983621}
+  - {fileID: 1462112625171934349}
+  - {fileID: -5170117832441870283}
+  - {fileID: -727372954925139447}
+  services: []
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +262,170 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
   position: {x: 1026, y: 428}
   angleThreshold: 360
+--- !u!114 &-5198480312190253987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: 5e1e5cd9fd8bbed4db6b139fcdb51302
+  position: {x: 340.7615, y: 585.7268}
+  nodes:
+  - {fileID: -7487917602779013640}
+  services: []
+--- !u!114 &-5170117832441870283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
+  m_Name: Task_ChasePlayerNode
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
+  guid: 3ec0a52dc33e76043b1aecfb707254bb
+  position: {x: 1962.24, y: 1078}
+  Distance: 3
+  speed: 4
+--- !u!114 &-4336526947768680597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
+  m_Name: Task_Pressure
+  m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
+  guid: e852940c177b39247b14d9410dc74663
+  position: {x: 3549.3608, y: 1092.8784}
+  Pos_Key: PressurePos
+  MoveSpeed: 4
+  StoppingDist: 0.5
+  RotationSpeed: 5
+--- !u!114 &-3402662949793792824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_CheckCoolTime
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  guid: 7112f674fc8889b47bc3dc6a454a6da7
+  position: {x: -573.7411, y: 1084.2073}
+  skillName: BackStep
+  cooldownDuration: 0
+--- !u!114 &-3349151520496833152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_BlackboardEnumKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  guid: aba4e65ee95be5e4dab98b4d5e8a2ffc
+  position: {x: 348.749, y: 1081.9563}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
+--- !u!114 &-2407993802177057151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
+  m_Name: Condition_IsStunned
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
+  guid: e4037aba55bfb5941808d54a5a37349b
+  position: {x: 678.7, y: 247.90002}
+--- !u!114 &-2370183225047254142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_BlackboardEnumKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  guid: 26817e963ff63af4b8ab6263446fbe29
+  position: {x: 1265, y: 1077}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
+--- !u!114 &-2309589762897278274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: c6b414079d5d34d4bbfd787780101ac4
+  position: {x: -347.7411, y: 903.2073}
+  nodes:
+  - {fileID: 392198514301603739}
+  - {fileID: 9160703467865863772}
+  - {fileID: -3402662949793792824}
+  - {fileID: 2673136619778358838}
+  - {fileID: 8644310311750729431}
+  - {fileID: 7568445298634689736}
+  - {fileID: 8549425792094615154}
+  services: []
+--- !u!114 &-2192937327043153820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: 1e986052296887547ba46dc302d3b8cb
+  position: {x: 777.749, y: 928.95624}
+  nodes:
+  - {fileID: -3349151520496833152}
+  - {fileID: 8652133803017051560}
+  - {fileID: -117907974023946315}
+  - {fileID: -5717269597686315248}
+  services: []
 --- !u!114 &-2169847181082004984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +472,61 @@ MonoBehaviour:
   - {fileID: -2169847181082004984}
   - {fileID: 6055799875146286108}
   services: []
+--- !u!114 &-727372954925139447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Task_NormalAttackNode
+  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
+  guid: 6b4518dd04311ae46af8783e825e2272
+  position: {x: 2141.7554, y: 1082.0074}
+  attackKey: Attack01_a
+  maintainAtk: 0
+  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  ExceptKey: IsAttacking
+--- !u!114 &-712269739463635056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_BlackboardEnumKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  guid: 0bcd6178c742e4c418cb7c4dc3a01327
+  position: {x: 3266.3608, y: 1090.8783}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
+--- !u!114 &-117907974023946315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_BlackboardKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  guid: abc2686e502a05948ac0f8979313221c
+  position: {x: 842.74896, y: 1083.9562}
+  key: IsPlayerVulnerable
+  exceptCondition:
+    key: 
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,12 +539,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b2bd3fdc5ecc1844b404f16eb2135d0, type: 3}
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
-  rootNode: {fileID: 0}
+  rootNode: {fileID: 8252121878231186870}
   treeState: 2
   nodes:
-  - {fileID: 2744660848506042777}
   - {fileID: 8252121878231186870}
   - {fileID: 1093107920418380475}
+  - {fileID: -2407993802177057151}
+  - {fileID: -6063786690352801468}
+  - {fileID: 1866111979461285554}
+  - {fileID: -8433408208377359767}
+  - {fileID: 6252039999696478905}
+  - {fileID: -2309589762897278274}
+  - {fileID: 392198514301603739}
+  - {fileID: 9160703467865863772}
+  - {fileID: -3402662949793792824}
+  - {fileID: 2673136619778358838}
+  - {fileID: 8644310311750729431}
+  - {fileID: 7568445298634689736}
+  - {fileID: 8549425792094615154}
+  - {fileID: -2192937327043153820}
+  - {fileID: -3349151520496833152}
+  - {fileID: 8652133803017051560}
+  - {fileID: -117907974023946315}
+  - {fileID: -5717269597686315248}
+  - {fileID: -6469037860938568525}
+  - {fileID: -5637289146704815515}
+  - {fileID: 3411060387033075431}
+  - {fileID: -2370183225047254142}
+  - {fileID: 4485496211308983621}
+  - {fileID: 1462112625171934349}
+  - {fileID: -5170117832441870283}
+  - {fileID: -727372954925139447}
+  - {fileID: 3380620059797001749}
+  - {fileID: 3464280414441739881}
+  - {fileID: 8527638835808649181}
+  - {fileID: -6836648223920151082}
+  - {fileID: 7781392752390456587}
+  - {fileID: -712269739463635056}
+  - {fileID: -4336526947768680597}
+  - {fileID: -8818150647920502965}
+  - {fileID: -5198480312190253987}
+  - {fileID: -7487917602779013640}
+--- !u!114 &392198514301603739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_BlackboardEnumKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  guid: 63fe7a64fe923564e9b2f81eb420cb44
+  position: {x: -1061.7411, y: 1086.2072}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,8 +628,11 @@ MonoBehaviour:
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   guid: 561ae0d9e08c11a4cb79f80a5f734d59
-  position: {x: 0, y: 0}
-  nodes: []
+  position: {x: -170.64798, y: 376.98862}
+  nodes:
+  - {fileID: 1866111979461285554}
+  - {fileID: -8433408208377359767}
+  - {fileID: 6252039999696478905}
   services: []
 --- !u!114 &1254360389698641468
 MonoBehaviour:
@@ -260,7 +672,7 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &2744660848506042777
+--- !u!114 &1462112625171934349
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -269,14 +681,124 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: BackMoving
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  guid: a468f49ecfc290e4bade221dee1bc51f
-  position: {x: 99, y: 132}
-  targetDistance: 5
-  acceptanceRadius: 0.5
-  timeout: 1.8
+  m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
+  m_Name: Condition_DistanceHysteresis
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
+  guid: 79b2d111d4b518c40b2d803507af14f3
+  position: {x: 1753.44, y: 1077}
+  target: {fileID: 0}
+  minRange: 5
+  maxRange: 6
+  checkType: 0
+--- !u!114 &1866111979461285554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b09f6cfc9fd3d7d41aeba729b58f5d3f, type: 3}
+  m_Name: Condition_CheckLeash
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckLeash
+  guid: 4f735302d2f9abe4495d133f41c5c23d
+  position: {x: -348.64792, y: 544.98865}
+  leashDistance: 20
+--- !u!114 &2673136619778358838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_BlackboardFloatKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  guid: bb0e26ba5e5613749a8bc18648111ba0
+  position: {x: -385.7411, y: 1084.2073}
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 1
+    value: 5
+  exceptCondition:
+    key: 
+--- !u!114 &3380620059797001749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_BlackboardEnumKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  guid: 9efc1f96e1a3f3b4492d3e1140f4f082
+  position: {x: 2363.2192, y: 1090.239}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
+  exceptCondition:
+    key: 
+--- !u!114 &3411060387033075431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: da43101212b11cc41ab82a93d6effbf7
+  position: {x: 2801.319, y: 944.21124}
+  nodes:
+  - {fileID: 3380620059797001749}
+  - {fileID: 3464280414441739881}
+  - {fileID: 8527638835808649181}
+  - {fileID: -6836648223920151082}
+  services: []
+--- !u!114 &3464280414441739881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_BlackboardKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  guid: aa7d62a266804924c9e44da2bbcd4768
+  position: {x: 2628.219, y: 1089.239}
+  key: HasAttackToken
+  exceptCondition:
+    key: 
+--- !u!114 &4485496211308983621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_BlackboardKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  guid: 956b02a11961a5d46a56eb9adc7c95ae
+  position: {x: 1530, y: 1076}
+  key: HasAttackToken
+  exceptCondition:
+    key: 
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,6 +844,21 @@ MonoBehaviour:
   position: {x: 1383, y: 1078}
   nodes: []
   services: []
+--- !u!114 &6252039999696478905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc8fd77e1b05e44a9c97c3686a40484, type: 3}
+  m_Name: Task_ReturnHome
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ReturnHome
+  guid: 0dc227de9220d844d93be45b86caab75
+  position: {x: -58.64796, y: 541.9885}
+  MoveSpeed: 6
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,6 +904,42 @@ MonoBehaviour:
   m_Name: Condition_Is Ally Not Called
   m_EditorClassIdentifier: 
   position: {x: 457, y: 16}
+--- !u!114 &7568445298634689736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6300e24a500cfe346bc9988c0826fdfc, type: 3}
+  m_Name: Task_BackStep
+  m_EditorClassIdentifier: Assembly-CSharp::Task_BackStep
+  guid: d54f9be3ebacbdf4cb928cb63891a499
+  position: {x: 66.25883, y: 1085.2073}
+  backStepSpeed: 15
+  duration: 0.4
+  animationTrigger: Do_BackStep
+  wallCheckDist: 1
+--- !u!114 &7781392752390456587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f08fa1313b9c7c141924e1408c5c58e9, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  guid: 516bacd889b806241b8e43d828fc1c30
+  position: {x: 3466.3608, y: 952.8784}
+  nodes:
+  - {fileID: -712269739463635056}
+  - {fileID: -4336526947768680597}
+  services: []
 --- !u!114 &8246282568877846733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,9 +967,76 @@ MonoBehaviour:
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   guid: 1eda256835bf5bd4aa081aaeca903788
-  position: {x: 173, y: 251}
+  position: {x: 1174, y: 70}
   nodes: []
   services: []
+--- !u!114 &8527638835808649181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
+  m_Name: Condition_DistanceHysteresis
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
+  guid: 7c23984fedf5f924ba96a1f688916789
+  position: {x: 2856, y: 1090}
+  target: {fileID: 0}
+  minRange: 5
+  maxRange: 6
+  checkType: 0
+--- !u!114 &8549425792094615154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: StartSkillCooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  guid: 1a784577640bf0145a67be8f962833aa
+  position: {x: 180.25882, y: 1083.2072}
+  skillName: 
+--- !u!114 &8644310311750729431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
+  m_Name: Condition_RandomChance
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
+  guid: 26c708d4b653f434ea09efe1dec6150d
+  position: {x: -124.741104, y: 1084.2073}
+  checkName: 
+  cooldownDuration: 0
+  successChance: 50
+--- !u!114 &8652133803017051560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_BlackboardKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  guid: 97b4b38618be0354a838ee5401be645b
+  position: {x: 614.74896, y: 1081.9563}
+  key: HasAttackToken
+  exceptCondition:
+    key: 
 --- !u!114 &8701554609853382117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,3 +1069,20 @@ MonoBehaviour:
   animationName: Attack2
   maintainAtk: 1
   attackOffset: 0
+--- !u!114 &9160703467865863772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_BlackboardKeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  guid: ec0954e44da2db04593a732ef43b394d
+  position: {x: -798.7411, y: 1086.2072}
+  key: IsPlayerAimingMe
+  exceptCondition:
+    key: 
