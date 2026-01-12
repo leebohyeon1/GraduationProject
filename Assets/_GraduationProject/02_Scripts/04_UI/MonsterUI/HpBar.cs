@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Threading;
-using BH_Lib.DI;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,12 +1,10 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 대기 상태입니다.
 /// </summary>
-public class PlayerIdleState : BaseState<Player>
+public class PlayerIdleState : State<Player>
 {
     public PlayerIdleState(Player context, StateMachine<Player> stateMachine)
         : base(context, stateMachine) { }
@@ -16,6 +14,35 @@ public class PlayerIdleState : BaseState<Player>
         p_context.Stats.AttackComboIndex = 0;
         p_context.Animator.SetInteger("ComboIndex", p_context.Stats.AttackComboIndex);
         p_context.Animator.SetBool("IsIdle", true);
+    }
+
+    public override void OnUpdate()
+    {   
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+
+        if (p_context.Input.MoveInput != Vector2.zero)
+        {
+            p_stateMachine.ChangeState<PlayerMoveState>();
+        }
+        else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
+        else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerAttackState>();
+        }
+        else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerChargeState>();
+        }
+        else if (p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState <PlayerParryState>();
+        }
     }
 
     public override void OnFixedUpdate()

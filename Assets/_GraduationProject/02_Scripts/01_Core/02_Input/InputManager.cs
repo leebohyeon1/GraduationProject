@@ -1,7 +1,6 @@
 using UnityEngine;
-using BH_Lib.DI;
-using BH_Lib.AssetManager;
 using System.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 
 public enum ActionMapType
 {
@@ -9,31 +8,41 @@ public enum ActionMapType
     UI = 1
 }
 
-[Register(LifetimeScope.Singleton)]
-public class InputManager : DIMonoBehaviour
+public class InputManager : MonoBehaviour
 {
+    public static InputManager Instance { get; private set; }
+
     [SerializeField] private InputReader _inputReader;
 
-    [Inject] private AssetManager _assetManager;
-    [Inject] private UIManager _uiManager;
-
-    protected override async void OnEnable()
+    private void Awake()
     {
-        base.OnEnable();
-
-        if(_inputReader == null)
+        if(Instance == null)
         {
-            _inputReader = await _assetManager.LoadAssetAsync<InputReader>("InputReader", gameObject);            
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
-        _uiManager.OnOpenFirstPopUpUI += HandleOpenPopUpUI;
-        _uiManager.OnClearPopUpUI += HandleClearPopUpUI;    
     }
 
-    private void OnDisable()
+    private async void Start()
     {
-        _uiManager.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
-        _uiManager.OnClearPopUpUI -= HandleClearPopUpUI;
+        if(_inputReader == null)
+        {
+            _inputReader = await Addressables.LoadAssetAsync<InputReader>("InputReader").Task;            
+        }
+
+        UIManager.Instance.OnOpenFirstPopUpUI += HandleOpenPopUpUI;
+        UIManager.Instance.OnClearPopUpUI += HandleClearPopUpUI;    
+    }
+
+    private void OnDestroy()
+    {
+        UIManager.Instance.OnOpenFirstPopUpUI -= HandleOpenPopUpUI;
+        UIManager.Instance.OnClearPopUpUI -= HandleClearPopUpUI;
     }
 
     public void ChangeActionMap(ActionMapType type)

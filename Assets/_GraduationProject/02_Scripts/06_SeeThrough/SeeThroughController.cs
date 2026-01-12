@@ -26,12 +26,7 @@ public class SeeThroughController : MonoBehaviour, IEventListener<SeeThroughTarg
         _onRegisterCutOutTargetSO.Subscribe(this);
     }
 
-    private void OnDestroy()
-    {
-        _onRegisterCutOutTargetSO.Unsubscribe(this);
-    }
-
-    private void Start()
+    private void OnEnable()
     {
         _mainCamera = Camera.main;
     }
@@ -45,6 +40,14 @@ public class SeeThroughController : MonoBehaviour, IEventListener<SeeThroughTarg
 
         HandleOcclusionCurve();
     }
+
+    private void OnDisable()
+    {
+        _onRegisterCutOutTargetSO.Unsubscribe(this);
+        _targetObjects.Clear();
+    }
+
+
 
     void HandleOcclusionCurve()
     {

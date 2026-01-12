@@ -1,4 +1,3 @@
-using BH_Lib.Log;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;

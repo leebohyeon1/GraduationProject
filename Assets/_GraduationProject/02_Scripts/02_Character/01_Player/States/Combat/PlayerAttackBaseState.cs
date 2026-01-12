@@ -1,14 +1,12 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
+
 
 /// <summary>
 /// 플레이어의 모든 공격 상태의 기반이 되는 추상 클래스입니다.
 /// </summary>
-public abstract class PlayerAttackBaseState : BaseState<Player>
+public abstract class PlayerAttackBaseState : State<Player>
 {
     protected Type p_nextState; // 다음 전환될 상태
     protected bool _canInput = false;
@@ -42,6 +40,13 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+
+
         HandleInput();
     }
 
@@ -85,7 +90,7 @@ public abstract class PlayerAttackBaseState : BaseState<Player>
                 }
                 else
                 {
-                    var deviceType = p_context.InputDeviceDetector.CurrentInputDevice;
+                    var deviceType = p_context.DeviceDetector.CurrentInputDevice;
                     var moveInput = p_context.Input.MoveInput;
                     var mousePosition = p_context.Input.MousePosition;
 

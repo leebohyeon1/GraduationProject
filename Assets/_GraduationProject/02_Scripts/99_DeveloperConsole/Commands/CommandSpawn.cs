@@ -40,7 +40,7 @@ namespace Console
 
             try
             {
-                var spawnController = GameObject.FindObjectOfType<MonsterSpawnController>();
+                var spawnController = GameObject.FindFirstObjectByType<MonsterSpawnController>();
                 if(spawnController == null)
                 {
                     spawnController = new GameObject().AddComponent<MonsterSpawnController>();

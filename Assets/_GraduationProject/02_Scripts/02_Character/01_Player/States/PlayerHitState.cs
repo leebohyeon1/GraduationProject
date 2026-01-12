@@ -1,12 +1,10 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 피격 상태입니다.
 /// </summary>
-public class PlayerHitState : BaseState<Player>
+public class PlayerHitState : State<Player>
 {
     private float _hitDuration = 0.1f; // 피격 경직 시간
     private float _hitForce = 0f;
@@ -93,7 +91,5 @@ public class PlayerHitState : BaseState<Player>
             .SetEase(p_context.Health.DamageData.KnockbackCurve)
             .SetId(this)
             .SetUpdate(UpdateType.Fixed);
-
-        Log.Print($"플레이어 넉백 이동: {moveDirection * distance}");
     }
 }

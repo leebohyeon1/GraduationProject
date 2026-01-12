@@ -1,5 +1,3 @@
-using BH_Lib.FSM;
-using BH_Lib.Log;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -29,6 +27,13 @@ public class PlayerParryState : PlayerAttackBaseState
         base.OnEnter();
     }
 
+    public override void OnUpdate()
+    {
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+    }
 
     public override void OnExit()
     {
@@ -78,7 +83,10 @@ public class PlayerParryState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
-        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
+        PlayerAttackConfig attackConfig = p_AttackConfig;
+        attackConfig.AttackType = AttackType.NormalCounter;
+
+        Collider[] colliders = p_context.Combat.ExecuteAttack(attackConfig);
 
         foreach (Collider collider in colliders)
         {
