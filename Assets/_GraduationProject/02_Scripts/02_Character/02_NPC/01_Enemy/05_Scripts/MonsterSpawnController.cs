@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BH_Lib.AssetManager;
-using BH_Lib.DI;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-public class MonsterSpawnController:DIMonoBehaviour
+public class MonsterSpawnController : MonoBehaviour
 {
-    [Inject] private AssetManager _assetManager;
-
     public async Task SpawnEnemies(string Monster, int count, Transform transform = default)
     {
         Debug.Log(1);
@@ -30,7 +27,7 @@ public class MonsterSpawnController:DIMonoBehaviour
 
     private async Task<T> SpawnSingleEnemyAsync<T>(string MonsterPrefabName, Vector3 position, Transform parent) where T : Enemy
     {
-        var prefabObject = await _assetManager.InstantiateAsync(MonsterPrefabName, parent);
+        var prefabObject = await Addressables.InstantiateAsync(MonsterPrefabName, parent).Task;
 
         T enemy = prefabObject.GetComponent<T>();
         if (enemy == null)

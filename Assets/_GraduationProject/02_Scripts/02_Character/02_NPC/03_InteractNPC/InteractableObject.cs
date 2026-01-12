@@ -1,4 +1,3 @@
-using BH_Lib.DI;
 using System;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (p_player == null)
         {
-            p_player = DIContainer.Instance.Resolve<Player>();
+            // p_player = DIContainer.Instance.Resolve<Player>();
         }
     }
 

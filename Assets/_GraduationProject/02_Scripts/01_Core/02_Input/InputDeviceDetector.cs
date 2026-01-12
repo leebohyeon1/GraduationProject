@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using BH_Lib.DI;
 
 /// <summary>
 /// Unity Input System을 활용한 입력 기기 감지 클래스
 /// </summary>
-[Register(typeof(IInputDeviceDetector), LifetimeScope.Singleton)]
-public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
+public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 {
+    public static InputDeviceDetector Instance;
+
     private InputDeviceType _currentInputDevice = InputDeviceType.KeyboardMouse;
     private bool _isDetectionActive = false;
 
@@ -22,17 +22,24 @@ public class InputDeviceDetector : DIMonoBehaviour, IInputDeviceDetector
     /// </summary>
     public UnityEvent<InputDeviceType> OnInputDeviceChanged { get; private set; } = new UnityEvent<InputDeviceType>();
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
 
         // 초기 입력 기기 설정
         DetectInitialInputDevice();
     }
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
         StartDetection();
     }
 

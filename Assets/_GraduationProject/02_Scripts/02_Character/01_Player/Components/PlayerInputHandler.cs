@@ -1,9 +1,4 @@
-using BH_Lib.DI;
-using BH_Lib.FSM;
-using BH_Lib.Log;
-using System;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 /// <summary>
 /// 플레이어의 입력을 처리하고 관련 이벤트를 발생시키는 클래스입니다. (Unity Input System 사용)
@@ -56,6 +51,11 @@ public class PlayerInputHandler : MonoBehaviour
     /// </summary>
     public void Initialize(IInputDeviceDetector inputDeviceDetector)
     {
+        if (_inputReader != null)
+        {
+            _inputReader.Initialize();
+        }
+
         _inputDeviceDetector = inputDeviceDetector;
         if (_inputDeviceDetector != null)
         {

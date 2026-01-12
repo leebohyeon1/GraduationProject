@@ -1,4 +1,3 @@
-using BH_Lib.Log;
 using MoreMountains.Feedbacks;
 using System;
 using System.Collections.Generic;
@@ -44,14 +43,14 @@ public class FeedbackPlayer<T> : MonoBehaviour
         {
             if (feedback == null)
             {
-                Log.PrintWarning($"피드백이 null입니다: {feedbackType}");
+                Debug.LogWarning($"피드백이 null입니다: {feedbackType}");
                 return;
             }
             feedback.PlayFeedbacks();
         }
         else
         {
-            Log.PrintWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
+            Debug.LogWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
         }
     }
 
@@ -66,14 +65,14 @@ public class FeedbackPlayer<T> : MonoBehaviour
         {
             if (feedback == null)
             {
-                Log.PrintWarning($"피드백이 null입니다: {feedbackType}");
+                Debug.LogWarning($"피드백이 null입니다: {feedbackType}");
                 return;
             }
             feedback.PlayFeedbacks(position);
         }
         else
         {
-            Log.PrintWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
+            Debug.LogWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
         }
     }
 
@@ -87,14 +86,14 @@ public class FeedbackPlayer<T> : MonoBehaviour
         {
             if (feedback == null)
             {
-                Log.PrintWarning($"피드백이 null입니다: {feedbackType}");
+                Debug.LogWarning($"피드백이 null입니다: {feedbackType}");
                 return;
             }
             feedback.StopFeedbacks();
         }
         else
         {
-            Log.PrintWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
+            Debug.LogWarning($"피드백을 찾을 수 없습니다: {feedbackType}");
         }
     }
 }
