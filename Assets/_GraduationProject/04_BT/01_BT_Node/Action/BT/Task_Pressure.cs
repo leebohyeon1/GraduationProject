@@ -30,7 +30,7 @@ public class Task_Pressure : Node
 
     protected override NodeState OnUpdate()
     {
-        if(runner.CurrentState == Enemy.EnemyState.Attack)
+        if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
             return NodeState.FAILURE;
         }
@@ -53,7 +53,7 @@ public class Task_Pressure : Node
 
         // 2. 목적지 설정 및 로그
         // aiAgent.destination = targetPos;
-        runner.Movement.StartOrUpdateChase(targetPos, Enemy.EnemyState.Chase, MoveSpeed);
+        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
         RotateTowardsPlayer();
         
         // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)

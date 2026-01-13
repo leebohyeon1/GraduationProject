@@ -20,7 +20,7 @@ public class MortarAttackNode : Node
 
         // 1. 공격 시작 시 초기화
         hasLaunched = false;
-        runner.SetState(Enemy.EnemyState.Attack); // 상태를 공격으로 변경
+        runner.SetState(EnemyStateController.EnemyState.Attack); // 상태를 공격으로 변경
 
         runner.AnimationEvent(AttackName);
         launchPoint = runner.LaunchPoint;
@@ -95,7 +95,7 @@ public class MortarAttackNode : Node
     {
         hasLaunched = false;
         Handler.ResetAllFlags();
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
     }
 
 }

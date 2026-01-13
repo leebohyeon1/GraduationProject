@@ -8,7 +8,7 @@ public class Stunned : Node
     {
         base.OnEnter();
         runner.Movement.StopMovement();
-        runner.SetState(Enemy.EnemyState.Stunned);
+        runner.SetState(EnemyStateController.EnemyState.Stunned);
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
     protected override NodeState OnUpdate()
@@ -41,13 +41,13 @@ public class Stunned : Node
     {
         runner.ParrySystem.ClearStun();
         Debug.Log("<color=red>--STUNNED--: OnExit Triggered</color>");
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
     public override void Abort()
     {
         base.Abort();
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
 

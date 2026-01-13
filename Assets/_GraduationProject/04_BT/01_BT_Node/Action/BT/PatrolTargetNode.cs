@@ -22,7 +22,7 @@ public class PatrolTargetNode : Node
         {
             return NodeState.FAILURE;
         }
-        runner.Movement.StartOrUpdateChase(runner.player.transform.position, Enemy.EnemyState.Patrol);
+        runner.Movement.StartOrUpdateChase(runner.player.transform.position, EnemyStateController.EnemyState.Patrol);
 
         return NodeState.SUCCESS;
     }

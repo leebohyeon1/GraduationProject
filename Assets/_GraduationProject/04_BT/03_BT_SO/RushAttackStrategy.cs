@@ -45,7 +45,7 @@ public class RushAttackStrategy : EnemyUseAnything
         
         if (dist > stopDistance && !runner.animHandler.IsHitWindowOpen && !endStrategy)
         {
-             runner.Movement.StartOrUpdateChase(runner.player.transform.position, Enemy.EnemyState.Chase, speed);
+             runner.Movement.StartOrUpdateChase(runner.player.transform.position, EnemyStateController.EnemyState.Chase, speed);
              // 회전 로직 등...
         }
         else
