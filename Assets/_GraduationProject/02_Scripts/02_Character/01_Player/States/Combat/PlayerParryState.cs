@@ -33,6 +33,10 @@ public class PlayerParryState : PlayerAttackBaseState
         {
             p_stateMachine.ChangeState<PlayerHitState>();
         }
+        else
+        {
+            HandleInput();
+        }
     }
 
     public override void OnExit()
