@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "KSante", menuName = "Enemy/Strategy/KSante")]
 public class KSante : EnemyUseAnything
 {
-        [Header("Rush Settings")]
+    [Header("Rush Settings")]
     public float rushSpeed = 20f;       // 기본 돌진 속도 (곡선의 Y값이 1일 때의 속도)
     public float hitRadius = 1.5f;      // 플레이어 접촉 판정 범위
     public float overshootDist = 3.0f;  // 목표 오버슈트 거리
@@ -56,7 +56,8 @@ public class KSante : EnemyUseAnything
         board.SetValue(KEY_RUSH_START_TIME, Time.time);
         
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
-        
+        // [로그 1] 시작 데이터 (Cyan 색상)
+        Debug.Log($"<color=cyan>[Rush Start] 시작위치: {myPos} -> 플레이어위치: {playerPos} -> 1차목표: {finalDestination}</color>");
         runner.aIPath.enableRotation = false;
 
         runner.Movement.StopMovement();
@@ -74,110 +75,138 @@ public class KSante : EnemyUseAnything
         if(board.GetValue<bool>(KEY_HAS_HIT) )
         {
             enemy.player.transform.parent = null;
-            enemy.player.GetComponent<EnemyHealth>().TakeDamage(AttackDataKnockback);
+            AttackDataKnockback.AttackerTransform = enemy.transform;
+            enemy.player.GetComponent<PlayerHealth>().TakeDamage(AttackDataKnockback);
             board.SetValue(KEY_HAS_HIT, false);
+            enemy.player.GetComponent<IDragable>().Drop();
         }
         return runner;
     }
 
     public override T OnUpdate<T>(T runner)
+{
+    var board = runner._aiController._aiBrain.blackboard;
+    
+    // 1. 이미 Rush가 끝났는지 체크
+    if(board.GetValue<bool>(KEY_RUSHBOOL))
     {
-        var board = runner._aiController._aiBrain.blackboard;
-        if(board.GetValue<bool>(KEY_RUSHBOOL))
-        {
-            return runner; 
-        }
-        Enemy enemy = runner as Enemy;
-        if (enemy == null || enemy.player == null) return runner;
-        if (!board.GetValue<Vector3>(KEY_RUSH_DEST, out Vector3 targetPos))
-        {
-            return runner; 
-        }
-        if(enemy.animHandler.IsActionSO)
-        {
-        Debug.Log(this.name + " is running SO ");
-        }
-        // [추가] 시간 경과에 따른 속도 계산
-        float startTime = board.GetValue<float>(KEY_RUSH_START_TIME);
-        float elapsedTime = Time.time - startTime;      // 경과 시간
-        float normalizedTime = elapsedTime / rushDuration; // 0.0 ~ 1.0 사이 값으로 정규화
+        return runner; 
+    }
 
-        // 시간이 다 되면 종료
-        if (normalizedTime >= 1.0f)
+    Enemy enemy = runner as Enemy;
+    if (enemy == null || enemy.player == null) return runner;
+
+    // 2. 목표 지점 가져오기 (이번 프레임의 목표)
+    if (!board.GetValue<Vector3>(KEY_RUSH_DEST, out Vector3 targetPos))
+    {
+        return runner; 
+    }
+
+    // [생략했던 부분] 애니메이션 상태 체크
+    if(enemy.animHandler.IsActionSO)
+    {
+        Debug.Log(this.name + " is running SO ");
+    }
+
+    // [생략했던 부분] 시간 경과에 따른 속도 계산 및 종료 체크
+    float startTime = board.GetValue<float>(KEY_RUSH_START_TIME);
+    float elapsedTime = Time.time - startTime;      // 경과 시간
+    float normalizedTime = elapsedTime / rushDuration; // 0.0 ~ 1.0 사이 값으로 정규화
+    // 3. 이동 계산
+    float step = rushSpeed * Time.deltaTime;
+    Vector3 currentPos = enemy.transform.position;
+    
+    // 목표 방향으로 이동
+    Vector3 nextPos = Vector3.MoveTowards(currentPos, targetPos, step);
+    
+    Vector3 moveDir = (nextPos - currentPos).normalized;
+    moveDir.y = 0; // 높이 차이 무시 (평지 이동 시)
+
+    float moveDist = Vector3.Distance(currentPos, nextPos);
+
+    // 4. 이동 중 벽 체크 (이동하려는 거리가 아주 작으면 생략)
+    if (moveDist > 0.0001f)
+    {
+        // 주의: obstacleMask에 플레이어가 포함되어 있으면 안 됩니다.
+        if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 2, obstacleMask))
         {
-            Debug.Log("[Rush] 지속 시간 종료");
+            enemy.transform.position = nextPos;
+        }
+        else
+        {
+            Debug.Log($"<color=red>[Rush Stop] 벽 충돌! 현재위치: {currentPos}</color>");
             StopRush(enemy);
             return runner;
         }
-
-
-        float step = rushSpeed * Time.deltaTime;
-        Vector3 currentPos = enemy.transform.position;
-        
-        // 목표 방향으로 이동
-        Vector3 nextPos = Vector3.MoveTowards(currentPos, targetPos, step);
-        
-        // [벽 체크] (기존 로직 유지)
-        Vector3 moveDir = (nextPos - currentPos).normalized;
-        moveDir.y = 0; // 높이 차이 무시 (평지 이동 시)
-
-        // if (moveDir != Vector3.zero)
-        // {
-        //     Quaternion targetRot = Quaternion.LookRotation(moveDir);
-        //     // 돌진 중에는 조금 더 빠르게 회전해서 방향을 잡도록 보정 (turnSpeed * 2f 등 조절 가능)
-        //     enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRot, turnSpeed * Time.deltaTime * 5f);
-        // }
-        float moveDist = Vector3.Distance(currentPos, nextPos);
-
-        // 이동 거리가 아주 작으면(속도가 0인 구간 등) 레이캐스트 생략 가능
-        if (moveDist > 0.0001f)
+    }
+    bool hashit = board.GetValue<bool>(KEY_HAS_HIT);
+    if (!hashit)
+    {
+        float distToPlayer = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
+        if (distToPlayer <= hitRadius)
         {
-            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist, obstacleMask))
-            {
-                enemy.transform.position = nextPos;
-            }
-            else
-            {
-                // Debug.Log("[Rush] 벽에 부딪힘!");
-                StopRush(enemy);
-                return runner;
-            }
-        }
-        bool hashit = board.GetValue<bool>(KEY_HAS_HIT);
-        if (!hashit)
-        {
-            float distToPlayer = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
-            if (distToPlayer <= hitRadius)
-            {
-                // Debug.Log("[Rush] 플레이어 명중!");
-                PlayerTORush(enemy);
-                return runner;
-            }
+            Debug.Log("충돌 ");
+            PlayerTORush(enemy);
             
+            return runner; 
         }
-        // 2. [접촉 체크]
-
-        // 3. [도착 체크]
-        if (Vector3.Distance(enemy.transform.position, targetPos) < 0.1f)
-        {
-            // Debug.Log("[Rush] 목표 도착");
-            StopRush(enemy);
-        }
-
+    }
+    // 시간이 다 되면 종료
+    if (normalizedTime >= 1.0f)
+    {
+        Debug.Log("[Rush] 지속 시간 종료");
+        StopRush(enemy);
         return runner;
     }
+
+
+    
+
+    if (Vector3.Distance(enemy.transform.position, targetPos) < 0.1f)
+    {
+        Debug.Log($"<color=green>[Rush Arrived] 목표 도착! 현재위치: {enemy.transform.position} / 목표: {targetPos}</color>");
+        StopRush(enemy);
+    }
+
+    return runner;
+}
     private void PlayerTORush(Enemy enemy)
     {
         var board = enemy._aiController._aiBrain.blackboard;
 
         // 1. 중복 호출 방지 플래그 설정
         board.SetValue(KEY_HAS_HIT, true);
+        enemy.player.GetComponent<IDragable>().Drag();
 
         // 2. 새로운 목표 지점 계산: 현재 위치에서 바라보는 방향(Forward)으로 5m
         Vector3 currentPos = enemy.transform.position;
         Vector3 pushDir = enemy.transform.forward; // 혹은 (playerPos - myPos).normalized
         Vector3 newDestination = currentPos + (pushDir * 5.0f);
         enemy.player.transform.parent = enemy.transform;
+
+        Vector3 rayOrigin = currentPos + Vector3.up * 0.5f;
+
+        RaycastHit hit;
+        // maxPushDistance 만큼 앞을 확인
+        if (Physics.Raycast(rayOrigin, pushDir, out hit, 5, obstacleMask))
+        {
+            // [벽 발견]
+            // 벽 위치(hit.point)에서 wallBuffer만큼 뒤로 뺀 위치를 목표로 설정
+            float distanceToWall = hit.distance;
+            
+            // 벽이 너무 가까우면(buffer보다 가까우면) 제자리 혹은 아주 조금만 이동
+            float targetDist = Mathf.Max(0, distanceToWall - 3);
+            
+            newDestination = currentPos + (pushDir * targetDist);
+            
+            Debug.Log($"[KSante] 벽 감지됨! {hit.collider.name}. 거리: {distanceToWall:F2}, 목표이동거리: {targetDist:F2}");
+        }
+        else
+        {
+            // [벽 없음] 최대 거리로 이동
+            newDestination = currentPos + (pushDir * 5);
+        }
+
         // 3. 블랙보드 목표 업데이트
         board.SetValue(KEY_RUSH_DEST, newDestination);
 
@@ -193,7 +222,7 @@ public class KSante : EnemyUseAnything
         // (선택) 플레이어에게 충격/넉백을 주고 싶다면 여기서 플레이어 스크립트 호출
         // enemy.player.GetComponent<Rigidbody>().AddForce(pushDir * 10f, ForceMode.Impulse);
         
-        Debug.Log("플레이어 접촉! 5m 추가 돌진 시작");
+        Debug.Log($"<color=yellow>[Push Start] 접촉성공! 현재위치: {currentPos} -> {hit.point} -> 2차목표(밀치기): {newDestination}</color>");
     }
     private void StopRush(Enemy enemy)
     {
