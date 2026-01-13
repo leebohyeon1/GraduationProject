@@ -82,14 +82,14 @@ public class Task_NormalAttackNode : Node
         //     Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 공격 태그가 아닙니다: {stateInfo.fullPathHash}");
         //     return NodeState.FAILURE; 
         // }
-        if (stateInfo.IsTag("Attack") && !stateInfo.IsName(_data.AttackName))
+        if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            // runner.animator.ResetTrigger(_data.AttackName);
+            runner.animator.ResetTrigger(_data.AttackName);
             Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다: {stateInfo.fullPathHash}");
             return NodeState.FAILURE; 
         }
 
-        if (stateInfo.IsName(_data.AttackName))
+        if (stateInfo.IsTag(_data.AttackName))
         {
             if (SO != null) SO.OnUpdate(runner);
         }
@@ -102,7 +102,7 @@ public class Task_NormalAttackNode : Node
         if (Handler.IsActionSO)
         {
             // 현재 재생 중인 애니메이션이 내 공격이 맞는지 재확인
-            if (stateInfo.IsName(_data.AttackName))
+            if (stateInfo.IsTag(_data.AttackName))
             {
                 if (SO != null)
                 {
@@ -162,7 +162,6 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionFinished)
         {
-            Debug.Log($"[Task_NormalAttackNode] Action Finished: {this.name}");
                 return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
             
         }
