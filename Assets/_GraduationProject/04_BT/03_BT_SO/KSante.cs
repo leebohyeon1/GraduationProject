@@ -14,6 +14,7 @@ public class KSante : EnemyUseAnything
     public float rushDuration = 1.0f;   // 돌진이 지속될 총 시간 (초)
     public float turnSpeed = 10f;      // 회전 속도 (도/초)
     // 블랙보드 키
+     public float PushDistance = 5.0f;
     public DamageData AttackDataKnockback;
     private const string KEY_RUSH_DEST = "RushDestination";
     private const string KEY_RUSHBOOL = "RushBool";
@@ -181,14 +182,14 @@ public class KSante : EnemyUseAnything
         // 2. 새로운 목표 지점 계산: 현재 위치에서 바라보는 방향(Forward)으로 5m
         Vector3 currentPos = enemy.transform.position;
         Vector3 pushDir = enemy.transform.forward; // 혹은 (playerPos - myPos).normalized
-        Vector3 newDestination = currentPos + (pushDir * 5.0f);
+        Vector3 newDestination = currentPos + (pushDir * PushDistance);
         enemy.player.transform.parent = enemy.transform;
 
         Vector3 rayOrigin = currentPos + Vector3.up * 0.5f;
 
         RaycastHit hit;
         // maxPushDistance 만큼 앞을 확인
-        if (Physics.Raycast(rayOrigin, pushDir, out hit, 5, obstacleMask))
+        if (Physics.Raycast(rayOrigin, pushDir, out hit, PushDistance, obstacleMask))
         {
             // [벽 발견]
             // 벽 위치(hit.point)에서 wallBuffer만큼 뒤로 뺀 위치를 목표로 설정
@@ -204,7 +205,7 @@ public class KSante : EnemyUseAnything
         else
         {
             // [벽 없음] 최대 거리로 이동
-            newDestination = currentPos + (pushDir * 5);
+            newDestination = currentPos + (pushDir * PushDistance);
         }
 
         // 3. 블랙보드 목표 업데이트
