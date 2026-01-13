@@ -17,7 +17,6 @@ public class Task_NormalAttackNode : Node
     public EnemyUseAnything SO = null;
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
-    // bool isOtherAttacking = false; // [삭제] 불필요한 변수
 
     public override void OnEnter()
     {
@@ -85,7 +84,7 @@ public class Task_NormalAttackNode : Node
         // }
         if (stateInfo.IsTag("Attack") && !stateInfo.IsName(_data.AttackName))
         {
-            runner.animator.ResetTrigger(_data.AttackName);
+            // runner.animator.ResetTrigger(_data.AttackName);
             Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다: {stateInfo.fullPathHash}");
             return NodeState.FAILURE; 
         }

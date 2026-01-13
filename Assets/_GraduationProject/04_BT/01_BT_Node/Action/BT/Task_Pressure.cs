@@ -34,10 +34,10 @@ public class Task_Pressure : Node
         {
             return NodeState.FAILURE;
         }
-        if(runner.animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
-        {
-            return NodeState.FAILURE;
-        }   
+        // if(runner.animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+        // {
+        //     return NodeState.FAILURE;
+        // }   
         if (aiAgent == null) return NodeState.FAILURE;
         
         // 1. 블랙보드 값 확인
