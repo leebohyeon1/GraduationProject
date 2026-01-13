@@ -85,6 +85,7 @@ public class Task_NormalAttackNode : Node
         // }
         if (stateInfo.IsTag("Attack") && !stateInfo.IsName(_data.AttackName))
         {
+            runner.animator.ResetTrigger(_data.AttackName);
             Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다: {stateInfo.fullPathHash}");
             return NodeState.FAILURE; 
         }
@@ -179,7 +180,7 @@ public class Task_NormalAttackNode : Node
         runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
-        
+
         if (SO != null)
         {
             SO.OnExit(runner);
@@ -211,13 +212,30 @@ public class Task_NormalAttackNode : Node
         
         if (SO != null)
         {
-            Handler.EndSO();
             SO.OnExit(runner);
+            Handler.EndSO();
         }
-        
+        Rigidbody rb = runner.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.Teleport(runner.transform.position);
+            ai.canMove = true;      
+            ai.isStopped = false;    
+            ai.maxSpeed = runner.Movement._normalSpeed; 
+            ai.destination = runner.transform.position;
+            if (ai is AIPath aiPath) aiPath.enableRotation = true;
+        }
         var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
         if (RVO != null)
         {
+            Debug.Log("[Task_NormalAttackNode] Abort: RVOController found, unlocking RVO.");
             RVO.locked = false;
             RVO.lockWhenNotMoving = true;
         }
