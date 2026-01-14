@@ -36,6 +36,27 @@ public class BlackBoard
     {
         return _data.ContainsKey(key);
     }
+    #region 블랙보드 전용 Enum 키 버전
+    public void SetValue(EnemyBlackboardKeys key, object value)
+{
+    SetValue(key.ToKey(), value);  // string으로 변환해서 호출
+}
+/// <summary>Enum 키로 값 가져오기</summary>
+public T GetValue<T>(EnemyBlackboardKeys key)
+{
+    return GetValue<T>(key.ToKey());  // string으로 변환해서 호출
+}
+/// <summary>Enum 키로 값 가져오기 (out 버전)</summary>
+public bool GetValue<T>(EnemyBlackboardKeys key, out T value)
+{
+    return GetValue(key.ToKey(), out value);  // string으로 변환해서 호출
+}
+/// <summary>Enum 키가 존재하는지 확인</summary>
+public bool HasKey(EnemyBlackboardKeys key)
+{
+    return HasKey(key.ToKey());  // string으로 변환해서 호출
+}
+#endregion
 
     public void LogAllValues()
     {

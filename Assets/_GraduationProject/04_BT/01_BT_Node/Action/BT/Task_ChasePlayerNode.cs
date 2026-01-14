@@ -11,7 +11,7 @@ public class Task_ChasePlayerNode : Node
     public override void OnEnter()
     {
         aIPath = runner.GetComponent<AIPath>();
-        runner.SetState(Enemy.EnemyState.Chase);
+        runner.SetState(EnemyStateController.EnemyState.Chase);
         runner.aIPath.enableRotation = true;
     }
     protected override NodeState OnUpdate()
@@ -20,7 +20,7 @@ public class Task_ChasePlayerNode : Node
         {
             return NodeState.FAILURE;
         }
-        runner.Movement.StartOrUpdateChase(runner.player.transform.position, Enemy.EnemyState.Chase, speed);
+        runner.Movement.StartOrUpdateChase(runner.player.transform.position, EnemyStateController.EnemyState.Chase, speed);
         float distance = Vector3.Distance(runner.transform.position, runner.player.transform.position);
         if(distance <= Distance)
         {

@@ -14,7 +14,7 @@ public class RandomPatrol : Node
     public float MoveSpeed = 6.0f;
     public override void OnEnter()
     {
-        runner.SetState(Enemy.EnemyState.Patrol);
+        runner.SetState(EnemyStateController.EnemyState.Patrol);
         _aiPath = runner.GetComponent<AIPath>();
         _hasTarget = false;
         _isWaiting = false;
@@ -58,7 +58,7 @@ public class RandomPatrol : Node
                 {
                     targetPos = hitInfo.point;
                 }
-                runner.Movement.StartOrUpdateChase(targetPos, Enemy.EnemyState.Patrol, MoveSpeed);
+                runner.Movement.StartOrUpdateChase(targetPos,   EnemyStateController.EnemyState.Patrol, MoveSpeed);
                 _hasTarget = true;
             }
             if (_hasTarget)

@@ -18,6 +18,11 @@ namespace BehaviorTree
 
         public NodeState Evaluate()
         {
+            if (!runner._initializer.IsInitialized("Final"))
+            {
+                Debug.LogWarning($"[BehaviorTree] Runner {runner.name} is not fully initialized. Node {this.name} evaluation skipped.");
+                return NodeState.FAILURE;
+            }
             if (!isEntered)
             {
                 OnEnter();

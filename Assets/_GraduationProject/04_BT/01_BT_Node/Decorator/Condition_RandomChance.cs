@@ -22,9 +22,7 @@ public class Condition_RandomChance : ConditionNode
         }
 
         brain.StartSkillCooldown(checkName);
-        Debug.Log("[RandomChance] Checking chance: " + successChance + "%");
         bool cnt = Random.Range(0f, 100f) <= successChance;
-        Debug.Log(cnt);
         return cnt;
     }
 

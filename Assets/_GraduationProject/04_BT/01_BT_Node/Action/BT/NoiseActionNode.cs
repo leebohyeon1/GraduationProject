@@ -9,7 +9,7 @@ public class NoiseActionNode : Node
     public AudioClip EnemyCallingSoundClip;
     public override void OnEnter()
     {
-        runner.SetState(Enemy.EnemyState.Noise);
+        runner.SetState(EnemyStateController.EnemyState.Noise);
         runner.Movement.StopMovement();
         runner.AnimationEvent("Noise"); // 애니메이션 이름은 정확히 맞춰주세요
     }

@@ -21,8 +21,7 @@ public class PlayerMoveState : State<Player>
         {
             p_stateMachine.ChangeState<PlayerHitState>();
         }
-
-        if (p_context.Input.MoveInput == Vector2.zero)
+        else if (p_context.Input.MoveInput == Vector2.zero)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
         }

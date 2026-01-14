@@ -45,9 +45,11 @@ public abstract class PlayerAttackBaseState : State<Player>
         {
             p_stateMachine.ChangeState<PlayerHitState>();
         }
+        else
+        {
+            HandleInput();
+        }
 
-
-        HandleInput();
     }
 
     public override void OnExit()

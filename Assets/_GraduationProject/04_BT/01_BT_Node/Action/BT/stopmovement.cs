@@ -25,7 +25,7 @@ public class StopMovement : Node
                 Debug.Log("정면이동");
             }
 
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
             //어색한 부분을 없애기 위해 정면을 도착지로 정함
         }
     }
