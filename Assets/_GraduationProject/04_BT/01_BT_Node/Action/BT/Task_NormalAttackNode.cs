@@ -45,7 +45,6 @@ public class Task_NormalAttackNode : Node
         _didHitPlayer = false;
         _parryEffectPlayed = false;
         _isCooldownDenied = false; // 진입 성공했으므로 false 확인
-
         _data.damageData.AttackerTransform = runner.transform;
         
         runner.AnimationEvent(_data.AttackName);
@@ -84,8 +83,8 @@ public class Task_NormalAttackNode : Node
         // }
         if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
+            Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다. 애니메이션 이름  : {_data.AttackName  }");
             runner.animator.ResetTrigger(_data.AttackName);
-            Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다: {stateInfo.fullPathHash}");
             return NodeState.FAILURE; 
         }
 

@@ -52,6 +52,21 @@ MonoBehaviour:
   maintainAtk: 0
   SO: {fileID: 0}
   ExceptKey: IsAttacking
+--- !u!114 &-7917068014566437409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 1031, y: 50}
+  skillName: totalAttack
+  cooldownDuration: 2
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,11 +81,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 711, y: 230}
   nodes:
+  - {fileID: -7917068014566437409}
   - {fileID: 1811496777038547811}
   - {fileID: 8335210479689113784}
   - {fileID: 3325441546977679017}
   - {fileID: 4489605913624550641}
+  - {fileID: 6933929667489801121}
   services: []
+--- !u!114 &-6261290527910063413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 718, y: -329}
+  skillName: totalAttack
+  cooldownDuration: 2
 --- !u!114 &-6030631403478375727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +172,21 @@ MonoBehaviour:
   key: HasAttackToken
   exceptCondition:
     key: 
+--- !u!114 &-1792391068340430454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 1032, y: 470}
+  skillName: totalAttack
+  cooldownDuration: 2
 --- !u!114 &-700661456820620682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,9 +248,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 458, y: -42}
   nodes:
+  - {fileID: -6261290527910063413}
   - {fileID: 5785559906818792379}
   - {fileID: 1998061911425268077}
   - {fileID: 4441881582081485876}
+  - {fileID: 2948891314232819811}
   - {fileID: 2806539970974443842}
   services: []
 --- !u!114 &1811496777038547811
@@ -271,11 +320,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_Normal Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 726, y: 60}
+  position: {x: 726, y: 127}
   attackKey: Attack02_A1
   maintainAtk: 0
   SO: {fileID: 11400000, guid: 4ce6e35790b1fa9489fac88cf02ce265, type: 2}
   ExceptKey: IsAttacking
+--- !u!114 &2948891314232819811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 726, y: 50}
+  skillName: totalAttack
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,11 +369,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 719, y: 537}
   nodes:
+  - {fileID: -1792391068340430454}
   - {fileID: -4747025815022784661}
   - {fileID: -4091383270736508263}
   - {fileID: -5794056097246212893}
   - {fileID: -8061363964458695047}
+  - {fileID: 3993525684807199370}
   services: []
+--- !u!114 &3993525684807199370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 1032, y: 845}
+  skillName: totalAttack
 --- !u!114 &4027494429244999788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 204, y: -43}
+  position: {x: 203, y: -42}
 --- !u!114 &5785559906818792379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,6 +476,20 @@ MonoBehaviour:
     TargetState: 3
   exceptCondition:
     key: 
+--- !u!114 &6933929667489801121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 1031, y: 431}
+  skillName: totalAttack
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
