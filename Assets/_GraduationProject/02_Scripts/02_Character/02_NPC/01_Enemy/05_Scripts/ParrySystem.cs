@@ -15,6 +15,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
+    
     public enum EnemyState
     {
         Normal,
