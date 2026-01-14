@@ -133,15 +133,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         GetComponent<Animator>().enabled = false;
         _owner.tag = "DeadEnemy";
     }
-    private IEnumerator DieSequence(Vector3 direction)
-    {
 
-        _characterController.enabled = false;
-        _owner.animator.enabled = false;
-        yield return new WaitForSeconds(0.1f);
-        Vector3 combinedForce = (direction * KnockbackForce) + (Vector3.up * upwardForce);
-        yield return new WaitForSeconds(1f);
-    }
     private IEnumerator ActivateImmunityAfterDelay(float delay)
     {
         // 1. 지정된 시간(5초)만큼 대기
@@ -210,8 +202,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
 
-        _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
-
+        
         OnRecoveryHealth?.Invoke(false);
 
         if (Knockbackable)
@@ -226,13 +217,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
         if (Health <= 0)
         {
-            if (_KnockbackCoroutine != null)
-            {
-                StopCoroutine(_KnockbackCoroutine);
-            }
-            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             Die();
-            _KnockbackCoroutine = StartCoroutine(DieSequence(knockbackDir));
 
         }
     }
