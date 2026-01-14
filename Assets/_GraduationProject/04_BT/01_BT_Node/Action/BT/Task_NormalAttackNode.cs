@@ -183,7 +183,30 @@ public class Task_NormalAttackNode : Node
             SO.OnExit(runner);
             Handler.EndSO(); // 혹시 켜져있으면 끄기
         }
-        
+        Rigidbody rb = runner.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.Teleport(runner.transform.position);
+            ai.canMove = true;      
+            ai.isStopped = false;    
+            ai.maxSpeed = runner.Movement._normalSpeed; 
+            ai.destination = runner.transform.position;
+            if (ai is AIPath aiPath) aiPath.enableRotation = true;
+        }
+        var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
+        if (RVO != null)
+        {
+            Debug.Log("[Task_NormalAttackNode] Abort: RVOController found, unlocking RVO.");
+            RVO.locked = false;
+            RVO.lockWhenNotMoving = true;
+        }
         if (!_isCooldownDenied)
         {
             brain.StartSkillCooldown(attackKey);
