@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 721, y: -17}
+  position: {x: 711, y: 69}
   key: IsWallBlocked
   exceptCondition:
     key: 
@@ -81,10 +81,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 711, y: 230}
   nodes:
+  - {fileID: -7917068014566437409}
   - {fileID: 1811496777038547811}
   - {fileID: 8335210479689113784}
   - {fileID: 3325441546977679017}
   - {fileID: 4489605913624550641}
+  - {fileID: 6933929667489801121}
   services: []
 --- !u!114 &-6261290527910063413
 MonoBehaviour:
@@ -98,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 718, y: -329}
+  position: {x: 711, y: -329}
   skillName: totalAttack
   cooldownDuration: 2
 --- !u!114 &-6030631403478375727
@@ -166,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1014, y: 752}
+  position: {x: 1013, y: 752}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -246,10 +248,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 458, y: -42}
   nodes:
+  - {fileID: -6261290527910063413}
   - {fileID: 5785559906818792379}
   - {fileID: 1998061911425268077}
   - {fileID: 4441881582081485876}
   - {fileID: 2806539970974443842}
+  - {fileID: 2948891314232819811}
   services: []
 --- !u!114 &1811496777038547811
 MonoBehaviour:
@@ -316,7 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_Normal Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 726, y: 127}
+  position: {x: 711, y: -8}
   attackKey: Attack02_A1
   maintainAtk: 0
   SO: {fileID: 11400000, guid: 4ce6e35790b1fa9489fac88cf02ce265, type: 2}
@@ -333,7 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 726, y: 50}
+  position: {x: 716, y: 136}
   skillName: totalAttack
 --- !u!114 &3325441546977679017
 MonoBehaviour:
@@ -365,10 +369,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 701, y: 675}
   nodes:
+  - {fileID: -1792391068340430454}
   - {fileID: -4747025815022784661}
   - {fileID: -4091383270736508263}
   - {fileID: -5794056097246212893}
   - {fileID: -8061363964458695047}
+  - {fileID: 3993525684807199370}
   services: []
 --- !u!114 &3993525684807199370
 MonoBehaviour:
@@ -396,7 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_CombatTactics(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 203, y: 37}
+  position: {x: 203, y: 35}
   nodes:
   - {fileID: 1681072726047148729}
   - {fileID: -6030631403478375727}
@@ -532,6 +538,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1031, y: 204}
   target: {fileID: 0}
-  minRange: 2.5
-  maxRange: 3.5
+  minRange: 3.5
+  maxRange: 4.5
   checkType: 0
