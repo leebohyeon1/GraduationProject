@@ -55,8 +55,15 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
                 return false;
             }
         }   
-        _owner.StiffnessSystem.AddStiffness(100);
-        DeactivateImmunity();
+        if(attackType == AttackType.NormalCounter)
+        {
+            DeactivateImmunity();
+        }
+        else
+        {
+            DeactivateImmunity();
+            _owner.StiffnessSystem.AddStiffness(100);
+        }
         return true;
     }
 
