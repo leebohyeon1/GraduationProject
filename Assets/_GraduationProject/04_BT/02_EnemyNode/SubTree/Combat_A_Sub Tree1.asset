@@ -28,7 +28,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 697, y: 830}
+  position: {x: 685, y: 1054}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_SlamAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1032, y: 768}
+  position: {x: 1014, y: 906}
   attackKey: Attack03_A1
   maintainAtk: 0
   SO: {fileID: 0}
@@ -81,12 +81,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 711, y: 230}
   nodes:
-  - {fileID: -7917068014566437409}
   - {fileID: 1811496777038547811}
   - {fileID: 8335210479689113784}
   - {fileID: 3325441546977679017}
   - {fileID: 4489605913624550641}
-  - {fileID: 6933929667489801121}
   services: []
 --- !u!114 &-6261290527910063413
 MonoBehaviour:
@@ -132,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1032, y: 691}
+  position: {x: 1014, y: 829}
   target: {fileID: 0}
   minRange: 4
   maxRange: 5
@@ -149,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1031, y: 536}
+  position: {x: 1013, y: 674}
   stateCondition:
     Key: CurrentStatus
     Operator: 1
@@ -168,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1032, y: 614}
+  position: {x: 1014, y: 752}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -184,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1032, y: 470}
+  position: {x: 1005, y: 590}
   skillName: totalAttack
   cooldownDuration: 2
 --- !u!114 &-700661456820620682
@@ -217,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Pressure(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 696, y: 908}
+  position: {x: 684, y: 1132}
   nodes:
   - {fileID: 2554010000721168745}
   services: []
@@ -248,11 +246,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 458, y: -42}
   nodes:
-  - {fileID: -6261290527910063413}
   - {fileID: 5785559906818792379}
   - {fileID: 1998061911425268077}
   - {fileID: 4441881582081485876}
-  - {fileID: 2948891314232819811}
   - {fileID: 2806539970974443842}
   services: []
 --- !u!114 &1811496777038547811
@@ -303,7 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Task_Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 966, y: 908}
+  position: {x: 893, y: 1134}
   Pos_Key: PressurePos
   MoveSpeed: 2
   StoppingDist: 0.5
@@ -367,14 +363,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_SlamAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 719, y: 537}
+  position: {x: 701, y: 675}
   nodes:
-  - {fileID: -1792391068340430454}
   - {fileID: -4747025815022784661}
   - {fileID: -4091383270736508263}
   - {fileID: -5794056097246212893}
   - {fileID: -8061363964458695047}
-  - {fileID: 3993525684807199370}
   services: []
 --- !u!114 &3993525684807199370
 MonoBehaviour:
@@ -388,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1032, y: 845}
+  position: {x: 1014, y: 983}
   skillName: totalAttack
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -502,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 479, y: 863}
+  position: {x: 467, y: 1087}
   nodes:
   - {fileID: -8069466620819224126}
   - {fileID: -335546641203014191}
