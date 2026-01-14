@@ -1,6 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
+using Pathfinding.RVO;
 
 public class Task_Pressure : Node
 {
@@ -15,12 +16,10 @@ public class Task_Pressure : Node
         base.OnEnter();
         aiAgent = runner.GetComponent<IAstarAI>();
         
-
         if (aiAgent == null)
         {
             return;
         }
-
         aiAgent.maxSpeed = MoveSpeed;
         if (aiAgent is AIPath aiPath) {
             aiPath.endReachedDistance = StoppingDist;
@@ -55,19 +54,19 @@ public class Task_Pressure : Node
         // aiAgent.destination = targetPos;
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
         RotateTowardsPlayer();
-        
+        runner.Movement.UpdateStrafeAnim();
         // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)
         // Debug.Log($"[Action_Run] 목표: {targetPos} | 현재: {runner.transform.position} | 남은거리: {Vector3.Distance(runner.transform.position, targetPos)}");
 
         // 3. 도착 확인 로그
         if (aiAgent.reachedEndOfPath)
         {
-            Debug.Log($"[Action_Success] 도착 완료! (Pos: {targetPos})");
             return NodeState.SUCCESS;
         }
 
         return NodeState.RUNNING;
     }
+
     public override void Abort()
     {
         base.Abort();
