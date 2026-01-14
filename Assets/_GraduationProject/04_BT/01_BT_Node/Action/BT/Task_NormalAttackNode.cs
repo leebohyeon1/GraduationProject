@@ -190,6 +190,7 @@ public class Task_NormalAttackNode : Node
             brain.StartSkillCooldown(attackKey);
         }
         runner.ParrySystem.DeactivateImmunity();
+        
     }
 
     public override void Abort()

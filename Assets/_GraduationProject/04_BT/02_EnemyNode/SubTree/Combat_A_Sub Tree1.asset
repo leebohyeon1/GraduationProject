@@ -67,9 +67,9 @@ MonoBehaviour:
   position: {x: 714, y: 230}
   nodes:
   - {fileID: 1811496777038547811}
-  - {fileID: 3325441546977679017}
   - {fileID: 8335210479689113784}
   - {fileID: 2818379902901682789}
+  - {fileID: 3325441546977679017}
   - {fileID: 4489605913624550641}
   services: []
 --- !u!114 &-6030631403478375727
@@ -86,7 +86,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 459, y: 230}
   nodes:
-  - {fileID: -7154228387633228831}
   - {fileID: 3428122175870849780}
   services: []
 --- !u!114 &-5794056097246212893
@@ -158,7 +157,7 @@ MonoBehaviour:
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
   services:
-  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  - {fileID: 8279960542052063534, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
 --- !u!114 &-335546641203014191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
   m_Name: Combat_A_Sub Tree1
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
-  rootNode: {fileID: 8279960542052063534}
+  rootNode: {fileID: -700661456820620682}
 --- !u!114 &1681072726047148729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_ChasePlayer
   m_EditorClassIdentifier: Assembly-CSharp::ChasePlayerNode
-  position: {x: 1034, y: 364}
+  position: {x: 1034, y: 281}
   Distance: 2
   speed: 4
 --- !u!114 &3325441546977679017
@@ -287,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1035, y: 206}
+  position: {x: 1034, y: 364}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -324,7 +323,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 203, y: 37}
   nodes:
-  - {fileID: 1681072726047148729}
   - {fileID: -6030631403478375727}
   - {fileID: 8237416307744218084}
   services: []
@@ -340,7 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 713, y: -2}
+  position: {x: 714, y: 0}
   floatCondition:
     key: DistanceToTarget
     Operator: 1
@@ -425,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: -64, y: 169}
+  position: {x: -48, y: 76}
   UpdateInterval: 0.1
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget
@@ -442,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1034, y: 284}
+  position: {x: 1034, y: 204}
   target: {fileID: 0}
   minRange: 2.5
   maxRange: 3.5
