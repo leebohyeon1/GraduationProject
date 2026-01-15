@@ -182,7 +182,7 @@ public class Task_NormalAttackNode : Node
                     if (SO[i] != null)
                     {
                         Debug.Log($"Using SO: {SO[i].name} after hitting player.");
-                        SO[i].UseSomeThing(runner, _didHitPlayer);
+                        SO[i].UseSomeThing(runner);
                     }
                 }
             }
