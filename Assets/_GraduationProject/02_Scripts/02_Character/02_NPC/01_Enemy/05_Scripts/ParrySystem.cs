@@ -67,8 +67,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         else
         {
             Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
-            DeactivateImmunity();
             _owner.StiffnessSystem.AddStiffness(100);
+            DeactivateImmunity();
         }
         return true;
     }
@@ -114,6 +114,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ActivateMinorImmunity()
     {
         // 소경직 면역 활성화
+        Debug.Log("[ParrySystem] 소경직 면역이 활성화되었습니다.");
         _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.Minor);
     }
 
@@ -127,5 +128,6 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     {
         // 면역 해제
         _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.None);
+        Debug.Log("[ParrySystem] 면역이 해제되었습니다.:"+ _owner.EnemyHealth._currentImmunityLevel);
     }
 }

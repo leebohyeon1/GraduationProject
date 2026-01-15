@@ -22,8 +22,7 @@ public class LoopAction : EnemyUseAnything
     {
         timer += Time.deltaTime;
         if(timer >= ExitTime)
-        {
-            Debug.Log   ("[LoopAction] Exit Loop Action");
+        { 
             runner.AnimationBool(AnimationBool, true);
         }
         return runner;

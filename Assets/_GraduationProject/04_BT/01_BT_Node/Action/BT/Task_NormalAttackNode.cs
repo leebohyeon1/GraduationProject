@@ -183,15 +183,12 @@ public class Task_NormalAttackNode : Node
         }
         if (stateInfo.IsTag(_data.AttackName))
         {
-        Debug.Log($"_didHitPlayer: {_didHitPlayer}, LoopAttack: {LoopAttack}, nodename{this.name}");
             if (_didHitPlayer & LoopAttack)
             {
                 for(int i = 0; i < SO.Length; i++)
                 {
-                    Debug.Log($"Checking SO[{SO[i].name}] after hitting player.");
                     if (SO[i] != null)
                     {
-                        Debug.Log($"Using SO: {SO[i].name} after hitting player.");
                         SO[i].UseSomeThing(runner);
                     }
                 }

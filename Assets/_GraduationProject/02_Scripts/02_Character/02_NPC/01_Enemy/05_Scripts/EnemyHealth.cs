@@ -7,7 +7,8 @@ using UnityEngine.TextCore.Text;
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStat enemyStat;
-    private ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
+    public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
+
     public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
 
@@ -50,8 +51,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
     public void SetImmunityLevel(ImmunityLevel level)
     {
-        if (level > _currentImmunityLevel)
+        if (level != _currentImmunityLevel)
             _currentImmunityLevel = level;
+        if(level == ImmunityLevel.None && _delayCoroutine != null)
+        {
+            StopCoroutine(_delayCoroutine);
+            _delayCoroutine = null;
+        }
     }
     private bool IsImmuneToHitReaction(AttackType incomingAttackType)
     {
