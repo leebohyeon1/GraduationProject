@@ -38,7 +38,7 @@ public class Task_BackStep : Node
         _dashDirection = -runner.transform.forward;
 
         // 3. 상태 및 애니메이션 설정
-        runner.SetState(Enemy.EnemyState.Rush); // 혹은 Evasion 등 적절한 상태
+        runner.SetState(EnemyStateController.EnemyState.Rush); // 혹은 Evasion 등 적절한 상태
         runner.AnimationEvent(animationTrigger);
         
         // (선택) 시작 시 순간적인 힘을 원한다면 여기서 처리 가능하지만, 
@@ -91,7 +91,7 @@ public class Task_BackStep : Node
 
         // 2. 상태 초기화
         runner.Movement.StopMovement(); // 잔여 속도 제거
-        runner.SetState(Enemy.EnemyState.Idle);
+        runner.SetState(EnemyStateController.EnemyState.Idle);
     }
 
     public override Node Clone()

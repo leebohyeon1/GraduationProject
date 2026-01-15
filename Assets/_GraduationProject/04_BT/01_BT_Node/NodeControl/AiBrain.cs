@@ -9,7 +9,7 @@ public class AiBrain
     private Enemy _owner;
     private Player _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
-    public Enemy.EnemyState CurrentState => _owner.CurrentState;
+    public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
     public Coroutine lateUpdateCoroutine;
     public AiBrain(Enemy ai)
     {
@@ -18,8 +18,8 @@ public class AiBrain
         blackboard = new BlackBoard();
         _player = _owner.player;
 
-        blackboard.SetValue("HomePosition", _owner.StartPos);
-        blackboard.SetValue("Self", _owner.gameObject);
+        blackboard.SetValue(EnemyBlackboardKeys.HomePosition, _owner.StartPos);
+        blackboard.SetValue(EnemyBlackboardKeys.Self, _owner.gameObject);
         lateUpdateCoroutine = _owner.StartCoroutine(TickCoroutine());
     }
 
@@ -35,9 +35,9 @@ public class AiBrain
             {
                 
                 bool IsHasLOS = CheckPlayerVisibility();
-                blackboard.SetValue("IsHasLOS", IsHasLOS);
+                blackboard.SetValue(EnemyBlackboardKeys.IsHasLOS, IsHasLOS);
                 bool OnPlayerLooking = PlayerVisibilityEnemy();
-                blackboard.SetValue("OnPlayerLooking", OnPlayerLooking);
+                blackboard.SetValue(EnemyBlackboardKeys.OnPlayerLooking, OnPlayerLooking);
                 // counter++;
                 // if (counter >= 10)
                 // {
@@ -53,8 +53,8 @@ public class AiBrain
     {
         Vector3 toPlayer = _player.transform.position - _owner.transform.position;
         float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
-        blackboard.SetValue("DistanceBetween", distance);
-        blackboard.SetValue("DetectPlayer", distance <= _owner.enemyStat.DetectRange);
+        blackboard.SetValue(EnemyBlackboardKeys.DistanceBetween, distance);
+        blackboard.SetValue(EnemyBlackboardKeys.DetectPlayer, distance <= _owner.enemyStat.DetectRange);
         if(distance > _owner.enemyStat.CircleSeeRange)
         {
             return true;
@@ -67,7 +67,7 @@ public class AiBrain
         {
             return false;
         }
-        blackboard.SetValue("LastPlayerPos", _player.transform.position);
+        blackboard.SetValue(EnemyBlackboardKeys.LastPlayerPos, _player.transform.position);
         return true;
     }
     private bool PlayerVisibilityEnemy()
@@ -95,10 +95,10 @@ public class AiBrain
     {
         switch (CurrentState)
         {
-            case Enemy.EnemyState.Attack:
-            case Enemy.EnemyState.Rush:
-            case Enemy.EnemyState.Stunned:
-            case Enemy.EnemyState.Die:
+            case EnemyStateController.EnemyState.Attack:
+            case EnemyStateController.EnemyState.Rush:
+            case EnemyStateController.EnemyState.Stunned:
+            case EnemyStateController.EnemyState.Die:
                 return true; // 이 상태에서는 행동을 중단할 수 없습니다.
             default:
                 return false; // Idle, Patrol 등은 행동을 중단할 수 있습니다.
@@ -134,7 +134,7 @@ public class AiBrain
     {
         _isCombat = combat;
 
-        blackboard.SetValue("IsPlayerDetected", _isCombat);
+        blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
 
         
         if (_isCombat)
@@ -145,7 +145,7 @@ public class AiBrain
     }
     public void SurroundTarget(bool surround = true)
     {
-        blackboard.SetValue("IsSurrounding", surround);
+        blackboard.SetValue(EnemyBlackboardKeys.IsSurrounding, surround);
     }
     public void AddEnemyAttackData(EnemyAttackData enemyAttackData)
     {

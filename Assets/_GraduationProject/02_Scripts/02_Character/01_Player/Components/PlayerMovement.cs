@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 이동, 회전, 중력 등 물리적인 움직임을 담당하는 컴포넌트입니다.
 /// </summary>
-public class PlayerMovement : MonoBehaviour, IDisposable
+public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 {
     #region Private Fields
     private CharacterController _characterController; // 캐릭터 컨트롤러
@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public float LastDodgeTime => _lastDodgeTime;
     public bool HasTargetRotation => _hasTargetRotation;
     #endregion
+
+    public event Action<bool> Dragged;
 
     /// <summary>
     /// 초기화 함수
@@ -221,6 +223,21 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         }
     }
     #endregion
+
+    #region Drag
+
+    public void Drag()
+    {
+        Dragged?.Invoke(true);
+    }
+
+    public void Drop()
+    {
+        Dragged?.Invoke(false);
+    }
+
+    #endregion
+
 
     #region Event
     #endregion

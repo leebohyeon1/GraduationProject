@@ -66,7 +66,7 @@ public class StateCondition
     public StateOperator Operator;
 
     [Tooltip("비교할 대상 상태")]
-    public Enemy.EnemyState TargetState; // Enemy.cs 안에 정의된 EnemyState Enum
+    public EnemyStateController.EnemyState TargetState; // Enemy.cs 안에 정의된 EnemyState Enum
 
     public bool isCondition(BlackBoard blackboard)
     {
@@ -75,9 +75,9 @@ public class StateCondition
             Debug.LogWarning($"[StateCondition] 키 '{Key}'가 블랙보드에 존재하지 않습니다.");
             return false;
         }
-        if (!blackboard.GetValue<Enemy.EnemyState>(Key, out Enemy.EnemyState actualState))
+        if (!blackboard.GetValue<EnemyStateController.EnemyState>(Key, out EnemyStateController.EnemyState actualState))
         {
-            Debug.LogWarning($"[StateCondition] 키 '{Key}'를 찾을 수 없거나 타입이 Enemy.EnemyState가 아닙니다.");
+            Debug.LogWarning($"[StateCondition] 키 '{Key}'를 찾을 수 없거나 타입이 EnemyState가 아닙니다.");
             return false;
         }
 

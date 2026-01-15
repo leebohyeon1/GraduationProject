@@ -99,6 +99,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.LockOnTargetChangeVector2Event += LockOnTargetChangeVector2Event;
 
         _inputReader.InteractEvent += OnInteract;
+        _inputReader.PotionEvent += OnPotion;
 
     }
     
@@ -125,6 +126,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.LockOnTargetChangeVector2Event -= LockOnTargetChangeVector2Event;
 
         _inputReader.InteractEvent -= OnInteract;
+        _inputReader.PotionEvent -= OnPotion;
     }
     
     private void OnDestroy()
@@ -174,8 +176,8 @@ public class PlayerInputHandler : MonoBehaviour
     private void LockOnTargetChangeVector2Event(Vector2 vector2) => _lockOnTargetChangeVector2Input = vector2;
 
     private void OnInteract() => _InteractInput = true;
+    private void OnPotion() => _potionInput = true;
 
-    
 
     /// <summary>
     /// 매 프레임 마지막에 호출되어 일회성 입력 상태를 초기화합니다.

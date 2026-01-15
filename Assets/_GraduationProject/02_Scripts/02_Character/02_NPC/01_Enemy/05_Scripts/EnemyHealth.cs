@@ -128,7 +128,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
-        _owner.SetState(Enemy.EnemyState.Die);
+        _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
         GetComponent<Animator>().enabled = false;
         _owner.tag = "DeadEnemy";
@@ -164,7 +164,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void TakeDamage(DamageData damageData)
     {
         if (Health <= 0) return;
-        _owner._aiController._aiBrain.blackboard.SetValue("OnTakeHit", true);
+        _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
         if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
         {
@@ -179,7 +179,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             // 액션(공격 등) 중이 아닐 때만 히트 모션 취함
             if (!_owner._aiController.IsActionable())
             {
-                _owner.SetState(Enemy.EnemyState.Hit);
+                _owner.SetState(EnemyStateController.EnemyState.Hit);
                 _owner.AnimationEvent("Hit");
             }
         }
@@ -208,7 +208,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
-        _owner._aiController._aiBrain.blackboard.SetValue("SelfHealth", curHealth);
+        _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
 
         _owner.StiffnessSystem.AddStiffness(damageData.StiffnessAmount);
 

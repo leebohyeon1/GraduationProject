@@ -13,10 +13,10 @@ public class Stun : Node
     protected override NodeState OnUpdate()
     {
         // runner.player.ApplyStun(2);
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
+        if (runner.CurrentState == EnemyStateController.EnemyState.Rush)
         {
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
         }
         // runner.player.GetComponent<IDamageable>().TakeDamage(Damage, runner.heatSystem.GetTier(), damageData);
@@ -28,10 +28,10 @@ public class Stun : Node
     {
         base.Abort();
         // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
-        if (runner.CurrentState == Enemy.EnemyState.Rush)
+        if (runner.CurrentState == EnemyStateController.EnemyState.Rush)
         {
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);
-            runner.SetState(Enemy.EnemyState.Idle);
+            runner.SetState(EnemyStateController.EnemyState.Idle);
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
 
         }

@@ -33,15 +33,7 @@ public class PlayerChargeState : State<Player>
             p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
         }
 
-        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
-        {
-            p_stateMachine.ChangeState<PlayerHitState>();
-        }
-        
-        if (_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
-        {
-            p_stateMachine.ChangeState<PlayerChargeAttackState>();
-        }
+      
 
         p_context.Stamina.UseStamina(p_context.Stats.RuntimeData.CombatData.ChargeStamina * Time.deltaTime);
 
@@ -77,9 +69,15 @@ public class PlayerChargeState : State<Player>
             p_context.Animator.SetFloat("Y", 0);
         }
 
-
-        // 입력에 따른 상태 전환
-        if (!p_context.Input.AttackHeldInput)
+        if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
+        {
+            p_stateMachine.ChangeState<PlayerHitState>();
+        }
+        else if (_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
+        {
+            p_stateMachine.ChangeState<PlayerChargeAttackState>();
+        }
+        else if (!p_context.Input.AttackHeldInput)  // 입력에 따른 상태 전환
         {
             if (_chargeLevel > 0)
             {
