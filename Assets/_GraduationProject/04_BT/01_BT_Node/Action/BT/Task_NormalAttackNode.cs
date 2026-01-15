@@ -18,17 +18,22 @@ public class Task_NormalAttackNode : Node
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
     public bool LoopAttack = false;
-
+    bool OtherAttackAnimationPlaying = false;
     public override void OnEnter()
     {
-
+        
         // 데이터 로드
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
             Debug.LogError("No Attack Data Found for key: " + attackKey);
             return;
         }
-
+        if (runner._animationBridge.IsAttacking)
+        {
+            Debug.LogWarning("attack act : " + this.name);
+            OtherAttackAnimationPlaying = true;
+            return;
+        }
         // 스턴 체크
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
@@ -57,8 +62,9 @@ public class Task_NormalAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
-        if (_data == null || _isCooldownDenied)
+        if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
+            Debug.LogWarning("Attack Data is null or cooldown denied or other attack animation is playing.");
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
             return NodeState.FAILURE;
         }
@@ -66,6 +72,7 @@ public class Task_NormalAttackNode : Node
         // 스턴 체크
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
             return NodeState.FAILURE;
         }
 
@@ -164,9 +171,9 @@ public class Task_NormalAttackNode : Node
                 }
             }
         }
-        Debug.Log($"_didHitPlayer: {_didHitPlayer}, LoopAttack: {LoopAttack}, nodename{this.name}");
         if (stateInfo.IsTag(_data.AttackName))
         {
+        Debug.Log($"_didHitPlayer: {_didHitPlayer}, LoopAttack: {LoopAttack}, nodename{this.name}");
             if (_didHitPlayer & LoopAttack)
             {
                 for(int i = 0; i < SO.Length; i++)
