@@ -103,8 +103,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
                     _stats.ParrySet.Add(parryable);
                 }
 
-                Debug.Log("상쇄");
-                parryable.Parry(damageData.AttackType);
+                if(_stats.IsChage)
+                {
+                    parryable.Parry(AttackType.Heavy);
+                }
+                else
+                {
+                    parryable.Parry(AttackType.NormalCounter);
+                }
+
                 return;
             }
         }
