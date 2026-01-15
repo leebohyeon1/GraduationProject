@@ -7,7 +7,8 @@ using UnityEngine.TextCore.Text;
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStat enemyStat;
-    private ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
+    public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
+
     public int Health => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
 
@@ -50,8 +51,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
     public void SetImmunityLevel(ImmunityLevel level)
     {
-        if (level > _currentImmunityLevel)
+        if (level != _currentImmunityLevel)
             _currentImmunityLevel = level;
+        if(level == ImmunityLevel.None && _delayCoroutine != null)
+        {
+            StopCoroutine(_delayCoroutine);
+            _delayCoroutine = null;
+        }
     }
     private bool IsImmuneToHitReaction(AttackType incomingAttackType)
     {
@@ -174,7 +180,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         // 면역이 아닐 때만! -> 피격 애니메이션 재생
         if (!isImmune)
         {
-            Debug.Log("[EnemyHealth] 피격 애니메이션 재생");
             // 액션(공격 등) 중이 아닐 때만 히트 모션 취함
             if (!_owner._aiController.IsActionable())
             {

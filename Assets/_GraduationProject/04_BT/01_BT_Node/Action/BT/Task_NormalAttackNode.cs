@@ -18,17 +18,25 @@ public class Task_NormalAttackNode : Node
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
     public bool LoopAttack = false;
+    bool OtherAttackAnimationPlaying = false;
 
+    private float _nodeEntryTime; 
+    private const float TRANSITION_BUFFER = 0.4f;
     public override void OnEnter()
     {
-
+        _nodeEntryTime = Time.time;
         // 데이터 로드
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
             Debug.LogError("No Attack Data Found for key: " + attackKey);
             return;
         }
-
+        if (runner._animationBridge.IsAttacking)
+        {
+            Debug.LogWarning("attack act : " + this.name);
+            OtherAttackAnimationPlaying = true;
+            return;
+        }
         // 스턴 체크
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
@@ -47,9 +55,8 @@ public class Task_NormalAttackNode : Node
         _parryEffectPlayed = false;
         _isCooldownDenied = false; // 진입 성공했으므로 false 확인
         _data.damageData.AttackerTransform = runner.transform;
-
         runner.AnimationEvent(_data.AttackName);
-
+        runner.SetState(EnemyStateController.EnemyState.Attack);
         runner.SetCurrentAttackData(_data);
         runner.Movement.StopMovement();
 
@@ -57,8 +64,9 @@ public class Task_NormalAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
-        if (_data == null || _isCooldownDenied)
+        if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
+            Debug.LogWarning("Attack Data is null or cooldown denied or other attack animation is playing.");
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
             return NodeState.FAILURE;
         }
@@ -66,13 +74,22 @@ public class Task_NormalAttackNode : Node
         // 스턴 체크
         if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
         {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
             return NodeState.FAILURE;
         }
-
+        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.Stunned)
+        {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
+            return NodeState.FAILURE;
+        }
         if (runner.animator.IsInTransition(0))
         {
             // 전환 중 발생하는 이벤트는 찌꺼기일 확률이 높으므로 무시 및 초기화
             Handler.ResetAllFlags();
+            return NodeState.RUNNING;
+        }
+        if (Time.time - _nodeEntryTime < TRANSITION_BUFFER)
+        {
             return NodeState.RUNNING;
         }
 
@@ -84,7 +101,8 @@ public class Task_NormalAttackNode : Node
         // }
         if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다. 애니메이션 이름  : {_data.AttackName}");
+            AnimatorClipInfo[] currentClipInfo = runner.animator.GetCurrentAnimatorClipInfo(0);
+            Debug.LogWarning($"[Task_NormalAttackNode] 지정된 공격이 아닙니다. 애니메이션 이름 : {_data.AttackName} , 현재 애니메이션{currentClipInfo[0].clip.name}");
             runner.animator.ResetTrigger(_data.AttackName);
             return NodeState.FAILURE;
         }
@@ -131,7 +149,6 @@ public class Task_NormalAttackNode : Node
         if (Handler.IsActive)
         {
             tracking = true;
-            runner.SetState(EnemyStateController.EnemyState.Attack);
         }
         else
         {
@@ -164,18 +181,15 @@ public class Task_NormalAttackNode : Node
                 }
             }
         }
-        Debug.Log($"_didHitPlayer: {_didHitPlayer}, LoopAttack: {LoopAttack}, nodename{this.name}");
         if (stateInfo.IsTag(_data.AttackName))
         {
             if (_didHitPlayer & LoopAttack)
             {
                 for(int i = 0; i < SO.Length; i++)
                 {
-                    Debug.Log($"Checking SO[{SO[i].name}] after hitting player.");
                     if (SO[i] != null)
                     {
-                        Debug.Log($"Using SO: {SO[i].name} after hitting player.");
-                        SO[i].UseSomeThing(runner, _didHitPlayer);
+                        SO[i].UseSomeThing(runner);
                     }
                 }
             }
