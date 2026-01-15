@@ -10,6 +10,8 @@ public class Mon_Stiffness : StiffnessSystem
     }
     protected override void OnLightStagger()
     {
+        _owner.ParrySystem.ApplyWeakStun(_weakStiffnessDuration);
+        _owner.ParrySystem.SetCounterAttack(true);
     }
     protected override void OnHeavyStagger()
     {

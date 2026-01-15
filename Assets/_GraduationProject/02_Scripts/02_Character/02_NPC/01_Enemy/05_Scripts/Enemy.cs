@@ -86,9 +86,14 @@ public class Enemy : MonoBehaviour
     }
     public void AnimationBool(string boolName, bool value)
     {
+        Debug.Log($"AnimationBool {boolName} set to {value}");
+        Debug.Log($"_animationBridge is {_animationBridge}");
         _animationBridge?.SetBool(boolName, value);
     }
     public float NormalSpeed => enemyStat.MoveSpeed;
+
+    public bool AnimationBasedMovement ;
+
     public void StopMovement()
     {
         blackboard.SetValue(EnemyBlackboardKeys.StopMovement, true);

@@ -47,11 +47,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_ChargeAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1032, y: 768}
+  position: {x: 1031, y: 768}
   attackKey: Attack03_a
   maintainAtk: 0
-  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  SO:
+  - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   ExceptKey: 
+  LoopAttack: 1
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerVulnerable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 736, y: 20}
+  position: {x: 737, y: 20}
   key: IsPlayerVulnerable
   exceptCondition:
     key: 
@@ -425,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Condition_StartSkillCooldonw(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 728, y: -222}
+  position: {x: 726, y: -220}
   skillName: BackStep
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -480,8 +483,10 @@ MonoBehaviour:
   position: {x: 1351, y: 409}
   attackKey: Attack01_a
   maintainAtk: 0
-  SO: {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  SO:
+  - {fileID: 0}
   ExceptKey: IsAttacking
+  LoopAttack: 0
 --- !u!114 &5099860071830320573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,8 +567,10 @@ MonoBehaviour:
   position: {x: 736, y: 97}
   attackKey: Attack02_a
   maintainAtk: 0
-  SO: {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
+  SO:
+  - {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
   ExceptKey: IsAttacking
+  LoopAttack: 0
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using UnityEditor.Build.Pipeline;
 using UnityEngine;
     public enum ImmunityLevel
 {
@@ -14,6 +15,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
+    
     public enum EnemyState
     {
         Normal,
@@ -55,8 +57,16 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
                 return false;
             }
         }   
-        _owner.StiffnessSystem.AddStiffness(100);
-        DeactivateImmunity();
+        if(attackType == AttackType.NormalCounter)
+        {
+            _owner.StiffnessSystem.AddStiffness(0);
+            DeactivateImmunity();
+        }
+        else
+        {
+            DeactivateImmunity();
+            _owner.StiffnessSystem.AddStiffness(100);
+        }
         return true;
     }
 
@@ -78,10 +88,19 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
         CurrentState = EnemyState.Stunned;
     }
-
+    public void ApplyWeakStun(float stunDuration)
+    {
+        if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        _isStunned = true;
+        _stunExitTime = Time.time + stunDuration;
+        _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
+        _owner.animator.SetBool("WeakStun", true); // 스턴 애니메이션 트리거
+        CurrentState = EnemyState.Stunned;
+    }
     public void ClearStun()
     {
         _owner.animator.SetBool("Stun", false);
+        _owner.animator.SetBool("WeakStun", false);
         _isStunned = false;
         CurrentState = EnemyState.StunnedExit;
     }
