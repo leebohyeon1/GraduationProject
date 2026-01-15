@@ -77,7 +77,11 @@ public class Task_NormalAttackNode : Node
             Debug.LogWarning("Enemy is stunned, cannot perform attack.");
             return NodeState.FAILURE;
         }
-
+        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.Stunned)
+        {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
+            return NodeState.FAILURE;
+        }
         if (runner.animator.IsInTransition(0))
         {
             // 전환 중 발생하는 이벤트는 찌꺼기일 확률이 높으므로 무시 및 초기화
