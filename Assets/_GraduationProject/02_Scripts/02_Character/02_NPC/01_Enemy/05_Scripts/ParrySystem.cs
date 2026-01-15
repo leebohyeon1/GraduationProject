@@ -54,16 +54,19 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         {
             if(_owner.EnemyHealth.CheckStunImmunity(attackType))
             {
+                Debug.Log("[ParrySystem] 면역 상태로 인해 경직이 적용되지 않았습니다.");
                 return false;
             }
         }   
         if(attackType == AttackType.NormalCounter)
         {
+            Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
             _owner.StiffnessSystem.AddStiffness(0);
             DeactivateImmunity();
         }
         else
         {
+            Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
             DeactivateImmunity();
             _owner.StiffnessSystem.AddStiffness(100);
         }

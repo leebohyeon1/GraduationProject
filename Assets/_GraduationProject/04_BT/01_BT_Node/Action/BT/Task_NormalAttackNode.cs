@@ -19,9 +19,12 @@ public class Task_NormalAttackNode : Node
     public string ExceptKey = "IsAttacking";
     public bool LoopAttack = false;
     bool OtherAttackAnimationPlaying = false;
+
+    private float _nodeEntryTime; 
+    private const float TRANSITION_BUFFER = 0.4f;
     public override void OnEnter()
     {
-        
+        _nodeEntryTime = Time.time;
         // 데이터 로드
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
@@ -52,9 +55,8 @@ public class Task_NormalAttackNode : Node
         _parryEffectPlayed = false;
         _isCooldownDenied = false; // 진입 성공했으므로 false 확인
         _data.damageData.AttackerTransform = runner.transform;
-
         runner.AnimationEvent(_data.AttackName);
-
+        runner.SetState(EnemyStateController.EnemyState.Attack);
         runner.SetCurrentAttackData(_data);
         runner.Movement.StopMovement();
 
@@ -82,6 +84,10 @@ public class Task_NormalAttackNode : Node
             Handler.ResetAllFlags();
             return NodeState.RUNNING;
         }
+        if (Time.time - _nodeEntryTime < TRANSITION_BUFFER)
+        {
+            return NodeState.RUNNING;
+        }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         // if(!stateInfo.IsTag("Attack") )
@@ -91,7 +97,8 @@ public class Task_NormalAttackNode : Node
         // }
         if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 지정된 공격이 아닙니다. 애니메이션 이름  : {_data.AttackName}");
+            AnimatorClipInfo[] currentClipInfo = runner.animator.GetCurrentAnimatorClipInfo(0);
+            Debug.LogWarning($"[Task_NormalAttackNode] 지정된 공격이 아닙니다. 애니메이션 이름 : {_data.AttackName} , 현재 애니메이션{currentClipInfo[0].clip.name}");
             runner.animator.ResetTrigger(_data.AttackName);
             return NodeState.FAILURE;
         }
@@ -138,7 +145,6 @@ public class Task_NormalAttackNode : Node
         if (Handler.IsActive)
         {
             tracking = true;
-            runner.SetState(EnemyStateController.EnemyState.Attack);
         }
         else
         {
