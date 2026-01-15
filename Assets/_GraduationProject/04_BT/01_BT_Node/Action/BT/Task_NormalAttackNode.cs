@@ -17,6 +17,7 @@ public class Task_NormalAttackNode : Node
     public EnemyUseAnything[] SO = null;
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
+    public bool LoopAttack = false;
 
     public override void OnEnter()
     {
@@ -51,6 +52,7 @@ public class Task_NormalAttackNode : Node
 
         runner.SetCurrentAttackData(_data);
         runner.Movement.StopMovement();
+
     }
 
     protected override NodeState OnUpdate()
@@ -146,7 +148,7 @@ public class Task_NormalAttackNode : Node
 
             Collider[] hitColliders = GetHitColliders(attackOrigin);
             brain.blackboard.SetValue(ExceptKey, true);
-
+            
             foreach (var col in hitColliders)
             {
                 if (col.gameObject == runner.gameObject) continue;
@@ -154,6 +156,7 @@ public class Task_NormalAttackNode : Node
                 {
                     Character.TakeDamage(_data.damageData);
                     _didHitPlayer = true;
+                    
                     if (!maintainAtk)
                     {
                         Handler.CloseHitWindow();
@@ -161,7 +164,22 @@ public class Task_NormalAttackNode : Node
                 }
             }
         }
-
+        Debug.Log($"_didHitPlayer: {_didHitPlayer}, LoopAttack: {LoopAttack}, nodename{this.name}");
+        if (stateInfo.IsTag(_data.AttackName))
+        {
+            if (_didHitPlayer & LoopAttack)
+            {
+                for(int i = 0; i < SO.Length; i++)
+                {
+                    Debug.Log($"Checking SO[{SO[i].name}] after hitting player.");
+                    if (SO[i] != null)
+                    {
+                        Debug.Log($"Using SO: {SO[i].name} after hitting player.");
+                        SO[i].UseSomeThing(runner, _didHitPlayer);
+                    }
+                }
+            }
+        }
         if (Handler.IsHitWindowOpen && !_parryEffectPlayed)
         {
             Handler.CloseHitWindow();
@@ -226,7 +244,6 @@ public class Task_NormalAttackNode : Node
 
     public override void Abort()
     {
-        Debug.Log($"[Task_NormalAttackNode] Abort: {this.name}");
 
         // OnExit과 동일한 정리 로직 수행
         tracking = false;
@@ -267,7 +284,6 @@ public class Task_NormalAttackNode : Node
         var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
         if (RVO != null)
         {
-            Debug.Log("[Task_NormalAttackNode] Abort: RVOController found, unlocking RVO.");
             RVO.locked = false;
             RVO.lockWhenNotMoving = true;
         }
@@ -278,6 +294,9 @@ public class Task_NormalAttackNode : Node
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
         node.maintainAtk = this.maintainAtk;
+        node.SO = this.SO;
+        node.ExceptKey = this.ExceptKey;
+        node.LoopAttack = this.LoopAttack;
         // SO는 ScriptableObject라 공유되어도 되지만, 필요하다면 복제
         // node.SO = this.SO; 
         return node;
