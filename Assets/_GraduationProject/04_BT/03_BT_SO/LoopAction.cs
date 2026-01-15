@@ -7,7 +7,6 @@ public class LoopAction : EnemyUseAnything
     public float ExitTime = 5;
     public override T OnEnter<T>(T runner)
     {
-        timer = 0;
         return runner;
         
     }
@@ -24,6 +23,7 @@ public class LoopAction : EnemyUseAnything
         timer += Time.deltaTime;
         if(timer >= ExitTime)
         {
+            Debug.Log   ("[LoopAction] Exit Loop Action");
             runner.AnimationBool(AnimationBool, true);
         }
         return runner;
