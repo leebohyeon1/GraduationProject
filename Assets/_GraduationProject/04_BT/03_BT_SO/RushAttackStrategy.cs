@@ -8,7 +8,6 @@ public class RushAttackStrategy : EnemyUseAnything
     public float rushSpeed = 15f;    
     public float stopDistance = 1.0f;
     bool endStrategy = false;
-    Transform targetLocation = null;
     public float speed = 6;
 
     // [상태값] 돌진이 멈췄는지 여부 등은 '인스턴스'가 필요하지만, 
@@ -27,7 +26,6 @@ public class RushAttackStrategy : EnemyUseAnything
             aiPath.maxSpeed = rushSpeed;
             aiPath.enableRotation = false;
             endStrategy = false;
-            targetLocation = runner.player.transform;
         }
         return runner;
          // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
@@ -45,7 +43,7 @@ public class RushAttackStrategy : EnemyUseAnything
         
         if (dist > stopDistance && !runner.animHandler.IsHitWindowOpen && !endStrategy)
         {
-             runner.Movement.StartOrUpdateChase(runner.player.transform.position, EnemyStateController.EnemyState.Chase, speed);
+             runner.Movement.StartRush(runner.player.transform.position, speed);
              // 회전 로직 등...
         }
         else
