@@ -20,9 +20,10 @@ public class KSante : EnemyUseAnything
     private const string KEY_RUSHBOOL = "RushBool";
     private const string KEY_RUSH_START_TIME = "RushStartTime"; // [추가] 시작 시간 저장용
     private const string KEY_HAS_HIT = "HasHitPlayer"; // [추가] 중복 충돌 방지용
-        public override T OnEnter<T>(T runner)
+    public override T OnEnter<T>(T runner)
     {
-        if(!runner._aiController._aiBrain.blackboard.GetValue<bool>(KEY_RUSHBOOL))
+        var blackboard = runner._aiController._aiBrain.blackboard;
+        if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
         {
             return runner; 
         }
@@ -49,12 +50,11 @@ public class KSante : EnemyUseAnything
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
         Vector3 finalDestination = playerPos + (dir * overshootDist) + offset;
-        var board = enemy._aiController._aiBrain.blackboard;
         // 3. 블랙보드 데이터 설정
-        board.SetValue(KEY_RUSH_DEST, finalDestination);
-        board.SetValue(KEY_RUSHBOOL, false);
-        board.SetValue(KEY_HAS_HIT, false); // [추가] 충돌 상태 초기화
-        board.SetValue(KEY_RUSH_START_TIME, Time.time);
+        blackboard.SetValue(KEY_RUSH_DEST, finalDestination);
+        blackboard.SetValue(KEY_RUSHBOOL, false);
+        blackboard.SetValue(KEY_HAS_HIT, false); // [추가] 충돌 상태 초기화
+        blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
         
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
         // [로그 1] 시작 데이터 (Cyan 색상)
