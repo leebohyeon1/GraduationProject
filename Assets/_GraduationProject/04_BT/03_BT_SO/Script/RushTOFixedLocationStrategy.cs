@@ -23,7 +23,8 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
 
     public override T OnEnter<T>(T runner)
     {
-        if(!runner._aiController._aiBrain.blackboard.GetValue<bool>(KEY_RUSHBOOL))
+        var blackboard = runner._aiController._aiBrain.blackboard;
+        if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
         {
             return runner; 
         }
@@ -52,11 +53,11 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         Vector3 finalDestination = playerPos + (dir * overshootDist) + offset;
 
         // 3. 블랙보드 데이터 설정
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_DEST, finalDestination);
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSHBOOL, false);
+        blackboard.SetValue(KEY_RUSH_DEST, finalDestination);
+        blackboard.SetValue(KEY_RUSHBOOL, false);
         
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
+        blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
         
         runner.aIPath.enableRotation = false;
 

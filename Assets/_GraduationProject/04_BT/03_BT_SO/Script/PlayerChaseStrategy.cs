@@ -24,7 +24,9 @@ public class PlayerChaseStrategy : EnemyUseAnything
 
     public override T OnEnter<T>(T runner)
     {
-        if (!runner._aiController._aiBrain.blackboard.GetValue<bool>(KEY_RUSHBOOL))
+        var blackboard = runner._aiController._aiBrain.blackboard;
+        if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
+
         {
             return runner;
         }
@@ -42,10 +44,10 @@ public class PlayerChaseStrategy : EnemyUseAnything
 
         // 2. 초기 이동 방향 설정 (현재 적이 바라보는 방향)
         Vector3 initialDir = enemy.transform.forward;
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_VELOCITY_DIR, initialDir);
+        blackboard.SetValue(KEY_RUSH_VELOCITY_DIR, initialDir);
         
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSHBOOL, false);
-        enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
+        blackboard.SetValue(KEY_RUSHBOOL, false);
+        blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
 
         runner.aIPath.enableRotation = false; // A* 회전 비활성화
         runner.Movement.StopMovement();
