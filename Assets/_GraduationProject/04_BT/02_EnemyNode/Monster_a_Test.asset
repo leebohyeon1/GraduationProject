@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Idle
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 261, y: 158}
+  position: {x: 261, y: 206}
   subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 494, y: -87}
+  position: {x: 491, y: -140}
 --- !u!114 &-7610850223706687289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Stun
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 264, y: -110}
+  position: {x: 261, y: -163}
   nodes:
   - {fileID: 8701554609853382117}
   - {fileID: -7778356412862204304}
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Reset
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 261, y: -12}
+  position: {x: 261, y: 36}
   subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
 --- !u!114 &-5667558639043742383
 MonoBehaviour:
@@ -179,6 +179,22 @@ MonoBehaviour:
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
   rootNode: {fileID: 1254360389698641468}
+--- !u!114 &193999242879699279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: KeyCh
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 276, y: -63}
+  nodes:
+  - {fileID: 2225612242746855301}
+  services: []
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 261, y: 69}
+  position: {x: 261, y: 117}
   subTreeToRun: {fileID: 11400000, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
 --- !u!114 &1254360389698641468
 MonoBehaviour:
@@ -208,6 +224,7 @@ MonoBehaviour:
   position: {x: 30, y: 4}
   nodes:
   - {fileID: -7610850223706687289}
+  - {fileID: 193999242879699279}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
   - {fileID: -8025809362345536030}
@@ -230,6 +247,25 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &2225612242746855301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: KeyCheck
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 453, y: -63}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 0
+    TargetState: 9
+  exceptCondition:
+    key: 
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
   m_Name: Condition_Is Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 494, y: -176}
+  position: {x: 491, y: -229}
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0

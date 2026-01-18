@@ -97,7 +97,6 @@ public class AiBrain
         {
             case EnemyStateController.EnemyState.Attack:
             case EnemyStateController.EnemyState.Rush:
-            case EnemyStateController.EnemyState.Stunned:
             case EnemyStateController.EnemyState.Die:
                 return true; // 이 상태에서는 행동을 중단할 수 없습니다.
             default:

@@ -18,7 +18,7 @@ public class PlayerParryState : PlayerAttackBaseState
 
     }
     protected override string p_animationTrigger => "Parry";
-    protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.CurrentAttackData.AttackConfig;
+    protected override PlayerAttackConfig p_AttackConfig => p_context.Stats.RuntimeData.CombatData.NormalParryAttackConfig;
 
 
     public override void OnEnter()
@@ -87,10 +87,7 @@ public class PlayerParryState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
-        PlayerAttackConfig attackConfig = p_AttackConfig;
-        attackConfig.AttackType = AttackType.NormalCounter;
-
-        Collider[] colliders = p_context.Combat.ExecuteAttack(attackConfig);
+        Collider[] colliders = p_context.Combat.ExecuteAttack(p_AttackConfig);
 
         foreach (Collider collider in colliders)
         {

@@ -29,14 +29,17 @@ public class Task_Pressure : Node
 
     protected override NodeState OnUpdate()
     {
+        if(runner._animationBridge.IsAttacking)
+        {
+
+        Debug.Log($"[{runner.name} 공격애니메.");
+            return NodeState.FAILURE;
+        }   
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
+        Debug.Log($"[{runner.name} 공격스테이트.");
             return NodeState.FAILURE;
         }
-        // if(runner.animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
-        // {
-        //     return NodeState.FAILURE;
-        // }   
         if (aiAgent == null) return NodeState.FAILURE;
         
         // 1. 블랙보드 값 확인
@@ -71,6 +74,11 @@ public class Task_Pressure : Node
     {
         base.Abort();
         Debug.Log($"[Action_Abort] {runner.name} 압박 이동 노드 중단됨.");
+        runner.Movement.StopMovement();
+    }
+    public override void OnExit()
+    {
+        base.OnExit();
         runner.Movement.StopMovement();
     }
     private void RotateTowardsPlayer()
