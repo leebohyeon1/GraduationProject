@@ -7,17 +7,13 @@ public class PlayerHpUI : MonoBehaviour
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private Image _hpImage;
 
-    private void OnEnable()
-    {
-        _playerHealth.OnHealthChanged += UpdateHpUI;
-    }
-    
     private void Start()
     {
+        _playerHealth.OnHealthChanged += UpdateHpUI;
         _hpImage.fillAmount = (float)_playerHealth.Health / _playerHealth.MaxHealth;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         _playerHealth.OnHealthChanged -= UpdateHpUI;
     }   
