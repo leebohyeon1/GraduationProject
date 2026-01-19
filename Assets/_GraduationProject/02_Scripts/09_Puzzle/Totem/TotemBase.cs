@@ -7,25 +7,26 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     [Header("Base Settings")]
     [SerializeField] protected float _moveSpeed = 10f;
     [SerializeField] protected TotemType _type;
+    [SerializeField] protected bool _isMovable = true; // 이동 가능 여부 (기본값 true)
     
     protected Vector2Int _startGridPos;
     protected Vector2Int _currentGridPos;
     protected TotemState _state = TotemState.Idle;
     
-    // IDamageable Events
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
 
     public bool IsDead => _state == TotemState.Destroyed;
     
-    // IDamageable Properties
     public int Health => 1;
     public int MaxHealth => 1;
     public bool IsInvincible => false;
+    
+    // 외부에서 설정 가능하도록 프로퍼티 제공
+    public bool IsMovable { get => _isMovable; set => _isMovable = value; }
 
     protected virtual void Awake()
     {
-        // 초기화 시점 로직 필요 시 작성
     }
 
     protected virtual void Start()
@@ -43,12 +44,24 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
     public void TakeDamage(DamageData damageData)
     {
+        // 이동 불가능한 토템이면 반응 안 함 (흔들림도 X 혹은 흔들림 O?)
+        // 보통 고정 벽은 때려도 꿈쩍 않는 게 자연스러움.
+        if (!_isMovable) 
+        {
+            // OnHitBlocked(); // 필요하면 흔들림 추가
+            return;
+        }
+
         if (_state != TotemState.Idle && _state != TotemState.Destroyed) return;
         if (IsDead) return;
 
+        if (!IsChargedAttack(damageData.AttackType))
+        {
+            OnHitBlocked();
+            return;
+        }
+
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
-        
-        // 4방향(Cardinal) 판정으로 복구
         Vector2Int moveDir = GetCardinalDirection(incomingDir);
 
         if (moveDir == Vector2Int.zero) return;
@@ -62,6 +75,14 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         }
 
         StartCoroutine(SlideToPosition(targetGridPos));
+    }
+
+    private bool IsChargedAttack(AttackType type)
+    {
+        return type == AttackType.Charge1 || 
+               type == AttackType.Charge2 || 
+               type == AttackType.Charge3 || 
+               type == AttackType.Heavy;
     }
 
     private System.Collections.IEnumerator SlideToPosition(Vector2Int targetGridPos)
@@ -101,7 +122,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         transform.DOShakePosition(0.3f, 0.2f);
     }
 
-    // 4방향 벡터 변환 (X, Z 중 더 큰 축을 선택)
     private Vector2Int GetCardinalDirection(Vector3 dir)
     {
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
