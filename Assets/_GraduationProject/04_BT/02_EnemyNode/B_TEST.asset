@@ -271,6 +271,7 @@ MonoBehaviour:
   position: {x: 379, y: 413}
   Radius: 15
   Delay: 2
+  MoveSpeed: 6
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,7 +461,10 @@ MonoBehaviour:
   position: {x: 1521, y: 144}
   attackKey: 
   maintainAtk: 0
-  SO: {fileID: 0}
+  SO:
+  - {fileID: 0}
+  ExceptKey: IsAttacking
+  LoopAttack: 0
 --- !u!114 &2818389067996432150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,14 +596,17 @@ MonoBehaviour:
   m_Name: Task_Set Black Board
   m_EditorClassIdentifier: Assembly-CSharp::Task_SetBlackBoard
   position: {x: 579, y: -212}
-  key: Distance
-  valueType: 3
-  intValue: 0
-  floatValue: 0
-  boolValue: 0
-  vector3Value: {x: 0, y: 0, z: 0}
-  stringValue: 
-  transformObjectValue: {fileID: 0}
+  Utils:
+    inputType: 1
+    enumKey: 0
+    stringKey: 
+    valueType: 2
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector3Value: {x: 0, y: 0, z: 0}
+    stringValue: 
+    transformObjectValue: {fileID: 0}
 --- !u!114 &6108192575178470743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,6 +740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1546, y: -1011}
   Distance: 3
+  speed: 4
 --- !u!114 &8581566141182817877
 MonoBehaviour:
   m_ObjectHideFlags: 0
