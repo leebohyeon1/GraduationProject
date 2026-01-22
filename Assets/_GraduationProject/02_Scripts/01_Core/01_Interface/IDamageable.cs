@@ -70,10 +70,8 @@ public enum AttackType
 {
     Normal,
     NormalCounter,
-    Heavy,
-    Range,
-    Charge1,
-    Charge2,
-    Charge3,
+    Heavy1,
+    Heavy2,
+    Heavy3,
+    Absoluteness,
 }
-
