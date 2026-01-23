@@ -69,6 +69,7 @@ public class PlayerCombatData
     [Header("Attack")]
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
     public List<PlayerAttackData> AttackDatas; // 일반 공격 데이터 배열
+    public PlayerAttackConfig NormalParryAttackConfig; // 일반 패링 공격 설정
 
     [Header("ChargeAttack")]
     public float ChargeMoveSpeed; 

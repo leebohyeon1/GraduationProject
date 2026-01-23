@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: PlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
   MaxHealth: 100
-  MaxStamina: 9999
+  MaxPotion: 3
+  PotionHealAmount: 40
+  MaxStamina: 100
   StaminaRegenPerSecond: 15
   ObstacleLayerMask:
     serializedVersion: 2
@@ -836,6 +838,65 @@ MonoBehaviour:
             m_RotationOrder: 4
           KnockBackDuration: 0.1
           KnockBackForce: 21
+    NormalParryAttackConfig:
+      AttackType: 1
+      AttackStamina: 20
+      AttackMoveDistance: 2
+      RotateSpeed: 20
+      AttackMoveDuration: 2
+      AttackMoveCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackDamage: 10
+      StiffnessAmount: 10
+      AttackRadius: {x: 3, y: 2, z: 2.5}
+      KnockBackCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      KnockBackDuration: 0.1
+      KnockBackForce: 8
     ChargeMoveSpeed: 1
     ChargeRotateSpeed: 5
     ChargeStamina: 3

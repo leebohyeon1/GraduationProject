@@ -133,8 +133,8 @@ public class EnemyInitializer : MonoBehaviour
         InitializeStateController();
         InitializeAnimationSystem();
         InitializeBillboardUI();
-        InitializeHealthSystem(skipCache);
         InitializeParrySystem(skipCache);
+        InitializeHealthSystem(skipCache);
         InitializeStiffnessSystem(skipCache);
         InitializeSpecialAbility(skipCache);
         MarkInitialized("Components");
