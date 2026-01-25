@@ -32,6 +32,17 @@ public class BlackBoard
         value = default(T);
         return false;
     }
+    public T GetValueOrDefault<T>(string key, T defaultValue)
+{
+    if (_data.TryGetValue(key, out object value))
+    {
+        if (value is T)
+        {
+            return (T)value;
+        }
+    }
+    return defaultValue;
+}
     public bool HasKey(string key)
     {
         return _data.ContainsKey(key);

@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using UnityEditor.Build.Pipeline;
 using UnityEngine;
     public enum ImmunityLevel
 {
@@ -14,6 +15,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     float _stunExitTime = -Mathf.Infinity;
     public bool _isStunned { get; private set; } = false;
     public float StunExitTime => _stunExitTime;
+    
     public enum EnemyState
     {
         Normal,
@@ -52,11 +54,22 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         {
             if(_owner.EnemyHealth.CheckStunImmunity(attackType))
             {
+                Debug.Log("[ParrySystem] 면역 상태로 인해 경직이 적용되지 않았습니다.");
                 return false;
             }
         }   
-        _owner.StiffnessSystem.AddStiffness(100);
-        DeactivateImmunity();
+        if(attackType == AttackType.NormalCounter)
+        {
+            Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
+            _owner.StiffnessSystem.AddStiffness(0);
+            DeactivateImmunity();
+        }
+        else
+        {
+            Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
+            _owner.StiffnessSystem.AddStiffness(100);
+            DeactivateImmunity();
+        }
         return true;
     }
 
@@ -78,10 +91,19 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
         CurrentState = EnemyState.Stunned;
     }
-
+    public void ApplyWeakStun(float stunDuration)
+    {
+        if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        _isStunned = true;
+        _stunExitTime = Time.time + stunDuration;
+        _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
+        _owner.animator.SetBool("WeakStun", true); // 스턴 애니메이션 트리거
+        CurrentState = EnemyState.Stunned;
+    }
     public void ClearStun()
     {
         _owner.animator.SetBool("Stun", false);
+        _owner.animator.SetBool("WeakStun", false);
         _isStunned = false;
         CurrentState = EnemyState.StunnedExit;
     }
@@ -92,6 +114,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ActivateMinorImmunity()
     {
         // 소경직 면역 활성화
+        Debug.Log("[ParrySystem] 소경직 면역이 활성화되었습니다.");
         _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.Minor);
     }
 
@@ -105,5 +128,6 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     {
         // 면역 해제
         _owner.EnemyHealth.SetImmunityLevel(ImmunityLevel.None);
+        Debug.Log("[ParrySystem] 면역이 해제되었습니다.:"+ _owner.EnemyHealth._currentImmunityLevel);
     }
 }

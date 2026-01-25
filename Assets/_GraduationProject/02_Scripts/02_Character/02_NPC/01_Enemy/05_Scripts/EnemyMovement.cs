@@ -8,8 +8,8 @@ public class EnemyMovement
     private Enemy _runner;
     AIPath aIPath;
     Rigidbody rb;
-    Animator animator;
     private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
+    
     public float _normalSpeed {get; private set; } = 2f;
     public EnemyMovement(Enemy enemy)
     {
@@ -17,7 +17,6 @@ public class EnemyMovement
         _normalSpeed = _runner.NormalSpeed;
         aIPath = _runner.GetComponent<AIPath>();
         aIPath.maxSpeed = _normalSpeed;
-        animator = _runner.animator;
         rb = _runner.GetComponent<Rigidbody>();
     }
 
@@ -52,6 +51,15 @@ public class EnemyMovement
         aIPath.destination = newTarget;
         
         aIPath.isStopped = false;
+    }
+    
+    public void UpdateStrafeAnim()
+    {
+        if(!_runner.AnimationBasedMovement) return;
+        Vector3 worldVelocity = aIPath.velocity;
+        Vector3 localVelocity = _runner.transform.InverseTransformDirection(worldVelocity);
+        _runner.animator.SetFloat("InputX", localVelocity.x / aIPath.maxSpeed , 0.1f, Time.deltaTime);
+        _runner.animator.SetFloat("InputZ", localVelocity.z / aIPath.maxSpeed , 0.1f, Time.deltaTime);
     }
 
     // Transform을 받는 오버로딩 버전도 유지
