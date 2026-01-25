@@ -64,6 +64,7 @@ public class PassingDashStrategy : EnemyUseAnything
     {
         Enemy enemy = runner as Enemy;
         if (enemy == null) return runner;
+        if(enemy._aiController._aiBrain.blackboard.HasKey(KEY_DASH_TARGET_POS) == false) return runner;
 
         // 1. 목표 지점 가져오기
         Vector3 targetPos = enemy._aiController._aiBrain.blackboard.GetValue<Vector3>(KEY_DASH_TARGET_POS);
@@ -112,8 +113,7 @@ public class PassingDashStrategy : EnemyUseAnything
 
     public override T OnExit<T>(T runner)
     {
-        StopDash(runner as Enemy);
-        runner._aiController._aiBrain.blackboard.SetValue(KEY_DASH_TARGET_POS, null);
+        // StopDash(runner as Enemy);
         return runner;
     }
 
@@ -124,6 +124,8 @@ public class PassingDashStrategy : EnemyUseAnything
         // 물리 초기화
         Rigidbody rb = enemy.GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = Vector3.zero;
+        enemy._aiController._aiBrain.blackboard.RemoveKey(KEY_DASH_TARGET_POS);
+        enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
 
         // AI 복구
         IAstarAI ai = enemy.GetComponent<IAstarAI>();

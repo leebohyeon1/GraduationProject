@@ -13,7 +13,6 @@ public class Task_NormalAttackNode : Node
     [Tooltip("공격 성공 여부를 저장할 블랙보드 키 이름")]
     private EnemyAttackData _data;
     bool tracking = false;
-    bool _parryEffectPlayed = false;
     public EnemyUseAnything[] SO = null;
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
@@ -53,7 +52,6 @@ public class Task_NormalAttackNode : Node
         Handler.ResetAllFlags();
         // [변경] 블랙보드 초기화 (공격 시작 시 '명중 안 함'으로 설정)
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
-        _parryEffectPlayed = false;
         _isCooldownDenied = false; // 진입 성공했으므로 false 확인
         _data.damageData.AttackerTransform = runner.transform;
         runner.AnimationEvent(_data.AttackName);
@@ -94,16 +92,10 @@ public class Task_NormalAttackNode : Node
         }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
-        // if(!stateInfo.IsTag("Attack") )
-        // {
-        //     Debug.LogWarning($"[Task_NormalAttackNode] 현재 애니메이션이 공격 태그가 아닙니다: {stateInfo.fullPathHash}");
-        //     return NodeState.FAILURE; 
-        // }
+
         if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
             AnimatorClipInfo[] currentClipInfo = runner.animator.GetCurrentAnimatorClipInfo(0);
-            Debug.LogWarning($"[Task_NormalAttackNode] 지정된 공격이 아닙니다. 애니메이션 이름 : {_data.AttackName} , 현재 애니메이션{currentClipInfo[0].clip.name}");
-            runner.animator.ResetTrigger(_data.AttackName);
             return NodeState.FAILURE;
         }
 
@@ -162,7 +154,6 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsHitWindowOpen)
         {
-
             Collider[] hitColliders = GetHitColliders(attackOrigin);
             brain.blackboard.SetValue(ExceptKey, true);
             
@@ -194,11 +185,6 @@ public class Task_NormalAttackNode : Node
                     }
                 }
             }
-        }
-        if (Handler.IsHitWindowOpen && !_parryEffectPlayed)
-        {
-            Handler.CloseHitWindow();
-            _parryEffectPlayed = true;
         }
 
         if (Handler.IsActionFinished)
@@ -269,8 +255,6 @@ public class Task_NormalAttackNode : Node
         runner.SetState(EnemyStateController.EnemyState.Idle);
         brain.blackboard.SetValue(ExceptKey, false);
         runner.aIPath.enableRotation = true;
-
-        if (!_parryEffectPlayed) _parryEffectPlayed = true;
 
 
         for (int i = 0; i < SO.Length; i++)
