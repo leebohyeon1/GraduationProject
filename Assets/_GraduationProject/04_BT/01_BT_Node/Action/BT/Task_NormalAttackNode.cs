@@ -10,7 +10,7 @@ public class Task_NormalAttackNode : Node
     [Header("Attack Properties")]
     public string attackKey;
     public bool maintainAtk;
-    private bool _didHitPlayer;
+    [Tooltip("공격 성공 여부를 저장할 블랙보드 키 이름")]
     private EnemyAttackData _data;
     bool tracking = false;
     bool _parryEffectPlayed = false;
@@ -51,7 +51,8 @@ public class Task_NormalAttackNode : Node
         }
 
         Handler.ResetAllFlags();
-        _didHitPlayer = false;
+        // [변경] 블랙보드 초기화 (공격 시작 시 '명중 안 함'으로 설정)
+        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
         _parryEffectPlayed = false;
         _isCooldownDenied = false; // 진입 성공했으므로 false 확인
         _data.damageData.AttackerTransform = runner.transform;
@@ -171,7 +172,7 @@ public class Task_NormalAttackNode : Node
                 if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
                 {
                     Character.TakeDamage(_data.damageData);
-                    _didHitPlayer = true;
+                    brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                     
                     if (!maintainAtk)
                     {
@@ -182,7 +183,8 @@ public class Task_NormalAttackNode : Node
         }
         if (stateInfo.IsTag(_data.AttackName))
         {
-            if (_didHitPlayer & LoopAttack)
+            bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
+            if (hasHit & LoopAttack)
             {
                 for(int i = 0; i < SO.Length; i++)
                 {
@@ -201,12 +203,14 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionFinished)
         {
-            return _didHitPlayer ? NodeState.SUCCESS : NodeState.FAILURE;
+            bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
+            return hasHit ? NodeState.SUCCESS : NodeState.FAILURE;
 
         }
 
         return NodeState.RUNNING;
     }
+    
     public override void OnExit()
     {
         tracking = false;
