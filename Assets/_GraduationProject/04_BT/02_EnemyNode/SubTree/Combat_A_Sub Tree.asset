@@ -223,7 +223,6 @@ MonoBehaviour:
   - {fileID: 5099860071830320573}
   - {fileID: -4140156646422702466}
   - {fileID: -3955425885467282472}
-  - {fileID: 7513341714229683203}
   services: []
 --- !u!114 &-1894843701333497225
 MonoBehaviour:
@@ -582,7 +581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
   position: {x: 1181, y: -456}
   child: {fileID: -8249379415562615602}
---- !u!114 &7513341714229683203
+--- !u!114 &7277324819824967324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -591,16 +590,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_LeapAttack(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1164, y: 95}
-  attackKey: Attack02_a
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
-  ExceptKey: IsAttacking
-  LoopAttack: 0
+  m_Script: {fileID: 11500000, guid: 868d6069a6a2a4e4a8b5d8a346c9c798, type: 3}
+  m_Name: Task_Flee From Target
+  m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
+  position: {x: 0, y: 0}
+  fleeDistance: 5
+  fleeSpeed: 5
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
