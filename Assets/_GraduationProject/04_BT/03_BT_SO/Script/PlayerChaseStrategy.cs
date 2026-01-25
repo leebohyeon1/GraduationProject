@@ -25,8 +25,8 @@ public class PlayerChaseStrategy : EnemyUseAnything
     public override T OnEnter<T>(T runner)
     {
         var blackboard = runner._aiController._aiBrain.blackboard;
-        if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
 
+        if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
         {
             return runner;
         }
@@ -57,12 +57,16 @@ public class PlayerChaseStrategy : EnemyUseAnything
 
     public override T OnUpdate<T>(T runner)
     {
+        if (!runner._aiController._aiBrain.blackboard.HasKey(KEY_RUSH_START_TIME))
+        {
+            // 아직 세팅이 안 된 상태이므로 로직을 수행하지 않고 리턴
+            return runner;
+        }
         // 종료 조건 체크 (외부에서 불리언을 켰을 경우)
         if (runner._aiController._aiBrain.blackboard.GetValue<bool>(KEY_RUSHBOOL))
         {
             return runner;
         }
-
         Enemy enemy = runner as Enemy;
         if (enemy == null || enemy.player == null) return runner;
 
