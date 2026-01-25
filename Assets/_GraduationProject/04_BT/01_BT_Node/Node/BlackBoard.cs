@@ -47,6 +47,13 @@ public class BlackBoard
     {
         return _data.ContainsKey(key);
     }
+    public void RemoveKey(string key)
+    {
+        if (_data.ContainsKey(key))
+        {
+            _data.Remove(key);
+        }
+    }
     #region 블랙보드 전용 Enum 키 버전
     public void SetValue(EnemyBlackboardKeys key, object value)
 {
