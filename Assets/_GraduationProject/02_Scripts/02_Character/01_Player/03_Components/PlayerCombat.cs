@@ -17,7 +17,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
 
     [Header("Charge")]
-    private int _chargeLevel;   // 차지 레벨
+    private int _chargeLevel = -1;   // 차지 레벨
     
     [Header("Counter")]
     private bool _isCounterable = false;          // 상쇄 가능 여부

@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeavyCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Data.HeavyCounterAttackConfigList[p_owner.Combat.ChargeLevel - 1].AttackConfig;
+    protected override PlayerAttackConfig p_AttackConfig => p_owner.Data.HeavyCounterAttackConfigList[p_owner.Combat.ChargeLevel].AttackConfig;
      
     public PlayerHeavyCounterState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -86,8 +86,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                 p_owner.Combat.AddCounterEnemy(parryable);
             }
         }
-
-        p_owner.InputHandler.SetAttackHeldInput(false);
     }
     #endregion
 }

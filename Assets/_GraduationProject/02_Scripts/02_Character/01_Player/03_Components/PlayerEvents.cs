@@ -92,6 +92,7 @@ public class PlayerEvents
 
     #region Charge
     private event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
+    private event Action<int> ChargeLevelCompleted;                     // 차지 레벨 완료 이벤트
 
     /// <summary>
     /// 차지 시작 이벤트 발행
@@ -108,6 +109,15 @@ public class PlayerEvents
     {
         ChargeFinished?.Invoke();
     }
+
+    /// <summary>
+    /// 차지 레벨 완료 이벤트 발행
+    /// </summary>
+    /// <param name="chargeLevel">차지 레벨</param>
+    public void TriggerChargeLevelCompleted(int chargeLevel)
+    {
+        ChargeLevelCompleted?.Invoke(chargeLevel);
+    }
     #endregion
 
     #region Parry
@@ -123,6 +133,14 @@ public class PlayerEvents
     }
 
     /// <summary>
+    /// 패링 검사 종료 이벤트 발행
+    /// </summary>
+    public void TriggerCounterWindowFinished()
+    {
+        CounterWindowFinished?.Invoke();
+    }
+
+    /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
     public void TriggerCounterSucceeded(Transform transform)
@@ -130,13 +148,6 @@ public class PlayerEvents
         CounterSucceeded?.Invoke(transform);
     }
 
-    /// <summary>
-    /// 패링 검사 종료 이벤트 발행
-    /// </summary>
-    public void TriggerCounterWindowFinished()
-    {
-        CounterWindowFinished?.Invoke();
-    }
     #endregion
 
     public event Action<bool> RegenStamina; // 스테미나 회복 이벤트

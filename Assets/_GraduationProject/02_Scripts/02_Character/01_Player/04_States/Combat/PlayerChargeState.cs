@@ -19,10 +19,6 @@ public class PlayerChargeState : PlayerBaseState
         base.OnEnter();
 
         Debug.Log("Enter Charge State");
-        //p_owner.Combat.IsCharge = true;
-
-        //p_owner.Stats.ChargeLevel = 0;
-        _chargeTimer = 0f;   
     }
 
     public override void OnUpdate()
@@ -30,13 +26,16 @@ public class PlayerChargeState : PlayerBaseState
         base.OnUpdate();
 
         _chargeTimer += Time.deltaTime;
-        if(_chargeLevel < p_owner.Data.HeavyCounterAttackConfigList.Count && 
-            _chargeTimer >= p_owner.Data.HeavyCounterAttackConfigList[_chargeLevel].ChargeTime)
+
+        // 차지 레벨이 차지 카운터 리스트 갯수보다 작고, 다음 차지 시간이 지났으면
+        if(_chargeLevel < (p_owner.Data.HeavyCounterAttackConfigList.Count - 1) && 
+            _chargeTimer >= p_owner.Data.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
         {
-            // p_owner.Stats.ChargeLevel++;
-            // p_context.Events.TriggerChargeLevelFeedback(_chargeLevel);
+            p_owner.Combat.IncreaseChargeLevel();
+            p_owner.Events.TriggerChargeLevelCompleted(_chargeLevel);
         }
 
+        // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Data.ChargeStamina * Time.deltaTime);
 
         //if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
@@ -106,14 +105,15 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.OnExit();
 
-        p_owner.Events.TriggerBattleStateChanged(true);
-        p_owner.Events.TriggerChargeFinshed();
     }
 
     #region Setup Function
     protected override void SetupStats()
     {
         base.SetupStats();
+
+        p_owner.Combat.ResetChargeLevel();
+        _chargeTimer = 0f;
     }
 
     protected override void SetupAnimator()
@@ -121,6 +121,43 @@ public class PlayerChargeState : PlayerBaseState
         base.SetupAnimator();
 
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Charge);
+        p_animator.SetTrigger("ChargeStart");
     }
+    #endregion
+
+    #region Clear Function
+    protected override void ClearStats()
+    {
+        base.ClearStats();
+
+        p_owner.Events.TriggerBattleStateChanged(true);
+        p_owner.Events.TriggerChargeFinshed();
+
+        _chargeTimer = 0f;
+    }
+
+    #endregion
+
+    #region Input
+    /// <summary>
+    /// 차지 종료 입력
+    /// </summary>
+    protected override void OnChargeCancel()
+    {
+        base.OnChargeCancel();
+
+        if (p_owner.Combat.ChargeLevel > 0)
+        {
+            p_stateMachine.ChangeState<PlayerHeavyCounterState>();
+        }
+        else
+        {
+            // 차지 레벨을 채우지 못한 레벨 초기화
+            p_owner.Combat.ResetChargeLevel();
+
+            p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        }
+    }
+
     #endregion
 }

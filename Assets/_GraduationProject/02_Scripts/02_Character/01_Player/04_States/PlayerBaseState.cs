@@ -77,6 +77,7 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.NormalAttackEvent += OnAttack;
         p_owner.InputReader.NormalCounterEvent += OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent += OnChargeStart;
+        p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
     }
     /// <summary>
     /// 능력치 설정 함수
@@ -107,6 +108,7 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.NormalAttackEvent -= OnAttack;
         p_owner.InputReader.NormalCounterEvent -= OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent -= OnChargeStart;
+        p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
     }
     /// <summary>
     /// 능력치 해제 함수
@@ -163,7 +165,12 @@ public abstract class PlayerBaseState : IState
     /// <summary>
     /// 차지 시작 입력 처리
     /// </summary>
-    protected virtual void OnChargeStart() { }    
+    protected virtual void OnChargeStart() { }
+
+    /// <summary>
+    /// 차지 종료 입력 처리
+    /// </summary>
+    protected virtual void OnChargeCancel() { }
     #endregion
 }
 

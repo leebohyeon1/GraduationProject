@@ -88,8 +88,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                 p_owner.Combat.AddCounterEnemy(parryable);
             }
         }
-
-        p_owner.InputHandler.SetAttackHeldInput(false);
     }
     #endregion
 }

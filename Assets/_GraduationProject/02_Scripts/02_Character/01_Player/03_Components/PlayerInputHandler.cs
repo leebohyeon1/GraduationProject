@@ -13,37 +13,16 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     // 입력 상태 변수
     private Vector3 _moveInput; // 이동 입력
     private Vector3 _mousePosition; // 마우스 위치 (키보드/마우스)
-    private bool _attackInput; // 공격 입력
-    private bool _attackHeldInput; // 공격 홀드 입력
-    private bool _rangedAttackInput; // 원거리 공격 입력
-    private bool _dodgeInput; // 회피 입력
-    private bool _skillInput; // 스킬 입력
-    private bool _skilChangeInput; // 스킬 변경 입렵
-    private bool _InteractInput; // 상호작용 입력
-    private bool _potionInput; // 포션 사용 입력
-    private bool _parryInput; // 패리 입력
-    private bool _toggleLockOnInput; // 락온 토글 입력
-    private bool _lockOnTargetChangeInput; // 락온 타겟 변경 입력
+
     private Vector2 _lockOnTargetChangeVector2Input; // 락온 타겟 변경 벡터 입력
 
-    private bool _canAttackHeldInput = true; // 차징 중복 막기 위함
     private InputDeviceType _currentInputDevice;    // 현재 입력 디바이스
     private bool _canBufferInput = false;           // 선입력 가능 여부
 
     #region Properties
     public Vector3 MoveInput => _moveInput;
     public Vector3 MousePosition => _mousePosition;
-    public bool AttackInput => _attackInput;
-    public bool AttackHeldInput => _attackHeldInput;
-    public bool RangedAttackInput => _rangedAttackInput;
-    public bool DodgeInput => _dodgeInput;
-    public bool SkillInput => _skillInput;
-    public bool SkillChangeInput => _skilChangeInput;
-    public bool InteractInput => _InteractInput;
-    public bool PotionInput => _potionInput;
-    public bool ParryInput => _parryInput;  
-    public bool ToggleLockOnInput => _toggleLockOnInput;
-    public bool LockOnTargetChangeInput => _lockOnTargetChangeInput;
+
     public Vector2 LockOnTargetChangeVector2Input => _lockOnTargetChangeVector2Input;
 
     public InputDeviceType CurrentInputDevice => _currentInputDevice;
@@ -66,19 +45,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         _inputReader.MoveEvent += OnMove;
         _inputReader.MousePositionEvent += OnMousePosition;
 
-        _inputReader.NormalAttackEvent += OnNormalAttack;
-        _inputReader.ChargeStartEvent += OnChargeStart;
-        _inputReader.ChargeCancelEvent += OnAttackCancel;
-
-        _inputReader.DodgeEvent += OnDodge;
-        _inputReader.NormalCounterEvent += OnParry;
-        _inputReader.ToggleLockOnEvent += ToggleLockOnEvent;
-        _inputReader.LockOnTargetChangeEvent += LockOnTargetChangeEvent;
-        _inputReader.LockOnTargetChangeVector2Event += LockOnTargetChangeVector2Event;
-
-        _inputReader.InteractEvent += OnInteract;
-        _inputReader.PotionEvent += OnPotion;
-
         _events.BufferInputStarted += OnBufferInputStarted;
         _events.BufferInputEnded += OnBufferInputEnded;
 
@@ -96,19 +62,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         // 이벤트 구독 해제
         _inputReader.MoveEvent -= OnMove;
         _inputReader.MousePositionEvent -= OnMousePosition;
-
-        _inputReader.NormalAttackEvent -= OnNormalAttack;
-        _inputReader.ChargeStartEvent -= OnChargeStart;
-        _inputReader.ChargeCancelEvent -= OnAttackCancel;
-
-        _inputReader.DodgeEvent -= OnDodge;
-        _inputReader.NormalCounterEvent -= OnParry;
-        _inputReader.ToggleLockOnEvent -= ToggleLockOnEvent;
-        _inputReader.LockOnTargetChangeEvent -= LockOnTargetChangeEvent;
-        _inputReader.LockOnTargetChangeVector2Event -= LockOnTargetChangeVector2Event;
-
-        _inputReader.InteractEvent -= OnInteract;
-        _inputReader.PotionEvent -= OnPotion;
 
         _events.BufferInputStarted -= OnBufferInputStarted;
         _events.BufferInputEnded -= OnBufferInputEnded;
@@ -136,40 +89,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         _mousePosition = new Vector3(mousePosition.x, 0, mousePosition.y);
     }
 
-    private void OnNormalAttack()
-    {
-        _attackInput = true;
-    }
-
-    private void OnChargeStart()
-    {
-        if (_canAttackHeldInput)
-        {
-            _attackHeldInput = true;
-            _canAttackHeldInput = false;
-        }
-    }
-
-    private void OnAttackCancel() 
-    {
-        _parryInput = false;
-
-        if (!_canAttackHeldInput)
-        {
-            _attackHeldInput = false;
-            _canAttackHeldInput = true;
-        }
-    }
-    
-    private void OnDodge() => _dodgeInput = true;
-    private void OnParry() => _parryInput = true;
-    private void ToggleLockOnEvent() => _toggleLockOnInput = true;
-    private void LockOnTargetChangeEvent() => _lockOnTargetChangeInput = true;
-    private void LockOnTargetChangeVector2Event(Vector2 vector2) => _lockOnTargetChangeVector2Input = vector2;
-
-    private void OnInteract() => _InteractInput = true;
-    private void OnPotion() => _potionInput = true;
-
     /// <summary>
     /// 선입력 시작
     /// </summary>
@@ -185,26 +104,4 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     {
         _canBufferInput = false;
     }
-
-    /// <summary>
-    /// 매 프레임 마지막에 호출되어 일회성 입력 상태를 초기화합니다.
-    /// </summary>
-    public void LateTick()
-    {
-        _attackInput = false;
-        _skillInput = false;
-        _attackInput = false;
-        _dodgeInput = false;
-        _InteractInput = false;
-        _potionInput = false;
-        _parryInput = false;
-        _toggleLockOnInput = false;
-        _lockOnTargetChangeInput = false;
-    }
-
-    public void SetAttackHeldInput(bool isAttackHold)
-    {
-        _attackHeldInput = isAttackHold;
-    }
-
 }
