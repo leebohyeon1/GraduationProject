@@ -51,7 +51,6 @@ public class LoopAction : EnemyUseAnything
         if (currentTimer >= ExitTime)
         {
             runner.AnimationBool(AnimationBool, true);
-            Debug.Log("LoopAction triggered after " + ExitTime + " seconds.");
             
             // 실행 완료 표시 (이제 [안전장치 2]에 의해 다음 프레임부터는 Update 로직이 스킵됨)
             blackboard.SetValue(KEY_IS_TRIGGERED, true);
