@@ -284,7 +284,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public Vector3 GetRelativeVectorToCamera(Vector3 vector)
     {
         // 카메라 방향 기준으로 이동 방향 계산
-        Vector3 relativeDirection = vector.x * _camera.transform.right + vector.z * _camera.transform.forward;
+        Vector3 relativeDirection = vector.x * _camera.transform.right + vector.z * Vector3.Scale(new Vector3(1,0,1), _camera.transform.forward);
         relativeDirection.y = 0; // 수평면에서만 이동하도록 y축 성분 제거
         relativeDirection.Normalize();  // 정규화
 

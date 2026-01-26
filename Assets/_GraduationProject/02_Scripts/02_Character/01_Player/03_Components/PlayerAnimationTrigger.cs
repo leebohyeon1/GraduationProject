@@ -67,21 +67,31 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     }
     #endregion
 
-    #region Parry
+    #region Counter
     /// <summary>
     /// 상쇄 가능 상태 시작
     /// </summary>
-    public void EnableParryWindow()
+    public void EnableCounterWindow()
     {
-       // p_owner.Stats.SetParryable(true);
+       p_owner.Events.TriggerCounterWindowStarted();
     }
 
     /// <summary>
     /// 상쇄 가능 상태 종료
     /// </summary>
-    public void DisableParryWindow()
+    public void DisableCounterWindow()
     {
-       // p_owner.Stats.SetParryable(false);
+        p_owner.Events.TriggerCounterWindowFinished();
+    }
+    #endregion
+
+    #region Charge
+    /// <summary>
+    /// 차지 시작 
+    /// </summary>
+    public void ChargeStarted()
+    {
+        p_owner.Events.TriggerChargeStarted();  
     }
     #endregion
 }

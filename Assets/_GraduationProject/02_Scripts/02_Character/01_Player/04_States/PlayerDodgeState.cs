@@ -7,8 +7,6 @@ using UnityEngine;
 /// </summary>
 public class PlayerDodgeState : PlayerBaseState
 {
-    private Vector3 _dodgeDirection; // 회피 방향
-
     public PlayerDodgeState(StateMachine<PlayerController> stateMachine)
     : base(stateMachine) { }
 
@@ -16,17 +14,6 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.OnEnter();
 
-        // 입력 방향에 따라 회피 방향 결정
-        if (p_owner.InputHandler.MoveInput == Vector3.zero)
-        {
-            _dodgeDirection = p_owner.transform.forward;
-        }
-        else
-        {
-            _dodgeDirection = new Vector3(p_owner.InputHandler.MoveInput.x, 0, p_owner.InputHandler.MoveInput.y).normalized;
-        }
-
-        p_owner.Movement.Rotate(_dodgeDirection, 1);
     }
 
     public override void OnUpdate()
@@ -133,11 +120,11 @@ public class PlayerDodgeState : PlayerBaseState
                 Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
 
                 float deltaDistance = x - currentDistance;
-                Vector3 displacement = p_owner.Movement.transform.forward * deltaDistance;
 
                 p_owner.Movement.Rotate(dodgeDirection, dodgeData.StepRotateSpeed, Time.fixedDeltaTime);
 
                 // 캐릭터 컨트롤러 이동
+                Vector3 displacement = p_owner.Movement.transform.forward * deltaDistance;
                 p_owner.Movement.CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;

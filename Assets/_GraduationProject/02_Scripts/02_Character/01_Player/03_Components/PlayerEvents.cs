@@ -117,7 +117,7 @@ public class PlayerEvents
     /// <summary>
     /// 패링 검사 시작 이벤트 발행
     /// </summary>
-    public void TriggerParryWindowStarted()
+    public void TriggerCounterWindowStarted()
     {
         CounterWindowStarted?.Invoke();
     }
@@ -125,7 +125,7 @@ public class PlayerEvents
     /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerParrySucceeded(Transform transform)
+    public void TriggerCounterSucceeded(Transform transform)
     {
         CounterSucceeded?.Invoke(transform);
     }
@@ -133,7 +133,7 @@ public class PlayerEvents
     /// <summary>
     /// 패링 검사 종료 이벤트 발행
     /// </summary>
-    public void TriggerParryWindowFinished()
+    public void TriggerCounterWindowFinished()
     {
         CounterWindowFinished?.Invoke();
     }
