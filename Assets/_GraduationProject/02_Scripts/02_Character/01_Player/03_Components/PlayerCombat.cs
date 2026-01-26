@@ -14,7 +14,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [SerializeField] private OnSwingMiss _onSwingMiss;  // 공격 미스 이벤트
 
     [Header("NormalAttack")]
-    private int _normalAttackComboIndex;    // 일반 공격 콤보 순서
+    private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
 
     [Header("Charge")]
     private int _chargeLevel;   // 차지 레벨

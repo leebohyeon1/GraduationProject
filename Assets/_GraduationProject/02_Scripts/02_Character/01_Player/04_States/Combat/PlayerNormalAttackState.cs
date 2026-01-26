@@ -16,8 +16,10 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
     #region Setup Function
     protected override void SetupStats()
     {
-        base.SetupStats();
+        // 일반 공격 콤보 순서 증가
+        p_owner.Combat.IncreaseNormalAttackComboIndex();
 
+        base.SetupStats();
     }
 
     protected override void SetupAnimator()

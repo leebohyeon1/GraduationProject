@@ -61,7 +61,7 @@ public class PlayerDodgeState : PlayerBaseState
         base.SetupAnimator();
 
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Dodge);   // 애니메이션 상태 설정
-        p_animator.Play("Dodge", 0, 0f);                                    // 0부터 재생
+        p_animator.Play("Roll", 0, 0f);                                    // 0부터 재생
     }
     #endregion
 
@@ -138,7 +138,7 @@ public class PlayerDodgeState : PlayerBaseState
                 p_owner.Movement.Rotate(dodgeDirection, dodgeData.StepRotateSpeed, Time.fixedDeltaTime);
 
                 // 캐릭터 컨트롤러 이동
-                p_owner.Movement.CharacterControllerMove(displacement, Time.fixedDeltaTime);
+                p_owner.Movement.CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
             },

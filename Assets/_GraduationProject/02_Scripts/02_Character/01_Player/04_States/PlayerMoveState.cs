@@ -19,6 +19,7 @@ public class PlayerMoveState : PlayerBaseState
 
         // 플레이어를 카메라 기준으로 이동
         p_owner.Movement.MoveByInput(p_owner.InputHandler.MoveInput, Time.fixedDeltaTime);
+        p_owner.Movement.RotateToVelocity(Time.fixedDeltaTime);
 
         float moveSpeedRatio = p_owner.Movement.CurrentMoveSpeed / p_owner.Data.MoveSpeed;
         p_animator.SetFloat("MoveInput", moveSpeedRatio);
@@ -27,7 +28,6 @@ public class PlayerMoveState : PlayerBaseState
     public override void OnExit()
     {
         base.OnExit();
-        p_animator.SetBool("IsMoving", false);
     }
 
     #region Setup Function
@@ -60,7 +60,7 @@ public class PlayerMoveState : PlayerBaseState
     {
         if (moveInput == Vector2.zero)
         {
-            p_stateMachine.ChangeState(typeof(PlayerIdleState));
+            p_stateMachine.ChangeState<PlayerIdleState>();
             return;
         }
     }

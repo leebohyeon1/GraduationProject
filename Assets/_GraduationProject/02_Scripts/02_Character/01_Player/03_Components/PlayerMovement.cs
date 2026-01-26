@@ -43,25 +43,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
     }
 
-    /// <summary>
-    /// 중력을 적용합니다.
-    /// </summary>
-    public void ApplyGravity()
-    {
-        if (_characterController.isGrounded && _velocity.y < 0)
-        {
-            _velocity.y = -2f; // 지면에 붙어있도록 약간의 하향력 유지
-        }
-        else
-        {
-            _velocity.y += Physics.gravity.y * Time.fixedDeltaTime;
-        }
-
-        // 최대 낙하 속도 제한
-        if (_velocity.y < -30f) _velocity.y = -30f;
-    }
-
-
     #region Move
     /// <summary>
     /// 캐릭터 컨트롤러를 속도에 따른 이동
@@ -70,9 +51,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public void CharacterControllerMove(Vector3 velocity, float deltaTime)
     {
         // 중력 적용
-        ApplyGravity(deltaTime);
+        ApplyGravity();
 
-        _characterController.Move(velocity);
+        _characterController.Move(velocity * deltaTime);
     }
 
     /// <summary>
@@ -147,8 +128,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     /// <summary>
     /// 중력을 적용합니다.
     /// </summary>
-    /// <param name="deltaTime">델타 타임</param>
-    protected void ApplyGravity(float deltaTime)
+    protected void ApplyGravity()
     {
         if (_characterController.isGrounded && _velocity.y < 0)
         {
@@ -156,7 +136,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         }
         else
         {
-            _velocity.y += Physics.gravity.y * 3f * deltaTime;
+            _velocity.y += Physics.gravity.y;
         }
 
         // 최대 낙하 속도 제한
@@ -226,6 +206,29 @@ public class PlayerMovement : MonoBehaviour, IDisposable
             rotationSpeed * deltaTime
         );
     }
+
+    /// <summary>
+    /// 이동 방향으로 회전
+    /// </summary>
+    /// <param name="deltaTime">델타 타임</param>
+    public void RotateToVelocity(float deltaTime)
+    {
+        // 중력을 제외한 값 사용
+        Vector3 velocity = new Vector3(_velocity.x, 0, _velocity.z);
+
+        // 속도가 거의 없으면 회전 타이머 감소 후 리턴
+        if (_currentMoveSpeed <= 0.1f)
+        {
+            _rotateAccelTimer -= deltaTime / _data.RotateDecelerationTime;
+            _rotateAccelTimer = Mathf.Clamp01(_rotateAccelTimer);
+
+            // 커브를 이용한 회전 속도 계산
+            _currentRotationSpeed = _data.RotateSpeed * _data.RotationCurve.Evaluate(_rotateAccelTimer);
+            return;
+        }
+
+        Rotate(velocity, deltaTime);
+    }
     #endregion
 
     #region Dodge
@@ -255,7 +258,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
                 if (useGravity)
                 {
-                    ApplyGravity(Time.fixedDeltaTime);
+                    ApplyGravity();
                 }
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);

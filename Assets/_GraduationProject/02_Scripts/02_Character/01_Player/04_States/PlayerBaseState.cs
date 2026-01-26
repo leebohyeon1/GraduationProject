@@ -70,7 +70,6 @@ public abstract class PlayerBaseState : IState
     /// </summary>
     protected virtual void SetupEvents()
     {
-        Debug.Log(111);
         p_owner.InputReader.MoveEvent += OnMove;
         p_owner.InputReader.MousePositionEvent += OnMousePosition;
 

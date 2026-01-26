@@ -64,8 +64,6 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void OnExit()
     {
-        p_animator.SetBool("IsIdle", false);
-
         base.OnExit();
     }
 

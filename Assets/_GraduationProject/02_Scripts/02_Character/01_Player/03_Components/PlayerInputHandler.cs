@@ -81,6 +81,9 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
 
         _events.BufferInputStarted += OnBufferInputStarted;
         _events.BufferInputEnded += OnBufferInputEnded;
+
+        // InputReader 초기화
+        _inputReader.Initialize();
     }
 
     /// <summary>
@@ -107,10 +110,11 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         _inputReader.InteractEvent -= OnInteract;
         _inputReader.PotionEvent -= OnPotion;
 
-        _inputReader.Dispose();
-
         _events.BufferInputStarted -= OnBufferInputStarted;
         _events.BufferInputEnded -= OnBufferInputEnded;
+
+        // InputReader 해제
+        _inputReader.Dispose();
     }
 
     /// <summary>
@@ -124,7 +128,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     // 각 입력 이벤트에 대한 콜백 함수들
     private void OnMove(Vector2 moveInput)
     {
-        Debug.Log(moveInput);
         _moveInput = new Vector3(moveInput.x, 0, moveInput.y);
     }
 

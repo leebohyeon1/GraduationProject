@@ -16,8 +16,8 @@ public class StateMachine<T>
     private IState _currentState;
     private IState _previousState;
 
-    public Type CurrentState => _currentState?.GetType();
-    public Type PreviousState => _previousState?.GetType();
+    public IState CurrentState => _currentState;
+    public IState PreviousState => _previousState;
 
     public StateMachine(T context)
     {

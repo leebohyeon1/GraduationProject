@@ -19,14 +19,14 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     /// </summary>
     public void BufferInputStart()
     {
-        // p_owner.Events.TriggerBufferInputStartEvent();
+        p_owner.Events.TriggerBufferInputStarted();
     }
     /// <summary>
     /// 선입력 종료 함수
     /// </summary>
     public void BufferInputEnd()
     {
-       //  p_owner.Events.TriggerBufferInputEndEvent();
+        p_owner.Events.TriggerBufferInputEnded();
     }
     #endregion
 
@@ -36,7 +36,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     /// </summary>
     public void DodgeStart()
     {
-       // p_owner.Events.TriggerDodgeStartEvent();
+       p_owner.Events.TriggerDodgeStarted();
     }
 
     #endregion
@@ -47,15 +47,15 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     /// </summary>
     public void AttackStart()
     {
-       // p_owner.Events.TriggerAttackStatEvent();
+        p_owner.Events.TriggerAttackStarted();
     }
 
     /// <summary>
     /// 공격 타격
     /// </summary>
-    public void AttackImpact()
+    public void AttackPerform()
     {
-       // p_owner.Events.TriggerAttackImpactEvent();
+        p_owner.Events.TriggerAttackPerformed();
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     /// </summary>
     public void AttackEnd()
     {
-       // p_owner.Events.TriggerAttackEndEvent();
+        p_owner.Events.TriggerAttackFinished();
     }
     #endregion
 
