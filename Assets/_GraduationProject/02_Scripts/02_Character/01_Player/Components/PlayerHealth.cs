@@ -76,10 +76,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
 
-        if(damageData.AttackType == AttackType.Heavy && _stats.IsChage)
+        if (damageData.AttackType != AttackType.Absoluteness)
         {
-            if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
-             && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+            if(damageData.AttackType <= AttackType.NormalCounter) 
+            {
+                if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
+                && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable) && damageData.AttackType <= AttackType.NormalCounter + _stats.ChargeLevel)
                 {
                     if (!_stats.ParrySet.Contains(parryable))
                     {
@@ -87,34 +89,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
                         _stats.ParrySet.Add(parryable);
                     }
 
-                   Debug.Log("상쇄");
-                    parryable.Parry(damageData.AttackType);
+                    Debug.Log("상쇄");
+                    parryable.Parry(AttackType.NormalCounter + _stats.ChargeLevel);
                     return;
                 }
-        }
-        else if(damageData.AttackType != AttackType.Heavy)
-        {
-            if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
-            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
-            {
-                if (!_stats.ParrySet.Contains(parryable))
-                {
-                    _events.TriggerParrySucceeded(damageData.AttackerTransform);
-                    _stats.ParrySet.Add(parryable);
-                }
-
-                if(_stats.IsChage)
-                {
-                    parryable.Parry(AttackType.Heavy);
-                }
-                else
-                {
-                    parryable.Parry(AttackType.NormalCounter);
-                }
-
-                return;
             }
         }
+            
 
         _damageData = damageData;
 
@@ -149,10 +130,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             case AttackType.Normal:
                 MiddleStagger(); // 약한 경직
                 break;
-            case AttackType.Range:
-                MiddleStagger(); // 약한 경직
-                break;  
-            case AttackType.Heavy:
+            case AttackType.Heavy1:
+            case AttackType.Heavy2:
+            case AttackType.Heavy3:
                 HeavyStagger(); // 강한 경직
                 break;
         }
