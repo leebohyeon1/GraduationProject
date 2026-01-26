@@ -78,10 +78,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         if (damageData.AttackType != AttackType.Absoluteness)
         {
-            if (damageData.AttackType >= AttackType.Heavy1 && _stats.IsChage)
+            if(damageData.AttackType <= AttackType.NormalCounter) 
             {
                 if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
-                 && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+                && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable) && damageData.AttackType <= AttackType.NormalCounter + _stats.ChargeLevel)
                 {
                     if (!_stats.ParrySet.Contains(parryable))
                     {
@@ -90,30 +90,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
                     }
 
                     Debug.Log("상쇄");
-                    parryable.Parry(damageData.AttackType);
-                    return;
-                }
-            }
-            else if (damageData.AttackType <= AttackType.Heavy1)
-            {
-                if (_stats.IsParring && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.ParryAngle / 2f)
-                && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
-                {
-                    if (!_stats.ParrySet.Contains(parryable))
-                    {
-                        _events.TriggerParrySucceeded(damageData.AttackerTransform);
-                        _stats.ParrySet.Add(parryable);
-                    }
-
-                    if (_stats.IsChage)
-                    {
-                        parryable.Parry(AttackType.NormalCounter + _stats.ChargeLevel);
-                    }
-                    else
-                    {
-                        parryable.Parry(AttackType.NormalCounter);
-                    }
-
+                    parryable.Parry(AttackType.NormalCounter + _stats.ChargeLevel);
                     return;
                 }
             }
