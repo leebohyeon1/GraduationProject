@@ -158,7 +158,6 @@ public class PlayerChaseStrategy : EnemyUseAnything
     {
         // 상태 초기화
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSHBOOL, true);
-        enemy._aiController._aiBrain.blackboard.RemoveKey(KEY_RUSH_START_TIME);
         
         // 물리 관성 제거
         Rigidbody rb = enemy.GetComponent<Rigidbody>();
