@@ -76,7 +76,7 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.MousePositionEvent += OnMousePosition;
 
         p_owner.InputReader.DodgeEvent += OnDodge;
-        p_owner.InputReader.NormalAttackEvent += OnAttack;
+        p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
         p_owner.InputReader.NormalCounterEvent += OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent += OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
@@ -107,7 +107,7 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.MousePositionEvent -= OnMousePosition;
 
         p_owner.InputReader.DodgeEvent -= OnDodge;
-        p_owner.InputReader.NormalAttackEvent -= OnAttack;
+        p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
         p_owner.InputReader.NormalCounterEvent -= OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent -= OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
@@ -150,14 +150,7 @@ public abstract class PlayerBaseState : IState
     /// <summary>
     /// 공격 입력 처리
     /// </summary>
-    protected virtual void OnAttack() 
-    {
-        // 일반 공격이 가능하지 않으면 리턴
-        if (!p_owner.Combat.CanNormalAttack())
-        {
-            return;
-        }
-    }
+    protected virtual void OnNormalAttack() { }
     
     /// <summary>
     /// 일반 상쇄 입력 처리

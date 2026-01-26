@@ -195,7 +195,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void ResetChargeLevel()
     {
-        _chargeLevel = 0;
+        _chargeLevel = -1;
     }
     #endregion
 

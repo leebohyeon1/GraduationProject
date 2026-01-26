@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerCombat _combat;          // 플레이어 전투 시스템
     [SerializeField] private PlayerAnimationTrigger _animationTrigger; // 플레이어 애니메이션 이벤트 트리거
     [SerializeField] private LockOnSystem _lockOn;          // 락온 시스템
+    [SerializeField] private PlayerAbility _ability;        // 능력 시스템
 
     private StateMachine<PlayerController> _stateMachine;        // 상태 머신
 
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     public PlayerCombat Combat => _combat;
     public PlayerAnimationTrigger AnimationTrigger => _animationTrigger;
     public LockOnSystem LockOn => _lockOn;
+    public PlayerAbility Ability => _ability;
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
@@ -56,7 +58,11 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         _inputHandler?.Dispose();
+        _health?.Dispose();
         _stamina?.Dispose();
+        _combat?.Dispose();
+        _animationTrigger?.Dispose();
+        _ability?.Dispose();
     }
 
     #region Initialize
@@ -97,6 +103,12 @@ public class PlayerController : MonoBehaviour
             _inputHandler.Initialize(InputReader, _events);
         }
 
+        // PlayerHealth 초기화
+        if (TryGetComponent<PlayerHealth>(out _health))
+        {
+            _health.Initialize(this);
+        }
+
         // PlayerMovement 초기화
         if (TryGetComponent<PlayerMovement>(out _movement))
         {
@@ -124,6 +136,11 @@ public class PlayerController : MonoBehaviour
         if(TryGetComponent<LockOnSystem>(out _lockOn))
         {
         }
+
+        if(TryGetComponent<PlayerAbility>(out _ability))
+        {
+            _ability.Initialize(this);
+        }
     }
 
     /// <summary>
@@ -140,9 +157,18 @@ public class PlayerController : MonoBehaviour
         _stateMachine.AddState(new PlayerNormalCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerHeavyCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerChargeState(_stateMachine));
+        _stateMachine.AddState(new PlayerDamagedState(_stateMachine));
+        _stateMachine.AddState(new PlayerKnockdownState(_stateMachine));
 
         // Idle 상태에서 시작
         _stateMachine.ChangeState(typeof(PlayerIdleState));
     }
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.pink;
+
+        Gizmos.DrawWireCube(transform.position + transform.forward * (Data.NormalAttackConfigList[0].AttackRadius.z / 2), Data.NormalAttackConfigList[0].AttackRadius);
+    }
 }

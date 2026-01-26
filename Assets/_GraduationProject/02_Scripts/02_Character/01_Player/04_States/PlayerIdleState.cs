@@ -82,9 +82,9 @@ public class PlayerIdleState : PlayerBaseState
     /// <summary>
     /// 공격 입력 이벤트 처리
     /// </summary>
-    protected override void OnAttack()
+    protected override void OnNormalAttack()
     {
-        base.OnAttack();
+        base.OnNormalAttack();
 
         p_stateMachine.ChangeState<PlayerNormalAttackState>();
     }

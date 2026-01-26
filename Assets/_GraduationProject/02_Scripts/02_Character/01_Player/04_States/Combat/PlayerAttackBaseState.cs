@@ -84,9 +84,13 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// <summary>
     /// 공격 입력 처리
     /// </summary>
-    protected override void OnAttack()
+    protected override void OnNormalAttack()
     {
-        base.OnAttack();
+        // 일반 공격이 가능하지 않으면 리턴
+        if (!p_owner.Combat.CanNormalAttack())
+        {
+            return;
+        }
 
         // 선입력 가능하면 공격 상태 변경
         if (p_nextState == null && p_canBufferInput)

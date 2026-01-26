@@ -128,7 +128,7 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.OnChargeCancel();
 
-        if (p_owner.Combat.ChargeLevel > 0)
+        if (p_owner.Combat.ChargeLevel >= 0)
         {
             p_stateMachine.ChangeState<PlayerHeavyCounterState>();
         }

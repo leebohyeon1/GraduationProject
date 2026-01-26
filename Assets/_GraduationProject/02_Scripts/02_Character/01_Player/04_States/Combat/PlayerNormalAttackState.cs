@@ -36,12 +36,6 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
     protected override void ClearStats()
     {
         base.ClearStats();
-
-        // 일반 공격을 더이상 할 수 없을 때 초기화
-        if(!p_owner.Combat.CanNormalAttack())
-        {
-            p_owner.Combat.ResetNormalAttackComboIndex();
-        }
     }
 
     #endregion
