@@ -63,6 +63,10 @@ public class Task_NormalAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
+        if(brain.blackboard.HasKey("GoHome") && brain.blackboard.GetValue<bool>("GoHome"))
+        {
+            return NodeState.FAILURE;
+        }
         if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
