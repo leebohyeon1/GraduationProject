@@ -22,6 +22,8 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     {
         base.SetupStats();
 
+
+        p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
     }
 
     protected override void SetupAnimator()
@@ -46,6 +48,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.ClearStats();
 
         p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ResetChargeLevel();
     }
 
     #endregion
@@ -60,7 +63,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
-            parryable.Parry(AttackType.NormalCounter);
+            parryable.Parry(AttackType.HeavyCounter);
             p_owner.Combat.AddCounterEnemy(parryable);
         }
 

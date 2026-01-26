@@ -2,6 +2,15 @@ using System;
 using UnityEngine;
 
 /// <summary>
+/// 플레이어 데미지 문맥
+/// </summary>
+public struct PlayerDamageContext
+{
+    public DamageData Data;     // 데미지 데이터
+    public bool HasSuperArmor;  // 슈퍼아머 여부
+}
+
+/// <summary>
 /// 플레이어의 체력, 데미지 처리, 사망, 무적 상태 등을 관리하는 컴포넌트입니다.
 /// </summary>
 public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, IDisposable
@@ -31,8 +40,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
     public int StiffnessThreshold => 100; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
-
-
 
 
     /// <summary>
@@ -75,34 +82,39 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             return;
         }
 
-        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;
-
-        if (damageData.AttackType != AttackType.Absoluteness)
+        PlayerDamageContext damageContext = new PlayerDamageContext()
         {
-            if(damageData.AttackType <= AttackType.NormalCounter) 
-            {
-                //if (_stats.IsCounterable && Vector3.Angle(transform.forward, toEnemy) <= (_stats.RuntimeData.CombatData.CounterAngle / 2f)
-                //&& damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable) && damageData.AttackType <= AttackType.NormalCounter + _stats.ChargeLevel)
-                //{
-                //    if (!_stats.CounterEnemySet.Contains(parryable))
-                //    {
-                //        _events.TriggerParrySucceeded(damageData.AttackerTransform);
-                //        _stats.CounterEnemySet.Add(parryable);
-                //    }
+            Data = damageData,
+            HasSuperArmor = false
+        };
 
-                //    Debug.Log("상쇄");
-                //    parryable.Parry(AttackType.NormalCounter + _stats.ChargeLevel);
-                //    return;
-                //}
-            }
-        }
+        // 데미지 계산 전 레퍼런스로 데미지 데이터 수정
+        _events.TriggerBeforeDamaged(ref damageContext);
 
-        AddStiffness(damageData.StiffnessAmount);
+        damageData = damageContext.Data;
+
         ChangeHealth(-damageData.DamageAmount);
 
         if (IsDead)
         {
             Die();
+            return;
+        }
+
+        AddStiffness(damageData.StiffnessAmount);
+
+        // 경직도 임계값을 넘으면
+        if (CurrentStiffness >= StiffnessThreshold)
+        {
+            _events.TriggerKnockdown();
+            ChangeStiffness(-_currentStiffness); // 경직도 초기화
+            return;
+        }
+
+        if (!damageContext.HasSuperArmor)   // 슈퍼 아머가 아니면
+        {
+            _events.TriggerDamaged(damageData);
+            return;
         }
     }
 
@@ -114,15 +126,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void AddStiffness(int amount)
     {
         ChangeStiffness(amount);
-
-        if(CurrentStiffness >= StiffnessThreshold)
-        {
-            ChangeStiffness(-_currentStiffness); // 경직도 초기화
-
-            return;
-        }
-
-
     }
 
     /// <summary>
@@ -138,33 +141,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             OnStiffnessChanged?.Invoke(previouseStiffness, _currentStiffness);
         }
     }
-
-    ///// <summary>
-    ///// 약한 경직 상태로 전환합니다.
-    ///// </summary>
-    //private void MiddleStagger()
-    //{
-    //    _stats.IsMiddleHit = true;
-    //    _stiffnessDuration = DamageData.KnockbackDuration;
-    //    _knockbackForce = DamageData.KnockbackForce;
-    //}
-
-    ///// <summary>
-    ///// 강한 경직 상태로 전환합니다.
-    ///// </summary>
-    //private void HeavyStagger()
-    //{
-    //    _stats.IsHeavyHit = true; 
-    //    _stiffnessDuration = DamageData.KnockbackDuration;
-    //    _knockbackForce = DamageData.KnockbackForce;
-    //}
-
-    //private void KnockDown()
-    //{
-    //    _stats.IsKnockDown = true;
-    //    _stiffnessDuration = 1.5f;
-    //    _knockbackForce = 0f;
-    //}
 
     /// <summary>
     /// 체력을 회복합니다.

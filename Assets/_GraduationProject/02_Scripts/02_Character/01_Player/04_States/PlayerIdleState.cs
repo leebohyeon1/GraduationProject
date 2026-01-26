@@ -20,34 +20,6 @@ public class PlayerIdleState : PlayerBaseState
         }
     }
 
-    public override void OnUpdate()
-    {   
-        //if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
-        //{
-        //    p_stateMachine.ChangeState<PlayerHitState>();
-        //}
-        //else if (p_context.Input.MoveInput != Vector2.zero)
-        //{
-        //    p_stateMachine.ChangeState<PlayerMoveState>();
-        //}
-        //else if(p_context.Input.DodgeInput && p_context.Stamina.CheckStamina())
-        //{
-        //    p_stateMachine.ChangeState<PlayerDodgeState>();
-        //}
-        //else if (p_context.Input.AttackInput && p_context.Stamina.CheckStamina())
-        //{
-        //    p_stateMachine.ChangeState<PlayerAttackState>();
-        //}
-        //else if (p_context.Input.AttackHeldInput && p_context.Stamina.CheckStamina())
-        //{
-        //    p_stateMachine.ChangeState<PlayerChargeState>();
-        //}
-        //else if (p_context.Input.ParryInput && p_context.Stamina.CheckStamina())
-        //{
-        //    p_stateMachine.ChangeState <PlayerNormalCounterState>();
-        //}
-    }
-
     public override void OnFixedUpdate()
     {
         if (p_owner.LockOn.IsLockOn)
@@ -74,10 +46,10 @@ public class PlayerIdleState : PlayerBaseState
         base.SetupStats();
 
         // 일반 공격 콤보 순서 초기화
-        if (p_owner.Combat.NormalAttackComboIndex != -1)
-        {
-            p_owner.Combat.ResetNormalAttackComboIndex();
-        }
+        p_owner.Combat.ResetNormalAttackComboIndex();
+
+        // 차지 레벨 초기화
+        p_owner.Combat.ResetChargeLevel();
     }
 
     protected override void SetupAnimator()

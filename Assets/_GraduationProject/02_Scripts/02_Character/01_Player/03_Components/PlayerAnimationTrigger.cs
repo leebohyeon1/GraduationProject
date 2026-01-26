@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class PlayerAnimationTrigger : FeedbackPlayer<string>
+public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 {
     private PlayerController p_owner;
 
@@ -11,6 +12,16 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     public void Initialize(PlayerController player)
     {
         p_owner = player;
+
+        p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+    }
+
+    /// <summary>
+    /// 컴포넌트 해제
+    /// </summary>
+    public void Dispose()
+    {
+        p_owner.Events.CounterSucceeded += OnCounterSucceeded;
     }
 
     #region Input
@@ -93,5 +104,21 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>
     {
         p_owner.Events.TriggerChargeStarted();  
     }
+
     #endregion
+
+
+//============================================================================//
+// Event Handler
+//============================================================================//
+
+    /// <summary>
+    /// 상쇄 성공 이벤트 
+    /// </summary>
+    /// <param name="transform"></param>
+    private void OnCounterSucceeded(Transform transform)
+    {
+        PlayFeedback("Counter_Sucess_FB");  // 상쇄 성공 피드백 재생
+    }
+
 }

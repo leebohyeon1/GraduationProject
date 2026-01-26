@@ -51,7 +51,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_nextState = null; // 다음 상태 초기화
 
         p_owner.Stamina.UseStamina(p_AttackConfig.AttackStamina);       // 스테미나 사용
-
+        p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
         p_owner.Events.TriggerBattleStateChanged(true);                 // 전투 상태 On  
     }

@@ -40,7 +40,7 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.SetupStats();
 
-        // p_owner.Health.IncreaseDamageReduction(_dodgeTagSO.DamageReduction);
+        p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
     }
 
     protected override void SetupAnimator()
@@ -72,8 +72,6 @@ public class PlayerDodgeState : PlayerBaseState
         {
             p_owner.Events.TriggerBattleStateChanged(true);
         }
-
-        // p_owner.Stats.DecreaseDamageReduction(_dodgeTagSO.DamageReduction);
     }
 
     protected override void ClearAnimator()

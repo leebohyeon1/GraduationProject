@@ -43,6 +43,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.BattleStateChaged += OnBattleStateChaged;
         _events.CounterWindowStarted += OnCounterWindowStarted;
         _events.CounterWindowFinished += OnCounterWindowFinished;
+
+        _events.BeforeDamaged += OnBeforeDamaged;
     }
 
     /// <summary>
@@ -53,7 +55,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.BattleStateChaged -= OnBattleStateChaged;
         _events.CounterWindowStarted -= OnCounterWindowStarted;
         _events.CounterWindowFinished -= OnCounterWindowFinished;
+
+        _events.BeforeDamaged -= OnBeforeDamaged;
     }
+
+    //==========================================================================================================================
+    // BattleState =============================================================================================================
+    //==========================================================================================================================
 
     #region BattleState
     /// <summary>
@@ -72,6 +80,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _isBattleState = isBattleState;
     }
     #endregion
+
+
+    //==========================================================================================================================
+    // Attack ==================================================================================================================
+    //==========================================================================================================================
 
     #region Attack
     /// <summary>
@@ -132,6 +145,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
     #endregion
 
+    //==========================================================================================================================
+    // NormalAttack ============================================================================================================
+    //==========================================================================================================================
+
     #region NormalAttack
     /// <summary>
     /// 일반 공격 콤보 번호 증가
@@ -160,6 +177,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
     #endregion
 
+    //==========================================================================================================================
+    // Charge ==================================================================================================================
+    //==========================================================================================================================
+    
     #region Charge
     /// <summary>
     /// 차지 레벨 증가
@@ -177,6 +198,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _chargeLevel = 0;
     }
     #endregion
+
+    //==========================================================================================================================
+    // Counter =================================================================================================================
+    //==========================================================================================================================
 
     #region Counter
     /// <summary>
@@ -222,7 +247,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
     #endregion
 
-    #region EventHandle
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
     /// <summary>
     /// 카운터 검사 시작
     /// </summary>
@@ -252,5 +280,36 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         SetBattleState(isBattleState);
     }
-    #endregion
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        DamageData damageData = damageContext.Data;
+
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;        // 적으로 가는 벡터 구하기
+        // 적을 마주보고 있는가
+        bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (_data.CounterAngle / 2f);
+
+
+        // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
+        bool validateAttackType = damageData.AttackType >= AttackType.Heavy1 && ChargeLevel > 0 || damageData.AttackType == AttackType.Normal;
+
+
+        // 카운터에 성공하면 데미지 데이터 전부 0으로 처리
+        if (_isCounterable && isFacingEnemy && validateAttackType && !damageData.IsMagic
+            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        {
+            damageData.DamageAmount = 0;
+            damageData.StiffnessAmount = 0;
+            damageData.KnockbackDuration = 0;
+            damageData.KnockbackForce = 0;
+
+            // 카운터 성공 이벤트 발행
+            _events.TriggerCounterSucceeded(damageData.AttackerTransform);
+        }
+               
+    }
 }

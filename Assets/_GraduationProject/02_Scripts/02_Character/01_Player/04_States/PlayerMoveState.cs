@@ -36,10 +36,7 @@ public class PlayerMoveState : PlayerBaseState
         base.SetupStats();
 
         // 일반 공격 콤보 순서 초기화
-        if (p_owner.Combat.NormalAttackComboIndex != -1)
-        {
-            p_owner.Combat.ResetNormalAttackComboIndex();
-        }
+        p_owner.Combat.ResetNormalAttackComboIndex();
     }
 
     protected override void SetupAnimator()

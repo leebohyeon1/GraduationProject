@@ -34,6 +34,9 @@ public interface IDamageable
     public event Action OnDied;
 }
 
+/// <summary>
+/// 데미지 데이터
+/// </summary>
 [Serializable]
 public struct DamageData
 {
@@ -46,8 +49,10 @@ public struct DamageData
     public float KnockbackDuration;
     public float KnockbackForce;
 
+    public bool IsMagic;
 
-    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f)
+    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, 
+        AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, bool isMagic = false)
     {
         AttackerTransform = attackerTransform;
         AttackType = attackType;
@@ -56,6 +61,7 @@ public struct DamageData
         KnockbackCurve = knockbackCurve;
         KnockbackDuration = knockbackDuration;
         KnockbackForce = knockbackForce;
+        IsMagic = isMagic;
     }
 }
 
@@ -67,5 +73,6 @@ public enum AttackType
     Heavy1,
     Heavy2,
     Heavy3,
+    HeavyCounter,
     Absoluteness,
 }

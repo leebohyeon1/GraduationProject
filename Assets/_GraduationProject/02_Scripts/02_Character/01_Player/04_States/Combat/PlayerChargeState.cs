@@ -37,28 +37,6 @@ public class PlayerChargeState : PlayerBaseState
 
         // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Data.ChargeStamina * Time.deltaTime);
-
-        //if (!p_context.Health.IsDead && p_context.Stats.IsDamaged)
-        //{
-        //    p_stateMachine.ChangeState<PlayerHitState>();
-        //}
-        //else if (_chargeTimer >= p_context.Stats.RuntimeData.CombatData.MaxChargeTime)
-        //{
-        //    p_stateMachine.ChangeState<PlayerChargeAttackState>();
-        //}
-        //else if (!p_context.Input.AttackHeldInput)  // 입력에 따른 상태 전환
-        //{
-        //    if (_chargeLevel > 0)
-        //    {
-        //        p_stateMachine.ChangeState<PlayerChargeAttackState>();
-        //    }
-        //    else
-        //    {
-        //        p_context.Stats.ChargeLevel = 0;
-        //        p_context.Stats.IsCharge = false;
-        //        p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        //    }
-        //}
     }
 
     public override void OnFixedUpdate()
@@ -112,7 +90,10 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.SetupStats();
 
+        p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
+        p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Combat.ResetChargeLevel();
+        p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
     }
 
@@ -132,6 +113,7 @@ public class PlayerChargeState : PlayerBaseState
 
         p_owner.Events.TriggerBattleStateChanged(true);
         p_owner.Events.TriggerChargeFinshed();
+        p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
 
         _chargeTimer = 0f;
     }

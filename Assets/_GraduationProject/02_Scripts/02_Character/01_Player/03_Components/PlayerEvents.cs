@@ -120,9 +120,9 @@ public class PlayerEvents
     }
     #endregion
 
-    #region Parry
+    #region Counter
     public event Action CounterWindowStarted, CounterWindowFinished; // 패링 수행 이벤트
-    public event Action<Transform> CounterSucceeded; // 패링 성공 이벤트
+    public event Action<Transform>  CounterSucceeded; // 패링 성공 이벤트
 
     /// <summary>
     /// 패링 검사 시작 이벤트 발행
@@ -150,11 +150,50 @@ public class PlayerEvents
 
     #endregion
 
+    #region Damaged
+    public event RefAction<PlayerDamageContext> BeforeDamaged;  // 데미지 받기 전 대리자
+    public event Action<DamageData> Damaged;          // 데미지 상태로 변하는 이벤트
+    public event Action Knockdown;                    // 기절 상태로 변하는 이벤트
+                      
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    public void TriggerBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        BeforeDamaged?.Invoke(ref damageContext);
+    }
+
+    /// <summary>
+    /// 데미지 상태로 변하는 이벤트 발행
+    /// </summary>
+    /// <param name="damageData">받은 데미지 데이터</param>
+    public void TriggerDamaged(DamageData damageData)
+    {
+        Damaged?.Invoke(damageData);
+    }
+
+    /// <summary>
+    /// 기절 상태로 변하는 이벤트 발행
+    /// </summary>
+    public void TriggerKnockdown()
+    {
+        Knockdown?.Invoke();    
+    }
+    #endregion
+
+    #region Stamina
     public event Action<bool> RegenStamina; // 스테미나 회복 이벤트
 
+    /// <summary>
+    /// 스테미나 회복 이벤트 발행
+    /// </summary>
+    /// <param name="canRegen">회복 가능 여부</param>
     public void TriggerRegenStamina(bool canRegen)
     {
         RegenStamina?.Invoke(canRegen);
     }
+    #endregion
+
     #endregion
 }

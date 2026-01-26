@@ -18,7 +18,9 @@ public abstract class PlayerBaseState : IState
         Charge = 5,
         ChargeCounterCounterAttack = 6,
 
-        Damaged = -1
+        NormalDamaged = -1,
+        HeavyDamaged = -2,
+        Knockdown = -3,
     }
 
     protected StateMachine<PlayerController> p_stateMachine;            // 상태를 관리하는 상태 머신

@@ -5,20 +5,40 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAbilitySO>
 {
+    [Header("References")]
+    private PlayerEvents _events;
     [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
 
+    /// <summary>
+    /// 컴포넌트 초기화
+    /// </summary>
+    /// <param name="player">플레이어</param>
+    public void Initialize(PlayerController player)
+    {
+        _events = player.Events;
 
 
+        _events.BeforeDamaged += OnBeforeDamaged;
+    }
+
+    /// <summary>
+    /// 컴포넌트 해제
+    /// </summary>
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _events.BeforeDamaged -= OnBeforeDamaged;
+
     }
 
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
         AddAbility(ability);
     }
+
+    //==========================================================================================================================
+    // Ability Management ======================================================================================================
+    //==========================================================================================================================
 
     #region Ability Management
     /// <summary>
@@ -51,6 +71,10 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         return _abilitySet.Contains(ability);
     }
     #endregion
+
+    //==========================================================================================================================
+    // Tag Management ==========================================================================================================
+    //==========================================================================================================================
 
     #region Tag Management
     /// <summary>
@@ -96,6 +120,30 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     }
 
     /// <summary>
+    /// 태그를 가지고 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="validTag">확인할 태그</param>
+    /// <returns>가지고 있는지 여부</returns>
+    public bool HasTag(PlayerAbilityTagSO validTag)
+    {
+        foreach (var tag in _abilityTags)
+        {
+            // 태그가 비어있으면 계속
+            if (tag == null)
+            {
+                continue;
+            }
+
+            if (tag == validTag)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// 아이디에 맞는 태그 반환
     /// </summary>
     /// <param name="id">태그 아이디</param>
@@ -120,4 +168,20 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     }
     #endregion
 
+
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        if(HasTag("SuperArmor"))
+        {
+            damageContext.HasSuperArmor = true;
+        }
+    }
 }
