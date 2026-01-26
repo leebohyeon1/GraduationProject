@@ -1,0 +1,149 @@
+using System;
+using UnityEngine;
+
+/// <summary>
+/// 플레이어의 모든 이벤트를 관리하고 피드백을 재생하는 클래스입니다.
+/// </summary>
+public class PlayerEvents
+{
+    #region EventHandler
+    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
+
+    /// <summary>
+    /// 전투 상태 변경 이벤트를 발생시킵니다.
+    /// </summary>
+    public void TriggerBattleStateChanged(bool isBattleState)
+    {
+        BattleStateChaged?.Invoke(isBattleState);
+    }
+
+    #region Dodge
+    public event Action DodgeStarted, DodgeFinished; // 회피 종료 이벤트
+
+    /// <summary>
+    /// 회피 시작 피드백을 재생합니다.
+    /// </summary>
+    public void TriggerDodgeStarted()
+    {
+        DodgeStarted?.Invoke();
+        TriggerRegenStamina(false);
+    }
+
+    /// <summary>
+    /// 회피 종료 이벤트를 발생시키고 피드백을 재생합니다. 
+    /// </summary>
+    public void TriggerDodgeFinished()
+    {
+        DodgeFinished?.Invoke();
+        TriggerRegenStamina(true);
+    }
+    #endregion
+
+    #region BufferInput
+    public event Action BufferInputStarted, BufferInputEnded;           // 선입력 버퍼 이벤트
+
+    /// <summary>
+    /// 입력 버퍼 시작 이벤트 발행
+    /// </summary>
+    public void TriggerBufferInputStarted()
+    {
+        BufferInputStarted?.Invoke();
+    }
+    
+    /// <summary>
+    /// 입력 버퍼 종료 이벤트 발행
+    /// </summary>
+    public void TriggerBufferInputEnded()
+    {
+        BufferInputEnded?.Invoke();
+    }
+
+    #endregion
+
+    #region Attack
+    public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
+
+    /// <summary>
+    /// 공격 시작 피드백을 재생합니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackStarted()
+    {
+        AttackStarted?.Invoke();
+        TriggerRegenStamina(false);
+    }
+
+    /// <summary>
+    /// 공격 수행 이벤트를 발생시킵니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackPerformed()
+    {
+        AttackPerformed?.Invoke();
+    }
+
+    /// <summary>
+    /// 공격을 끝내고 다음 행동으로 넘어갑니다. (애니메이션 이벤트로 호출)
+    /// </summary>
+    public void TriggerAttackFinished()
+    {
+        AttackFinished?.Invoke();
+    }
+
+    #endregion
+
+    #region Charge
+    private event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
+
+    /// <summary>
+    /// 차지 시작 이벤트 발행
+    /// </summary>
+    public void TriggerChargeStarted()
+    {
+        ChargeStarted?.Invoke(); 
+    }
+
+    /// <summary>
+    /// 차지 종료 이벤트 발행
+    /// </summary>
+    public void TriggerChargeFinshed()
+    {
+        ChargeFinished?.Invoke();
+    }
+    #endregion
+
+    #region Parry
+    public event Action CounterWindowStarted, CounterWindowFinished; // 패링 수행 이벤트
+    public event Action<Transform> CounterSucceeded; // 패링 성공 이벤트
+
+    /// <summary>
+    /// 패링 검사 시작 이벤트 발행
+    /// </summary>
+    public void TriggerParryWindowStarted()
+    {
+        CounterWindowStarted?.Invoke();
+    }
+
+    /// <summary>
+    /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
+    /// </summary>
+    public void TriggerParrySucceeded(Transform transform)
+    {
+        CounterSucceeded?.Invoke(transform);
+    }
+
+    /// <summary>
+    /// 패링 검사 종료 이벤트 발행
+    /// </summary>
+    public void TriggerParryWindowFinished()
+    {
+        CounterWindowFinished?.Invoke();
+    }
+    #endregion
+
+    public event Action<bool> RegenStamina; // 스테미나 회복 이벤트
+
+    public void TriggerRegenStamina(bool canRegen)
+    {
+        RegenStamina?.Invoke(canRegen);
+    }
+    #endregion
+}

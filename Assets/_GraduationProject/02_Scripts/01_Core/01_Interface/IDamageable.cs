@@ -6,7 +6,7 @@ public interface IDamageable
     /// <summary>
     /// 현재 체력
     /// </summary>
-    public int Health { get; }
+    public int CurrentHealth { get; }
 
     /// <summary>
     /// 최대 체력
@@ -17,12 +17,6 @@ public interface IDamageable
     /// 사망 여부
     /// </summary>
     public bool IsDead { get; }
-
-    /// <summary>
-    /// 무적 상태 여부
-    /// </summary>
-    public bool IsInvincible { get; }  
-
 
     /// <summary>
     /// 피해를 받는 함수

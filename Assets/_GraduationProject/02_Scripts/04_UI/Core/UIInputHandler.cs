@@ -6,7 +6,7 @@ using UnityEngine;
 public class UIInputHandler : MonoBehaviour
 {
     [Header("Input")]
-    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private InputReaderSO _inputReader;
 
     // UI input state variables
     private bool _cancelInput;

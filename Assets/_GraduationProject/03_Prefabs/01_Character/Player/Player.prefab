@@ -3331,6 +3331,31 @@ MonoBehaviour:
     Color: {r: 1, g: 0.13757904, b: 0, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
+  _glowDuration: 0.5
+  _glowCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5193752814845066499
 GameObject:
   m_ObjectHideFlags: 0
@@ -5378,9 +5403,9 @@ GameObject:
   - component: {fileID: 8179803700943878997}
   - component: {fileID: 1890978879368711845}
   - component: {fileID: 5465638030384625449}
-  - component: {fileID: 9042720769638020941}
+  - component: {fileID: 346879565659448149}
   - component: {fileID: 2938692540566714052}
-  - component: {fileID: 3780332413375402449}
+  - component: {fileID: 4287152458117511782}
   - component: {fileID: 7109705603458011796}
   - component: {fileID: 5785969070339328951}
   - component: {fileID: 8725834076422140633}
@@ -5472,7 +5497,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9042720769638020941
+--- !u!114 &346879565659448149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5481,24 +5506,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 8406303703004210642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e4aba7f7c24fe8499d9ed2ee92c0c3a, type: 3}
+  m_Script: {fileID: 11500000, guid: aaa0e4b50b50f9e47bcbe258b258e54f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  _saveDuringPlay: 0
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _animator: {fileID: 5465638030384625449}
-  _characterController: {fileID: 1890978879368711845}
   _data: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
-  _events: {fileID: 3780332413375402449}
-  _input: {fileID: 2938692540566714052}
+  _inputHandler: {fileID: 2938692540566714052}
   _health: {fileID: 5785969070339328951}
   _movement: {fileID: 8725834076422140633}
-  _combat: {fileID: 7109705603458011796}
-  _interact: {fileID: 7045531422154869315}
   _stamina: {fileID: 6762247131494143912}
-  _lockOnSystem: {fileID: 8864815167107620252}
-  _ability: {fileID: 7584183168185193458}
-  _potion: {fileID: 0}
-  _onCameraInitializeSO: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+  _combat: {fileID: 7109705603458011796}
+  _animationTrigger: {fileID: 4287152458117511782}
+  _lockOn: {fileID: 8864815167107620252}
 --- !u!114 &2938692540566714052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5512,7 +5532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
---- !u!114 &3780332413375402449
+--- !u!114 &4287152458117511782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5521,9 +5541,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8406303703004210642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6df5ca9e8f44934899eb44fa890e10f, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b02398c8a43b942a0be6e55fdbfc4a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerEvents
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationTrigger
   _feedbacks:
   - type: Dodge_FB
     Feedback: {fileID: 4904109085875626804}
@@ -5662,7 +5682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 995a56e1ea87c1b4594087e4158be987, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbility
-  _abilitySelectedSO: {fileID: 11400000, guid: c3f357a0da13df544a8fe467f2a4934d, type: 2}
+  _abilityTags: []
 --- !u!114 &1288170247013544486
 MonoBehaviour:
   m_ObjectHideFlags: 0

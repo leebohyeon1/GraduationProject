@@ -8,33 +8,33 @@ public class StatUpgradeAbilitySO : AbilitySO
 
     public override void ApplyAbility(GameObject player)
     {
-        PlayerStats stats = player.GetComponent<Player>().Stats;
+        //PlayerStats stats = player.GetComponent<Player>().Stats;
 
-        stats.RuntimeData.MaxHealth += _statIncreases.Health;
-        stats.RuntimeData.MaxStamina += _statIncreases.Stamina;
-        stats.RuntimeData.StaminaRegenPerSecond += _statIncreases.StaminaRegenPerSecond;
+        //stats.RuntimeData.MaxHealth += _statIncreases.Health;
+        //stats.RuntimeData.MaxStamina += _statIncreases.Stamina;
+        //stats.RuntimeData.StaminaRegenPerSecond += _statIncreases.StaminaRegenPerSecond;
 
-        stats.RuntimeData.CombatData.DodgeStamina += _statIncreases.DodgeStamina;
-        stats.RuntimeData.CombatData.DodgeDistance += _statIncreases.DodgeDistance;
-        stats.RuntimeData.CombatData.DodgeDuration += _statIncreases.DodgeDuration;
+        //stats.RuntimeData.CombatData.DodgeStamina += _statIncreases.DodgeStamina;
+        //stats.RuntimeData.CombatData.DodgeDistance += _statIncreases.DodgeDistance;
+        //stats.RuntimeData.CombatData.DodgeDuration += _statIncreases.DodgeDuration;
 
-        for(int i = 0; i < stats.RuntimeData.CombatData.AttackDatas.Count; i++)
-        {
-            stats.RuntimeData.CombatData.AttackDatas[i].AttackConfig.AttackDamage += _statIncreases.AttackDamage;
-            stats.RuntimeData.CombatData.AttackDatas[i].AttackConfig.AttackStamina += _statIncreases.AttackStamina;
-            stats.RuntimeData.CombatData.AttackDatas[i].AttackConfig.AttackRadius *= _statIncreases.AttackRadius;
+        //for(int i = 0; i < stats.RuntimeData.CombatData.NormalAttackConfigList.Count; i++)
+        //{
+        //    stats.RuntimeData.CombatData.NormalAttackConfigList[i].AttackConfig.AttackDamage += _statIncreases.AttackDamage;
+        //    stats.RuntimeData.CombatData.NormalAttackConfigList[i].AttackConfig.AttackStamina += _statIncreases.AttackStamina;
+        //    stats.RuntimeData.CombatData.NormalAttackConfigList[i].AttackConfig.AttackRadius *= _statIncreases.AttackRadius;
 
-            for(int j = 0; j < stats.RuntimeData.CombatData.AttackDatas[i].ChargeConfigs.Count; j++)
-            {
-                stats.RuntimeData.CombatData.AttackDatas[i].ChargeConfigs[j].AttackConfig.AttackDamage += _statIncreases.ChargeAttackDamage;
-                stats.RuntimeData.CombatData.AttackDatas[i].ChargeConfigs[j].AttackConfig.AttackStamina += _statIncreases.ChargeAttackStamina;
-                stats.RuntimeData.CombatData.AttackDatas[i].ChargeConfigs[j].AttackConfig.AttackRadius *= _statIncreases.ChargeAttackRadius;
-            }
-        }
+        //    for(int j = 0; j < stats.RuntimeData.CombatData.NormalAttackConfigList[i].ChargeConfigs.Count; j++)
+        //    {
+        //        stats.RuntimeData.CombatData.NormalAttackConfigList[i].ChargeConfigs[j].AttackConfig.AttackDamage += _statIncreases.ChargeAttackDamage;
+        //        stats.RuntimeData.CombatData.NormalAttackConfigList[i].ChargeConfigs[j].AttackConfig.AttackStamina += _statIncreases.ChargeAttackStamina;
+        //        stats.RuntimeData.CombatData.NormalAttackConfigList[i].ChargeConfigs[j].AttackConfig.AttackRadius *= _statIncreases.ChargeAttackRadius;
+        //    }
+        //}
 
-        stats.RuntimeData.CombatData.ChargeMoveSpeed += _statIncreases.ChargeMoveSpeed;
-        stats.RuntimeData.CombatData.ChargeStamina += _statIncreases.ChargeStamina;
-        stats.RuntimeData.CombatData.MaxChargeTime += _statIncreases.MaxChargeTime;
+        //stats.RuntimeData.CombatData.ChargeMoveSpeed += _statIncreases.ChargeMoveSpeed;
+        //stats.RuntimeData.CombatData.ChargeStamina += _statIncreases.ChargeStamina;
+        //stats.RuntimeData.CombatData.MaxChargeTime += _statIncreases.MaxChargeTime;
     }
 }
 
@@ -43,13 +43,13 @@ public class StatUpgradeAbilitySO : AbilitySO
 //[Serializable]
 //public class PlusPlayerStat
 //{
-//    public int Health = 10; // ÃÖ´ë Ã¼·Â
+//    public int Health = 10; // ìµœëŒ€ ì²´ë ¥
 //    public float Stamina = 10;
 //    public float StaminaRegenPerSecond = 5;
 
 //    [Header("Dodge")]
 //    public float DodgeStamina = 10;
-//    public float DodgeDistance; // È¸ÇÇ °Å¸®
+//    public float DodgeDistance; // íšŒí”¼ ê±°ë¦¬
 //    public float DodgeDuration;
 
 //    [Header("ChargeAttack")]

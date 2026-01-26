@@ -24,7 +24,7 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
     [SerializeField] private AbilitySelectedSO _abilitySelectSO;
 
     [Header("Input")]
-    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private InputReaderSO _inputReader;
 
     [Header("Events")]
     [SerializeField] private UpdateNextWaveHoldTimeEventSO UpdateNextWaveHoldTimeEvent;
@@ -36,7 +36,7 @@ public class SurvivorLikeManager : MonoBehaviour, IEventListener<AbilitySO>
     {
         if (!_inputReader)
         {
-            _inputReader = await Addressables.LoadAssetAsync<InputReader>("InputReader").Task;
+            _inputReader = await Addressables.LoadAssetAsync<InputReaderSO>("InputReader").Task;
         }
 
         _inputReader.InteractHoldEvent += OnInteractHold;
