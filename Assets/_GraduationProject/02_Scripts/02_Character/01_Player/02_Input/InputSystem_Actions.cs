@@ -147,18 +147,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ToggleLockOnForGamepad"",
+                    ""name"": ""Potion"",
                     ""type"": ""Button"",
-                    ""id"": ""d91e0bb1-8348-4777-bfaa-23558dd9f7b0"",
+                    ""id"": ""b8cdb602-bd08-4c36-9c74-8c418e59e24c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""LockOnForKeyboard"",
+                    ""name"": ""ToggleLockOnForGamepad"",
                     ""type"": ""Button"",
-                    ""id"": ""a7232a5f-5855-4bef-8604-156cb55dcee0"",
+                    ""id"": ""d91e0bb1-8348-4777-bfaa-23558dd9f7b0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -174,9 +174,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Potion"",
+                    ""name"": ""LockOnForKeyboard"",
                     ""type"": ""Button"",
-                    ""id"": ""b8cdb602-bd08-4c36-9c74-8c418e59e24c"",
+                    ""id"": ""a7232a5f-5855-4bef-8604-156cb55dcee0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -892,10 +892,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_CounterAndCharge = m_Player.FindAction("CounterAndCharge", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
-        m_Player_ToggleLockOnForGamepad = m_Player.FindAction("ToggleLockOnForGamepad", throwIfNotFound: true);
-        m_Player_LockOnForKeyboard = m_Player.FindAction("LockOnForKeyboard", throwIfNotFound: true);
-        m_Player_LockOnTargetChangeForGamepad = m_Player.FindAction("LockOnTargetChangeForGamepad", throwIfNotFound: true);
         m_Player_Potion = m_Player.FindAction("Potion", throwIfNotFound: true);
+        m_Player_ToggleLockOnForGamepad = m_Player.FindAction("ToggleLockOnForGamepad", throwIfNotFound: true);
+        m_Player_LockOnTargetChangeForGamepad = m_Player.FindAction("LockOnTargetChangeForGamepad", throwIfNotFound: true);
+        m_Player_LockOnForKeyboard = m_Player.FindAction("LockOnForKeyboard", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -998,10 +998,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CounterAndCharge;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Dodge;
-    private readonly InputAction m_Player_ToggleLockOnForGamepad;
-    private readonly InputAction m_Player_LockOnForKeyboard;
-    private readonly InputAction m_Player_LockOnTargetChangeForGamepad;
     private readonly InputAction m_Player_Potion;
+    private readonly InputAction m_Player_ToggleLockOnForGamepad;
+    private readonly InputAction m_Player_LockOnTargetChangeForGamepad;
+    private readonly InputAction m_Player_LockOnForKeyboard;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1038,21 +1038,21 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         /// <summary>
+        /// Provides access to the underlying input action "Player/Potion".
+        /// </summary>
+        public InputAction @Potion => m_Wrapper.m_Player_Potion;
+        /// <summary>
         /// Provides access to the underlying input action "Player/ToggleLockOnForGamepad".
         /// </summary>
         public InputAction @ToggleLockOnForGamepad => m_Wrapper.m_Player_ToggleLockOnForGamepad;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/LockOnForKeyboard".
-        /// </summary>
-        public InputAction @LockOnForKeyboard => m_Wrapper.m_Player_LockOnForKeyboard;
         /// <summary>
         /// Provides access to the underlying input action "Player/LockOnTargetChangeForGamepad".
         /// </summary>
         public InputAction @LockOnTargetChangeForGamepad => m_Wrapper.m_Player_LockOnTargetChangeForGamepad;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Potion".
+        /// Provides access to the underlying input action "Player/LockOnForKeyboard".
         /// </summary>
-        public InputAction @Potion => m_Wrapper.m_Player_Potion;
+        public InputAction @LockOnForKeyboard => m_Wrapper.m_Player_LockOnForKeyboard;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1097,18 +1097,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
-            @ToggleLockOnForGamepad.started += instance.OnToggleLockOnForGamepad;
-            @ToggleLockOnForGamepad.performed += instance.OnToggleLockOnForGamepad;
-            @ToggleLockOnForGamepad.canceled += instance.OnToggleLockOnForGamepad;
-            @LockOnForKeyboard.started += instance.OnLockOnForKeyboard;
-            @LockOnForKeyboard.performed += instance.OnLockOnForKeyboard;
-            @LockOnForKeyboard.canceled += instance.OnLockOnForKeyboard;
-            @LockOnTargetChangeForGamepad.started += instance.OnLockOnTargetChangeForGamepad;
-            @LockOnTargetChangeForGamepad.performed += instance.OnLockOnTargetChangeForGamepad;
-            @LockOnTargetChangeForGamepad.canceled += instance.OnLockOnTargetChangeForGamepad;
             @Potion.started += instance.OnPotion;
             @Potion.performed += instance.OnPotion;
             @Potion.canceled += instance.OnPotion;
+            @ToggleLockOnForGamepad.started += instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.performed += instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.canceled += instance.OnToggleLockOnForGamepad;
+            @LockOnTargetChangeForGamepad.started += instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.performed += instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.canceled += instance.OnLockOnTargetChangeForGamepad;
+            @LockOnForKeyboard.started += instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.performed += instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.canceled += instance.OnLockOnForKeyboard;
         }
 
         /// <summary>
@@ -1138,18 +1138,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
-            @ToggleLockOnForGamepad.started -= instance.OnToggleLockOnForGamepad;
-            @ToggleLockOnForGamepad.performed -= instance.OnToggleLockOnForGamepad;
-            @ToggleLockOnForGamepad.canceled -= instance.OnToggleLockOnForGamepad;
-            @LockOnForKeyboard.started -= instance.OnLockOnForKeyboard;
-            @LockOnForKeyboard.performed -= instance.OnLockOnForKeyboard;
-            @LockOnForKeyboard.canceled -= instance.OnLockOnForKeyboard;
-            @LockOnTargetChangeForGamepad.started -= instance.OnLockOnTargetChangeForGamepad;
-            @LockOnTargetChangeForGamepad.performed -= instance.OnLockOnTargetChangeForGamepad;
-            @LockOnTargetChangeForGamepad.canceled -= instance.OnLockOnTargetChangeForGamepad;
             @Potion.started -= instance.OnPotion;
             @Potion.performed -= instance.OnPotion;
             @Potion.canceled -= instance.OnPotion;
+            @ToggleLockOnForGamepad.started -= instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.performed -= instance.OnToggleLockOnForGamepad;
+            @ToggleLockOnForGamepad.canceled -= instance.OnToggleLockOnForGamepad;
+            @LockOnTargetChangeForGamepad.started -= instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.performed -= instance.OnLockOnTargetChangeForGamepad;
+            @LockOnTargetChangeForGamepad.canceled -= instance.OnLockOnTargetChangeForGamepad;
+            @LockOnForKeyboard.started -= instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.performed -= instance.OnLockOnForKeyboard;
+            @LockOnForKeyboard.canceled -= instance.OnLockOnForKeyboard;
         }
 
         /// <summary>
@@ -1578,19 +1578,19 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDodge(InputAction.CallbackContext context);
         /// <summary>
+        /// Method invoked when associated input action "Potion" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPotion(InputAction.CallbackContext context);
+        /// <summary>
         /// Method invoked when associated input action "ToggleLockOnForGamepad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleLockOnForGamepad(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "LockOnForKeyboard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnLockOnForKeyboard(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "LockOnTargetChangeForGamepad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
@@ -1599,12 +1599,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Potion" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "LockOnForKeyboard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPotion(InputAction.CallbackContext context);
+        void OnLockOnForKeyboard(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

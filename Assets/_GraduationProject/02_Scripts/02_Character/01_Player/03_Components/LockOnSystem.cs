@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+/// <summary>
+/// 락온 시스템을 구현한 클래스
+/// </summary>
 public class LockOnSystem : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private GameObject _lockOnIndicator;
     [SerializeField] private OnLockOnSO _onLockOnEvent;
 
@@ -11,7 +15,6 @@ public class LockOnSystem : MonoBehaviour
 
     [Header("Scan Settings")]
     [SerializeField] private LayerMask _lockOnLayer;
-    [SerializeField] private Vector3 _offset;
     [SerializeField] private float _scanRadius = 10f;
     [SerializeField] private float _priorityScanAngle = 90f;
     private Collider[] _scanResults = new Collider[10];
@@ -21,22 +24,19 @@ public class LockOnSystem : MonoBehaviour
     [Header("Gizmos")]
     [SerializeField] private bool _showGizmos = true;
 
-    #region properties
+    [Header("Properties")]
     public GameObject LockOnIndicator => _lockOnIndicator;
     public Transform CurrentTarget => _currentTarget;
-    #endregion
 
-    private async void OnEnable()
+    private async void Start()
     {
         if(_lockOnIndicator == null)
         {
             _lockOnIndicator = await Addressables.InstantiateAsync("LockOnIndicator").Task;
         }
-        _lockOnIndicator.SetActive(false);
-    }
 
-    private void Start()
-    {
+        _lockOnIndicator.SetActive(false);
+
         _mainCamera = Camera.main;
     }
 
@@ -55,7 +55,7 @@ public class LockOnSystem : MonoBehaviour
     public bool LockOn(InputDeviceType deviceType, Vector2 lockOnInput, Vector2 mousePosition)
     { 
         // 1. 검색 기준 위치 설정 (마우스 vs 플레이어 위치)
-        Vector3 searchOrigin = transform.position + _offset;
+        Vector3 searchOrigin = transform.position;
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
             float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
@@ -86,7 +86,7 @@ public class LockOnSystem : MonoBehaviour
     {
         if (deviceType == InputDeviceType.Gamepad)
         {
-            Vector3 originalOffset = _offset;
+            Vector3 originalOffset = Vector3.zero;
 
             originalOffset.x += lockOnInput.x * 10;
             originalOffset.z += lockOnInput.y * 10;
@@ -129,7 +129,7 @@ public class LockOnSystem : MonoBehaviour
     /// </summary>
     public void ChangeLockOnTarget()
     {
-        Collider target = FindBestTarget(transform.position + _offset, true);
+        Collider target = FindBestTarget(transform.position, true);
 
         // 유효성 검사
         if (target == null || !target.TryGetComponent<ILockOnAble>(out var component))
@@ -224,7 +224,7 @@ public class LockOnSystem : MonoBehaviour
             if (usePriorityAngle)
             {
                 // 우선순위(시야각) 타겟 별도 추적
-                Vector3 dirToTarget = (hitCollider.transform.position - (transform.position + _offset)).normalized;
+                Vector3 dirToTarget = (hitCollider.transform.position - (transform.position)).normalized;
                 if (Vector3.Angle(transform.forward, dirToTarget) <= _priorityScanAngle * 0.5f)
                 {
                     if (dist < priorityDist)
@@ -244,7 +244,7 @@ public class LockOnSystem : MonoBehaviour
     /// </summary>
     private bool IsTargetValid(Collider collider)
     {
-        // 1. 자기 자신이거나 현재 타겟이면 제외
+        // 자기 자신이거나 현재 타겟이면 제외
         if (collider.transform == transform)
         {
             return false;
@@ -254,14 +254,14 @@ public class LockOnSystem : MonoBehaviour
             return false;
         }
 
-        // 2. 화면 밖인지 검사
+        // 화면 밖인지 검사
         Vector3 viewPos = _mainCamera.WorldToViewportPoint(collider.transform.position);
         if (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1)
         {
             return false;
         }
 
-        // 3. ILockOnAble 컴포넌트 여부
+        // ILockOnAble 컴포넌트 여부
         if (!collider.TryGetComponent<ILockOnAble>(out _))
         {
             return false;
@@ -285,13 +285,11 @@ public class LockOnSystem : MonoBehaviour
         // 이벤트 구독
         if (_currentTarget.TryGetComponent<ILockOnAble>(out var newlockOnAble))
         {
-            newlockOnAble.OnLockReleased -= LockOff;
             newlockOnAble.OnLockReleased += LockOff;
         }
 
         if (_currentTarget.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.OnDied -= ChangeLockOnTarget;
             damageable.OnDied += ChangeLockOnTarget;
         }
 
@@ -309,14 +307,14 @@ public class LockOnSystem : MonoBehaviour
         }
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position + _offset, _scanRadius);
+        Gizmos.DrawWireSphere(transform.position, _scanRadius);
 
         Gizmos.color = Color.yellow;
         Vector3 forward = transform.forward;
         Vector3 rightBoundary = Quaternion.Euler(0, _priorityScanAngle * 0.5f, 0) * forward;
         Vector3 leftBoundary = Quaternion.Euler(0, -_priorityScanAngle * 0.5f, 0) * forward;
-        Gizmos.DrawLine(transform.position + _offset, transform.position + _offset + rightBoundary * _scanRadius);
-        Gizmos.DrawLine(transform.position + _offset, transform.position + _offset + leftBoundary * _scanRadius);
+        Gizmos.DrawLine(transform.position, transform.position + rightBoundary * _scanRadius);
+        Gizmos.DrawLine(transform.position, transform.position + leftBoundary * _scanRadius);
     }
 
 }

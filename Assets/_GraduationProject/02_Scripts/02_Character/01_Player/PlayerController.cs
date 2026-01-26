@@ -5,9 +5,11 @@ using UnityEngine.AddressableAssets;
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
+    private Camera _camera;                                 // 메인 카메라
+    [SerializeField] private Animator _animator;            // 애니메이터
+
     private PlayerEvents _events;                           // 플레이어 이벤트 클래스
     [SerializeField] private InputReaderSO _inputReader;    // 입력을 읽어오는 클래스
-    [SerializeField] private Animator _animator;            // 애니메이터
     [SerializeField] private PlayerDataSO _data;            // 캐릭터 데이터
 
     [SerializeField] private PlayerInputHandler _inputHandler;  // 입력 처리 클래스
@@ -19,12 +21,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LockOnSystem _lockOn;          // 락온 시스템
     [SerializeField] private PlayerAbility _ability;        // 능력 시스템
 
-    private StateMachine<PlayerController> _stateMachine;        // 상태 머신
+    private StateMachine<PlayerController> _stateMachine;   // 상태 머신
+
 
     [Header("Properties")]
+    public Camera Camera => _camera;
+    public Animator Animator => _animator;
+
     public PlayerEvents Events => _events;
     public InputReaderSO InputReader => _inputReader;
-    public Animator Animator => _animator;
     public PlayerDataSO Data => _data;
 
     public PlayerInputHandler InputHandler => _inputHandler;
@@ -38,8 +43,9 @@ public class PlayerController : MonoBehaviour
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
+
     private async void Start()
-    {
+    {        
         // 참조 초기화
         await InitializeReferences();
         InitializeFSM();
@@ -71,6 +77,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private async Task InitializeReferences()
     {
+        // 카메라 초기화
+        _camera = Camera.main;
+
+        // Animator 초기화
+        if (_animator == null)
+        {
+            _animator = GetComponent<Animator>();
+        }
+
         // PlayerEvents 초기화
         if (_events == null)
         {
@@ -82,12 +97,6 @@ public class PlayerController : MonoBehaviour
         {
             _inputReader = await Addressables.
                 LoadAssetAsync<InputReaderSO>("InputReader").Task;
-        }
-
-        // Animator 초기화
-        if(_animator == null)
-        {
-            _animator = GetComponent<Animator>();
         }
 
         // CharacterData 초기화

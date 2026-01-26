@@ -32,10 +32,7 @@ public abstract class PlayerBaseState : IState
     public PlayerBaseState(StateMachine<PlayerController> stateMachine)
     { 
         p_stateMachine = stateMachine;
-
-        if(p_stateMachine.GetContext().TryGetComponent<Animator>(out p_animator))
-        {
-        } 
+        p_animator = p_owner.GetComponent<Animator>();
     }
 
     // 상태가 시작할 때 호출
@@ -80,6 +77,8 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.NormalCounterEvent += OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent += OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
+
+        p_owner.InputReader.ToggleLockOnEvent += OnToggleLockOn;
     }
     /// <summary>
     /// 능력치 설정 함수
@@ -111,6 +110,8 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.NormalCounterEvent -= OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent -= OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
+
+        p_owner.InputReader.ToggleLockOnEvent -= OnToggleLockOn;
     }
     /// <summary>
     /// 능력치 해제 함수
@@ -166,6 +167,27 @@ public abstract class PlayerBaseState : IState
     /// 차지 종료 입력 처리
     /// </summary>
     protected virtual void OnChargeCancel() { }
+
+    /// <summary>
+    /// 락온 토글 입력 처리
+    /// </summary>
+    protected virtual void OnToggleLockOn()
+    {
+        InputDeviceType currentInputDevice = p_owner.InputHandler.CurrentInputDevice;
+        Vector3 searchOrigin = p_owner.transform.position;
+
+        if (currentInputDevice == InputDeviceType.KeyboardMouse)
+        {
+            Vector3 mousePosition = p_owner.InputHandler.MousePosition;
+
+            float distanceToCamera = Vector3.Distance(p_owner.transform.position, p_owner.Camera.transform.position);
+            searchOrigin = p_owner.Camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distanceToCamera));
+        }
+        else
+        {
+
+        }
+    }
     #endregion
 }
 

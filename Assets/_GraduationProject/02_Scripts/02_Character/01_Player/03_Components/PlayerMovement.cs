@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     public void Initialize(PlayerController player)
     {
         _characterController = GetComponent<CharacterController>();
-        _camera = Camera.main;
+        _camera = player.Camera;
 
         _events = player.Events;
         _data = player.Data;
@@ -310,18 +310,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         vectorToMouse.Normalize();
 
         return vectorToMouse;
-    }
-
-    #endregion
-
-    #region Config Methods
-    /// <summary>
-    /// 카메라 설정
-    /// </summary>
-    /// <param name="camera">설정할 카메라</param>
-    public void SetCamera(Camera camera)
-    {
-        _camera = camera;
     }
 
     #endregion

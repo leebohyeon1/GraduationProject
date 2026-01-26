@@ -20,8 +20,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public event Action DodgeEvent = delegate { };
     public event Action ToggleLockOnEvent = delegate { };
-    public event Action LockOnTargetChangeEvent = delegate { };
-    public event Action<Vector2> LockOnTargetChangeVector2Event = delegate { };
+    public event Action LockOnTargetChangeForKeyboard = delegate { };
+    public event Action<Vector2> LockOnTargetChangeForGamepadEvent = delegate { };
 
     public event Action InteractEvent = delegate { };
     public event Action InteractHoldEvent = delegate { };
@@ -180,7 +180,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
                 }
                 else
                 {
-                    LockOnTargetChangeEvent.Invoke();
+                    LockOnTargetChangeForKeyboard.Invoke();
                 }
                 break;
         }
@@ -197,7 +197,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context)
     {
         Vector2 lockOnInput = context.ReadValue<Vector2>();
-        LockOnTargetChangeVector2Event.Invoke(lockOnInput);
+        LockOnTargetChangeForGamepadEvent.Invoke(lockOnInput);
     }
 
     public void OnPotion(InputAction.CallbackContext context)
