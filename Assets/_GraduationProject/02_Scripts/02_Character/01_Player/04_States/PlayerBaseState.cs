@@ -79,6 +79,8 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
 
         p_owner.InputReader.ToggleLockOnEvent += OnToggleLockOn;
+        p_owner.InputReader.LockOnTargetChangeForKeyboard += OnLockOnTargetChangeForKeyboard;
+        p_owner.InputReader.LockOnTargetChangeForGamepadEvent += OnLockOnTargetChangeForGamepadEvent;
     }
     /// <summary>
     /// 능력치 설정 함수
@@ -112,6 +114,8 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
 
         p_owner.InputReader.ToggleLockOnEvent -= OnToggleLockOn;
+        p_owner.InputReader.LockOnTargetChangeForKeyboard -= OnLockOnTargetChangeForKeyboard;
+        p_owner.InputReader.LockOnTargetChangeForGamepadEvent -= OnLockOnTargetChangeForGamepadEvent;
     }
     /// <summary>
     /// 능력치 해제 함수
@@ -173,21 +177,55 @@ public abstract class PlayerBaseState : IState
     /// </summary>
     protected virtual void OnToggleLockOn()
     {
-        InputDeviceType currentInputDevice = p_owner.InputHandler.CurrentInputDevice;
-        Vector3 searchOrigin = p_owner.transform.position;
-
-        if (currentInputDevice == InputDeviceType.KeyboardMouse)
+        if (p_owner.LockOn.IsLockOn)
         {
-            Vector3 mousePosition = p_owner.InputHandler.MousePosition;
-
-            float distanceToCamera = Vector3.Distance(p_owner.transform.position, p_owner.Camera.transform.position);
-            searchOrigin = p_owner.Camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distanceToCamera));
+            p_owner.LockOn.LockOff();
         }
         else
         {
+            InputDeviceType currentInputDevice = p_owner.InputHandler.CurrentInputDevice;
+            Vector3 searchOrigin = p_owner.InputHandler.MousePosition;
 
+            p_owner.LockOn.LockOn(currentInputDevice, searchOrigin);
         }
     }
+
+    /// <summary>
+    /// 키보드 락온 대상 변경 입력 처리
+    /// </summary>
+    protected virtual void OnLockOnTargetChangeForKeyboard()
+    {
+        InputDeviceType currentInputDevice = p_owner.InputHandler.CurrentInputDevice;
+        Vector3 searchOrigin = p_owner.InputHandler.MousePosition;
+
+        // 락온이 되어 있지 않으면 락온
+        if (!p_owner.LockOn.IsLockOn)
+        {
+            p_owner.LockOn.LockOn(currentInputDevice, searchOrigin);
+        }
+        else
+        {
+            p_owner.LockOn.ChangeLockOnTargetByMouse(searchOrigin);
+        }
+
+    }
+
+    /// <summary>
+    /// 게임 패드 락온 대상 변경 입력 처리
+    /// </summary>
+    /// <param name="gamepadInput">대상 탐색 방향</param>
+    protected virtual void OnLockOnTargetChangeForGamepadEvent(Vector2 gamepadInput)
+    {
+        // 락온이 되어 있지 않으면 리턴
+        if (!p_owner.LockOn.IsLockOn)
+        {
+            return;
+        }
+
+        p_owner.LockOn.ChangeLockOnTargetByGamePad(gamepadInput);
+    }
+
+
     #endregion
 }
 

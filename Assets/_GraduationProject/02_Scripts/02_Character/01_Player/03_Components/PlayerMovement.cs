@@ -8,19 +8,19 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour, IDisposable
 {
-    #region Private Fields
+    [Header("References")]
     private CharacterController _characterController; // 캐릭터 컨트롤러
     private Camera _camera; // 메인 카메라
     private PlayerEvents _events;
     private PlayerDataSO _data;
 
+    [Header("Movement Variable")]
     private Vector3 _velocity;          // 현재 속도 (중력 포함)
     private float _currentMoveSpeed;    // 현재 이동 속도
     private float _currentRotationSpeed;// 현재 회전 속도
 
     private float _moveAccelTimer;              // 이동 가속 타이머
     private float _rotateAccelTimer;            // 회전 가속 타이머
-    #endregion
 
     [Header("Properties")]
     public Vector3 Velocity => _velocity;

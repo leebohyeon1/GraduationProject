@@ -353,7 +353,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""11cad33b-c877-4172-9cc7-59ed25e4050b"",
                     ""path"": ""<Keyboard>/t"",
-                    ""interactions"": ""Hold,Press"",
+                    ""interactions"": ""Tap,Hold"",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""LockOnForKeyboard"",

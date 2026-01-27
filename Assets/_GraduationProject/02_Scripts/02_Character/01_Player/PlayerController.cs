@@ -18,11 +18,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerStamina _stamina;        // 플레이어 스테미나 시스템
     [SerializeField] private PlayerCombat _combat;          // 플레이어 전투 시스템
     [SerializeField] private PlayerAnimationTrigger _animationTrigger; // 플레이어 애니메이션 이벤트 트리거
-    [SerializeField] private LockOnSystem _lockOn;          // 락온 시스템
+    [SerializeField] private PlayerLockOn _lockOn;          // 락온 시스템
     [SerializeField] private PlayerAbility _ability;        // 능력 시스템
 
     private StateMachine<PlayerController> _stateMachine;   // 상태 머신
 
+    [SerializeField] private OnPlayerSpawnedSO playerSpawnedSO; // 플레이어 스폰 이벤트
 
     [Header("Properties")]
     public Camera Camera => _camera;
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour
     public PlayerStamina Stamina => _stamina;
     public PlayerCombat Combat => _combat;
     public PlayerAnimationTrigger AnimationTrigger => _animationTrigger;
-    public LockOnSystem LockOn => _lockOn;
+    public PlayerLockOn LockOn => _lockOn;
     public PlayerAbility Ability => _ability;
 
     public StateMachine<PlayerController> FSM => _stateMachine;
@@ -49,6 +50,9 @@ public class PlayerController : MonoBehaviour
         // 참조 초기화
         await InitializeReferences();
         InitializeFSM();
+
+        // 초기화 후 스폰 이벤트 발행
+        playerSpawnedSO.Publish(this);
     }
 
     private void Update()
@@ -142,7 +146,7 @@ public class PlayerController : MonoBehaviour
             _animationTrigger.Initialize(this);
         }
 
-        if(TryGetComponent<LockOnSystem>(out _lockOn))
+        if(TryGetComponent<PlayerLockOn>(out _lockOn))
         {
         }
 

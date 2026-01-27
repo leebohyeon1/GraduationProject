@@ -1,14 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 /// <summary>
 /// 락온 시스템을 구현한 클래스
 /// </summary>
-public class LockOnSystem : MonoBehaviour
+public class PlayerLockOn : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject _lockOnIndicator;
-    [SerializeField] private OnLockOnSO _onLockOnEvent;
 
     private Transform _currentTarget;
     private Camera _mainCamera;
@@ -23,6 +23,8 @@ public class LockOnSystem : MonoBehaviour
 
     [Header("Gizmos")]
     [SerializeField] private bool _showGizmos = true;
+
+    public event Action<bool> LockOnEvent;
 
     [Header("Properties")]
     public GameObject LockOnIndicator => _lockOnIndicator;
@@ -49,23 +51,22 @@ public class LockOnSystem : MonoBehaviour
     /// 락온
     /// </summary>
     /// <param name="deviceType">입력 기기</param>
-    /// <param name="lockOnInput">락온 방향</param>
     /// <param name="mousePosition">마우스 위치</param>
     /// <returns></returns>
-    public bool LockOn(InputDeviceType deviceType, Vector2 lockOnInput, Vector2 mousePosition)
+    public bool LockOn(InputDeviceType deviceType, Vector3 mousePosition)
     { 
         // 1. 검색 기준 위치 설정 (마우스 vs 플레이어 위치)
         Vector3 searchOrigin = transform.position;
         if (deviceType == InputDeviceType.KeyboardMouse)
         {
             float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
-            searchOrigin = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distanceToCamera));
+            searchOrigin = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.z, distanceToCamera));
         }
 
         Collider target = FindBestTarget(searchOrigin, deviceType == InputDeviceType.Gamepad);
 
         // 유효성 검사
-        if (target == null || !target.TryGetComponent<ILockOnAble>(out var component))
+        if (target == null )
         {
             return false;
         }
@@ -77,51 +78,53 @@ public class LockOnSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 락온 타겟 변경
+    /// 락온 대상 변경
+    /// 현재 타겟의 상대 방향 기준에서
+    /// 가장 가까운 적 탐색
     /// </summary>
-    /// <param name="deviceType">입력 기기</param>
-    /// <param name="lockOnInput">락온 방향</param>
-    /// <param name="mousePosition">마우스 위치</param>
-    public void ChangeLockOnTarget(InputDeviceType deviceType, Vector2 lockOnInput, Vector2 mousePosition)
+    /// <param name="changeDirection">변경 방향</param>
+    public void ChangeLockOnTargetByGamePad(Vector2 changeDirection)
     {
-        if (deviceType == InputDeviceType.Gamepad)
+        Vector3 offset = new Vector3(changeDirection.x, 0, changeDirection.y);
+
+        Vector3 searchOrigin = CurrentTarget.position + offset;
+
+        Collider target = FindBestTarget(searchOrigin, true);
+
+        // 유효성 검사
+        if (target == null )
         {
-            Vector3 originalOffset = Vector3.zero;
-
-            originalOffset.x += lockOnInput.x * 10;
-            originalOffset.z += lockOnInput.y * 10;
-
-            Vector3 searchOrigin = CurrentTarget.position + originalOffset;
-
-            Collider target = FindBestTarget(searchOrigin, true);
-
-            // 유효성 검사
-            if (target == null || !target.TryGetComponent<ILockOnAble>(out var component))
-            {
-                return;
-            }
-
-            // 상태 갱신
-            ApplyLockOn(target.transform);
-        }
-        else if(deviceType == InputDeviceType.KeyboardMouse)
-        {
-            // 1. 검색 기준 위치 설정 (마우스 vs 플레이어 위치)
-            float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
-            Vector3 searchOrigin = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distanceToCamera));
-
-            Collider target = FindBestTarget(searchOrigin, false);
-
-            // 유효성 검사
-            if (target == null || !target.TryGetComponent<ILockOnAble>(out var component))
-            {
-                return;
-            }
-
-            // 상태 갱신
-            ApplyLockOn(target.transform);
+            LockOff();
+            return;
         }
 
+        // 상태 갱신
+        ApplyLockOn(target.transform);
+    }
+
+    /// <summary>
+    /// 락온 대상 변경
+    /// 마우스 위치 주변에서
+    /// 가장 가까운 적 탐색
+    /// </summary>
+    /// <param name="mousePosition">마우스 위치</param>
+    public void ChangeLockOnTargetByMouse(Vector3 mousePosition)
+    {
+        // 1. 검색 기준 위치 설정 (마우스 vs 플레이어 위치)
+        float distanceToCamera = Vector3.Distance(transform.position, _mainCamera.transform.position);
+        Vector3 searchOrigin = _mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.z, distanceToCamera));
+
+        Collider target = FindBestTarget(searchOrigin, false);
+
+        // 유효성 검사
+        if (target == null)
+        {
+            LockOff();
+            return;
+        }
+
+        // 상태 갱신
+        ApplyLockOn(target.transform);
     }
 
     /// <summary>
@@ -132,8 +135,9 @@ public class LockOnSystem : MonoBehaviour
         Collider target = FindBestTarget(transform.position, true);
 
         // 유효성 검사
-        if (target == null || !target.TryGetComponent<ILockOnAble>(out var component))
+        if (target == null)
         {
+            LockOff();
             return;
         }
 
@@ -164,8 +168,8 @@ public class LockOnSystem : MonoBehaviour
         // 타겟 해제 후 비활성화 
         LockOnIndicator.SetActive(false);
         SetTarget(this.transform);
-
-        _onLockOnEvent.Publish(false);
+        IsLockOn = false;
+        LockOnEvent?.Invoke(false);
     }
 
     /// <summary>
@@ -296,7 +300,8 @@ public class LockOnSystem : MonoBehaviour
         // 인디케이터 이동
         SetTarget(_currentTarget.transform);
         _lockOnIndicator.SetActive(true);
-        _onLockOnEvent.Publish(true);
+        IsLockOn = true;
+        LockOnEvent?.Invoke(true);
     }
 
     private void OnDrawGizmos()

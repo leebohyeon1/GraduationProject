@@ -1,91 +1,155 @@
+using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class CameraTarget
-{
-    public int Priority = 0;
-    public Transform Transform { get; private set; }
-    public float Radius { get; private set; }
-    public float Weight { get; private set; }
 
-    public CameraTarget(int priority, Transform transform, float radius = 2, float weight = 0.5f)
-    {
-        Priority = priority;
-        Transform = transform;
-        Radius = radius;
-        Weight = weight;
-    }
+[Serializable]
+public class CameraChannel
+{
+    public string ChannelName;
+    public CinemachineCamera Camera;
 }
 
-public class CameraManager : MonoBehaviour, IEventListener<CameraTarget>, IEventListener<bool>
+/// <summary>
+/// 카메라를 관리하는 매니저
+/// </summary>
+public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListener<PlayerController>
 {
     [SerializeField] private CinemachineBrain _cinemachineBrain; // 시네머신 브레인    
-    [SerializeField] private CinemachineCamera _playerFollowCamera; // 플레이어 추적 카메라
-    [SerializeField] private CinemachineTargetGroup _lockOnTargetGroup; // 락온 목표 그룹
+    [SerializeField] private List<CameraChannel> _channelList = new List<CameraChannel>();
 
-    [SerializeField] private OnCameraInitializeSO _onCameraInitializeSO; // 카메라 초기화 이벤트
-    [SerializeField] private OnLockOnSO _onLockOnSO; // 락온 이벤트
+    private CameraChannel _currentChannel;          // 현재 카메라
+    private PlayerController _player;
 
-
-    private List<CameraTarget> _targetList = new List<CameraTarget>();
+    [SerializeField] private OnCameraChangeSO _onCameraChangeSO;
+    [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawnedSO;
 
     private void OnEnable()
     {
-        _onCameraInitializeSO.Subscribe(this);
-        _onLockOnSO.Subscribe(this);
+        _onCameraChangeSO.Subscribe(this);
+        _onPlayerSpawnedSO.Subscribe(this);
+
+        // 모든 카메라 Off
+        foreach (var channel in _channelList)
+        {
+            channel.Camera.gameObject.SetActive(false);
+        }
+
+        // 기본 카메라를 현재 카메라로 설정
+        ChangeChannel(GetCameraChannel("DefaultCamera"));
     }
-        
+
     private void OnDisable()
     {
-        _onCameraInitializeSO.Unsubscribe(this);
-        _onLockOnSO.Unsubscribe(this);
+        if (_player != null)
+        {
+            _player.LockOn.LockOnEvent -= OnLockOnEvent;
+        }
+
+        _onCameraChangeSO.Unsubscribe(this);
+        _onPlayerSpawnedSO.Unsubscribe(this);
     }
 
-
-    public void OnEventTrigger(CameraTarget value)
+    #region CameraChannel
+    /// <summary>
+    /// 카메라 채널 바꾸기
+    /// </summary>
+    /// <param name="cameraChannelName">바꾸려는 카메라 채널 이름</param>
+    public void ChangeChannel(string cameraChannelName)
     {
-        _targetList.Add(value);
-
-        _targetList.Sort(new PriorityComparer());
-
-        _lockOnTargetGroup.Targets.Clear();
-        foreach (var target in _targetList)
+        foreach (var channel in _channelList)
         {
-            _lockOnTargetGroup.AddMember(target.Transform, target.Weight, target.Radius);
-
-            if (target.Transform.CompareTag("Player"))
+            // 채널 명이 같으면
+            if(channel.ChannelName == cameraChannelName)
             {
-                _playerFollowCamera.Target.TrackingTarget = target.Transform;
+                ChangeChannel(channel); // 채널 변경
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 카메라 채널 바꾸기
+    /// </summary>
+    /// <param name="cameraChannel">바꿀 카메라 채널</param>
+    public void ChangeChannel(CameraChannel cameraChannel)
+    {
+        // 카메라 우선순위 변경
+        cameraChannel.Camera.gameObject.SetActive(true);
+        if(_currentChannel != null)
+        {
+            _currentChannel.Camera.gameObject.SetActive(false);
+        }
+
+        // 현재 카메라 교체
+        _currentChannel = cameraChannel;
+    }
+
+    /// <summary>
+    /// 카메라 반환 함수
+    /// </summary>
+    /// <param name="cameraChannelName">카메라 채널 이름</param>
+    /// <returns>찾은 카메라 채널</returns>
+    public CameraChannel GetCameraChannel(string cameraChannelName)
+    {
+        foreach (var channel in _channelList)
+        {
+            // 채널 명이 같으면
+            if (channel.ChannelName == cameraChannelName)
+            {
+                return channel;
             }
         }
 
+        return null;
     }
 
-    public void OnEventTrigger(bool value)
+    #endregion
+
+    /// <summary>
+    /// string 이벤트 처리
+    /// </summary>
+    /// <param name="cameraChannel">카메라 채널 명</param>
+    public void OnEventTrigger(string cameraChannel)
     {
-        if(value)
+        ChangeChannel(cameraChannel);
+    }
+
+    /// <summary>
+    /// 플레이어 스폰 이벤트 처리
+    /// </summary>
+    /// <param name="player">플레이어</param>
+    public void OnEventTrigger(PlayerController player)
+    {
+        if(_player == null)
         {
-            // 락온 모드
-            _cinemachineBrain.ChannelMask = OutputChannels.Channel01;
-            return;
+            _player = player;
+
+            _player.LockOn.LockOnEvent += OnLockOnEvent;
+
+            // 기본 카메라 타겟 설정
+            GetCameraChannel("DefaultCamera").Camera.Target.TrackingTarget = _player.transform;
+
+            // 락온 카메라 타겟 설정
+            Transform targetGroup = GetCameraChannel("LockOnCamera").Camera.Target.TrackingTarget;
+            if(targetGroup.TryGetComponent<CinemachineTargetGroup>(out CinemachineTargetGroup var))
+            {
+                var.AddMember(_player.transform, 0.5f, 1f);
+                var.AddMember(_player.LockOn.LockOnIndicator.transform, 0.5f, 1f);
+            }
+        }
+    }
+
+    private void OnLockOnEvent(bool islockOn)
+    {
+        if(islockOn)
+        {
+            ChangeChannel("LockOnCamera");
         }
         else
         {
-            _cinemachineBrain.ChannelMask = OutputChannels.Default;
+            ChangeChannel("DefaultCamera");
         }
-    }
-}
-
-public class PriorityComparer : IComparer<CameraTarget>
-{
-    public int Compare(CameraTarget x, CameraTarget y)
-    {
-        if (x == null || y == null)
-        {
-            return 0;
-        }
-
-        return x.Priority.CompareTo(y.Priority); // 내림차순
     }
 }
