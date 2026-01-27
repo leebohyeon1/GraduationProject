@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class PlayerChargeConfig
+public struct PlayerChargeConfig
 {
     public float ChargeTime;
     public PlayerAttackConfig AttackConfig;

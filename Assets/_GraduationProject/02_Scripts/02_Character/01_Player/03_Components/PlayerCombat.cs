@@ -84,12 +84,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="data">플레이어 데이터</param>
     private void InitializeData(PlayerDataSO data)
     {
-        _normalAttackConfigList = data.NormalAttackConfigList;
+        _normalAttackConfigList.AddRange(data.NormalAttackConfigList);
 
         _chargeStamina = data.ChargeStamina;
 
         _normalCounterAttackConfig = data.NormalCounterAttackConfig;
-        _heavyCounterAttackConfigList = data.HeavyCounterAttackConfigList;
+        _heavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);
         _counterAngle = data.CounterAngle;
     }
 
