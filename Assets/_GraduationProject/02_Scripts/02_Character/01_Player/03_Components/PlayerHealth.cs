@@ -67,21 +67,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
     }
 
-    /// <summary>
-    /// 체력을 변경합니다.
-    /// </summary>
-    /// <param name="amount">변경량</param>
-    public void ChangeHealth(int amount)
-    {
-        int previousHealth = CurrentHealth;
-        _currentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
-
-        if (previousHealth != CurrentHealth)
-        {
-            OnHealthChanged?.Invoke(previousHealth, CurrentHealth);
-        }
-    }
-
     public void TakeDamage(DamageData damageData)
     {
         if (IsDead)
@@ -125,47 +110,23 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         }
     }
 
-    /// <summary>
-    /// 경직도를 추가하고 경직 상태를 결정합니다.
-    /// </summary>
-    /// <param name="amount">추가할 경직도</param>
-    /// <param name="data">데미지 데이터</param>
-    public void AddStiffness(int amount)
-    {
-        ChangeStiffness(amount);
-    }
+    //==========================================================================================================================
+    // Health ==================================================================================================================
+    //==========================================================================================================================
 
     /// <summary>
-    /// 경직도를 변경합니다.
+    /// 체력을 변경합니다.
     /// </summary>
-    private void ChangeStiffness(int amount)
+    /// <param name="amount">변경량</param>
+    public void ChangeHealth(int amount)
     {
-        int previouseStiffness = _currentStiffness;
-        _currentStiffness += amount;
+        int previousHealth = CurrentHealth;
+        _currentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
 
-        if (previouseStiffness != _currentStiffness) 
+        if (previousHealth != CurrentHealth)
         {
-            OnStiffnessChanged?.Invoke(previouseStiffness, _currentStiffness);
+            OnHealthChanged?.Invoke(previousHealth, CurrentHealth);
         }
-    }
-
-    /// <summary>
-    /// 체력을 회복합니다.
-    /// </summary>
-    /// <param name="healAmount">회복량</param>
-    public void Heal(int healAmount)
-    {
-        if (IsDead) return;
-        ChangeHealth(healAmount);
-    }
-
-    /// <summary>
-    /// 사망 처리
-    /// </summary>
-    public void Die()
-    {
-        OnDied?.Invoke();
-        gameObject.SetActive(false);
     }
 
     #region DamageReduction Management
@@ -204,4 +165,56 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _damageReduction -= value;
     }
     #endregion
+
+    /// <summary>
+    /// 사망 처리
+    /// </summary>
+    public void Die()
+    {
+        OnDied?.Invoke();
+        gameObject.SetActive(false);
+    }
+
+    //==========================================================================================================================
+    // Stiffness ===============================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 경직도를 추가하고 경직 상태를 결정합니다.
+    /// </summary>
+    /// <param name="amount">추가할 경직도</param>
+    /// <param name="data">데미지 데이터</param>
+    public void AddStiffness(int amount)
+    {
+        ChangeStiffness(amount);
+    }
+
+    /// <summary>
+    /// 경직도를 변경합니다.
+    /// </summary>
+    private void ChangeStiffness(int amount)
+    {
+        int previouseStiffness = _currentStiffness;
+        _currentStiffness += amount;
+
+        if (previouseStiffness != _currentStiffness) 
+        {
+            OnStiffnessChanged?.Invoke(previouseStiffness, _currentStiffness);
+        }
+    }
+
+    //==========================================================================================================================
+    // Heal ====================================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 체력을 회복합니다.
+    /// </summary>
+    /// <param name="healAmount">회복량</param>
+    public void Heal(int healAmount)
+    {
+        if (IsDead) return;
+        ChangeHealth(healAmount);
+    }
+
 }

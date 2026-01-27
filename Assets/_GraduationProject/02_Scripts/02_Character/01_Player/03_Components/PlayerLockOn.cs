@@ -78,6 +78,33 @@ public class PlayerLockOn : MonoBehaviour
     }
 
     /// <summary>
+    /// 락온 해제
+    /// </summary>
+    public void LockOff()
+    {
+        if (CurrentTarget == null || CurrentTarget == this.transform)
+        {
+            return;
+        }
+
+        if (CurrentTarget.TryGetComponent<ILockOnAble>(out var lockOnAble))
+        {
+            lockOnAble.OnLockReleased -= LockOff;
+        }
+
+        if (CurrentTarget.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.OnDied -= ChangeLockOnTarget;
+        }
+
+        // 타겟 해제 후 비활성화 
+        LockOnIndicator.SetActive(false);
+        SetTarget(this.transform);
+        IsLockOn = false;
+        LockOnEvent?.Invoke(false);
+    }
+
+    /// <summary>
     /// 락온 대상 변경
     /// 현재 타겟의 상대 방향 기준에서
     /// 가장 가까운 적 탐색
@@ -143,47 +170,6 @@ public class PlayerLockOn : MonoBehaviour
 
         // 상태 갱신
         ApplyLockOn(target.transform);
-    }
-
-    /// <summary>
-    /// 락온 해제
-    /// </summary>
-    public void LockOff()
-    {
-        if(CurrentTarget == null || CurrentTarget == this.transform)
-        {
-            return;
-        }
-
-        if (CurrentTarget.TryGetComponent<ILockOnAble>(out var lockOnAble))
-        {
-            lockOnAble.OnLockReleased -= LockOff;
-        }
-
-        if(CurrentTarget.TryGetComponent<IDamageable>(out var damageable))
-        {
-            damageable.OnDied -= ChangeLockOnTarget;
-        }
-
-        // 타겟 해제 후 비활성화 
-        LockOnIndicator.SetActive(false);
-        SetTarget(this.transform);
-        IsLockOn = false;
-        LockOnEvent?.Invoke(false);
-    }
-
-    /// <summary>
-    /// 타겟 설정
-    /// </summary>
-    /// <param name="target">타겟</param>
-    public void SetTarget(Transform target)
-    {
-        _currentTarget = target;
-        if (_lockOnIndicator != null)
-        {
-            LockOnIndicator.transform.parent = target;
-            LockOnIndicator.transform.localPosition = Vector3.zero;
-        }
     }
 
     /// <summary>
@@ -302,6 +288,20 @@ public class PlayerLockOn : MonoBehaviour
         _lockOnIndicator.SetActive(true);
         IsLockOn = true;
         LockOnEvent?.Invoke(true);
+    }
+
+    /// <summary>
+    /// 타겟 설정
+    /// </summary>
+    /// <param name="target">타겟</param>
+    public void SetTarget(Transform target)
+    {
+        _currentTarget = target;
+        if (_lockOnIndicator != null)
+        {
+            LockOnIndicator.transform.parent = target;
+            LockOnIndicator.transform.localPosition = Vector3.zero;
+        }
     }
 
     private void OnDrawGizmos()
