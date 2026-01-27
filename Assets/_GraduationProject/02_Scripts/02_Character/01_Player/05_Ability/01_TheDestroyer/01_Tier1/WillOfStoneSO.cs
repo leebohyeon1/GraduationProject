@@ -35,8 +35,6 @@ public class WillOfStoneSO : PlayerAbilitySO
         p_owner.Events.ChargeFinished -= OnChargeFinished;
     }
 
-
-
     private void OnChargeStarted()
     {
         AddAllSkillTags();

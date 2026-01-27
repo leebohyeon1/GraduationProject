@@ -28,7 +28,7 @@ public class PlayerDataSO : ScriptableObject
     public float RotateSpeed = 5f; // 회전 속도
     public float RotateAccelerationTime = 0.2f; // 회전 가속 시간
     public float RotateDecelerationTime = 0.5f; // 회전 감속 시간
-    public AnimationCurve RotationCurve;        // 회전 속도 곡선
+    public AnimationCurve RotateCurve;        // 회전 속도 곡선
 
     [Header("Dodge")]
     public DodgeData DodgeConfig;   // 회피 설정
@@ -42,7 +42,7 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("Charge Setting")]
     public float ChargeMoveSpeed;
-    public float ChargeRotationSpeed;
+    public float ChargeRotateSpeed;
     public float ChargeStamina;
     public float MaxChargeTime = 5f;
 
@@ -62,6 +62,15 @@ public class PlayerDataSO : ScriptableObject
 [Serializable]
 public class DodgeData
 {
+    public enum DodgeType
+    {
+        Roll = 0,
+        Step = 1
+    }
+
+    public string  AnimationStateName;  // 애니메이션 이름
+
+    public DodgeType Type;      // 회피 타입
     public float StaminaAmount; // 스테미나 사용량
     public bool isInivicible;   // 무적 여부
     public StepData MoveConfig; // 회피 움직임 설정

@@ -12,20 +12,40 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     private CharacterController _characterController; // 캐릭터 컨트롤러
     private Camera _camera; // 메인 카메라
     private PlayerEvents _events;
-    private PlayerDataSO _data;
 
-    [Header("Movement Variable")]
-    private Vector3 _velocity;          // 현재 속도 (중력 포함)
-    private float _currentMoveSpeed;    // 현재 이동 속도
-    private float _currentRotationSpeed;// 현재 회전 속도
+    [Header("Movement Setting")]
+    private float _maxMoveSpeed;            // 최대 이동 속도
+    private float _moveAccelerationTime;    // 이동 가속 시간
+    private float _moveDecelerationnTime;   // 이동 감속 시간
+    private AnimationCurve _moveCurve;      // 이동 가속 커브
+
+    private float _maxRotateSpeed;            // 최대 회전 속도
+    private float _rotateAccelerationTime;    // 회전 가속 시간
+    private float _rotateDecelerationTime;   // 회전 감속 시간
+    private AnimationCurve _rotateCurve;      // 회전 가속 커브
+
+    private Vector3 _velocity;              // 현재 속도 (중력 포함)
+    public Vector3 Velocity => _velocity;
+
+    private float _currentMoveSpeed;            // 현재 이동 속도   
+    public float CurrentMoveSpeed => _currentMoveSpeed;
+
+    private float _currentRotationSpeed;        // 현재 회전 속도
+    public float CurrentRotationSpeed => _currentRotationSpeed;
 
     private float _moveAccelTimer;              // 이동 가속 타이머
     private float _rotateAccelTimer;            // 회전 가속 타이머
 
-    [Header("Properties")]
-    public Vector3 Velocity => _velocity;
-    public float CurrentMoveSpeed => _currentMoveSpeed;
-    public float CurrentRotationSpeed => _currentRotationSpeed; 
+    [Header("Dodge Setting")]
+    private DodgeData _dodgeConfig;         // 회피 설정
+    public DodgeData DodgeConfig => _dodgeConfig;
+
+    [Header("ChargeMove Setting")]
+    private float _chargeMoveSpeed;         // 차지 이동 속도
+    public float ChargeMoveSpeed => _chargeMoveSpeed;   
+
+    private float _chargeRotateSpeed;         // 차지 이동 속도
+    public float ChargeRoataeSpeed => _chargeRotateSpeed;
 
     /// <summary>
     /// 초기화 함수
@@ -34,16 +54,34 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     {
         _characterController = GetComponent<CharacterController>();
         _camera = player.Camera;
-
         _events = player.Events;
-        _data = player.Data;
+        player.RegisterDisposable(this);    // 이벤트 해제 구독
 
-        // 이벤트 해제 구독
-        player.RegisterDisposable(this);
+        InitializeData(player.Data);
     }
 
     public void Dispose()
     {
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    /// <param name="data">플레이어 데이터</param>
+    private void InitializeData(PlayerDataSO data)
+    {
+        _maxMoveSpeed = data.MoveSpeed;
+        _moveAccelerationTime = data.MoveAccelerationTime;
+        _moveDecelerationnTime = data.MoveDecelerationnTime;
+        _moveCurve = data.MoveCurve;
+
+        _maxRotateSpeed = data.RotateSpeed;
+        _rotateAccelerationTime = data.RotateAccelerationTime;
+        _rotateDecelerationTime = data.RotateDecelerationTime;
+        _rotateCurve = data.RotateCurve;
+
+        _chargeMoveSpeed = data.ChargeMoveSpeed;
+        _chargeRotateSpeed = data.ChargeRotateSpeed;
     }
 
     //==========================================================================================================================
@@ -106,25 +144,25 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         bool isInput = moveInput.sqrMagnitude > 0.01f;
 
         // 방향 전환 체크 (입력이 있고, 현재 움직이는 방향과 반대일 때)
-        bool isReversed = isInput && _currentMoveSpeed > (_data.MoveSpeed / 2f) &&
+        bool isReversed = isInput && _currentMoveSpeed > (_maxMoveSpeed / 2f) &&
                          Vector3.Dot(moveInput, transform.forward) < -0.3f;
 
         if (isInput && !isReversed)
         {
             // 가속: 타이머 증가
-            _moveAccelTimer += deltaTime / _data.MoveAccelerationTime;
+            _moveAccelTimer += deltaTime / _moveAccelerationTime;
         }
         else
         {
             // 감속 혹은 방향 전환: 타이머 감소
-            _moveAccelTimer -= deltaTime / _data.MoveDecelerationnTime;
+            _moveAccelTimer -= deltaTime / _moveDecelerationnTime;
         }
 
         _moveAccelTimer = Mathf.Clamp01(_moveAccelTimer);
 
         // 커브와 이동 입력에 따른 스피드 계산
-        float speedRatio = _data.MoveCurve.Evaluate(_moveAccelTimer);
-        _currentMoveSpeed = _data.MoveSpeed * speedRatio * moveInput.magnitude;
+        float speedRatio = _moveCurve.Evaluate(_moveAccelTimer);
+        _currentMoveSpeed = _maxMoveSpeed * speedRatio * moveInput.magnitude;
 
         // 카메라 방향 기준으로 이동 방향 계산
         Vector3 relativeDirection = GetRelativeVectorToCamera(moveInput);
@@ -175,19 +213,19 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         if (Vector3.Dot(targetDirection, currentDirecrion) >= 0.9f)
         {
             // 회전 감속
-            _rotateAccelTimer -= deltaTime / _data.RotateDecelerationTime;
+            _rotateAccelTimer -= deltaTime / _rotateDecelerationTime;
         }
         else
         {
             // 회전 가속
-            _rotateAccelTimer += deltaTime / _data.RotateDecelerationTime;
+            _rotateAccelTimer += deltaTime / _rotateAccelerationTime;
         }
 
         _rotateAccelTimer = Mathf.Clamp01(_rotateAccelTimer);
 
         // 커브를 이용한 회전 속도 계산
-        float rotationRatio = _data.RotationCurve.Evaluate(_rotateAccelTimer);
-        _currentRotationSpeed = _data.RotateSpeed * rotationRatio;
+        float rotationRatio = _rotateCurve.Evaluate(_rotateAccelTimer);
+        _currentRotationSpeed = _maxRotateSpeed * rotationRatio;
 
         // 회전 적용
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
@@ -230,11 +268,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         // 속도가 거의 없으면 회전 타이머 감소 후 리턴
         if (_currentMoveSpeed <= 0.1f)
         {
-            _rotateAccelTimer -= deltaTime / _data.RotateDecelerationTime;
+            _rotateAccelTimer -= deltaTime / _rotateDecelerationTime;
             _rotateAccelTimer = Mathf.Clamp01(_rotateAccelTimer);
 
             // 커브를 이용한 회전 속도 계산
-            _currentRotationSpeed = _data.RotateSpeed * _data.RotationCurve.Evaluate(_rotateAccelTimer);
+            _currentRotationSpeed = -_maxRotateSpeed * _rotateCurve.Evaluate(_rotateAccelTimer);
             return;
         }
 
@@ -284,6 +322,107 @@ public class PlayerMovement : MonoBehaviour, IDisposable
             stepData.StepDuration)
             .SetEase(stepData.StepCurve)
             .SetId(id)
+            .SetUpdate(UpdateType.Fixed)
+            .OnComplete(compeleteCallback);
+    }
+
+
+    /// <summary>
+    /// 원하는 방향으로 스텝 데이터에 따라 스텝
+    /// </summary>
+    /// <param name="direction">스텝 방향</param>
+    /// <param name="id">트윈 아이디</param>
+    /// <param name="useGravity">중력 사용 여부</param>
+    /// <param name="compeleteCallback">종료 시 콜백</param>
+    public void Step(Vector3 direction, object id, bool useGravity = false, TweenCallback compeleteCallback = null)
+    {
+        float currentDistance = 0f;
+
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                Vector3 moveDirection = direction;
+                float deltaDistance = x - currentDistance;
+                Vector3 displacement = moveDirection * deltaDistance;
+
+                Rotate(moveDirection, DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
+
+                if (useGravity)
+                {
+                    ApplyGravity();
+                }
+                // 캐릭터 컨트롤러 이동
+                _characterController.Move(displacement);
+
+                currentDistance = x;
+            },
+            DodgeConfig.MoveConfig.StepDistance,
+            DodgeConfig.MoveConfig.StepDuration)
+            .SetEase(DodgeConfig.MoveConfig.StepCurve)
+            .SetId(id)
+            .SetUpdate(UpdateType.Fixed)
+            .OnComplete(compeleteCallback);
+    }
+
+
+    /// <summary>
+    /// 정면으로 구르기 방향에 따라 구르기
+    /// </summary>
+    /// <param name="stepData">스텝 데이터</param>
+    /// <param name="id">트윈 아이디</param>
+    /// <param name="compeleteCallback">종료 시 콜백</param>
+    public void Roll(StepData stepData, object id, TweenCallback compeleteCallback = null)
+    {
+        // 구르기 시작
+        float currentDistance = 0f;
+
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                float deltaDistance = x - currentDistance;
+
+                // 캐릭터 컨트롤러 이동
+                Vector3 displacement = transform.forward * deltaDistance;
+                CharacterControllerMove(displacement, 1);
+
+                currentDistance = x;
+            },
+            stepData.StepDistance,
+            stepData.StepDuration)
+            .SetEase(stepData.StepCurve)
+            .SetId(this)
+            .SetUpdate(UpdateType.Fixed)
+            .OnComplete(compeleteCallback);
+    }
+
+    /// <summary>
+    /// 정면으로 구르기 방향에 따라 구르기
+    /// </summary>
+    /// <param name="id">트윈 아이디</param>
+    /// <param name="compeleteCallback">종료 시 콜백</param>
+    public void Roll(object id, TweenCallback compeleteCallback = null)
+    {
+        // 구르기 시작
+        float currentDistance = 0f;
+
+        DOTween.To(
+            () => currentDistance,
+            x =>
+            {
+                float deltaDistance = x - currentDistance;
+
+                // 캐릭터 컨트롤러 이동
+                Vector3 displacement = transform.forward * deltaDistance;
+                CharacterControllerMove(displacement, 1);
+
+                currentDistance = x;
+            },
+            DodgeConfig.MoveConfig.StepDistance,
+            DodgeConfig.MoveConfig.StepDuration)
+            .SetEase(DodgeConfig.MoveConfig.StepCurve)
+            .SetId(this)
             .SetUpdate(UpdateType.Fixed)
             .OnComplete(compeleteCallback);
     }

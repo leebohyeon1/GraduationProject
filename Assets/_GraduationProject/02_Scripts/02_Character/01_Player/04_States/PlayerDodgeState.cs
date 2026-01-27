@@ -1,4 +1,5 @@
 using DG.Tweening;
+using MoreMountains.Tools;
 using System;
 using UnityEngine;
 
@@ -19,6 +20,13 @@ public class PlayerDodgeState : PlayerBaseState
     public override void OnUpdate()
     {
         base.OnUpdate();
+
+        // 카메라 방향 기준 벡터 반환
+        Vector3 moveInput = p_owner.InputHandler.MoveInput;
+        Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+
+        // 회전은 따로 처리
+        p_owner.Movement.Rotate(dodgeDirection, p_owner.Movement.DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
     }
 
     public override void OnExit()
@@ -47,8 +55,10 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.SetupAnimator();
 
-        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Dodge);   // 애니메이션 상태 설정
-        p_animator.Play("Roll", 0, 0f);                                    // 0부터 재생
+        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Dodge);       // 애니메이션 상태 설정
+        p_animator.SetInteger("DodgeType", (int)p_owner.Movement.DodgeConfig.Type); // 회피 타입 설정
+
+        p_animator.Play(p_owner.Movement.DodgeConfig.AnimationStateName, 0, 0f);    // 0부터 재생
     }
     #endregion
 
@@ -91,7 +101,18 @@ public class PlayerDodgeState : PlayerBaseState
             p_owner.Events.TriggerBattleStateChanged(true);
         }
 
-        Roll();
+        switch(p_owner.Movement.DodgeConfig.Type)
+        {
+            case DodgeData.DodgeType.Roll:
+                p_owner.Movement.Roll(this, OnDodgeFinished);
+                break;
+            case DodgeData.DodgeType.Step:
+                Vector3 moveInput = p_owner.InputHandler.MoveInput;
+                Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+
+                p_owner.Movement.Step(dodgeDirection, this, false, OnDodgeFinished);
+                break;
+        }
     }
 
     /// <summary>
@@ -103,35 +124,4 @@ public class PlayerDodgeState : PlayerBaseState
     }
     #endregion
 
-    private void Roll()
-    {
-        // 구르기 시작
-        StepData dodgeData = p_owner.Data.DodgeConfig.MoveConfig;
-        float currentDistance = 0f;
-
-        DOTween.To(
-            () => currentDistance,
-            x =>
-            {
-                // 카메라 방향 기준 벡터 반환
-                Vector3 moveInput = p_owner.InputHandler.MoveInput;
-                Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
-
-                float deltaDistance = x - currentDistance;
-
-                p_owner.Movement.Rotate(dodgeDirection, dodgeData.StepRotateSpeed, Time.fixedDeltaTime);
-
-                // 캐릭터 컨트롤러 이동
-                Vector3 displacement = p_owner.Movement.transform.forward * deltaDistance;
-                p_owner.Movement.CharacterControllerMove(displacement, 1);
-
-                currentDistance = x;
-            },
-            dodgeData.StepDistance,
-            dodgeData.StepDuration)
-            .SetEase(dodgeData.StepCurve)
-            .SetId(this)
-            .SetUpdate(UpdateType.Fixed)
-            .OnComplete(p_owner.Events.TriggerDodgeFinished);
-    }
 }

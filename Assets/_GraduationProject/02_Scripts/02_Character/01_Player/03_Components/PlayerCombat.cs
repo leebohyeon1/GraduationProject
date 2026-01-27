@@ -9,17 +9,26 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour, IDisposable
 {
     [Header("References")]
-    private PlayerDataSO _data;     // 플레이어 데이터
     private PlayerEvents _events;   // 플레이어 이벤트
+
     [SerializeField] private OnSwingMiss _onSwingMiss;  // 공격 미스 이벤트
+
+    [Header("Attack")]
+    private LayerMask _attackLayerMask;
 
     [Header("NormalAttack")]
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
+    private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
 
     [Header("Charge")]
-    private int _chargeLevel = -1;   // 차지 레벨
-    
+    private float _chargeStamina = 5;   // 차지 스테미나
+    private int _chargeLevel = -1;      // 차지 레벨
+
     [Header("Counter")]
+    private PlayerAttackConfig _normalCounterAttackConfig;
+    private List<PlayerChargeConfig> _heavyCounterAttackConfigList = new List<PlayerChargeConfig>();
+
+    private float _counterAngle = 120f;           // 상쇄 가능 각도
     private bool _isCounterable = false;          // 상쇄 가능 여부
     private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
 
@@ -27,17 +36,22 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private bool _isBattleState;    // 전투 중인지 여부
 
     [Header("Properties")]
+    public int NormalAttackComboIndex => _normalAttackComboIndex;
+
+    public float ChargeStamina => _chargeStamina;
+    public int ChargeLevel => _chargeLevel;
+
+    public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
+    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _heavyCounterAttackConfigList;
+
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
-    public int NormalAttackComboIndex => _normalAttackComboIndex;
-    public int ChargeLevel => _chargeLevel;
 
     /// <summary>
     /// 초기화 함수
     /// </summary>
     public void Initialize(PlayerController player)
     {
-        _data = player.Data;
         _events = player.Events;
 
         _events.BattleStateChaged += OnBattleStateChaged;
@@ -48,6 +62,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
+
+        InitializeData(player.Data);
     }
 
     /// <summary>
@@ -60,6 +76,21 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.CounterWindowFinished -= OnCounterWindowFinished;
 
         _events.BeforeDamaged -= OnBeforeDamaged;
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    /// <param name="data">플레이어 데이터</param>
+    private void InitializeData(PlayerDataSO data)
+    {
+        _normalAttackConfigList = data.NormalAttackConfigList;
+
+        _chargeStamina = data.ChargeStamina;
+
+        _normalCounterAttackConfig = data.NormalCounterAttackConfig;
+        _heavyCounterAttackConfigList = data.HeavyCounterAttackConfigList;
+        _counterAngle = data.CounterAngle;
     }
 
     //==========================================================================================================================
@@ -110,7 +141,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         Vector3 attackCenter = GetAttackCenter(attackData);
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _data.AttackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
 
         if (hitEnemies.Length > 0)
         {
@@ -176,7 +207,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <returns>일반 공격 가능 여부</returns>
     public bool CanNormalAttack()
     {
-        return _normalAttackComboIndex < (_data.NormalAttackConfigList.Count - 1);
+        return _normalAttackComboIndex < (_normalAttackConfigList.Count - 1);
     }
     #endregion
 
@@ -294,7 +325,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;        // 적으로 가는 벡터 구하기
         // 적을 마주보고 있는가
-        bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (_data.CounterAngle / 2f);
+        bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (_counterAngle / 2f);
 
 
         // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가

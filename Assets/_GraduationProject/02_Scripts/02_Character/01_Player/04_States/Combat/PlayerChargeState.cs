@@ -25,15 +25,15 @@ public class PlayerChargeState : PlayerBaseState
         _chargeTimer += Time.deltaTime;
 
         // 차지 레벨이 차지 카운터 리스트 갯수보다 작고, 다음 차지 시간이 지났으면
-        if(_chargeLevel < (p_owner.Data.HeavyCounterAttackConfigList.Count - 1) && 
-            _chargeTimer >= p_owner.Data.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
+        if(_chargeLevel < (p_owner.Combat.HeavyCounterAttackConfigList.Count - 1) && 
+            _chargeTimer >= p_owner.Combat.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
         {
             p_owner.Combat.IncreaseChargeLevel();
             p_owner.Events.TriggerChargeLevelCompleted(_chargeLevel);
         }
 
         // 매초마다 스테미나 감소
-        p_owner.Stamina.UseStamina(p_owner.Data.ChargeStamina * Time.deltaTime);
+        p_owner.Stamina.UseStamina(p_owner.Combat.ChargeStamina * Time.deltaTime);
     }
 
     public override void OnFixedUpdate()
@@ -44,7 +44,7 @@ public class PlayerChargeState : PlayerBaseState
         Vector3 moveDirection = p_owner.Movement.GetRelativeVectorToCamera(p_owner.InputHandler.MoveInput);
 
         // 이동 처리
-        p_owner.Movement.Move(moveDirection, p_owner.Data.ChargeMoveSpeed, Time.fixedDeltaTime);
+        p_owner.Movement.Move(moveDirection, p_owner.Movement.ChargeMoveSpeed, Time.fixedDeltaTime);
         Vector3 localMove = p_owner.transform.InverseTransformDirection(moveDirection);
         p_animator.SetFloat("X", localMove.x);
         p_animator.SetFloat("Y", localMove.z);
@@ -64,14 +64,14 @@ public class PlayerChargeState : PlayerBaseState
                 // 게임패드: 이동 방향으로 회전
                 if (p_owner.InputHandler.MoveInput.sqrMagnitude > 0.01f)
                 {
-                    p_owner.Movement.Rotate(moveDirection, p_owner.Data.ChargeRotationSpeed, Time.fixedDeltaTime);
+                    p_owner.Movement.Rotate(moveDirection, p_owner.Movement.ChargeRoataeSpeed, Time.fixedDeltaTime);
                 }
             }
             else
             {
                 // 키보드/마우스: 마우스 방향으로 회전
                 Vector3 mouseDirection = p_owner.Movement.GetDirectionToMouse(p_owner.InputHandler.MousePosition);
-                p_owner.Movement.Rotate(mouseDirection, p_owner.Data.ChargeRotationSpeed, Time.fixedDeltaTime);
+                p_owner.Movement.Rotate(mouseDirection, p_owner.Movement.ChargeRoataeSpeed, Time.fixedDeltaTime);
             }
         }
     }
