@@ -14,6 +14,9 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner = player;
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     /// <summary>

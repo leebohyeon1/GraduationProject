@@ -45,6 +45,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.CounterWindowFinished += OnCounterWindowFinished;
 
         _events.BeforeDamaged += OnBeforeDamaged;
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     /// <summary>

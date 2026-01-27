@@ -26,10 +26,16 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// </summary>
     public void Initialize(PlayerController player)
     {
+        _maxStamina = player.Data.MaxStamina;
+        _currentStamina = _maxStamina;
+        _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
+
         _events = player.Events;
 
         _events.RegenStamina += OnRegenStamina;
 
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     public void Dispose()

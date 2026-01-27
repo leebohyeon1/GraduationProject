@@ -32,11 +32,11 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     /// <summary>
     /// 클래스 초기화
     /// </summary>
-    /// <param name="inputReader">InputReader 스크립터블 오브젝트</param>
-    public void Initialize(InputReaderSO inputReader, PlayerEvents events)
+    /// <param name="player">플레이어</param>
+    public void Initialize(PlayerController player)
     {
-        _inputReader = inputReader;
-        _events = events;
+        _inputReader = player.InputReader;
+        _events = player.Events;
 
         // 이벤트 등록
         InputDeviceDetector.Instance.InputDeviceChanged.AddListener(OnInputDeviceChanged);
@@ -50,6 +50,9 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
 
         // InputReader 초기화
         _inputReader.Initialize();
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     /// <summary>

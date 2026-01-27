@@ -37,6 +37,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
         _events = player.Events;
         _data = player.Data;
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     public void Dispose()

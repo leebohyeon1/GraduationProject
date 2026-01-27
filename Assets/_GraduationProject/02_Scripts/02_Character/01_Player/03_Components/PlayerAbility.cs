@@ -17,8 +17,10 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     {
         _events = player.Events;
 
-
         _events.BeforeDamaged += OnBeforeDamaged;
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     /// <summary>

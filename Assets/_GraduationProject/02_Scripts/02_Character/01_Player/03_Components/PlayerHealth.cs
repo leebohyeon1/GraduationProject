@@ -56,8 +56,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         // 경직도 초기화
         _currentStiffness = 0;
 
-        OnHealthChanged?.Invoke(CurrentHealth, CurrentHealth);
-        OnStiffnessChanged?.Invoke(0, 0);
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
     }
 
     /// <summary>

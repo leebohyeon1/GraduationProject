@@ -4,17 +4,20 @@ using Unity.Cinemachine;
 using UnityEngine;
 
 
+/// <summary>
+/// 카메라 채널
+/// </summary>
 [Serializable]
 public class CameraChannel
 {
-    public string ChannelName;
+    public string ChannelName;  // 채널 이름
     public CinemachineCamera Camera;
 }
 
 /// <summary>
 /// 카메라를 관리하는 매니저
 /// </summary>
-public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListener<PlayerController>
+public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListener<PlayerController>, IDisposable
 {
     [SerializeField] private CinemachineBrain _cinemachineBrain; // 시네머신 브레인    
     [SerializeField] private List<CameraChannel> _channelList = new List<CameraChannel>();
@@ -42,13 +45,21 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
 
     private void OnDisable()
     {
+        _onCameraChangeSO.Unsubscribe(this);
+        _onPlayerSpawnedSO.Unsubscribe(this);
+    }
+
+    /// <summary>
+    /// 객체 해제
+    /// </summary>
+    public void Dispose()
+    {
         if (_player != null)
         {
             _player.LockOn.LockOnEvent -= OnLockOnEvent;
-        }
 
-        _onCameraChangeSO.Unsubscribe(this);
-        _onPlayerSpawnedSO.Unsubscribe(this);
+            _player = null;
+        }
     }
 
     #region CameraChannel
@@ -107,6 +118,10 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
 
     #endregion
 
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
     /// <summary>
     /// string 이벤트 처리
     /// </summary>
@@ -138,9 +153,15 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
                 var.AddMember(_player.transform, 0.5f, 1f);
                 var.AddMember(_player.LockOn.LockOnIndicator.transform, 0.5f, 1f);
             }
+
+            player.RegisterDisposable(this);
         }
     }
 
+    /// <summary>
+    /// 락온 이벤트 처리
+    /// </summary>
+    /// <param name="islockOn">락온 여부</param>
     private void OnLockOnEvent(bool islockOn)
     {
         if(islockOn)
@@ -152,4 +173,5 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
             ChangeChannel("DefaultCamera");
         }
     }
+
 }

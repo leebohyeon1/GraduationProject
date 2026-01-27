@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -22,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerAbility _ability;        // 능력 시스템
 
     private StateMachine<PlayerController> _stateMachine;   // 상태 머신
+    private List<IDisposable> _disposableList = new List<IDisposable>(); // 해제해야 하는 객체 리스트
 
     [SerializeField] private OnPlayerSpawnedSO playerSpawnedSO; // 플레이어 스폰 이벤트
 
@@ -57,22 +60,20 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        _stateMachine.Update();
+        // FSM Update
+        _stateMachine.Update(); 
     }
 
     private void FixedUpdate()
     {
+        // FSM FixedUpdate
         _stateMachine?.FixedUpdate();
     }
 
     private void OnDestroy()
     {
-        _inputHandler?.Dispose();
-        _health?.Dispose();
-        _stamina?.Dispose();
-        _combat?.Dispose();
-        _animationTrigger?.Dispose();
-        _ability?.Dispose();
+        // 객체 해제
+        Disapose();
     }
 
     #region Initialize
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
         // InputHandler 초기화
         if (TryGetComponent<PlayerInputHandler>(out _inputHandler))
         {
-            _inputHandler.Initialize(InputReader, _events);
+            _inputHandler.Initialize(this);
         }
 
         // PlayerHealth 초기화
@@ -175,6 +176,36 @@ public class PlayerController : MonoBehaviour
 
         // Idle 상태에서 시작
         _stateMachine.ChangeState(typeof(PlayerIdleState));
+    }
+    #endregion
+
+    #region Dispose
+    /// <summary>
+    /// 객체 폐기
+    /// </summary>
+    private void Disapose()
+    {
+        foreach(IDisposable disaposable in _disposableList)
+        {
+            disaposable.Dispose();
+        }
+
+        _disposableList.Clear();
+    }
+
+    /// <summary>
+    /// Disposable 구독
+    /// </summary>
+    /// <param name="disposable">구독할 객체</param>
+    public void RegisterDisposable(IDisposable disposable)
+    {
+        // 이미 구독되어 있으면 리턴
+        if(_disposableList.Contains(disposable))
+        {
+            return;
+        }
+
+        _disposableList.Add(disposable);
     }
     #endregion
 
