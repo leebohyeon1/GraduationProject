@@ -8,6 +8,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerAbilitySO", menuName = "Project/Player/Ability/PlayerAbilitySO")]
 public class PlayerAbilitySO : ScriptableObject
 {
+    public string Id;            // 능력 ID
+    
     protected PlayerController p_owner;
     protected PlayerAbility p_ability;  // 능력 주체
     public List<PlayerAbilityTagSO> Tags;    // 이 능력이 부여하는 태그들

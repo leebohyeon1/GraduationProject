@@ -8,7 +8,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ClashSO", menuName = "Project/Player/Ability/TheDestroyer/Tier1/ClashSO")]
 public class ClashSO : PlayerAbilitySO
 {
-    public DodgeTagSO dodgeTagSO;
+    public DodgeTagSO StepTagSO;
+    public DodgeTagSO ChargeStepTagSO;
 
     /// <summary>
     /// 기능 등록
@@ -19,7 +20,7 @@ public class ClashSO : PlayerAbilitySO
         p_ability = ability;
         p_owner = p_ability.GetComponent<PlayerController>();
 
-        dodgeTagSO.Apply(p_owner);  // 회피 태그 적용
+        StepTagSO.Apply(p_owner);  // 회피 태그 적용
 
         p_owner.Events.DodgeStarted += OnDodgeStarted;
         p_owner.Events.DodgeFinished += OnDodgeFinished;
@@ -34,7 +35,7 @@ public class ClashSO : PlayerAbilitySO
         p_ability = null;
         p_owner = null;
 
-        dodgeTagSO.Revert(p_owner);  // 회피 태그 해제
+        StepTagSO.Revert(p_owner);  // 회피 태그 해제
 
 
         p_owner.Events.DodgeStarted -= OnDodgeStarted;

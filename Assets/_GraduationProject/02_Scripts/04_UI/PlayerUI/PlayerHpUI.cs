@@ -61,7 +61,7 @@ public class PlayerHpUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
             {
                 _hpBarImage.fillAmount = x;
             },
-            currentHealth / _playerController.Health.MaxHealth,
+            (float) currentHealth / _playerController.Health.MaxHealth,
             _animationSpeed)
             .SetEase(_animationCurve);
     }

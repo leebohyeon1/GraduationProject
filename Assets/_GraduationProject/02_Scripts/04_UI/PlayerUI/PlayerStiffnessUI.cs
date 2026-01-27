@@ -58,7 +58,7 @@ public class PlayerStiffnessUI : MonoBehaviour, IEventListener<PlayerController>
             {
                 _stifnessBarImage.fillAmount = x;
             },
-            currentStiffness / _playerController.Health.StiffnessThreshold,
+            (float) currentStiffness / _playerController.Health.StiffnessThreshold,
             _animationSpeed)
             .SetEase(_animationCurve);
     }

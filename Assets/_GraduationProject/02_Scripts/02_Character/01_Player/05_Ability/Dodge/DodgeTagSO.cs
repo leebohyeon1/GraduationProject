@@ -7,4 +7,13 @@ using UnityEngine;
 public class DodgeTagSO : PlayerAbilityTagSO
 {
     public DodgeData DodgeConfig;       // 회피 설정 
+
+    public override void Apply(PlayerController player)
+    {
+        base.Apply(player);
+
+        // 회피 데이터 설정
+        player.Movement.SetDodgeConfig(DodgeConfig);
+    }
+
 }

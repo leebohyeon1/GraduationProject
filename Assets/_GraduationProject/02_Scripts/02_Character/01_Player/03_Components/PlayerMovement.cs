@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
     [Header("ChargeMove Setting")]
     private float _chargeMoveSpeed;         // 차지 이동 속도
-    public float ChargeMoveSpeed => _chargeMoveSpeed;   
+    public float ChargeMoveSpeed => _chargeMoveSpeed;
 
     private float _chargeRotateSpeed;         // 차지 이동 속도
     public float ChargeRoataeSpeed => _chargeRotateSpeed;
@@ -285,6 +285,14 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     //==========================================================================================================================
 
     #region Dodge
+    /// <summary>
+    /// 회피 데이터 설정
+    /// </summary>
+    /// <param name="dodgeData">회피 데이터</param>
+    public void SetDodgeConfig(DodgeData dodgeData)
+    {
+        _dodgeConfig = dodgeData;
+    }
 
     /// <summary>
     /// 원하는 방향으로 스텝 데이터에 따라 스텝

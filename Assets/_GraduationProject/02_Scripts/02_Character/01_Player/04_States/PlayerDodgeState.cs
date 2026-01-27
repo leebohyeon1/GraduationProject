@@ -82,6 +82,8 @@ public class PlayerDodgeState : PlayerBaseState
         {
             p_owner.Events.TriggerBattleStateChanged(true);
         }
+
+        p_owner.Events.TriggerDodgeFinished();
     }
 
     protected override void ClearAnimator()
@@ -104,13 +106,21 @@ public class PlayerDodgeState : PlayerBaseState
         switch(p_owner.Movement.DodgeConfig.Type)
         {
             case DodgeData.DodgeType.Roll:
-                p_owner.Movement.Roll(this, OnDodgeFinished);
+                p_owner.Movement.Roll(this, 
+                    () => 
+                    { 
+                        p_stateMachine.ChangeState<PlayerIdleState>(); 
+                    });
                 break;
             case DodgeData.DodgeType.Step:
                 Vector3 moveInput = p_owner.InputHandler.MoveInput;
                 Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
 
-                p_owner.Movement.Step(dodgeDirection, this, false, OnDodgeFinished);
+                p_owner.Movement.Step(dodgeDirection, this, false, 
+                    () =>
+                    {
+                        p_stateMachine.ChangeState<PlayerIdleState>();
+                    });
                 break;
         }
     }
@@ -120,7 +130,7 @@ public class PlayerDodgeState : PlayerBaseState
     /// </summary>
     public void OnDodgeFinished()
     {
-        p_stateMachine.ChangeState<PlayerIdleState>();
+
     }
     #endregion
 

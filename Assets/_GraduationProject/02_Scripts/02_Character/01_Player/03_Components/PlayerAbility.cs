@@ -9,6 +9,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
 
+
     /// <summary>
     /// 컴포넌트 초기화
     /// </summary>
@@ -21,6 +22,11 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
+
+
+#if UNITY_EDITOR
+        InitializeTestAbility();
+#endif
     }
 
     /// <summary>
@@ -32,6 +38,10 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
     }
 
+    /// <summary>
+    /// 기술 선택 이벤트 호출
+    /// </summary>
+    /// <param name="ability">기술</param>
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
         AddAbility(ability);
@@ -65,11 +75,58 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <summary>
     /// 기술을 가지고 있는지 확인하는 함수
     /// </summary>
+    /// <param name="id">아이디</param>
+    /// <returns>가지고 있는지 여부</returns>
+    public bool HasAbility(string id)
+    {
+        foreach (var ability in _abilitySet)
+        {
+            if (ability == null)
+            {
+                continue;
+            }
+
+            if (ability.Id == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 기술을 가지고 있는지 확인하는 함수
+    /// </summary>
     /// <param name="ability">확인할 기술</param>
     /// <returns>가지고 있는지 여부</returns>
     public bool HasAbility(PlayerAbilitySO ability)
     {
         return _abilitySet.Contains(ability);
+    }
+
+    /// <summary>
+    /// 아이디에 맞는 기술 반환
+    /// </summary>
+    /// <param name="id">아이디</param>
+    /// <returns>기술 스크립터블 오브젝트</returns>
+    public PlayerAbilitySO GetAbility(string id)
+    {
+        foreach (var tag in _abilitySet)
+        {
+            // 태그가 비어있으면 계속
+            if (tag == null)
+            {
+                continue;
+            }
+
+            if (tag.Id == id)
+            {
+                return tag;
+            }
+        }
+
+        return null;
     }
     #endregion
 
@@ -111,7 +168,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
                 continue;
             }
 
-            if (tag.TagId == id)
+            if (tag.Id == id)
             {
                 return true;
             }
@@ -159,7 +216,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
                 continue;
             }
 
-            if (tag.TagId == id)
+            if (tag.Id == id)
             {
                 return tag;
             }
@@ -197,4 +254,20 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
             damageContext.HasSuperArmor = true;
         }
     }
+
+
+#if UNITY_EDITOR
+
+    [SerializeField] private List<PlayerAbilitySO> _testAbilities = new List<PlayerAbilitySO>();
+
+    private void InitializeTestAbility()
+    {
+        foreach (var ability in _testAbilities)
+        {
+            AddAbility(ability);
+        }
+    }
+
+
+#endif
 }

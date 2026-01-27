@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,9 @@ public class PlayerChargeState : PlayerBaseState
 {
     private int _chargeLevel => p_owner.Combat.ChargeLevel;
     private float _chargeTimer = 0f;
+
+    private bool _isStep;           // 차지 대시 중인가
+    private bool _shouldTransition; // 상태 전환해야 하는지 여부
 
     public PlayerChargeState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -25,7 +29,7 @@ public class PlayerChargeState : PlayerBaseState
         _chargeTimer += Time.deltaTime;
 
         // 차지 레벨이 차지 카운터 리스트 갯수보다 작고, 다음 차지 시간이 지났으면
-        if(_chargeLevel < (p_owner.Combat.HeavyCounterAttackConfigList.Count - 1) && 
+        if (_chargeLevel < (p_owner.Combat.HeavyCounterAttackConfigList.Count - 1) &&
             _chargeTimer >= p_owner.Combat.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
         {
             p_owner.Combat.IncreaseChargeLevel();
@@ -34,6 +38,7 @@ public class PlayerChargeState : PlayerBaseState
 
         // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Combat.ChargeStamina * Time.deltaTime);
+        p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
     }
 
     public override void OnFixedUpdate()
@@ -125,6 +130,19 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.OnChargeCancel();
 
+        // 상태 전환해야 하면 리턴
+        if (_shouldTransition)
+        {
+            return;
+        }
+
+        if (_isStep)
+        {
+            // 상태 전환해야 하는 상태로 전환
+            _shouldTransition = true;
+            return;
+        }
+
         if (p_owner.Combat.ChargeLevel >= 0)
         {
             p_stateMachine.ChangeState<PlayerHeavyCounterState>();
@@ -138,5 +156,64 @@ public class PlayerChargeState : PlayerBaseState
         }
     }
 
+    /// <summary>
+    /// 구르기 입력 
+    /// </summary>
+    protected override void OnDodge()
+    {
+        base.OnDodge();
+
+        // Clash 기술이 있으면 차지 대시 가능
+        if (p_owner.Ability.HasAbility("Clash"))
+        {
+            ClashSO clashSO = p_owner.Ability.GetAbility("Clash") as ClashSO;
+
+            Vector3 moveInput = p_owner.InputHandler.MoveInput;
+            Vector3 stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+
+            DodgeData ChargeDashData = clashSO.ChargeStepTagSO.DodgeConfig;
+            StepData stepData = ChargeDashData.MoveConfig;
+
+            p_owner.Movement.Step(stepDirection, stepData, this, false, OnStepComplete);
+            // 1번 레이어에서 차지 대시 애니메이션 재생
+            p_animator.Play(ChargeDashData.AnimationStateName, 1, 0f);
+        }
+    }
+
+    #endregion
+
+    #region EventHandler
+
+    private void OnDodgeStarted()
+    {
+        _isStep = true;
+    }
+
+    private void OnDodgeFinished()
+    {
+        _isStep = false;
+    } 
+
+    private void OnStepComplete()
+    {
+        p_owner.Events.TriggerDodgeFinished();
+
+        if(_shouldTransition)
+        {
+            if (p_owner.Combat.ChargeLevel >= 0)
+            {
+                p_stateMachine.ChangeState<PlayerHeavyCounterState>();
+            }
+            else
+            {
+                // 차지 레벨을 채우지 못한 레벨 초기화
+                p_owner.Combat.ResetChargeLevel();
+
+                p_stateMachine.ChangeState<PlayerNormalCounterState>();
+            }
+        }
+    }
+
     #endregion
 }
+   
