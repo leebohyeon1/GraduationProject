@@ -155,7 +155,7 @@ public class Task_NormalAttackNode : Node
         {
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
-
+        Debug.Log($"runniing node : {this.name} ");
         if (Handler.IsHitWindowOpen)
         {
             Collider[] hitColliders = GetHitColliders(attackOrigin);
@@ -190,7 +190,6 @@ public class Task_NormalAttackNode : Node
                 }
             }
         }
-
         if (Handler.IsActionFinished)
         {
             bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
