@@ -8,4 +8,15 @@ using UnityEngine;
 public class GamePlayTagSO : ScriptableObject 
 {
     public string TagId;
+
+    public virtual void Apply(PlayerController player)
+    {
+
+    }
+
+
+    public virtual void Revert(PlayerController player)
+    {
+
+    }
 }

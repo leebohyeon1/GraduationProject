@@ -109,8 +109,8 @@ public class PlayerEvents
     //==========================================================================================================================
 
     #region Charge
-    private event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
-    private event Action<int> ChargeLevelCompleted;                     // 차지 레벨 완료 이벤트
+    public event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
+    public event Action<int> ChargeLevelCompleted;                     // 차지 레벨 완료 이벤트
 
     /// <summary>
     /// 차지 시작 이벤트 발행

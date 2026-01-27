@@ -106,7 +106,7 @@ public class PlayerDodgeState : PlayerBaseState
     private void Roll()
     {
         // 구르기 시작
-        StepData dodgeData = p_owner.Data.DodgeConfig;
+        StepData dodgeData = p_owner.Data.DodgeConfig.MoveConfig;
         float currentDistance = 0f;
 
         DOTween.To(

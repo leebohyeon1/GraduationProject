@@ -31,8 +31,7 @@ public class PlayerDataSO : ScriptableObject
     public AnimationCurve RotationCurve;        // 회전 속도 곡선
 
     [Header("Dodge")]
-    public float DodgeStamina = 10;
-    public StepData DodgeConfig;            // 회피 설정
+    public DodgeData DodgeConfig;   // 회피 설정
 
     [Header("Combat")]
     public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
@@ -57,36 +56,13 @@ public class PlayerDataSO : ScriptableObject
     public float KnockDownDuration = 10;    // 기절 지속시간
 }
 
-
-///// <summary>
-///// 플레이어의 전투 관련 데이터를 정의하는 구조체입니다.
-///// </summary>
-//[Serializable]
-//public class PlayerCombatData
-//{
-//    [Header("Dodge")]
-//    public float DodgeStamina = 10;
-//    public StepData DodgeConfig;            // 회피 설정
-
-//    [Header("Attack")]
-//    public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
-//    public List<PlayerAttackConfig> NormalAttackConfigList;         // 일반 공격 데이터 배열
-//    public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
-//    public List<PlayerChargeConfig> HeavyCounterAttackConfigList;   // 차징 카운터 공격 설정
-
-//    [Header("Counter")]
-//    public float CounterStamina;
-//    public float CounterAngle;
-//    public float CounterKnockbackDuration;          // 카운터 성공 시 넉백 시간
-//    public float CounterKnockbackDistance;          // 카운터 성공 시 넉백 거리
-//    public AnimationCurve CounterKnockbackCurve;    // 카운터 성공 시 넉백 커브
-
-//    [Header("ChargeCounterAttack")]
-//    public float ChargeMoveSpeed; 
-//    public float ChargeRotateSpeed; 
-//    public float ChargeStamina;
-//    public float MaxChargeTime = 5f;
-
-//    [Header("KnockDown")]
-//    public float KnockDownDuration = 10;    // 기절 지속시간
-//}
+/// <summary>
+/// 회피 데이터
+/// </summary>
+[Serializable]
+public class DodgeData
+{
+    public float StaminaAmount; // 스테미나 사용량
+    public bool isInivicible;   // 무적 여부
+    public StepData MoveConfig; // 회피 움직임 설정
+}

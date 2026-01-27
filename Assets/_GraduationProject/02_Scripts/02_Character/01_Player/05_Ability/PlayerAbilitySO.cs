@@ -8,7 +8,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerAbilitySO", menuName = "Project/Player/Ability/PlayerAbilitySO")]
 public class PlayerAbilitySO : ScriptableObject
 {
-    protected PlayerAbility p_owner;  // 능력 주체
+    protected PlayerController p_owner;
+    protected PlayerAbility p_ability;  // 능력 주체
     public List<PlayerAbilityTagSO> Tags;    // 이 능력이 부여하는 태그들
 
     /// <summary>
@@ -17,7 +18,9 @@ public class PlayerAbilitySO : ScriptableObject
     /// <param name="ability">플레이어</param>
     public virtual void RegisterAbility(PlayerAbility ability)
     {
-        p_owner = ability;
+        p_ability = ability;
+        p_owner = p_ability.GetComponent<PlayerController>();   
+
         AddAllSkillTags();
     }
 
@@ -27,7 +30,9 @@ public class PlayerAbilitySO : ScriptableObject
     /// <param name="ability">플레이어</param>
     public virtual void UnregisterAbility(PlayerAbility ability)
     {
+        p_ability = null;
         p_owner = null;
+
         RemoveAllSkillTags();
     }
 
@@ -38,7 +43,8 @@ public class PlayerAbilitySO : ScriptableObject
     {
         foreach (var tag in Tags)
         {
-            p_owner.AddTag(tag);
+            tag.Apply(p_owner);     // 태그 적용
+            p_ability.AddTag(tag);  // 어빌리티에 추가
         }
     }
 
@@ -49,7 +55,8 @@ public class PlayerAbilitySO : ScriptableObject
     {
         foreach (var tag in Tags)
         {
-            p_owner.RemoveTag(tag);
+            tag.Revert(p_owner);        // 태그 해제
+            p_ability.RemoveTag(tag);   // 어빌리티에 제거
         }
     }
 }

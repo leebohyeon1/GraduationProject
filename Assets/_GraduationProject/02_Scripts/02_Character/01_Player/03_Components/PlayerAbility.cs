@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAbilitySO>
 {
@@ -165,7 +164,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         }
 
         return null;
-    }
+    }       
     #endregion
 
 
@@ -179,7 +178,19 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="damageContext">받은 데미지 데이터</param>
     private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
     {
-        if(HasTag("SuperArmor"))
+        DamageData damageData = damageContext.Data;
+
+        // 무적 태그가 있으면 무적
+        if (HasTag("Invicible"))
+        {
+            damageData.DamageAmount = 0;
+            damageData.StiffnessAmount = 0;
+            damageData.KnockbackDuration = 0;
+            damageData.KnockbackForce = 0;
+
+            damageContext.HasSuperArmor = true;
+        }
+        else if(HasTag("SuperArmor")) // 슈퍼아머 태그가 있으면 슈퍼아머
         {
             damageContext.HasSuperArmor = true;
         }
