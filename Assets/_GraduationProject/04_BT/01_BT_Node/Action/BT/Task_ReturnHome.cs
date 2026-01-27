@@ -8,6 +8,7 @@ public class Task_ReturnHome : Node
     bool _hasDestination = false;
     Vector3 HomePosition;
     public float MoveSpeed = 6.0f;
+    
     public override Node Clone()
     {
         Task_ReturnHome newNode = Instantiate(this);
@@ -20,6 +21,7 @@ public class Task_ReturnHome : Node
         runner.EnemyHealth.OnRecoveryHealth?.Invoke(true);
 
         HomePosition = brain.blackboard.GetValue<Vector3>("HomePosition");
+        brain.blackboard.SetValue("GoHome", true);
     }
     protected override NodeState OnUpdate()
     {
@@ -39,6 +41,8 @@ public class Task_ReturnHome : Node
     {
         if(_aiPath != null && _hasDestination)
         {
+            brain.blackboard.SetValue("GoHome", false);
+            runner.Movement.StopMovement();
             // _aiPath.;
         }
         _hasDestination = false;

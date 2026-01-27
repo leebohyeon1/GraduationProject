@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1009, y: 772}
+  position: {x: 1011, y: 775}
   floatCondition:
     key: DistanceToTarget
     Operator: 5
@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
   m_Name: Combat_b_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
-  rootNode: {fileID: 8279960542052063534}
+  rootNode: {fileID: -700661456820620682}
 --- !u!114 &1681072726047148729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Melee Counter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 470, y: -236}
+  position: {x: 490, y: -35}
   nodes:
   - {fileID: 5785559906818792379}
   - {fileID: 4726210464116984691}
@@ -244,6 +244,21 @@ MonoBehaviour:
   minRange: 3
   maxRange: 4
   checkType: 0
+--- !u!114 &2561368941018339883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868d6069a6a2a4e4a8b5d8a346c9c798, type: 3}
+  m_Name: Task_Flee From Target
+  m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
+  position: {x: 1012, y: 696}
+  fleeDistance: 5
+  fleeSpeed: 5
 --- !u!114 &3075294371316707839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,7 +326,6 @@ MonoBehaviour:
   position: {x: 203, y: 37}
   nodes:
   - {fileID: 1681072726047148729}
-  - {fileID: -7154228387633228831}
   - {fileID: 3919280333966606404}
   services: []
 --- !u!114 &4441881582081485876
@@ -413,6 +427,7 @@ MonoBehaviour:
   position: {x: 803, y: 622}
   nodes:
   - {fileID: -8107024922637317193}
+  - {fileID: 2561368941018339883}
   services: []
 --- !u!114 &8279960542052063534
 MonoBehaviour:
@@ -426,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: -64, y: 169}
+  position: {x: 19, y: 181}
   UpdateInterval: 0.1
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget

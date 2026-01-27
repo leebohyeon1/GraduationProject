@@ -79,6 +79,7 @@ public enum EnemyBlackboardKeys
     #endregion
     
     #region Combat
+    DidLastAttackHit,
     
     /// <summary>전투 시작 여부 (bool)</summary>
     IsPlayerDetected,

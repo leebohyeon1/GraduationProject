@@ -37,7 +37,7 @@ public class EnemyMovement
 
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
-        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Attack || CurrentState == EnemyStateController.EnemyState.Die || CurrentState == EnemyStateController.EnemyState.Noise)
+        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || CurrentState == EnemyStateController.EnemyState.Noise)
         {
             StopMovement();
             return;
