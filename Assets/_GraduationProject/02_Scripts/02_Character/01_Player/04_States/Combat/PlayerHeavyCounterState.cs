@@ -86,6 +86,12 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         {
             if (collider.TryGetComponent<IParryable>(out var parryable))
             {
+                // 카운터가 되지 않았다면 차지 공격만 인정
+                if(!p_owner.Combat.IsEnemyCountered(parryable))
+                {
+                    p_owner.Events.TriggerOnlyChargeAttackSucceded();
+                }
+
                 p_owner.Combat.AddCounterEnemy(parryable);
             }
         }

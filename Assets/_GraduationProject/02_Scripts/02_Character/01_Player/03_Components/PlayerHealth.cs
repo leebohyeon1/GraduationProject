@@ -26,6 +26,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
     public event Action OnDied; // 사망 이벤트
 
+    [Header("Shield")]
+    private int _currentshieldAmount;   // 현재 보호막 양
+
     [Header("Stiffness")]
     private int _currentStiffness; // 현재 경직도
     private float _stiffnessDuration; // 경직 지속 시간
@@ -84,6 +87,21 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _events.TriggerBeforeDamaged(ref damageContext);
 
         damageData = damageContext.Data;
+
+        // 보호막 양만큼 데미지 감소
+        int shieldDamage = 0;
+        if(damageData.DamageAmount >= _currentshieldAmount)
+        {
+            shieldDamage = _currentshieldAmount;
+        }
+        else
+        {
+            shieldDamage = damageData.DamageAmount;    
+        }
+
+        // 실드 피해 만큼 데미지 양에서 제거
+        damageData.DamageAmount = Mathf.Max(damageData.DamageAmount - shieldDamage, 0); 
+        DecreaseShield(shieldDamage);               // 보호막 감소
 
         ChangeHealth(-damageData.DamageAmount);
 
@@ -174,6 +192,34 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         OnDied?.Invoke();
         gameObject.SetActive(false);
     }
+
+    //==========================================================================================================================
+    // Shiled ==================================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 보호막 양 증가
+    /// </summary>
+    /// <param name="shieldAmount">보호막 양</param>
+    public void IncreaseShield(int  shieldAmount)
+    {
+        _currentshieldAmount += shieldAmount;
+    }
+
+    /// <summary>
+    /// 보호막 양 감소
+    /// </summary>
+    /// <param name="shieldAmount">보호막 양</param>
+    public void DecreaseShield(int shieldAmount)
+    {
+        _currentshieldAmount -= shieldAmount;
+
+        if(_currentshieldAmount <= 0)
+        {
+            _currentshieldAmount = 0;
+        }
+    }
+
 
     //==========================================================================================================================
     // Stiffness ===============================================================================================================

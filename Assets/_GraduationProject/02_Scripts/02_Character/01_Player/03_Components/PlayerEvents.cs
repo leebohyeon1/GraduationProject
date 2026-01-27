@@ -76,9 +76,10 @@ public class PlayerEvents
 
     #region Attack
     public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
+    public event Action OnlyChargeAttackSucceded;   // 오직 차지 공격 성공
 
     /// <summary>
-    /// 공격 시작 피드백을 재생합니다. (애니메이션 이벤트로 호출)
+    /// 공격 시작 피드백을 재생합니다.
     /// </summary>
     public void TriggerAttackStarted()
     {
@@ -87,7 +88,7 @@ public class PlayerEvents
     }
 
     /// <summary>
-    /// 공격 수행 이벤트를 발생시킵니다. (애니메이션 이벤트로 호출)
+    /// 공격 수행 이벤트를 발생시킵니다.
     /// </summary>
     public void TriggerAttackPerformed()
     {
@@ -95,11 +96,19 @@ public class PlayerEvents
     }
 
     /// <summary>
-    /// 공격을 끝내고 다음 행동으로 넘어갑니다. (애니메이션 이벤트로 호출)
+    /// 공격을 끝내고 다음 행동으로 넘어갑니다. 
     /// </summary>
     public void TriggerAttackFinished()
     {
         AttackFinished?.Invoke();
+    }
+
+    /// <summary>
+    /// 상쇄 없이 차지 공격만 성공했을 때 이벤트
+    /// </summary>
+    public void TriggerOnlyChargeAttackSucceded()
+    {
+        OnlyChargeAttackSucceded?.Invoke();
     }
 
     #endregion

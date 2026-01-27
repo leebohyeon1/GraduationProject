@@ -88,6 +88,14 @@ public class PlayerChargeState : PlayerBaseState
     }
 
     #region Setup Function
+    protected override void SetupEvents()
+    {
+        base.SetupEvents();
+
+        p_owner.Events.DodgeStarted += OnDodgeStarted;
+        p_owner.Events.DodgeFinished += OnDodgeFinished;
+    }
+
     protected override void SetupStats()
     {
         base.SetupStats();
@@ -109,6 +117,14 @@ public class PlayerChargeState : PlayerBaseState
     #endregion
 
     #region Clear Function
+    protected override void ClearEvents()
+    {
+        base.ClearEvents();
+
+        p_owner.Events.DodgeStarted -= OnDodgeStarted;
+        p_owner.Events.DodgeFinished -= OnDodgeFinished;
+    }
+
     protected override void ClearStats()
     {
         base.ClearStats();
