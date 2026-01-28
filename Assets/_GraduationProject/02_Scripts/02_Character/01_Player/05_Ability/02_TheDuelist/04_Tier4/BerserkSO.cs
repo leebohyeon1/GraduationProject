@@ -14,12 +14,16 @@ public class BerserkSO : PlayerAbilitySO
     public int CounterThreshold;    // 연속 상쇄 임계값
 
     public float BerserkerTime;     // 폭주 시간
+    public CanSpecialAttackSO SpecialAttackSO;
 
     private int _counterCount;  // 연속 상쇄 횟수
     private Coroutine _counterCoroutine;
 
     private bool _isBerserker;
     private Coroutine _berserkerCoroutine;
+
+    private bool _normalAttackInput = false;
+    private bool _counterAttackInput = false;
 
     public override void RegisterAbility(PlayerAbility ability)
     {
@@ -40,6 +44,8 @@ public class BerserkSO : PlayerAbilitySO
 
         _counterCoroutine = null;
         _berserkerCoroutine = null;
+
+        BerserkerOff();
     }
     
     private void OnCounterSucceded(Transform transform)
@@ -104,17 +110,84 @@ public class BerserkSO : PlayerAbilitySO
         }
     }
 
-    private IEnumerator BerserkerCorountine()
+    /// <summary>
+    /// 폭주 함수
+    /// </summary>
+    private void BerserkerOff()
     {
-        _isBerserker = true;
-        AddAllSkillTags();
-
-        yield return new WaitForSeconds(BerserkerTime);
-
         _isBerserker = false;
         RemoveAllSkillTags();
+        p_ability.RemoveTag(SpecialAttackSO);
+
+        p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
+        p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
+        p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
+        p_owner.InputReader.NormalCounterCancelEvent -= OnCounterCancel;
 
         _berserkerCoroutine = null;
     }
 
+    private IEnumerator BerserkerCorountine()
+    {
+        _isBerserker = true;
+        AddAllSkillTags();
+        p_ability.AddTag(SpecialAttackSO);
+
+        p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
+        p_owner.InputReader.NormalAttackCancelEvent += OnNormalAttackCancel;
+        p_owner.InputReader.NormalCounterEvent += OnCounterAttack;
+        p_owner.InputReader.NormalCounterCancelEvent += OnCounterCancel;
+
+        yield return new WaitForSeconds(BerserkerTime);
+
+        BerserkerOff();
+    }
+
+    #region Input
+    private void OnNormalAttack()
+    {
+        _normalAttackInput = true;
+
+        if (_normalAttackInput && _counterAttackInput)
+        {
+            ActiveSkill();
+        }
+    }
+
+    private void OnNormalAttackCancel()
+    {
+        _normalAttackInput = false;
+    }
+
+    private void OnCounterAttack()
+    {
+        _counterAttackInput = true;
+
+        if (_normalAttackInput && _counterAttackInput)
+        {
+            ActiveSkill();
+        }
+    }
+
+    private void OnCounterCancel()
+    {
+        _counterAttackInput = false;
+    }
+    #endregion
+
+    private void ActiveSkill()
+    {
+        p_owner.Events.AttackFinished += OnAttackFinished;
+
+        SpecialAttackSO.Apply(p_owner);
+
+        BerserkerOff();
+
+    }
+
+    private void OnAttackFinished()
+    {
+        SpecialAttackSO.Revert(p_owner);
+        p_owner.Events.AttackFinished -= OnAttackFinished;
+    }
 }

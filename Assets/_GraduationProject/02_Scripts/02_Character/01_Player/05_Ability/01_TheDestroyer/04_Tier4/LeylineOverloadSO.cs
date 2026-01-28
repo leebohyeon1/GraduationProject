@@ -15,8 +15,8 @@ public class LeylineOverloadSO : PlayerAbilitySO
     [Range(0f, 10f)]
     public float ShieldMultipliers; // 보호막 배수
 
-    private bool _normalAttackInput;
-    private bool _counterAttackInput;
+    private bool _normalAttackInput = false;
+    private bool _counterAttackInput = false;
 
     private CanSpecialAttackSO _runtimeSpecialAttackSO;
     private Coroutine _cooldownCoroutine = null;
@@ -30,7 +30,7 @@ public class LeylineOverloadSO : PlayerAbilitySO
         p_owner.InputReader.NormalAttackCancelEvent += OnNormalAttackCancel;
 
         p_owner.InputReader.NormalCounterEvent += OnCounterAttack;
-        p_owner.InputReader.NormalCounterCancelEvent += OnChargeCancel;
+        p_owner.InputReader.NormalCounterCancelEvent += OnCounterCancel;
 
         _cooldownCoroutine = null;
 
@@ -51,7 +51,7 @@ public class LeylineOverloadSO : PlayerAbilitySO
             p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
             p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
             p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
-            p_owner.InputReader.NormalCounterCancelEvent -= OnChargeCancel;
+            p_owner.InputReader.NormalCounterCancelEvent -= OnCounterCancel;
             p_owner.Events.AttackFinished -= OnAttackFinished;
 
             // 쿨다운 코루틴이 돌고 있다면 강제로 멈춰야 안전함
@@ -105,7 +105,7 @@ public class LeylineOverloadSO : PlayerAbilitySO
         }
     }
 
-    private void OnChargeCancel() 
+    private void OnCounterCancel() 
     {
         _counterAttackInput = false;
     }
