@@ -21,10 +21,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private int _maxHealth;         // 최대 체력
     private int _currentHealth;     // 현재 체력
 
-    private float _damageReduction; // 데미지 감소량
+    private float _damageReductionRate; // 데미지 감소량
 
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
     public event Action OnDied; // 사망 이벤트
+    public event Action<int> TakeDamged;
 
     [Header("Shield")]
     private int _currentshieldAmount;   // 현재 보호막 양
@@ -61,6 +62,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _currentStiffness = 0;
 
         // 이벤트 해제 구독
+        _events.AttackRegained += OnAttackRegained;
+
         player.RegisterDisposable(this);
     }
 
@@ -69,6 +72,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     public void Dispose()
     {
+        _events.AttackRegained -= OnAttackRegained;
     }
 
     public void TakeDamage(DamageData damageData)
@@ -89,6 +93,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         damageData = damageContext.Data;
 
+        // 데미지 감소 적용
+        damageData.DamageAmount -= Mathf.RoundToInt(damageData.DamageAmount * _damageReductionRate);
+
         // 보호막 양만큼 데미지 감소
         int shieldDamage = 0;
         if(damageData.DamageAmount >= _currentshieldAmount)
@@ -104,6 +111,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         damageData.DamageAmount = Mathf.Max(damageData.DamageAmount - shieldDamage, 0); 
         DecreaseShield(shieldDamage);               // 보호막 감소
 
+        TakeDamged?.Invoke(damageData.DamageAmount);
         ChangeHealth(-damageData.DamageAmount);
 
         if (IsDead)
@@ -153,35 +161,35 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// 데미지 감소량 설정
     /// </summary>
     /// <param name="value">설정할 값</param>
-    public void SetDamageReduction(float value)
+    public void SetDamageReductionRate(float value)
     {
-        _damageReduction = value;
+        _damageReductionRate = value;
     }
 
     /// <summary>
     /// 데미지 감소량 초기화
     /// </summary>
-    public void ResetDamageReduction()
+    public void ResetDamageReductionRate()
     {
-        _damageReduction = 0f;
+        _damageReductionRate = 0f;
     }
 
     /// <summary>
     /// 데미지 감소량 증가
     /// </summary>
     /// <param name="value">증가량</param>
-    public void IncreaseDamageReduction(float value)
+    public void IncreaseDamageReductionRate(float value)
     {
-        _damageReduction += value;
+        _damageReductionRate += value;
     }
 
     /// <summary>
     /// 데미지 감소량 감소
     /// </summary>
     /// <param name="value">감소량</param>
-    public void DecreaseDamageReduction(float value)
+    public void DecreaseDamageReductionRate(float value)
     {
-        _damageReduction -= value;
+        _damageReductionRate -= value;
     }
     #endregion
 
@@ -268,8 +276,31 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// <param name="healAmount">회복량</param>
     public void Heal(int healAmount)
     {
-        if (IsDead) return;
+        // 죽은 상태면 리턴
+        if (IsDead)
+        {
+            return;
+        }
+
         ChangeHealth(healAmount);
+    }
+
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 회복 이벤트 처리
+    /// </summary>
+    /// <param name="attackRegainedAmount">회복량</param>
+    private void OnAttackRegained(int attackRegainedAmount)
+    {
+        if (IsDead)
+        {
+            return;
+        }
+
+        Heal(attackRegainedAmount);
     }
 
 }

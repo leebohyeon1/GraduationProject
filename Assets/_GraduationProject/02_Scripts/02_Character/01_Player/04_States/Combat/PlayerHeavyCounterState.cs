@@ -67,11 +67,22 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             p_owner.Combat.AddCounterEnemy(parryable);
         }
 
+
         // 적이 아직 죽지 않았다면 타격
-        if (transform.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
+        if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(new DamageData(transform, p_AttackConfig.AttackType, p_AttackConfig.AttackDamage
-                , 0, p_AttackConfig.KnockbackCofig.StepCurve, p_AttackConfig.KnockbackCofig.StepDuration, p_AttackConfig.KnockbackCofig.StepDistance));
+            DamageData damage = new DamageData
+            {
+                AttackerTransform = transform,
+                AttackType = p_AttackConfig.AttackType,
+                DamageAmount = p_AttackConfig.AttackDamage,
+                StiffnessAmount = 0,
+                KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
+                KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
+                KnockbackForce = p_AttackConfig.KnockbackCofig.StepDistance,
+            };
+
+            p_owner.Combat.Attack(damageable, damage);
         }
     }
 

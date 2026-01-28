@@ -77,6 +77,7 @@ public class PlayerEvents
     #region Attack
     public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
     public event Action OnlyChargeAttackSucceded;   // 오직 차지 공격 성공
+    public event Action<int> AttackRegained;        // 공격 흡혈
 
     /// <summary>
     /// 공격 시작 피드백을 재생합니다.
@@ -109,6 +110,15 @@ public class PlayerEvents
     public void TriggerOnlyChargeAttackSucceded()
     {
         OnlyChargeAttackSucceded?.Invoke();
+    }
+
+    /// <summary>
+    /// 공격 흡혈 이벤트
+    /// </summary>
+    /// <param name="amount">회복 량</param>
+    public void TriggerAttackRegained(int amount)
+    {
+        AttackRegained?.Invoke(amount);
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using GSPAWN;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Attack")]
     private LayerMask _attackLayerMask;
+    private float _attackRegainRate;             // 공격 회복 비율
 
     [Header("NormalAttack")]
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
@@ -84,6 +86,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="data">플레이어 데이터</param>
     private void InitializeData(PlayerDataSO data)
     {
+        _attackLayerMask = data.AttackLayerMask;
+
         _normalAttackConfigList.AddRange(data.NormalAttackConfigList);
 
         _chargeStamina = data.ChargeStamina;
@@ -170,12 +174,57 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 continue;
             }
 
-            if (obj.TryGetComponent<IDamageable>(out var damageable) && !damageable.IsDead)
+            if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
-                damageable.TakeDamage(new DamageData(transform, attackData.AttackType, attackData.AttackDamage
-                    ,0 , attackData.KnockbackCofig.StepCurve, attackData.KnockbackCofig.StepDuration, attackData.KnockbackCofig.StepDistance));
-            }
+                DamageData damage = new DamageData
+                {
+                    AttackerTransform = transform,
+                    AttackType = attackData.AttackType,
+                    DamageAmount = attackData.AttackDamage,
+                    StiffnessAmount = 0,
+                    KnockbackCurve = attackData.KnockbackCofig.StepCurve,
+                    KnockbackDuration = attackData.KnockbackCofig.StepDuration,
+                    KnockbackForce = attackData.KnockbackCofig.StepDistance,
+                };
+                    
+                Attack(damageable, damage);
+             }
+         }
+        
+    }
+
+    /// <summary>
+    /// 데미지를 입을 수 있는 객체에 타격
+    /// </summary>
+    /// <param name="damageable">타격 받을 객체</param>
+    /// <param name="damageData">데미지 데이터</param>
+    public void Attack(IDamageable damageable, DamageData damageData)
+    {
+        if (!damageable.IsDead)
+        {
+            damageable.TakeDamage(damageData);
+
+            int regainAmount = Mathf.RoundToInt(damageData.DamageAmount * _attackRegainRate);
+            _events.TriggerAttackRegained(regainAmount);
         }
+    }
+
+    /// <summary>
+    /// 공격 흡혈 비율 증가
+    /// </summary>
+    /// <param name="amount">증가량</param>
+    public void IncreaseAttackRegainRate(float amount)
+    {
+        _attackRegainRate += amount;
+    }
+
+    /// <summary>
+    /// 공격 흡혈 비율 감소
+    /// </summary>
+    /// <param name="amount">감소량</param>
+    public void DecreaseAttackRegainRate(float amount)
+    {
+        _attackRegainRate = Mathf.Max(_attackRegainRate - amount, 0);
     }
     #endregion
 

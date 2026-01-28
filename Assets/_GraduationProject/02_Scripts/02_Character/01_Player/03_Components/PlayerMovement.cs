@@ -80,6 +80,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable
         _rotateDecelerationTime = data.RotateDecelerationTime;
         _rotateCurve = data.RotateCurve;
 
+        _dodgeConfig = data.DodgeConfig;
+
         _chargeMoveSpeed = data.ChargeMoveSpeed;
         _chargeRotateSpeed = data.ChargeRotateSpeed;
     }

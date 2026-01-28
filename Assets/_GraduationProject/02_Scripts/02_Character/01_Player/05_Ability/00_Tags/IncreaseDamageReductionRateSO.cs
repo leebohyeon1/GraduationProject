@@ -4,17 +4,18 @@ using UnityEngine;
 /// 피해 감소량 증가 태그
 /// </summary>
 [CreateAssetMenu(fileName = "IncreaseDamageReductionSO", menuName = "Project/Player/Ability/Tag/IncreaseDamageReductionSO")]
-public class IncreaseDamageReductionSO : PlayerAbilityTagSO
+public class IncreaseDamageReductionRateSO : PlayerAbilityTagSO
 {
-    public float IncreaseAmount;    // 증가량
+    [Range(0, 1)]
+    public float IncreaseRate;    // 증가량
 
     public override void Apply(PlayerController player)
     {
-        player.Health.IncreaseDamageReduction(IncreaseAmount);
+        player.Health.IncreaseDamageReductionRate(IncreaseRate);
     }
 
     public override void Revert(PlayerController player)
     {
-        player.Health.DecreaseDamageReduction(IncreaseAmount);
+        player.Health.DecreaseDamageReductionRate(IncreaseRate);
     }
 }

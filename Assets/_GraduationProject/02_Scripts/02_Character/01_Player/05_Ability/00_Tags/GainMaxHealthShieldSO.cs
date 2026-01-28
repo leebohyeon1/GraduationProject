@@ -16,6 +16,6 @@ public class GainMaxHealthShieldSO : PlayerAbilityTagSO
         // 실드량 계산
         float shieldAmount = player.Health.MaxHealth * shieldPercentOfMaxHealth;
         // 반올림
-        player.Health.IncreaseDamageReduction(Mathf.RoundToInt(shieldAmount));
+        player.Health.IncreaseShield(Mathf.RoundToInt(shieldAmount));
     }
 }
