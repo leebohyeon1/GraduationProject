@@ -52,15 +52,20 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private bool _isCounterable = false;          // 상쇄 가능 여부
     private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
 
+    [SerializeField] private PlayerAbilityTagSO _counterSuperArmorTagSO; // 카운터 성공 시 슈퍼아머
+    public PlayerAbilityTagSO CounterSuperArmorTagSO => _counterSuperArmorTagSO;
+
+    [Header("SpecialAttack")]
+    private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
+    public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
+
+
+
     private float _lastBattleTime;  // 마지막 전투 시간
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
 
     private bool _isBattleState;    // 전투 중인지 여부
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
-
-    [Header("SpecialAttack")]
-    private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
-    public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
 
     /// <summary>
     /// 초기화 함수
@@ -461,9 +466,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             damageData.KnockbackDuration = 0;
             damageData.KnockbackForce = 0;
 
+            damageContext.HasSuperArmor = true;
+
             // 카운터 성공 이벤트 발행
             _events.TriggerCounterSucceeded(damageData.AttackerTransform);
         }
-               
+
+        damageContext.Data = damageData;
     }
 }

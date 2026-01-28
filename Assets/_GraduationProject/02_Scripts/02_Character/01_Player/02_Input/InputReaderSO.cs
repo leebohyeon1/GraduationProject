@@ -127,7 +127,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                NormalCounterEvent.Invoke();
+                if (context.interaction is HoldInteraction)
+                {
+
+                }
+                else
+                {
+                    NormalCounterEvent.Invoke();
+                }
                 break;
             case InputActionPhase.Canceled:
                 NormalCounterCancelEvent.Invoke();

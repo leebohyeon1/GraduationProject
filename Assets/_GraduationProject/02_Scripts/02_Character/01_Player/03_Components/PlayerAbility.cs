@@ -253,6 +253,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         {
             damageContext.HasSuperArmor = true;
         }
+
+        damageContext.Data = damageData;
     }
 
 

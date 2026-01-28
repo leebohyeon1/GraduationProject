@@ -47,6 +47,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     {
         base.ClearStats();
 
+        p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
 
         // Smahs 가능 상태면 취소
@@ -58,6 +59,11 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             p_owner.Ability.RemoveTag(smashAttackTag);
         }
 
+        // 상쇄로 인한 수퍼아머 태그가 있으면
+        if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        {
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuperArmorTagSO);
+        }
     }
 
     #endregion
@@ -98,8 +104,14 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     /// <param name="transform">상쇄한 적</param>
     private void OnCounterSucceeded(Transform transform)
     {
+        // 상쇄 성공 시 슈퍼 아머
+        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        {
+            p_owner.Ability.AddTag(p_owner.Combat.CounterSuperArmorTagSO);
+        }
+
         // 적이 상쇄되지 않았다면 상쇄
-        if(transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
+        if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
             parryable.Parry(AttackType.NormalCounter);
             p_owner.Combat.AddCounterEnemy(parryable);
