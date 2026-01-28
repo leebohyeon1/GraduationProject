@@ -3,13 +3,13 @@ using UnityEngine;
 /// <summary>
 /// 플레이어 특수 공격 상태
 /// </summary>
-public class PlayerSpectialAttackState : PlayerAttackBaseState
+public class PlayerSpecialAttackState : PlayerAttackBaseState
 {
     protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.SpecialAttackSO.AttackConfig;
 
     private CanSpecialAttackSO _canSpecialAttackSO => p_owner.Combat.SpecialAttackSO;
 
-    public PlayerSpectialAttackState(StateMachine<PlayerController> stateMachine) 
+    public PlayerSpecialAttackState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
 
 

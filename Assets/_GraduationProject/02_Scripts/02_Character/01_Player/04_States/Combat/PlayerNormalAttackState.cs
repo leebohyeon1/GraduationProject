@@ -27,6 +27,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
+        p_animator.speed += p_animator.speed * p_owner.Combat.PlusNormalAttackSpeedMultiplier;
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalAttack);
         p_animator.SetInteger("NormalAttackComboIndex", p_owner.Combat.NormalAttackComboIndex);
     }
@@ -38,5 +39,11 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
         base.ClearStats();
     }
 
-    #endregion
+    protected override void ClearAnimator()
+    {
+        base.SetupAnimator();
+
+        p_animator.speed = 1;
+    }
+        #endregion
 }

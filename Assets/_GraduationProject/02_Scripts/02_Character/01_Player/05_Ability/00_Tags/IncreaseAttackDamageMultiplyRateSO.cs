@@ -7,15 +7,15 @@ using UnityEngine;
 public class IncreaseAttackDamageMultiplyRateSO : PlayerAbilityTagSO
 {
     [Range(0, 1)]
-    public float IncreaseRate;    // 증가량
+    public float IncreaseMultiplier;    // 증가량
 
     public override void Apply(PlayerController player)
     {
-        player.Combat.IncreaseNormalAttackSpeedRate(IncreaseRate);
+        player.Combat.IncreaseAttackDamageMultiplier(IncreaseMultiplier);
     }
 
     public override void Revert(PlayerController player)
     {
-        player.Combat.DecreaseNormalAttackSpeedRate(IncreaseRate);
+        player.Combat.DecreaseAttackDamageMultiplier(IncreaseMultiplier);
     }
 }

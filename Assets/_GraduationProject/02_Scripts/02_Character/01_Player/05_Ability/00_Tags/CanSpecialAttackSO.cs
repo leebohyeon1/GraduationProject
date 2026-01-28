@@ -16,7 +16,7 @@ public class CanSpecialAttackSO : PlayerAbilityTagSO
         player.Combat.SetSpecialAttackSO(this);
 
         // 특수 공격 상태로 전환
-        player.FSM.ChangeState<PlayerSpectialAttackState>();
+        player.FSM.ChangeState<PlayerSpecialAttackState>();
     }
 
     public override void Revert(PlayerController player)

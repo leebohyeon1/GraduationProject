@@ -18,12 +18,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private LayerMask _attackLayerMask;
     private float _attackRegainRate;             // 공격 회복 비율
 
+    private float _attackDamageMultiplier;       // 공격력 배율
+    public float AttackDamageMultiplier => _attackDamageMultiplier;
+
     [Header("NormalAttack")]
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
-    private float _plusNormalAttackSpeedMultiplyRate;   // 추가 공속 속도 배율
-    public float PlusNormalAttackSpeedMultiplyRate => _plusNormalAttackSpeedMultiplyRate;
+    private float _plusNormalAttackSpeedMultiplier;   // 추가 공속 속도 배율
+    public float PlusNormalAttackSpeedMultiplier => _plusNormalAttackSpeedMultiplier;
 
     private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
     public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
@@ -186,7 +189,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 {
                     AttackerTransform = transform,
                     AttackType = attackData.AttackType,
-                    DamageAmount = attackData.AttackDamage,
+                    DamageAmount = attackData.AttackDamage + Mathf.RoundToInt(attackData.AttackDamage * AttackDamageMultiplier),
                     StiffnessAmount = 0,
                     KnockbackCurve = attackData.KnockbackCofig.StepCurve,
                     KnockbackDuration = attackData.KnockbackCofig.StepDuration,
@@ -232,6 +235,24 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _attackRegainRate = Mathf.Max(_attackRegainRate - amount, 0);
     }
+
+    /// <summary>
+    /// 공격력 배율 증가 함수
+    /// </summary>
+    /// <param name="amount">증가 배율</param>
+    public void IncreaseAttackDamageMultiplier(float amount)
+    {
+        _attackDamageMultiplier += amount;
+    }
+
+    /// <summary>
+    /// 공격력 배율 감소 함수
+    /// </summary>
+    /// <param name="amount">감소 배울</param>
+    public void DecreaseAttackDamageMultiplier(float amount)
+    {
+        _attackDamageMultiplier -= amount;
+    }
     #endregion
 
     //==========================================================================================================================
@@ -269,18 +290,18 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// 일반 공속 배율 증가 함수
     /// </summary>
     /// <param name="rate">증가 배율</param>
-    public void IncreaseNormalAttackSpeedMultiplyRate(float rate)
+    public void IncreaseNormalAttackSpeedMultiplier(float rate)
     {
-        _plusNormalAttackSpeedMultiplyRate += rate;
+        _plusNormalAttackSpeedMultiplier += rate;
     }
 
     /// <summary>
     /// 일반 공속 배율 감소 함수
     /// </summary>
     /// <param name="rate">감소 배율</param>
-    public void DecreaseNormalAttackSpeedMultiplyRate(float rate)
+    public void DecreaseNormalAttackSpeedMultiplier(float rate)
     {
-        _plusNormalAttackSpeedMultiplyRate = Mathf.Max(_plusNormalAttackSpeedMultiplyRate - rate, 0);
+        _plusNormalAttackSpeedMultiplier = Mathf.Max(_plusNormalAttackSpeedMultiplier - rate, 0);
     }
     #endregion
 
