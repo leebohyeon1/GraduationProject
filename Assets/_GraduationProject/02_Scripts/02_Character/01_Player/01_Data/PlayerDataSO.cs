@@ -39,6 +39,7 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("NormalAttack Setting")]
     public List<PlayerAttackConfig> NormalAttackConfigList;         // 일반 공격 데이터 배열
+    public float MaxNormalAttackSpeedMultiplier = 1.0f;
 
     [Header("Charge Setting")]
     public float ChargeMoveSpeed;

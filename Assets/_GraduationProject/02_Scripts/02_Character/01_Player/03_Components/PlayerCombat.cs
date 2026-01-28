@@ -25,6 +25,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
+    private float _maxNormalAttackSpeedMultiplier;  // 최대 공속 속도 배율
+    public float MaxNormalAttackSpeedMultiplier => _maxNormalAttackSpeedMultiplier;
+
     private float _plusNormalAttackSpeedMultiplier;   // 추가 공속 속도 배율
     public float PlusNormalAttackSpeedMultiplier => _plusNormalAttackSpeedMultiplier;
 
@@ -97,6 +100,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _attackLayerMask = data.AttackLayerMask;
 
+        _maxNormalAttackSpeedMultiplier = data.MaxNormalAttackSpeedMultiplier;
         _normalAttackConfigList.AddRange(data.NormalAttackConfigList);
 
         _chargeStamina = data.ChargeStamina;
@@ -292,7 +296,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="rate">증가 배율</param>
     public void IncreaseNormalAttackSpeedMultiplier(float rate)
     {
-        _plusNormalAttackSpeedMultiplier += rate;
+        _plusNormalAttackSpeedMultiplier = Mathf.Min(_plusNormalAttackSpeedMultiplier + rate, MaxNormalAttackSpeedMultiplier);
     }
 
     /// <summary>
