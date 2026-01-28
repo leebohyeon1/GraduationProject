@@ -28,7 +28,10 @@ public class SmashSO : PlayerAbilitySO
 
     private void OnCounterSucceeded(Transform transform)
     {
-        p_ability.AddTag(SpecialAttackSO);
+        if(!p_ability.HasTag(SpecialAttackSO))
+        {
+            p_ability.AddTag(SpecialAttackSO);
+        }
     }
 
     public void Smash()
