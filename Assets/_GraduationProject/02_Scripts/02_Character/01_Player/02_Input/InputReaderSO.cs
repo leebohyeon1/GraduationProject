@@ -14,6 +14,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action<Vector2> MousePositionEvent = delegate { };
 
     public event Action NormalAttackEvent = delegate { };
+    public event Action NormalAttackCancelEvent = delegate { };
     public event Action NormalCounterEvent = delegate { };
     public event Action ChargeStartEvent = delegate { };
     public event Action ChargeCancelEvent = delegate { };
@@ -109,9 +110,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public void OnNormalAttack(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        switch (context.phase)
         {
-            NormalAttackEvent.Invoke();
+            case InputActionPhase.Performed:
+                    NormalAttackEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                    NormalAttackCancelEvent.Invoke();
+                break;
         }
     }
 

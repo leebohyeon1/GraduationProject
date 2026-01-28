@@ -8,16 +8,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ObsidianArmorSO", menuName = "Project/Player/Ability/TheDestroyer/Tier3/ObsidianArmorSO")]
 public class ObsidianArmorSO : PlayerAbilitySO
 {
-    public int CounterShieldGainAmount = 0;
-    public int ChargeAttackShieldGainAmount = 0;
+    public GainMaxHealthShieldSO GainCounterShieldSO;
+    public GainMaxHealthShieldSO GainChargeAttackShieldSO;
 
     public override void RegisterAbility(PlayerAbility ability)
     {
         p_ability = ability;
         p_owner = p_ability.GetComponent<PlayerController>();
 
+
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_ability.AddTag(GainCounterShieldSO);
+
         p_owner.Events.OnlyChargeAttackSucceded += OnOnlyChargeAttackSucceded;
+        p_ability.AddTag(GainChargeAttackShieldSO);
     }
 
     public override void UnregisterAbility(PlayerAbility ability)
@@ -26,16 +30,22 @@ public class ObsidianArmorSO : PlayerAbilitySO
         p_owner = null;
 
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+        p_ability.RemoveTag(GainCounterShieldSO);
+
         p_owner.Events.OnlyChargeAttackSucceded -= OnOnlyChargeAttackSucceded;
+        p_ability.RemoveTag(GainChargeAttackShieldSO);
     }
 
     private void OnCounterSucceeded(Transform transform)
     {
-        p_owner.Health.IncreaseShield(CounterShieldGainAmount);
+        GainCounterShieldSO.Apply(p_owner);
+
+        // 경직도 초기화
+        p_owner.Health.ResetStiffness();
     }
 
     private void OnOnlyChargeAttackSucceded()
     {
-        p_owner.Health.IncreaseShield(ChargeAttackShieldGainAmount);
+        GainChargeAttackShieldSO.Apply(p_owner);
     }
 }

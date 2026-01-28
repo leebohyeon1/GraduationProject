@@ -28,6 +28,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
     [Header("Shield")]
     private int _currentshieldAmount;   // 현재 보호막 양
+    public int CurrentShieldAmount => _currentshieldAmount;
 
     [Header("Stiffness")]
     private int _currentStiffness; // 현재 경직도
@@ -233,6 +234,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void AddStiffness(int amount)
     {
         ChangeStiffness(amount);
+    }
+
+    /// <summary>
+    /// 경직도 초기화
+    /// </summary>
+    public void ResetStiffness()
+    {
+        ChangeStiffness(-_currentStiffness);
     }
 
     /// <summary>
