@@ -22,6 +22,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
+    private float _plusNormalAttackSpeedMultiplyRate;   // 추가 공속 속도 배율
+    public float PlusNormalAttackSpeedMultiplyRate => _plusNormalAttackSpeedMultiplyRate;
+
     private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
     public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
 
@@ -260,6 +263,24 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public bool CanNormalAttack()
     {
         return _normalAttackComboIndex < (_normalAttackConfigList.Count - 1);
+    }
+
+    /// <summary>
+    /// 일반 공속 배율 증가 함수
+    /// </summary>
+    /// <param name="rate">증가 배율</param>
+    public void IncreaseNormalAttackSpeedMultiplyRate(float rate)
+    {
+        _plusNormalAttackSpeedMultiplyRate += rate;
+    }
+
+    /// <summary>
+    /// 일반 공속 배율 감소 함수
+    /// </summary>
+    /// <param name="rate">감소 배율</param>
+    public void DecreaseNormalAttackSpeedMultiplyRate(float rate)
+    {
+        _plusNormalAttackSpeedMultiplyRate = Mathf.Max(_plusNormalAttackSpeedMultiplyRate - rate, 0);
     }
     #endregion
 

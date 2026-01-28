@@ -21,7 +21,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private int _maxHealth;         // 최대 체력
     private int _currentHealth;     // 현재 체력
 
-    private float _damageReductionRate; // 데미지 감소량
+    private float _damageReductionMultiplyRate; // 데미지 감소량
 
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
     public event Action OnDied; // 사망 이벤트
@@ -94,7 +94,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         damageData = damageContext.Data;
 
         // 데미지 감소 적용
-        damageData.DamageAmount -= Mathf.RoundToInt(damageData.DamageAmount * _damageReductionRate);
+        damageData.DamageAmount -= Mathf.RoundToInt(damageData.DamageAmount * _damageReductionMultiplyRate);
 
         // 보호막 양만큼 데미지 감소
         int shieldDamage = 0;
@@ -161,35 +161,35 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// 데미지 감소량 설정
     /// </summary>
     /// <param name="value">설정할 값</param>
-    public void SetDamageReductionRate(float value)
+    public void SetDamageReductionMultiplyRate(float value)
     {
-        _damageReductionRate = value;
+        _damageReductionMultiplyRate = value;
     }
 
     /// <summary>
     /// 데미지 감소량 초기화
     /// </summary>
-    public void ResetDamageReductionRate()
+    public void ResetDamageReductionMultiplyRate()
     {
-        _damageReductionRate = 0f;
+        SetDamageReductionMultiplyRate(0);
     }
 
     /// <summary>
     /// 데미지 감소량 증가
     /// </summary>
     /// <param name="value">증가량</param>
-    public void IncreaseDamageReductionRate(float value)
+    public void IncreaseDamageReductionMultiplyRate(float value)
     {
-        _damageReductionRate += value;
+        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate + value);
     }
 
     /// <summary>
     /// 데미지 감소량 감소
     /// </summary>
     /// <param name="value">감소량</param>
-    public void DecreaseDamageReductionRate(float value)
+    public void DecreaseDamageReductionMultiplyRate(float value)
     {
-        _damageReductionRate -= value;
+        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate - value);
     }
     #endregion
 
