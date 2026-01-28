@@ -120,12 +120,21 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""CounterAndCharge"",
+                    ""name"": ""Counter"",
                     ""type"": ""Button"",
                     ""id"": ""a7fa0207-d23a-49f0-8110-15cc31c0f9da"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Hold,Tap"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Charge"",
+                    ""type"": ""Button"",
+                    ""id"": ""839f1c75-3908-4a51-b241-b2738a3952e5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -334,7 +343,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""CounterAndCharge"",
+                    ""action"": ""Counter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -345,7 +354,29 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""CounterAndCharge"",
+                    ""action"": ""Counter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""359499a3-0b02-444d-92c0-c3ad2c4b1e15"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Charge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""afb457f9-9a9b-4860-8f31-2f5448b95118"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Charge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -353,7 +384,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""11cad33b-c877-4172-9cc7-59ed25e4050b"",
                     ""path"": ""<Keyboard>/t"",
-                    ""interactions"": ""Tap,Hold"",
+                    ""interactions"": ""Hold,Press"",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""LockOnForKeyboard"",
@@ -889,7 +920,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
         m_Player_NormalAttack = m_Player.FindAction("NormalAttack", throwIfNotFound: true);
-        m_Player_CounterAndCharge = m_Player.FindAction("CounterAndCharge", throwIfNotFound: true);
+        m_Player_Counter = m_Player.FindAction("Counter", throwIfNotFound: true);
+        m_Player_Charge = m_Player.FindAction("Charge", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
         m_Player_Potion = m_Player.FindAction("Potion", throwIfNotFound: true);
@@ -995,7 +1027,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_MousePosition;
     private readonly InputAction m_Player_NormalAttack;
-    private readonly InputAction m_Player_CounterAndCharge;
+    private readonly InputAction m_Player_Counter;
+    private readonly InputAction m_Player_Charge;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Dodge;
     private readonly InputAction m_Player_Potion;
@@ -1026,9 +1059,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @NormalAttack => m_Wrapper.m_Player_NormalAttack;
         /// <summary>
-        /// Provides access to the underlying input action "Player/CounterAndCharge".
+        /// Provides access to the underlying input action "Player/Counter".
         /// </summary>
-        public InputAction @CounterAndCharge => m_Wrapper.m_Player_CounterAndCharge;
+        public InputAction @Counter => m_Wrapper.m_Player_Counter;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Charge".
+        /// </summary>
+        public InputAction @Charge => m_Wrapper.m_Player_Charge;
         /// <summary>
         /// Provides access to the underlying input action "Player/Interact".
         /// </summary>
@@ -1088,9 +1125,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @NormalAttack.started += instance.OnNormalAttack;
             @NormalAttack.performed += instance.OnNormalAttack;
             @NormalAttack.canceled += instance.OnNormalAttack;
-            @CounterAndCharge.started += instance.OnCounterAndCharge;
-            @CounterAndCharge.performed += instance.OnCounterAndCharge;
-            @CounterAndCharge.canceled += instance.OnCounterAndCharge;
+            @Counter.started += instance.OnCounter;
+            @Counter.performed += instance.OnCounter;
+            @Counter.canceled += instance.OnCounter;
+            @Charge.started += instance.OnCharge;
+            @Charge.performed += instance.OnCharge;
+            @Charge.canceled += instance.OnCharge;
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
@@ -1129,9 +1169,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @NormalAttack.started -= instance.OnNormalAttack;
             @NormalAttack.performed -= instance.OnNormalAttack;
             @NormalAttack.canceled -= instance.OnNormalAttack;
-            @CounterAndCharge.started -= instance.OnCounterAndCharge;
-            @CounterAndCharge.performed -= instance.OnCounterAndCharge;
-            @CounterAndCharge.canceled -= instance.OnCounterAndCharge;
+            @Counter.started -= instance.OnCounter;
+            @Counter.performed -= instance.OnCounter;
+            @Counter.canceled -= instance.OnCounter;
+            @Charge.started -= instance.OnCharge;
+            @Charge.performed -= instance.OnCharge;
+            @Charge.canceled -= instance.OnCharge;
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
@@ -1557,12 +1600,19 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNormalAttack(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "CounterAndCharge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Counter" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCounterAndCharge(InputAction.CallbackContext context);
+        void OnCounter(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Charge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCharge(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

@@ -17,6 +17,7 @@ public abstract class PlayerBaseState : IState
         NormalCounterAttack = 4,
         Charge = 5,
         ChargeCounterCounterAttack = 6,
+        SpecialAttack = 7,
 
         NormalDamaged = -1,
         HeavyDamaged = -2,

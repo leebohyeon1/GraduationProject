@@ -28,11 +28,11 @@ public class WillOfStoneSO : PlayerAbilitySO
     /// <param name="ability">플레이어</param>
     public override void UnregisterAbility(PlayerAbility ability)
     {
-        p_ability = null;
-        p_owner = null;
-
         p_owner.Events.ChargeStarted -= OnChargeStarted;
         p_owner.Events.ChargeFinished -= OnChargeFinished;
+
+        p_ability = null;
+        p_owner = null;
     }
 
     private void OnChargeStarted()

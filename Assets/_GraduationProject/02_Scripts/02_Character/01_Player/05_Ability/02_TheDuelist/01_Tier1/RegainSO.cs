@@ -23,10 +23,10 @@ public class RegainSO : PlayerAbilitySO
 
     public override void UnregisterAbility(PlayerAbility ability)
     {
-        p_ability = null;
-        p_owner = null;
+        p_owner.Health.TakeDamged -= OnTakeDamaged;        
         
-        p_owner.Health.TakeDamged -= OnTakeDamaged;
+        p_ability = null;
+        p_owner = null;   
     }
 
     private void OnTakeDamaged(int damage)

@@ -26,14 +26,14 @@ public class ObsidianArmorSO : PlayerAbilitySO
 
     public override void UnregisterAbility(PlayerAbility ability)
     {
-        p_ability = null;
-        p_owner = null;
-
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
         p_ability.RemoveTag(GainCounterShieldSO);
 
         p_owner.Events.OnlyChargeAttackSucceded -= OnOnlyChargeAttackSucceded;
         p_ability.RemoveTag(GainChargeAttackShieldSO);
+
+        p_ability = null;
+        p_owner = null;
     }
 
     private void OnCounterSucceeded(Transform transform)

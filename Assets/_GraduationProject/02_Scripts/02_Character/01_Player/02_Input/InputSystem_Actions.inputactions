@@ -34,12 +34,21 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CounterAndCharge",
+                    "name": "Counter",
                     "type": "Button",
                     "id": "a7fa0207-d23a-49f0-8110-15cc31c0f9da",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold,Tap",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Charge",
+                    "type": "Button",
+                    "id": "839f1c75-3908-4a51-b241-b2738a3952e5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
                     "initialStateCheck": false
                 },
                 {
@@ -248,7 +257,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "CounterAndCharge",
+                    "action": "Counter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -259,7 +268,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "CounterAndCharge",
+                    "action": "Counter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "359499a3-0b02-444d-92c0-c3ad2c4b1e15",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Charge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "afb457f9-9a9b-4860-8f31-2f5448b95118",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Charge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -267,7 +298,7 @@
                     "name": "",
                     "id": "11cad33b-c877-4172-9cc7-59ed25e4050b",
                     "path": "<Keyboard>/t",
-                    "interactions": "Tap,Hold",
+                    "interactions": "Hold,Press",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "LockOnForKeyboard",

@@ -32,14 +32,13 @@ public class ClashSO : PlayerAbilitySO
     /// <param name="ability">플레이어</param>
     public override void UnregisterAbility(PlayerAbility ability)
     {
-        p_ability = null;
-        p_owner = null;
-
         StepTagSO.Revert(p_owner);  // 회피 태그 해제
-
 
         p_owner.Events.DodgeStarted -= OnDodgeStarted;
         p_owner.Events.DodgeFinished -= OnDodgeFinished;
+
+        p_ability = null;
+        p_owner = null;
     }
 
     private void OnDodgeStarted()

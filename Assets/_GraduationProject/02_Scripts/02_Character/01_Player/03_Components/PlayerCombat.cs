@@ -20,34 +20,37 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("NormalAttack")]
     private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
+    public int NormalAttackComboIndex => _normalAttackComboIndex;
+
     private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
+    public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
 
     [Header("Charge")]
     private float _chargeStamina = 5;   // 차지 스테미나
+    public float ChargeStamina => _chargeStamina;
+
     private int _chargeLevel = -1;      // 차지 레벨
+    public int ChargeLevel => _chargeLevel;
 
     [Header("Counter")]
     private PlayerAttackConfig _normalCounterAttackConfig;
+
     private List<PlayerChargeConfig> _heavyCounterAttackConfigList = new List<PlayerChargeConfig>();
+    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _heavyCounterAttackConfigList;
 
     private float _counterAngle = 120f;           // 상쇄 가능 각도
     private bool _isCounterable = false;          // 상쇄 가능 여부
     private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
 
     private float _lastBattleTime;  // 마지막 전투 시간
-    private bool _isBattleState;    // 전투 중인지 여부
-
-    [Header("Properties")]
-    public int NormalAttackComboIndex => _normalAttackComboIndex;
-
-    public float ChargeStamina => _chargeStamina;
-    public int ChargeLevel => _chargeLevel;
-
-    public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
-    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _heavyCounterAttackConfigList;
-
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
+
+    private bool _isBattleState;    // 전투 중인지 여부
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
+
+    [Header("SpecialAttack")]
+    private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
+    public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
 
     /// <summary>
     /// 초기화 함수
@@ -329,6 +332,27 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         }
     }
     #endregion
+
+    //==========================================================================================================================
+    // Special Attack ==========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 특수 공격 스크립터블 오브젝트 설정
+    /// </summary>
+    /// <param name="specialAttackSO">특수 공격</param>
+    public void SetSpecialAttackSO(CanSpecialAttackSO specialAttackSO)
+    {
+        _specialAttackSO = specialAttackSO;
+    }
+
+    /// <summary>
+    /// 특수 공격 스크립터블 오브젝트 초기화
+    /// </summary>
+    public void ClearSpecialAttackSO()
+    {
+        _specialAttackSO = null;
+    }
 
     //==========================================================================================================================
     // Event Handler ===========================================================================================================

@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -7,13 +9,17 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "LeylineOverloadSO", menuName = "Project/Player/Ability/TheDestroyer/Tier4/LeylineOverloadSO")]
 public class LeylineOverloadSO : PlayerAbilitySO
 {
-    public PlayerAttackConfig DamageConfig;  //  기본 데미지
+    public float _cooldown;     
+
+    public CanSpecialAttackSO SpecialAttackSO;
     [Range(0f, 10f)]
     public float ShieldMultipliers; // 보호막 배수
 
     private bool _normalAttackInput;
-    private bool _counterAttackInput;   
+    private bool _counterAttackInput;
 
+    private CanSpecialAttackSO _runtimeSpecialAttackSO;
+    private Coroutine _cooldownCoroutine = null;
 
     public override void RegisterAbility(PlayerAbility ability)
     {
@@ -24,21 +30,56 @@ public class LeylineOverloadSO : PlayerAbilitySO
         p_owner.InputReader.NormalAttackCancelEvent += OnNormalAttackCancel;
 
         p_owner.InputReader.NormalCounterEvent += OnCounterAttack;
-        p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
+        p_owner.InputReader.NormalCounterCancelEvent += OnChargeCancel;
+
+        _cooldownCoroutine = null;
+
+        // 런타임 인스턴스 생성
+        if (_runtimeSpecialAttackSO == null)
+        {
+            _runtimeSpecialAttackSO = Instantiate(SpecialAttackSO);
+        }
+
+        // 태그 등록
+        p_owner.Ability.AddTag(_runtimeSpecialAttackSO);
     }
 
     public override void UnregisterAbility(PlayerAbility ability)
     {
+        if (p_owner != null)
+        {
+            p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
+            p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
+            p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
+            p_owner.InputReader.NormalCounterCancelEvent -= OnChargeCancel;
+            p_owner.Events.AttackFinished -= OnAttackFinished;
+
+            // 쿨다운 코루틴이 돌고 있다면 강제로 멈춰야 안전함
+            if (_cooldownCoroutine != null)
+            {
+                p_owner.StopCoroutine(_cooldownCoroutine);
+                _cooldownCoroutine = null;
+            }
+
+            // 등록했던 태그를 확실히 제거 (Destroy 전 안전하게)
+            if (_runtimeSpecialAttackSO != null)
+            {
+                p_owner.Ability.RemoveTag(_runtimeSpecialAttackSO);
+            }
+        }
+
         p_ability = null;
         p_owner = null;
 
-        p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
-        p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
-
-        p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
-        p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
+        // 런타임 오브젝트 파괴
+        if (_runtimeSpecialAttackSO != null)
+        {
+            Destroy(_runtimeSpecialAttackSO);
+            _runtimeSpecialAttackSO = null;
+        }
     }
 
+    #region Input
     private void OnNormalAttack()
     {
         _normalAttackInput = true;
@@ -68,20 +109,52 @@ public class LeylineOverloadSO : PlayerAbilitySO
     {
         _counterAttackInput = false;
     }
+    #endregion
+
+    /// <summary>
+    /// 공격 이 끝났을 때 이벤트
+    /// </summary>
+    private void OnAttackFinished()
+    {
+        if (p_owner != null && _runtimeSpecialAttackSO != null)
+        {
+            _runtimeSpecialAttackSO.Revert(p_owner);
+            p_owner.Events.AttackFinished -= OnAttackFinished;
+        }
+    }
 
     private void ActiveSkill()
     {
-        Debug.Log("지맥 폭발 사용");
+        if (_cooldownCoroutine != null)
+        {
+            Debug.Log("지맥 폭발 쿨다운");
+            return;
+        }
 
-        float shieldDamage = p_owner.Health.CurrentShieldAmount * ShieldMultipliers;
+        Debug.Log("지맥 폭발 사용");
         
         // 보호막 모두 사용
+        float bonusDamage = p_owner.Health.CurrentShieldAmount * ShieldMultipliers;
         p_owner.Health.DecreaseShield(p_owner.Health.CurrentShieldAmount);
 
-        DamageConfig.AttackDamage += Mathf.RoundToInt(shieldDamage);
+        PlayerAttackConfig attackConfig = SpecialAttackSO.AttackConfig;
+        attackConfig.AttackDamage += Mathf.RoundToInt(bonusDamage);
+        _runtimeSpecialAttackSO.AttackConfig = attackConfig;
 
-        p_owner.Combat.ExecuteAttack(DamageConfig);
+        p_owner.Events.AttackFinished += OnAttackFinished;
 
-        // ToDo 스킬 사용 시 방향 전환
+        // 특수 공격 실행
+        _runtimeSpecialAttackSO.Apply(p_owner);
+        p_owner.Ability.RemoveTag(_runtimeSpecialAttackSO);
+
+        _cooldownCoroutine = p_owner.StartCoroutine(Cooldown());
+    }
+
+    private IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(_cooldown);
+
+        _cooldownCoroutine = null;
+        p_owner.Ability.AddTag(_runtimeSpecialAttackSO);
     }
 }

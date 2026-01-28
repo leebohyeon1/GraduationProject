@@ -16,6 +16,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action NormalAttackEvent = delegate { };
     public event Action NormalAttackCancelEvent = delegate { };
     public event Action NormalCounterEvent = delegate { };
+    public event Action NormalCounterCancelEvent = delegate { };    
     public event Action ChargeStartEvent = delegate { };
     public event Action ChargeCancelEvent = delegate { };
 
@@ -121,19 +122,25 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
-    public void OnCounterAndCharge(InputAction.CallbackContext context)
+    public void OnCounter(InputAction.CallbackContext context)
     {
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                if (context.interaction is HoldInteraction)
-                {
-                    ChargeStartEvent.Invoke();
-                }
-                else
-                {
-                    NormalCounterEvent.Invoke();
-                }
+                NormalCounterEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                NormalCounterCancelEvent.Invoke();
+                break;
+        }
+    }
+
+    public void OnCharge(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                ChargeStartEvent.Invoke();
                 break;
             case InputActionPhase.Canceled:
                 ChargeCancelEvent.Invoke();
