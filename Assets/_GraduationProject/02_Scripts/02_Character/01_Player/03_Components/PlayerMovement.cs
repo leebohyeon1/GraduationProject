@@ -15,14 +15,28 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
     [Header("Movement Setting")]
     private float _maxMoveSpeed;            // 최대 이동 속도
+    public float MaxMoveSpeed => _maxMoveSpeed;
+
     private float _moveAccelerationTime;    // 이동 가속 시간
+    public float MoveAccelerationTime => _moveAccelerationTime;
+
     private float _moveDecelerationnTime;   // 이동 감속 시간
+    public float MoveDecelerationnTime => _moveDecelerationnTime;
+
     private AnimationCurve _moveCurve;      // 이동 가속 커브
+    public AnimationCurve MoveCurve => _moveCurve;
 
     private float _maxRotateSpeed;            // 최대 회전 속도
+    public float MaxRotateSpeed => _maxRotateSpeed;
+
     private float _rotateAccelerationTime;    // 회전 가속 시간
+    public float RotateAccelerationTime => _rotateAccelerationTime;    
+
     private float _rotateDecelerationTime;   // 회전 감속 시간
+    public float RotateDecationTime => _rotateDecelerationTime;
+
     private AnimationCurve _rotateCurve;      // 회전 가속 커브
+    public AnimationCurve RotateCurve => _rotateCurve;
 
     private Vector3 _velocity;              // 현재 속도 (중력 포함)
     public Vector3 Velocity => _velocity;

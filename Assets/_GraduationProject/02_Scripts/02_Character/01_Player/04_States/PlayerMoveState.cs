@@ -21,7 +21,7 @@ public class PlayerMoveState : PlayerBaseState
         p_owner.Movement.MoveByInput(p_owner.InputHandler.MoveInput, Time.fixedDeltaTime);
         p_owner.Movement.RotateToVelocity(Time.fixedDeltaTime);
 
-        float moveSpeedRatio = p_owner.Movement.CurrentMoveSpeed / p_owner.Data.MoveSpeed;
+        float moveSpeedRatio = p_owner.Movement.CurrentMoveSpeed / p_owner.Movement.MaxMoveSpeed;
         p_animator.SetFloat("MoveInput", moveSpeedRatio);
     }
 

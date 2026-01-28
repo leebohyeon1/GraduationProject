@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerNormalCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Data.NormalCounterAttackConfig;
+    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.NormalCounterAttackConfig;
 
     public PlayerNormalCounterState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }

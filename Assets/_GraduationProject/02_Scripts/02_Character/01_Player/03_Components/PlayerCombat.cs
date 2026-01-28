@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public float PlusNormalAttackSpeedMultiplier => _plusNormalAttackSpeedMultiplier;
 
     private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
-    public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
+    public List<PlayerAttackConfig> NormalAttackConfigList => _normalAttackConfigList;
 
     [Header("Charge")]
     private float _chargeStamina = 5;   // 차지 스테미나
@@ -43,6 +43,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Counter")]
     private PlayerAttackConfig _normalCounterAttackConfig;
+    public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
 
     private List<PlayerChargeConfig> _heavyCounterAttackConfigList = new List<PlayerChargeConfig>();
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _heavyCounterAttackConfigList;
