@@ -11,36 +11,29 @@ public class Task_Pressure : Node
     public float RotationSpeed = 5.0f;
     private IAstarAI aiAgent;
     private Vector3? currentTargetDebug; // 디버그용 그림 그리기 변수
+
     public override void OnEnter()
     {
         base.OnEnter();
         aiAgent = runner.GetComponent<IAstarAI>();
-        
         if (aiAgent == null)
         {
-            return;
+            Debug.LogWarning($"[Action_Warning] {runner.name}의 IAstarAI 컴포넌트를 찾을 수 없습니다.");
         }
-        aiAgent.maxSpeed = MoveSpeed;
-        if (aiAgent is AIPath aiPath) {
-            aiPath.endReachedDistance = StoppingDist;
-            aiPath.enableRotation = false;
-        }
+        Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
     }
-
     protected override NodeState OnUpdate()
     {
         if(runner._animationBridge.IsAttacking)
         {
-
-        Debug.Log($"[{runner.name} 공격애니메.");
+            Debug.Log($"[{runner.name} 공격애니메.");
             return NodeState.FAILURE;
         }   
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-        Debug.Log($"[{runner.name} 공격스테이트.");
+            Debug.Log($"[{runner.name} 공격스테이트.");
             return NodeState.FAILURE;
         }
-        if (aiAgent == null) return NodeState.FAILURE;
         
         // 1. 블랙보드 값 확인
         object val = brain.blackboard.GetValue<Vector3>(Pos_Key);
@@ -52,34 +45,26 @@ public class Task_Pressure : Node
 
         Vector3 targetPos = (Vector3)val;
         currentTargetDebug = targetPos; // 기즈모 그리기용 저장
+        
+        runner.Movement.StartOrUpdateChase(targetPos);
 
-        // 2. 목적지 설정 및 로그
-        // aiAgent.destination = targetPos;
-        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
         // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)
-        // Debug.Log($"[Action_Run] 목표: {targetPos} | 현재: {runner.transform.position} | 남은거리: {Vector3.Distance(runner.transform.position, targetPos)}");
 
-        // 3. 도착 확인 로그
-        if (aiAgent.reachedEndOfPath)
-        {
-            return NodeState.SUCCESS;
-        }
 
         return NodeState.RUNNING;
     }
-
     public override void Abort()
     {
         base.Abort();
-        Debug.Log($"[Action_Abort] {runner.name} 압박 이동 노드 중단됨.");
-        runner.Movement.StopMovement();
+        // runner.Movement.StopMovement();
     }
     public override void OnExit()
     {
         base.OnExit();
-        runner.Movement.StopMovement();
+        Debug.Log($"[Action_Exit] {runner.name} 압박 이동 노드 종료됨.");
+        // runner.Movement.StopMovement();
     }
     private void RotateTowardsPlayer()
     {

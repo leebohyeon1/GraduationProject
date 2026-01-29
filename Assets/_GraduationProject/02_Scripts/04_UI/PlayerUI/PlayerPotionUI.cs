@@ -1,39 +1,61 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPotionUI : MonoBehaviour
+/// <summary>
+/// 플레이어 포션 UI
+/// </summary>
+public class PlayerPotionUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
 {
-    [SerializeField] private PlayerPotion _playerPotion;
-    [SerializeField] private GameObject[] potionUIObjects;
+    [Header("References")]
+    [SerializeField] private List<GameObject> _potionImages;
+    private PlayerController _playerController;                     // 플레이어
+
+    [Header("Event")]
+    [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawned;    // 플레이어 스폰 이벤트
+
 
     private void OnEnable()
     {
-        if(_playerPotion == null)
-        {
-            _playerPotion = GameObject.FindFirstObjectByType<PlayerPotion>();
-        }
-
-        _playerPotion.OnPotionChange += OnPotionChange;
-
-        OnPotionChange(_playerPotion.CurrentPotion);
+        _onPlayerSpawned.Subscribe(this);
     }
 
     private void OnDisable()
     {
-        _playerPotion.OnPotionChange -= OnPotionChange;
+        _onPlayerSpawned.Unsubscribe(this);
     }
 
-    private void OnPotionChange(int currentPotion)
+
+    public void OnEventTrigger(PlayerController player)
     {
-        for (int i = 0; i < potionUIObjects.Length; i++)
+        _playerController = player;
+
+        _playerController.Potion.OnPotionChange += OnPotionChange;
+
+        OnPotionChange(_playerController.Potion.CurrentPotion);
+
+        player.RegisterDisposable(this);
+    }
+
+    public void Dispose()
+    {
+        _playerController.Potion.OnPotionChange -= OnPotionChange;
+    }
+
+    // 포션 변경 이벤트 처리
+    private void OnPotionChange(int curentPotion)
+    {
+        for (int i = 0; i < _potionImages.Count; i++)
         {
-            if(i < currentPotion)
+            if (i < curentPotion)
             {
-                potionUIObjects[i].SetActive(true);
+                _potionImages[i].SetActive(true);
             }
             else
             {
-                potionUIObjects[i].SetActive(false);
+                _potionImages[i].SetActive(false);
             }
         }
     }
+
 }

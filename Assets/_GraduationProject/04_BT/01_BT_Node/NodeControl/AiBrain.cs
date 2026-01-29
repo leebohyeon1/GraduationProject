@@ -7,7 +7,7 @@ public class AiBrain
 {
     public BlackBoard blackboard { get; private set; }
     private Enemy _owner;
-    private Player _player;
+    private PlayerController _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
     public Coroutine lateUpdateCoroutine;
@@ -134,11 +134,10 @@ public class AiBrain
         _isCombat = combat;
 
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
-
+        _owner.AnimationBool("IsCombat", _isCombat);
         
         if (_isCombat)
         {
-            _owner.animator.SetTrigger("Discover_Player");
             _owner.Movement.StopMovement();
         }
     }

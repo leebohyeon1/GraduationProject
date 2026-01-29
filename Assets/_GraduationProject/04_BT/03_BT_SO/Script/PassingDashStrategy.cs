@@ -138,4 +138,9 @@ public class PassingDashStrategy : EnemyUseAnything
             if (ai is AIPath aiPath) aiPath.enableRotation = true;
         }
     }
+
+    public override void Reset<T>(T runner)
+    {
+        
+    }
 }

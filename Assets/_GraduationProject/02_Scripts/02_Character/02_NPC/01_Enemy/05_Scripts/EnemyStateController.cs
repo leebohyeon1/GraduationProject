@@ -11,7 +11,6 @@ public class EnemyStateController : MonoBehaviour
         Chase,
         Attack,
         Beam,
-        Noise,
         Die,
         Stunned, // 스턴 상태 추가
         Rush,

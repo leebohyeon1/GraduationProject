@@ -77,10 +77,6 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         {
             return runner; 
         }
-        if(enemy.animHandler.IsActionSO)
-        {
-        Debug.Log(this.name + " is running SO ");
-        }
         // [추가] 시간 경과에 따른 속도 계산
         float startTime = enemy._aiController._aiBrain.blackboard.GetValue<float>(KEY_RUSH_START_TIME);
         float elapsedTime = Time.time - startTime;      // 경과 시간
@@ -170,29 +166,11 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_START_TIME, null);
         
-        Rigidbody rb = enemy.GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+    }
 
-        IAstarAI ai = enemy.GetComponent<IAstarAI>();
-        if (ai != null)
-        {
-            ai.Teleport(enemy.transform.position);
-            ai.canMove = true;      
-            ai.isStopped = false;    
-            ai.maxSpeed = enemy.Movement._normalSpeed; 
-            ai.destination = enemy.transform.position;
-            if (ai is AIPath aiPath) aiPath.enableRotation = true;
-        }
-        var Rvo = enemy.GetComponent<Pathfinding.RVO.RVOController>();
-        if (Rvo != null)
-        {
-            Rvo.locked = false;
-            Rvo.lockWhenNotMoving = true;
-            Rvo.velocity = Vector3.zero;
-        }
+    public override void Reset<T>(T runner)
+    {
+        runner._aiController._aiBrain.blackboard.RemoveKey(KEY_RUSHBOOL);
+        
     }
 }

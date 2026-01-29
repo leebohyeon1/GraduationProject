@@ -18,4 +18,9 @@ public class ActiveImmunity : EnemyUseAnything
     {
         return runner;
     }
+
+    public override void Reset<T>(T runner)
+    {
+        
+    }
 }

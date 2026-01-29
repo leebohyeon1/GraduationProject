@@ -20,8 +20,6 @@ public class PlayerChaseStrategy : EnemyUseAnything
     {
         Enemy enemy = runner as Enemy;
         if (enemy == null || enemy.player == null) return runner;
-
-        // 1. 이동 시작 (A* 활성화)
         runner.Movement.StartOrUpdateChase(enemy.player.transform.position);
 
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
@@ -93,17 +91,17 @@ public class PlayerChaseStrategy : EnemyUseAnything
 
     private void StopRush(Enemy enemy)
     {
+        enemy.Movement.StopMovement();
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
-        if (ai != null)
+        if (ai != null && ai is AIPath aiPath)
         {
-            ai.maxSpeed = enemy.Movement._normalSpeed;
-            ai.isStopped = true;
-            ai.destination = enemy.transform.position;
-            if (ai is AIPath aiPath)
-            {
-                aiPath.maxAcceleration = _originalAcceleration > 0 ? _originalAcceleration : -1;
-            }
+            aiPath.maxAcceleration = _originalAcceleration;
+            aiPath.destination = enemy.transform.position;
         }
-        enemy.StopMovement();
+    }
+
+    public override void Reset<T>(T runner)
+    {
+
     }
 }

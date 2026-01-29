@@ -12,24 +12,31 @@ public class Task_NormalAttackNode : Node
     public bool maintainAtk;
     [Tooltip("공격 성공 여부를 저장할 블랙보드 키 이름")]
     private EnemyAttackData _data;
-    bool tracking = false;
     public EnemyUseAnything[] SO = null;
     bool _isCooldownDenied = false;
     public string ExceptKey = "IsAttacking";
     public bool LoopAttack = false;
     bool OtherAttackAnimationPlaying = false;
-
+    public bool NextBT = false;
     private float _nodeEntryTime; 
-    private const float TRANSITION_BUFFER = 0.4f;
+    private const float TRANSITION_BUFFER = 1f;
     public override void OnEnter()
     {
         _nodeEntryTime = Time.time;
+        _isCooldownDenied = false; // 진입 성공했으므로 false 확인
+        // 쿨타임 체크
         // 데이터 로드
-        if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
+        if (!brain.blackboard.HasKey(attackKey) || !brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
-            Debug.LogError("No Attack Data Found for key: " + attackKey);
+            Debug.LogError($"[Task_NormalAttackNode] '{attackKey}' 키를 블랙보드에서 찾을 수 없거나 데이터 타입이 맞지 않습니다.");
             return;
         }
+        // if (!brain.IsSkillReady(attackKey, _data.Cooltime))
+        // {
+        //     Debug.LogWarning("Attack on Cooldown: " + attackKey);
+        //     _isCooldownDenied = true;
+        //     return;
+        // }
         if (runner._animationBridge.IsAttacking)
         {
             Debug.LogWarning("attack act : " + this.name);
@@ -42,34 +49,33 @@ public class Task_NormalAttackNode : Node
             return;
         }
 
-        // 쿨타임 체크
-        if (!brain.IsSkillReady(attackKey, _data.Cooltime))
-        {
-            _isCooldownDenied = true;
-            return;
-        }
-
+        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}'{_isCooldownDenied} 공격을 시작합니다.");
         Handler.ResetAllFlags();
         // [변경] 블랙보드 초기화 (공격 시작 시 '명중 안 함'으로 설정)
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
-        _isCooldownDenied = false; // 진입 성공했으므로 false 확인
         _data.damageData.AttackerTransform = runner.transform;
         runner.AnimationEvent(_data.AttackName);
         runner.SetState(EnemyStateController.EnemyState.Attack);
         runner.SetCurrentAttackData(_data);
         runner.Movement.StopMovement();
-
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null)
+            {
+                SO[i].Reset(runner);
+            }
+        }
     }
 
     protected override NodeState OnUpdate()
     {
-        if(brain.blackboard.HasKey("GoHome") && brain.blackboard.GetValue<bool>("GoHome"))
-        {
-            return NodeState.FAILURE;
-        }
         if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
+            return NodeState.FAILURE;
+        }
+        if(brain.blackboard.HasKey("GoHome") && brain.blackboard.GetValue<bool>("GoHome"))
+        {
             return NodeState.FAILURE;
         }
 
@@ -88,21 +94,36 @@ public class Task_NormalAttackNode : Node
         {
             // 전환 중 발생하는 이벤트는 찌꺼기일 확률이 높으므로 무시 및 초기화
             Handler.ResetAllFlags();
-            return NodeState.RUNNING;
         }
-        if (Time.time - _nodeEntryTime < TRANSITION_BUFFER)
-        {
-            return NodeState.RUNNING;
-        }
+
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+    var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0); // 전환될 다음 상태
+    float elapsedTime = Time.time - _nodeEntryTime;
 
-        if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
+    // 2. 현재 혹은 다음 상태가 내가 찾는 공격 태그인지 확인
+    bool isTagValid = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
+
+    // [핵심 로직]
+    if (!isTagValid)
+    {
+        // 아직 태그가 안 보인다면 버퍼 시간(최대 대기 시간) 동안은 RUNNING으로 기다려줍니다.
+        if (elapsedTime < TRANSITION_BUFFER)
         {
-            AnimatorClipInfo[] currentClipInfo = runner.animator.GetCurrentAnimatorClipInfo(0);
-            return NodeState.FAILURE;
+            return NodeState.RUNNING;
         }
 
+        // 버퍼 시간이 지났는데도 태그를 못 찾았다면 그때서야 FAILURE
+        Debug.LogWarning($"[Task_NormalAttackNode] {runner.name} 태그 인식 실패 (대기시간 초과): {_data.AttackName}");
+        return NodeState.FAILURE;
+    }
+
+        // 4. 애니메이션 태그 및 상태 체크
+        // if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        // {
+        //     runner.animator.ResetTrigger(_data.AttackName);
+        //     return NodeState.FAILURE;
+        // }
         if (stateInfo.IsTag(_data.AttackName))
         {
             for (int i = 0; i < SO.Length; i++)
@@ -114,7 +135,6 @@ public class Task_NormalAttackNode : Node
             }
 
         }
-
         // 회전 및 추적 로직
         Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
@@ -122,6 +142,7 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionSO)
         {
+                        Debug.Log("SO OnEnter called in attack ");
             // 현재 재생 중인 애니메이션이 내 공격이 맞는지 재확인
             if (stateInfo.IsTag(_data.AttackName))
             {
@@ -140,22 +161,12 @@ public class Task_NormalAttackNode : Node
         {
             Handler.EndSound();
         }
-
-        // 추적 상태 (IsActive)
-        if (Handler.IsActive)
-        {
-            tracking = true;
-        }
-        else
-        {
-            tracking = false;
-        }
-
-        if (!tracking)
+        if(!Handler.IsActive)
         {
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+
         }
-        Debug.Log($"runniing node : {this.name} ");
+
         if (Handler.IsHitWindowOpen)
         {
             Collider[] hitColliders = GetHitColliders(attackOrigin);
@@ -192,6 +203,10 @@ public class Task_NormalAttackNode : Node
         }
         if (Handler.IsActionFinished)
         {
+            if (NextBT)
+            {
+                return NodeState.SUCCESS;
+            }
             bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
             return hasHit ? NodeState.SUCCESS : NodeState.FAILURE;
 
@@ -202,14 +217,13 @@ public class Task_NormalAttackNode : Node
     
     public override void OnExit()
     {
-        tracking = false;
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
         Handler.ResetAllFlags();
         runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
-
+        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다.");
         for (int i = 0; i < SO.Length; i++)
         {
             if (SO[i] != null)
@@ -225,24 +239,9 @@ public class Task_NormalAttackNode : Node
             rb.angularVelocity = Vector3.zero;
         }
 
-        IAstarAI ai = runner.GetComponent<IAstarAI>();
-        if (ai != null)
-        {
-            ai.Teleport(runner.transform.position);
-            ai.canMove = true;
-            ai.isStopped = false;
-            ai.maxSpeed = runner.Movement._normalSpeed;
-            ai.destination = runner.transform.position;
-            if (ai is AIPath aiPath) aiPath.enableRotation = true;
-        }
-        var RVO = runner.GetComponent<Pathfinding.RVO.RVOController>();
-        if (RVO != null)
-        {
-            RVO.locked = false;
-            RVO.lockWhenNotMoving = true;
-        }
         if (!_isCooldownDenied)
         {
+            Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다. 쿨타임 시작.");
             brain.StartSkillCooldown(attackKey);
         }
 
@@ -252,7 +251,6 @@ public class Task_NormalAttackNode : Node
     {
 
         // OnExit과 동일한 정리 로직 수행
-        tracking = false;
         Handler.ResetAllFlags();
         runner.ParrySystem.StateNormal();
         runner.SetState(EnemyStateController.EnemyState.Idle);

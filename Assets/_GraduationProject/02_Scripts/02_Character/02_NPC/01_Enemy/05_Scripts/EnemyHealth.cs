@@ -9,12 +9,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStat enemyStat;
     public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
 
-    public int Health => curHealth;
+    public int CurrentHealth => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
 
     int _maxHealth = 100;
     int curHealth = 100;
-    public bool IsDead => Health <= 0;
+    public bool IsDead => CurrentHealth <= 0;
     public event Action<int, int> OnHealthChanged;
     public Action<bool> OnRecoveryHealth;
     public int healthPerSecond = 20; // 초당 회복량
@@ -24,7 +24,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Coroutine _KnockbackCoroutine;
     public Action<AttackType> OnDamageReceived;
     public Func<AttackType, bool> CheckStunImmunity;
-    public bool IsInvincible => throw new NotImplementedException();
+  
     Enemy _owner;
     private float _knockbackResistance = 1f;
     public bool ImmunityStart = false;
@@ -61,12 +61,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
     private bool IsImmuneToHitReaction(AttackType incomingAttackType)
     {
-        if (_currentImmunityLevel >= ImmunityLevel.Minor)
+        if (_currentImmunityLevel == ImmunityLevel.Minor)
         {
             if (incomingAttackType == AttackType.Normal) return true;
         }
 
-        if (_currentImmunityLevel >= ImmunityLevel.Major)
+        if (_currentImmunityLevel == ImmunityLevel.Major)
         {
             if (incomingAttackType == AttackType.NormalCounter || incomingAttackType == AttackType.Normal) return true;
         }
@@ -137,6 +137,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
+        _owner.player.Money.GetMoney(_owner.enemyStat.MoneyReward);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
@@ -167,7 +168,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Coroutine _delayCoroutine;
     public void TakeDamage(DamageData damageData)
     {
-        if (Health <= 0) return;
+        if (CurrentHealth <= 0) return;
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
         if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
@@ -190,22 +191,26 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
 
         int previousHealth = curHealth;
+        Debug.Log(damageData.AttackType);
         switch (damageData.AttackType)
         {
             case AttackType.Heavy1:
+                Debug.Log("Heavy1 피격");
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
                 break;
             case AttackType.Heavy2:
+                Debug.Log("Heavy2 피격");
+
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
                 break;
             case AttackType.Heavy3:
+                Debug.Log("Heavy3 피격");
+
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
                 break;
-            //case AttackType.Heavy:
-            //    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy);
-            //    break;
             default:
-                _owner.animHandler.PlayFeedback("Damage_FB");
+                Debug.Log("Normal 피격");
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
                 break;
         }
         curHealth -= damageData.DamageAmount;
@@ -227,7 +232,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             }
             _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }
-        if (Health <= 0)
+        if (CurrentHealth <= 0)
         {
             Die();
 

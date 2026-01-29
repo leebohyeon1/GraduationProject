@@ -29,7 +29,7 @@ namespace Console
     {
         public static DeveloperConsole Instance { get; private set; }
 
-        [SerializeField] private InputReader _inputReader;
+        [SerializeField] private InputReaderSO _inputReader;
         public static Dictionary<string, ConsoleCommand> Commands { get; private set; }
 
         private System.Text.StringBuilder consoleContent = new System.Text.StringBuilder();

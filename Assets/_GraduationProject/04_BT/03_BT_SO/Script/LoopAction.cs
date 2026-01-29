@@ -82,4 +82,15 @@ public class LoopAction : EnemyUseAnything
  
         return runner;
     }
+
+    public override void Reset<T>(T runner)
+    {
+        Enemy enemy = runner as Enemy;
+        if (enemy != null) enemy.AnimationBool(AnimationBool, false);
+        var blackboard = runner._aiController._aiBrain.blackboard;
+        Debug.Log("LoopAction Reset called");
+        blackboard.RemoveKey(KEY_START_TIME); // 키 삭제로 상태 초기화
+        blackboard.RemoveKey(KEY_DURATION);
+        blackboard.SetValue(EndKey, false);
+    }
 }

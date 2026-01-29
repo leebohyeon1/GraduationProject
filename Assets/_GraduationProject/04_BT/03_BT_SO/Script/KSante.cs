@@ -25,6 +25,7 @@ public class KSante : EnemyUseAnything
         var blackboard = runner._aiController._aiBrain.blackboard;
         if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
         {
+            Debug.Log("Already rushing ");
             return runner; 
         }
         Enemy enemy = runner as Enemy;
@@ -32,12 +33,7 @@ public class KSante : EnemyUseAnything
 
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
 
-        // 1. A* 네비게이션 끄기
-        if (ai != null)
-        {
-            ai.canMove = false;
-            ai.isStopped = true; 
-        }
+        runner.Movement.StopMovement();
 
         // 2. 목표 지점 계산
         Vector3 playerPos = enemy.player.transform.position;
@@ -59,9 +55,6 @@ public class KSante : EnemyUseAnything
         // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
         // [로그 1] 시작 데이터 (Cyan 색상)
         Debug.Log($"<color=cyan>[Rush Start] 시작위치: {myPos} -> 플레이어위치: {playerPos} -> 1차목표: {finalDestination}</color>");
-        runner.aIPath.enableRotation = false;
-
-        runner.Movement.StopMovement();
         return runner;
     }
 
@@ -259,5 +252,10 @@ public class KSante : EnemyUseAnything
             Rvo.lockWhenNotMoving = true;
             Rvo.velocity = Vector3.zero;
         }
+    }
+
+    public override void Reset<T>(T runner)
+    {
+        
     }
 }
