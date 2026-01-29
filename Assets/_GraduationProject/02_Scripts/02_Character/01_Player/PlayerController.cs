@@ -164,6 +164,11 @@ public class PlayerController : MonoBehaviour
         {
             _potion.Initialize(this);
         }
+
+        if(TryGetComponent<PlayerMoney>(out _money))
+        {
+            _money.Initialize(this);
+        }
     }
 
     /// <summary>

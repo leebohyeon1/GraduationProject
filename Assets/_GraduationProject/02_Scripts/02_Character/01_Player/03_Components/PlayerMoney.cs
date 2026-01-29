@@ -9,6 +9,7 @@ public class PlayerMoney : MonoBehaviour
     private PlayerEvents _events;
 
     private int _currentMoney;
+    public int CurrentMoney => _currentMoney;
 
     public event Action<int> MoneyChanged;   
 

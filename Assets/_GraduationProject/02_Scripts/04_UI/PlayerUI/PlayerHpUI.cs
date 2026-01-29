@@ -44,7 +44,11 @@ public class PlayerHpUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
         // UI 초기화 (시작 시 두 바 모두 꽉 채움)
         float initialRatio = (float)_playerController.Health.CurrentHealth / _playerController.Health.MaxHealth;
         _hpBarImage.fillAmount = initialRatio;
-        if (_backHpBarImage != null) _backHpBarImage.fillAmount = initialRatio;
+        
+        if (_backHpBarImage != null)
+        {
+            _backHpBarImage.fillAmount = initialRatio;
+        }
 
         player.RegisterDisposable(this);
     }
