@@ -115,7 +115,6 @@ public class Task_NormalAttackNode : Node
     {
         Debug.LogWarning($"[Task_NormalAttackNode] 공격 중단: 현재 태그 '{ stateInfo.IsTag(_data.AttackName)}' 태그가 아닙니다.");
         runner.animator.ResetTrigger(_data.AttackName);
-        _isCooldownDenied = true;
         Debug.LogError($"[Task_NormalAttackNode] {runner.name} 공격 중단: '{_data.AttackName}' 태그를 찾을 수 없음.");
         return NodeState.FAILURE;
     }

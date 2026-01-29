@@ -8,12 +8,20 @@ public class Condition_CheckCoolTime : ConditionNode
 
     [Tooltip("이 스킬의 쿨타임 시간(초)입니다.")]
     public float cooldownDuration;
+    public bool EnemyAttackData;
+    public EnemyAttackData attackData;
     public override void OnEnter()
     {
         base.OnEnter();
     }
     protected override bool CheckCondition()
     {
+        if(EnemyAttackData)
+        {
+            skillName = attackData.AttackName;
+            cooldownDuration = attackData.Cooltime;
+            return brain.IsSkillReady(skillName, cooldownDuration);
+        }
         if (string.IsNullOrEmpty(skillName))
         {
             Debug.LogWarning("비어있음: skillName이 설정되지 않았습니다.");
