@@ -63,6 +63,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         // 이벤트 해제 구독
         _events.AttackRegained += OnAttackRegained;
+        _events.Heal += OnHeal;
 
         player.RegisterDisposable(this);
     }
@@ -290,7 +291,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     //==========================================================================================================================
 
     /// <summary>
-    /// 회복 이벤트 처리
+    /// 공격 회복 이벤트 처리
     /// </summary>
     /// <param name="attackRegainedAmount">회복량</param>
     private void OnAttackRegained(int attackRegainedAmount)
@@ -303,4 +304,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         Heal(attackRegainedAmount);
     }
 
+    /// <summary>
+    /// 회복 이벤트 처리
+    /// </summary>
+    /// <param name="healAmount">회복량</param>
+    private void OnHeal(int healAmount)
+    {
+        if (IsDead)
+        {
+            return;
+        }
+
+        Heal(healAmount);
+    }
 }
