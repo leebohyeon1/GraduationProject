@@ -16,7 +16,7 @@ MonoBehaviour:
   floatCondition:
     key: DistanceToTarget
     Operator: 1
-    value: 8
+    value: 5
   exceptCondition:
     key: 
 --- !u!114 &-7154228387633228831
@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Name: Task_Flee From Target
   m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
   position: {x: 1011, y: 630}
-  fleeDistance: 5
-  fleeSpeed: 5
+  fleeDistance: 8
+  fleeSpeed: 7
 --- !u!114 &3075294371316707839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,6 +375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 478, y: 624}
   nodes:
+  - {fileID: 6245012853462913271}
   - {fileID: -4693679520517520094}
   - {fileID: -1718746313817319046}
   services: []
