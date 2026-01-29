@@ -97,28 +97,26 @@ public class Task_NormalAttackNode : Node
         }
 
 
-    // 1. 애니메이터 상태 상세 추출
-    var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
-    float elapsedTime = Time.time - _nodeEntryTime;
+        // 1. 애니메이터 상태 상세 추출
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        float elapsedTime = Time.time - _nodeEntryTime;
 
-    // 현재 애니메이터가 'Attack' 상태로 전환되었는지 확인
-    bool isTagValid = stateInfo.IsTag(_data.AttackName);
+        // 현재 애니메이터가 'Attack' 상태로 전환되었는지 확인
+        bool isTagValid = stateInfo.IsTag(_data.AttackName);
 
-    // 0.4초(TRANSITION_BUFFER) 동안은 태그가 없어도 FAILURE를 내지 않고 기다림
-    if (elapsedTime < TRANSITION_BUFFER)
-    {
-        return NodeState.RUNNING;
-    }
+        // 0.4초(TRANSITION_BUFFER) 동안은 태그가 없어도 FAILURE를 내지 않고 기다림
+        if (elapsedTime < TRANSITION_BUFFER)
+        {
+            return NodeState.RUNNING;
+        }
 
-    // 4. 애니메이션 태그 및 상태 체크
-    if (!isTagValid && runner.CurrentState == EnemyStateController.EnemyState.Attack)
-    {
-        Debug.LogWarning($"[Task_NormalAttackNode] 공격 중단: 현재 태그 '{ stateInfo.IsTag(_data.AttackName)}' 태그가 아닙니다.");
-        runner.animator.ResetTrigger(_data.AttackName);
-        Debug.LogError($"[Task_NormalAttackNode] {runner.name} 공격 중단: '{_data.AttackName}' 태그를 찾을 수 없음.");
-        return NodeState.FAILURE;
-    }
-    if (stateInfo.IsTag(_data.AttackName))
+        // 4. 애니메이션 태그 및 상태 체크
+        if (!isTagValid && runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        {
+            runner.animator.ResetTrigger(_data.AttackName);
+            return NodeState.FAILURE;
+        }
+        if (stateInfo.IsTag(_data.AttackName))
         {
             for (int i = 0; i < SO.Length; i++)
             {

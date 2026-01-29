@@ -7,7 +7,6 @@ public class Stunned : Node
     public override void OnEnter()
     {
         base.OnEnter();
-        runner.Movement.StopMovement();
         runner.SetState(EnemyStateController.EnemyState.Stunned);
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
@@ -24,6 +23,8 @@ public class Stunned : Node
         }
         else
         {
+        runner.Movement.StopMovement();
+
             return NodeState.RUNNING;
         }
         // if (!Handler.IsActionFinished)
