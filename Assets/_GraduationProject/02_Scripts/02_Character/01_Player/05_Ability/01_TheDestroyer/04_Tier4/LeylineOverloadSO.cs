@@ -29,8 +29,8 @@ public class LeylineOverloadSO : PlayerAbilitySO
         p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
         p_owner.InputReader.NormalAttackCancelEvent += OnNormalAttackCancel;
 
-        p_owner.InputReader.NormalCounterEvent += OnCounterAttack;
-        p_owner.InputReader.NormalCounterCancelEvent += OnCounterCancel;
+        p_owner.InputReader.NormalCounterInputEvent += OnCounterAttack;
+        p_owner.InputReader.NormalCounterInputCancelEvent += OnCounterCancel;
 
         _cooldownCoroutine = null;
 
@@ -50,8 +50,9 @@ public class LeylineOverloadSO : PlayerAbilitySO
         {
             p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
             p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
-            p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
-            p_owner.InputReader.NormalCounterCancelEvent -= OnCounterCancel;
+            p_owner.InputReader.NormalCounterInputEvent -= OnCounterAttack;
+            p_owner.InputReader.NormalCounterInputCancelEvent -= OnCounterCancel;
+
             p_owner.Events.AttackFinished -= OnAttackFinished;
 
             // 쿨다운 코루틴이 돌고 있다면 강제로 멈춰야 안전함

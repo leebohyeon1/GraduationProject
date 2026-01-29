@@ -16,7 +16,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action NormalAttackEvent = delegate { };
     public event Action NormalAttackCancelEvent = delegate { };
     public event Action NormalCounterEvent = delegate { };
-    public event Action NormalCounterCancelEvent = delegate { };    
+    public event Action NormalCounterInputEvent = delegate { };
+    public event Action NormalCounterInputCancelEvent = delegate { };    
     public event Action ChargeStartEvent = delegate { };
     public event Action ChargeCancelEvent = delegate { };
 
@@ -122,20 +123,19 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
-    public void OnCounter(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            NormalCounterEvent.Invoke();
-        }
-    }
-
-    public void OnCharge(InputAction.CallbackContext context)
+    public void OnCounterAndCharge(InputAction.CallbackContext context)
     {
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                ChargeStartEvent.Invoke();
+                if (context.interaction is HoldInteraction)
+                {
+                    ChargeStartEvent.Invoke();
+                }
+                else
+                {
+                    NormalCounterEvent.Invoke();
+                }
                 break;
             case InputActionPhase.Canceled:
                 ChargeCancelEvent.Invoke();
@@ -143,6 +143,18 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
+    public void OnCounterInputCheck(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                NormalCounterInputEvent.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                NormalCounterInputCancelEvent.Invoke();
+                break;
+        }
+    }
     public void OnMousePosition(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = context.ReadValue<Vector2>();
