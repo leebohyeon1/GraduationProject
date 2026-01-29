@@ -20,7 +20,7 @@ public class EnemyData
     public bool HasAttackToken { get; set; }
     
     // 컴포넌트 참조 (읽기 전용)
-    public Player Player { get; set; }
+    public PlayerController Player { get; set; }
     
     
     public static EnemyData Create(Enemy enemy)
@@ -32,7 +32,7 @@ public class EnemyData
         {
             EnemyType = enemy.EnemyType,
             StartPosition = enemy.transform.position,
-            Player = GameObject.FindFirstObjectByType<Player>(),
+            Player = GameObject.FindFirstObjectByType<PlayerController>(),
             LaunchPoint = enemy.transform.Find("LaunchPoint"), // 또는 Inspector에서 설정
             GroupAi = enemy.groupAi
         };

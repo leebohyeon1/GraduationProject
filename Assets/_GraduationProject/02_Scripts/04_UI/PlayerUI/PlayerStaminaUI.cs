@@ -1,69 +1,81 @@
 using DG.Tweening;
-using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStaminaUI : MonoBehaviour
+/// <summary>
+/// í”Œë ˆì´ì–´ ìŠ¤í…Œë¯¸ë‚˜ UI
+/// </summary>
+public class PlayerStaminaUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
 {
-    [SerializeField] private PlayerStamina _playerStamina;
-    [SerializeField] private Image _plusStaminaImage;
-    [SerializeField] private Image _minusStaminaImage;
+    [Header("References")]
+    [SerializeField] private Image _plusStaminaBarImage;            // ì–‘ ìŠ¤í…Œë¯¸ë‚˜ë°” ì´ë¯¸ì§€
+    [SerializeField] private Image _minusStaminaBarImage;           // ìŒ ìŠ¤í…Œë¯¸ë‚˜ë°” ì´ë¯¸ì§€
+    private PlayerController _playerController;                     // í”Œë ˆì´ì–´
 
-    [Tooltip("°ÔÀÌÁö°¡ Â÷¿À¸£°Å³ª ÁÙ¾îµå´Â ¼Óµµ (ÃÊ´ç ÆÛ¼¾Æ®)")]
-    [SerializeField] private float _fillSpeed = 2.0f; // 1ÃÊ¿¡ 2Ä­(200%) Á¤µµ ÀÌµ¿ÇÏ´Â ¼Óµµ
+    [Header("Animation Setting")]
+    [SerializeField] private float _animationSpeed = 0.3f;          // ì• ë‹ˆë©”ì´ì…˜ ì†ë„
+    [SerializeField] private AnimationCurve _animationCurve;        // ì• ë‹ˆë©”ì´ì…˜ ì»¤ë¸Œ
 
-    private float _currentAmount = 0;
 
-    private void OnEnable()
+    [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawned;    // í”Œë ˆì´ì–´ ìŠ¤í° ì´ë²¤íŠ¸
+
+    private void OnEnable() 
     {
-        // ÃÊ±âÈ­: UI°¡ ÄÑÁú ¶§ ÇöÀç ½ºÅ×¹Ì³ª·Î Áï½Ã ¼³Á¤
-        _playerStamina.OnStaminaChanged += HandleStaminaChanged;
-    }
-
-    private void Start()
-    {
-        _currentAmount = _playerStamina.Stamina;
-        UpdateImages(_playerStamina.Stamina);
+        _onPlayerSpawned.Subscribe(this);
     }
 
     private void OnDisable()
     {
-        _playerStamina.OnStaminaChanged -= HandleStaminaChanged;
+        _onPlayerSpawned.Unsubscribe(this);
     }
 
-    private void HandleStaminaChanged(float previousStamina, float currentStamina)
+    /// <summary>
+    /// í”Œë ˆì´ì–´ ìŠ¤í° ì´ë²¤íŠ¸ ì²˜ë¦¬
+    /// </summary>
+    /// <param name="player">í”Œë ˆì´ì–´</param>
+    public void OnEventTrigger(PlayerController player)
     {
-        DOTween.Kill(this);
+        _playerController = player;
 
+        _playerController.Stamina.OnStaminaChanged += OnStaminaChanged;
+
+        OnStaminaChanged(_playerController.Stamina.CurrentStamina, _playerController.Stamina.CurrentStamina);
+
+        player.RegisterDisposable(this);
+    }
+
+    /// <summary>
+    /// ê°ì²´ í•´ì œ
+    /// </summary>
+    public void Dispose()
+    {
+        _playerController.Stamina.OnStaminaChanged -= OnStaminaChanged;
+    }
+
+    // ì²´ë ¥ ë³€ê²½ ì´ë²¤íŠ¸ ì²˜ë¦¬
+    private void OnStaminaChanged(float previouseStamina, float currentStamina)
+    {
+        float currentfillAmount = previouseStamina / _playerController.Stamina.MaxStamina;
         DOTween.To(
-            () => _currentAmount,
-            X =>
+            () => currentfillAmount,
+            x =>
             {
-                _currentAmount = X;
-                UpdateImages(_currentAmount);
+                if(currentfillAmount > 0)
+                {
+                    _plusStaminaBarImage.fillAmount = currentfillAmount;
+                    _minusStaminaBarImage.fillAmount = 0f;
+                }
+                else
+                {
+                    _plusStaminaBarImage.fillAmount = 0f;
+                    _minusStaminaBarImage.fillAmount = Mathf.Abs(currentfillAmount);
+                }
+
+                currentfillAmount = x;
             },
-           currentStamina,
-             _fillSpeed)
-            .SetEase(Ease.Linear)
-            .SetId(this);
-    }
-
-    // ½ÇÁ¦ ÀÌ¹ÌÁö¸¦ Ã¤¿ì´Â ·ÎÁ÷ ºĞ¸®
-    private void UpdateImages(float staminaValue)
-    {
-        float maxStamina = _playerStamina.MaxStamina;
-
-        if (staminaValue >= 0)
-        {
-            // ¾ç¼ö ±¸°£: Plus´Â ºñÀ²´ë·Î, Minus´Â 0
-            _plusStaminaImage.fillAmount = staminaValue / maxStamina;
-            _minusStaminaImage.fillAmount = 0f;
-        }
-        else
-        {
-            // À½¼ö ±¸°£: Plus´Â 0, Minus´Â Àı´ë°ª ºñÀ²´ë·Î
-            _plusStaminaImage.fillAmount = 0f;
-            _minusStaminaImage.fillAmount = Mathf.Abs(staminaValue) / maxStamina;
-        }
+            currentStamina / _playerController.Stamina.MaxStamina,
+            _animationSpeed)
+            .SetEase(_animationCurve);
     }
 }

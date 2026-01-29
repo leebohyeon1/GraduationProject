@@ -8,7 +8,7 @@ public class EnemyInitializer : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _enableLogging = true;
     private Enemy _enemy;
-    private Player _player;
+    private PlayerController _player;
     private GroupAi _groupAi;
     // 컴포넌트 캐시 등록
     private Dictionary<Type, Component> _componentCache = new Dictionary<Type, Component>();
@@ -83,7 +83,7 @@ public class EnemyInitializer : MonoBehaviour
     private void Phase1_CollectReferences()
     {
         Log("Phase 1: Collecting References started.");
-        _player = GameObject.FindFirstObjectByType<Player>();
+        _player = GameObject.FindFirstObjectByType<PlayerController>();
 
         FindOrCreateGroupAi();
 
