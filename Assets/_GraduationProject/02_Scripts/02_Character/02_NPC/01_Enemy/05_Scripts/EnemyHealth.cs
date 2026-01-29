@@ -137,6 +137,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
+        _owner.player.Money.GetMoney(_owner.enemyStat.MoneyReward);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();

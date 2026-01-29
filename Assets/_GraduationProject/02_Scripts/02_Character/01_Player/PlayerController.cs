@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerLockOn _lockOn;          // 락온 시스템
     [SerializeField] private PlayerAbility _ability;        // 능력 시스템
     [SerializeField] private PlayerPotion _potion;          // 포션 시스템
+    [SerializeField] private PlayerMoney _money;            // 돈 
 
     private StateMachine<PlayerController> _stateMachine;   // 상태 머신
     private List<IDisposable> _disposableList = new List<IDisposable>(); // 해제해야 하는 객체 리스트
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour
     public PlayerLockOn LockOn => _lockOn;
     public PlayerAbility Ability => _ability;
     public PlayerPotion Potion => _potion;
+    public PlayerMoney Money => _money;
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
