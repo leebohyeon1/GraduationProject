@@ -13,8 +13,7 @@ public class EnemyProjectile : MonoBehaviour
         moveSpeed = speed;
         this._data = data;
         this._owner = owner;
-        data.AttackerTransform = this.transform;
-        transform.rotation = Quaternion.LookRotation(dir);
+        _data.AttackerTransform = this.transform;
         
         Destroy(gameObject, 5f);
     }

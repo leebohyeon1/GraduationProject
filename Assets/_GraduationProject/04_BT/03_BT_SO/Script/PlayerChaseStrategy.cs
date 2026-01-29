@@ -96,6 +96,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
         if (ai != null && ai is AIPath aiPath)
         {
             aiPath.maxAcceleration = _originalAcceleration;
+            aiPath.destination = enemy.transform.position;
         }
     }
 

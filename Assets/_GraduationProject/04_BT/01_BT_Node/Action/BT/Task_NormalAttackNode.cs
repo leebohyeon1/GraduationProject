@@ -69,6 +69,10 @@ public class Task_NormalAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
+        if (Handler.IsActionSO)
+        {
+            Debug.Log(this.name + " is running SO ");
+        }
         if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
@@ -97,29 +101,34 @@ public class Task_NormalAttackNode : Node
         }
 
 
-    // 1. 애니메이터 상태 상세 추출
-    var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+    var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0); // 전환될 다음 상태
     float elapsedTime = Time.time - _nodeEntryTime;
 
-    // 현재 애니메이터가 'Attack' 상태로 전환되었는지 확인
-    bool isTagValid = stateInfo.IsTag(_data.AttackName);
+    // 2. 현재 혹은 다음 상태가 내가 찾는 공격 태그인지 확인
+    bool isTagValid = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
 
-    // 0.4초(TRANSITION_BUFFER) 동안은 태그가 없어도 FAILURE를 내지 않고 기다림
-    if (elapsedTime < TRANSITION_BUFFER)
+    // [핵심 로직]
+    if (!isTagValid)
     {
-        return NodeState.RUNNING;
-    }
+        // 아직 태그가 안 보인다면 버퍼 시간(최대 대기 시간) 동안은 RUNNING으로 기다려줍니다.
+        if (elapsedTime < TRANSITION_BUFFER)
+        {
+            return NodeState.RUNNING;
+        }
 
-    // 4. 애니메이션 태그 및 상태 체크
-    if (!isTagValid && runner.CurrentState == EnemyStateController.EnemyState.Attack)
-    {
-        Debug.LogWarning($"[Task_NormalAttackNode] 공격 중단: 현재 태그 '{ stateInfo.IsTag(_data.AttackName)}' 태그가 아닙니다.");
-        runner.animator.ResetTrigger(_data.AttackName);
-        _isCooldownDenied = true;
-        Debug.LogError($"[Task_NormalAttackNode] {runner.name} 공격 중단: '{_data.AttackName}' 태그를 찾을 수 없음.");
+        // 버퍼 시간이 지났는데도 태그를 못 찾았다면 그때서야 FAILURE
+        Debug.LogWarning($"[Task_NormalAttackNode] {runner.name} 태그 인식 실패 (대기시간 초과): {_data.AttackName}");
         return NodeState.FAILURE;
     }
-    if (stateInfo.IsTag(_data.AttackName))
+
+        // 4. 애니메이션 태그 및 상태 체크
+        // if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        // {
+        //     runner.animator.ResetTrigger(_data.AttackName);
+        //     return NodeState.FAILURE;
+        // }
+        if (stateInfo.IsTag(_data.AttackName))
         {
             for (int i = 0; i < SO.Length; i++)
             {
@@ -137,6 +146,7 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionSO)
         {
+                        Debug.Log("SO OnEnter called in attack ");
             // 현재 재생 중인 애니메이션이 내 공격이 맞는지 재확인
             if (stateInfo.IsTag(_data.AttackName))
             {

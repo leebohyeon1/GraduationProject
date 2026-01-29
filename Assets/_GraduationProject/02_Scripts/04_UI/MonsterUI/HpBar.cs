@@ -4,28 +4,47 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
-    [SerializeField] private Image _hpBarSlider;
-    [SerializeField] private Image _stiffnessBarSlider;
+    [Header("UI Components")]
+    [SerializeField] private Image _hpBarFront;
+    [SerializeField] private Image _hpBarBack;
+
+    [Header("Target Object")]
     [SerializeField] private GameObject _object;
     [SerializeField] private Vector3 _followOffset;
+
     private Camera _mainCamera;
     private RectTransform _transform;
     private IDamageable _damageable;
-    private IStiffness _stiffness;
-    
+
     private void Start()
     {
         _mainCamera = Camera.main;
         _transform = GetComponent<RectTransform>();
-        _damageable = _object.GetComponent<IDamageable>();
-        _stiffness = _object.GetComponent<IStiffness>();
 
-        _damageable.OnHealthChanged += ChangeHpBar;
-        _stiffness.OnStiffnessChanged += ChangeStiffness;
+        if (_object != null)
+        {
+            _damageable = _object.GetComponent<IDamageable>();
+            if (_damageable != null)
+            {
+                _damageable.OnHealthChanged += ChangeHpBar;
+
+                // 초기화
+                float initialRatio = (float)_damageable.CurrentHealth / _damageable.MaxHealth;
+                _hpBarFront.fillAmount = initialRatio;
+                _hpBarBack.fillAmount = initialRatio;
+            }
+        }
     }
-    
-    private void FixedUpdate()
+
+    private void LateUpdate()
     {
+        // 안전장치: 몬스터(_object)가 이미 파괴되어 사라졌다면, HP바도 즉시 파괴
+        if (_object == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         FollowObject();
     }
 
@@ -36,41 +55,39 @@ public class HpBar : MonoBehaviour
             _damageable.OnHealthChanged -= ChangeHpBar;
         }
 
-        if(_stiffness != null)
-        {
-            _stiffness.OnStiffnessChanged -= ChangeStiffness;
-        }
+        // DOTween 안전하게 종료 (오브젝트 파괴 시 트윈이 돌고 있으면 에러가 날 수 있음)
+        DOTween.Kill(_hpBarFront);
+        DOTween.Kill(_hpBarBack);
     }
 
     private void ChangeHpBar(int previousHp, int currentHp)
     {
-        DOTween.Kill(_hpBarSlider, true);
+        float targetFill = (float)currentHp / _damageable.MaxHealth;
 
-        DOTween.To(() => _hpBarSlider.fillAmount,
-                    x => _hpBarSlider.fillAmount = x,
-                    currentHp/(float)_damageable.MaxHealth, 0.3f)
-                    .SetEase(Ease.Linear)
-                    .SetId(_hpBarSlider);
-    }
+        // 1. 앞쪽 게이지 (즉시 반영)
+        _hpBarFront.fillAmount = targetFill;
 
-    private void ChangeStiffness(int previousStiffness, int currentStiffness)
-    {
-        DOTween.Kill(_stiffnessBarSlider, true);
+        // 2. 뒤쪽 게이지 (잔상 효과)
+        DOTween.Kill(_hpBarBack);
+        DOTween.To(() => _hpBarBack.fillAmount,
+                    x => _hpBarBack.fillAmount = x,
+                    targetFill,
+                    0.5f)
+                    .SetDelay(0.1f)
+                    .SetEase(Ease.OutCubic);
 
-        DOTween.To(() => _stiffnessBarSlider.fillAmount,
-                    x => _stiffnessBarSlider.fillAmount = x,
-                    currentStiffness / 100.0f, 0.3f)
-                    .SetEase(Ease.Linear)
-                    .SetId(_hpBarSlider);
+        // 3. 사망 처리: HP가 0 이하라면 UI 파괴
+        if (currentHp <= 0)
+        {
+            // 바로 사라지면 0이 되는 모습이 안 보이므로, 
+            // 잔상 애니메이션 시간(0.1s 대기 + 0.5s 이동 = 0.6s)만큼 기다렸다가 파괴
+            Destroy(gameObject, 0.6f);
+        }
     }
 
     private void FollowObject()
     {
-        if (_object != null)
-        {
-            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_object.transform.position) + _followOffset;
-            _transform.position = screenPos;
-        }
+        Vector3 screenPos = _mainCamera.WorldToScreenPoint(_object.transform.position) + _followOffset;
+        _transform.position = screenPos;
     }
-
 }
