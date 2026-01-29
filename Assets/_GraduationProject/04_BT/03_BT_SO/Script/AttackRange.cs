@@ -22,7 +22,7 @@ public class AttackRange : EnemyUseAnything
         
         Vector3 spawnPos = enemy.transform.position + (enemy.transform.rotation * spawnOffset);
         Vector3 dir = (targetPos - spawnPos).normalized;
-
+        dir.y = 0;
         GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
 
         EnemyProjectile projectileScript = bulletObj.GetComponent<EnemyProjectile>();
