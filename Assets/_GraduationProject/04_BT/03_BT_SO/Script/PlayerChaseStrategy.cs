@@ -20,6 +20,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
     {
         Enemy enemy = runner as Enemy;
         if (enemy == null || enemy.player == null) return runner;
+        runner.Movement.StartOrUpdateChase(enemy.player.transform.position);
 
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
         if (ai != null && ai is AIPath aiPath)
@@ -106,12 +107,6 @@ public class PlayerChaseStrategy : EnemyUseAnything
 
     public override void Reset<T>(T runner)
     {
-        IAstarAI ai = runner.GetComponent<IAstarAI>();
-        if (ai != null)
-        {
-            ai.maxSpeed = runner.Movement._normalSpeed;
-            if (ai is AIPath aiPath)
-                aiPath.maxAcceleration = _originalAcceleration;
-        }
+
     }
 }
