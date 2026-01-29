@@ -9,12 +9,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private EnemyStat enemyStat;
     public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
 
-    public int Health => curHealth;
+    public int CurrentHealth => curHealth;
     public int MaxHealth => enemyStat.Maxhealth;
 
     int _maxHealth = 100;
     int curHealth = 100;
-    public bool IsDead => Health <= 0;
+    public bool IsDead => CurrentHealth <= 0;
     public event Action<int, int> OnHealthChanged;
     public Action<bool> OnRecoveryHealth;
     public int healthPerSecond = 20; // 초당 회복량
@@ -24,7 +24,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Coroutine _KnockbackCoroutine;
     public Action<AttackType> OnDamageReceived;
     public Func<AttackType, bool> CheckStunImmunity;
-    public bool IsInvincible => throw new NotImplementedException();
+  
     Enemy _owner;
     private float _knockbackResistance = 1f;
     public bool ImmunityStart = false;
@@ -167,7 +167,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Coroutine _delayCoroutine;
     public void TakeDamage(DamageData damageData)
     {
-        if (Health <= 0) return;
+        if (CurrentHealth <= 0) return;
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
         if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
@@ -227,7 +227,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             }
             _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }
-        if (Health <= 0)
+        if (CurrentHealth <= 0)
         {
             Die();
 

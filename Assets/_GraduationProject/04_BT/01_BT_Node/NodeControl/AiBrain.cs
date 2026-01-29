@@ -7,7 +7,7 @@ public class AiBrain
 {
     public BlackBoard blackboard { get; private set; }
     private Enemy _owner;
-    private Player _player;
+    private PlayerController _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
     public Coroutine lateUpdateCoroutine;

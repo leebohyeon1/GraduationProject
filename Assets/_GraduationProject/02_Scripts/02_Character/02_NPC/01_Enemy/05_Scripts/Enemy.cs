@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour
     internal EnemyAnimationBridge _animationBridge;
     public EnemyInitializer _initializer{get; private set;}
     //데이터
-    public Player player =>  Data?.Player;
+    public PlayerController player =>  Data?.Player;
     public int CurrentStiffness
     {
         get =>Data?.CurrentStiffness ?? 4;

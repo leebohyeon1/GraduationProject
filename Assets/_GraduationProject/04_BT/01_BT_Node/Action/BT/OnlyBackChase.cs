@@ -54,11 +54,11 @@ AIPath aiPath;
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
         
-        if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.CurrentPlayerState))
+        if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.FSM.CurrentState.GetType()))
         {
             return NodeState.SUCCESS;
         }
-        else if (runner.player.CurrentPlayerState == typeof(PlayerDodgeState))
+        else if (runner.player.FSM.CurrentState.GetType() == typeof(PlayerDodgeState))
         {
             return NodeState.SUCCESS;
         }
