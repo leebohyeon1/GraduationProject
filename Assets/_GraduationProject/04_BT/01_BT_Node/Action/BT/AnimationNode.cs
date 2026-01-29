@@ -50,7 +50,7 @@ public class AnimationNode : Node
                 return NodeState.SUCCESS;
             }
         }
-        Debug.Log($"AnimationNode {animationName} running");
+        // Debug.Log($"AnimationNode {animationName} running");
         return NodeState.RUNNING;
     }
 }

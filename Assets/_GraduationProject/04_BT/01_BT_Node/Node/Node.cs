@@ -35,7 +35,7 @@ namespace BehaviorTree
                 isEntered = false;
             }
              // if(currentState == NodeState.SUCCESS)
-            Debug.Log($"Node: {this.name}, State: <color=green>{currentState}</color>");
+            // Debug.Log($"Node: {this.name}, State: <color=green>{currentState}</color>");
             return currentState;
         }
 
