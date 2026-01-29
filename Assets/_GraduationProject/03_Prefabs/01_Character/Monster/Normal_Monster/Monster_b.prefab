@@ -463,13 +463,17 @@ GameObject:
   - component: {fileID: 5517718577005526806}
   - component: {fileID: 5060830232353991742}
   - component: {fileID: 3905371663404492617}
+  - component: {fileID: 5913584946252184622}
+  - component: {fileID: 1461350062224242970}
+  - component: {fileID: 1496542255945031958}
+  - component: {fileID: 363481964474288842}
   m_Layer: 0
   m_Name: Monster_b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &629783981564199794
 Transform:
   m_ObjectHideFlags: 0
@@ -625,7 +629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13e05e0d59d70746bf262516365b588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AiController
-  _behaviorTree: {fileID: 11400000, guid: ba8784bd69425844a832a2d7e276e50c, type: 2}
+  _behaviorTree: {fileID: 11400000, guid: e05b29de06c8e444ca535f910c0965d1, type: 2}
   _onSwingMissEvent: {fileID: 11400000, guid: 02c8d327e4c408d4fbad8f7b755f1298, type: 2}
   _onHealingEvent: {fileID: 11400000, guid: 9acfedbe409228b4da69bbcfbdee6653, type: 2}
   <enemyAttackDatas>k__BackingField:
@@ -670,6 +674,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTakeDmg
   enemyStat: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
+  _currentImmunityLevel: 0
+  healthPerSecond: 20
+  ImmunityStart: 0
+  MinorTime: 5
   KnockbackForce: 30
   upwardForce: 5
 --- !u!114 &8388223035923141400
@@ -698,6 +706,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Mon_Stiffness
   _stiffnessThreshold: 100
   _stiffnessDuration: 2
+  _weakStiffnessDuration: 2
 --- !u!114 &5517718577005526806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,10 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
-  _CurrentStiffness: 4
-  LaunchPoint: {fileID: 0}
-  _currentAttackRadius: 0
-  _currentAttackOffset: {x: 0, y: 0, z: 0}
+  AnimationBasedMovement: 0
 --- !u!114 &5060830232353991742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,6 +761,56 @@ MonoBehaviour:
   wallAvoidFalloff: 1
   priority: 0.5
   debug: 0
+--- !u!114 &5913584946252184622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307295378721129737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cba6c6051755d844e98fec73a78e7494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStateController
+--- !u!114 &1461350062224242970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307295378721129737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acc2b0b7d04c66c4789a32d527929853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationBridge
+--- !u!114 &1496542255945031958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307295378721129737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f02e930fc21dd040b4ac0a3e996a2dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyInitializer
+  _enableLogging: 1
+--- !u!114 &363481964474288842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307295378721129737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f8f1a6dcaa594429209f140ceefd95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyGizmoDrawer
+  _editorPreviewData: {fileID: 0}
 --- !u!1 &1321409635974398530
 GameObject:
   m_ObjectHideFlags: 0
