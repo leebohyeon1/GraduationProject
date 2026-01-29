@@ -5,7 +5,7 @@ namespace BehaviorTree
 {
     public abstract class ServiceNode : Node
     {
-        public float UpdateInterval = 0.1f;
+        public float UpdateInterval = 0.3f;
         protected float lastExecutionTime = 0f;
 
         // [수정 1] Clone은 자식에서 구현하므로 여기선 추상화하거나, 기본 구현을 유지하되 주의해야 합니다.
