@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1012, y: 624}
+  position: {x: 1011, y: 558}
   floatCondition:
     key: DistanceToTarget
     Operator: 1
@@ -138,6 +138,20 @@ MonoBehaviour:
   position: {x: 804, y: 930}
   IsSee: 1
   rotationSpeed: 5
+--- !u!114 &-1599208639559542778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
+  m_Name: Start Skill Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
+  position: {x: 1010, y: 698}
+  skillName: flee
 --- !u!114 &-700661456820620682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,6 +170,23 @@ MonoBehaviour:
   - {fileID: 4027494429244999788}
   services:
   - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+--- !u!114 &-463672864274951679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 1011, y: 481}
+  skillName: flee
+  cooldownDuration: 7
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &-443099784655628695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868d6069a6a2a4e4a8b5d8a346c9c798, type: 3}
   m_Name: Task_Flee From Target
   m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
-  position: {x: 1012, y: 696}
+  position: {x: 1011, y: 630}
   fleeDistance: 5
   fleeSpeed: 5
 --- !u!114 &3075294371316707839
@@ -465,8 +496,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 803, y: 622}
   nodes:
+  - {fileID: -463672864274951679}
   - {fileID: -8107024922637317193}
   - {fileID: 2561368941018339883}
+  - {fileID: -1599208639559542778}
   services: []
 --- !u!114 &8279960542052063534
 MonoBehaviour:
