@@ -174,6 +174,7 @@ public class PlayerController : MonoBehaviour
         _stateMachine.AddState(new PlayerDamagedState(_stateMachine));
         _stateMachine.AddState(new PlayerKnockdownState(_stateMachine));
         _stateMachine.AddState(new PlayerSpecialAttackState(_stateMachine));
+        _stateMachine.AddState(new PlayerDraggedState(_stateMachine));
 
         // Idle 상태에서 시작
         _stateMachine.ChangeState(typeof(PlayerIdleState));
