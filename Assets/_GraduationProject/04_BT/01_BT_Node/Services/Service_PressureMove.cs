@@ -110,33 +110,22 @@ public class Service_PressureMove : ServiceNode
     }
 
     private Vector3 CalculatePressurePosition(Transform target, Vector3 myPos)
-    {
-        Vector3 dirToMe = (myPos - target.position).normalized;
-        
-        // 외적을 이용해 횡이동(Strafe) 벡터 구하기
-        // (Target -> Me) 벡터의 수직 방향
-        Vector3 rightDir = Vector3.Cross(Vector3.up, dirToMe); 
-        Vector3 strafeDir = rightDir * _currentDir;
+{
+    Vector3 dirFromTarget = (myPos - target.position).normalized;
+    
+    // 플레이어 주위를 도는 방향 계산
+    Vector3 rightDir = Vector3.Cross(Vector3.up, dirFromTarget); 
+    Vector3 strafeDir = rightDir * _currentDir;
 
-        // 거리 유지 로직 (앞뒤 조절)
-        float currentDist = Vector3.Distance(myPos, target.position);
-        Vector3 forwardBackDir = Vector3.zero;
+    // 원하는 유지 거리 결정 (Min과 Max 사이)
+    float desiredDist = (MinDistance + MaxDistance) * 0.5f;
 
-        if (currentDist < MinDistance)
-        {
-            forwardBackDir = dirToMe; // 너무 가까우면 뒤로
-        }
-        else if (currentDist > MaxDistance)
-        {
-            forwardBackDir = -dirToMe; // 너무 멀면 앞으로
-        }
-
-        // 횡이동 + 앞뒤이동 합성
-        Vector3 finalDir = (strafeDir + forwardBackDir).normalized;
-        
-        // 이동 예측 지점 반환
-        return myPos + (finalDir * 2.0f);
-    }
+    // [핵심] 플레이어 위치에서부터의 오프셋으로 계산
+    // 플레이어로부터 dirFromTarget 방향으로 desiredDist만큼 떨어진 곳에 횡이동 방향을 더함
+    Vector3 finalPos = target.position + (dirFromTarget * desiredDist) + (strafeDir * 1.5f);
+    
+    return finalPos; 
+}
 
     private bool IsValidPosition(Vector3 pos)
     {

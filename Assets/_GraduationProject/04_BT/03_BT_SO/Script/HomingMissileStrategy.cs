@@ -132,4 +132,9 @@ public class SpawnHomingStrategy : EnemyUseAnything
             if (ai is AIPath aiPath) aiPath.enableRotation = true;
         }
     }
+
+    public override void Reset<T>(T runner)
+    {
+        throw new System.NotImplementedException();
+    }
 }

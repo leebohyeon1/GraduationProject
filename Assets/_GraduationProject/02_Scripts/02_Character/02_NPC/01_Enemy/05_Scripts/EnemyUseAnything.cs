@@ -15,6 +15,7 @@ public abstract class EnemyUseAnything : ScriptableObject
     {
         return true;
     }
+    public abstract void Reset<T>(T runner) where T : Enemy;
 }
 
 

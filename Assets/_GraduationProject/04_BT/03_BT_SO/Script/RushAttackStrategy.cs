@@ -60,9 +60,14 @@ public class RushAttackStrategy : EnemyUseAnything
         var aiPath = runner.GetComponent<AIPath>();
         if (aiPath != null)
         {
-            aiPath.maxSpeed = 4.0f; // 원래 속도로 복구 (혹은 Enemy 스탯 참조)
+            aiPath.maxSpeed = runner.Movement._normalSpeed; // 원래 속도로 복구 (혹은 Enemy 스탯 참조)
             aiPath.enableRotation = true;
         }
         return runner;
+    }
+
+    public override void Reset<T>(T runner)
+    {
+        throw new System.NotImplementedException();
     }
 }
