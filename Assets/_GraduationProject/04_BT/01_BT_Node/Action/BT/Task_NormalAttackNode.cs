@@ -18,7 +18,7 @@ public class Task_NormalAttackNode : Node
     public string ExceptKey = "IsAttacking";
     public bool LoopAttack = false;
     bool OtherAttackAnimationPlaying = false;
-
+    public bool NextBT = false;
     private float _nodeEntryTime; 
     private const float TRANSITION_BUFFER = 0.4f;
     public override void OnEnter()
@@ -58,7 +58,13 @@ public class Task_NormalAttackNode : Node
         runner.SetState(EnemyStateController.EnemyState.Attack);
         runner.SetCurrentAttackData(_data);
         runner.Movement.StopMovement();
-
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null)
+            {
+                SO[i].Reset(runner);
+            }
+        }
     }
 
     protected override NodeState OnUpdate()
@@ -99,7 +105,7 @@ public class Task_NormalAttackNode : Node
 
         if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            AnimatorClipInfo[] currentClipInfo = runner.animator.GetCurrentAnimatorClipInfo(0);
+            runner.animator.ResetTrigger(_data.AttackName);
             return NodeState.FAILURE;
         }
 
@@ -155,7 +161,6 @@ public class Task_NormalAttackNode : Node
         {
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
         }
-        Debug.Log($"runniing node : {this.name} ");
         if (Handler.IsHitWindowOpen)
         {
             Collider[] hitColliders = GetHitColliders(attackOrigin);
@@ -192,6 +197,10 @@ public class Task_NormalAttackNode : Node
         }
         if (Handler.IsActionFinished)
         {
+            if (NextBT)
+            {
+                return NodeState.SUCCESS;
+            }
             bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
             return hasHit ? NodeState.SUCCESS : NodeState.FAILURE;
 

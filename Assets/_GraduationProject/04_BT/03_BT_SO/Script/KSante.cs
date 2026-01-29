@@ -260,4 +260,9 @@ public class KSante : EnemyUseAnything
             Rvo.velocity = Vector3.zero;
         }
     }
+
+    public override void Reset<T>(T runner)
+    {
+        throw new System.NotImplementedException();
+    }
 }
