@@ -458,7 +458,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
 
         // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
-        bool validateAttackType = damageData.AttackType >= AttackType.Heavy1 && ChargeLevel > 0 || damageData.AttackType == AttackType.Normal;
+        bool validateAttackType = damageData.AttackType >= AttackType.Heavy1 && ChargeLevel >= 0 || damageData.AttackType == AttackType.Normal;
 
 
         // 카운터에 성공하면 데미지 데이터 전부 0으로 처리
