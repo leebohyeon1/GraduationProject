@@ -61,12 +61,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
     private bool IsImmuneToHitReaction(AttackType incomingAttackType)
     {
-        if (_currentImmunityLevel >= ImmunityLevel.Minor)
+        if (_currentImmunityLevel == ImmunityLevel.Minor)
         {
             if (incomingAttackType == AttackType.Normal) return true;
         }
 
-        if (_currentImmunityLevel >= ImmunityLevel.Major)
+        if (_currentImmunityLevel == ImmunityLevel.Major)
         {
             if (incomingAttackType == AttackType.NormalCounter || incomingAttackType == AttackType.Normal) return true;
         }

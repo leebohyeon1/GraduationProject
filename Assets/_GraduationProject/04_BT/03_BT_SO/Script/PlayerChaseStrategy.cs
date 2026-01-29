@@ -21,9 +21,6 @@ public class PlayerChaseStrategy : EnemyUseAnything
         Enemy enemy = runner as Enemy;
         if (enemy == null || enemy.player == null) return runner;
 
-        // 1. 이동 시작 (A* 활성화)
-        runner.Movement.StartOrUpdateChase(enemy.player.transform.position);
-
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
         if (ai != null && ai is AIPath aiPath)
         {
@@ -101,9 +98,20 @@ public class PlayerChaseStrategy : EnemyUseAnything
             ai.destination = enemy.transform.position;
             if (ai is AIPath aiPath)
             {
-                aiPath.maxAcceleration = _originalAcceleration > 0 ? _originalAcceleration : -1;
+                aiPath.maxAcceleration = _originalAcceleration;
             }
         }
         enemy.StopMovement();
+    }
+
+    public override void Reset<T>(T runner)
+    {
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.maxSpeed = runner.Movement._normalSpeed;
+            if (ai is AIPath aiPath)
+                aiPath.maxAcceleration = _originalAcceleration;
+        }
     }
 }

@@ -37,20 +37,28 @@ public class EnemyMovement
 
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
-        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || CurrentState == EnemyStateController.EnemyState.Noise)
+        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die)
         {
             StopMovement();
             return;
         }
         if (aIPath == null) return;
-        if (_runner.CurrentState != EnemyStateController.EnemyState.Hit)
+        if (_runner.CurrentState != EnemyStateController.EnemyState.Hit && _runner.CurrentState != EnemyStateController.EnemyState.Attack)
+        {
             _runner.SetState(ChaseState);
-        _runner.AnimationBool("Walk", true);
+            _runner.AnimationBool("Walk", true);
+        }
         aIPath.enabled = true;
+        aIPath.canMove = true;
         aIPath.maxSpeed = chaseSpeed;
-        aIPath.destination = newTarget;
-        
         aIPath.isStopped = false;
+        aIPath.destination = newTarget;
+        // Debug.Log($"[Action_Run] 목표: {newTarget} | 현재: {_runner.transform.position} | 남은거리: {Vector3.Distance(_runner.transform.position, newTarget)} aipathstopped: {aIPath.isStopped}");
+        
+        if (!aIPath.pathPending) 
+        {
+            aIPath.SearchPath();
+        }
     }
     
     public void UpdateStrafeAnim()

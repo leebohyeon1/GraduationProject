@@ -43,4 +43,9 @@ public class AttackRange : EnemyUseAnything
     {
         return runner;
     }
+
+    public override void Reset<T>(T runner)
+    {
+        throw new System.NotImplementedException();
+    }
 }

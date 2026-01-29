@@ -171,6 +171,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _stats.IsHeavyHit = true; 
         _stiffnessDuration = DamageData.KnockbackDuration;
         _knockbackForce = DamageData.KnockbackForce;
+        Debug.Log("강한 경직 상태로 전환");
     }
 
     private void KnockDown()
