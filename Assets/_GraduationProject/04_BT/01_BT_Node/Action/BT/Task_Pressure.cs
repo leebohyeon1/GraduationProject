@@ -58,7 +58,6 @@ public class Task_Pressure : Node
     public override void Abort()
     {
         base.Abort();
-        Debug.Log($"[Action_Abort] {runner.name} 압박 이동 노드 중단됨.");
         // runner.Movement.StopMovement();
     }
     public override void OnExit()
