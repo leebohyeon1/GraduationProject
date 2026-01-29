@@ -190,22 +190,26 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
 
         int previousHealth = curHealth;
+        Debug.Log(damageData.AttackType);
         switch (damageData.AttackType)
         {
             case AttackType.Heavy1:
+                Debug.Log("Heavy1 피격");
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
                 break;
             case AttackType.Heavy2:
+                Debug.Log("Heavy2 피격");
+
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
                 break;
             case AttackType.Heavy3:
+                Debug.Log("Heavy3 피격");
+
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
                 break;
-            //case AttackType.Heavy:
-            //    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy);
-            //    break;
             default:
-                _owner.animHandler.PlayFeedback("Damage_FB");
+                Debug.Log("Normal 피격");
+                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
                 break;
         }
         curHealth -= damageData.DamageAmount;
