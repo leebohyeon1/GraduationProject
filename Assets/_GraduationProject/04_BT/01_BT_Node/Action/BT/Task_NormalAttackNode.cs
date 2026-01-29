@@ -69,10 +69,6 @@ public class Task_NormalAttackNode : Node
 
     protected override NodeState OnUpdate()
     {
-        if (Handler.IsActionSO)
-        {
-            Debug.Log(this.name + " is running SO ");
-        }
         if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
         {
             // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
