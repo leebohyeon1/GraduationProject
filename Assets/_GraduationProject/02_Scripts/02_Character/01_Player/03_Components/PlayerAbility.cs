@@ -9,6 +9,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
 
+    [Header("Event")]
+    [SerializeField] private OnAbilitySelectedSO _abilitySelected;
 
     /// <summary>
     /// 컴포넌트 초기화
@@ -19,6 +21,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _events = player.Events;
 
         _events.BeforeDamaged += OnBeforeDamaged;
+        _abilitySelected.Subscribe(this);
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -35,7 +38,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     public void Dispose()
     {
         _events.BeforeDamaged -= OnBeforeDamaged;
-
+        _abilitySelected.Unsubscribe(this);
     }
 
     /// <summary>
@@ -44,6 +47,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="ability">기술</param>
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
+        Debug.Log("가술 둥록");
         AddAbility(ability);
     }
 
