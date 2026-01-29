@@ -31,6 +31,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action InteractCancelEvent = delegate { };
 
     public event Action PotionEvent = delegate { };
+    public event Action EscapeEvent = delegate { }; 
 
     // UI Actions
     public event Action CancelEvent = delegate { };
@@ -225,6 +226,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         if(context.phase == InputActionPhase.Performed)
         {
             PotionEvent.Invoke();
+        }
+    }
+
+    public void OnEscape(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            EscapeEvent.Invoke();
         }
     }
 

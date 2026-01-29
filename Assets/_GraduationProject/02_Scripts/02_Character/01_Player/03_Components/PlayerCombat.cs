@@ -12,7 +12,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [Header("References")]
     private PlayerEvents _events;   // 플레이어 이벤트
 
-    [SerializeField] private OnSwingMiss _onSwingMiss;  // 공격 미스 이벤트
+    [SerializeField] private OnSwingMissSO _onSwingMiss;  // 공격 미스 이벤트
 
     [Header("Attack")]
     [SerializeField] private LayerMask _attackLayerMask;
