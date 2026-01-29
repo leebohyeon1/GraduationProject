@@ -43,22 +43,25 @@ public class EnemyMovement
             return;
         }
         if (aIPath == null) return;
+
+        aIPath.enabled = true;
+        aIPath.canMove = true;       // 이동 권한 부여
+        aIPath.isStopped = false;    // 정지 해제
+        aIPath.maxSpeed = chaseSpeed;
+
+        aIPath.destination = newTarget;
+        
         if (_runner.CurrentState != EnemyStateController.EnemyState.Hit && _runner.CurrentState != EnemyStateController.EnemyState.Attack)
         {
             _runner.SetState(ChaseState);
             _runner.AnimationBool("Walk", true);
         }
-        aIPath.enabled = true;
-        aIPath.canMove = true;
-        aIPath.maxSpeed = chaseSpeed;
-        aIPath.isStopped = false;
-        aIPath.destination = newTarget;
         // Debug.Log($"[Action_Run] 목표: {newTarget} | 현재: {_runner.transform.position} | 남은거리: {Vector3.Distance(_runner.transform.position, newTarget)} aipathstopped: {aIPath.isStopped}");
         
         if (!aIPath.pathPending) 
-        {
-            aIPath.SearchPath();
-        }
+    {
+        aIPath.SearchPath(); // 경로 재계산 강제
+    }
     }
     
     public void UpdateStrafeAnim()
@@ -77,49 +80,9 @@ public class EnemyMovement
     }
     public void StopMovement()
     {
-        aIPath.SetPath(null);
-        _runner.AnimationBool("Walk", false);
-        aIPath.enableRotation = true;
+        aIPath.canMove = false;
         aIPath.isStopped = true;
-
-        if (CurrentState == EnemyStateController.EnemyState.Rush ||
-            CurrentState == EnemyStateController.EnemyState.Beam ||
-            CurrentState == EnemyStateController.EnemyState.Stunned ||
-            CurrentState == EnemyStateController.EnemyState.Die ||
-            CurrentState == EnemyStateController.EnemyState.Attack)
-        {
-
-            aIPath.enabled = false;
-            return;
-        }
-        else
-        {
-            aIPath.enabled = true;
-        }
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-        }
-        if (aIPath == null)
-        {
-            return;
-        }
+        _runner.AnimationBool("Walk", false);
 
     }
 }
-    // public void StartWallRush(float rushSpeed)
-    // {
-    //     if (aIPath != null)
-    //     {
-    //         aIPath.enabled = false; // A* Pathfinding 비활성화
-    //     }
-    //     Vector3 lookAtPosition = _runner.player.transform.position;
-    //     lookAtPosition.y = _runner.transform.position.y;
-    //     // _runner.transform.LookAt(lookAtPosition);
-    //     // _runner.SetLastRushHitObject(null);
-    //     if (rb != null)
-    //     {
-    //         rb.isKinematic = false; // Rigidbody 물리 효과 활성화
-    //         rb.linearVelocity = _runner.transform.forward * rushSpeed; // 현재 바라보는 방향으로 속도 적용
-    //     }
-    // }
