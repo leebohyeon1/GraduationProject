@@ -263,6 +263,6 @@ public class KSante : EnemyUseAnything
 
     public override void Reset<T>(T runner)
     {
-        throw new System.NotImplementedException();
+        
     }
 }
