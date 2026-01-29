@@ -6,7 +6,7 @@ using UnityEngine;
 /// 플레이어의 이동, 회전, 중력 등 물리적인 움직임을 담당하는 컴포넌트입니다.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovement : MonoBehaviour, IDisposable
+public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 {
     [Header("References")]
     private CharacterController _characterController; // 캐릭터 컨트롤러
@@ -60,6 +60,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
     private float _chargeRotateSpeed;         // 차지 이동 속도
     public float ChargeRoataeSpeed => _chargeRotateSpeed;
+
+    [Header("Drag Setting")]
+    [SerializeField] private PlayerAbilityTagSO _dragSuperArmorSO; // 드래그 슈퍼 아머
+    public PlayerAbilityTagSO DragSuperArmorSO => _dragSuperArmorSO;
+    public event Action<bool> Dragged;
 
     /// <summary>
     /// 초기화 함수
@@ -465,6 +470,26 @@ public class PlayerMovement : MonoBehaviour, IDisposable
     }
 
     //==========================================================================================================================
+    // Drag ====================================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 플레이어 드래그 함수
+    /// </summary>
+    public void Drag()
+    {
+        Dragged?.Invoke(true);
+    }
+
+    /// <summary>
+    /// 플레이어 드래그 취소 함수
+    /// </summary>
+    public void Drop()
+    {
+        Dragged?.Invoke(false);
+    }
+
+    //==========================================================================================================================
     // Util ====================================================================================================================
     //==========================================================================================================================
 
@@ -505,6 +530,5 @@ public class PlayerMovement : MonoBehaviour, IDisposable
 
         return vectorToMouse;
     }
-
     #endregion
 }

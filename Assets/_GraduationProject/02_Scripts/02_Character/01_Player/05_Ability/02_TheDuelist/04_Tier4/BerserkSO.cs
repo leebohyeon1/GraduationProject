@@ -121,8 +121,8 @@ public class BerserkSO : PlayerAbilitySO
 
         p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
         p_owner.InputReader.NormalAttackCancelEvent -= OnNormalAttackCancel;
-        p_owner.InputReader.NormalCounterEvent -= OnCounterAttack;
-        p_owner.InputReader.NormalCounterCancelEvent -= OnCounterCancel;
+        p_owner.InputReader.NormalCounterInputEvent -= OnCounterAttack;
+        p_owner.InputReader.NormalCounterInputCancelEvent -= OnCounterCancel;
 
         _berserkerCoroutine = null;
     }
@@ -135,8 +135,8 @@ public class BerserkSO : PlayerAbilitySO
 
         p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
         p_owner.InputReader.NormalAttackCancelEvent += OnNormalAttackCancel;
-        p_owner.InputReader.NormalCounterEvent += OnCounterAttack;
-        p_owner.InputReader.NormalCounterCancelEvent += OnCounterCancel;
+        p_owner.InputReader.NormalCounterInputEvent += OnCounterAttack;
+        p_owner.InputReader.NormalCounterInputCancelEvent += OnCounterCancel;
 
         yield return new WaitForSeconds(BerserkerTime);
 
