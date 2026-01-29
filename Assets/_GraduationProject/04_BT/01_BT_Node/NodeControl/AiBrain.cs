@@ -134,11 +134,10 @@ public class AiBrain
         _isCombat = combat;
 
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
-
+        _owner.AnimationBool("IsCombat", _isCombat);
         
         if (_isCombat)
         {
-            _owner.animator.SetTrigger("Discover_Player");
             _owner.Movement.StopMovement();
         }
     }

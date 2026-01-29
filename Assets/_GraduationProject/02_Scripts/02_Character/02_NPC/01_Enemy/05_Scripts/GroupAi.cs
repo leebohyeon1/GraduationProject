@@ -76,6 +76,7 @@ public class GroupAi : MonoBehaviour
 
     public void CombatAll()
     {
+        
         CombatGroup = true;
         foreach (var enemy in enemies)
         {

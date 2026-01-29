@@ -27,7 +27,7 @@ public class Condition_CheckCoolTime : ConditionNode
             Debug.LogWarning("비어있음: skillName이 설정되지 않았습니다.");
             return false;
         }
-        Debug.Log($"success : {this.name} {brain.IsSkillReady(skillName, cooldownDuration)}");
+        // Debug.Log($"success : {this.name} {brain.IsSkillReady(skillName, cooldownDuration)}");
     
         return brain.IsSkillReady(skillName, cooldownDuration);
     }

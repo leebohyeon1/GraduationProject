@@ -64,6 +64,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
     {
         if( !_aiBrain._isCombat )
         _aiBrain.CombatEnter(combat);
+        
     }
 
     public void OnEventTrigger(string eventName)
