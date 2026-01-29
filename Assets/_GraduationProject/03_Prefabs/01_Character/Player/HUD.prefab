@@ -7664,13 +7664,14 @@ GameObject:
   - component: {fileID: 7299955940285273104}
   - component: {fileID: 8543995099601847104}
   - component: {fileID: 8833421344866353919}
+  - component: {fileID: 8867304956655750010}
   m_Layer: 5
-  m_Name: Money
+  m_Name: MoneyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7299955940285273104
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7730,6 +7731,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8867304956655750010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6919162511971661627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1fa31d62a590a744a66c9725940708f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMoneyUI
+  _moneyBar: {fileID: 123815257188441000}
+  _moneyText: {fileID: 8286211762901432960}
+  _onPlayerSpawned: {fileID: 11400000, guid: 707c6a44acbbe864f895da890194bf93, type: 2}
 --- !u!1 &7423313316491683765
 GameObject:
   m_ObjectHideFlags: 0
