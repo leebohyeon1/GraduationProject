@@ -15,56 +15,59 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [SerializeField] private OnSwingMiss _onSwingMiss;  // 공격 미스 이벤트
 
     [Header("Attack")]
-    private LayerMask _attackLayerMask;
-    private float _attackRegainRate;             // 공격 회복 비율
+    [SerializeField] private LayerMask _attackLayerMask;
+    [SerializeField] private float _attackRegainRate;             // 공격 회복 비율
 
-    private float _attackDamageMultiplier;       // 공격력 배율
+    [SerializeField] private float _attackDamageMultiplier;       // 공격력 배율
     public float AttackDamageMultiplier => _attackDamageMultiplier;
 
     [Header("NormalAttack")]
-    private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
+    [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
-    private float _maxNormalAttackSpeedMultiplier;  // 최대 공속 속도 배율
+    [SerializeField] private float _maxNormalAttackSpeedMultiplier;  // 최대 공속 속도 배율
     public float MaxNormalAttackSpeedMultiplier => _maxNormalAttackSpeedMultiplier;
 
-    private float _plusNormalAttackSpeedMultiplier;   // 추가 공속 속도 배율
+    [SerializeField] private float _plusNormalAttackSpeedMultiplier;   // 추가 공속 속도 배율
     public float PlusNormalAttackSpeedMultiplier => _plusNormalAttackSpeedMultiplier;
 
-    private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
+    [SerializeField] private List<PlayerAttackConfig> _normalAttackConfigList = new List<PlayerAttackConfig>();  // 일반 공격 리스트
     public List<PlayerAttackConfig> NormalAttackConfigList => _normalAttackConfigList;
 
     [Header("Charge")]
-    private float _chargeStamina = 5;   // 차지 스테미나
+    [SerializeField] private float _chargeStamina = 5;   // 차지 스테미나
     public float ChargeStamina => _chargeStamina;
 
-    private int _chargeLevel = -1;      // 차지 레벨
+    [SerializeField] private float _maxChargeTime; // 최대 차지 시간
+    public float MaxChargeTime => _maxChargeTime;
+
+    [SerializeField] private int _chargeLevel = -1;      // 차지 레벨
     public int ChargeLevel => _chargeLevel;
 
     [Header("Counter")]
-    private PlayerAttackConfig _normalCounterAttackConfig;
+    [SerializeField] private PlayerAttackConfig _normalCounterAttackConfig;
     public PlayerAttackConfig NormalCounterAttackConfig => _normalCounterAttackConfig;
 
-    private List<PlayerChargeConfig> _heavyCounterAttackConfigList = new List<PlayerChargeConfig>();
+    [SerializeField] private List<PlayerChargeConfig> _heavyCounterAttackConfigList = new List<PlayerChargeConfig>();
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _heavyCounterAttackConfigList;
 
-    private float _counterAngle = 120f;           // 상쇄 가능 각도
-    private bool _isCounterable = false;          // 상쇄 가능 여부
-    private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
+    [SerializeField] private float _counterAngle = 120f;           // 상쇄 가능 각도
+    [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
+    [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
 
     [SerializeField] private PlayerAbilityTagSO _counterSuperArmorTagSO; // 카운터 성공 시 슈퍼아머
     public PlayerAbilityTagSO CounterSuperArmorTagSO => _counterSuperArmorTagSO;
 
     [Header("SpecialAttack")]
-    private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
+    [SerializeField] private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
     public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
 
 
-
-    private float _lastBattleTime;  // 마지막 전투 시간
+    [Header("BattleState")]
+    [SerializeField] private float _lastBattleTime;  // 마지막 전투 시간
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
 
-    private bool _isBattleState;    // 전투 중인지 여부
+    [SerializeField] private bool _isBattleState;    // 전투 중인지 여부
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
 
     /// <summary>
@@ -110,6 +113,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _normalAttackConfigList.AddRange(data.NormalAttackConfigList);
 
         _chargeStamina = data.ChargeStamina;
+        _maxChargeTime = data.MaxChargeTime;
 
         _normalCounterAttackConfig = data.NormalCounterAttackConfig;
         _heavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);

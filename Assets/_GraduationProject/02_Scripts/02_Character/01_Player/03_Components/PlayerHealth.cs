@@ -18,21 +18,21 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private PlayerEvents _events; // 플레이어 이벤트
 
     [Header("Health")]
-    private int _maxHealth;         // 최대 체력
-    private int _currentHealth;     // 현재 체력
+    [SerializeField] private int _maxHealth;         // 최대 체력
+    [SerializeField] private int _currentHealth;     // 현재 체력
 
-    private float _damageReductionMultiplyRate; // 데미지 감소량
+    [SerializeField] private float _damageReductionMultiplyRate; // 데미지 감소량
 
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
     public event Action OnDied; // 사망 이벤트
     public event Action<int> TakeDamged;
 
     [Header("Shield")]
-    private int _currentshieldAmount;   // 현재 보호막 양
+    [SerializeField] private int _currentshieldAmount;   // 현재 보호막 양
     public int CurrentShieldAmount => _currentshieldAmount;
 
     [Header("Stiffness")]
-    private int _currentStiffness; // 현재 경직도
+    [SerializeField] private int _currentStiffness; // 현재 경직도
     private float _stiffnessDuration; // 경직 지속 시간
 
     public event Action<int, int> OnStiffnessChanged;

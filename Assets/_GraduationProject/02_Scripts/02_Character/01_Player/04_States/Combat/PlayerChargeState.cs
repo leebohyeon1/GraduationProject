@@ -36,6 +36,11 @@ public class PlayerChargeState : PlayerBaseState
             p_owner.Events.TriggerChargeLevelCompleted(_chargeLevel);
         }
 
+        if (_chargeTimer > p_owner.Combat.MaxChargeTime)
+        {
+            p_stateMachine.ChangeState<PlayerHeavyCounterState>(); 
+        }
+
         // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Combat.ChargeStamina * Time.deltaTime);
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
@@ -105,6 +110,7 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Combat.ResetChargeLevel();
         p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
+        _shouldTransition = false;
     }
 
     protected override void SetupAnimator()
@@ -132,7 +138,7 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Events.TriggerBattleStateChanged(true);
         p_owner.Events.TriggerChargeFinshed();
         p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
-
+        _shouldTransition = false;
         _chargeTimer = 0f;
     }
 

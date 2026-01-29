@@ -124,21 +124,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public void OnCounter(InputAction.CallbackContext context)
     {
-        switch (context.phase)
+        if (context.phase == InputActionPhase.Performed)
         {
-            case InputActionPhase.Performed:
-                if (context.interaction is HoldInteraction)
-                {
-
-                }
-                else
-                {
-                    NormalCounterEvent.Invoke();
-                }
-                break;
-            case InputActionPhase.Canceled:
-                NormalCounterCancelEvent.Invoke();
-                break;
+            NormalCounterEvent.Invoke();
         }
     }
 
