@@ -111,6 +111,8 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
         _shouldTransition = false;
+
+        p_owner.AnimationTrigger.ChargeCanceled();
     }
 
     protected override void SetupAnimator()
@@ -138,6 +140,8 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Events.TriggerBattleStateChanged(true);
         p_owner.Events.TriggerChargeFinshed();
         p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
+        p_owner.AnimationTrigger.ChargeCanceled();  // 차지 종료 피드백
+
         _shouldTransition = false;
         _chargeTimer = 0f;
     }

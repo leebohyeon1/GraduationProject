@@ -25,11 +25,6 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
-
-
-#if UNITY_EDITOR
-        InitializeTestAbility();
-#endif
     }
 
     /// <summary>
@@ -260,20 +255,4 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
         damageContext.Data = damageData;
     }
-
-
-#if UNITY_EDITOR
-
-    [SerializeField] private List<PlayerAbilitySO> _testAbilities = new List<PlayerAbilitySO>();
-
-    private void InitializeTestAbility()
-    {
-        foreach (var ability in _testAbilities)
-        {
-            AddAbility(ability);
-        }
-    }
-
-
-#endif
 }
