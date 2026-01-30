@@ -12,6 +12,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     [Header("Event")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
 
+    public IEnumerable<PlayerAbilitySO> ActiveAbilities => _abilitySet;
+
     /// <summary>
     /// 컴포넌트 초기화
     /// </summary>
@@ -22,6 +24,20 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
         _events.BeforeDamaged += OnBeforeDamaged;
         _abilitySelected.Subscribe(this);
+
+        // 저장된 능력이 있다면 불러오기
+        if (player.RuntimeData != null && player.RuntimeData.acquiredAbilityIds != null)
+        {
+            foreach (string abilityId in player.RuntimeData.acquiredAbilityIds)
+            {
+                // DataManager를 통해 ID에 해당하는 스킬 SO를 찾아옴
+                PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);
+                if (abilitySO != null)
+                {
+                    AddAbility(abilitySO);
+                }
+            }
+        }
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);

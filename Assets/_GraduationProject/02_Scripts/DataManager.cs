@@ -7,6 +7,9 @@ public class DataManager : MonoBehaviour
     public static DataManager Instance;
 
     public PlayerData currentPlayer = new PlayerData();
+    
+    [Header("Game Data Library")]
+    public List<PlayerAbilitySO> abilityDatabase = new List<PlayerAbilitySO>(); // 게임에 존재하는 모든 스킬 리스트
 
     private void Awake()
     {
@@ -19,6 +22,22 @@ public class DataManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    
+    /// <summary>
+    /// ID로 능력 스크립터블 오브젝트 찾기
+    /// </summary>
+    public PlayerAbilitySO GetAbility(string id)
+    {
+        foreach (var ability in abilityDatabase)
+        {
+            if (ability.Id == id)
+            {
+                return ability;
+            }
+        }
+        Debug.LogWarning($"Ability ID '{id}' not found in DataManager database.");
+        return null;
     }
 
     public void SaveGame()
@@ -81,15 +100,24 @@ public class DataManager : MonoBehaviour
 
         // 스태미나 저장
         var stamina = player.GetComponent<PlayerStamina>();
-        // Note: PlayerStamina 필드 접근은 구현에 따라 public 필드나 프로퍼티가 필요할 수 있습니다.
+        if (stamina)
+        {
+             currentPlayer.currentStamina = stamina.CurrentStamina;
+             currentPlayer.maxStamina = stamina.MaxStamina;
+        }
         
         // 보유한 능력(Ability) 저장
         var abilityComp = player.GetComponent<PlayerAbility>();
         if (abilityComp)
         {
             currentPlayer.acquiredAbilityIds.Clear();
-            // PlayerAbility에 현재 보유한 리스트를 가져오는 기능이 필요할 수 있습니다.
-            // 여기서는 개념적으로 string ID 리스트를 저장하는 방식을 제안합니다.
+            foreach (var ability in abilityComp.ActiveAbilities)
+            {
+                if (!string.IsNullOrEmpty(ability.Id))
+                {
+                    currentPlayer.acquiredAbilityIds.Add(ability.Id);
+                }
+            }
         }
     }
 }
