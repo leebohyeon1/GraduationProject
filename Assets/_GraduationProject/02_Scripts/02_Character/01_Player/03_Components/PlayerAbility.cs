@@ -255,7 +255,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         DamageData damageData = damageContext.Data;
 
         // 무적 태그가 있으면 무적
-        if (HasTag("Invicible"))
+        if (HasTag("Invincible"))
         {
             damageData.DamageAmount = 0;
             damageData.StiffnessAmount = 0;

@@ -9,7 +9,7 @@ public class DataManager : MonoBehaviour
     public PlayerData currentPlayer = new PlayerData();
     
     [Header("Game Data Library")]
-    public List<PlayerAbilitySO> abilityDatabase = new List<PlayerAbilitySO>(); // 게임에 존재하는 모든 스킬 리스트
+    [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
 
     private void Awake()
     {
@@ -29,15 +29,20 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public PlayerAbilitySO GetAbility(string id)
     {
-        foreach (var ability in abilityDatabase)
+        if (_abilityDatabase == null)
         {
-            if (ability.Id == id)
-            {
-                return ability;
-            }
+            Debug.LogWarning("AbilityDatabaseSO is not assigned in DataManager!");
+            return null;
         }
-        Debug.LogWarning($"Ability ID '{id}' not found in DataManager database.");
-        return null;
+
+        PlayerAbilitySO ability = _abilityDatabase.GetAbility(id);
+        
+        if (ability == null)
+        {
+            Debug.LogWarning($"Ability ID '{id}' not found in AbilityDatabase.");
+        }
+        
+        return ability;
     }
 
     public void SaveGame()
