@@ -28,9 +28,6 @@ public class PlayerStamina : MonoBehaviour, IDisposable
         _runtimeData = player.RuntimeData;
         _events = player.Events;
         
-        // _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
-        // _staminaRegenPerSecond = _runtimeData.StaminaRegenPerSecond;
-        
         // Initialize default if needed
         if (_runtimeData != null && _runtimeData.StaminaRegenPerSecond == 0)
         {
@@ -77,8 +74,8 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
         float previousStamina = CurrentStamina; 
         
-        // 데이터 직접 수정 (0 ~ Max 사이로 제한)
-        _runtimeData.CurrentStamina = Mathf.Clamp(CurrentStamina + amount, 0, MaxStamina);
+        // 데이터 직접 수정 ( ~ Max 로 제한)
+        _runtimeData.CurrentStamina = Mathf.Min(CurrentStamina + amount, MaxStamina);
 
         if (previousStamina != CurrentStamina)
         {
