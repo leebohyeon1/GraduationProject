@@ -2,33 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSkillUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
+public class PlayerSkillUI : PlayerUIBase
 {
-    private PlayerController _playerController;
-
     [SerializeField] private List<PlayerSkillUpgradeButtonUI> _upgradeButtonList;
 
-    [Header("Events")]
-    [SerializeField] private OnPlayerSpawnedSO _playerSpawned;
-
-    private void Awake()
+    public override void Initialize(PlayerController player)
     {
-        _playerSpawned.Subscribe(this);
+        base.Initialize(player);
 
-        gameObject.SetActive(false);
-    }
-
-    private void OnDestroy()
-    {
-        _playerSpawned.Unsubscribe(this);
-    }
-
-    public void OnEventTrigger(PlayerController player)
-    {
-        _playerController = player;
-
-        _playerController.InputReader.EscapeEvent += OnEscape;
-        _playerController.RegisterDisposable(this);
+        p_player.InputReader.EscapeEvent += OnEscape;
 
         foreach (var button in _upgradeButtonList)
         {
@@ -36,9 +18,9 @@ public class PlayerSkillUI : MonoBehaviour, IEventListener<PlayerController>, ID
         }
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
-        _playerController.InputReader.EscapeEvent -= OnEscape;
+        p_player.InputReader.EscapeEvent -= OnEscape;
     }
 
     private void OnEscape()

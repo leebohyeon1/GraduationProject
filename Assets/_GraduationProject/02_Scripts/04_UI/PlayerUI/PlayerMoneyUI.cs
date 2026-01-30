@@ -7,40 +7,24 @@ using UnityEngine.UI;
 /// <summary>
 /// 플레이어 돈 UI
 /// </summary>
-public class PlayerMoneyUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
-{
+public class PlayerMoneyUI : PlayerUIBase
+{ 
     [Header("References")]
     [SerializeField] private Image _moneyBar;               // 돈 UI 이미지
     [SerializeField] private TMP_Text _moneyText;           // 돈 Text
-    private PlayerController _playerController;             // 플레이어
 
-
-    [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawned; // 플레이어 스폰 이벤트
-
-    private void OnEnable()
+    public override void Initialize(PlayerController player)
     {
-        _onPlayerSpawned.Subscribe(this);
+        base.Initialize(player);
+        p_player = player;
+
+        p_player.Money.MoneyChanged += OnMoneyChanged;
+        SetMoneyText(p_player.Money.CurrentMoney);
     }
 
-    private void OnDisable()
+    public override void Dispose()
     {
-        _onPlayerSpawned.Unsubscribe(this);
-    }
-
-
-    public void OnEventTrigger(PlayerController player)
-    {
-        _playerController = player;
-
-        _playerController.Money.MoneyChanged += OnMoneyChanged;
-        SetMoneyText(_playerController.Money.CurrentMoney);
-
-        player.RegisterDisposable(this);
-    }
-
-    public void Dispose()
-    {
-        _playerController.Money.MoneyChanged -= OnMoneyChanged;
+        p_player.Money.MoneyChanged -= OnMoneyChanged;
     }
 
     private void OnMoneyChanged(int  amount)

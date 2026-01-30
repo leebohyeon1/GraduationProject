@@ -5435,7 +5435,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.242, y: 0.691, z: -16.381}
   m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9125757547062017592}
   - {fileID: 5371502664780211747}
@@ -5580,6 +5580,122 @@ MonoBehaviour:
     Feedback: {fileID: 4624731016047261092}
   - type: Counter_Sucess_FB
     Feedback: {fileID: 6316564671831946279}
+  HeavyCounterFeedbacks:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeAttackStartLevel1_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeAttackStartLevel2_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeAttackStartLevel3_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  CounterSuccessFeedback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Counter_Sucess_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  ChargeLevelCompletedFeedbacks:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeLevel1_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeLevel2_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeLevel3_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  ChargeCancelFeedback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeCancel_FB
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7109705603458011796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5737,7 +5853,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbility
   _abilityTags: []
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
-  _testAbilities: []
 --- !u!114 &1288170247013544486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8284,7 +8399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].RangeFalloff.m_Curve.Array.data[0].weightedMode
@@ -8311,11 +8426,23 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7142775619783640208}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 6184652537957900628}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
@@ -8323,11 +8450,23 @@ PrefabInstance:
       value: SetWeaponInnerGlowEffect
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StopFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: PlayerWeapon, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
@@ -8335,7 +8474,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_FloatArgument
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
@@ -8347,7 +8494,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
+      propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5974253428132444425, guid: f482a12669c667349b92521803c374d8, type: 3}

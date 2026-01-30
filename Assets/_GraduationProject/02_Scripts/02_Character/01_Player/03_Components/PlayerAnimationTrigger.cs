@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 {
@@ -14,6 +16,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner = player;
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -24,7 +27,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// </summary>
     public void Dispose()
     {
-        p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+        p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
     }
 
     //==========================================================================================================================
@@ -98,6 +102,9 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Counter
+    public List<UnityEvent> HeavyCounterFeedbacks;
+    public UnityEvent CounterSuccessFeedback;
+
     /// <summary>
     /// 상쇄 가능 상태 시작
     /// </summary>
@@ -113,6 +120,14 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner.Events.TriggerCounterWindowFinished();
     }
+
+    /// <summary>
+    /// 강한 상쇄 시작
+    /// </summary>
+    public void HeavyCounterFeedbackPlay()
+    {
+        HeavyCounterFeedbacks[p_owner.Combat.ChargeLevel]?.Invoke();
+    }
     #endregion
 
     //==========================================================================================================================
@@ -120,12 +135,21 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Charge
+    public List<UnityEvent> ChargeLevelCompletedFeedbacks;
+    public UnityEvent ChargeCancelFeedback;
+
+
     /// <summary>
     /// 차지 시작 
     /// </summary>
     public void ChargeStarted()
     {
         p_owner.Events.TriggerChargeStarted();  
+    }
+
+    public void ChargeCanceled()
+    {
+        ChargeCancelFeedback?.Invoke();
     }
 
     #endregion
@@ -140,7 +164,16 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="transform"></param>
     private void OnCounterSucceeded(Transform transform)
     {
-        PlayFeedback("Counter_Sucess_FB");  // 상쇄 성공 피드백 재생
+        CounterSuccessFeedback?.Invoke();
+    }
+
+    /// <summary>
+    /// 차지 레벨 달성 이벤트
+    /// </summary>
+    /// <param name="level">달성한 레벨</param>
+    private void OnChargeLevelCompleted(int level)
+    {
+        ChargeLevelCompletedFeedbacks[level]?.Invoke();
     }
 
 }
