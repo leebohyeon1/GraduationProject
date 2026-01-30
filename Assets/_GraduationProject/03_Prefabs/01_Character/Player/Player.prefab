@@ -5580,6 +5580,23 @@ MonoBehaviour:
     Feedback: {fileID: 4624731016047261092}
   - type: Counter_Sucess_FB
     Feedback: {fileID: 6316564671831946279}
+  - type: Clash_Dodge_FB
+    Feedback: {fileID: 4159280982982812322}
+  ClashDodgeFeedback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4287152458117511782}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Clash_Dodge_FB
+          m_BoolArgument: 0
+        m_CallState: 2
   HeavyCounterFeedbacks:
   - m_PersistentCalls:
       m_Calls:
@@ -6189,13 +6206,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7787796744103094366, guid: 7efe8278883839f459c31fb6f945ef61, type: 3}
       propertyPath: m_Name
-      value: Dodge_Parry_FB
+      value: Clash_Dodge_FB
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7efe8278883839f459c31fb6f945ef61, type: 3}
+--- !u!114 &4159280982982812322 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4063397296849235944, guid: 7efe8278883839f459c31fb6f945ef61, type: 3}
+  m_PrefabInstance: {fileID: 134169368484465994}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &5857891645106462364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5807324916697912278, guid: 7efe8278883839f459c31fb6f945ef61, type: 3}

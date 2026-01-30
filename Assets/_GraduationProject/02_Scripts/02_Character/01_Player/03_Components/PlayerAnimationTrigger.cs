@@ -17,6 +17,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
         p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
+        p_owner.Health.TakeDamged += OnTakeDamaged;
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -29,6 +30,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
         p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
+        p_owner.Health.TakeDamged -= OnTakeDamaged;
     }
 
     //==========================================================================================================================
@@ -57,6 +59,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Dodge
+    public UnityEvent ClashDodgeFeedback;
+
     /// <summary>
     /// 회피 시작 함수
     /// </summary>
@@ -174,6 +178,18 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     private void OnChargeLevelCompleted(int level)
     {
         ChargeLevelCompletedFeedbacks[level]?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어가 데미지 받았을 때 이벤트
+    /// </summary>
+    /// <param name="damage">데미지</param>
+    private void OnTakeDamaged(int damage)
+    {
+        if (p_owner.Ability.HasTag("Clash_IncreaseDamageReduction"))
+        {
+            ClashDodgeFeedback?.Invoke();
+        }
     }
 
 }
