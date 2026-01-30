@@ -26,9 +26,9 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _abilitySelected.Subscribe(this);
 
         // 저장된 능력이 있다면 불러오기
-        if (player.RuntimeData != null && player.RuntimeData.acquiredAbilityIds != null)
+        if (player.RuntimeData != null && player.RuntimeData.AcquiredAbilityIds != null)
         {
-            foreach (string abilityId in player.RuntimeData.acquiredAbilityIds)
+            foreach (string abilityId in player.RuntimeData.AcquiredAbilityIds)
             {
                 // DataManager를 통해 ID에 해당하는 스킬 SO를 찾아옴
                 PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);

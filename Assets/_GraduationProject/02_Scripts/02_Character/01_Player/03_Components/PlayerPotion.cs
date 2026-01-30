@@ -4,37 +4,26 @@ using UnityEngine;
 public class PlayerPotion : MonoBehaviour
 {
     private PlayerEvents _events;
-
-    private int _maxPotion;
-    private int _currentPotion;
+    private PlayerData _data;
 
     private int _potionHealAmount;
 
     public event Action<int> OnPotionChange;
 
-    public int MaxPotion => _maxPotion;
-    public int CurrentPotion => _currentPotion;
+    public int MaxPotion => _data != null ? _data.MaxPotion : 3;
+    public int CurrentPotion => _data != null ? _data.CurrentPotion : 0;
     public int PotionHealAmount => _potionHealAmount;   
 
     public void Initialize(PlayerController player)
     {
         _events = player.Events;
-
-        if (player.RuntimeData != null)
-        {
-            _maxPotion = player.RuntimeData.maxPotion;
-            _currentPotion = player.RuntimeData.currentPotion;
-        }
-        else
-        {
-            _maxPotion = player.Data.MaxPotion;
-            ReloadPotion();
-        }
+        _data = player.RuntimeData;
 
         _potionHealAmount = player.Data.PotionHealAmount;
         
         // UI 업데이트를 위해 이벤트 호출
-        OnPotionChange?.Invoke(_currentPotion);
+        if (_data != null)
+            OnPotionChange?.Invoke(_data.CurrentPotion);
     }
 
     /// <summary>
@@ -42,13 +31,13 @@ public class PlayerPotion : MonoBehaviour
     /// </summary>
     public void UsePotion()
     {
-        if(_currentPotion == 0)
+        if (_data == null || _data.CurrentPotion <= 0)
         {
             return;
         }
 
-        _currentPotion--;
-        OnPotionChange?.Invoke(_currentPotion);
+        _data.CurrentPotion--;
+        OnPotionChange?.Invoke(_data.CurrentPotion);
         _events.TriggerHeal(_potionHealAmount);
     }
 
@@ -57,7 +46,9 @@ public class PlayerPotion : MonoBehaviour
     /// </summary>
     public void ReloadPotion()
     {
-        _currentPotion = _maxPotion;
-        OnPotionChange?.Invoke(_currentPotion);
+        if (_data == null) return;
+
+        _data.CurrentPotion = _data.MaxPotion;
+        OnPotionChange?.Invoke(_data.CurrentPotion);
     }
 }

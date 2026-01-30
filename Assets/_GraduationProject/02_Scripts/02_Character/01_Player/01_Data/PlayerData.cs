@@ -6,44 +6,40 @@ using UnityEngine;
 public class PlayerData
 {
     [Header("Basic Info")]
-    public string playerName;
-    public int level;
-    public int gold;
+    public int Money;
     
     [Header("Stats")]
-    public int currentHealth;
-    public int maxHealth;
-    public float currentStamina;
-    public float maxStamina;
+    public int CurrentHealth;
+    public int MaxHealth;
+    public float CurrentStamina;
+    public float MaxStamina;
     
     [Header("Items")]
-    public int currentPotion;
-    public int maxPotion;
+    public int CurrentPotion;
+    public int MaxPotion;
     
     [Header("Position")]
     public float x, y, z;
 
     [Header("Abilities")]
-    public List<string> acquiredAbilityIds = new List<string>();
+    public List<string> AcquiredAbilityIds = new List<string>();
 
     public PlayerData()
     {
-        playerName = "Hero";
-        level = 1;
-        gold = 0;
+        Money = 0;
         
-        currentHealth = 100;
-        maxHealth = 100;
-        currentStamina = 100f;
-        maxStamina = 100f;
+        CurrentHealth = 100;
+        MaxHealth = 100;
+        CurrentStamina = 100f;
+        MaxStamina = 100f;
         
-        currentPotion = 3;
-        maxPotion = 3;
+        CurrentPotion = 3;
+        MaxPotion = 3;
         
         x = 0;
         y = 0;
         z = 0;
         
-        acquiredAbilityIds = new List<string>();
+        AcquiredAbilityIds = new List<string>();
     }
 }

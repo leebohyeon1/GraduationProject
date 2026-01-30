@@ -89,38 +89,38 @@ public class DataManager : MonoBehaviour
         var health = player.GetComponent<PlayerHealth>();
         if (health)
         {
-            currentPlayer.currentHealth = health.CurrentHealth;
-            currentPlayer.maxHealth = health.MaxHealth;
+            currentPlayer.CurrentHealth = health.CurrentHealth;
+            currentPlayer.MaxHealth = health.MaxHealth;
         }
 
         var money = player.GetComponent<PlayerMoney>();
-        if (money) currentPlayer.gold = money.CurrentMoney;
+        if (money) currentPlayer.Money = money.CurrentMoney;
 
         var potion = player.GetComponent<PlayerPotion>();
         if (potion)
         {
-            currentPlayer.currentPotion = potion.CurrentPotion;
-            currentPlayer.maxPotion = potion.MaxPotion;
+            currentPlayer.CurrentPotion = potion.CurrentPotion;
+            currentPlayer.MaxPotion = potion.MaxPotion;
         }
 
         // 스태미나 저장
         var stamina = player.GetComponent<PlayerStamina>();
         if (stamina)
         {
-             currentPlayer.currentStamina = stamina.CurrentStamina;
-             currentPlayer.maxStamina = stamina.MaxStamina;
+             currentPlayer.CurrentStamina = stamina.CurrentStamina;
+             currentPlayer.MaxStamina = stamina.MaxStamina;
         }
         
         // 보유한 능력(Ability) 저장
         var abilityComp = player.GetComponent<PlayerAbility>();
         if (abilityComp)
         {
-            currentPlayer.acquiredAbilityIds.Clear();
+            currentPlayer.AcquiredAbilityIds.Clear();
             foreach (var ability in abilityComp.ActiveAbilities)
             {
                 if (!string.IsNullOrEmpty(ability.Id))
                 {
-                    currentPlayer.acquiredAbilityIds.Add(ability.Id);
+                    currentPlayer.AcquiredAbilityIds.Add(ability.Id);
                 }
             }
         }

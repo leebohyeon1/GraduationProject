@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PlayerStamina : MonoBehaviour, IDisposable
 {
+    private PlayerData _runtimeData;
     private PlayerEvents _events; // 플레이어 이벤트
 
-    private float _maxStamina;
-    private float _currentStamina;
     private float _staminaRegenPerSecond;
 
     private Coroutine _regenStaminaCoroutine;
@@ -16,8 +15,8 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
 
     #region Properties
-    public float CurrentStamina => _currentStamina;
-    public float MaxStamina => _maxStamina;
+    public float CurrentStamina => _runtimeData != null ? _runtimeData.CurrentStamina : 0;
+    public float MaxStamina => _runtimeData != null ? _runtimeData.MaxStamina : 100;
     public float StaminaRegenPerSecond => _staminaRegenPerSecond;
     #endregion
 
@@ -26,19 +25,8 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// </summary>
     public void Initialize(PlayerController player)
     {
+        _runtimeData = player.RuntimeData;
         _events = player.Events;
-        
-        // RuntimeData 사용
-        if (player.RuntimeData != null)
-        {
-            _maxStamina = player.RuntimeData.maxStamina;
-            _currentStamina = player.RuntimeData.currentStamina;
-        }
-        else
-        {
-            _maxStamina = player.Data.MaxStamina;
-            _currentStamina = _maxStamina;
-        }
         
         _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
 
@@ -78,9 +66,12 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// <param name="amount">스테미나 변경량</param>
     public void ChangeStamina(float amount)
     {
+        if (_runtimeData == null) return;
+
         float previousStamina = CurrentStamina; 
         
-        _currentStamina = Mathf.Min(_currentStamina + amount, MaxStamina);
+        // 데이터 직접 수정 (0 ~ Max 사이로 제한)
+        _runtimeData.CurrentStamina = Mathf.Clamp(CurrentStamina + amount, 0, MaxStamina);
 
         if (previousStamina != CurrentStamina)
         {

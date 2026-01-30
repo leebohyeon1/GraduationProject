@@ -7,24 +7,16 @@ using UnityEngine;
 public class PlayerMoney : MonoBehaviour
 {
     private PlayerEvents _events;
+    private PlayerData _data;
 
-    private int _currentMoney;
-    public int CurrentMoney => _currentMoney;
+    public int CurrentMoney => _data != null ? _data.Money : 0;
 
     public event Action<int> MoneyChanged;   
 
     public void Initialize(PlayerController player)
     {
         _events = player.Events;
-
-        if (player.RuntimeData != null)
-        {
-            _currentMoney = player.RuntimeData.gold;
-        }
-        else
-        {
-            _currentMoney = 0;
-        }
+        _data = player.RuntimeData;
     }
 
     /// <summary>
@@ -34,7 +26,9 @@ public class PlayerMoney : MonoBehaviour
     /// <returns>사용 가능 여부</returns>
     public bool CanUseMoney(int amount)
     {
-        if (_currentMoney >= amount)
+        if (_data == null) return false;
+
+        if (_data.Money >= amount)
         {
             return true;
         }
@@ -48,8 +42,10 @@ public class PlayerMoney : MonoBehaviour
     /// <param name="amount">사용량</param>
     public void UseMoney(int amount)
     {
-        _currentMoney -= amount;
-        MoneyChanged?.Invoke(amount);
+        if (_data == null) return;
+
+        _data.Money -= amount;
+        MoneyChanged?.Invoke(_data.Money);
     }
 
     /// <summary>
@@ -58,7 +54,9 @@ public class PlayerMoney : MonoBehaviour
     /// <param name="amount">획득량</param>
     public void GetMoney(int amount)
     {
-        _currentMoney += amount;
-        MoneyChanged?.Invoke(amount);
+        if (_data == null) return;
+
+        _data.Money += amount;
+        MoneyChanged?.Invoke(_data.Money);
     }
 }
