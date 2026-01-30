@@ -25,19 +25,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _events.BeforeDamaged += OnBeforeDamaged;
         _abilitySelected.Subscribe(this);
 
-        // 저장된 능력이 있다면 불러오기
-        if (player.RuntimeData != null && player.RuntimeData.AcquiredAbilityIds != null)
-        {
-            foreach (string abilityId in player.RuntimeData.AcquiredAbilityIds)
-            {
-                // DataManager를 통해 ID에 해당하는 스킬 SO를 찾아옴
-                PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);
-                if (abilitySO != null)
-                {
-                    AddAbility(abilitySO);
-                }
-            }
-        }
+        InitializeData(player.RuntimeData);
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -52,14 +40,21 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _abilitySelected.Unsubscribe(this);
     }
 
-    /// <summary>
-    /// 기술 선택 이벤트 호출
-    /// </summary>
-    /// <param name="ability">기술</param>
-    public void OnEventTrigger(PlayerAbilitySO ability)
+    private void InitializeData(PlayerData data)
     {
-        Debug.Log("가술 둥록");
-        AddAbility(ability);
+        // 저장된 능력이 있다면 불러오기
+        if (data != null && data.AcquiredAbilityIds != null)
+        {
+            foreach (string abilityId in data.AcquiredAbilityIds)
+            {
+                // DataManager를 통해 ID에 해당하는 스킬 SO를 찾아옴
+                PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);
+                if (abilitySO != null)
+                {
+                    AddAbility(abilitySO);
+                }
+            }
+        }
     }
 
     //==========================================================================================================================
@@ -238,13 +233,23 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         }
 
         return null;
-    }       
+    }
     #endregion
 
 
     //==========================================================================================================================
     // Event Handler ===========================================================================================================
     //==========================================================================================================================
+    
+    /// <summary>
+    /// 기술 선택 이벤트 호출
+    /// </summary>
+    /// <param name="ability">기술</param>
+    public void OnEventTrigger(PlayerAbilitySO ability)
+    {
+        Debug.Log("가술 둥록");
+        AddAbility(ability);
+    }
 
     /// <summary>
     /// 데미지 받기 전 이벤트 발행

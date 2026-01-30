@@ -6,20 +6,24 @@ public class PlayerPotion : MonoBehaviour
     private PlayerEvents _events;
     private PlayerData _data;
 
-    private int _potionHealAmount;
+    // private int _potionHealAmount;
 
     public event Action<int> OnPotionChange;
 
     public int MaxPotion => _data != null ? _data.MaxPotion : 3;
     public int CurrentPotion => _data != null ? _data.CurrentPotion : 0;
-    public int PotionHealAmount => _potionHealAmount;   
+    public int PotionHealAmount => _data != null ? _data.PotionHealAmount : 40;   
 
     public void Initialize(PlayerController player)
     {
         _events = player.Events;
         _data = player.RuntimeData;
 
-        _potionHealAmount = player.Data.PotionHealAmount;
+        // _potionHealAmount = player.Data.PotionHealAmount;
+        if (_data != null && _data.PotionHealAmount == 0)
+        {
+            _data.PotionHealAmount = player.Data.PotionHealAmount;
+        }
         
         // UI 업데이트를 위해 이벤트 호출
         if (_data != null)
@@ -38,7 +42,7 @@ public class PlayerPotion : MonoBehaviour
 
         _data.CurrentPotion--;
         OnPotionChange?.Invoke(_data.CurrentPotion);
-        _events.TriggerHeal(_potionHealAmount);
+        _events.TriggerHeal(PotionHealAmount);
     }
 
     /// <summary>

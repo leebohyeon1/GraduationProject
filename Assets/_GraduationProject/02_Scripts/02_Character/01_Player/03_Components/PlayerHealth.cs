@@ -43,6 +43,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
     public int StiffnessThreshold => 100; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
+    
+    public float KnockDownDuration => _data != null ? _data.KnockDownDuration : 3f;
 
 
     /// <summary>
@@ -53,6 +55,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _data = player.RuntimeData;
         _events = player.Events;
+
+        if (_data != null && _data.KnockDownDuration == 0)
+        {
+            _data.KnockDownDuration = player.Data.KnockDownDuration;
+        }
 
         // 경직도 초기화
         _currentStiffness = 0;
@@ -145,7 +152,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// <param name="amount">변경량</param>
     public void ChangeHealth(int amount)
     {
-        if (_data == null) return;
+        if (_data == null)
+        {
+            return;
+        }
 
         int previousHealth = _data.CurrentHealth;
         

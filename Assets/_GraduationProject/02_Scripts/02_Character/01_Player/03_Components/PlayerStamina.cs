@@ -7,7 +7,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     private PlayerData _runtimeData;
     private PlayerEvents _events; // 플레이어 이벤트
 
-    private float _staminaRegenPerSecond;
+    // private float _staminaRegenPerSecond;
 
     private Coroutine _regenStaminaCoroutine;
 
@@ -17,7 +17,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     #region Properties
     public float CurrentStamina => _runtimeData != null ? _runtimeData.CurrentStamina : 0;
     public float MaxStamina => _runtimeData != null ? _runtimeData.MaxStamina : 100;
-    public float StaminaRegenPerSecond => _staminaRegenPerSecond;
+    public float StaminaRegenPerSecond => _runtimeData != null ? _runtimeData.StaminaRegenPerSecond : 5f;
     #endregion
 
     /// <summary>
@@ -28,7 +28,14 @@ public class PlayerStamina : MonoBehaviour, IDisposable
         _runtimeData = player.RuntimeData;
         _events = player.Events;
         
-        _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
+        // _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
+        // _staminaRegenPerSecond = _runtimeData.StaminaRegenPerSecond;
+        
+        // Initialize default if needed
+        if (_runtimeData != null && _runtimeData.StaminaRegenPerSecond == 0)
+        {
+            _runtimeData.StaminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
+        }
 
         _events.RegenStamina += OnRegenStamina;
 

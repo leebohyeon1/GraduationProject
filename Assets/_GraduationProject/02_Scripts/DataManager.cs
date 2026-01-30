@@ -51,7 +51,7 @@ public class DataManager : MonoBehaviour
         UpdatePlayerDataFromGame();
 
         string json = JsonUtility.ToJson(currentPlayer, true);
-        string filePath = Path.Combine(Application.persistentDataPath, "MyGameData.json");
+        string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
         File.WriteAllText(filePath, json);
 
         Debug.Log("저장 성공! 경로: " + filePath);
@@ -59,7 +59,7 @@ public class DataManager : MonoBehaviour
 
     public void LoadGame()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, "MyGameData.json");
+        string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
 
         if (File.Exists(filePath))
         {
@@ -80,36 +80,12 @@ public class DataManager : MonoBehaviour
         PlayerController player = FindFirstObjectByType<PlayerController>();
         if (player == null) return;
 
-        // 위치 저장
+        // 위치 저장 (직접 연동되지 않으므로 복사 필요)
         currentPlayer.x = player.transform.position.x;
         currentPlayer.y = player.transform.position.y;
         currentPlayer.z = player.transform.position.z;
 
-        // 체력/돈/포션 저장 (각 컴포넌트 접근)
-        var health = player.GetComponent<PlayerHealth>();
-        if (health)
-        {
-            currentPlayer.CurrentHealth = health.CurrentHealth;
-            currentPlayer.MaxHealth = health.MaxHealth;
-        }
-
-        var money = player.GetComponent<PlayerMoney>();
-        if (money) currentPlayer.Money = money.CurrentMoney;
-
-        var potion = player.GetComponent<PlayerPotion>();
-        if (potion)
-        {
-            currentPlayer.CurrentPotion = potion.CurrentPotion;
-            currentPlayer.MaxPotion = potion.MaxPotion;
-        }
-
-        // 스태미나 저장
-        var stamina = player.GetComponent<PlayerStamina>();
-        if (stamina)
-        {
-             currentPlayer.CurrentStamina = stamina.CurrentStamina;
-             currentPlayer.MaxStamina = stamina.MaxStamina;
-        }
+        // Health, Money, Potion, Stamina, Combat 등은 RuntimeData를 직접 참조하므로 별도 복사 불필요
         
         // 보유한 능력(Ability) 저장
         var abilityComp = player.GetComponent<PlayerAbility>();
