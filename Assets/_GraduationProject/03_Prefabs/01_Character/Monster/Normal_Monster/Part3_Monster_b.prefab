@@ -658,12 +658,12 @@ MonoBehaviour:
     id: 0
     HitType: 0
   - name: Damage_FB
-    feedback: {fileID: 0}
+    feedback: {fileID: 3916332231507782279}
     offset: {x: 0, y: 0, z: 0}
     id: 0
     HitType: 0
   - name: Die
-    feedback: {fileID: 0}
+    feedback: {fileID: 6295349170976556554}
     offset: {x: 0, y: 0, z: 0}
     id: 0
     HitType: 2
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f2eee0e86c2774581291daf379defe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTakeDmg
-  enemyStat: {fileID: 11400000, guid: 46e527f76bec3eb40b7da00d9581cdee, type: 2}
+  enemyStat: {fileID: 11400000, guid: a547cf6fe13d12c4587298f1855fbb9b, type: 2}
   _currentImmunityLevel: 0
   healthPerSecond: 20
   ImmunityStart: 0
@@ -1053,7 +1053,7 @@ Transform:
   m_GameObject: {fileID: 1418402599928777768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.22231, y: 0.746, z: -5.1037498}
+  m_LocalPosition: {x: 0, y: 1.134, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1163,7 +1163,6 @@ MonoBehaviour:
   InScriptDrivenPause: 0
   FeedbacksList:
   - rid: 6863434231624761634
-  - rid: 6863434231624761635
   - rid: 6863434231624761636
   - rid: 6863434231624761637
   - rid: 6863434231624761638
@@ -1362,7 +1361,7 @@ MonoBehaviour:
           ButtonText: 
         Owner: {fileID: 2089605017267537034}
         DebugActive: 0
-        AnimateScaleTarget: {fileID: 0}
+        AnimateScaleTarget: {fileID: 629783981564199794}
         DeclaredDuration: 0.2
         DampingX: 0.4
         FrequencyX: 5
@@ -1375,160 +1374,6 @@ MonoBehaviour:
         MoveToScaleMax: {x: 2, y: 2, z: 2}
         BumpScaleMin: {x: 10, y: 10, z: 10}
         BumpScaleMax: {x: 10, y: 10, z: 10}
-    - rid: 6863434231624761635
-      type: {class: MMF_ShaderController, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
-      data:
-        Active: 1
-        UniqueID: -168196152
-        Label: ShaderController
-        OriginalLabel: ShaderController
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          PlayCount: 20
-          LimitPlayCount: 0
-          MaxPlayCount: 3
-          SetPlayCountToZeroOnReset: 0
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        AutomaticShakerSetupButton:
-          ButtonText: 
-        Owner: {fileID: 2089605017267537034}
-        DebugActive: 0
-        Mode: 0
-        TargetShaderController: {fileID: 0}
-        TargetShaderControllerList:
-        - {fileID: 0}
-        - {fileID: 0}
-        RevertToInitialValueAfterEnd: 0
-        GetInitialValueOnOneTime: 0
-        OneTimeDuration: 0.2
-        OneTimeAmplitude: 10
-        OneTimeRemapMin: 0
-        OneTimeRemapMax: 1
-        OneTimeCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        ToDestinationValue: 1
-        ToDestinationDuration: 1
-        ToDestinationColor: {r: 1, g: 0, b: 0, a: 1}
-        ToDestinationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
     - rid: 6863434231624761636
       type: {class: MMF_FreezeFrame, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
@@ -1894,11 +1739,9 @@ MonoBehaviour:
         Owner: {fileID: 2089605017267537034}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -2257,7 +2100,7 @@ Transform:
   m_GameObject: {fileID: 2146084096820428640}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.22231, y: 0.746, z: -5.1037498}
+  m_LocalPosition: {x: 0, y: 1.134, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2566,7 +2409,7 @@ MonoBehaviour:
           ButtonText: 
         Owner: {fileID: 5957921044178243349}
         DebugActive: 0
-        AnimateScaleTarget: {fileID: 0}
+        AnimateScaleTarget: {fileID: 629783981564199794}
         DeclaredDuration: 0.2
         DampingX: 0.4
         FrequencyX: 5
@@ -3020,7 +2863,7 @@ MonoBehaviour:
           DissipationMode: 2
           DissipationDistance: 100
           PropagationSpeed: 343
-        Velocity: {x: 1, y: 1, z: 1}
+        Velocity: {x: 2, y: 2, z: 2}
         ClearImpulseOnStop: 0
         DrawGizmos: 0
     - rid: 6863434827262066818
@@ -3098,11 +2941,9 @@ MonoBehaviour:
         Owner: {fileID: 5957921044178243349}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -3110,8 +2951,8 @@ MonoBehaviour:
         SoundDataSO: {fileID: 0}
         MinVolume: 1
         MaxVolume: 1
-        MinPitch: 1
-        MaxPitch: 1
+        MinPitch: 0.8
+        MaxPitch: 0.8
         MmSoundManagerTrack: 0
         ID: 0
         AudioGroup: {fileID: 0}
@@ -4345,7 +4186,7 @@ Transform:
   m_GameObject: {fileID: 4845047491806782884}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.22231, y: 0.746, z: -5.1037498}
+  m_LocalPosition: {x: 0, y: 1.134, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4654,7 +4495,7 @@ MonoBehaviour:
           ButtonText: 
         Owner: {fileID: 4281818208074561397}
         DebugActive: 0
-        AnimateScaleTarget: {fileID: 0}
+        AnimateScaleTarget: {fileID: 629783981564199794}
         DeclaredDuration: 0.2
         DampingX: 0.4
         FrequencyX: 5
@@ -5108,7 +4949,7 @@ MonoBehaviour:
           DissipationMode: 2
           DissipationDistance: 100
           PropagationSpeed: 343
-        Velocity: {x: 1, y: 1, z: 1}
+        Velocity: {x: 1.5, y: 1.5, z: 1.5}
         ClearImpulseOnStop: 0
         DrawGizmos: 0
     - rid: 6863434827262066818
@@ -5186,11 +5027,9 @@ MonoBehaviour:
         Owner: {fileID: 4281818208074561397}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -5198,8 +5037,8 @@ MonoBehaviour:
         SoundDataSO: {fileID: 0}
         MinVolume: 1
         MaxVolume: 1
-        MinPitch: 1
-        MaxPitch: 1
+        MinPitch: 0.9
+        MaxPitch: 0.9
         MmSoundManagerTrack: 0
         ID: 0
         AudioGroup: {fileID: 0}

@@ -99,6 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2139140705915334969}
   - component: {fileID: 6593434145917610034}
+  - component: {fileID: -9220118744533188862}
   m_Layer: 0
   m_Name: Part3_Tree04
   m_TagString: Untagged
@@ -149,6 +150,48 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers: []
   m_Enabled: 1
+--- !u!114 &-9220118744533188862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8303547515496109604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SeeThroughObject
+  _targetObject: {fileID: 0}
+  _heightOffset: 2
+  _transitionDuration: 0.8
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _cutHeightProperty: _CutHeight
+  _baseGlancingAngleCut: _BaseGlancingAngleCut
+  _ditherProperty: _Dither
 --- !u!1 &9080562194875187942
 GameObject:
   m_ObjectHideFlags: 0
