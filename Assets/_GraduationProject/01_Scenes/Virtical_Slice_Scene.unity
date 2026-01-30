@@ -18419,10 +18419,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6004533190032841246, guid: 81ee1fd46bd585547bfb357d3c9741b1, type: 3}
-      insertIndex: 6
+      insertIndex: -1
       addedObject: {fileID: 1527889218}
     - targetCorrespondingSourceObject: {fileID: 6004533190032841246, guid: 81ee1fd46bd585547bfb357d3c9741b1, type: 3}
-      insertIndex: 7
+      insertIndex: -1
       addedObject: {fileID: 934998316}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2887095622598985964, guid: 81ee1fd46bd585547bfb357d3c9741b1, type: 3}
@@ -20475,6 +20475,121 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 89f770807741c5946acc4083b37434da, type: 3}
   m_PrefabInstance: {fileID: 44355944}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1863871527
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1863871529}
+  - component: {fileID: 1863871528}
+  m_Layer: 0
+  m_Name: DataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1863871528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863871527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925c7a87161676940a4f3e070ba452d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  _defaultPlayerDataSO: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
+  CurrentPlayer:
+    Money: 0
+    CurrentHealth: 100
+    MaxHealth: 100
+    CurrentStamina: 100
+    MaxStamina: 100
+    AttackDamageMultiplier: 0
+    AttackRegainRate: 0
+    PlusNormalAttackSpeedMultiplier: 0
+    MaxNormalAttackSpeedMultiplier: 0
+    CurrentSpecialAttackId: 
+    ChargeStamina: 0
+    MaxChargeTime: 0
+    CounterAngle: 0
+    NormalAttackConfigList: []
+    NormalCounterAttackConfig:
+      AttackType: 0
+      AttackStamina: 0
+      AttackRadius: {x: 0, y: 0, z: 0}
+      AttackDamage: 0
+      AttackMoveConfig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+      KnockbackCofig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+    HeavyCounterAttackConfigList: []
+    DodgeConfig:
+      AnimationStateName: 
+      Type: 0
+      StaminaAmount: 0
+      isInivicible: 0
+      MoveConfig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+    StaminaRegenPerSecond: 5
+    CurrentPotion: 3
+    MaxPotion: 3
+    PotionHealAmount: 0
+    KnockDownDuration: 0
+    MoveSpeed: 0
+    RotateSpeed: 0
+    ChargeMoveSpeed: 0
+    ChargeRotateSpeed: 0
+    x: 0
+    y: 0
+    z: 0
+    AcquiredAbilityIds: []
+  _abilityDatabase: {fileID: 11400000, guid: ae3062d139dd5154aa6ab152f9d3a1b7, type: 2}
+--- !u!4 &1863871529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863871527}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.72551, y: 15.25535, z: -11.53592}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1870719865
 GameObject:
   m_ObjectHideFlags: 0
@@ -24600,3 +24715,4 @@ SceneRoots:
   - {fileID: 1133729665}
   - {fileID: 2066621079}
   - {fileID: 798756167}
+  - {fileID: 1863871529}

@@ -98,4 +98,64 @@ public class PlayerData
         
         AcquiredAbilityIds = new List<string>();
     }
+
+    /// <summary>
+    /// PlayerDataSO의 데이터로 초기화합니다.
+    /// </summary>
+    public void InitializeFromSO(PlayerDataSO so)
+    {
+        if (so == null)
+        {
+            return;
+        }
+
+        // Basic & Stats
+        MaxHealth = so.MaxHealth;
+        CurrentHealth = MaxHealth;
+        MaxStamina = so.MaxStamina;
+        CurrentStamina = MaxStamina;
+        
+        // Items
+        MaxPotion = so.MaxPotion;
+        CurrentPotion = MaxPotion;
+        PotionHealAmount = so.PotionHealAmount;
+
+        // Stamina
+        StaminaRegenPerSecond = so.StaminaRegenPerSecond;
+
+        // Combat Stats
+        // SO에 없는 런타임 전용 스탯은 0으로 초기화
+        AttackDamageMultiplier = 0f;
+        AttackRegainRate = 0f;
+        PlusNormalAttackSpeedMultiplier = 0f;
+        MaxNormalAttackSpeedMultiplier = so.MaxNormalAttackSpeedMultiplier;
+        CurrentSpecialAttackId = "";
+
+        // Combat Config
+        ChargeStamina = so.ChargeStamina;
+        MaxChargeTime = so.MaxChargeTime;
+        CounterAngle = so.CounterAngle;
+        KnockDownDuration = so.KnockDownDuration;
+
+        // Movement
+        MoveSpeed = so.MoveSpeed;
+        RotateSpeed = so.RotateSpeed;
+        ChargeMoveSpeed = so.ChargeMoveSpeed;
+        ChargeRotateSpeed = so.ChargeRotateSpeed;
+
+        // Lists & Complex Types (Deep Copy)
+        NormalAttackConfigList = new List<PlayerAttackConfig>(so.NormalAttackConfigList);
+        NormalCounterAttackConfig = so.NormalCounterAttackConfig;
+        HeavyCounterAttackConfigList = new List<PlayerChargeConfig>(so.HeavyCounterAttackConfigList);
+
+        DodgeConfig = new DodgeData();
+        if (so.DodgeConfig != null)
+        {
+            DodgeConfig.AnimationStateName = so.DodgeConfig.AnimationStateName;
+            DodgeConfig.Type = so.DodgeConfig.Type;
+            DodgeConfig.StaminaAmount = so.DodgeConfig.StaminaAmount;
+            DodgeConfig.isInivicible = so.DodgeConfig.isInivicible;
+            DodgeConfig.MoveConfig = so.DodgeConfig.MoveConfig;
+        }
+    }
 }

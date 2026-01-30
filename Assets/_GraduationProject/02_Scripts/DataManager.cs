@@ -6,7 +6,8 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
 
-    public PlayerData currentPlayer = new PlayerData();
+    [SerializeField] private PlayerDataSO _defaultPlayerDataSO;
+    public PlayerData CurrentPlayer = new PlayerData();
     
     [Header("Game Data Library")]
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
@@ -22,8 +23,15 @@ public class DataManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        LoadGame();
     }
-    
+
+    private void OnDestroy()
+    {
+        SaveGame();
+    }
+
     /// <summary>
     /// ID로 능력 스크립터블 오브젝트 찾기
     /// </summary>
@@ -50,7 +58,7 @@ public class DataManager : MonoBehaviour
         // 실제 게임 월드의 데이터를 currentPlayer 객체에 반영
         UpdatePlayerDataFromGame();
 
-        string json = JsonUtility.ToJson(currentPlayer, true);
+        string json = JsonUtility.ToJson(CurrentPlayer, true);
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
         File.WriteAllText(filePath, json);
 
@@ -64,13 +72,13 @@ public class DataManager : MonoBehaviour
         if (File.Exists(filePath))
         {
             string json = File.ReadAllText(filePath);
-            currentPlayer = JsonUtility.FromJson<PlayerData>(json);
+            CurrentPlayer = JsonUtility.FromJson<PlayerData>(json);
             Debug.Log("로드 성공!");
         }
         else
         {
             Debug.Log("저장된 파일이 없어 새로운 데이터를 생성합니다.");
-            currentPlayer = new PlayerData();
+            CurrentPlayer.InitializeFromSO(_defaultPlayerDataSO);
         }
     }
 
@@ -81,9 +89,9 @@ public class DataManager : MonoBehaviour
         if (player == null) return;
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
-        currentPlayer.x = player.transform.position.x;
-        currentPlayer.y = player.transform.position.y;
-        currentPlayer.z = player.transform.position.z;
+        CurrentPlayer.x = player.transform.position.x;
+        CurrentPlayer.y = player.transform.position.y;
+        CurrentPlayer.z = player.transform.position.z;
 
         // Health, Money, Potion, Stamina, Combat 등은 RuntimeData를 직접 참조하므로 별도 복사 불필요
         
@@ -91,12 +99,12 @@ public class DataManager : MonoBehaviour
         var abilityComp = player.GetComponent<PlayerAbility>();
         if (abilityComp)
         {
-            currentPlayer.AcquiredAbilityIds.Clear();
+            CurrentPlayer.AcquiredAbilityIds.Clear();
             foreach (var ability in abilityComp.ActiveAbilities)
             {
                 if (!string.IsNullOrEmpty(ability.Id))
                 {
-                    currentPlayer.AcquiredAbilityIds.Add(ability.Id);
+                    CurrentPlayer.AcquiredAbilityIds.Add(ability.Id);
                 }
             }
         }

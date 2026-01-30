@@ -6,6 +6,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 {
     [Header("References")]
     private PlayerEvents _events;
+    private PlayerData _runtimeData;
+
     [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
 
@@ -42,6 +44,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
     private void InitializeData(PlayerData data)
     {
+        _runtimeData = data;
+     
         // 저장된 능력이 있다면 불러오기
         if (data != null && data.AcquiredAbilityIds != null)
         {
