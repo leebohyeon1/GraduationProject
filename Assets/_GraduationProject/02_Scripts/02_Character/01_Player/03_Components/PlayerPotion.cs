@@ -20,10 +20,21 @@ public class PlayerPotion : MonoBehaviour
     {
         _events = player.Events;
 
-        _maxPotion = player.Data.MaxPotion;
-        ReloadPotion();
+        if (player.RuntimeData != null)
+        {
+            _maxPotion = player.RuntimeData.maxPotion;
+            _currentPotion = player.RuntimeData.currentPotion;
+        }
+        else
+        {
+            _maxPotion = player.Data.MaxPotion;
+            ReloadPotion();
+        }
 
         _potionHealAmount = player.Data.PotionHealAmount;
+        
+        // UI 업데이트를 위해 이벤트 호출
+        OnPotionChange?.Invoke(_currentPotion);
     }
 
     /// <summary>

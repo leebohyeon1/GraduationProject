@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
+    public PlayerData RuntimeData { get; private set; }
 
     private async void Start()
     {        
@@ -86,6 +87,23 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private async Task InitializeReferences()
     {
+        // DataManager에서 런타임 데이터 가져오기
+        if (DataManager.Instance != null)
+        {
+            RuntimeData = DataManager.Instance.currentPlayer;
+            
+            // 저장된 위치로 이동 (0,0,0이 아닐 경우에만 - 필요 시 조건 변경)
+            if (RuntimeData.x != 0 || RuntimeData.y != 0 || RuntimeData.z != 0)
+            {
+                transform.position = new Vector3(RuntimeData.x, RuntimeData.y, RuntimeData.z);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("DataManager Instance is null. Creating default RuntimeData.");
+            RuntimeData = new PlayerData();
+        }
+
         // 카메라 초기화
         _camera = Camera.main;
 

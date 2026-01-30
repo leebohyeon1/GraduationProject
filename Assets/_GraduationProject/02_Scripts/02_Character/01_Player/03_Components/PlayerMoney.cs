@@ -17,7 +17,14 @@ public class PlayerMoney : MonoBehaviour
     {
         _events = player.Events;
 
-        _currentMoney = 0;
+        if (player.RuntimeData != null)
+        {
+            _currentMoney = player.RuntimeData.gold;
+        }
+        else
+        {
+            _currentMoney = 0;
+        }
     }
 
     /// <summary>

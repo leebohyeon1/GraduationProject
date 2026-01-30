@@ -54,9 +54,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _events = player.Events;
 
-        // 체력 초기화
-        _maxHealth = player.Data.MaxHealth;
-        _currentHealth = _maxHealth;
+        // 체력 초기화 (RuntimeData 사용)
+        if (player.RuntimeData != null)
+        {
+            _maxHealth = player.RuntimeData.maxHealth;
+            _currentHealth = player.RuntimeData.currentHealth;
+        }
+        else
+        {
+            _maxHealth = player.Data.MaxHealth;
+            _currentHealth = _maxHealth;
+        }
 
         // 경직도 초기화
         _currentStiffness = 0;
