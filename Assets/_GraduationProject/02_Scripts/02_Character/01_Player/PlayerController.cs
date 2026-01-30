@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogWarning("DataManager Instance is null. Creating default RuntimeData.");
             RuntimeData = new PlayerData();
+            RuntimeData.InitializeFromSO(Data);
         }
 
         // 카메라 초기화

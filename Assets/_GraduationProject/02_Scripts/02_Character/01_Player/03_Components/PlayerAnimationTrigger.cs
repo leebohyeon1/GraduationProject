@@ -99,6 +99,15 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner.Events.TriggerAttackFinished();
     }
+
+    /// <summary>
+    /// 다음 전투 상태로 전환
+    /// </summary>
+    public void ChangeNextCombatState()
+    {
+        p_owner.Events.TriggerChangeNextCombatState();
+    }
+
     #endregion
 
     //==========================================================================================================================
