@@ -103,6 +103,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             return;
         }
 
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+
         if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerNormalAttackState>();
@@ -122,7 +127,10 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
         if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
@@ -143,7 +151,10 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
         if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerNormalCounterState>();
@@ -165,8 +176,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-
-        if(p_canChangeCombatState)
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+        if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
         }

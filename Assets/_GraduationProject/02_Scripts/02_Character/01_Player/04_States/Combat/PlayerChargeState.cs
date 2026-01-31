@@ -43,6 +43,12 @@ public class PlayerChargeState : PlayerBaseState
 
         // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Combat.ChargeStamina * Time.deltaTime);
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            OnChargeCancel();
+            return;
+        }
+
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
     }
 
@@ -190,7 +196,7 @@ public class PlayerChargeState : PlayerBaseState
         base.OnDodge();
 
         // Clash 기술이 있으면 차지 대시 가능
-        if (p_owner.Ability.HasAbility("Clash"))
+        if (p_owner.Stamina.CheckStamina() && p_owner.Ability.HasAbility("Clash"))
         {
             ClashSO clashSO = p_owner.Ability.GetAbility("Clash") as ClashSO;
 
