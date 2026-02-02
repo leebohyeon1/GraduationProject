@@ -244,10 +244,4 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.pink;
-
-        Gizmos.DrawWireCube(transform.position + transform.forward * (Data.NormalAttackConfigList[0].AttackRadius.z / 2), Data.NormalAttackConfigList[0].AttackRadius);
-    }
 }
