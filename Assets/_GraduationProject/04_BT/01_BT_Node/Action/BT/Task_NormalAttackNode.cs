@@ -31,12 +31,6 @@ public class Task_NormalAttackNode : Node
             Debug.LogError($"[Task_NormalAttackNode] '{attackKey}' 키를 블랙보드에서 찾을 수 없거나 데이터 타입이 맞지 않습니다.");
             return;
         }
-        // if (!brain.IsSkillReady(attackKey, _data.Cooltime))
-        // {
-        //     Debug.LogWarning("Attack on Cooldown: " + attackKey);
-        //     _isCooldownDenied = true;
-        //     return;
-        // }
         if (runner._animationBridge.IsAttacking)
         {
             Debug.LogWarning("attack act : " + this.name);
@@ -49,7 +43,6 @@ public class Task_NormalAttackNode : Node
             return;
         }
 
-        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}'{_isCooldownDenied} 공격을 시작합니다.");
         Handler.ResetAllFlags();
         // [변경] 블랙보드 초기화 (공격 시작 시 '명중 안 함'으로 설정)
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
@@ -114,8 +107,8 @@ public class Task_NormalAttackNode : Node
         }
 
         // 버퍼 시간이 지났는데도 태그를 못 찾았다면 그때서야 FAILURE
-        Debug.LogWarning($"[Task_NormalAttackNode] {runner.name} 태그 인식 실패 (대기시간 초과): {_data.AttackName}");
-        return NodeState.FAILURE;
+        
+         return NodeState.FAILURE;
     }
 
         // 4. 애니메이션 태그 및 상태 체크
@@ -142,7 +135,6 @@ public class Task_NormalAttackNode : Node
 
         if (Handler.IsActionSO)
         {
-                        Debug.Log("SO OnEnter called in attack ");
             // 현재 재생 중인 애니메이션이 내 공격이 맞는지 재확인
             if (stateInfo.IsTag(_data.AttackName))
             {
@@ -223,7 +215,7 @@ public class Task_NormalAttackNode : Node
         runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
-        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다.");
+        // Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다.");
         for (int i = 0; i < SO.Length; i++)
         {
             if (SO[i] != null)
