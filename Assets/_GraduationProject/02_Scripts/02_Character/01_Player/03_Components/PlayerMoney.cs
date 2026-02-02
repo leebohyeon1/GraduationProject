@@ -53,7 +53,7 @@ public class PlayerMoney : MonoBehaviour
     /// 돈 획득 함수
     /// </summary>
     /// <param name="amount">획득량</param>
-    public void GetMoney(int amount)
+    public void GiveMoney(int amount)
     {
         if (_data == null) return;
 

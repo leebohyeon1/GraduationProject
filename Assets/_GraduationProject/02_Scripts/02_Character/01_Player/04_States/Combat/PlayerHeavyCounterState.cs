@@ -161,4 +161,14 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         }
     }
     #endregion
+
+    #region Input
+    /// <summary>
+    /// 일반 상쇄 입력 처리
+    /// </summary>
+    protected override void OnNormalCounter()
+    {
+        return;
+    }
+    #endregion
 }

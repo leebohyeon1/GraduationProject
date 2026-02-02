@@ -22,23 +22,19 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
     [Header("Events")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
 
-
     public void Initialize(PlayerController player)
-    { 
-        _playerController = player; 
+    {
+        _playerController = player;
         _abilitySelected.Subscribe(this);
+
+        // 초기화 시 UI 상태 갱신
+        UpdateUIState();
     }
 
     private void OnEnable()
     {
-        if(CheckCondition())
-        {
-            _skillToggleButton.interactable = true;
-        }
-        else
-        {
-            _skillToggleButton.interactable = false;
-        }
+        // 켜질 때 UI 상태 갱신
+        UpdateUIState();
     }
 
     private void OnDestroy()
@@ -52,51 +48,63 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
     /// <param name="ability">플레이어가 배운 스킬</param>
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
-        if (CheckCondition())
-        {
-            _skillToggleButton.interactable = true;
-        }
-        else
-        {
-            _skillToggleButton.interactable = false;
-        }
+        // 이벤트 발생 시 UI 상태 갱신
+        UpdateUIState();
     }
 
     /// <summary>
-    /// 스킬 학습
+    /// UI 상태 (토글 체크 여부, 상호작용 여부) 통합 관리
     /// </summary>
-    public void AcquireSkill()
+    private void UpdateUIState()
     {
-        if(_isLearned)
+        if (_playerController == null)
         {
             return;
         }
 
-        foreach (var item in _needAbilities)
-        {
-            _playerController.Ability.AddAbility(item);
-        }
+        // 이미 배웠는지 확인
+        bool alreadyHasSkill = HasSkill();
 
-        _abilitySelected.Publish(_learnAbilities[0]);
-        _isLearned = true;
-        _skillToggleButton.interactable = false;
+        // 배웠다면 토글을 켜진 상태로 변경 (이벤트 트리거 방지를 위해 SetIsOnWithoutNotify 사용 권장)
+        _skillToggleButton.SetIsOnWithoutNotify(alreadyHasSkill);
+
+        if (alreadyHasSkill)
+        {
+            _isLearned = true;
+            _skillToggleButton.interactable = false; // 이미 배웠으므로 클릭 불가
+        }
+        else
+        {
+            _isLearned = false;
+            // 배우지 않았다면 구매 조건(돈, 선행 스킬) 체크하여 활성화 여부 결정
+            _skillToggleButton.interactable = CheckPurchaseCondition();
+        }
     }
 
     /// <summary>
-    /// 조건 체크
+    /// 스킬 보유 여부 확인
     /// </summary>
-    /// <returns>조건에 만족했는가</returns>
-    public bool CheckCondition()
+    private bool HasSkill()
     {
-        if (_isLearned)
+        for (int i = 0; i < _learnAbilities.Count; i++)
         {
-            return false;
+            if (_playerController.Ability.HasAbility(_learnAbilities[i]))
+            {
+                return true;
+            }
         }
+        return false;
+    }
 
+    /// <summary>
+    /// 구매 가능 조건 체크 (보유 여부 제외, 돈과 선행 스킬만 체크)
+    /// </summary>
+    private bool CheckPurchaseCondition()
+    {
         // 플레이어 현재 돈 체크
         if (_playerController.Money.CurrentMoney >= _price)
         {
-            // 가지고 있는 기술 체크
+            // 선행 기술 체크
             for (int i = 0; i < _needAbilities.Count; i++)
             {
                 if (!_playerController.Ability.HasAbility(_needAbilities[i]))
@@ -104,12 +112,49 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
                     return false;
                 }
             }
-
             return true;
         }
-        else
+
+        return false;
+    }
+
+    /// <summary>
+    /// 스킬 학습 (Toggle의 OnValueChanged나 Button의 OnClick에 연결)
+    /// </summary>
+    public void AcquireSkill()
+    {
+        Debug.Log("스킬 학습 시도");
+
+        // 방어 코드: 이미 배웠거나 조건 불만족 시 리턴
+        if (_isLearned || !CheckPurchaseCondition())
         {
-            return false;
+            // 강제로 토글이 켜졌다면 다시 끔 (UI 동기화)
+            if (!_isLearned)
+            {
+                _skillToggleButton.SetIsOnWithoutNotify(false);
+            }
+
+            return;
         }
+
+        // --- 실제 스킬 구매 로직 ---
+        // 돈 차감 (필요하다면 로직 추가)
+        _playerController.Money.UseMoney(_price); 
+
+        foreach (var item in _needAbilities)
+        {
+            _playerController.Ability.AddAbility(item);
+        }
+
+        // 배우는 스킬 이벤트 발생 및 등록
+        for (int i = 0; i < _learnAbilities.Count; i++)
+        {
+            _abilitySelected.Publish(_learnAbilities[i]);
+            // 만약 Publish가 자동으로 AddAbility를 안 해준다면 여기서 직접 추가
+            _playerController.Ability.AddAbility(_learnAbilities[i]);
+        }
+
+        // 상태 갱신
+        UpdateUIState();
     }
 }

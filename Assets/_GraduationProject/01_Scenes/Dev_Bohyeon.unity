@@ -2544,26 +2544,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 720928063}
-  - component: {fileID: 720928062}
+  - component: {fileID: 720928064}
   m_Layer: 0
-  m_Name: InputManager
+  m_Name: DataManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &720928062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720928061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3978082bd673cbf40be2ef722f94753d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InputManager
 --- !u!4 &720928063
 Transform:
   m_ObjectHideFlags: 0
@@ -2579,6 +2567,89 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &720928064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720928061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925c7a87161676940a4f3e070ba452d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  _defaultPlayerDataSO: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
+  CurrentPlayer:
+    Money: 0
+    CurrentHealth: 100
+    MaxHealth: 100
+    CurrentStamina: 100
+    MaxStamina: 100
+    AttackDamageMultiplier: 0
+    AttackRegainRate: -0.09
+    PlusNormalAttackSpeedMultiplier: 0
+    MaxNormalAttackSpeedMultiplier: 0
+    CurrentSpecialAttackId: 
+    ChargeStamina: 0
+    MaxChargeTime: 0
+    CounterAngle: 0
+    NormalAttackConfigList: []
+    NormalCounterAttackConfig:
+      AttackType: 0
+      AttackStamina: 0
+      AttackRadius: {x: 0, y: 0, z: 0}
+      AttackDamage: 0
+      AttackMoveConfig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+      KnockbackCofig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+    HeavyCounterAttackConfigList: []
+    DodgeConfig:
+      AnimationStateName: 
+      Type: 0
+      StaminaAmount: 0
+      isInivicible: 0
+      MoveConfig:
+        StepDistance: 0
+        StepDuration: 0
+        StepCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        StepRotateSpeed: 0
+    StaminaRegenPerSecond: 5
+    CurrentPotion: 3
+    MaxPotion: 3
+    PotionHealAmount: 0
+    KnockDownDuration: 0
+    MoveSpeed: 0
+    RotateSpeed: 0
+    ChargeMoveSpeed: 0
+    ChargeRotateSpeed: 0
+    x: 0
+    y: 0
+    z: 0
+    AcquiredAbilityIds: []
+  _abilityDatabase: {fileID: 11400000, guid: ae3062d139dd5154aa6ab152f9d3a1b7, type: 2}
 --- !u!4 &748358051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8364228339392027034, guid: 4433e2f5ebc1e5f4ca0e68528bb07dec, type: 3}
@@ -4693,6 +4764,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1411628309000092009, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.38
+      objectReference: {fileID: 0}
     - target: {fileID: 1955804810809216147, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4732,6 +4807,10 @@ PrefabInstance:
     - target: {fileID: 1955804810809216147, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5775447848678631036, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.38
       objectReference: {fileID: 0}
     - target: {fileID: 7906223804623676572, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: Target.TrackingTarget
@@ -4811,17 +4890,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 346879565659448149, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
-      propertyPath: _dataSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.05
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.8
+      value: 1.38
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4858,10 +4933,6 @@ PrefabInstance:
     - target: {fileID: 8406303703004210642, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8725834076422140633, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
-      propertyPath: _obstacleMask.m_Bits
-      value: 768
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
