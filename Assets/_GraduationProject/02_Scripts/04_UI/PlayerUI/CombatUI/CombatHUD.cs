@@ -25,7 +25,7 @@ public class CombatHUD : PlayerUIBase
         _rectTransform = GetComponent<RectTransform>();
         _mainCamera = Camera.main; // 메인 카메라 캐싱 (최적화)
 
-        p_player.Events.BattleStateChaged += OnBattleStateChanged;
+        p_player.Combat.BattleStateChaged += OnBattleStateChanged;
 
         // 시작 시 비활성화 및 초기 위치 설정
         gameObject.SetActive(false);
@@ -38,7 +38,7 @@ public class CombatHUD : PlayerUIBase
     {
         if (p_player != null)
         {
-            p_player.Events.BattleStateChaged -= OnBattleStateChanged;
+            p_player.Combat.BattleStateChaged -= OnBattleStateChanged;
         }
         base.Dispose();
     }

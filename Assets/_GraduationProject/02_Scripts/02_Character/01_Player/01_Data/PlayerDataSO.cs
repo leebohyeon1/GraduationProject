@@ -34,7 +34,6 @@ public class PlayerDataSO : ScriptableObject
     public DodgeData DodgeConfig;   // 회피 설정
 
     [Header("Combat")]
-    public float BattleOutTime = 8f; // 비전투 상태로 전환되는 시간
     public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
 
     [Header("NormalAttack Setting")]

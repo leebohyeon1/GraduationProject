@@ -114,7 +114,7 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Combat.ResetChargeLevel();
-        p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
+        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
         _shouldTransition = false;
 
@@ -143,7 +143,7 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.ClearStats();
 
-        p_owner.Events.TriggerBattleStateChanged(true);
+        p_owner.Combat.TriggerBattleStateChanged(true);
         p_owner.Events.TriggerChargeFinshed();
         p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
         p_owner.AnimationTrigger.ChargeCanceled();  // 차지 종료 피드백
