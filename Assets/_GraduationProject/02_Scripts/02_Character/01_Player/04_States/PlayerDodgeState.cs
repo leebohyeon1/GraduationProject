@@ -80,7 +80,7 @@ public class PlayerDodgeState : PlayerBaseState
         // 전투 상태일 때 구르기만 전투 상태 유지
         if (p_owner.Combat.IsBattleState)
         {
-            p_owner.Events.TriggerBattleStateChanged(true);
+            p_owner.Combat.TriggerBattleStateChanged(true);
         }
 
         p_owner.Events.TriggerDodgeFinished();
@@ -100,7 +100,7 @@ public class PlayerDodgeState : PlayerBaseState
         // 전투 상태일 때 구르기만 전투 상태 유지
         if (p_owner.Combat.IsBattleState)
         {
-            p_owner.Events.TriggerBattleStateChanged(true);
+            p_owner.Combat.TriggerBattleStateChanged(true);
         }
 
         switch(p_owner.Movement.DodgeConfig.Type)

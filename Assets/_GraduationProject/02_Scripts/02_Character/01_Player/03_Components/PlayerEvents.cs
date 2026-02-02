@@ -7,16 +7,6 @@ using UnityEngine;
 public class PlayerEvents
 {
     #region EventHandler
-    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
-
-    /// <summary>
-    /// 전투 상태 변경 이벤트를 발생시킵니다.
-    /// </summary>
-    public void TriggerBattleStateChanged(bool isBattleState)
-    {
-        BattleStateChaged?.Invoke(isBattleState);
-    }
-
 
     //==========================================================================================================================
     // Dodge ===================================================================================================================

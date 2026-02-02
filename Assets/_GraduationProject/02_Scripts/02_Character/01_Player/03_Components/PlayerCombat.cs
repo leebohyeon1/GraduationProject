@@ -1,8 +1,10 @@
 using GSPAWN;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 
 /// <summary>
@@ -67,6 +69,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [SerializeField] private bool _isBattleState;    // 전투 중인지 여부
     public bool IsBattleState => _isBattleState; // 전투 상태 여부
 
+    private Coroutine _battleStateStopCoroutine; // 전투 상태 종료 코루틴
+    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
+
 
     /// <summary>
     /// 초기화 함수
@@ -76,7 +81,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _runtimeData = player.RuntimeData;
         _events = player.Events;
 
-        _events.BattleStateChaged += OnBattleStateChaged;
         _events.CounterWindowStarted += OnCounterWindowStarted;
         _events.CounterWindowFinished += OnCounterWindowFinished;
 
@@ -100,7 +104,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void Dispose()
     {
-        _events.BattleStateChaged -= OnBattleStateChaged;
         _events.CounterWindowStarted -= OnCounterWindowStarted;
         _events.CounterWindowFinished -= OnCounterWindowFinished;
 
@@ -139,13 +142,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     //==========================================================================================================================
 
     #region BattleState
-    /// <summary>
-    /// 마지막 전투 시간을 현재 시간으로 설정합니다.
-    /// </summary>
-    public void SetupBattleTime()
-    {
-        _lastBattleTime = Time.time;
-    }
+
     /// <summary>
     /// 전투 상태를 변경합니다.
     /// </summary>
@@ -154,6 +151,34 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _isBattleState = isBattleState;
     }
+
+    /// <summary>
+    /// 전투 상태 변경 이벤트를 발생시킵니다.
+    /// </summary>
+    public void TriggerBattleStateChanged(bool isBattleState)
+    {
+        if(isBattleState)
+        {
+            StopCoroutine(BattleStateStopCoroutine());
+            _battleStateStopCoroutine = StartCoroutine(BattleStateStopCoroutine());
+        }
+
+        SetBattleState(isBattleState);
+        BattleStateChaged?.Invoke(isBattleState);
+    }
+
+    /// <summary>
+    /// 전투 상태 종료 코루틴
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator BattleStateStopCoroutine()
+    {
+        yield return new WaitForSeconds(8f);
+        
+        TriggerBattleStateChanged(false);
+        _battleStateStopCoroutine = null;
+    }
+
     #endregion
 
 
@@ -450,20 +475,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private void OnCounterWindowFinished()
     {
         SetCounterable(false);
-    }
-
-    /// <summary>
-    /// 전투 상태 변경
-    /// </summary>
-    /// <param name="isBattleState">전투 상태 여부</param>
-    private void OnBattleStateChaged(bool isBattleState)
-    {
-        if (isBattleState)
-        {
-            SetupBattleTime();
-        }
-
-        SetBattleState(isBattleState);
     }
 
     /// <summary>
