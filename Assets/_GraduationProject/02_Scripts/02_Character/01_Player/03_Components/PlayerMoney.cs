@@ -18,8 +18,6 @@ public class PlayerMoney : MonoBehaviour
     {
         _events = player.Events;
         _data = player.RuntimeData;
-
-        StartCoroutine(Asd());
     }
 
     /// <summary>
@@ -61,20 +59,5 @@ public class PlayerMoney : MonoBehaviour
 
         _data.Money += amount;
         MoneyChanged?.Invoke(_data.Money);
-    }
-
-    private IEnumerator Asd()
-    {
-        yield return new WaitForSeconds(2f);
-
-        GetMoney(10);
-
-        yield return new WaitForSeconds(1f);
-        
-        GetMoney(20);
-
-        yield return new WaitForSeconds(10f);
-
-        GetMoney(100);
     }
 }
