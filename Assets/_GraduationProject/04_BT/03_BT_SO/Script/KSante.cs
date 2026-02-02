@@ -52,9 +52,6 @@ public class KSante : EnemyUseAnything
         blackboard.SetValue(KEY_HAS_HIT, false); // [추가] 충돌 상태 초기화
         blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
         
-        // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
-        // [로그 1] 시작 데이터 (Cyan 색상)
-        Debug.Log($"<color=cyan>[Rush Start] 시작위치: {myPos} -> 플레이어위치: {playerPos} -> 1차목표: {finalDestination}</color>");
         return runner;
     }
 
@@ -139,7 +136,6 @@ public class KSante : EnemyUseAnything
         float distToPlayer = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
         if (distToPlayer <= hitRadius)
         {
-            Debug.Log("충돌 ");
             PlayerTORush(enemy);
             
             return runner; 
@@ -148,7 +144,6 @@ public class KSante : EnemyUseAnything
     // 시간이 다 되면 종료
     if (normalizedTime >= 1.0f)
     {
-        Debug.Log("[Rush] 지속 시간 종료");
         StopRush(enemy);
         return runner;
     }
@@ -158,7 +153,6 @@ public class KSante : EnemyUseAnything
 
     if (Vector3.Distance(enemy.transform.position, targetPos) < 0.1f)
     {
-        Debug.Log($"<color=green>[Rush Arrived] 목표 도착! 현재위치: {enemy.transform.position} / 목표: {targetPos}</color>");
         StopRush(enemy);
     }
 
@@ -193,7 +187,7 @@ public class KSante : EnemyUseAnything
             
             newDestination = currentPos + (pushDir * targetDist);
             
-            Debug.Log($"[KSante] 벽 감지됨! {hit.collider.name}. 거리: {distanceToWall:F2}, 목표이동거리: {targetDist:F2}");
+           
         }
         else
         {
@@ -216,7 +210,6 @@ public class KSante : EnemyUseAnything
         // (선택) 플레이어에게 충격/넉백을 주고 싶다면 여기서 플레이어 스크립트 호출
         // enemy.player.GetComponent<Rigidbody>().AddForce(pushDir * 10f, ForceMode.Impulse);
         
-        Debug.Log($"<color=yellow>[Push Start] 접촉성공! 현재위치: {currentPos} -> {hit.point} -> 2차목표(밀치기): {newDestination}</color>");
     }
     private void StopRush(Enemy enemy)
     {

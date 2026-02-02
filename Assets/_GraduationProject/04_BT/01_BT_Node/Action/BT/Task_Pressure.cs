@@ -63,7 +63,6 @@ public class Task_Pressure : Node
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log($"[Action_Exit] {runner.name} 압박 이동 노드 종료됨.");
         // runner.Movement.StopMovement();
     }
     private void RotateTowardsPlayer()
