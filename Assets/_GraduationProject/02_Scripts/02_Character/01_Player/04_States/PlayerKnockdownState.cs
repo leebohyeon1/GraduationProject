@@ -37,13 +37,6 @@ public class PlayerKnockdownState : PlayerBaseState
         }
     }
 
-    public override void OnExit()
-    {
-        DOTween.Kill(this);
-        p_animator.SetBool("IsHit", false);
-        p_owner.Events.TriggerBattleStateChanged(true);
-    }
-
     #region Setup Function
     protected override void SetupStats()
     {
@@ -51,7 +44,7 @@ public class PlayerKnockdownState : PlayerBaseState
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
         p_owner.Combat.ResetChargeLevel();                  // 차지 레벨 초기화
-        p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 유지
+        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
         
         _knockbackTimer = 0f;   // 타이머 초기화
     }
@@ -69,7 +62,15 @@ public class PlayerKnockdownState : PlayerBaseState
     {
         base.SetupStats();
 
-        p_owner.Events.TriggerBattleStateChanged(true);
+        DOTween.Kill(this);
+        p_owner.Combat.TriggerBattleStateChanged(true);
+    }
+
+    protected override void ClearAnimator()
+    {
+        base.ClearAnimator();
+
+        p_animator.SetBool("IsHit", false);
     }
     #endregion
 

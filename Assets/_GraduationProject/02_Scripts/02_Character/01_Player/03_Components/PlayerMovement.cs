@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어의 이동, 회전, 중력 등 물리적인 움직임을 담당하는 컴포넌트입니다.
@@ -60,6 +61,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public float ChargeMoveSpeed => _runtimeData != null ? _runtimeData.ChargeMoveSpeed : 0f;
     // 차지 이동 속도
     public float ChargeRoataeSpeed => _runtimeData != null ? _runtimeData.ChargeRotateSpeed : 0f;
+
+    [Header("Obstacle Detection")]
+    [SerializeField] private LayerMask _obstacleMask = -1;
 
     [Header("Drag Setting")]
     [SerializeField] private PlayerAbilityTagSO _dragSuperArmorSO; // 드래그 슈퍼 아머
@@ -350,6 +354,13 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         TweenCallback compeleteCallback = null)
     {
         float currentDistance = 0f;
+        float targetDistance = stepData.StepDistance;
+
+        // 장애물 감지: 이동 방향에 장애물이 있으면 거리를 제한
+        if (Physics.SphereCast(transform.position + _characterController.center, _characterController.radius, direction.normalized, out RaycastHit hit, targetDistance, _obstacleMask))
+        {
+            targetDistance = hit.distance;
+        }
 
         DOTween.To(
             () => currentDistance,
@@ -370,7 +381,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 currentDistance = x;
             },
-            stepData.StepDistance,
+            targetDistance,
             stepData.StepDuration)
             .SetEase(stepData.StepCurve)
             .SetId(id)
@@ -389,6 +400,13 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void Step(Vector3 direction, object id, bool useGravity = false, TweenCallback compeleteCallback = null)
     {
         float currentDistance = 0f;
+        float targetDistance = DodgeConfig.MoveConfig.StepDistance;
+
+        // 장애물 감지: 이동 방향에 장애물이 있으면 거리를 제한
+        if (Physics.SphereCast(transform.position + _characterController.center, _characterController.radius, direction.normalized, out RaycastHit hit, targetDistance, _obstacleMask))
+        {
+            targetDistance = hit.distance;
+        }
 
         DOTween.To(
             () => currentDistance,
@@ -409,7 +427,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 currentDistance = x;
             },
-            DodgeConfig.MoveConfig.StepDistance,
+            targetDistance,
             DodgeConfig.MoveConfig.StepDuration)
             .SetEase(DodgeConfig.MoveConfig.StepCurve)
             .SetId(id)
