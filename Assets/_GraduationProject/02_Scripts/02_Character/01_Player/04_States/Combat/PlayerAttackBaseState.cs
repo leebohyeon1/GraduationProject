@@ -13,6 +13,9 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     protected abstract PlayerAttackConfig p_AttackConfig { get; } // 현재 공격의 데이터
 
     protected bool p_canBufferInput => p_owner.InputHandler.CanBufferInput;
+    protected bool p_canChangeCombatState = false;
+  
+    protected float p_enterTime; // 상태에 진입한 시간
 
     public PlayerAttackBaseState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -42,6 +45,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackStarted += OnAttackStarted;
         p_owner.Events.AttackPerformed += OnAttackPerformed;
         p_owner.Events.AttackFinished += OnAttackFinished;
+        p_owner.Events.ChangeNextCombatState += OnChangeNextCombatState;
     }
 
     protected override void SetupStats()
@@ -49,11 +53,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         base.SetupStats();
 
         p_nextState = null; // 다음 상태 초기화
-
+        p_enterTime = Time.time;    // 현재 시간 기록
         p_owner.Stamina.UseStamina(p_AttackConfig.AttackStamina);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
         p_owner.Events.TriggerBattleStateChanged(true);                 // 전투 상태 On  
+        p_canChangeCombatState = false;
     }
     #endregion
 
@@ -65,6 +70,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackStarted -= OnAttackStarted;
         p_owner.Events.AttackPerformed -= OnAttackPerformed;
         p_owner.Events.AttackFinished -= OnAttackFinished;
+        p_owner.Events.ChangeNextCombatState -= OnChangeNextCombatState;
         DOTween.Kill(this);
     }
 
@@ -75,7 +81,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
         p_owner.Events.TriggerBufferInputEnded();           // 선입력 종료
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
-
+        p_canChangeCombatState = false;
         p_nextState = null;                                 // 다음 상태 null 처리
     }
     #endregion
@@ -92,10 +98,23 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             return;
         }
 
-        // 선입력 가능하면 공격 상태 변경
-        if (p_nextState == null && p_canBufferInput)
+        if (p_nextState != null)
+        {
+            return;
+        }
+
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+
+        if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerNormalAttackState>();
+        }
+        else if (p_canBufferInput)
+        {
+            p_nextState = typeof(PlayerNormalAttackState);
         }
     }
 
@@ -104,8 +123,19 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected override void OnDodge()
     {
-        // 선입력 가능하면 다음 상태 선택
-        if (p_nextState == null && p_canBufferInput)
+        if (p_nextState != null)
+        {
+            return;
+        }
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+        if (p_canChangeCombatState)
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
+        else if (p_canBufferInput)
         {
             p_nextState = typeof(PlayerDodgeState);
         }
@@ -116,9 +146,22 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected override void OnNormalCounter()
     {
-        if (p_nextState == null && p_canBufferInput)
+
+        if (p_nextState != null)
+        {
+            return;
+        }
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+        if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        }
+        else if (p_canBufferInput)
+        {
+            p_nextState = typeof(PlayerNormalCounterState);
         }
     }
 
@@ -129,9 +172,21 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     {
         base.OnChargeStart();
 
-        if (p_nextState == null && p_canBufferInput)
+        if (p_nextState != null)
+        {
+            return;
+        }
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+        if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
+        }
+        else if (p_canBufferInput)
+        {
+            p_nextState = typeof(PlayerChargeState);
         }
     }
 
@@ -159,6 +214,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackFinished()
     {
+        // 상태 전환으로 인해 애니메이션 초반이면 리턴
+        if (Time.time - p_enterTime < 0.3f)
+        {
+            return;
+        }
+
         if (p_nextState != null)
         {
             p_stateMachine.ChangeState(p_nextState);
@@ -166,6 +227,25 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         else
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
+        }
+    }
+
+    protected virtual void OnChangeNextCombatState()
+    {
+        p_canChangeCombatState = true;
+
+        if (p_nextState == null)
+        {
+            return;
+        }
+
+        bool isAttackState = typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState);
+        bool isDodgeState = p_nextState == typeof(PlayerDodgeState);
+        bool isChargeState = p_nextState == typeof(PlayerChargeState);
+        
+        if (isAttackState || isDodgeState || isChargeState)
+        {
+            p_stateMachine.ChangeState(p_nextState);
         }
     }
     #endregion

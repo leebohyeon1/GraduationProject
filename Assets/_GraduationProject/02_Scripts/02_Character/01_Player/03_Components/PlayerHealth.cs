@@ -16,14 +16,12 @@ public struct PlayerDamageContext
 public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, IDisposable
 {    
     private PlayerEvents _events; // 플레이어 이벤트
+    private PlayerData _data;     // 런타임 데이터 (직접 참조)
 
-    [Header("Health")]
-    [SerializeField] private int _maxHealth;         // 최대 체력
-    [SerializeField] private int _currentHealth;     // 현재 체력
-
+    [Header("Health Settings")]
     [SerializeField] private float _damageReductionMultiplyRate; // 데미지 감소량
 
-    public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트
+    public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트 (Previous, Current)
     public event Action OnDied; // 사망 이벤트
     public event Action<int> TakeDamged;
 
@@ -38,25 +36,30 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public event Action<int, int> OnStiffnessChanged;
 
     [Header("Properties")]
-    public int CurrentHealth => _currentHealth;
-    public int MaxHealth => _maxHealth;
+    public int CurrentHealth => _data != null ? _data.CurrentHealth : 0;
+    public int MaxHealth => _data != null ? _data.MaxHealth : 100;
     public bool IsDead => CurrentHealth <= 0; // 사망 여부
 
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
     public int StiffnessThreshold => 100; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
+    
+    public float KnockDownDuration => _data != null ? _data.KnockDownDuration : 3f;
 
 
     /// <summary>
     /// 초기화 함수
     /// </summary>
+    /// <param name="player">플레이어 컨트롤러 (초기화용)</param>
     public void Initialize(PlayerController player)
     {
+        _data = player.RuntimeData;
         _events = player.Events;
 
-        // 체력 초기화
-        _maxHealth = player.Data.MaxHealth;
-        _currentHealth = _maxHealth;
+        if (_data != null && _data.KnockDownDuration == 0)
+        {
+            _data.KnockDownDuration = player.Data.KnockDownDuration;
+        }
 
         // 경직도 초기화
         _currentStiffness = 0;
@@ -65,6 +68,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _events.AttackRegained += OnAttackRegained;
         _events.Heal += OnHeal;
 
+        // 리소스 해제 등록
         player.RegisterDisposable(this);
     }
 
@@ -143,17 +147,24 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     //==========================================================================================================================
 
     /// <summary>
-    /// 체력을 변경합니다.
+    /// 체력을 변경합니다。
     /// </summary>
     /// <param name="amount">변경량</param>
     public void ChangeHealth(int amount)
     {
-        int previousHealth = CurrentHealth;
-        _currentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
-
-        if (previousHealth != CurrentHealth)
+        if (_data == null)
         {
-            OnHealthChanged?.Invoke(previousHealth, CurrentHealth);
+            return;
+        }
+
+        int previousHealth = _data.CurrentHealth;
+        
+        // 데이터 직접 수정
+        _data.CurrentHealth = Mathf.Clamp(_data.CurrentHealth + amount, 0, _data.MaxHealth);
+
+        if (previousHealth != _data.CurrentHealth)
+        {
+            OnHealthChanged?.Invoke(previousHealth, _data.CurrentHealth);
         }
     }
 

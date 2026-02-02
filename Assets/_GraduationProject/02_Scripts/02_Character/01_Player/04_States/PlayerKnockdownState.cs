@@ -31,7 +31,7 @@ public class PlayerKnockdownState : PlayerBaseState
         p_owner.Movement?.Move(Vector3.zero, 0f, 0f);
 
         // 경직 시간이 지나면 상태 전환
-        if (_knockbackTimer >= p_owner.Data.KnockDownDuration)
+        if (_knockbackTimer >= p_owner.Health.KnockDownDuration)
         {
             p_stateMachine.ChangeState<PlayerIdleState>();
         }

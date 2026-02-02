@@ -6,11 +6,15 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 {
     [Header("References")]
     private PlayerEvents _events;
+    private PlayerData _runtimeData;
+
     [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
 
     [Header("Event")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
+
+    public IEnumerable<PlayerAbilitySO> ActiveAbilities => _abilitySet;
 
     /// <summary>
     /// 컴포넌트 초기화
@@ -22,6 +26,8 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
         _events.BeforeDamaged += OnBeforeDamaged;
         _abilitySelected.Subscribe(this);
+
+        InitializeData(player.RuntimeData);
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -36,14 +42,23 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _abilitySelected.Unsubscribe(this);
     }
 
-    /// <summary>
-    /// 기술 선택 이벤트 호출
-    /// </summary>
-    /// <param name="ability">기술</param>
-    public void OnEventTrigger(PlayerAbilitySO ability)
+    private void InitializeData(PlayerData data)
     {
-        Debug.Log("가술 둥록");
-        AddAbility(ability);
+        _runtimeData = data;
+     
+        // 저장된 능력이 있다면 불러오기
+        if (data != null && data.AcquiredAbilityIds != null)
+        {
+            foreach (string abilityId in data.AcquiredAbilityIds)
+            {
+                // DataManager를 통해 ID에 해당하는 스킬 SO를 찾아옴
+                PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);
+                if (abilitySO != null)
+                {
+                    AddAbility(abilitySO);
+                }
+            }
+        }
     }
 
     //==========================================================================================================================
@@ -222,13 +237,23 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         }
 
         return null;
-    }       
+    }
     #endregion
 
 
     //==========================================================================================================================
     // Event Handler ===========================================================================================================
     //==========================================================================================================================
+    
+    /// <summary>
+    /// 기술 선택 이벤트 호출
+    /// </summary>
+    /// <param name="ability">기술</param>
+    public void OnEventTrigger(PlayerAbilitySO ability)
+    {
+        Debug.Log("가술 둥록");
+        AddAbility(ability);
+    }
 
     /// <summary>
     /// 데미지 받기 전 이벤트 발행
@@ -239,7 +264,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         DamageData damageData = damageContext.Data;
 
         // 무적 태그가 있으면 무적
-        if (HasTag("Invicible"))
+        if (HasTag("Invincible"))
         {
             damageData.DamageAmount = 0;
             damageData.StiffnessAmount = 0;

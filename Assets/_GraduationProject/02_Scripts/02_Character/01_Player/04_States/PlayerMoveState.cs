@@ -67,7 +67,10 @@ public class PlayerMoveState : PlayerBaseState
     /// </summary>
     protected override void OnDodge()
     {
-        p_stateMachine.ChangeState<PlayerDodgeState>();
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
     }
 
     /// <summary>
@@ -76,8 +79,10 @@ public class PlayerMoveState : PlayerBaseState
     protected override void OnNormalAttack()
     {
         base.OnNormalAttack();
-
-        p_stateMachine.ChangeState<PlayerNormalAttackState>();
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalAttackState>();
+        }
     }
 
     /// <summary>
@@ -86,8 +91,10 @@ public class PlayerMoveState : PlayerBaseState
     protected override void OnNormalCounter()
     {
         base.OnNormalCounter();
-
-        p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        }
     }
 
     /// <summary>
@@ -96,8 +103,10 @@ public class PlayerMoveState : PlayerBaseState
     protected override void OnChargeStart()
     {
         base.OnChargeStart();
-
-        p_stateMachine.ChangeState<PlayerChargeState>();
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerChargeState>();
+        }
     }
     #endregion
 
