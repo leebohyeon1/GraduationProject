@@ -141,17 +141,10 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
         // 돈 차감 (필요하다면 로직 추가)
         _playerController.Money.UseMoney(_price); 
 
-        foreach (var item in _needAbilities)
-        {
-            _playerController.Ability.AddAbility(item);
-        }
-
         // 배우는 스킬 이벤트 발생 및 등록
         for (int i = 0; i < _learnAbilities.Count; i++)
         {
             _abilitySelected.Publish(_learnAbilities[i]);
-            // 만약 Publish가 자동으로 AddAbility를 안 해준다면 여기서 직접 추가
-            _playerController.Ability.AddAbility(_learnAbilities[i]);
         }
 
         // 상태 갱신

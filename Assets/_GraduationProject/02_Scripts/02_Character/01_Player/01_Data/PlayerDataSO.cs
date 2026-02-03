@@ -51,6 +51,7 @@ public class PlayerDataSO : ScriptableObject
     public StepData CounterKnockbackConfig; // 카운터 성공 시 넉백 설정
     public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList;   // 차징 카운터 공격 설정
+    public List<float> ProjectileCounterAddedVelocity;  // 투사체 카운터 시 투사체에 적용하는 추가 이동속도
 
     [Header("KnockDown")]
     public float KnockDownDuration = 10;    // 기절 지속시간

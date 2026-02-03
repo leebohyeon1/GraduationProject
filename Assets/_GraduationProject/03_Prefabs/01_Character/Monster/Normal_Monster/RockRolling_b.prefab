@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2571187880404811137}
   - component: {fileID: 4987520572583805537}
-  - component: {fileID: 8086529516977637683}
+  - component: {fileID: 4599248112621813728}
   - component: {fileID: 2395451475933796512}
   - component: {fileID: 4848088752833492482}
   - component: {fileID: 255081555373608603}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RockRolling_b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,8 +60,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!135 &8086529516977637683
-SphereCollider:
+--- !u!136 &4599248112621813728
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -78,8 +78,10 @@ SphereCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
+  serializedVersion: 2
+  m_Radius: 0.24
+  m_Height: 0.67
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2395451475933796512
 Rigidbody:

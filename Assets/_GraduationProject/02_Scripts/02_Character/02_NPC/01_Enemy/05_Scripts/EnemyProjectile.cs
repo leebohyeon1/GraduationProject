@@ -2,17 +2,20 @@ using UnityEngine;
 
 public class EnemyProjectile : MonoBehaviour
 {
-    private Vector3 moveDirection;
-    private float moveSpeed;
+    private Vector3 _moveDirection;
+    private float _moveSpeed;
     private DamageData _data;
-    private Enemy _owner;
+    public GameObject Owner { get; private set; }
 
-    public void Setup(Vector3 dir, float speed,Enemy owner, DamageData data = default)
+    public float MoveSpeed => _moveSpeed;
+    public DamageData Data => _data;
+
+    public void Setup(Vector3 dir, float speed, GameObject owner, DamageData data = default)
     {
-        moveDirection = dir;
-        moveSpeed = speed;
-        this._data = data;
-        this._owner = owner;
+        _moveDirection = dir;
+        _moveSpeed = speed;
+        _data = data;
+        Owner = owner;
         _data.AttackerTransform = this.transform;
         
         Destroy(gameObject, 5f);
@@ -20,17 +23,17 @@ public class EnemyProjectile : MonoBehaviour
 
     private void Update()
     {
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        transform.position += _moveDirection * _moveSpeed * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject == _owner.gameObject) return;
+        if(other.gameObject == Owner.gameObject) return;
         Debug.Log("충돌 감지: " + other.name);
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (other.TryGetComponent<IDamageable>(out var health))
         {
-            Debug.Log("플레이어 명중!");
-            other.GetComponent<PlayerHealth>()?.TakeDamage(_data);
+            Debug.Log("투사체 명중!");
+            health?.TakeDamage(_data);
             Destroy(gameObject); 
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Wall") )
