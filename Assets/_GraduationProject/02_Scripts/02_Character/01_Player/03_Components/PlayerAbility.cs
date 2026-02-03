@@ -251,7 +251,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="ability">기술</param>
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
-        Debug.Log("가술 둥록");
+        Debug.Log("가술 둥록: " + ability.Id);
         AddAbility(ability);
     }
 
