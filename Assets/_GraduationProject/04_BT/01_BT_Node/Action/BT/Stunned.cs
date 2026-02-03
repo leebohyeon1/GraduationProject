@@ -8,6 +8,7 @@ public class Stunned : Node
     {
         base.OnEnter();
         runner.SetState(EnemyStateController.EnemyState.Stunned);
+        runner.Shield.IsActive = false;
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
     protected override NodeState OnUpdate()
@@ -27,30 +28,17 @@ public class Stunned : Node
 
             return NodeState.RUNNING;
         }
-        // if (!Handler.IsActionFinished)
-        // {
-        //     return NodeState.RUNNING;
-        // }
-        // else
-        // {
-        //     runner.ClearStun();
-        //     Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
-        //     return NodeState.SUCCESS;
-        // }
+
     }
     public override void OnExit()
     {
         runner.ParrySystem.ClearStun();
+        runner.Shield.IsActive = true;
         Debug.Log("<color=red>--STUNNED--: OnExit Triggered</color>");
         runner.SetState(EnemyStateController.EnemyState.Idle);
         Handler.ResetAllFlags();
     }
-    public override void Abort()
-    {
-        base.Abort();
-        runner.SetState(EnemyStateController.EnemyState.Idle);
-        Handler.ResetAllFlags();
-    }
+
 
 
     public override Node Clone()

@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour
     public EnemyHealth EnemyHealth => _initializer?.GetCachedComponent<EnemyHealth>();
     public EnemySpecialAbility specialAbility => _initializer?.GetCachedComponent<EnemySpecialAbility>();
     public AiController _aiController => _initializer?.GetCachedComponent<AiController>();
+    public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
     public BillboardUI BillboardUI => GetComponentInChildren<BillboardUI>();
     public Transform LaunchPoint { get; set; }
     //내부 컴포넌트

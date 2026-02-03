@@ -17,18 +17,18 @@ public class Task_Pressure : Node
         base.OnEnter();
         ai = runner.aIPath;
         ai.enableRotation = false;
-        Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
+        // Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
     }
     protected override NodeState OnUpdate()
     {
         if(runner._animationBridge.IsAttacking)
         {
-            Debug.Log($"[{runner.name} 공격애니메.");
+            // Debug.Log($"[{runner.name} 공격애니메.");
             return NodeState.FAILURE;
         }   
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            Debug.Log($"[{runner.name} 공격스테이트.");
+            // Debug.Log($"[{runner.name} 공격스테이트.");
             return NodeState.FAILURE;
         }
         

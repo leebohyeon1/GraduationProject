@@ -45,7 +45,6 @@ public class AnimationNode : Node
         {
             enemyUseAnything?.OnUpdate(runner);
         }
-        Debug.Log("Success: " + OnSuccess);
         if(OnSuccess)
         {
             return NodeState.SUCCESS;
