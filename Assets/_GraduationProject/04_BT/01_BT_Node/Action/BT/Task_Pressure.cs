@@ -9,17 +9,14 @@ public class Task_Pressure : Node
     public float MoveSpeed = 4.0f;
     public float StoppingDist = 0.5f;
     public float RotationSpeed = 5.0f;
-    private IAstarAI aiAgent;
+    private AIPath ai;
     private Vector3? currentTargetDebug; // 디버그용 그림 그리기 변수
 
     public override void OnEnter()
     {
         base.OnEnter();
-        aiAgent = runner.GetComponent<IAstarAI>();
-        if (aiAgent == null)
-        {
-            Debug.LogWarning($"[Action_Warning] {runner.name}의 IAstarAI 컴포넌트를 찾을 수 없습니다.");
-        }
+        ai = runner.aIPath;
+        ai.enableRotation = false;
         Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
     }
     protected override NodeState OnUpdate()
@@ -63,6 +60,7 @@ public class Task_Pressure : Node
     public override void OnExit()
     {
         base.OnExit();
+        ai.enableRotation = true;
         // runner.Movement.StopMovement();
     }
     private void RotateTowardsPlayer()

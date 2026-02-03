@@ -8,7 +8,7 @@ public class EnemyMovement : MonoBehaviour
 {
     private Enemy _runner;
     AIPath aIPath;
-    public float _normalSpeed  = 2;
+    public float _normalSpeed{get; private set;}
     private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
 
     private RVOController _rvo; // RVO 컴포넌트 참조
@@ -26,7 +26,8 @@ public class EnemyMovement : MonoBehaviour
             // RVOController가 있으면 그 반지름을 사용, 없으면 기본값 0.5f
             return _rvo != null ? _rvo.radius : 0.5f;
         }
-    }
+    }   
+
 
     public void Initialize(Enemy enemy)
     {
