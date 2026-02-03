@@ -46,8 +46,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public int ChargeLevel => _chargeLevel;
 
     [Header("Counter")]
-    public PlayerAttackConfig NormalCounterAttackConfig => _runtimeData != null ? _runtimeData.NormalCounterAttackConfig : new PlayerAttackConfig();
-    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _runtimeData != null ? _runtimeData.HeavyCounterAttackConfigList : new List<PlayerChargeConfig>();
+    public PlayerAttackConfig NormalCounterAttackConfig => _runtimeData.NormalCounterAttackConfig;
+    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _runtimeData.HeavyCounterAttackConfigList;
+    public List<float> ProjectileCounterAddedVelocity => _runtimeData.ProjectileCounterAddedVelocity;
 
     [SerializeField] public float CounterAngle => _runtimeData != null ? _runtimeData.CounterAngle : 120;   // 상쇄 가능 각도
 
@@ -56,6 +57,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [SerializeField] private PlayerAbilityTagSO _counterSuperArmorTagSO; // 카운터 성공 시 슈퍼아머
     public PlayerAbilityTagSO CounterSuperArmorTagSO => _counterSuperArmorTagSO;
+
+    public event Action CheckedProjectileCounter;
 
     [Header("SpecialAttack")]
     [SerializeField] private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
@@ -120,20 +123,31 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         if (_runtimeData != null)
         {
-            if (_runtimeData.ChargeStamina == 0) _runtimeData.ChargeStamina = data.ChargeStamina;
-            if (_runtimeData.MaxChargeTime == 0) _runtimeData.MaxChargeTime = data.MaxChargeTime;
-            if (_runtimeData.CounterAngle == 0) _runtimeData.CounterAngle = data.CounterAngle;
+            if (_runtimeData.ChargeStamina == 0) { _runtimeData.ChargeStamina = data.ChargeStamina; }
+            if (_runtimeData.MaxChargeTime == 0) {_runtimeData.MaxChargeTime = data.MaxChargeTime;}
+            if (_runtimeData.CounterAngle == 0) { _runtimeData.CounterAngle = data.CounterAngle; }
 
             // Sync Configs
             if (_runtimeData.NormalAttackConfigList.Count == 0)
+            {
                 _runtimeData.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
+            }
 
             if (_runtimeData.HeavyCounterAttackConfigList.Count == 0)
+            {
                 _runtimeData.HeavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);
+            }
 
             // Check if default (assuming damage 0 is invalid/uninitialized)
             if (_runtimeData.NormalCounterAttackConfig.AttackDamage == 0)
+            {
                 _runtimeData.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
+            }
+
+            if (_runtimeData.ProjectileCounterAddedVelocity.Count == 0)
+            {
+                _runtimeData.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
+            }
         }
     }
 
@@ -195,7 +209,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// 공격의 중심 위치를 계산합니다.
     /// </summary>
     /// <returns>공격 박스의 중심 위치</returns>
-    private Vector3 GetAttackCenter(PlayerAttackConfig attackData)
+    public Vector3 GetAttackCenter(PlayerAttackConfig attackData)
     {
         return transform.position + transform.forward * (attackData.AttackRadius.z / 2);
     }
@@ -212,7 +226,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
-        Debug.Log(hitEnemies.Length);
 
         if (hitEnemies.Length > 0)
         {
@@ -430,6 +443,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         {
             return false;
         }
+    }
+
+    /// <summary>
+    /// 투사체 체크 이벤트 발행
+    /// </summary>
+    public void TriggerCheckedProjectileCounter()
+    {
+        CheckedProjectileCounter?.Invoke();
     }
     #endregion
 

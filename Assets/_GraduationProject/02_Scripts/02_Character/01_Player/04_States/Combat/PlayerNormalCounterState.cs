@@ -1,3 +1,4 @@
+using GSPAWN;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         base.SetupEvents();
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Combat.CheckedProjectileCounter += OnChecekdProjectileCounter;
     }
 
     protected override void SetupStats()
@@ -41,6 +43,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         base.ClearEvents();
 
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+        p_owner.Combat.CheckedProjectileCounter -= OnChecekdProjectileCounter;
     }
 
     protected override void ClearStats()
@@ -154,6 +157,36 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             if (collider.TryGetComponent<IParryable>(out var parryable))
             {
                 p_owner.Combat.AddCounterEnemy(parryable);
+            }
+
+          
+        }
+    }
+
+    private void OnChecekdProjectileCounter()
+    {
+        Vector3 attackCenter = p_owner.Combat.GetAttackCenter(p_AttackConfig);
+        Vector3 halfExtents = p_AttackConfig.AttackRadius / 2f;
+
+        Collider[] hitObjects = Physics.OverlapBox(attackCenter, halfExtents, p_owner.transform.rotation, p_owner.Data.AttackLayerMask);
+
+        if (hitObjects.Length > 0)
+        {
+            foreach(Collider collider in hitObjects)
+            {
+                // 투사체인 경우
+                if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
+                {
+                    Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
+
+                    DamageData damageData = projectile.Data;
+                    damageData.DamageAmount += p_AttackConfig.AttackDamage;
+
+                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
+
+                    projectile.Setup(direction, speed, p_owner.gameObject, damageData);
+
+                }
             }
         }
     }

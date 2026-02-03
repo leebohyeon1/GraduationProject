@@ -63,7 +63,7 @@ public class AttackRange : EnemyUseAnything
             
             if (projectileScript != null)
             {
-                projectileScript.Setup(dir, projectileSpeed, runner, damageData);
+                projectileScript.Setup(dir, projectileSpeed, runner.gameObject, damageData);
             }
         }
 

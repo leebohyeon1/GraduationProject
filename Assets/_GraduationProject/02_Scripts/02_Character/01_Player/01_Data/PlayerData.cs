@@ -30,6 +30,8 @@ public class PlayerData
     public PlayerAttackConfig NormalCounterAttackConfig;
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList;
 
+    public List<float> ProjectileCounterAddedVelocity;
+
     [Header("Dodge Config")]
     public DodgeData DodgeConfig;
 
@@ -147,6 +149,7 @@ public class PlayerData
         NormalAttackConfigList = new List<PlayerAttackConfig>(so.NormalAttackConfigList);
         NormalCounterAttackConfig = so.NormalCounterAttackConfig;
         HeavyCounterAttackConfigList = new List<PlayerChargeConfig>(so.HeavyCounterAttackConfigList);
+        ProjectileCounterAddedVelocity = new List<float>(so.ProjectileCounterAddedVelocity);
 
         DodgeConfig = new DodgeData();
         if (so.DodgeConfig != null)
