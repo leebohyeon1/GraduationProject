@@ -2946,8 +2946,8 @@ MonoBehaviour:
     offset: {x: 0, y: 0, z: 0}
     id: 0
     HitType: 4
-  - name: Monster_Attack_Notification_FB
-    feedback: {fileID: 3577306474255254876}
+  - name: Monster_NormalAttack_Notification_FB
+    feedback: {fileID: 5559825895044524846}
     offset: {x: 0, y: 0, z: 0}
     id: 0
     HitType: 0
@@ -4392,7 +4392,7 @@ Transform:
   - {fileID: 6294574399168961994}
   - {fileID: 8033218900827062272}
   - {fileID: 7509563829269740296}
-  - {fileID: 6438545663425831119}
+  - {fileID: 2726668244121669309}
   m_Father: {fileID: 1864534636432622886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3049647260702967911
@@ -17580,7 +17580,7 @@ Transform:
   - {fileID: 2883969985681248737}
   m_Father: {fileID: 1340120495779799821}
   m_LocalEulerAnglesHint: {x: -46.663624, y: -0.000065020395, z: -142.2749}
---- !u!1001 &5815972483435241817
+--- !u!1001 &3187177795336769323
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -17594,7 +17594,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.86
       objectReference: {fileID: 0}
     - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17630,17 +17630,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8181634728804917590, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
       propertyPath: m_Name
-      value: Monster_Attack_Notification_FB
+      value: Monster_NormalAttack_Notification_FB
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
---- !u!114 &3577306474255254876 stripped
+--- !u!4 &2726668244121669309 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+  m_PrefabInstance: {fileID: 3187177795336769323}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5559825895044524846 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6995032916030530565, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
-  m_PrefabInstance: {fileID: 5815972483435241817}
+  m_PrefabInstance: {fileID: 3187177795336769323}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -17648,8 +17653,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
---- !u!4 &6438545663425831119 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
-  m_PrefabInstance: {fileID: 5815972483435241817}
-  m_PrefabAsset: {fileID: 0}
