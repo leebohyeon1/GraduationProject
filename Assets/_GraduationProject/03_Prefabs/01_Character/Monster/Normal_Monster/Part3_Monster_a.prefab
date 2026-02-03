@@ -2723,6 +2723,8 @@ GameObject:
   - component: {fileID: 8988324276808111283}
   - component: {fileID: 343879752324978677}
   - component: {fileID: 3453354711736433746}
+  - component: {fileID: 4427833354949509476}
+  - component: {fileID: 1202605068070455818}
   m_Layer: 8
   m_Name: Part3_Monster_a
   m_TagString: Enemy
@@ -2892,7 +2894,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0dc086cc9f1520744b9be2513bea42d0, type: 2}
   - {fileID: 11400000, guid: 7b811b2cceea080488d5da69b564c94f, type: 2}
   - {fileID: 11400000, guid: 9e20ad6ff726a754ab6416a053e340bf, type: 2}
-  <inGameenemyAttackDatas>k__BackingField: []
 --- !u!114 &793417534168409537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,7 +3024,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
-  AnimationBasedMovement: 0
 --- !u!114 &5123924331001142085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3216,6 +3216,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyGizmoDrawer
   _editorPreviewData: {fileID: 0}
+--- !u!114 &4427833354949509476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59100c7745107ce4e87880af27c7b4c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  wallBuffer: 0.5
+  AnimationBasedMovement: 1
+--- !u!114 &1202605068070455818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.SimpleSmoothModifier
+  version: 1073741824
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.5
+  uniformLength: 1
+  maxSegmentLength: 4
+  bezierTangentLength: 0.4
+  offset: 0.2
+  factor: 0.1
 --- !u!1 &1766048112759876093
 GameObject:
   m_ObjectHideFlags: 0

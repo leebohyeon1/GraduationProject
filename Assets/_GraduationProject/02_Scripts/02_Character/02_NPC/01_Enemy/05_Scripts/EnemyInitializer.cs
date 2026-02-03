@@ -276,11 +276,23 @@ public class EnemyInitializer : MonoBehaviour
         }
         aiController.Initialize(_enemy);
 
-        var movement = new EnemyMovement(_enemy);
+        var movement = GetComponent<EnemyMovement>();
+        if (movement == null)
+        {
+            Debug.LogError("EnemyMovement component is missing.");
+            return;
+        }
+        movement.Initialize(_enemy);
         _enemy.Movement = movement;
 
         movement.StopMovement();
-
+        var shield = GetComponent<EnemyShield>();
+        if (shield == null)
+        {
+            Debug.LogError("EnemyShield component is missing.");
+            return;
+        }
+        
         MarkInitialized("AI");
         Log("Phase 4 complete");
     }

@@ -19,4 +19,5 @@ public class EnemyAttackData : ScriptableObject {
     [Header("Fan Settings")]
     [Range(0, 360)]
     public float fanAngle = 90f;
+    public float sizeY = 1.0f;
 }

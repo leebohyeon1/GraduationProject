@@ -11,7 +11,7 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private OnHealingSO _onHealingEvent;
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
-    [HideInInspector][field: SerializeField] public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
+    [HideInInspector]public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
 
     public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
     {
