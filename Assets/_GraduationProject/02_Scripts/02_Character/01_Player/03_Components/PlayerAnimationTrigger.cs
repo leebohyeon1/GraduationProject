@@ -141,6 +141,14 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         HeavyCounterFeedbacks[p_owner.Combat.ChargeLevel]?.Invoke();
     }
+
+    /// <summary>
+    /// 투사체 상쇄 체크
+    /// </summary>
+    public void CheckProjectileCounter()
+    {
+        p_owner.Combat.TriggerCheckedProjectileCounter();
+    }
     #endregion
 
     //==========================================================================================================================
