@@ -159,7 +159,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         if(isBattleState)
         {
-            StopCoroutine(BattleStateStopCoroutine());
+            if(_battleStateStopCoroutine != null)
+            {
+                StopCoroutine(_battleStateStopCoroutine);
+            }
+            
             _battleStateStopCoroutine = StartCoroutine(BattleStateStopCoroutine());
         }
 
@@ -208,6 +212,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         Vector3 halfExtents = attackData.AttackRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+        Debug.Log(hitEnemies.Length);
 
         if (hitEnemies.Length > 0)
         {

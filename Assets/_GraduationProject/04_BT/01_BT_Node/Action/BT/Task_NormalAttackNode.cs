@@ -3,23 +3,47 @@ using BehaviorTree;
 using System.Collections.Generic;
 using System.Collections;
 using Pathfinding;
-using UnityEditorInternal;
 
 public class Task_NormalAttackNode : Node
 {
     [Header("Attack Properties")]
+    [Tooltip("블랙보드에서 불러올 EnemyAttackData의 키 이름")]
     public string attackKey;
+
+    [Tooltip("애니메이션 상태 이름 (태그가 없을 때 사용됨, 비워두면 자동 감지)")]
+    public string animationStateName = "";
+
+    [Tooltip("OnActionTriggered() 호출 여부 (이동공격/특수한 공격에서 사용)")]
+    public bool useActionTriggered = false;
+
+    [Tooltip("공격 성공 시 히트 윈도우를 닫지 않음")]
     public bool maintainAtk;
-    [Tooltip("공격 성공 여부를 저장할 블랙보드 키 이름")]
-    private EnemyAttackData _data;
+
+    [Tooltip("추가 공격 효과 (EnemyUseAnything 스크립터블 오브젝트)")]
     public EnemyUseAnything[] SO = null;
-    bool _isCooldownDenied = false;
+
+    [Tooltip("공격 중일 때 설정할 블랙보드 키 이름")]
     public string ExceptKey = "IsAttacking";
+
+    [Tooltip("히트 시 LoopAttack 효과 실행 여부")]
     public bool LoopAttack = false;
-    bool OtherAttackAnimationPlaying = false;
+
+    [Tooltip("공격 종료 시 항상 SUCCESS 반환 여부")]
     public bool NextBT = false;
-    private float _nodeEntryTime; 
-    private const float TRANSITION_BUFFER = 1f;
+
+    [Header("Timing Settings")]
+    [Range(0.1f, 5f)]
+    [Tooltip("애니메이션 태그 전환 대기 시간 (초)")]
+    public float transitionBuffer = 1f;
+
+    [Header("Debug Settings")]
+    [Tooltip("디버그 모드: 상세 로그 출력")]
+    public bool debugMode = false;
+
+    private EnemyAttackData _data;
+    private bool _isCooldownDenied = false;
+    private bool OtherAttackAnimationPlaying = false;
+    private float _nodeEntryTime;
     public override void OnEnter()
     {
         _nodeEntryTime = Time.time;
@@ -31,12 +55,6 @@ public class Task_NormalAttackNode : Node
             Debug.LogError($"[Task_NormalAttackNode] '{attackKey}' 키를 블랙보드에서 찾을 수 없거나 데이터 타입이 맞지 않습니다.");
             return;
         }
-        // if (!brain.IsSkillReady(attackKey, _data.Cooltime))
-        // {
-        //     Debug.LogWarning("Attack on Cooldown: " + attackKey);
-        //     _isCooldownDenied = true;
-        //     return;
-        // }
         if (runner._animationBridge.IsAttacking)
         {
             Debug.LogWarning("attack act : " + this.name);
@@ -49,7 +67,6 @@ public class Task_NormalAttackNode : Node
             return;
         }
 
-        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}'{_isCooldownDenied} 공격을 시작합니다.");
         Handler.ResetAllFlags();
         // [변경] 블랙보드 초기화 (공격 시작 시 '명중 안 함'으로 설정)
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
@@ -63,67 +80,76 @@ public class Task_NormalAttackNode : Node
             if (SO[i] != null)
             {
                 SO[i].Reset(runner);
+                SO[i].OnActionTriggered(runner);
             }
         }
     }
 
     protected override NodeState OnUpdate()
     {
-        if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
+        if (!ValidateState()) return NodeState.FAILURE;
+
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
+        float elapsedTime = Time.time - _nodeEntryTime;
+
+        bool isTagValid = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
+
+        if (!isTagValid)
         {
-            // OnEnter에서 초기화가 안 됐거나 쿨타임 중임
-            return NodeState.FAILURE;
-        }
-        if(brain.blackboard.HasKey("GoHome") && brain.blackboard.GetValue<bool>("GoHome"))
-        {
+            if (elapsedTime < transitionBuffer)
+            {
+                return NodeState.RUNNING;
+            }
             return NodeState.FAILURE;
         }
 
-        // 스턴 체크
-        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
-        {
-            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
-            return NodeState.FAILURE;
-        }
-        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.Stunned)
-        {
-            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
-            return NodeState.FAILURE;
-        }
         if (runner.animator.IsInTransition(0))
         {
-            // 전환 중 발생하는 이벤트는 찌꺼기일 확률이 높으므로 무시 및 초기화
             Handler.ResetAllFlags();
         }
 
+        HandleSOUpdates(stateInfo);
+        HandleRotation();
+        HandleHitDetection();
 
-        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
-    var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0); // 전환될 다음 상태
-    float elapsedTime = Time.time - _nodeEntryTime;
-
-    // 2. 현재 혹은 다음 상태가 내가 찾는 공격 태그인지 확인
-    bool isTagValid = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
-
-    // [핵심 로직]
-    if (!isTagValid)
-    {
-        // 아직 태그가 안 보인다면 버퍼 시간(최대 대기 시간) 동안은 RUNNING으로 기다려줍니다.
-        if (elapsedTime < TRANSITION_BUFFER)
+        if (stateInfo.IsTag(_data.AttackName))
         {
-            return NodeState.RUNNING;
+            HandleLoopAttackLogic(stateInfo);
         }
 
-        // 버퍼 시간이 지났는데도 태그를 못 찾았다면 그때서야 FAILURE
-        Debug.LogWarning($"[Task_NormalAttackNode] {runner.name} 태그 인식 실패 (대기시간 초과): {_data.AttackName}");
-        return NodeState.FAILURE;
+        return CheckActionFinished();
     }
 
-        // 4. 애니메이션 태그 및 상태 체크
-        // if (!stateInfo.IsTag(_data.AttackName) && runner.CurrentState == EnemyStateController.EnemyState.Attack)
-        // {
-        //     runner.animator.ResetTrigger(_data.AttackName);
-        //     return NodeState.FAILURE;
-        // }
+    private bool ValidateState()
+    {
+        if (_data == null || _isCooldownDenied || OtherAttackAnimationPlaying)
+        {
+            return false;
+        }
+
+        if (brain.blackboard.HasKey("GoHome") && brain.blackboard.GetValue<bool>("GoHome"))
+        {
+            return false;
+        }
+
+        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.StunnedExit)
+        {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
+            return false;
+        }
+
+        if (runner.ParrySystem.CurrentState == ParrySystem.EnemyState.Stunned)
+        {
+            Debug.LogWarning("Enemy is stunned, cannot perform attack.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void HandleSOUpdates(AnimatorStateInfo stateInfo)
+    {
         if (stateInfo.IsTag(_data.AttackName))
         {
             for (int i = 0; i < SO.Length; i++)
@@ -133,17 +159,10 @@ public class Task_NormalAttackNode : Node
                     SO[i].OnUpdate(runner);
                 }
             }
-
         }
-        // 회전 및 추적 로직
-        Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
-        Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
-        directionToPlayer.y = 0;
 
         if (Handler.IsActionSO)
         {
-                        Debug.Log("SO OnEnter called in attack ");
-            // 현재 재생 중인 애니메이션이 내 공격이 맞는지 재확인
             if (stateInfo.IsTag(_data.AttackName))
             {
                 for (int i = 0; i < SO.Length; i++)
@@ -161,58 +180,69 @@ public class Task_NormalAttackNode : Node
         {
             Handler.EndSound();
         }
-        if(!Handler.IsActive)
+    }
+
+    private void HandleRotation()
+    {
+        if (!Handler.IsActive)
         {
+            Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
+            directionToPlayer.y = 0;
             runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
-
         }
+    }
 
-        if (Handler.IsHitWindowOpen)
+    private void HandleHitDetection()
+    {
+        if (!Handler.IsHitWindowOpen) return;
+
+        Vector3 attackOrigin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
+        Collider[] hitColliders = GetHitColliders(attackOrigin);
+        brain.blackboard.SetValue(ExceptKey, true);
+
+        foreach (var col in hitColliders)
         {
-            Collider[] hitColliders = GetHitColliders(attackOrigin);
-            brain.blackboard.SetValue(ExceptKey, true);
-            
-            foreach (var col in hitColliders)
+            if (col.gameObject == runner.gameObject) continue;
+            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
-                if (col.gameObject == runner.gameObject) continue;
-                if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
+                Character.TakeDamage(_data.damageData);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+
+                if (!maintainAtk)
                 {
-                    Character.TakeDamage(_data.damageData);
-                    brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                    
-                    if (!maintainAtk)
-                    {
-                        Handler.CloseHitWindow();
-                    }
+                    Handler.CloseHitWindow();
                 }
             }
         }
-        if (stateInfo.IsTag(_data.AttackName))
+    }
+
+    private void HandleLoopAttackLogic(AnimatorStateInfo stateInfo)
+    {
+        bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
+
+        if (hasHit && LoopAttack)
         {
-            bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
-            if (hasHit & LoopAttack)
+            for (int i = 0; i < SO.Length; i++)
             {
-                for(int i = 0; i < SO.Length; i++)
+                if (SO[i] != null)
                 {
-                    if (SO[i] != null)
-                    {
-                        SO[i].UseSomeThing(runner);
-                    }
+                    SO[i].UseSomeThing(runner);
                 }
             }
         }
-        if (Handler.IsActionFinished)
-        {
-            if (NextBT)
-            {
-                return NodeState.SUCCESS;
-            }
-            bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
-            return hasHit ? NodeState.SUCCESS : NodeState.FAILURE;
+    }
 
+    private NodeState CheckActionFinished()
+    {
+        if (!Handler.IsActionFinished) return NodeState.RUNNING;
+
+        if (NextBT)
+        {
+            return NodeState.SUCCESS;
         }
 
-        return NodeState.RUNNING;
+        bool hasHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DidLastAttackHit);
+        return hasHit ? NodeState.SUCCESS : NodeState.FAILURE;
     }
     
     public override void OnExit()
@@ -223,7 +253,7 @@ public class Task_NormalAttackNode : Node
         runner.SetState(EnemyStateController.EnemyState.Idle);
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
-        Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다.");
+        // Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다.");
         for (int i = 0; i < SO.Length; i++)
         {
             if (SO[i] != null)
@@ -295,14 +325,30 @@ public class Task_NormalAttackNode : Node
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
+        node.animationStateName = this.animationStateName;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.ExceptKey = this.ExceptKey;
         node.LoopAttack = this.LoopAttack;
+        node.NextBT = this.NextBT;
+        node.transitionBuffer = this.transitionBuffer;
+        node.debugMode = this.debugMode;
+        node.useActionTriggered = this.useActionTriggered;
         // SO는 ScriptableObject라 공유되어도 되지만, 필요하다면 복제
-        // node.SO = this.SO; 
+        // node.SO = this.SO;
         return node;
     }
+    #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (string.IsNullOrEmpty(attackKey))
+        {
+            Debug.LogWarning("[Task_NormalAttackNode] AttackKey가 설정되지 않았습니다. 블랙보드에서 공격 데이터를 찾을 수 없습니다.", this);
+            return;
+        }
+    }
+#endif
+
     private Collider[] GetHitColliders(Vector3 origin)
     {
         List<Collider> validHits = new List<Collider>();
@@ -314,24 +360,16 @@ public class Task_NormalAttackNode : Node
                 return Physics.OverlapSphere(origin, _data.damageRadius);
 
             case AttackShape.Box:
-                // OverlapBox는 HalfExtents(사이즈의 절반)를 받습니다.
-                // 회전은 공격자(runner)의 회전을 따라갑니다.
                 return Physics.OverlapBox(origin, _data.boxSize * 0.5f, runner.transform.rotation);
 
             case AttackShape.Fan:
-                // 1차로 구체 범위 내의 적을 모두 찾습니다.
                 rawHits = Physics.OverlapSphere(origin, _data.damageRadius);
 
                 foreach (var col in rawHits)
                 {
-                    // 각도 계산을 위해 적의 방향 벡터를 구합니다.
                     Vector3 directionToTarget = (col.transform.position - origin).normalized;
-
-                    // 내 정면(transform.forward)과 적 방향 사이의 각도를 구합니다.
-                    // (높이차 무시를 위해 y를 0으로 할 수도 있음)
                     float angleToTarget = Vector3.Angle(runner.transform.forward, directionToTarget);
 
-                    // 설정한 각도의 절반 이내에 있다면 범위 안입니다.
                     if (angleToTarget <= _data.fanAngle * 0.5f)
                     {
                         validHits.Add(col);
