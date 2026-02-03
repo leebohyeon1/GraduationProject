@@ -2080,7 +2080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1442114732914935687, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1864534636432622886, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2124,6 +2124,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688761314623063882, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4321814676454047558, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
+      propertyPath: AnimationBasedMovement
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7980730251416689258, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
@@ -2133,7 +2137,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1442114732914935687, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1215721152}
   m_SourcePrefab: {fileID: 100100000, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
 --- !u!114 &1034689102 stripped
 MonoBehaviour:
@@ -2274,6 +2281,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adfc94599ade77a44a5a7b2b345bc85e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NextWaveHoldUI
+--- !u!1 &1215721131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1442114732914935687, guid: 6771eaa40e2538142bf658e04ec6b179, type: 3}
+  m_PrefabInstance: {fileID: 948043723}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1215721152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215721131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.SimpleSmoothModifier
+  version: 1073741824
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.5
+  uniformLength: 1
+  maxSegmentLength: 4
+  bezierTangentLength: 0.4
+  offset: 0.2
+  factor: 0.1
 --- !u!1 &1321184615
 GameObject:
   m_ObjectHideFlags: 0
@@ -2956,11 +2990,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1307295378721129737, guid: 50f3fcb1d91ffe04d853bf6928e1669c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1409598740799340335, guid: 50f3fcb1d91ffe04d853bf6928e1669c, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4281818208074561397, guid: 50f3fcb1d91ffe04d853bf6928e1669c, type: 3}
       propertyPath: managedReferences[6863434231624761635].TargetShaderController

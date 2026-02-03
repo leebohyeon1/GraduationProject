@@ -3,7 +3,7 @@ using Pathfinding;
 [RequireComponent(typeof(AIPath), typeof(AiController), typeof(Enemy_AnimationEventHandler))]
 [RequireComponent(typeof(ParrySystem), typeof(EnemyHealth), typeof(EnemySpecialAbility))]
 [RequireComponent(typeof(Mon_Stiffness), typeof(EnemyStateController), typeof(EnemyAnimationBridge))]
-[RequireComponent(typeof(EnemyInitializer))]
+[RequireComponent(typeof(EnemyInitializer), typeof(EnemyMovement))]
 #if UNITY_EDITOR
 [RequireComponent(typeof(EnemyGizmoDrawer))]
 #endif

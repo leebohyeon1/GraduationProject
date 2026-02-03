@@ -57,7 +57,7 @@ public class Task_NormalAttackNode : Node
         }
         if (runner._animationBridge.IsAttacking)
         {
-            Debug.LogWarning("attack act : " + this.name);
+            // Debug.LogWarning("attack act : " + this.name);
             OtherAttackAnimationPlaying = true;
             return;
         }
