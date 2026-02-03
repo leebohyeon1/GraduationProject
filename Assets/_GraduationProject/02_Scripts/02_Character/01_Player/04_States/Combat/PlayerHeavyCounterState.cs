@@ -181,6 +181,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                 if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
                 {
                     Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
+                    direction.Normalize();
 
                     DamageData damageData = projectile.Data;
                     damageData.DamageAmount += p_AttackConfig.AttackDamage;
