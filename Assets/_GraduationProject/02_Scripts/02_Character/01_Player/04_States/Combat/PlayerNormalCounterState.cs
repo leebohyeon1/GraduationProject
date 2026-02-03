@@ -178,10 +178,11 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                 if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
                 {
                     Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
+                    direction.Normalize();
 
                     DamageData damageData = projectile.Data;
                     damageData.DamageAmount += p_AttackConfig.AttackDamage;
-
+                    
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
 
                     projectile.Setup(direction, speed, p_owner.gameObject, damageData);

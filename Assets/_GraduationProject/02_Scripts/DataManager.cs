@@ -96,7 +96,7 @@ public class DataManager : MonoBehaviour
         // Health, Money, Potion, Stamina, Combat 등은 RuntimeData를 직접 참조하므로 별도 복사 불필요
         
         // 보유한 능력(Ability) 저장
-        var abilityComp = player.GetComponent<PlayerAbility>();
+        var abilityComp = player.Ability;
         if (abilityComp)
         {
             CurrentPlayer.AcquiredAbilityIds.Clear();
