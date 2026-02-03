@@ -8,7 +8,7 @@ public class EnemyMovement : MonoBehaviour
 {
     private Enemy _runner;
     AIPath aIPath;
-    public float _normalSpeed {get; private set; } = 2f;
+    public float _normalSpeed  = 2;
     private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
 
     private RVOController _rvo; // RVO 컴포넌트 참조
@@ -17,6 +17,8 @@ public class EnemyMovement : MonoBehaviour
     // characterRadius 변수 삭제 -> RVOController.radius 사용
     public LayerMask obstacleMask;         // 벽 레이어
     public float wallBuffer = 0.5f;        // 벽 여유 거리
+    public bool AnimationBasedMovement ;
+
     public float CharacterRadius
     {
         get
@@ -29,7 +31,7 @@ public class EnemyMovement : MonoBehaviour
     public void Initialize(Enemy enemy)
     {
         _runner = enemy;
-        _normalSpeed = _runner.NormalSpeed;
+        _normalSpeed = _runner.enemyStat.MoveSpeed;
         aIPath = _runner.GetComponent<AIPath>();
         aIPath.maxSpeed = _normalSpeed;
 
@@ -109,7 +111,7 @@ public class EnemyMovement : MonoBehaviour
     }
     public void UpdateStrafeAnim()
     {
-        if(!_runner.AnimationBasedMovement) return;
+        if(!AnimationBasedMovement) return;
         Vector3 worldVelocity = aIPath.velocity;
         Vector3 localVelocity = _runner.transform.InverseTransformDirection(worldVelocity);
         _runner.animator.SetFloat("InputX", localVelocity.x / aIPath.maxSpeed , 0.1f, Time.deltaTime);
