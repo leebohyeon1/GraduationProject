@@ -95,6 +95,13 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         }
     }
 
+    /// <summary>
+    /// 일반 상쇄 입력 처리
+    /// </summary>
+    protected override void OnNormalCounter()
+    {
+        return;
+    }
     #endregion
 
     #region EventHandle
