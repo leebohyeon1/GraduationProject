@@ -27,13 +27,13 @@ public class EnemyProjectile : MonoBehaviour
     {
         if(other.gameObject == _owner.gameObject) return;
         Debug.Log("충돌 감지: " + other.name);
-        if (other.CompareTag("Player"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Debug.Log("플레이어 명중!");
             other.GetComponent<PlayerHealth>()?.TakeDamage(_data);
             Destroy(gameObject); 
         }
-        else if (other.CompareTag("Wall") )
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Wall") )
         {
             Destroy(gameObject); // 벽에 닿으면 삭제
         }
