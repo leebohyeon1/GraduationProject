@@ -93,11 +93,7 @@ public class PlayerController : MonoBehaviour
             DataManager.Instance.LoadGame();
             RuntimeData = DataManager.Instance.CurrentPlayer;
             
-            // 저장된 위치로 이동 (0,0,0이 아닐 경우에만 - 필요 시 조건 변경)
-            if (RuntimeData.x != 0 || RuntimeData.y != 0 || RuntimeData.z != 0)
-            {
-                transform.position = new Vector3(RuntimeData.x, RuntimeData.y, RuntimeData.z);
-            }
+            transform.position = RuntimeData.LastPosition;
         }
         else
         {
