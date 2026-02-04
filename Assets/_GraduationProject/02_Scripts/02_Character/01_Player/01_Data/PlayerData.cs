@@ -53,7 +53,8 @@ public class PlayerData
     public float ChargeRotateSpeed;
     
     [Header("Position")]
-    public float x, y, z;
+    public Vector3 LastPosition;
+    public Vector3 RespawnPostion;
 
     [Header("Abilities")]
     public List<string> AcquiredAbilityIds = new List<string>();
@@ -93,11 +94,10 @@ public class PlayerData
         RotateSpeed = 0f;
         ChargeMoveSpeed = 0f;
         ChargeRotateSpeed = 0f;
-        
-        x = 0;
-        y = 0;
-        z = 0;
-        
+
+        LastPosition = Vector3.zero;
+        RespawnPostion = Vector3.zero;
+
         AcquiredAbilityIds = new List<string>();
     }
 

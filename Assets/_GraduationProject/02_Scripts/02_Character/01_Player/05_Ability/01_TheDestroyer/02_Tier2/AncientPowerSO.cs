@@ -36,11 +36,14 @@ public class AncientPowerSO : PlayerAbilitySO
     /// <param name="ability">플레이어</param>
     public override void UnregisterAbility(PlayerAbility ability)
     {
+        if (p_owner != null)
+        {
+            p_owner.Combat.HeavyCounterAttackConfigList
+                .RemoveRange(_defaultIndex, AdditionalChargeDataList.Count);
+        }
+
         p_ability = null;
         p_owner = null;
-
-        p_owner.Combat.HeavyCounterAttackConfigList
-            .RemoveRange(_defaultIndex, AdditionalChargeDataList.Count);
 
         _defaultIndex = -1;
     }
