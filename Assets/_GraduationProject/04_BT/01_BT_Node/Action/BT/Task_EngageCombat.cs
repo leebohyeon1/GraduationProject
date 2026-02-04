@@ -10,6 +10,7 @@ public class Task_EngageCombat : Node
         // runner의 전투 돌입 함수를 호출합니다.
         // 기존의 EnemyCalling()을 사용하거나, 의미에 맞게 새 함수를 만들어도 좋습니다.
         // 여기서는 기존 함수를 그대로 사용하겠습니다.
+        Debug.Log($"[Task_EngageCombat] {runner.name} 전투 돌입.");
         if (!brain._isCombat)
         {
             runner.groupAi.CombatAll();

@@ -3,6 +3,7 @@ using BehaviorTree;
 public class AnimationNode : Node
 {
     public string animationName;
+    public bool OnSuccess = false;
     public enum AnimationType
     {
         Trigger,
@@ -18,6 +19,7 @@ public class AnimationNode : Node
         node.animationName = animationName;
         node.animationBool = animationBool;
         node.enemyUseAnything = enemyUseAnything;
+        node.OnSuccess = OnSuccess;
         return node;
     }
     public override void OnEnter()
@@ -37,10 +39,15 @@ public class AnimationNode : Node
 
     protected override NodeState OnUpdate()
     {
+        
         Animator animator = runner.animator;
         if (Handler.IsActive)
         {
             enemyUseAnything?.OnUpdate(runner);
+        }
+        if(OnSuccess)
+        {
+            return NodeState.SUCCESS;
         }
 
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))

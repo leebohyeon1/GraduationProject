@@ -3,7 +3,7 @@ using Pathfinding;
 [RequireComponent(typeof(AIPath), typeof(AiController), typeof(Enemy_AnimationEventHandler))]
 [RequireComponent(typeof(ParrySystem), typeof(EnemyHealth), typeof(EnemySpecialAbility))]
 [RequireComponent(typeof(Mon_Stiffness), typeof(EnemyStateController), typeof(EnemyAnimationBridge))]
-[RequireComponent(typeof(EnemyInitializer))]
+[RequireComponent(typeof(EnemyInitializer), typeof(EnemyMovement))]
 #if UNITY_EDITOR
 [RequireComponent(typeof(EnemyGizmoDrawer))]
 #endif
@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour
     public EnemyHealth EnemyHealth => _initializer?.GetCachedComponent<EnemyHealth>();
     public EnemySpecialAbility specialAbility => _initializer?.GetCachedComponent<EnemySpecialAbility>();
     public AiController _aiController => _initializer?.GetCachedComponent<AiController>();
+    public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
     public BillboardUI BillboardUI => GetComponentInChildren<BillboardUI>();
     public Transform LaunchPoint { get; set; }
     //내부 컴포넌트
@@ -89,9 +90,7 @@ public class Enemy : MonoBehaviour
     {
         _animationBridge?.SetBool(boolName, value);
     }
-    public float NormalSpeed => enemyStat.MoveSpeed;
 
-    public bool AnimationBasedMovement ;
 
 
 }

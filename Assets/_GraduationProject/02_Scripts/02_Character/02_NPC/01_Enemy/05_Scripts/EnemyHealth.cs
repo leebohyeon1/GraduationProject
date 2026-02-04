@@ -169,6 +169,19 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void TakeDamage(DamageData damageData)
     {
         if (CurrentHealth <= 0) return;
+        bool isBlocked = false;
+        int finalDamage = damageData.DamageAmount;
+        if(_owner.Shield != null && damageData.AttackerTransform != null)
+        {
+            if (_owner.Shield.CheckBlock(damageData.AttackerTransform.position))
+            {
+                isBlocked = true;
+                float damageMultiplier = 1.0f - _owner.Shield.DamageReduction;
+                Debug.Log($"Damage Reduction: {_owner.Shield.DamageReduction}, Damage Multiplier: {damageMultiplier}");
+                finalDamage = Mathf.RoundToInt(damageData.DamageAmount * damageMultiplier);
+                Debug.Log($"[EnemyHealth] {gameObject.name}이(가) 방패로 공격을 막았습니다! 원 데미지 {damageData.DamageAmount} 최종 데미지: {finalDamage}");
+            }
+        }
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
         if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
@@ -177,9 +190,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             _delayCoroutine = StartCoroutine(ActivateImmunityAfterDelay(MinorTime));
         }
         bool isImmune = IsImmune(damageData.AttackType);
+
         Debug.Log($"[EnemyHealth] {gameObject.name}의 상태 {_currentImmunityLevel} :공격 레벨 {damageData.AttackType}. 면역 상태: {isImmune}");
         // 면역이 아닐 때만! -> 피격 애니메이션 재생
-        if (!isImmune)
+        if (!isImmune && !isBlocked)
         {
             // 액션(공격 등) 중이 아닐 때만 히트 모션 취함
             if (!_owner._aiController.IsActionable())
@@ -191,6 +205,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
 
         int previousHealth = curHealth;
+        if (isBlocked)
+        {
+            _owner.animHandler.PlayFeedback("Block_FB");
+        }
+        else
+        {
+            
         Debug.Log(damageData.AttackType);
         switch (damageData.AttackType)
         {
@@ -213,7 +234,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
                 break;
         }
-        curHealth -= damageData.DamageAmount;
+        }
+
+        curHealth -= finalDamage;
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
@@ -222,7 +245,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         OnRecoveryHealth?.Invoke(false);
 
-        if (Knockbackable)
+        if (Knockbackable && !isBlocked)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             knockbackDir.y = 0;

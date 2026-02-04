@@ -55,7 +55,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
                 PlayerAbilitySO abilitySO = DataManager.Instance.GetAbility(abilityId);
                 if (abilitySO != null)
                 {
-                    AddAbility(abilitySO);
+                    LoadAbility(abilitySO);
                 }
             }
         }
@@ -67,13 +67,31 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
     #region Ability Management
     /// <summary>
+    /// 스킬 로드
+    /// </summary>
+    /// <param name="ability">로드할 스킬</param>
+    private void LoadAbility(PlayerAbilitySO ability)
+    {
+        Debug.Log("기술 로드: " + ability.Id);
+        _abilitySet.Add(ability);
+    }
+
+    /// <summary>
     /// 기술 추가 함수
     /// </summary>
     /// <param name="ability">추가할 기술</param>
     public void AddAbility(PlayerAbilitySO ability)
     {
-        _abilitySet.Add(ability);
-        ability.RegisterAbility(this);    // 기술 등록
+        if(_abilitySet.Add(ability))
+        {
+            ability.RegisterAbility(this);    // 기술 등록
+            Debug.Log("기술 등록: " + ability.Id);
+        }
+        else
+        {
+            Debug.LogWarning($"기술 등록 해제: {ability.Id}");
+        }
+
     }
 
     /// <summary>
@@ -82,8 +100,11 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="ability">삭제할 기술</param>
     public void RemoveAbility(PlayerAbilitySO ability)
     {
-        _abilitySet.Remove(ability);
-        ability.UnregisterAbility(this);  // 기술 해제
+        if (_abilitySet.Remove(ability))
+        {
+            ability.UnregisterAbility(this);  // 기술 해제
+            Debug.Log($"기술 해제: {ability.Id}");
+        }
     }
 
     /// <summary>
@@ -251,7 +272,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="ability">기술</param>
     public void OnEventTrigger(PlayerAbilitySO ability)
     {
-        Debug.Log("가술 둥록: " + ability.Id);
+
         AddAbility(ability);
     }
 

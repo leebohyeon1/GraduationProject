@@ -1,7 +1,11 @@
 using System.IO;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// 데이터를 관리하는 매니저
+/// </summary>
+[DefaultExecutionOrder(-999)]
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
@@ -27,10 +31,27 @@ public class DataManager : MonoBehaviour
         LoadGame();
     }
 
-    private void OnDestroy()
+    /// <summary>
+    /// 게임 종료 시점에 저장
+    /// </summary>
+    private void OnApplicationQuit()
     {
         SaveGame();
     }
+
+    /// <summary>
+    /// 게임 화면 나갔을 때 저장
+    /// </summary>
+    /// <param name="pause">멈춘 여부</param>
+    private void OnApplicationPause(bool pause)
+    {
+        // 멈춘 상태면 저장
+        if (pause)
+        {
+            SaveGame();
+        }
+    }
+
 
     /// <summary>
     /// ID로 능력 스크립터블 오브젝트 찾기
@@ -86,26 +107,29 @@ public class DataManager : MonoBehaviour
     private void UpdatePlayerDataFromGame()
     {
         PlayerController player = FindFirstObjectByType<PlayerController>();
-        if (player == null) return;
+        if (player == null)
+        {
+            Debug.Log(1111111111111111);
+            return;
+        }
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
-        CurrentPlayer.x = player.transform.position.x;
-        CurrentPlayer.y = player.transform.position.y;
-        CurrentPlayer.z = player.transform.position.z;
+        CurrentPlayer.LastPosition = player.transform.position;
+        CurrentPlayer.RespawnPostion = player.transform.position;
 
-        // Health, Money, Potion, Stamina, Combat 등은 RuntimeData를 직접 참조하므로 별도 복사 불필요
-        
         // 보유한 능력(Ability) 저장
-        var abilityComp = player.GetComponent<PlayerAbility>();
+        var abilityComp = player.Ability;
         if (abilityComp)
         {
             CurrentPlayer.AcquiredAbilityIds.Clear();
+
             foreach (var ability in abilityComp.ActiveAbilities)
             {
                 if (!string.IsNullOrEmpty(ability.Id))
                 {
                     CurrentPlayer.AcquiredAbilityIds.Add(ability.Id);
                 }
+
             }
         }
     }
