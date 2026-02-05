@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Packages.Rider.Editor.UnitTesting;
 using UnityEditor.Build.Pipeline;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -182,7 +183,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
-        if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
+        if (_delayCoroutine == null && !IsImmune(damageData.AttackType) && !_owner.ParrySystem._isStunned )
         {
             _delayCoroutine = StartCoroutine(ActivateImmunityAfterDelay(MinorTime));
         }
