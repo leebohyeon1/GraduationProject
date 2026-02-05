@@ -8,7 +8,6 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     [SerializeField] protected int _stiffnessThreshold = 100;
     [Tooltip("경직 상태가 지속 시간")]
     [SerializeField] protected float _stiffnessDuration = 2f;
-    [SerializeField] protected float _weakStiffnessDuration = 2f;
     protected int _currentStiffness = 0;
 
     public event Action<int, int> OnStiffnessChanged;

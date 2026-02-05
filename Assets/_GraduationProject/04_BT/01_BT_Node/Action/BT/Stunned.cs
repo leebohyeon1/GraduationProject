@@ -14,7 +14,7 @@ public class Stunned : Node
     }
     protected override NodeState OnUpdate()
     {
-        if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
+        if (runner.ParrySystem._isStunned && runner.ParrySystem.StunExitTime <= Time.time)
         {
             Debug.Log("<color=red>--STUNNED--: OnUpdate Finished</color>");
             return NodeState.SUCCESS;
