@@ -8,6 +8,7 @@ public class Stunned : Node
     {
         base.OnEnter();
         runner.SetState(EnemyStateController.EnemyState.Stunned);
+        if(runner.Shield != null)
         runner.Shield.IsActive = false;
         Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
     }
@@ -33,6 +34,7 @@ public class Stunned : Node
     public override void OnExit()
     {
         runner.ParrySystem.ClearStun();
+        if(runner.Shield != null)
         runner.Shield.IsActive = true;
         Debug.Log("<color=red>--STUNNED--: OnExit Triggered</color>");
         runner.SetState(EnemyStateController.EnemyState.Idle);
