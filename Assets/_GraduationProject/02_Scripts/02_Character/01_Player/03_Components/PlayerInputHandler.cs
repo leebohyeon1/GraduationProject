@@ -48,9 +48,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         _events.BufferInputStarted += OnBufferInputStarted;
         _events.BufferInputEnded += OnBufferInputEnded;
 
-        // InputReader 초기화
-        _inputReader.Initialize();
-
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
     }
@@ -68,9 +65,6 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
 
         _events.BufferInputStarted -= OnBufferInputStarted;
         _events.BufferInputEnded -= OnBufferInputEnded;
-
-        // InputReader 해제
-        _inputReader.Dispose();
     }
 
     /// <summary>
