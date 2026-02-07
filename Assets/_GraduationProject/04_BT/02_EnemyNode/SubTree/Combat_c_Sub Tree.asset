@@ -20,7 +20,7 @@ MonoBehaviour:
   SO:
   - {fileID: 11400000, guid: 7855d458914724941a281bce55d36715, type: 2}
   ExceptKey: IsAttacking
-  LoopAttack: 1
+  LoopAttack: 0
   NextBT: 0
   transitionBuffer: 1
   debugMode: 1
@@ -74,23 +74,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
   position: {x: 1325, y: 470}
   skillName: flee
---- !u!114 &-5794056097246212893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
-  m_Name: Condition_Distance Hysteresis(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1140, y: -258}
-  target: {fileID: 0}
-  minRange: 6
-  maxRange: 15
-  checkType: 0
 --- !u!114 &-5169928796796515572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,9 +86,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1141, y: 46}
+  position: {x: 1141, y: 45}
   skillName: Attack01_c
-  cooldownDuration: 3
+  cooldownDuration: 5
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: 4385bc1ec5c31b643892f23bd21aa4df, type: 2}
 --- !u!114 &-4747025815022784661
@@ -359,7 +342,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 913, y: -32}
   nodes:
-  - {fileID: -5794056097246212893}
   - {fileID: -4091383270736508263}
   - {fileID: -785585555750304635}
   - {fileID: -4747025815022784661}
@@ -521,7 +503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1152, y: -747}
   target: {fileID: 0}
-  minRange: 5
+  minRange: 7
   maxRange: 7
   checkType: 0
 --- !u!114 &8463926354739292389
