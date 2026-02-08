@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
     }
      public void AnimationEvent(string eventName)
     {
-        Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
+        // Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
         _animationBridge?.TriggerEvent(eventName);
     }
     public void AnimationBool(string boolName, bool value)

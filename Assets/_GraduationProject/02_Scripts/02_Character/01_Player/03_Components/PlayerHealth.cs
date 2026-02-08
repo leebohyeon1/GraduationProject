@@ -46,6 +46,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     
     public float KnockDownDuration => _data != null ? _data.KnockDownDuration : 3f;
 
+    public bool invincibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
 
     /// <summary>
     /// 초기화 함수

@@ -70,10 +70,13 @@ public class Task_FleeFromTarget : Node
     protected override NodeState OnUpdate()
     {
         if (runner.player == null) return NodeState.FAILURE;
-
+    
         var ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return NodeState.FAILURE;
-
+        if (runner._animationBridge.IsAttacking)
+        {
+            return NodeState.FAILURE;
+        }
         if (!ai.pathPending && (ai.reachedEndOfPath || ai.reachedDestination)) 
         {
             return NodeState.SUCCESS;

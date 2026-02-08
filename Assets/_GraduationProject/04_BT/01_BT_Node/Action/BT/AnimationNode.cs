@@ -27,6 +27,8 @@ public class AnimationNode : Node
         enemyUseAnything?.OnEnter(runner);
 
         runner.Movement.StopMovement();
+        Debug.Log("iscombat " + runner._aiController._aiBrain._isCombat);
+        Debug.Log($"AnimationNode {animationName} entered");
         if(animationBool != AnimationType.Trigger)
         {
             runner.animator.SetBool(animationName, animationBool == AnimationType.True);

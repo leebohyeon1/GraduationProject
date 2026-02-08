@@ -271,7 +271,7 @@ public class Task_NormalAttackNode : Node
 
         if (!_isCooldownDenied)
         {
-            Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다. 쿨타임 시작.");
+            // Debug.Log($"[Task_NormalAttackNode] {runner.name}가 '{_data.AttackName}' 공격을 종료합니다. 쿨타임 시작.");
             brain.StartSkillCooldown(attackKey);
         }
 

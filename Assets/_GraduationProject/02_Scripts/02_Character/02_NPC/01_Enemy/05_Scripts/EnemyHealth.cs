@@ -133,6 +133,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
 
     public bool Knockbackable { get; private set; } = true;
+    public bool invincibility { get; set; } = false;
 
     public void Die()
     {
@@ -332,4 +333,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _KnockbackCoroutine = null;
     }
 
+    internal void SetInvulnerable(bool invisible)
+    {
+        invincibility = invisible;
+    }
 }
