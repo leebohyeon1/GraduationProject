@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5436751317173034174}
   - component: {fileID: 8721637082105568737}
   - component: {fileID: 6351028912948514099}
+  - component: {fileID: 8883909986531533170}
   m_Layer: 0
   m_Name: tree1_leaf
   m_TagString: Untagged
@@ -89,6 +90,48 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8883909986531533170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413946005532941427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutObject
+  _targetObject: {fileID: 0}
+  _heightOffset: 2
+  _transitionDuration: 0.5
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _cutHeightProperty: _CutHeight
+  _baseGlancingAngleCut: _BaseGlancingAngleCut
+  _ditherProperty: _Dither
 --- !u!1 &1794128200166799679
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +143,8 @@ GameObject:
   - component: {fileID: 7460948216658388104}
   - component: {fileID: 2702051550208864768}
   - component: {fileID: 3287954713227967996}
+  - component: {fileID: 5057224679028537928}
+  - component: {fileID: 2925554510475668250}
   m_Layer: 0
   m_Name: tree1_low
   m_TagString: Untagged
@@ -178,6 +223,70 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5057224679028537928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794128200166799679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutOutObject
+  _targetObject: {fileID: 0}
+  _heightOffset: 2
+  _transitionDuration: 0.5
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _cutHeightProperty: _CutHeight
+  _baseGlancingAngleCut: _BaseGlancingAngleCut
+  _ditherProperty: _Dither
+--- !u!64 &2925554510475668250
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794128200166799679}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3647817205780269397, guid: c52f5ffe680ab2b488421f294f36f43f, type: 3}
 --- !u!1 &7181237895344122476
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,7 +297,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8270532793690063165}
   - component: {fileID: 8302026969812306390}
-  - component: {fileID: 4712751769906870071}
   m_Layer: 0
   m_Name: Part3_Tree01
   m_TagString: Untagged
@@ -239,45 +347,3 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers: []
   m_Enabled: 1
---- !u!114 &4712751769906870071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7181237895344122476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SeeThroughObject
-  _targetObject: {fileID: 0}
-  _heightOffset: 2
-  _transitionDuration: 0.8
-  _transitionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _cutHeightProperty: _CutHeight
-  _baseGlancingAngleCut: _BaseGlancingAngleCut
-  _ditherProperty: _Dither

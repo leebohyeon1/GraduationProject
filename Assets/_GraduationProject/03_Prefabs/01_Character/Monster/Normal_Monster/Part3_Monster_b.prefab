@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 629783981564199794}
   - component: {fileID: 8888308733668497756}
   - component: {fileID: 1695563610096901519}
-  - component: {fileID: 7162321013013339171}
+  - component: {fileID: 5136749546100758718}
   - component: {fileID: 6005756487463077567}
   - component: {fileID: 9086173936554295183}
   - component: {fileID: 7613545001021850787}
@@ -471,6 +471,7 @@ GameObject:
   - component: {fileID: 4517581104158105689}
   - component: {fileID: 2599291375645291807}
   - component: {fileID: 3124914876464854538}
+  - component: {fileID: 5161201755883427825}
   m_Layer: 8
   m_Name: Part3_Monster_b
   m_TagString: Untagged
@@ -542,12 +543,12 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2.78
   m_Radius: 0.68
-  m_SlopeLimit: 45
+  m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.4, z: 0}
---- !u!65 &7162321013013339171
+--- !u!65 &5136749546100758718
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -566,7 +567,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.36, y: 1, z: 1.16}
+  m_Size: {x: 1.36, y: 0.5, z: 1.16}
   m_Center: {x: 0, y: 2.56, z: 0}
 --- !u!114 &6005756487463077567
 MonoBehaviour:
@@ -1006,6 +1007,28 @@ MonoBehaviour:
     m_Bits: 512
   wallBuffer: 0.5
   AnimationBasedMovement: 1
+--- !u!114 &5161201755883427825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307295378721129737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.SimpleSmoothModifier
+  version: 1073741824
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.5
+  uniformLength: 1
+  maxSegmentLength: 4
+  bezierTangentLength: 0.4
+  offset: 0.2
+  factor: 0.1
 --- !u!1 &1321409635974398530
 GameObject:
   m_ObjectHideFlags: 0
