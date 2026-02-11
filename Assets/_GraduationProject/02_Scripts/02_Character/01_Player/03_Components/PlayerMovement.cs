@@ -225,7 +225,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         }
         else
         {
-            _velocity.y += Physics.gravity.y * 2 * Time.fixedDeltaTime;
+            _velocity.y += Physics.gravity.y * 20 * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한

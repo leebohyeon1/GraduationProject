@@ -19,6 +19,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
         p_owner.Health.TakeDamged += OnTakeDamaged;
 
+        p_owner.Events.BeforeDamaged += OnBeforeDamaged;
+
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
     }
@@ -31,6 +33,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
         p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
         p_owner.Health.TakeDamged -= OnTakeDamaged;
+
+        p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
     }
 
     //==========================================================================================================================
@@ -209,4 +213,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         }
     }
 
+    //==========================================================================================================================
+    // Damaged =================================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        if(p_owner.Ability.HasTag("SuperArmor"))
+        {
+            PlayFeedback("SuperArmor_Damage_FB");
+        }
+    }
 }
