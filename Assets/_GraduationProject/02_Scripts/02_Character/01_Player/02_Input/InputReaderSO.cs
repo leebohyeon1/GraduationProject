@@ -2,13 +2,24 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using System;
-using UnityEngine.SceneManagement;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
 [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/Input/Input Reader")]
 public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions
 {
+    public enum InputMode
+    {
+        None,       // 모든 입력 차단 (컷씬 등)
+        Gameplay,   // 캐릭터 조작
+        UI         // 인벤토리, 메뉴 등
+    }
+
+    // 현재 상태를 외부에서 읽을 수 있게 프로퍼티 제공
+    public InputMode CurrentInputMode { get; private set; } = InputMode.None;
+    // 상태가 바뀔 때 알림을 받고 싶다면 이벤트 추가
+    public event Action<InputMode> InputModeChanged;
+
     // Player Actions
     public event Action<Vector2> MoveEvent = delegate { };
     public event Action<Vector2> MousePositionEvent = delegate { };
@@ -42,6 +53,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action RightClickEvent = delegate { };
     public event Action MiddleClickEvent = delegate { };
     public event Action<Vector2> ScrollWheelEvent = delegate { };
+    public event Action AnyKeyEvent = delegate { };
 
     // Developer Actions;
     public event Action ToggleConsoleEvent = delegate { };  
@@ -49,60 +61,76 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     private InputSystem_Actions _inputActions;
 
-    public void Initialize()
+    private void OnEnable()
     {
         if (_inputActions == null)
         {
+            Debug.Log("InputReader 초기화");
             _inputActions = new InputSystem_Actions();
             _inputActions.Player.SetCallbacks(this);
             _inputActions.UI.SetCallbacks(this);
-            _inputActions.Developer.SetCallbacks(this); 
+            _inputActions.Developer.SetCallbacks(this);
         }
-        EnablePlayerActions();
-        EnableDeveloperActions();
+
+        SetInputMode(InputMode.None);
+    }
+
+    private void OnDisable()
+    {
+        // ScriptableObject가 비활성화되거나 게임이 종료될 때 정리
+        DisableAllInput();
+
+        // 이전에 말씀드린 안전한 해제 방식
+        _inputActions.Player.RemoveCallbacks(this);
+        _inputActions.UI.RemoveCallbacks(this);
+        _inputActions.Developer.RemoveCallbacks(this);
+
+        _inputActions.Dispose();
+        _inputActions = null;
     }
 
     /// <summary>
-    /// 입력 시스템 리소스를 정리합니다
+    /// 입력 모드 설정
     /// </summary>
-    public void Dispose()
+    /// <param name="newMode">새 모드</param>
+    public void SetInputMode(InputMode newMode)
     {
-        DisablePlayerActions();
-        DisableUIActions();
-        DisableDeveloperActions();
-        _inputActions?.Dispose();
-        _inputActions = null;
+        // 우선 모든 맵을 비활성화 (개발자 맵 같은 상시 맵 제외)
+        DisableAllInput();
 
+        switch (newMode)
+        {
+            case InputMode.Gameplay:
+                _inputActions.Player.Enable();
+                break;
+
+            case InputMode.UI:
+                _inputActions.UI.Enable();
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                break;
+
+            case InputMode.None:
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                break;
+        }
+
+        CurrentInputMode = newMode;
+        InputModeChanged?.Invoke(newMode);
+
+        Debug.Log($"입력 모드 변경: {newMode}");
     }
 
-    public void EnablePlayerActions()
+    /// <summary>
+    /// 모든 입력을 차단합니다. (컷씬, 로딩 등)
+    /// </summary>
+    public void DisableAllInput()
     {
-        _inputActions.Player.Enable();
-    }
-
-    public void DisablePlayerActions()
-    {
-        _inputActions?.Player.Disable();
-    }
-
-    public void EnableUIActions()
-    {
-        _inputActions.UI.Enable();
-    }
-
-    public void DisableUIActions()
-    {
-        _inputActions?.UI.Disable();
-    }
-
-    public void EnableDeveloperActions()
-    {
-        _inputActions.Developer.Enable();
-    }
-
-    public void DisableDeveloperActions()
-    {
-        _inputActions.Developer.Disable();
+        _inputActions.Player.Disable();
+        _inputActions.UI.Disable();
+        // 개발자 콘솔조차 막으려면 이것도 Disable
+        // _inputActions.Developer.Disable(); 
     }
 
     // Player Action Implementations
@@ -290,6 +318,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         if (context.phase == InputActionPhase.Performed)
         {
             SubmitEvent.Invoke();
+        }
+    }
+
+    public void OnAnyKey(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            AnyKeyEvent.Invoke();
         }
     }
 
