@@ -89,12 +89,7 @@ public class PlayerLockOn : MonoBehaviour
 
         if (CurrentTarget.TryGetComponent<ILockOnAble>(out var lockOnAble))
         {
-            lockOnAble.OnLockReleased -= LockOff;
-        }
-
-        if (CurrentTarget.TryGetComponent<IDamageable>(out var damageable))
-        {
-            damageable.OnDied -= ChangeLockOnTarget;
+            lockOnAble.OnLockReleased -= ChangeLockOnTarget;
         }
 
         // 타겟 해제 후 비활성화 
@@ -275,12 +270,7 @@ public class PlayerLockOn : MonoBehaviour
         // 이벤트 구독
         if (_currentTarget.TryGetComponent<ILockOnAble>(out var newlockOnAble))
         {
-            newlockOnAble.OnLockReleased += LockOff;
-        }
-
-        if (_currentTarget.TryGetComponent<IDamageable>(out var damageable))
-        {
-            damageable.OnDied += ChangeLockOnTarget;
+            newlockOnAble.OnLockReleased += ChangeLockOnTarget;
         }
 
         // 인디케이터 이동

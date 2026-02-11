@@ -50,6 +50,8 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
+
+        _inputReader.SetInputMode(InputReaderSO.InputMode.Gameplay);
     }
 
     /// <summary>
@@ -73,6 +75,16 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     private void OnInputDeviceChanged(InputDeviceType deviceType)
     {
         _currentInputDevice = deviceType;
+
+        if(_currentInputDevice == InputDeviceType.KeyboardMouse)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if(_currentInputDevice == InputDeviceType.Gamepad)
+        {
+            Cursor.visible = false;
+        }
     }
 
     // 각 입력 이벤트에 대한 콜백 함수들
