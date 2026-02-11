@@ -455,6 +455,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -485,6 +486,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;

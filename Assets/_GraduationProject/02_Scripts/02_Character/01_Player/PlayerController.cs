@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         if (DataManager.Instance != null)
         {
             DataManager.Instance.LoadGame();
-            RuntimeData = DataManager.Instance.CurrentPlayer;
+            RuntimeData = DataManager.Instance.GetGameData().PlayerData;
             
             transform.position = RuntimeData.LastPosition;
         }
