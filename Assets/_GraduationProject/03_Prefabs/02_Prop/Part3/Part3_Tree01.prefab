@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8721637082105568737}
   - component: {fileID: 6351028912948514099}
   - component: {fileID: 8883909986531533170}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: tree1_leaf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 3287954713227967996}
   - component: {fileID: 5057224679028537928}
   - component: {fileID: 2925554510475668250}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: tree1_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8270532793690063165}
   - component: {fileID: 8302026969812306390}
-  m_Layer: 0
+  - component: {fileID: 6154153748784861830}
+  - component: {fileID: -4095076384038952919}
+  m_Layer: 9
   m_Name: Part3_Tree01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,3 +349,66 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers: []
   m_Enabled: 1
+--- !u!114 &6154153748784861830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181237895344122476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19fd88d6b994b64ba68b0b01715d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SeeThroughObject
+  _targetObject: {fileID: 0}
+  _heightOffset: 2
+  _transitionDuration: 0.8
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _cutHeightProperty: _CutHeight
+  _baseGlancingAngleCut: _BaseGlancingAngleCut
+  _ditherProperty: _Dither
+--- !u!65 &-4095076384038952919
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181237895344122476}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 1, z: 7}
+  m_Center: {x: 0, y: 7.51, z: 0}
