@@ -80,6 +80,12 @@ public class PlayerDamagedState : PlayerBaseState
     /// <param name="damageData">받은 데미지 데이터</param>
     private void OnDamaged(DamageData damageData)
     {
+        // Knockdown 상태이면 반환
+        if(p_stateMachine.CurrentState.GetType() == typeof(PlayerKnockdownState))
+        {
+            return;
+        }
+
         // Heavy 공격을 맞았을 때는 다시 상태 변화 X
         if(_damageData.AttackType >= AttackType.Heavy1)
         {
