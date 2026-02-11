@@ -63,9 +63,9 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         }
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
         }
     }
 
@@ -115,9 +115,9 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     private void OnCounterSucceeded(Transform transform)
     {
         // 상쇄 성공 시 슈퍼 아머
-        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.AddTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.AddTag(p_owner.Combat.CounterSuccessTagSO);
         }
 
         // 적이 상쇄되지 않았다면 상쇄
@@ -187,6 +187,8 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
 
                     projectile.Setup(direction, speed, p_owner.gameObject, damageData);
 
+                    // 카운터 성공 이벤트 발행
+                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform);
                 }
             }
         }

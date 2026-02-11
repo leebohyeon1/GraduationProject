@@ -55,8 +55,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
     [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
 
-    [SerializeField] private PlayerAbilityTagSO _counterSuperArmorTagSO; // 카운터 성공 시 슈퍼아머
-    public PlayerAbilityTagSO CounterSuperArmorTagSO => _counterSuperArmorTagSO;
+    [SerializeField] private PlayerAbilityTagSO _counterSuccessTagSO; // 카운터 성공 시 슈퍼아머
+    public PlayerAbilityTagSO CounterSuccessTagSO => _counterSuccessTagSO;
 
     public event Action CheckedProjectileCounter;
 
