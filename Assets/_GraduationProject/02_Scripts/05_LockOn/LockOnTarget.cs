@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class LockOnTarget : MonoBehaviour, ILockOnAble
@@ -24,6 +25,11 @@ public class LockOnTarget : MonoBehaviour, ILockOnAble
     }
 
     private void OnBecameInvisible()
+    {
+        TriggerLockReleased();
+    }
+
+    private void OnDisable()
     {
         TriggerLockReleased();
     }

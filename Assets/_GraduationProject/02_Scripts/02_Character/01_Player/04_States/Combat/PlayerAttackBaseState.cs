@@ -271,7 +271,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
         }
 
-        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this);
+        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this,true);
     }
 
 }
