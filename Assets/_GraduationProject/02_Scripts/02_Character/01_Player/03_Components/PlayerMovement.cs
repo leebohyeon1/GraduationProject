@@ -225,7 +225,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         }
         else
         {
-            _velocity.y += Physics.gravity.y;
+            _velocity.y += Physics.gravity.y * 20 * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한
@@ -375,6 +375,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
@@ -421,7 +422,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
+
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
 
@@ -455,7 +458,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
-                displacement = new Vector3(displacement.x, _velocity.y, displacement.z);
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -486,7 +489,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
-                displacement = new Vector3(displacement.x, _velocity.y, displacement.z);
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;

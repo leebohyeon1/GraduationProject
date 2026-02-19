@@ -32,6 +32,10 @@ public class BerserkSO : PlayerAbilitySO
 
         p_owner.Events.CounterSucceeded += OnCounterSucceded;
         p_owner.Health.TakeDamged += OnTakeDamaged;
+
+        _isBerserker = false;
+        _counterCount = 0;
+        _berserkerCoroutine = null;
     }
 
     public override void UnregisterAbility(PlayerAbility ability)
@@ -77,7 +81,11 @@ public class BerserkSO : PlayerAbilitySO
 
     private void OnTakeDamaged(int amount)
     {
-        CountReset();
+        if (amount > 0)
+        {
+            CountReset();
+        }
+
     }
 
     private IEnumerator UpdateTime()
