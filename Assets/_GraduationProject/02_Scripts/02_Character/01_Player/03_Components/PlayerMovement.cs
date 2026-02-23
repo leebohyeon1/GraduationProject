@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 플레이어의 이동, 회전, 중력 등 물리적인 움직임을 담당하는 컴포넌트입니다.
@@ -12,10 +13,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     private CharacterController _characterController; // 캐릭터 컨트롤러
     private Camera _camera; // 메인 카메라
     private PlayerEvents _events;
+    private PlayerData _runtimeData;
 
     [Header("Movement Setting")]
-    private float _maxMoveSpeed;            // 최대 이동 속도
-    public float MaxMoveSpeed => _maxMoveSpeed;
+    // 최대 이동 속도
+    public float MaxMoveSpeed => _runtimeData != null ? _runtimeData.MoveSpeed : 5f;
 
     private float _moveAccelerationTime;    // 이동 가속 시간
     public float MoveAccelerationTime => _moveAccelerationTime;
@@ -26,8 +28,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     private AnimationCurve _moveCurve;      // 이동 가속 커브
     public AnimationCurve MoveCurve => _moveCurve;
 
-    private float _maxRotateSpeed;            // 최대 회전 속도
-    public float MaxRotateSpeed => _maxRotateSpeed;
+   // 최대 회전 속도
+    public float MaxRotateSpeed => _runtimeData != null ? _runtimeData.RotateSpeed : 5f;
 
     private float _rotateAccelerationTime;    // 회전 가속 시간
     public float RotateAccelerationTime => _rotateAccelerationTime;    
@@ -51,15 +53,17 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     private float _rotateAccelTimer;            // 회전 가속 타이머
 
     [Header("Dodge Setting")]
-    private DodgeData _dodgeConfig;         // 회피 설정
-    public DodgeData DodgeConfig => _dodgeConfig;
+    // 회피 설정
+    public DodgeData DodgeConfig => _runtimeData != null ? _runtimeData.DodgeConfig : null;
 
     [Header("ChargeMove Setting")]
-    private float _chargeMoveSpeed;         // 차지 이동 속도
-    public float ChargeMoveSpeed => _chargeMoveSpeed;
+    // 차지 이동 속도
+    public float ChargeMoveSpeed => _runtimeData != null ? _runtimeData.ChargeMoveSpeed : 0f;
+    // 차지 이동 속도
+    public float ChargeRoataeSpeed => _runtimeData != null ? _runtimeData.ChargeRotateSpeed : 0f;
 
-    private float _chargeRotateSpeed;         // 차지 이동 속도
-    public float ChargeRoataeSpeed => _chargeRotateSpeed;
+    [Header("Obstacle Detection")]
+    [SerializeField] private LayerMask _obstacleMask = -1;
 
     [Header("Drag Setting")]
     [SerializeField] private PlayerAbilityTagSO _dragSuperArmorSO; // 드래그 슈퍼 아머
@@ -74,6 +78,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         _characterController = GetComponent<CharacterController>();
         _camera = player.Camera;
         _events = player.Events;
+        _runtimeData = player.RuntimeData;
+        
         player.RegisterDisposable(this);    // 이벤트 해제 구독
 
         InitializeData(player.Data);
@@ -89,20 +95,31 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     /// <param name="data">플레이어 데이터</param>
     private void InitializeData(PlayerDataSO data)
     {
-        _maxMoveSpeed = data.MoveSpeed;
+        if (_runtimeData != null)
+        {
+            if (_runtimeData.MoveSpeed == 0) _runtimeData.MoveSpeed = data.MoveSpeed;
+            if (_runtimeData.RotateSpeed == 0) _runtimeData.RotateSpeed = data.RotateSpeed;
+            if (_runtimeData.ChargeMoveSpeed == 0) _runtimeData.ChargeMoveSpeed = data.ChargeMoveSpeed;
+            if (_runtimeData.ChargeRotateSpeed == 0) _runtimeData.ChargeRotateSpeed = data.ChargeRotateSpeed;
+            
+            // DodgeConfig Deep Copy
+            if (_runtimeData.DodgeConfig != null && string.IsNullOrEmpty(_runtimeData.DodgeConfig.AnimationStateName))
+            {
+                _runtimeData.DodgeConfig.AnimationStateName = data.DodgeConfig.AnimationStateName;
+                _runtimeData.DodgeConfig.Type = data.DodgeConfig.Type;
+                _runtimeData.DodgeConfig.StaminaAmount = data.DodgeConfig.StaminaAmount;
+                _runtimeData.DodgeConfig.isInivicible = data.DodgeConfig.isInivicible;
+                _runtimeData.DodgeConfig.MoveConfig = data.DodgeConfig.MoveConfig;
+            }
+        }
+
         _moveAccelerationTime = data.MoveAccelerationTime;
         _moveDecelerationnTime = data.MoveDecelerationnTime;
         _moveCurve = data.MoveCurve;
 
-        _maxRotateSpeed = data.RotateSpeed;
         _rotateAccelerationTime = data.RotateAccelerationTime;
         _rotateDecelerationTime = data.RotateDecelerationTime;
         _rotateCurve = data.RotateCurve;
-
-        _dodgeConfig = data.DodgeConfig;
-
-        _chargeMoveSpeed = data.ChargeMoveSpeed;
-        _chargeRotateSpeed = data.ChargeRotateSpeed;
     }
 
     //==========================================================================================================================
@@ -165,7 +182,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         bool isInput = moveInput.sqrMagnitude > 0.01f;
 
         // 방향 전환 체크 (입력이 있고, 현재 움직이는 방향과 반대일 때)
-        bool isReversed = isInput && _currentMoveSpeed > (_maxMoveSpeed / 2f) &&
+        // bool isReversed = isInput && _currentMoveSpeed > (_maxMoveSpeed / 2f) &&
+        //                  Vector3.Dot(moveInput, transform.forward) < -0.3f;
+        
+        bool isReversed = isInput && _currentMoveSpeed > (MaxMoveSpeed / 2f) &&
                          Vector3.Dot(moveInput, transform.forward) < -0.3f;
 
         if (isInput && !isReversed)
@@ -182,8 +202,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         _moveAccelTimer = Mathf.Clamp01(_moveAccelTimer);
 
         // 커브와 이동 입력에 따른 스피드 계산
+        // float speedRatio = _moveCurve.Evaluate(_moveAccelTimer);
+        // _currentMoveSpeed = _maxMoveSpeed * speedRatio * moveInput.magnitude;
+        
         float speedRatio = _moveCurve.Evaluate(_moveAccelTimer);
-        _currentMoveSpeed = _maxMoveSpeed * speedRatio * moveInput.magnitude;
+        _currentMoveSpeed = MaxMoveSpeed * speedRatio * moveInput.magnitude;
 
         // 카메라 방향 기준으로 이동 방향 계산
         Vector3 relativeDirection = GetRelativeVectorToCamera(moveInput);
@@ -202,7 +225,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         }
         else
         {
-            _velocity.y += Physics.gravity.y;
+            _velocity.y += Physics.gravity.y * 20 * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한
@@ -245,8 +268,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         _rotateAccelTimer = Mathf.Clamp01(_rotateAccelTimer);
 
         // 커브를 이용한 회전 속도 계산
+        // float rotationRatio = _rotateCurve.Evaluate(_rotateAccelTimer);
+        // _currentRotationSpeed = _maxRotateSpeed * rotationRatio;
+        
         float rotationRatio = _rotateCurve.Evaluate(_rotateAccelTimer);
-        _currentRotationSpeed = _maxRotateSpeed * rotationRatio;
+        _currentRotationSpeed = MaxRotateSpeed * rotationRatio;
 
         // 회전 적용
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
@@ -293,7 +319,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
             _rotateAccelTimer = Mathf.Clamp01(_rotateAccelTimer);
 
             // 커브를 이용한 회전 속도 계산
-            _currentRotationSpeed = -_maxRotateSpeed * _rotateCurve.Evaluate(_rotateAccelTimer);
+            // _currentRotationSpeed = -_maxRotateSpeed * _rotateCurve.Evaluate(_rotateAccelTimer);
+            _currentRotationSpeed = -MaxRotateSpeed * _rotateCurve.Evaluate(_rotateAccelTimer);
             return;
         }
 
@@ -312,7 +339,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     /// <param name="dodgeData">회피 데이터</param>
     public void SetDodgeConfig(DodgeData dodgeData)
     {
-        _dodgeConfig = dodgeData;
+        _runtimeData.DodgeConfig = dodgeData;
     }
 
     /// <summary>
@@ -327,6 +354,13 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         TweenCallback compeleteCallback = null)
     {
         float currentDistance = 0f;
+        float targetDistance = stepData.StepDistance;
+
+        // 장애물 감지: 이동 방향에 장애물이 있으면 거리를 제한
+        if (Physics.SphereCast(transform.position + _characterController.center, _characterController.radius, direction.normalized, out RaycastHit hit, targetDistance, _obstacleMask))
+        {
+            targetDistance = hit.distance;
+        }
 
         DOTween.To(
             () => currentDistance,
@@ -341,13 +375,14 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
 
                 currentDistance = x;
             },
-            stepData.StepDistance,
+            targetDistance,
             stepData.StepDuration)
             .SetEase(stepData.StepCurve)
             .SetId(id)
@@ -366,6 +401,13 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void Step(Vector3 direction, object id, bool useGravity = false, TweenCallback compeleteCallback = null)
     {
         float currentDistance = 0f;
+        float targetDistance = DodgeConfig.MoveConfig.StepDistance;
+
+        // 장애물 감지: 이동 방향에 장애물이 있으면 거리를 제한
+        if (Physics.SphereCast(transform.position + _characterController.center, _characterController.radius, direction.normalized, out RaycastHit hit, targetDistance, _obstacleMask))
+        {
+            targetDistance = hit.distance;
+        }
 
         DOTween.To(
             () => currentDistance,
@@ -380,13 +422,15 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
+
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
 
                 currentDistance = x;
             },
-            DodgeConfig.MoveConfig.StepDistance,
+            targetDistance,
             DodgeConfig.MoveConfig.StepDuration)
             .SetEase(DodgeConfig.MoveConfig.StepCurve)
             .SetId(id)
@@ -414,6 +458,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -444,6 +489,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -466,7 +512,8 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     /// </summary>
     public void SetChargeMoveSpeed(float speed)
     {
-        _chargeMoveSpeed = speed;
+        // _chargeMoveSpeed = speed;
+        if (_runtimeData != null) _runtimeData.ChargeMoveSpeed = speed;
     }
 
     //==========================================================================================================================

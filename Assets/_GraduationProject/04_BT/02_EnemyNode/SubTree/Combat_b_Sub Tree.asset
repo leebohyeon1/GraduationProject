@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1010, y: 698}
+  position: {x: 1011, y: 698}
   skillName: flee
 --- !u!114 &-700661456820620682
 MonoBehaviour:
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Combat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -48, y: -13}
+  position: {x: -51, y: -81}
   nodes:
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
@@ -355,12 +355,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
   position: {x: 792, y: -112}
   attackKey: Attack02_b
+  animationStateName: 
+  useActionTriggered: 0
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
   ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 1
+  transitionBuffer: 1
+  debugMode: 0
 --- !u!114 &3919280333966606404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,12 +434,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 798, y: 502}
   attackKey: Attack01_b
+  animationStateName: 
+  useActionTriggered: 0
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 8b1d9d704029b1e408febe1be52bb28a, type: 2}
   ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
+  transitionBuffer: 1
+  debugMode: 0
 --- !u!114 &4726210464116984691
 MonoBehaviour:
   m_ObjectHideFlags: 0

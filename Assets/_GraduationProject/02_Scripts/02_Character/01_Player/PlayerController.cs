@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
+    public PlayerData RuntimeData { get; private set; }
 
     private async void Start()
     {        
@@ -86,6 +87,21 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private async Task InitializeReferences()
     {
+        // DataManager에서 런타임 데이터 가져오기
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.LoadGame();
+            RuntimeData = DataManager.Instance.GetGameData().PlayerData;
+            
+            transform.position = RuntimeData.LastPosition;
+        }
+        else
+        {
+            Debug.LogWarning("DataManager Instance is null. Creating default RuntimeData.");
+            RuntimeData = new PlayerData();
+            RuntimeData.InitializeFromSO(Data);
+        }
+
         // 카메라 초기화
         _camera = Camera.main;
 
@@ -225,10 +241,4 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.pink;
-
-        Gizmos.DrawWireCube(transform.position + transform.forward * (Data.NormalAttackConfigList[0].AttackRadius.z / 2), Data.NormalAttackConfigList[0].AttackRadius);
-    }
 }

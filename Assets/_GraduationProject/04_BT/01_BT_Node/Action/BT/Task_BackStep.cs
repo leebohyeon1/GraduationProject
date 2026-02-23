@@ -58,6 +58,7 @@ public class Task_BackStep : Node
         Vector3 rayOrigin = runner.transform.position + Vector3.up * 0.8f;
         if (Physics.Raycast(rayOrigin, _dashDirection, wallCheckDist, LayerMask.GetMask("Wall", "Default")))
         {
+            Debug.Log("[Task_BackStep] 뒤에 벽 감지, 백스텝 종료.");
             return NodeState.SUCCESS;
         }
 

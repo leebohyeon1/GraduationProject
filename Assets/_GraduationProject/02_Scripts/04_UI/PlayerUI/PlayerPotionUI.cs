@@ -5,41 +5,23 @@ using UnityEngine;
 /// <summary>
 /// 플레이어 포션 UI
 /// </summary>
-public class PlayerPotionUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
+public class PlayerPotionUI : PlayerUIBase
 {
     [Header("References")]
     [SerializeField] private List<GameObject> _potionImages;
-    private PlayerController _playerController;                     // 플레이어
 
-    [Header("Event")]
-    [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawned;    // 플레이어 스폰 이벤트
-
-
-    private void OnEnable()
+    public override void Initialize(PlayerController player)
     {
-        _onPlayerSpawned.Subscribe(this);
+        base.Initialize(player);
+
+        p_player.Potion.OnPotionChange += OnPotionChange;
+
+        OnPotionChange(p_player.Potion.CurrentPotion);
     }
 
-    private void OnDisable()
+    public override void Dispose()
     {
-        _onPlayerSpawned.Unsubscribe(this);
-    }
-
-
-    public void OnEventTrigger(PlayerController player)
-    {
-        _playerController = player;
-
-        _playerController.Potion.OnPotionChange += OnPotionChange;
-
-        OnPotionChange(_playerController.Potion.CurrentPotion);
-
-        player.RegisterDisposable(this);
-    }
-
-    public void Dispose()
-    {
-        _playerController.Potion.OnPotionChange -= OnPotionChange;
+        p_player.Potion.OnPotionChange -= OnPotionChange;
     }
 
     // 포션 변경 이벤트 처리

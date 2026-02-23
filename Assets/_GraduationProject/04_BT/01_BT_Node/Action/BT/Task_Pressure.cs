@@ -9,29 +9,26 @@ public class Task_Pressure : Node
     public float MoveSpeed = 4.0f;
     public float StoppingDist = 0.5f;
     public float RotationSpeed = 5.0f;
-    private IAstarAI aiAgent;
+    private AIPath ai;
     private Vector3? currentTargetDebug; // 디버그용 그림 그리기 변수
 
     public override void OnEnter()
     {
         base.OnEnter();
-        aiAgent = runner.GetComponent<IAstarAI>();
-        if (aiAgent == null)
-        {
-            Debug.LogWarning($"[Action_Warning] {runner.name}의 IAstarAI 컴포넌트를 찾을 수 없습니다.");
-        }
-        Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
+        ai = runner.aIPath;
+        ai.enableRotation = false;
+        // Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
     }
     protected override NodeState OnUpdate()
     {
         if(runner._animationBridge.IsAttacking)
         {
-            Debug.Log($"[{runner.name} 공격애니메.");
+            // Debug.Log($"[{runner.name} 공격애니메.");
             return NodeState.FAILURE;
         }   
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            Debug.Log($"[{runner.name} 공격스테이트.");
+            // Debug.Log($"[{runner.name} 공격스테이트.");
             return NodeState.FAILURE;
         }
         
@@ -63,7 +60,7 @@ public class Task_Pressure : Node
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log($"[Action_Exit] {runner.name} 압박 이동 노드 종료됨.");
+        ai.enableRotation = true;
         // runner.Movement.StopMovement();
     }
     private void RotateTowardsPlayer()

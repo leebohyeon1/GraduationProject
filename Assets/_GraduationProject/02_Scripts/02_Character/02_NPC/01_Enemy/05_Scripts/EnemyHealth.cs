@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Packages.Rider.Editor.UnitTesting;
 using UnityEditor.Build.Pipeline;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -137,7 +138,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
-        _owner.player.Money.GetMoney(_owner.enemyStat.MoneyReward);
+        _owner.player.Money.GiveMoney(_owner.enemyStat.MoneyReward);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
@@ -169,17 +170,26 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void TakeDamage(DamageData damageData)
     {
         if (CurrentHealth <= 0) return;
+        bool isBlocked = false;
+        int finalDamage = damageData.DamageAmount;
+        if(_owner.Shield != null && damageData.AttackerTransform != null)
+        {
+            if (_owner.Shield.CheckBlock(damageData.AttackerTransform.position))
+            {
+                isBlocked = true;
+                float damageMultiplier = 1.0f - _owner.Shield.DamageReduction;
+                finalDamage = Mathf.RoundToInt(damageData.DamageAmount * damageMultiplier);
+            }
+        }
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
         _owner.groupAi.CombatAll();
-        if (_delayCoroutine == null && !IsImmune(damageData.AttackType))
+        if (_delayCoroutine == null && !IsImmune(damageData.AttackType) && !_owner.ParrySystem._isStunned )
         {
-            Debug.Log("소경직 면역 카운트 시작");
             _delayCoroutine = StartCoroutine(ActivateImmunityAfterDelay(MinorTime));
         }
         bool isImmune = IsImmune(damageData.AttackType);
-        Debug.Log($"[EnemyHealth] {gameObject.name}의 상태 {_currentImmunityLevel} :공격 레벨 {damageData.AttackType}. 면역 상태: {isImmune}");
-        // 면역이 아닐 때만! -> 피격 애니메이션 재생
-        if (!isImmune)
+
+        if (!isImmune && !isBlocked )
         {
             // 액션(공격 등) 중이 아닐 때만 히트 모션 취함
             if (!_owner._aiController.IsActionable())
@@ -191,29 +201,59 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
 
         int previousHealth = curHealth;
+        if (isBlocked)
+        {
+            switch (damageData.AttackType)
+            {
+                case AttackType.Heavy1:
+                    Debug.Log("Heavy1 피격");
+                    _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy1);
+                    break;
+                case AttackType.Heavy2:
+                    Debug.Log("Heavy2 피격");
+
+                    _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy2);
+                    break;
+                case AttackType.Heavy3:
+                    Debug.Log("Heavy3 피격");
+
+                    _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy3);
+                    break;
+                default:
+                    Debug.Log("Normal 피격");
+                    _owner.animHandler.PlayFeedback("Block_FB", AttackType.Normal);
+                    break;
+            }
+        
+        }
+        else
+        {
+            
         Debug.Log(damageData.AttackType);
         switch (damageData.AttackType)
-        {
-            case AttackType.Heavy1:
-                Debug.Log("Heavy1 피격");
-                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
-                break;
-            case AttackType.Heavy2:
-                Debug.Log("Heavy2 피격");
+            {
+                case AttackType.Heavy1:
+                    Debug.Log("Heavy1 피격");
+                    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
+                    break;
+                case AttackType.Heavy2:
+                    Debug.Log("Heavy2 피격");
 
-                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
-                break;
-            case AttackType.Heavy3:
-                Debug.Log("Heavy3 피격");
+                    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
+                    break;
+                case AttackType.Heavy3:
+                    Debug.Log("Heavy3 피격");
 
-                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
-                break;
-            default:
-                Debug.Log("Normal 피격");
-                _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
-                break;
+                    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
+                    break;
+                default:
+                    Debug.Log("Normal 피격");
+                    _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
+                    break;
+            }
         }
-        curHealth -= damageData.DamageAmount;
+
+        curHealth -= finalDamage;
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
@@ -222,7 +262,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         OnRecoveryHealth?.Invoke(false);
 
-        if (Knockbackable)
+        if (Knockbackable && !isBlocked)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             knockbackDir.y = 0;

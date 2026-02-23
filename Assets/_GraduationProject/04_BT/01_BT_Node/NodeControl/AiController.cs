@@ -7,11 +7,11 @@ public class AiController : MonoBehaviour,IEventListener<string>
     [SerializeField] private ActionTree _behaviorTree;
     public AiBrain _aiBrain { get; private set; }
     Enemy _enemy;
-    [SerializeField] private OnSwingMiss _onSwingMissEvent;
-    [SerializeField] private OnHealing _onHealingEvent;
+    [SerializeField] private OnSwingMissSO _onSwingMissEvent;
+    [SerializeField] private OnHealingSO _onHealingEvent;
 
     [field:SerializeField] public EnemyAttackData[] enemyAttackDatas{ get; private set; }
-    [field: SerializeField] public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
+    [HideInInspector]public EnemyAttackData[] inGameenemyAttackDatas{ get; private set; }
 
     public void Initialize(Enemy owner,EnemyStatMultiplier statMultiplier = default)
     {

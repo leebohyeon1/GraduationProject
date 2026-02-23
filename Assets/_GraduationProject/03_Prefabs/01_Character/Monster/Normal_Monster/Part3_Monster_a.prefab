@@ -609,7 +609,7 @@ Transform:
   m_Children:
   - {fileID: 3422017126234570086}
   m_Father: {fileID: 6188676012907855625}
-  m_LocalEulerAnglesHint: {x: 0.0000023459588, y: 0.000000028687023, z: 3.6640677}
+  m_LocalEulerAnglesHint: {x: 0.000003939458, y: 0.000000048172726, z: 3.6640713}
 --- !u!1 &356534877441165216
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 1513786411176796110}
   - component: {fileID: 7617342137508028609}
   m_Layer: 0
-  m_Name: Monster_a_Damage_FB
+  m_Name: Monster_Damage_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,7 +746,6 @@ MonoBehaviour:
   InScriptDrivenPause: 0
   FeedbacksList:
   - rid: 6863434231624761634
-  - rid: 6863434231624761635
   - rid: 6863434231624761636
   - rid: 6863434231624761637
   - rid: 6863434231624761638
@@ -958,160 +957,6 @@ MonoBehaviour:
         MoveToScaleMax: {x: 2, y: 2, z: 2}
         BumpScaleMin: {x: 10, y: 10, z: 10}
         BumpScaleMax: {x: 10, y: 10, z: 10}
-    - rid: 6863434231624761635
-      type: {class: MMF_ShaderController, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
-      data:
-        Active: 1
-        UniqueID: -168196152
-        Label: ShaderController
-        OriginalLabel: ShaderController
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          PlayCount: 20
-          LimitPlayCount: 0
-          MaxPlayCount: 3
-          SetPlayCountToZeroOnReset: 0
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        AutomaticShakerSetupButton:
-          ButtonText: 
-        Owner: {fileID: 7617342137508028609}
-        DebugActive: 0
-        Mode: 0
-        TargetShaderController: {fileID: 1512293029415170499}
-        TargetShaderControllerList:
-        - {fileID: 688019795850764577}
-        - {fileID: 2009015945912075981}
-        RevertToInitialValueAfterEnd: 0
-        GetInitialValueOnOneTime: 0
-        OneTimeDuration: 0.2
-        OneTimeAmplitude: 10
-        OneTimeRemapMin: 0
-        OneTimeRemapMax: 1
-        OneTimeCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        ToDestinationValue: 1
-        ToDestinationDuration: 1
-        ToDestinationColor: {r: 1, g: 0, b: 0, a: 1}
-        ToDestinationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
     - rid: 6863434231624761636
       type: {class: MMF_FreezeFrame, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
@@ -1633,7 +1478,7 @@ GameObject:
   - component: {fileID: 2006787584029130032}
   - component: {fileID: 2600828161626196967}
   m_Layer: 0
-  m_Name: Monster_a_Heavy1_Damage_FB
+  m_Name: Monster_Heavy1_Damage_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2045,10 +1890,10 @@ MonoBehaviour:
         Owner: {fileID: 2600828161626196967}
         DebugActive: 0
         Mode: 0
-        TargetShaderController: {fileID: 1512293029415170499}
+        TargetShaderController: {fileID: 0}
         TargetShaderControllerList:
-        - {fileID: 688019795850764577}
-        - {fileID: 2009015945912075981}
+        - {fileID: 0}
+        - {fileID: 0}
         RevertToInitialValueAfterEnd: 0
         GetInitialValueOnOneTime: 0
         OneTimeDuration: 0.2
@@ -2489,11 +2334,9 @@ MonoBehaviour:
         Owner: {fileID: 2600828161626196967}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -2664,7 +2507,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7740923647991160754}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 25.330729}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 1.6554487}
 --- !u!1 &1428788890235482724
 GameObject:
   m_ObjectHideFlags: 0
@@ -2696,7 +2539,7 @@ Transform:
   m_Children:
   - {fileID: 5633996735745744594}
   m_Father: {fileID: 6540639243078269455}
-  m_LocalEulerAnglesHint: {x: 0.0000000751742, y: -0.0000011739111, z: 3.6640677}
+  m_LocalEulerAnglesHint: {x: 0.00000012623644, y: -0.0000019712936, z: 3.6640713}
 --- !u!1 &1442114732914935687
 GameObject:
   m_ObjectHideFlags: 0
@@ -2708,6 +2551,7 @@ GameObject:
   - component: {fileID: 1864534636432622886}
   - component: {fileID: 912832351525886594}
   - component: {fileID: 7824219888508030345}
+  - component: {fileID: 4508075515280706271}
   - component: {fileID: 1383074150334306881}
   - component: {fileID: 6995231082406327000}
   - component: {fileID: 8242309275418590466}
@@ -2725,6 +2569,8 @@ GameObject:
   - component: {fileID: 8988324276808111283}
   - component: {fileID: 343879752324978677}
   - component: {fileID: 3453354711736433746}
+  - component: {fileID: 4427833354949509476}
+  - component: {fileID: 1202605068070455818}
   m_Layer: 8
   m_Name: Part3_Monster_a
   m_TagString: Enemy
@@ -2793,13 +2639,34 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.3
+  m_Height: 1.88
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.61, z: 0}
+  m_Center: {x: 0, y: 0.93, z: 0}
+--- !u!65 &4508075515280706271
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.31, z: 1}
+  m_Center: {x: 0, y: 1.68, z: 0}
 --- !u!114 &1383074150334306881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2842,7 +2709,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.AIPath
   version: 1073741824
   radius: 0.5
-  height: 1.3
+  height: 2.42
   canMove: 1
   maxSpeed: 1
   gravity: {x: NaN, y: NaN, z: NaN}
@@ -2894,7 +2761,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0dc086cc9f1520744b9be2513bea42d0, type: 2}
   - {fileID: 11400000, guid: 7b811b2cceea080488d5da69b564c94f, type: 2}
   - {fileID: 11400000, guid: 9e20ad6ff726a754ab6416a053e340bf, type: 2}
-  <inGameenemyAttackDatas>k__BackingField: []
 --- !u!114 &793417534168409537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2933,6 +2799,26 @@ MonoBehaviour:
     offset: {x: 0, y: 0, z: 0}
     id: 0
     HitType: 2
+  - name: Damage_FB
+    feedback: {fileID: 2600828161626196967}
+    offset: {x: 0, y: 0, z: 0}
+    id: 0
+    HitType: 2
+  - name: Damage_FB
+    feedback: {fileID: 4138283493062824288}
+    offset: {x: 0, y: 0, z: 0}
+    id: 0
+    HitType: 3
+  - name: Damage_FB
+    feedback: {fileID: 4542436796108121887}
+    offset: {x: 0, y: 0, z: 0}
+    id: 0
+    HitType: 4
+  - name: Monster_NormalAttack_Notification_FB
+    feedback: {fileID: 5559825895044524846}
+    offset: {x: 0, y: 0, z: 0}
+    id: 0
+    HitType: 0
 --- !u!114 &5524859501643995531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3005,7 +2891,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
-  AnimationBasedMovement: 0
 --- !u!114 &5123924331001142085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3044,7 +2929,7 @@ MonoBehaviour:
   collidesWith: -1
   wallAvoidForce: 1
   wallAvoidFalloff: 1
-  priority: 0.5
+  priority: 0.7
   debug: 0
 --- !u!114 &7980730251416689258
 MonoBehaviour:
@@ -3129,8 +3014,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
-  - {fileID: 0}
   materialsInverted: []
+  targetRenderers: []
 --- !u!114 &6730575990752702737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3198,6 +3083,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyGizmoDrawer
   _editorPreviewData: {fileID: 0}
+--- !u!114 &4427833354949509476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59100c7745107ce4e87880af27c7b4c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  wallBuffer: 0.5
+  AnimationBasedMovement: 1
+--- !u!114 &1202605068070455818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.SimpleSmoothModifier
+  version: 1073741824
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.5
+  uniformLength: 1
+  maxSegmentLength: 4
+  bezierTangentLength: 0.4
+  offset: 0.2
+  factor: 0.1
 --- !u!1 &1766048112759876093
 GameObject:
   m_ObjectHideFlags: 0
@@ -3229,7 +3153,7 @@ Transform:
   m_Children:
   - {fileID: 2345972402584445456}
   m_Father: {fileID: 1340120495779799821}
-  m_LocalEulerAnglesHint: {x: -4.5481305, y: -38.241154, z: 3.5107007}
+  m_LocalEulerAnglesHint: {x: 0.7452576, y: 1.0261495, z: 0.6751477}
 --- !u!1 &1803846663109595758
 GameObject:
   m_ObjectHideFlags: 0
@@ -3241,7 +3165,7 @@ GameObject:
   - component: {fileID: 6294574399168961994}
   - component: {fileID: 4542436796108121887}
   m_Layer: 0
-  m_Name: Monster_a_Heavy3_Damage_FB
+  m_Name: Monster_Heavy3_Damage_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3653,10 +3577,10 @@ MonoBehaviour:
         Owner: {fileID: 4542436796108121887}
         DebugActive: 0
         Mode: 0
-        TargetShaderController: {fileID: 1512293029415170499}
+        TargetShaderController: {fileID: 0}
         TargetShaderControllerList:
-        - {fileID: 688019795850764577}
-        - {fileID: 2009015945912075981}
+        - {fileID: 0}
+        - {fileID: 0}
         RevertToInitialValueAfterEnd: 0
         GetInitialValueOnOneTime: 0
         OneTimeDuration: 0.2
@@ -3806,7 +3730,7 @@ MonoBehaviour:
           ButtonText: Automatic Shaker Setup
         Owner: {fileID: 4542436796108121887}
         DebugActive: 0
-        FreezeFrameDuration: 0.15
+        FreezeFrameDuration: 0.3
         MinimumTimescaleThreshold: 0.1
     - rid: 6863434231624761637
       type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
@@ -4019,7 +3943,7 @@ MonoBehaviour:
           DissipationMode: 2
           DissipationDistance: 100
           PropagationSpeed: 343
-        Velocity: {x: 1, y: 1, z: 1}
+        Velocity: {x: 2, y: 2, z: 2}
         ClearImpulseOnStop: 0
         DrawGizmos: 0
     - rid: 6863434827262066818
@@ -4097,11 +4021,9 @@ MonoBehaviour:
         Owner: {fileID: 4542436796108121887}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -4109,8 +4031,8 @@ MonoBehaviour:
         SoundDataSO: {fileID: 0}
         MinVolume: 1
         MaxVolume: 1
-        MinPitch: 1
-        MaxPitch: 1
+        MinPitch: 0.8
+        MaxPitch: 0.8
         MmSoundManagerTrack: 0
         ID: 0
         AudioGroup: {fileID: 0}
@@ -4273,7 +4195,7 @@ Transform:
   m_Children:
   - {fileID: 130699411617665896}
   m_Father: {fileID: 1340120495779799821}
-  m_LocalEulerAnglesHint: {x: 46.663593, y: 0.000010926705, z: 142.27502}
+  m_LocalEulerAnglesHint: {x: 46.663593, y: 0.000007984127, z: 142.27502}
 --- !u!1 &2318900584552625039
 GameObject:
   m_ObjectHideFlags: 0
@@ -4305,7 +4227,7 @@ Transform:
   m_Children:
   - {fileID: 6337035384903699293}
   m_Father: {fileID: 8705299382596672239}
-  m_LocalEulerAnglesHint: {x: 0.000009098389, y: -0.0000027442559, z: -3.6640625}
+  m_LocalEulerAnglesHint: {x: 0.00000491392, y: -0.0000046082982, z: -3.6640625}
 --- !u!1 &2426634426344401545
 GameObject:
   m_ObjectHideFlags: 0
@@ -4337,7 +4259,7 @@ Transform:
   m_Children:
   - {fileID: 6048094845484492024}
   m_Father: {fileID: 5047285795251986307}
-  m_LocalEulerAnglesHint: {x: -0.00000006731738, y: -0.0000010512218, z: -3.6640625}
+  m_LocalEulerAnglesHint: {x: -0.00000011304287, y: -0.0000017652673, z: -3.6640625}
 --- !u!1 &2844849575255065722
 GameObject:
   m_ObjectHideFlags: 0
@@ -4376,6 +4298,7 @@ Transform:
   - {fileID: 6294574399168961994}
   - {fileID: 8033218900827062272}
   - {fileID: 7509563829269740296}
+  - {fileID: 2726668244121669309}
   m_Father: {fileID: 1864534636432622886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3049647260702967911
@@ -4408,7 +4331,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9192303728993908095}
-  m_LocalEulerAnglesHint: {x: 0.00000013411663, y: -0.0000022950267, z: 3.3444417}
+  m_LocalEulerAnglesHint: {x: 0.00000022521576, y: -0.0000038539297, z: 3.3444452}
 --- !u!1 &3208948337184735205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4439,7 +4362,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 545120876835656435}
-  m_LocalEulerAnglesHint: {x: -0.0000000015884105, y: -0.000000027181047, z: -3.3444555}
+  m_LocalEulerAnglesHint: {x: -0.0000000026673406, y: -0.000000045643816, z: -3.3444579}
 --- !u!1 &3518632166820617095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4451,7 +4374,7 @@ GameObject:
   - component: {fileID: 3885618795605477404}
   - component: {fileID: 4138283493062824288}
   m_Layer: 0
-  m_Name: Monster_a_Heavy2_Damage_FB
+  m_Name: Monster_Heavy2_Damage_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4863,10 +4786,10 @@ MonoBehaviour:
         Owner: {fileID: 4138283493062824288}
         DebugActive: 0
         Mode: 0
-        TargetShaderController: {fileID: 1512293029415170499}
+        TargetShaderController: {fileID: 0}
         TargetShaderControllerList:
-        - {fileID: 688019795850764577}
-        - {fileID: 2009015945912075981}
+        - {fileID: 0}
+        - {fileID: 0}
         RevertToInitialValueAfterEnd: 0
         GetInitialValueOnOneTime: 0
         OneTimeDuration: 0.2
@@ -5016,7 +4939,7 @@ MonoBehaviour:
           ButtonText: Automatic Shaker Setup
         Owner: {fileID: 4138283493062824288}
         DebugActive: 0
-        FreezeFrameDuration: 0.1
+        FreezeFrameDuration: 0.15
         MinimumTimescaleThreshold: 0.1
     - rid: 6863434231624761637
       type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
@@ -5229,7 +5152,7 @@ MonoBehaviour:
           DissipationMode: 2
           DissipationDistance: 100
           PropagationSpeed: 343
-        Velocity: {x: 1, y: 1, z: 1}
+        Velocity: {x: 1.5, y: 1.5, z: 1.5}
         ClearImpulseOnStop: 0
         DrawGizmos: 0
     - rid: 6863434827262066818
@@ -5307,11 +5230,9 @@ MonoBehaviour:
         Owner: {fileID: 4138283493062824288}
         DebugActive: 0
         Source: 0
-        Sfx: {fileID: 8300000, guid: a5154d29a0fe59c4697b110d370e46c8, type: 3}
+        Sfx: {fileID: 8300000, guid: 2ef093174a5ff904ba709a789aad5d87, type: 3}
         AudioResourceToPlay: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 898ae5a9037cf62488be596cde41f897, type: 3}
-        - {fileID: 8300000, guid: 3ed02fad3ad6b0d44938cdf6064c5132, type: 3}
+        RandomSfx: []
         SequentialOrder: 1
         SequentialOrderHoldLast: 0
         SequentialOrderHoldCooldownDuration: 2
@@ -5319,8 +5240,8 @@ MonoBehaviour:
         SoundDataSO: {fileID: 0}
         MinVolume: 1
         MaxVolume: 1
-        MinPitch: 1
-        MaxPitch: 1
+        MinPitch: 0.9
+        MaxPitch: 0.9
         MmSoundManagerTrack: 0
         ID: 0
         AudioGroup: {fileID: 0}
@@ -5483,7 +5404,7 @@ Transform:
   m_Children:
   - {fileID: 9192303728993908095}
   m_Father: {fileID: 1340120495779799821}
-  m_LocalEulerAnglesHint: {x: 34.827713, y: 0.000062153325, z: -142.2749}
+  m_LocalEulerAnglesHint: {x: 34.827713, y: 0.00006291285, z: -142.2749}
 --- !u!1 &4077300418688034563
 GameObject:
   m_ObjectHideFlags: 0
@@ -5514,7 +5435,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3316882265096039806}
-  m_LocalEulerAnglesHint: {x: 0.5643647, y: 7.973667, z: 175.9778}
+  m_LocalEulerAnglesHint: {x: 0.000030412504, y: -0.0000029632774, z: 175.93846}
 --- !u!1 &4395224353583378414
 GameObject:
   m_ObjectHideFlags: 0
@@ -5545,7 +5466,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3316882265096039806}
-  m_LocalEulerAnglesHint: {x: 2.61251, y: -39.987106, z: -176.88918}
+  m_LocalEulerAnglesHint: {x: -0.00006082501, y: -0.000005926563, z: -175.93846}
 --- !u!1 &5124568236705375222
 GameObject:
   m_ObjectHideFlags: 0
@@ -5577,7 +5498,7 @@ Transform:
   m_Children:
   - {fileID: 8012442229282615204}
   m_Father: {fileID: 1864534636432622886}
-  m_LocalEulerAnglesHint: {x: -76.72348, y: 22.366186, z: 136.38937}
+  m_LocalEulerAnglesHint: {x: 68.61519, y: -0.49890238, z: -119.56624}
 --- !u!1 &5199072278485031413
 GameObject:
   m_ObjectHideFlags: 0
@@ -14602,7 +14523,7 @@ Transform:
   m_Children:
   - {fileID: 6793617273118430473}
   m_Father: {fileID: 2482143178967051351}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 23.675283}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5465433226673213412
 GameObject:
   m_ObjectHideFlags: 0
@@ -14638,7 +14559,7 @@ Transform:
   - {fileID: 6188676012907855625}
   - {fileID: 6540639243078269455}
   m_Father: {fileID: 3316882265096039806}
-  m_LocalEulerAnglesHint: {x: -7.8872476, y: 27.629925, z: -1.2898313}
+  m_LocalEulerAnglesHint: {x: 0.7579263, y: 1.01716, z: 0.23427635}
 --- !u!1 &6343420664630244345
 GameObject:
   m_ObjectHideFlags: 0
@@ -14669,7 +14590,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2883969985681248737}
-  m_LocalEulerAnglesHint: {x: 0.000012504218, y: -0.000000013086847, z: 3.3444417}
+  m_LocalEulerAnglesHint: {x: 0.00001063317, y: -0.000000021976119, z: 3.3444452}
 --- !u!1 &6524752571633060189
 GameObject:
   m_ObjectHideFlags: 0
@@ -14681,7 +14602,6 @@ GameObject:
   - component: {fileID: 36501763837038980}
   - component: {fileID: 1550140654924680442}
   - component: {fileID: 2215936504900400904}
-  - component: {fileID: 2009015945912075981}
   m_Layer: 8
   m_Name: a_Spear
   m_TagString: Untagged
@@ -14968,206 +14888,6 @@ MonoBehaviour:
   hitFxFadeOutDuration: 0.25
   hitFxColor: {r: 1, g: 1, b: 1, a: 1}
   hitFxRadius: 0.5
---- !u!114 &2009015945912075981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6524752571633060189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad986206bb726846a202cfdedd282dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Tools.ShaderController
-  TargetType: 0
-  TargetRenderer: {fileID: 1550140654924680442}
-  TargetMaterialID: 0
-  TargetImage: {fileID: 0}
-  UseMaterialForRendering: 0
-  TargetRawImage: {fileID: 0}
-  TargetText: {fileID: 0}
-  CacheMaterial: 1
-  CreateMaterialInstance: 0
-  TargetPropertyName: _Color
-  PropertyType: 5
-  X: 0
-  Y: 0
-  Z: 0
-  W: 0
-  ColorMode: 0
-  ColorRamp:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  FromColor: {r: 0, g: 0, b: 0, a: 1}
-  ToColor: {r: 1, g: 1, b: 1, a: 1}
-  ControlMode: 2
-  AddToInitialValue: 0
-  UseUnscaledTime: 1
-  RevertToInitialValueAfterEnd: 1
-  UseMaterialPropertyBlocks: 0
-  SpriteRendererTextureProperty: _MainTex
-  SafeMode: 0
-  Curve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  MinValue: 0
-  MaxValue: 5
-  Duration: 1
-  PingPongPauseDuration: 1
-  LoopCurve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  LoopStartValue: 0
-  LoopEndValue: 5
-  LoopDuration: 1
-  LoopPauseDuration: 1
-  DrivenLevel: 0
-  Amplitude: {x: 0, y: 5}
-  Frequency: {x: 1, y: 1}
-  Shift: {x: 0, y: 1}
-  RemapNoiseValues: 0
-  RemapNoiseZero: 0
-  RemapNoiseOne: 1
-  OneTimeDuration: 1
-  OneTimeAmplitude: 1
-  OneTimeRemapMin: 0
-  OneTimeRemapMax: 1
-  OneTimeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  OneTimeButton: 0
-  DisableAfterOneTime: 0
-  DisableGameObjectAfterOneTime: 0
-  GetInitialValueOnOneTime: 0
-  AudioAnalyzer: {fileID: 0}
-  BeatID: 0
-  AudioAnalyzerMultiplier: 1
-  AudioAnalyzerOffset: 0
-  AudioAnalyzerLerp: 60
-  ToDestinationValue: 1
-  ToDestinationDuration: 1
-  ToDestinationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 0.6
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ToDestinationButton: 0
-  DisableAfterToDestination: 0
-  InitialValue: 0
-  CurrentValue: 0
-  CurrentValueNormalized: 0
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
-  PropertyID: 0
-  PropertyFound: 0
-  TargetMaterial: {fileID: 0}
-  PingPong: 0
-  LoopTime: 0
 --- !u!1 &6603088856741780449
 GameObject:
   m_ObjectHideFlags: 0
@@ -15199,7 +14919,7 @@ Transform:
   m_Children:
   - {fileID: 545120876835656435}
   m_Father: {fileID: 1340120495779799821}
-  m_LocalEulerAnglesHint: {x: -34.827698, y: -0.000017236573, z: 142.27502}
+  m_LocalEulerAnglesHint: {x: -34.827698, y: -0.000018579987, z: 142.27502}
 --- !u!1 &7132880127363076254
 GameObject:
   m_ObjectHideFlags: 0
@@ -15788,7 +15508,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2893470804105785617}
   - component: {fileID: 8287640988875000582}
-  - component: {fileID: 688019795850764577}
   m_Layer: 8
   m_Name: a_Cloak01
   m_TagString: Untagged
@@ -15882,206 +15601,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.119920015, y: 0.29238552, z: 0.00058433414}
     m_Extent: {x: 0.4347809, y: 0.5113256, z: 0.5094477}
   m_DirtyAABB: 0
---- !u!114 &688019795850764577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7139573592231709468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad986206bb726846a202cfdedd282dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Tools.ShaderController
-  TargetType: 0
-  TargetRenderer: {fileID: 8287640988875000582}
-  TargetMaterialID: 0
-  TargetImage: {fileID: 0}
-  UseMaterialForRendering: 0
-  TargetRawImage: {fileID: 0}
-  TargetText: {fileID: 0}
-  CacheMaterial: 1
-  CreateMaterialInstance: 0
-  TargetPropertyName: _Color
-  PropertyType: 5
-  X: 0
-  Y: 0
-  Z: 0
-  W: 0
-  ColorMode: 0
-  ColorRamp:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  FromColor: {r: 0, g: 0, b: 0, a: 1}
-  ToColor: {r: 1, g: 1, b: 1, a: 1}
-  ControlMode: 2
-  AddToInitialValue: 0
-  UseUnscaledTime: 1
-  RevertToInitialValueAfterEnd: 1
-  UseMaterialPropertyBlocks: 0
-  SpriteRendererTextureProperty: _MainTex
-  SafeMode: 0
-  Curve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  MinValue: 0
-  MaxValue: 5
-  Duration: 1
-  PingPongPauseDuration: 1
-  LoopCurve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  LoopStartValue: 0
-  LoopEndValue: 5
-  LoopDuration: 1
-  LoopPauseDuration: 1
-  DrivenLevel: 0
-  Amplitude: {x: 0, y: 5}
-  Frequency: {x: 1, y: 1}
-  Shift: {x: 0, y: 1}
-  RemapNoiseValues: 0
-  RemapNoiseZero: 0
-  RemapNoiseOne: 1
-  OneTimeDuration: 1
-  OneTimeAmplitude: 1
-  OneTimeRemapMin: 0
-  OneTimeRemapMax: 1
-  OneTimeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  OneTimeButton: 0
-  DisableAfterOneTime: 0
-  DisableGameObjectAfterOneTime: 0
-  GetInitialValueOnOneTime: 0
-  AudioAnalyzer: {fileID: 0}
-  BeatID: 0
-  AudioAnalyzerMultiplier: 1
-  AudioAnalyzerOffset: 0
-  AudioAnalyzerLerp: 60
-  ToDestinationValue: 1
-  ToDestinationDuration: 1
-  ToDestinationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 0.6
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ToDestinationButton: 0
-  DisableAfterToDestination: 0
-  InitialValue: 0
-  CurrentValue: 0
-  CurrentValueNormalized: 0
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
-  PropertyID: 0
-  PropertyFound: 0
-  TargetMaterial: {fileID: 0}
-  PingPong: 0
-  LoopTime: 0
 --- !u!1 &7323587740688749878
 GameObject:
   m_ObjectHideFlags: 0
@@ -16670,7 +16189,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2611585635985808199}
   - component: {fileID: 308781613045848473}
-  - component: {fileID: 1512293029415170499}
   m_Layer: 8
   m_Name: a_Body
   m_TagString: Untagged
@@ -16758,206 +16276,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.52360934, y: 0.0000004172325, z: 0.04139428}
     m_Extent: {x: 0.71064, y: 0.6220462, z: 0.4047535}
   m_DirtyAABB: 0
---- !u!114 &1512293029415170499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8011834145222851737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad986206bb726846a202cfdedd282dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Tools.ShaderController
-  TargetType: 0
-  TargetRenderer: {fileID: 308781613045848473}
-  TargetMaterialID: 0
-  TargetImage: {fileID: 0}
-  UseMaterialForRendering: 0
-  TargetRawImage: {fileID: 0}
-  TargetText: {fileID: 0}
-  CacheMaterial: 1
-  CreateMaterialInstance: 0
-  TargetPropertyName: _Color
-  PropertyType: 5
-  X: 0
-  Y: 0
-  Z: 0
-  W: 0
-  ColorMode: 0
-  ColorRamp:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  FromColor: {r: 0, g: 0, b: 0, a: 1}
-  ToColor: {r: 1, g: 1, b: 1, a: 1}
-  ControlMode: 2
-  AddToInitialValue: 0
-  UseUnscaledTime: 1
-  RevertToInitialValueAfterEnd: 1
-  UseMaterialPropertyBlocks: 0
-  SpriteRendererTextureProperty: _MainTex
-  SafeMode: 0
-  Curve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  MinValue: 0
-  MaxValue: 5
-  Duration: 1
-  PingPongPauseDuration: 1
-  LoopCurve:
-    MMTweenDefinitionType: 0
-    MMTweenCurve: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Initialized: 0
-    ConditionPropertyName: 
-    EnumConditionPropertyName: 
-    EnumConditions: 
-  LoopStartValue: 0
-  LoopEndValue: 5
-  LoopDuration: 1
-  LoopPauseDuration: 1
-  DrivenLevel: 0
-  Amplitude: {x: 0, y: 5}
-  Frequency: {x: 1, y: 1}
-  Shift: {x: 0, y: 1}
-  RemapNoiseValues: 0
-  RemapNoiseZero: 0
-  RemapNoiseOne: 1
-  OneTimeDuration: 1
-  OneTimeAmplitude: 1
-  OneTimeRemapMin: 0
-  OneTimeRemapMax: 1
-  OneTimeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  OneTimeButton: 0
-  DisableAfterOneTime: 0
-  DisableGameObjectAfterOneTime: 0
-  GetInitialValueOnOneTime: 0
-  AudioAnalyzer: {fileID: 0}
-  BeatID: 0
-  AudioAnalyzerMultiplier: 1
-  AudioAnalyzerOffset: 0
-  AudioAnalyzerLerp: 60
-  ToDestinationValue: 1
-  ToDestinationDuration: 1
-  ToDestinationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 0.6
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ToDestinationButton: 0
-  DisableAfterToDestination: 0
-  InitialValue: 0
-  CurrentValue: 0
-  CurrentValueNormalized: 0
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
-  PropertyID: 0
-  PropertyFound: 0
-  TargetMaterial: {fileID: 0}
-  PingPong: 0
-  LoopTime: 0
 --- !u!1 &8148804602768994987
 GameObject:
   m_ObjectHideFlags: 0
@@ -16988,7 +16306,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 130699411617665896}
-  m_LocalEulerAnglesHint: {x: 0.0000006766904, y: -0.00000087068366, z: -3.3444526}
+  m_LocalEulerAnglesHint: {x: 0.0000011363339, y: -0.0000014620969, z: -3.344453}
 --- !u!1 &8164878882408159964
 GameObject:
   m_ObjectHideFlags: 0
@@ -17435,7 +16753,7 @@ Transform:
   m_Children:
   - {fileID: 8486424726476965334}
   m_Father: {fileID: 6793617273118430473}
-  m_LocalEulerAnglesHint: {x: 9.962842e-14, y: 4.0549436e-14, z: 23.185009}
+  m_LocalEulerAnglesHint: {x: 1.4741204e-13, y: -3.9338328e-15, z: -0.49027193}
 --- !u!1 &9020504385873534737
 GameObject:
   m_ObjectHideFlags: 0
@@ -17467,7 +16785,7 @@ Transform:
   m_Children:
   - {fileID: 7740923647991160754}
   m_Father: {fileID: 8012442229282615204}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 24.165585}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.49029934}
 --- !u!1 &9029809749875312831
 GameObject:
   m_ObjectHideFlags: 0
@@ -17501,7 +16819,7 @@ Transform:
   - {fileID: 1059714417650479343}
   - {fileID: 8253436878729065066}
   m_Father: {fileID: 1864534636432622886}
-  m_LocalEulerAnglesHint: {x: 28.428976, y: 10.407408, z: -86.54715}
+  m_LocalEulerAnglesHint: {x: 0.05156305, y: -0.57319385, z: -88.93197}
 --- !u!1 &9031576921203038157
 GameObject:
   m_ObjectHideFlags: 0
@@ -17532,7 +16850,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 796522856946433974}
-  m_LocalEulerAnglesHint: {x: -0.7066254, y: -31.854982, z: 1.0012572}
+  m_LocalEulerAnglesHint: {x: 0.7450756, y: 0.9930675, z: -0.17915764}
 --- !u!1 &9089856515912443204
 GameObject:
   m_ObjectHideFlags: 0
@@ -17564,4 +16882,77 @@ Transform:
   m_Children:
   - {fileID: 2883969985681248737}
   m_Father: {fileID: 1340120495779799821}
-  m_LocalEulerAnglesHint: {x: -46.663624, y: -0.000064019885, z: -142.2749}
+  m_LocalEulerAnglesHint: {x: -46.663624, y: -0.00006604727, z: -142.2749}
+--- !u!1001 &3187177795336769323
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2604263672327640932}
+    m_Modifications:
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8181634728804917590, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+      propertyPath: m_Name
+      value: Monster_NormalAttack_Notification_FB
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+--- !u!4 &2726668244121669309 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 715002532182245782, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+  m_PrefabInstance: {fileID: 3187177795336769323}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5559825895044524846 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6995032916030530565, guid: ef23e0bb41bd8644d9764752c3bb3f0c, type: 3}
+  m_PrefabInstance: {fileID: 3187177795336769323}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player

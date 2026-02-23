@@ -135,6 +135,12 @@ public class AiBrain
 
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
         _owner.AnimationBool("IsCombat", _isCombat);
+        if (_owner.Shield != null)
+    {
+        _owner.Shield.IsActive = _isCombat; 
+        
+     }
+     
         
         if (_isCombat)
         {

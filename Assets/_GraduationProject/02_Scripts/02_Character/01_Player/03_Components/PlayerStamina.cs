@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PlayerStamina : MonoBehaviour, IDisposable
 {
+    private PlayerData _runtimeData;
     private PlayerEvents _events; // 플레이어 이벤트
 
-    private float _maxStamina;
-    private float _currentStamina;
-    private float _staminaRegenPerSecond;
+    // private float _staminaRegenPerSecond;
 
     private Coroutine _regenStaminaCoroutine;
 
@@ -16,9 +15,9 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
 
     #region Properties
-    public float CurrentStamina => _currentStamina;
-    public float MaxStamina => _maxStamina;
-    public float StaminaRegenPerSecond => _staminaRegenPerSecond;
+    public float CurrentStamina => _runtimeData != null ? _runtimeData.CurrentStamina : 0;
+    public float MaxStamina => _runtimeData != null ? _runtimeData.MaxStamina : 100;
+    public float StaminaRegenPerSecond => _runtimeData != null ? _runtimeData.StaminaRegenPerSecond : 5f;
     #endregion
 
     /// <summary>
@@ -26,11 +25,14 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// </summary>
     public void Initialize(PlayerController player)
     {
-        _maxStamina = player.Data.MaxStamina;
-        _currentStamina = _maxStamina;
-        _staminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
-
+        _runtimeData = player.RuntimeData;
         _events = player.Events;
+        
+        // Initialize default if needed
+        if (_runtimeData != null && _runtimeData.StaminaRegenPerSecond == 0)
+        {
+            _runtimeData.StaminaRegenPerSecond = player.Data.StaminaRegenPerSecond;
+        }
 
         _events.RegenStamina += OnRegenStamina;
 
@@ -68,9 +70,12 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// <param name="amount">스테미나 변경량</param>
     public void ChangeStamina(float amount)
     {
+        if (_runtimeData == null) return;
+
         float previousStamina = CurrentStamina; 
         
-        _currentStamina = Mathf.Min(_currentStamina + amount, MaxStamina);
+        // 데이터 직접 수정 ( ~ Max 로 제한)
+        _runtimeData.CurrentStamina = Mathf.Min(CurrentStamina + amount, MaxStamina);
 
         if (previousStamina != CurrentStamina)
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 /// <summary>
 /// 투명화되는 대상
@@ -20,8 +21,7 @@ public class SeeThroughObject : MonoBehaviour
     [SerializeField] private string _baseGlancingAngleCut = "_BaseGlancingAngleCut";
     [SerializeField] private string _ditherProperty = "_Dither";
 
-    private Renderer _renderer;
-    private Material[] _materials; // 런타임에 수정할 메테리얼 인스턴스
+    private List<Material> _materials = new List<Material>(); // 런타임에 수정할 메테리얼 인스턴스
 
     private int _cutHeightID;
     private int _ditherPropertyID;
@@ -35,12 +35,20 @@ public class SeeThroughObject : MonoBehaviour
 
     private void Awake()
     {
-        _renderer = GetComponent<Renderer>();
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
 
-        if (_renderer != null)
+        if (renderers.Length > 0)
         {
             // materials 프로퍼티에 접근하여 인스턴스를 생성하고 캐싱 (GC 방지)
-            _materials = _renderer.materials;
+
+            foreach (Renderer renderer in renderers)
+            {
+                foreach(var mat in renderer.materials)
+                {
+                    _materials.Add(mat);
+                }
+            }
+
         }
 
         _cutHeightID = Shader.PropertyToID(_cutHeightProperty);
@@ -94,7 +102,7 @@ public class SeeThroughObject : MonoBehaviour
     {
         if (_materials == null) return;
 
-        for (int i = 0; i < _materials.Length; i++)
+        for (int i = 0; i < _materials.Count; i++)
         {
             Material mat = _materials[i];
 

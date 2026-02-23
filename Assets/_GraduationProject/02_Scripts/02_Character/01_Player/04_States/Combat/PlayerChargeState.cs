@@ -43,6 +43,12 @@ public class PlayerChargeState : PlayerBaseState
 
         // 매초마다 스테미나 감소
         p_owner.Stamina.UseStamina(p_owner.Combat.ChargeStamina * Time.deltaTime);
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            OnChargeCancel();
+            return;
+        }
+
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
     }
 
@@ -108,9 +114,11 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Combat.ResetChargeLevel();
-        p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 On
+        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
         _shouldTransition = false;
+
+        p_owner.AnimationTrigger.ChargeCanceled();
     }
 
     protected override void SetupAnimator()
@@ -135,9 +143,11 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.ClearStats();
 
-        p_owner.Events.TriggerBattleStateChanged(true);
+        p_owner.Combat.TriggerBattleStateChanged(true);
         p_owner.Events.TriggerChargeFinshed();
         p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
+        p_owner.AnimationTrigger.ChargeCanceled();  // 차지 종료 피드백
+
         _shouldTransition = false;
         _chargeTimer = 0f;
     }
@@ -186,7 +196,7 @@ public class PlayerChargeState : PlayerBaseState
         base.OnDodge();
 
         // Clash 기술이 있으면 차지 대시 가능
-        if (p_owner.Ability.HasAbility("Clash"))
+        if (p_owner.Stamina.CheckStamina() && p_owner.Ability.HasAbility("Clash"))
         {
             ClashSO clashSO = p_owner.Ability.GetAbility("Clash") as ClashSO;
 

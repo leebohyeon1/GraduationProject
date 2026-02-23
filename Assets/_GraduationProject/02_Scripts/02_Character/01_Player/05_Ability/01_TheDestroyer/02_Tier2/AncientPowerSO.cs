@@ -11,8 +11,6 @@ public class AncientPowerSO : PlayerAbilitySO
 {
     // 추가 차지 공격 리스트
     public List<PlayerChargeConfig> AdditionalChargeDataList = new List<PlayerChargeConfig>();
-    public float ChargeMoveSpeed; // 차지 이동속도
-
 
     /// <summary>
     /// 기능 등록
@@ -24,7 +22,6 @@ public class AncientPowerSO : PlayerAbilitySO
         p_owner = p_ability.GetComponent<PlayerController>();
 
         p_owner.Combat.HeavyCounterAttackConfigList.AddRange(AdditionalChargeDataList);
-        p_owner.Movement.SetChargeMoveSpeed(ChargeMoveSpeed);
     }
 
     /// <summary>
@@ -33,8 +30,12 @@ public class AncientPowerSO : PlayerAbilitySO
     /// <param name="ability">플레이어</param>
     public override void UnregisterAbility(PlayerAbility ability)
     {
+        foreach (var data in AdditionalChargeDataList)
+        {
+            p_owner.Combat.HeavyCounterAttackConfigList.Remove(data);
+        }
+
         p_ability = null;
         p_owner = null;
-
     }
 }

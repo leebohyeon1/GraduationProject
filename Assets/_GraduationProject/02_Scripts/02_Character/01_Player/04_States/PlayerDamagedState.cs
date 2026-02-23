@@ -26,7 +26,7 @@ public class PlayerDamagedState : PlayerBaseState
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
         p_owner.Combat.ResetChargeLevel();                  // 차지 레벨 초기화
-        p_owner.Events.TriggerBattleStateChanged(true);     // 전투 상태 유지
+        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
 
         KnockbackMovement();
     }
@@ -52,7 +52,7 @@ public class PlayerDamagedState : PlayerBaseState
     {
         base.SetupStats();
 
-        p_owner.Events.TriggerBattleStateChanged(true);
+        p_owner.Combat.TriggerBattleStateChanged(true);
     }
     #endregion
 
@@ -80,6 +80,12 @@ public class PlayerDamagedState : PlayerBaseState
     /// <param name="damageData">받은 데미지 데이터</param>
     private void OnDamaged(DamageData damageData)
     {
+        // Knockdown 상태이면 반환
+        if(p_stateMachine.CurrentState.GetType() == typeof(PlayerKnockdownState))
+        {
+            return;
+        }
+
         // Heavy 공격을 맞았을 때는 다시 상태 변화 X
         if(_damageData.AttackType >= AttackType.Heavy1)
         {

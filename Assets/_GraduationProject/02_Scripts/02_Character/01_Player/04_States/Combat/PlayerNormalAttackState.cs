@@ -45,5 +45,5 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
 
         p_animator.speed = 1;
     }
-        #endregion
+    #endregion
 }

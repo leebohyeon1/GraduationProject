@@ -1,25 +1,43 @@
 using BehaviorTree;
 using Pathfinding;
+using Pathfinding.RVO;
 using UnityEngine;
 using static Enemy;
 
-public class EnemyMovement
+public class EnemyMovement : MonoBehaviour
 {
     private Enemy _runner;
     AIPath aIPath;
-    Rigidbody rb;
+    public float _normalSpeed{get; private set;}
     private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
-    
-    public float _normalSpeed {get; private set; } = 2f;
-    public EnemyMovement(Enemy enemy)
+
+    private RVOController _rvo; // RVO 컴포넌트 참조
+
+    [Header("Safety Settings")]
+    // characterRadius 변수 삭제 -> RVOController.radius 사용
+    public LayerMask obstacleMask;         // 벽 레이어
+    public float wallBuffer = 0.5f;        // 벽 여유 거리
+    public bool AnimationBasedMovement ;
+
+    public float CharacterRadius
+    {
+        get
+        {
+            // RVOController가 있으면 그 반지름을 사용, 없으면 기본값 0.5f
+            return _rvo != null ? _rvo.radius : 0.5f;
+        }
+    }   
+
+
+    public void Initialize(Enemy enemy)
     {
         _runner = enemy;
-        _normalSpeed = _runner.NormalSpeed;
+        _normalSpeed = _runner.enemyStat.MoveSpeed;
         aIPath = _runner.GetComponent<AIPath>();
         aIPath.maxSpeed = _normalSpeed;
-        rb = _runner.GetComponent<Rigidbody>();
-    }
 
+        _rvo = _runner.GetComponent<RVOController>();
+    }
     public void StartRush(Vector3 targetPosition, float rushSpeed)
     {
         if (aIPath == null)
@@ -49,8 +67,7 @@ public class EnemyMovement
         aIPath.isStopped = false;    // 정지 해제
         aIPath.maxSpeed = chaseSpeed;
 
-        aIPath.destination = newTarget;
-        
+        aIPath.destination = GetVolumeCorrectedPosition(newTarget);
         if (_runner.CurrentState != EnemyStateController.EnemyState.Hit && _runner.CurrentState != EnemyStateController.EnemyState.Attack)
         {
             _runner.SetState(ChaseState);
@@ -63,10 +80,39 @@ public class EnemyMovement
         aIPath.SearchPath(); // 경로 재계산 강제
     }
     }
-    
+    private Vector3 GetVolumeCorrectedPosition(Vector3 targetPos)
+    {
+        Vector3 myPos = _runner.transform.position;
+        Vector3 dir = (targetPos - myPos);
+        float dist = dir.magnitude;
+        
+        if (dist < 0.01f) return targetPos;
+
+        dir.Normalize();
+        if (IsPathBlocked(dir, dist, out RaycastHit hit))
+        {
+            // 벽 바로 앞까지만 이동하도록 보정
+            float safeDist = Mathf.Max(0, hit.distance - wallBuffer);
+            return myPos + (dir * safeDist);
+        }
+        return targetPos;
+    }
+    public bool IsPathBlocked(Vector3 direction, float distance, out RaycastHit hit)
+    {
+        Vector3 castOrigin = _runner.transform.position + Vector3.up * 0.5f;
+        
+        // SphereCast로 부피 체크
+        if (Physics.SphereCast(castOrigin, CharacterRadius, direction, out hit, distance, obstacleMask))
+        {
+            return true; // 막힘
+        }
+        
+        hit = new RaycastHit(); // 빈 값
+        return false; // 뚫림
+    }
     public void UpdateStrafeAnim()
     {
-        if(!_runner.AnimationBasedMovement) return;
+        if(!AnimationBasedMovement) return;
         Vector3 worldVelocity = aIPath.velocity;
         Vector3 localVelocity = _runner.transform.InverseTransformDirection(worldVelocity);
         _runner.animator.SetFloat("InputX", localVelocity.x / aIPath.maxSpeed , 0.1f, Time.deltaTime);

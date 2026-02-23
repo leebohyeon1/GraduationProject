@@ -16,6 +16,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.SetupEvents();
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Combat.CheckedProjectileCounter += OnChecekdProjectileCounter;
     }
 
     protected override void SetupStats()
@@ -41,6 +42,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.ClearEvents();
 
         p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+        p_owner.Combat.CheckedProjectileCounter -= OnChecekdProjectileCounter;
     }
 
     protected override void ClearStats()
@@ -61,9 +63,9 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         }
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
         }
     }
 
@@ -108,9 +110,9 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     private void OnCounterSucceeded(Transform transform)
     {
         // 상쇄 성공 시 슈퍼 아머
-        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.AddTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.AddTag(p_owner.Combat.CounterSuccessTagSO);
         }
 
         // 적이 상쇄되지 않았다면 상쇄
@@ -157,6 +159,41 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                 }
 
                 p_owner.Combat.AddCounterEnemy(parryable);
+            }
+
+
+           
+        }
+    }
+
+    private void OnChecekdProjectileCounter()
+    {
+        Vector3 attackCenter = p_owner.Combat.GetAttackCenter(p_AttackConfig);
+        Vector3 halfExtents = p_AttackConfig.AttackRadius / 2f;
+
+        Collider[] hitObjects = Physics.OverlapBox(attackCenter, halfExtents, p_owner.transform.rotation, p_owner.Data.AttackLayerMask);
+
+        if (hitObjects.Length > 0)
+        {
+            foreach (Collider collider in hitObjects)
+            {
+                // 투사체인 경우
+                if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
+                {
+                    Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
+                    direction.Normalize();
+
+                    DamageData damageData = projectile.Data;
+                    damageData.DamageAmount += p_AttackConfig.AttackDamage;
+
+                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.ChargeLevel + 1];
+
+                    projectile.Setup(direction, speed, p_owner.gameObject, damageData);
+
+                    // 투사체를 튕겨낼 시 
+                    // 상쇄 이벤트 발생
+                    p_owner.Events.TriggerCounterSucceeded(projectile.transform);
+                }
             }
         }
     }

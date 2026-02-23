@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 {
@@ -14,6 +16,10 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner = player;
 
         p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
+        p_owner.Health.TakeDamged += OnTakeDamaged;
+
+        p_owner.Events.BeforeDamaged += OnBeforeDamaged;
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -24,7 +30,11 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// </summary>
     public void Dispose()
     {
-        p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+        p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+        p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
+        p_owner.Health.TakeDamged -= OnTakeDamaged;
+
+        p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
     }
 
     //==========================================================================================================================
@@ -53,6 +63,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Dodge
+    public UnityEvent ClashDodgeFeedback;
+
     /// <summary>
     /// 회피 시작 함수
     /// </summary>
@@ -91,6 +103,15 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner.Events.TriggerAttackFinished();
     }
+
+    /// <summary>
+    /// 다음 전투 상태로 전환
+    /// </summary>
+    public void ChangeNextCombatState()
+    {
+        p_owner.Events.TriggerChangeNextCombatState();
+    }
+
     #endregion
 
     //==========================================================================================================================
@@ -98,6 +119,9 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Counter
+    public List<UnityEvent> HeavyCounterFeedbacks;
+    public UnityEvent CounterSuccessFeedback;
+
     /// <summary>
     /// 상쇄 가능 상태 시작
     /// </summary>
@@ -113,6 +137,22 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner.Events.TriggerCounterWindowFinished();
     }
+
+    /// <summary>
+    /// 강한 상쇄 시작
+    /// </summary>
+    public void HeavyCounterFeedbackPlay()
+    {
+        HeavyCounterFeedbacks[p_owner.Combat.ChargeLevel]?.Invoke();
+    }
+
+    /// <summary>
+    /// 투사체 상쇄 체크
+    /// </summary>
+    public void CheckProjectileCounter()
+    {
+        p_owner.Combat.TriggerCheckedProjectileCounter();
+    }
     #endregion
 
     //==========================================================================================================================
@@ -120,12 +160,21 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Charge
+    public List<UnityEvent> ChargeLevelCompletedFeedbacks;
+    public UnityEvent ChargeCancelFeedback;
+
+
     /// <summary>
     /// 차지 시작 
     /// </summary>
     public void ChargeStarted()
     {
         p_owner.Events.TriggerChargeStarted();  
+    }
+
+    public void ChargeCanceled()
+    {
+        ChargeCancelFeedback?.Invoke();
     }
 
     #endregion
@@ -140,7 +189,43 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="transform"></param>
     private void OnCounterSucceeded(Transform transform)
     {
-        PlayFeedback("Counter_Sucess_FB");  // 상쇄 성공 피드백 재생
+        CounterSuccessFeedback?.Invoke();
     }
 
+    /// <summary>
+    /// 차지 레벨 달성 이벤트
+    /// </summary>
+    /// <param name="level">달성한 레벨</param>
+    private void OnChargeLevelCompleted(int level)
+    {
+        ChargeLevelCompletedFeedbacks[level]?.Invoke();
+    }
+
+    /// <summary>
+    /// 플레이어가 데미지 받았을 때 이벤트
+    /// </summary>
+    /// <param name="damage">데미지</param>
+    private void OnTakeDamaged(int damage)
+    {
+        if (p_owner.Ability.HasTag("Clash_IncreaseDamageReduction"))
+        {
+            ClashDodgeFeedback?.Invoke();
+        }
+    }
+
+    //==========================================================================================================================
+    // Damaged =================================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        if(p_owner.Ability.HasTag("SuperArmor"))
+        {
+            PlayFeedback("SuperArmor_Damage_FB");
+        }
+    }
 }
