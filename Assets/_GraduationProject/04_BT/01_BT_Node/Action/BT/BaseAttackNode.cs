@@ -39,6 +39,7 @@ public abstract class BaseAttackNode : Node
 
     protected EnemyAttackData _data;
     protected float _nodeEntryTime;
+    protected int _entryFrame; 
     protected bool _isActionFinishedInternally;
     protected bool _hasTriggeredLoop;
     private bool _hasSeenTag;
@@ -49,6 +50,7 @@ public abstract class BaseAttackNode : Node
     public sealed override void OnEnter()
     {
         _nodeEntryTime = Time.time;
+        _entryFrame = Time.frameCount; 
         _isActionFinishedInternally = false;
         _hasTriggeredLoop = false;
         _hasSeenTag = false;
@@ -61,10 +63,11 @@ public abstract class BaseAttackNode : Node
             return;
         }
 
-        bool isAlreadyAttacking = runner._animationBridge.IsAttacking || runner.animator.IsInTransition(0);
-        if (runner._stateController.IsStateLocked || isAlreadyAttacking || runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        bool isAlreadyInAttackState = runner.CurrentState == EnemyStateController.EnemyState.Attack || runner._animationBridge.IsAttacking;
+        
+        if (runner._stateController.IsStateLocked || isAlreadyInAttackState)
         {
-            Log("진입 거부: 이미 공격 중이거나 트랜지션 중입니다.");
+            Log("진입 거부: 이미 공격 상태이거나 잠겨 있습니다. (State: " + runner.CurrentState + ")");
             _isActionFinishedInternally = true;
             return;
         }
@@ -104,7 +107,6 @@ public abstract class BaseAttackNode : Node
             if (SO[i] != null)
             {
                 SO[i].Reset(runner);
-                // OnEnter 시점에 타이머 시작 보장
                 SO[i].OnEnter(runner);
                 SO[i].OnActionTriggered(runner);
             }
@@ -123,7 +125,14 @@ public abstract class BaseAttackNode : Node
         float elapsedTime = Time.time - _nodeEntryTime;
 
         bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
-        if (isTagActive) _hasSeenTag = true;
+        
+        // [수정] 태그가 처음 감지될 때 플래그를 한 번 더 리셋함 (트랜지션 노이즈 제거)
+        if (isTagActive && !_hasSeenTag)
+        {
+            _hasSeenTag = true;
+            Handler.ResetAllFlags(); 
+            Log("애니메이션 태그 확인됨 - 신호 대기 시작");
+        }
 
         // 히트 확정 탈출 체크
         if (LoopAttack && escapeOnHitConfirm && _hitConfirmTime > 0)
@@ -139,14 +148,17 @@ public abstract class BaseAttackNode : Node
             }
         }
 
-        NodeState finishState = CheckActionFinished(elapsedTime);
-        if (finishState != NodeState.RUNNING) return finishState;
+        if (Time.frameCount > _entryFrame + 1)
+        {
+            NodeState finishState = CheckActionFinished(elapsedTime);
+            if (finishState != NodeState.RUNNING) return finishState;
+        }
 
         if (!isTagActive)
         {
             if (elapsedTime > transitionBuffer)
             {
-                Log("애니메이션 태그 불일치 종료");
+                Log("애니메이션 태그 불일치 종료 (Tag: " + _data.AttackName + ")");
                 return NodeState.FAILURE;
             }
             return NodeState.RUNNING;
@@ -158,33 +170,14 @@ public abstract class BaseAttackNode : Node
         }
 
         HandleCommonSystems(stateInfo, nextStateInfo);
-
-        // [핵심 수정] 루프 종료 여부 판단: 타격 성공 여부와 상관없이 SO 타이머가 만료되면 정지
-        bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
-        
-        if (!IsMovementFinished && !isLoopEnded)
-        {
-            UpdateMovement();
-        }
-        else
-        {
-            // 이동 중단 및 물리 초기화 (제자리 멈춤 보장)
-            Rigidbody rb = runner.GetComponent<Rigidbody>();
-            if (rb != null) rb.linearVelocity = Vector3.zero;
-            IAstarAI ai = runner.GetComponent<IAstarAI>();
-            if (ai != null) 
-            {
-                ai.isStopped = true;
-                ai.destination = runner.transform.position; 
-            }
-        }
+        UpdateMovement();
 
         return NodeState.RUNNING;
     }
 
     public sealed override void OnExit()
     {
-        Log("공격 노드 종료 (OnExit)");
+        Log("공격 노드 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
         CleanupAllStates();
         brain.StartSkillCooldown(attackKey);
     }
@@ -275,20 +268,26 @@ public abstract class BaseAttackNode : Node
             if (stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName))
             {
                 OnActionSOTriggered();
+                for (int i = 0; i < SO.Length; i++)
+                {
+                    if (SO[i] != null)
+                    {
+                        SO[i].OnEnter(runner);
+                    }
+                }
+                Handler.EndSO();
             }
-            Handler.EndSO();
         }
 
-        for (int i = 0; i < SO.Length; i++)
-        {
-            if (SO[i] != null)
-            {
-                SO[i].OnUpdate(runner);
-            }
-        }
-        
         if (stateInfo.IsTag(_data.AttackName))
         {
+            for (int i = 0; i < SO.Length; i++)
+            {
+                if (SO[i] != null)
+                {
+                    SO[i].OnUpdate(runner);
+                }
+            }
             HandleLoopAttackLogic();
         }
 
@@ -300,7 +299,7 @@ public abstract class BaseAttackNode : Node
 
     private void HandleRotation()
     {
-        if (continuousRotation)
+        if (continuousRotation && !Handler.IsActive)
         {
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;
@@ -318,13 +317,14 @@ public abstract class BaseAttackNode : Node
             if (col.gameObject == runner.gameObject) continue;
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
+                Log("플레이어 타격 성공: " + col.name);
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 
                 if (LoopAttack && _hitConfirmTime < 0)
                 {
                     _hitConfirmTime = Time.time;
-                    Log("플레이어 타격: 지연 후 루프 탈출 예정");
+                    Log("히트 확정: " + hitEscapeDelay + "초 후 루프 탈출 예정");
                 }
 
                 if (!maintainAtk) Handler.CloseHitWindow();
@@ -365,12 +365,12 @@ public abstract class BaseAttackNode : Node
 
     private NodeState CheckActionFinished(float elapsedTime)
     {
-        if (!_hasSeenTag && elapsedTime < transitionBuffer + 0.3f)
+        // [수정] 태그를 실제로 감지하기 전까지는 절대 종료 신호를 믿지 않음
+        if (!_hasSeenTag)
         {
             return NodeState.RUNNING;
         }
 
-        // [수정] 절대 타임아웃: maxNodeDuration 도달 시 즉시 종료
         bool isTimedOut = elapsedTime >= maxNodeDuration; 
         bool movementEnd = IsMovementFinished && elapsedTime > transitionBuffer + 0.5f;
         
@@ -384,7 +384,10 @@ public abstract class BaseAttackNode : Node
 
         if (Handler.IsActionFinished || movementEnd || isTimedOut)
         {
-            if (isTimedOut) Log("노드 시간 만료로 강제 종료 (Duration: " + maxNodeDuration + "s)", true);
+            if (isTimedOut) Log("시간 만료 종료", true);
+            else if (Handler.IsActionFinished) Log("애니메이션 신호로 종료");
+            else if (movementEnd) Log("특수 이동 완료로 종료");
+
             if (NextBT) return NodeState.SUCCESS;
             bool hit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
             return hit ? NodeState.SUCCESS : NodeState.FAILURE;
