@@ -67,9 +67,22 @@ public class KSante : EnemyUseAnything
         {
             enemy.player.transform.parent = null;
             AttackDataKnockback.AttackerTransform = enemy.transform;
-            enemy.player.GetComponent<PlayerHealth>().TakeDamage(AttackDataKnockback);
+            enemy.player.GetComponent<IDamageable>().TakeDamage(AttackDataKnockback);
             board.SetValue(KEY_HAS_HIT, false);
-            enemy.player.GetComponent<IDragable>().Drop();
+
+            enemy.player.Movement.Step(enemy.transform.forward, 
+                new StepData()
+                {
+                    StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
+                    StepDuration = AttackDataKnockback.KnockbackDuration,
+                    StepCurve = AttackDataKnockback.KnockbackCurve,
+                    StepRotateSpeed = 0f
+                }, 
+                this, false, () => 
+            {
+                enemy.player.GetComponent<IDragable>().Drop();
+            });
+
         }
         return runner;
     }

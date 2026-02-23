@@ -69,8 +69,6 @@ public class PlayerKnockdownState : PlayerBaseState
     protected override void ClearAnimator()
     {
         base.ClearAnimator();
-
-        p_animator.SetBool("IsHit", false);
     }
     #endregion
 
