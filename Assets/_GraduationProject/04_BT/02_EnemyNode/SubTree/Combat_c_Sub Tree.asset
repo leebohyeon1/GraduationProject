@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_HomingAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1142, y: 126}
+  position: {x: 1142, y: 123}
   attackKey: Attack01_c
   animationStateName: 
   useActionTriggered: 0
@@ -22,6 +22,7 @@ MonoBehaviour:
   ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
+  continuousRotation: 1
   transitionBuffer: 1
   debugMode: 1
 --- !u!114 &-7994454844275576254
@@ -36,7 +37,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_Chase Player Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
-  position: {x: 1323, y: 632}
+  position: {x: 1336, y: 747}
   Distance: 3
   speed: 4
 --- !u!114 &-7154228387633228831
@@ -72,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
   m_Name: Start Skill Cooldown
   m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1325, y: 470}
+  position: {x: 1337, y: 506}
   skillName: flee
 --- !u!114 &-5169928796796515572
 MonoBehaviour:
@@ -86,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1141, y: 45}
+  position: {x: 1141, y: 46}
   skillName: Attack01_c
   cooldownDuration: 5
   EnemyAttackData: 1
@@ -136,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1140, y: -181}
+  position: {x: 1141, y: -185}
   key: HasAttackToken
   exceptCondition:
     key: 
@@ -154,7 +155,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 922, y: 354}
   nodes:
-  - {fileID: 8754342361962056781}
   - {fileID: -2031808336131457005}
   - {fileID: 292309848878647992}
   services: []
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Chasing
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1142, y: 556}
+  position: {x: 1155, y: 671}
   nodes:
   - {fileID: 6610523143064210815}
   - {fileID: -7994454844275576254}
@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 1143, y: 728}
+  position: {x: 1156, y: 843}
   IsSee: 1
   rotationSpeed: 5
 --- !u!114 &826747160893888558
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868d6069a6a2a4e4a8b5d8a346c9c798, type: 3}
   m_Name: Task_Flee From Target
   m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
-  position: {x: 1324, y: 394}
+  position: {x: 1336, y: 430}
   fleeDistance: 5
   fleeSpeed: 5
 --- !u!114 &1247630875305046774
@@ -305,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1322, y: 319}
+  position: {x: 1334, y: 355}
   floatCondition:
     key: DistanceToTarget
     Operator: 1
@@ -347,7 +347,6 @@ MonoBehaviour:
   - {fileID: -4747025815022784661}
   - {fileID: -5169928796796515572}
   - {fileID: -8061363964458695047}
-  - {fileID: 8793536625120187579}
   services: []
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -387,6 +386,7 @@ MonoBehaviour:
   ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
+  continuousRotation: 1
   transitionBuffer: 1
   debugMode: 1
 --- !u!114 &4640970959790474602
@@ -449,7 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1322, y: 558}
+  position: {x: 1337, y: 621}
   floatCondition:
     key: DistanceToTarget
     Operator: 5
@@ -468,7 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1320, y: 243}
+  position: {x: 1334, y: 280}
   skillName: flee
   cooldownDuration: 5
   EnemyAttackData: 0
@@ -536,24 +536,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Kiting
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1143, y: 352}
+  position: {x: 1155, y: 393}
   nodes:
   - {fileID: 6996011208997606592}
   - {fileID: 1897480963455686129}
   - {fileID: 826747160893888558}
   - {fileID: -6173243950670796869}
   services: []
---- !u!114 &8793536625120187579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1145, y: 200}
-  waitTime: 1

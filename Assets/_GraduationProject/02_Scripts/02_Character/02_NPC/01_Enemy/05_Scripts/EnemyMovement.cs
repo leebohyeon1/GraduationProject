@@ -51,8 +51,6 @@ public class EnemyMovement : MonoBehaviour
         aIPath.isStopped = false;
 
     }
-
-
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
         if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die)
@@ -126,8 +124,10 @@ public class EnemyMovement : MonoBehaviour
     }
     public void StopMovement()
     {
+        Debug.Log($"[EnemyMovement] StopMovement 호출 - 현재 상태: {CurrentState}");
         aIPath.canMove = false;
         aIPath.isStopped = true;
+        aIPath.destination = _runner.transform.position;
         _runner.AnimationBool("Walk", false);
 
     }

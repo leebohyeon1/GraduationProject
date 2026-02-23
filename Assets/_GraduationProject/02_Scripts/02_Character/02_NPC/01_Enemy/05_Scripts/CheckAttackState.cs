@@ -9,6 +9,7 @@ public class CheckAttackState : StateMachineBehaviour
         var runner = animator.GetComponent<EnemyAnimationBridge>(); // 본인의 컴포넌트 가져오기
         if (runner != null)
         {
+            Debug.Log("<color=red>[Animation] 공격 애니메이션 진입 - IsAttacking true</color>");
             runner.IsAttacking = true; 
         }
     }

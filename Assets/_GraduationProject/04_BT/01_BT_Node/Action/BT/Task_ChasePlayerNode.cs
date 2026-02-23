@@ -16,6 +16,10 @@ public class Task_ChasePlayerNode : Node
     }
     protected override NodeState OnUpdate()
     {
+        if(runner._animationBridge.IsAttacking) {
+            Debug.Log("<color=red>[Task] 공격 애니메이션이 재생 중입니다. 추격 실패.</color>");
+            return NodeState.FAILURE;
+        }
         if (runner.player == null)
         {
             return NodeState.FAILURE;
@@ -32,8 +36,14 @@ public class Task_ChasePlayerNode : Node
 
     public override void OnExit()
     {
-        
+        Debug.Log("<color=cyan>[Task] 추격 완료 또는 실패, 이동 멈춤.</color>");
         runner.Movement.StopMovement();
+    }
+    public override void Abort()
+    {
+        base.Abort();
+        runner.Movement.StopMovement();
+
     }
 
     public override Node Clone()

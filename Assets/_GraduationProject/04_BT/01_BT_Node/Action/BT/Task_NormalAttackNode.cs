@@ -31,6 +31,9 @@ public class Task_NormalAttackNode : Node
     [Tooltip("공격 종료 시 항상 SUCCESS 반환 여부")]
     public bool NextBT = false;
 
+    [Tooltip("공격 중 플레이어를 계속 바라볼지 여부")]
+    public bool continuousRotation = true;
+
     [Header("Timing Settings")]
     [Range(0.1f, 5f)]
     [Tooltip("애니메이션 태그 전환 대기 시간 (초)")]
@@ -184,11 +187,14 @@ public class Task_NormalAttackNode : Node
 
     private void HandleRotation()
     {
-        if (!Handler.IsActive)
+        if (continuousRotation && !Handler.IsActive)
         {
             Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
             directionToPlayer.y = 0;
-            runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+            if (directionToPlayer.sqrMagnitude > 0.001f)
+            {
+                runner.transform.rotation = Quaternion.LookRotation(directionToPlayer);
+            }
         }
     }
 
@@ -331,6 +337,7 @@ public class Task_NormalAttackNode : Node
         node.ExceptKey = this.ExceptKey;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;
+        node.continuousRotation = this.continuousRotation;
         node.transitionBuffer = this.transitionBuffer;
         node.debugMode = this.debugMode;
         node.useActionTriggered = this.useActionTriggered;
