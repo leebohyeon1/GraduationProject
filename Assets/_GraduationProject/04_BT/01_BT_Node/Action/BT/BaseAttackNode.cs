@@ -170,7 +170,7 @@ public abstract class BaseAttackNode : Node
 
         HandleCommonSystems(stateInfo, nextStateInfo);
 
-        // [복구 및 수정] 이동 제어: 특수 이동이 끝났거나 루프 시간이 만료되었다면 즉시 물리 정지
+        // 이동 제어: 특수 이동이 끝났거나 루프 시간이 만료되었다면 즉시 물리 정지
         bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
         
         if (!IsMovementFinished && !isLoopEnded)
@@ -179,7 +179,6 @@ public abstract class BaseAttackNode : Node
         }
         else
         {
-            // 루프 종료 시 물리 정지 로직 재삽입
             Rigidbody rb = runner.GetComponent<Rigidbody>();
             if (rb != null) rb.linearVelocity = Vector3.zero;
             IAstarAI ai = runner.GetComponent<IAstarAI>();
@@ -426,6 +425,10 @@ public abstract class BaseAttackNode : Node
             ai.canMove = true;
             ai.isStopped = false;
             ai.maxSpeed = runner.Movement._normalSpeed;
+            
+            // [수정] 종료 시점에 목적지를 현재 위치로 고정하여 밀림 방지
+            ai.destination = runner.transform.position;
+            
             if (!ai.pathPending) ai.SearchPath();
         }
     }
