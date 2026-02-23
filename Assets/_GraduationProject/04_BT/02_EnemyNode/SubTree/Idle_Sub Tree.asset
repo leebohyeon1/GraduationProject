@@ -29,28 +29,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_Idle(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: -607, y: -299}
+  position: {x: -836, y: -299}
   nodes:
-  - {fileID: 4272942598619701867}
-  - {fileID: -6212856105988776067}
+  - {fileID: 5676594425274753719}
   services: []
---- !u!114 &-4720060248945217807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Animation Node
-  m_EditorClassIdentifier: Assembly-CSharp::AnimationNode
-  position: {x: -131, y: -88}
-  animationName: Discover_Player
-  OnSuccess: 0
-  animationBool: 0
-  enemyUseAnything: {fileID: 0}
 --- !u!114 &-4323218897466019289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_EngageCombat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: -137, y: -11}
+  position: {x: -137, y: -88}
+  transitionBuffer: 0.5
+  animationTagName: Discover_Player
 --- !u!114 &-2436545328585954225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,6 +106,36 @@ MonoBehaviour:
   m_Name: Idle_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -4941898794227933307}
+--- !u!114 &349469003420780475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: -446, y: -473}
+  child: {fileID: 497410341139032330}
+--- !u!114 &497410341139032330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: -446, y: -396}
+  key: IsPlayerDetected
+  exceptCondition:
+    key: 
 --- !u!114 &1435062344627752039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +201,6 @@ MonoBehaviour:
   - {fileID: 3249966189030680422}
   - {fileID: 4298692548849664335}
   - {fileID: 1435062344627752039}
-  - {fileID: -4720060248945217807}
   - {fileID: -4323218897466019289}
   services: []
 --- !u!114 &4298692548849664335
@@ -205,3 +218,37 @@ MonoBehaviour:
   position: {x: -130, y: -242}
   IsSee: 1
   rotationSpeed: 5
+--- !u!114 &5427365917279850068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: -612, y: -289}
+  nodes:
+  - {fileID: 4272942598619701867}
+  - {fileID: -6212856105988776067}
+  services: []
+--- !u!114 &5676594425274753719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: -597, y: -434}
+  nodes:
+  - {fileID: 349469003420780475}
+  - {fileID: 5427365917279850068}
+  services: []

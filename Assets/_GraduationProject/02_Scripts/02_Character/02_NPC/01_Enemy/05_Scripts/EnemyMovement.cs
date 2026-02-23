@@ -124,7 +124,7 @@ public class EnemyMovement : MonoBehaviour
     }
     public void StopMovement()
     {
-        Debug.Log($"[EnemyMovement] StopMovement 호출 - 현재 상태: {CurrentState}");
+        // Debug.Log($"[EnemyMovement] StopMovement 호출 - 현재 상태: {CurrentState}");
         aIPath.canMove = false;
         aIPath.isStopped = true;
         aIPath.destination = _runner.transform.position;

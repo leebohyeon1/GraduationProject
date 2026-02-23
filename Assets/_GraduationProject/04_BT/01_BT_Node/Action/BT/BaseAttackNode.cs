@@ -1,0 +1,417 @@
+using UnityEngine;
+using BehaviorTree;
+using System.Collections.Generic;
+using Pathfinding;
+
+/// <summary>
+/// 모든 공격형 노드의 기본 클래스. 
+/// 애니메이션 동기화, 히트 판정, 회전 로직 등 공통 공격 엔진을 포함하며 상세 로깅 시스템을 지원합니다.
+/// </summary>
+public abstract class BaseAttackNode : Node
+{
+    [Header("Base Attack Properties")]
+    public string attackKey;
+    public string animationStateName = "";
+    public float transitionBuffer = 1f;
+    /// <summary> 노드 진입 후 강제로 종료할 최대 시간 (초) </summary>
+    public float maxNodeDuration = 6.0f;
+    public bool continuousRotation = true;
+    public bool maintainAtk = false;
+    public EnemyUseAnything[] SO = null;
+    public bool LoopAttack = false;
+    public bool NextBT = false;
+    public bool debugMode = true;
+
+    [Header("Escape Settings (When Enemy Attacks Player)")]
+    [Tooltip("플레이어 타격 성공 시 루프를 탈출할지 여부")]
+    public bool escapeOnHitConfirm = true;
+    [Tooltip("타격 성공 후 루프를 탈출하기까지의 지연 시간 (초)")]
+    public float hitEscapeDelay = 0.5f;
+
+    [Header("Execution Gate")]
+    public bool checkRangeOnEnter = true;
+    public float rangeThreshold = 1.0f;
+    public bool ignoreYDistance = true;
+    public bool allowOutOfCombat = false;
+
+    [Header("State Control")]
+    public string ExceptKey = "IsAttacking";
+
+    protected EnemyAttackData _data;
+    protected float _nodeEntryTime;
+    protected bool _isActionFinishedInternally;
+    protected bool _hasTriggeredLoop;
+    private bool _hasSeenTag;
+    private float _hitConfirmTime = -1f;
+
+    #region Lifecycle (Sealed)
+    
+    public sealed override void OnEnter()
+    {
+        _nodeEntryTime = Time.time;
+        _isActionFinishedInternally = false;
+        _hasTriggeredLoop = false;
+        _hasSeenTag = false;
+        _hitConfirmTime = -1f;
+
+        if (!brain.blackboard.HasKey(attackKey) || !brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
+        {
+            Log("[Error] '" + attackKey + "' 키를 블랙보드에서 찾을 수 없습니다.", true);
+            _isActionFinishedInternally = true;
+            return;
+        }
+
+        bool isAlreadyAttacking = runner._animationBridge.IsAttacking || runner.animator.IsInTransition(0);
+        if (runner._stateController.IsStateLocked || isAlreadyAttacking || runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        {
+            Log("진입 거부: 이미 공격 중이거나 트랜지션 중입니다.");
+            _isActionFinishedInternally = true;
+            return;
+        }
+
+        if (!CanExecuteInternal())
+        {
+            _isActionFinishedInternally = true;
+            return;
+        }
+
+        Log("공격 노드 진입 확정: " + _data.AttackName);
+
+        Handler.ResetAllFlags();
+        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
+        brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
+        brain.blackboard.SetValue(ExceptKey, true);
+
+        runner.AnimationBool("IsRushing", false);
+
+        _data.damageData.AttackerTransform = runner.transform;
+        runner.AnimationEvent(_data.AttackName);
+        runner.SetState(EnemyStateController.EnemyState.Attack);
+        runner.SetCurrentAttackData(_data);
+        
+        runner._stateController.SetLock(true);
+
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.canMove = false;
+            ai.isStopped = true;
+            ai.destination = runner.transform.position;
+        }
+
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null)
+            {
+                SO[i].Reset(runner);
+                // OnEnter 시점에 타이머 시작 보장
+                SO[i].OnEnter(runner);
+                SO[i].OnActionTriggered(runner);
+            }
+        }
+
+        InitialMovementSetup();
+    }
+
+    protected sealed override NodeState OnUpdate()
+    {
+        if (_isActionFinishedInternally) return NodeState.FAILURE;
+        if (_data == null) return NodeState.FAILURE;
+
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
+        float elapsedTime = Time.time - _nodeEntryTime;
+
+        bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
+        if (isTagActive) _hasSeenTag = true;
+
+        // 히트 확정 탈출 체크
+        if (LoopAttack && escapeOnHitConfirm && _hitConfirmTime > 0)
+        {
+            if (Time.time - _hitConfirmTime >= hitEscapeDelay)
+            {
+                if (!brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false))
+                {
+                    Log("타격 성공 후 지연시간 경과: 루프 탈출");
+                    runner.AnimationBool("IsRushing", true);
+                    brain.blackboard.SetValue(LoopAction.EndKey, true);
+                }
+            }
+        }
+
+        NodeState finishState = CheckActionFinished(elapsedTime);
+        if (finishState != NodeState.RUNNING) return finishState;
+
+        if (!isTagActive)
+        {
+            if (elapsedTime > transitionBuffer)
+            {
+                Log("애니메이션 태그 불일치 종료");
+                return NodeState.FAILURE;
+            }
+            return NodeState.RUNNING;
+        }
+
+        if (runner.animator.IsInTransition(0))
+        {
+            Handler.ResetAllFlags();
+        }
+
+        HandleCommonSystems(stateInfo, nextStateInfo);
+
+        // [핵심 수정] 루프 종료 여부 판단: 타격 성공 여부와 상관없이 SO 타이머가 만료되면 정지
+        bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
+        
+        if (!IsMovementFinished && !isLoopEnded)
+        {
+            UpdateMovement();
+        }
+        else
+        {
+            // 이동 중단 및 물리 초기화 (제자리 멈춤 보장)
+            Rigidbody rb = runner.GetComponent<Rigidbody>();
+            if (rb != null) rb.linearVelocity = Vector3.zero;
+            IAstarAI ai = runner.GetComponent<IAstarAI>();
+            if (ai != null) 
+            {
+                ai.isStopped = true;
+                ai.destination = runner.transform.position; 
+            }
+        }
+
+        return NodeState.RUNNING;
+    }
+
+    public sealed override void OnExit()
+    {
+        Log("공격 노드 종료 (OnExit)");
+        CleanupAllStates();
+        brain.StartSkillCooldown(attackKey);
+    }
+
+    public sealed override void Abort()
+    {
+        Log("공격 노드 중단 (Abort)");
+        CleanupAllStates();
+    }
+
+    private void CleanupAllStates()
+    {
+        SpecificCleanup();
+
+        if (runner._stateController != null)
+        {
+            runner._stateController.SetLock(false);
+        }
+
+        runner.ParrySystem.StateNormal();
+        brain.blackboard.SetValue(ExceptKey, false);
+        brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
+        Handler.ResetAllFlags();
+        
+        runner.SetState(EnemyStateController.EnemyState.Idle);
+        runner.AnimationBool("Walk", false);
+        runner.AnimationBool("IsRushing", true);
+        
+        runner.aIPath.enableRotation = true;
+        runner.SetStiffness(0);
+
+        StopMovementInternal();
+
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null) SO[i].OnExit(runner);
+        }
+        Handler.EndSO();
+    }
+
+    #endregion
+
+    #region Execution Gate Logic
+
+    private bool CanExecuteInternal()
+    {
+        if (!allowOutOfCombat && !brain._isCombat) return false;
+        if (!brain.IsSkillReady(attackKey, _data.Cooltime)) return false;
+        if (checkRangeOnEnter)
+        {
+            float dist = CalculateDistance();
+            float range = GetRequiredRange();
+            if (dist > range + rangeThreshold) return false;
+        }
+        return CheckCustomPreconditions();
+    }
+
+    private float CalculateDistance()
+    {
+        Vector3 myPos = runner.transform.position;
+        Vector3 targetPos = runner.player.transform.position;
+        if (ignoreYDistance) { myPos.y = 0; targetPos.y = 0; }
+        return Vector3.Distance(myPos, targetPos);
+    }
+
+    protected virtual float GetRequiredRange() => _data != null ? _data.damageRadius : 2.0f;
+    protected virtual bool CheckCustomPreconditions() => true;
+
+    #endregion
+
+    #region Abstract Hooks
+
+    protected abstract void InitialMovementSetup();
+    protected abstract void UpdateMovement();
+    protected abstract bool IsMovementFinished { get; }
+    protected virtual void SpecificCleanup() { }
+
+    #endregion
+
+    #region Internal Attack Engine
+
+    private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
+    {
+        if (Handler.IsSound) Handler.EndSound();
+
+        if (Handler.IsActionSO)
+        {
+            if (stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName))
+            {
+                OnActionSOTriggered();
+            }
+            Handler.EndSO();
+        }
+
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null)
+            {
+                SO[i].OnUpdate(runner);
+            }
+        }
+        
+        if (stateInfo.IsTag(_data.AttackName))
+        {
+            HandleLoopAttackLogic();
+        }
+
+        HandleRotation();
+        HandleHitDetection();
+    }
+
+    protected virtual void OnActionSOTriggered() { }
+
+    private void HandleRotation()
+    {
+        if (continuousRotation)
+        {
+            Vector3 dir = runner.player.transform.position - runner.transform.position;
+            dir.y = 0;
+            if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
+        }
+    }
+
+    private void HandleHitDetection()
+    {
+        if (!Handler.IsHitWindowOpen) return;
+        Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
+        Collider[] hits = GetHitColliders(origin);
+        foreach (var col in hits)
+        {
+            if (col.gameObject == runner.gameObject) continue;
+            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
+            {
+                Character.TakeDamage(_data.damageData);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                
+                if (LoopAttack && _hitConfirmTime < 0)
+                {
+                    _hitConfirmTime = Time.time;
+                    Log("플레이어 타격: 지연 후 루프 탈출 예정");
+                }
+
+                if (!maintainAtk) Handler.CloseHitWindow();
+            }
+        }
+    }
+
+    private Collider[] GetHitColliders(Vector3 origin)
+    {
+        List<Collider> validHits = new List<Collider>();
+        switch (_data.shape)
+        {
+            case AttackShape.Sphere: return Physics.OverlapSphere(origin, _data.damageRadius);
+            case AttackShape.Box: return Physics.OverlapBox(origin, _data.boxSize * 0.5f, runner.transform.rotation);
+            case AttackShape.Fan:
+                Collider[] raw = Physics.OverlapSphere(origin, _data.damageRadius);
+                foreach (var c in raw)
+                {
+                    if (Vector3.Angle(runner.transform.forward, (c.transform.position - origin).normalized) <= _data.fanAngle * 0.5f) validHits.Add(c);
+                }
+                return validHits.ToArray();
+            default: return new Collider[0];
+        }
+    }
+
+    private void HandleLoopAttackLogic()
+    {
+        bool hasHit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
+        if (hasHit && LoopAttack && !_hasTriggeredLoop)
+        {
+            _hasTriggeredLoop = true;
+            for (int i = 0; i < SO.Length; i++)
+            {
+                if (SO[i] != null) SO[i].UseSomeThing(runner);
+            }
+        }
+    }
+
+    private NodeState CheckActionFinished(float elapsedTime)
+    {
+        if (!_hasSeenTag && elapsedTime < transitionBuffer + 0.3f)
+        {
+            return NodeState.RUNNING;
+        }
+
+        // [수정] 절대 타임아웃: maxNodeDuration 도달 시 즉시 종료
+        bool isTimedOut = elapsedTime >= maxNodeDuration; 
+        bool movementEnd = IsMovementFinished && elapsedTime > transitionBuffer + 0.5f;
+        
+        bool isLoopOngoing = false;
+        if (LoopAttack && _hasTriggeredLoop)
+        {
+             isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
+        }
+
+        if (isLoopOngoing && !isTimedOut) return NodeState.RUNNING;
+
+        if (Handler.IsActionFinished || movementEnd || isTimedOut)
+        {
+            if (isTimedOut) Log("노드 시간 만료로 강제 종료 (Duration: " + maxNodeDuration + "s)", true);
+            if (NextBT) return NodeState.SUCCESS;
+            bool hit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
+            return hit ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        return NodeState.RUNNING;
+    }
+
+    protected void StopMovementInternal()
+    {
+        Rigidbody rb = runner.GetComponent<Rigidbody>();
+        if (rb != null) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.canMove = true;
+            ai.isStopped = false;
+            ai.maxSpeed = runner.Movement._normalSpeed;
+            if (!ai.pathPending) ai.SearchPath();
+        }
+    }
+
+    protected void Log(string message, bool isError = false)
+    {
+        if (!debugMode) return;
+        string msg = "[" + this.GetType().Name + " : " + runner.name + "] " + message;
+        if (isError) Debug.LogError(msg); else Debug.Log(msg);
+    }
+    #endregion
+}

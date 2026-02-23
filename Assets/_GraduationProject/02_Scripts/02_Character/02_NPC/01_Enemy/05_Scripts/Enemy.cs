@@ -24,11 +24,9 @@ public class Enemy : MonoBehaviour
     public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
     public BillboardUI BillboardUI => GetComponentInChildren<BillboardUI>();
     public Transform LaunchPoint { get; set; }
-    //내부 컴포넌트
     internal EnemyStateController _stateController;
     internal EnemyAnimationBridge _animationBridge;
     public EnemyInitializer _initializer{get; private set;}
-    //데이터
     public PlayerController player =>  Data?.Player;
     public int CurrentStiffness
     {
@@ -83,6 +81,11 @@ public class Enemy : MonoBehaviour
     }
      public void AnimationEvent(string eventName)
     {
+        if (_stateController != null && _stateController.IsStateLocked && eventName != "Die")
+        {
+            return;
+        }
+
         Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
         _animationBridge?.TriggerEvent(eventName);
     }
@@ -90,7 +93,4 @@ public class Enemy : MonoBehaviour
     {
         _animationBridge?.SetBool(boolName, value);
     }
-
-
-
 }

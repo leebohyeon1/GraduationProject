@@ -1,30 +1,82 @@
-// --- FILE: Action_EngageCombat.cs ---
-
 using UnityEngine;
 using BehaviorTree;
 
 public class Task_EngageCombat : Node
 {
+    private float _entryTime;
+    public float transitionBuffer = 0.5f;
+    public string animationTagName = "Discover_Player";
+
     public override void OnEnter()
     {
-        // runner의 전투 돌입 함수를 호출합니다.
-        // 기존의 EnemyCalling()을 사용하거나, 의미에 맞게 새 함수를 만들어도 좋습니다.
-        // 여기서는 기존 함수를 그대로 사용하겠습니다.
-        Debug.Log($"[Task_EngageCombat] {runner.name} 전투 돌입.");
+        _entryTime = Time.time;
+        Debug.Log("[Task_EngageCombat] " + runner.name + " 전투 돌입.");
+        
         if (!brain._isCombat)
         {
-            runner.groupAi.CombatAll();
-            // brain.CombatEnter(); 
+            runner.AnimationEvent(animationTagName);
+            Debug.Log("애니메이션 작동: ");
+            // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
+            runner._stateController.SetLock(true);
+            
+            // 전역 전투 상태로 전환
+            brain.CombatEnter(true);
+            if (runner.groupAi != null) runner.groupAi.CombatAll();
+            
+            Handler.ResetAllFlags();
         }
     }
 
     protected override NodeState OnUpdate()
     {
-        return NodeState.SUCCESS;
+        float elapsedTime = Time.time - _entryTime;
+
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
+        bool isTagActive = stateInfo.IsTag(animationTagName) || nextStateInfo.IsTag(animationTagName);
+
+        if (Handler.IsActionFinished)
+        {
+            Debug.Log("[Task_EngageCombat] 행동 종료 감지.");
+            return NodeState.SUCCESS;
+        }
+
+        if (isTagActive || elapsedTime < transitionBuffer)
+        {
+            return NodeState.RUNNING;
+        }
+
+        if (elapsedTime > transitionBuffer + 2.0f)
+        {
+             return NodeState.SUCCESS;
+        }
+
+        return NodeState.RUNNING;
+    }
+
+    public override void OnExit()
+    {
+        if (runner._stateController != null)
+        {
+            runner._stateController.SetLock(false);
+        }
+        Handler.ResetAllFlags();
+    }
+
+    public override void Abort()
+    {
+        if (runner._stateController != null)
+        {
+            runner._stateController.SetLock(false);
+        }
+        Handler.ResetAllFlags();
     }
 
     public override Node Clone()
     {
-        return Instantiate(this);
+        Task_EngageCombat node = Instantiate(this);
+        node.transitionBuffer = this.transitionBuffer;
+        node.animationTagName = this.animationTagName;
+        return node;
     }
 }
