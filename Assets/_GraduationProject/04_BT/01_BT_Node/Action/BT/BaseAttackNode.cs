@@ -126,7 +126,6 @@ public abstract class BaseAttackNode : Node
 
         bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
         
-        // [수정] 태그가 처음 감지될 때 플래그를 한 번 더 리셋함 (트랜지션 노이즈 제거)
         if (isTagActive && !_hasSeenTag)
         {
             _hasSeenTag = true;
@@ -170,7 +169,26 @@ public abstract class BaseAttackNode : Node
         }
 
         HandleCommonSystems(stateInfo, nextStateInfo);
-        UpdateMovement();
+
+        // [복구 및 수정] 이동 제어: 특수 이동이 끝났거나 루프 시간이 만료되었다면 즉시 물리 정지
+        bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
+        
+        if (!IsMovementFinished && !isLoopEnded)
+        {
+            UpdateMovement();
+        }
+        else
+        {
+            // 루프 종료 시 물리 정지 로직 재삽입
+            Rigidbody rb = runner.GetComponent<Rigidbody>();
+            if (rb != null) rb.linearVelocity = Vector3.zero;
+            IAstarAI ai = runner.GetComponent<IAstarAI>();
+            if (ai != null) 
+            {
+                ai.isStopped = true;
+                ai.destination = runner.transform.position; // 제자리 멈춤 보장
+            }
+        }
 
         return NodeState.RUNNING;
     }
@@ -365,8 +383,7 @@ public abstract class BaseAttackNode : Node
 
     private NodeState CheckActionFinished(float elapsedTime)
     {
-        // [수정] 태그를 실제로 감지하기 전까지는 절대 종료 신호를 믿지 않음
-        if (!_hasSeenTag)
+        if (!_hasSeenTag && elapsedTime < transitionBuffer + 0.3f)
         {
             return NodeState.RUNNING;
         }
@@ -380,7 +397,10 @@ public abstract class BaseAttackNode : Node
              isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
         }
 
-        if (isLoopOngoing && !isTimedOut) return NodeState.RUNNING;
+        if (isLoopOngoing && !isTimedOut)
+        {
+            return NodeState.RUNNING;
+        }
 
         if (Handler.IsActionFinished || movementEnd || isTimedOut)
         {
