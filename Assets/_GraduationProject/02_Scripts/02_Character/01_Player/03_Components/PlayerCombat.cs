@@ -49,7 +49,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _runtimeData.HeavyCounterAttackConfigList;
     public List<float> ProjectileCounterAddedVelocity => _runtimeData.ProjectileCounterAddedVelocity;
 
-    [SerializeField] public float CounterAngle => _runtimeData != null ? _runtimeData.CounterAngle : 120;   // 상쇄 가능 각도
+    public float CounterAngle => _runtimeData != null ? _runtimeData.CounterAngle : 120;   // 상쇄 가능 각도
 
     [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
     [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
