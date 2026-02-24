@@ -10,9 +10,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 {
     public enum InputMode
     {
-        None,       // 모든 입력 차단 (컷씬 등)
+        None,       // 모든 입력 차단
         Gameplay,   // 캐릭터 조작
-        UI         // 인벤토리, 메뉴 등
+        UI,         // 인벤토리, 메뉴 등
+        CutScene     // 컷씬 전용 
     }
 
     // 현재 상태를 외부에서 읽을 수 있게 프로퍼티 제공
@@ -108,6 +109,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
                 _inputActions.UI.Enable();
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                break;
+            case InputMode.CutScene:
+
                 break;
 
             case InputMode.None:
