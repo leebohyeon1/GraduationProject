@@ -6,13 +6,11 @@ public class PlayerPotion : MonoBehaviour
     private PlayerEvents _events;
     private PlayerData _data;
 
-    // private int _potionHealAmount;
-
     public event Action<int> OnPotionChange;
 
     public int MaxPotion => _data != null ? _data.MaxPotion : 3;
     public int CurrentPotion => _data != null ? _data.CurrentPotion : 0;
-    public int PotionHealAmount => _data != null ? _data.PotionHealAmount : 40;   
+    public int PotionHealAmount => _data != null ? _data.PotionHealAmount : 40;
 
     public void Initialize(PlayerController player)
     {
@@ -24,10 +22,12 @@ public class PlayerPotion : MonoBehaviour
         {
             _data.PotionHealAmount = player.Data.PotionHealAmount;
         }
-        
+
         // UI 업데이트를 위해 이벤트 호출
         if (_data != null)
+        {
             OnPotionChange?.Invoke(_data.CurrentPotion);
+        }
     }
 
     /// <summary>
@@ -50,9 +50,26 @@ public class PlayerPotion : MonoBehaviour
     /// </summary>
     public void ReloadPotion()
     {
-        if (_data == null) return;
+        if (_data == null)
+        {
+            return;
+        }
 
         _data.CurrentPotion = _data.MaxPotion;
         OnPotionChange?.Invoke(_data.CurrentPotion);
+    }
+
+    /// <summary>
+    /// 포션 사용횟수 증가 함수
+    /// </summary>
+    /// <param name="amount">증가량</param>
+    public void IncreaseMaxPotion(int amount)
+    {
+        if (_data == null)
+        {
+            return;
+        }
+
+        _data.MaxPotion += amount;
     }
 }

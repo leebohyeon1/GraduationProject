@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어의 기본 데이터를 정의하는 ScriptableObject입니다.
 /// </summary>
-[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Scriptable Objects/Player/PlayerDatasSO")]
+[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Project/Player/PlayerDatasSO")]
 public class PlayerDataSO : ScriptableObject
 {
     [Header("Health")]
