@@ -27,4 +27,21 @@ public class EnemyAnimationBridge : MonoBehaviour
             _animator.SetBool(boolName, value);
         }
     }
+
+    public void ClearIsAttacking()
+    {
+        IsAttacking = false;
+    }
+
+    public void ResetAllTriggers()
+    {
+        if (_animator == null) return;
+        foreach (var parameter in _animator.parameters)
+        {
+            if (parameter.type == AnimatorControllerParameterType.Trigger)
+            {
+                _animator.ResetTrigger(parameter.name);
+            }
+        }
+    }
 }

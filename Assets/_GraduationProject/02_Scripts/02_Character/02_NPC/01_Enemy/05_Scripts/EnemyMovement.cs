@@ -51,7 +51,9 @@ public class EnemyMovement : MonoBehaviour
     }
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
-        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die)
+        bool isRecovering = _runner._stateController != null && _runner._stateController.IsRecoveringFromStun;
+        
+        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || isRecovering)
         {
             StopMovement();
             return;

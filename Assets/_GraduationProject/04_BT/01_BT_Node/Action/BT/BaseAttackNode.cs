@@ -15,7 +15,6 @@ public abstract class BaseAttackNode : Node
     public float transitionBuffer = 1f;
     /// <summary> 노드 진입 후 강제로 종료할 최대 시간 (초) </summary>
     public float maxNodeDuration = 6.0f;
-    public bool continuousRotation = true;
     public bool maintainAtk = false;
     public EnemyUseAnything[] SO = null;
     public bool LoopAttack = false;
@@ -70,11 +69,13 @@ public abstract class BaseAttackNode : Node
         }
 
         bool isAlreadyInAttackState = runner.CurrentState == EnemyStateController.EnemyState.Attack || runner._animationBridge.IsAttacking;
+        bool isStunnedState = runner.CurrentState == EnemyStateController.EnemyState.Stunned;
+        bool isRecovering = runner._stateController != null && runner._stateController.IsRecoveringFromStun;
         
-        if (runner._stateController.IsStateLocked || isAlreadyInAttackState)
+        if (runner._stateController.IsStateLocked || isAlreadyInAttackState || isStunnedState || isRecovering)
         {
-            Log(string.Format("진입 거부: 이미 공격 중이거나 잠겨 있음. (상태: {0}, Lock: {1}, AnimAtk: {2})", 
-                runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking));
+            Log(string.Format("진입 거부: 공격 중, 잠겨 있음, 스턴 상태 혹은 회복 중. (상태: {0}, Lock: {1}, AnimAtk: {2}, Recovering: {3})", 
+                runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking, isRecovering));
             
             _isActionFinishedInternally = true;
             return;
@@ -265,6 +266,11 @@ public abstract class BaseAttackNode : Node
             _didSetLock = false;
         }
 
+        if (runner._animationBridge != null)
+        {
+            runner._animationBridge.ClearIsAttacking();
+        }
+
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
@@ -300,7 +306,20 @@ public abstract class BaseAttackNode : Node
     {
         if (!allowOutOfCombat && !brain._isCombat) return false;
         if (!brain.IsSkillReady(attackKey, _data.Cooltime)) return false;
-        if (checkRangeOnEnter)
+        
+        if (runner.CurrentState == EnemyStateController.EnemyState.Stunned)
+        {
+            Log("진입 거부: 현재 논리적 스턴 상태임.");
+            return false;
+        }
+
+        if (runner._stateController != null && runner._stateController.IsRecoveringFromStun)
+        {
+            Log("진입 거부: 스턴 후 회복 중 (0.5초 대기)");
+            return false;
+        }
+
+        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         {
             float dist = CalculateDistance();
             float range = GetRequiredRange();
@@ -375,7 +394,7 @@ public abstract class BaseAttackNode : Node
 
     private void HandleRotation()
     {
-        if (continuousRotation)
+        if (!Handler.IsActive)
         {
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;

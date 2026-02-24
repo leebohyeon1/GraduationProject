@@ -24,6 +24,8 @@ public class EnemyStateController : MonoBehaviour
     public event Action<EnemyState, EnemyState> OnStateChanged;
     
     public bool IsStateLocked { get; private set; }
+    public float LastStunEndTime { get; private set; } = -10f;
+    public bool IsRecoveringFromStun => Time.time < LastStunEndTime + 0.5f;
 
     public void Initialize(Enemy owner)
     {
@@ -59,6 +61,12 @@ public class EnemyStateController : MonoBehaviour
     {
         IsStateLocked = locked;
         Debug.Log(string.Format("[StateController : {0}] State Lock: {1}", _owner.name, locked));
+    }
+
+    public void RecordStunEnd()
+    {
+        LastStunEndTime = Time.time;
+        Debug.Log(string.Format("[StateController : {0}] Stun End Recorded at {1}", _owner.name, LastStunEndTime));
     }
     
     public bool CanTransitionTo(EnemyState targetState)
