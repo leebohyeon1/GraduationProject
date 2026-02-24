@@ -6,32 +6,35 @@ public class Task_EngageCombat : Node
     private float _entryTime;
     public float transitionBuffer = 0.5f;
     public string animationTagName = "Discover_Player";
+    private bool _didSetLock = false;
 
     public override void OnEnter()
     {
         _entryTime = Time.time;
-        Debug.Log("[Task_EngageCombat] " + runner.name + " 전투 돌입.");
+        _didSetLock = false;
+        Debug.Log("[Task_EngageCombat : " + runner.name + "] 전투 돌입.");
         
         if (!brain._isCombat)
         {
-            runner.AnimationEvent(animationTagName);
-            
             // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
             runner._stateController.SetLock(true);
+            _didSetLock = true;
             
             // 전역 전투 상태로 전환
             brain.CombatEnter(true);
             if (runner.groupAi != null) runner.groupAi.CombatAll();
             
-            Handler.ResetAllFlags();
+            runner.AnimationEvent(animationTagName);
+            if (Handler != null) Handler.ResetAllFlags();
         }
     }
 
     protected override NodeState OnUpdate()
     {
-        // [중요] 상태 중단 체크: 스턴이나 사망 시 즉시 종료 (락은 OnExit/Abort에서 해제됨)
+        // 상태 중단 체크: 스턴이나 사망 시 즉시 종료
         if (runner.CurrentState == EnemyStateController.EnemyState.Stunned || runner.CurrentState == EnemyStateController.EnemyState.Die)
         {
+            Debug.Log("[Task_EngageCombat : " + runner.name + "] 상태 이상으로 인한 중단.");
             return NodeState.FAILURE;
         }
 
@@ -41,9 +44,9 @@ public class Task_EngageCombat : Node
         var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
         bool isTagActive = stateInfo.IsTag(animationTagName) || nextStateInfo.IsTag(animationTagName);
 
-        if (Handler.IsActionFinished)
+        if (Handler != null && Handler.IsActionFinished)
         {
-            Debug.Log("[Task_EngageCombat] 행동 종료 감지.");
+            Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
             return NodeState.SUCCESS;
         }
 
@@ -54,6 +57,7 @@ public class Task_EngageCombat : Node
 
         if (elapsedTime > transitionBuffer + 2.0f)
         {
+             Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
              return NodeState.SUCCESS;
         }
 
@@ -62,20 +66,23 @@ public class Task_EngageCombat : Node
 
     public override void OnExit()
     {
-        if (runner._stateController != null)
+        if (_didSetLock && runner._stateController != null)
         {
             runner._stateController.SetLock(false);
+            _didSetLock = false;
         }
-        Handler.ResetAllFlags();
+        if (Handler != null) Handler.ResetAllFlags();
     }
 
     public override void Abort()
     {
-        if (runner._stateController != null)
+        if (_didSetLock && runner._stateController != null)
         {
             runner._stateController.SetLock(false);
+            _didSetLock = false;
         }
-        Handler.ResetAllFlags();
+        if (Handler != null) Handler.ResetAllFlags();
+        base.Abort();
     }
 
     public override Node Clone()

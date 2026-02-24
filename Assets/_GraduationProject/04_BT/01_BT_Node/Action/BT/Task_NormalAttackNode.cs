@@ -16,7 +16,7 @@ public class Task_NormalAttackNode : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.ExceptKey = this.ExceptKey;

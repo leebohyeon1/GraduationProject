@@ -20,7 +20,7 @@ public class Task_RushAttack : BaseAttackNode
     {
         _endStrategy = false;
         _isRushing = false;
-        Log("돌진 공격 준비 완료 (ActionSO 대기)");
+        Log("돌진 공격 준비 (ActionSO 대기)");
     }
 
     protected override void OnActionSOTriggered()
@@ -67,7 +67,7 @@ public class Task_RushAttack : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -75,11 +75,15 @@ public class Task_RushAttack : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.rushSpeed = this.rushSpeed;
         node.stopDistance = this.stopDistance;
         node.speed = this.speed;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

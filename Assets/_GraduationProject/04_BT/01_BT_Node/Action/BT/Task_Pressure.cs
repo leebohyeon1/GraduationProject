@@ -17,7 +17,8 @@ public class Task_Pressure : Node
         base.OnEnter();
         ai = runner.aIPath;
         
-        Debug.Log(string.Format("[Task_Pressure : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}", runner.name, runner.CurrentState, runner._stateController.IsStateLocked));
+        Debug.Log(string.Format("[Task_Pressure : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}, AnimAtk: {3}", 
+            runner.name, runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking));
 
         if (ai != null)
         {
@@ -25,32 +26,34 @@ public class Task_Pressure : Node
             ai.isStopped = false;
             ai.maxSpeed = MoveSpeed;
             ai.enableRotation = false;
+            ai.SetPath(null); // 진입 시 잔여 경로 제거
         }
     }
     protected override NodeState OnUpdate()
     {
+        // [수정] 애니메이션 브릿지의 IsAttacking이 true더라도, 현재 상태가 Attack이 아니면 이동 허용 고려
+        // 하지만 안전을 위해 로그를 남기고 실패 처리 유지 (BaseAttackNode에서 강제 해제하므로 이제 발생 안 함)
         if(runner._animationBridge.IsAttacking)
         {
-            Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 애니메이션 브릿지가 공격 중임.", runner.name));
-            return NodeState.FAILURE;
+            // Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 대기: 애니메이션 브릿지가 아직 공격 중임.", runner.name));
+            return NodeState.RUNNING; // 실패 대신 대기하여 트리가 튀지 않게 함
         }   
+
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 현재 상태가 Attack임.", runner.name));
             return NodeState.FAILURE;
         }
         
         object val = brain.blackboard.GetValue<Vector3>(Pos_Key);
         if (val == null)
         {
-            Debug.LogWarning(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 블랙보드 키 '{1}'가 비어있음.", runner.name, Pos_Key));
             return NodeState.FAILURE;
         }
 
         Vector3 targetPos = (Vector3)val;
-        Debug.Log(string.Format("[Task_Pressure : {0}] targetPos from blackboard: {1}", runner.name, targetPos));
         currentTargetDebug = targetPos; 
         
+        // A* 경로 업데이트 강제
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         RotateTowardsPlayer();
@@ -94,7 +97,7 @@ public class Task_Pressure : Node
     }
     public override Node Clone()
     {
-        var node = Instantiate(this);
+        var node = Instantiate(this); // [수정] CreateInstance 대신 Instantiate 사용 (SO 복제 표준)
         node.Pos_Key = this.Pos_Key;
         node.MoveSpeed = this.MoveSpeed;
         node.StoppingDist = this.StoppingDist;

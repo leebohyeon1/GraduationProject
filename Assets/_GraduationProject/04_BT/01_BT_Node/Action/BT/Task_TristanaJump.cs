@@ -25,7 +25,12 @@ public class Task_TristanaJump : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _isJumping = false;
+        Log("점프 준비 (ActionSO 대기 중)");
+    }
 
+    protected override void OnActionSOTriggered()
+    {
+        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
         _startPos = runner.transform.position;
         Vector3 playerPos = runner.player.transform.position;
         Vector3 direction = (playerPos - _startPos);
@@ -34,18 +39,14 @@ public class Task_TristanaJump : BaseAttackNode
         direction.Normalize();
 
         float jumpDist = Mathf.Min(distance, jumpRange);
-        _targetPos = _startPos + (direction * jumpDist);
+        Vector3 rawTarget = _startPos + (direction * jumpDist);
 
-        NNInfo info = AstarPath.active.GetNearest(_targetPos, NNConstraint.Walkable);
-        if (info.node != null) _targetPos = info.position;
-        Log("점프 목표 계산 완료: " + _targetPos);
-    }
+        NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
+        _targetPos = info.node != null ? info.position : rawTarget;
 
-    protected override void OnActionSOTriggered()
-    {
-        Log("점프 시작 (OnActionSOTriggered)");
+        Log("점프 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isJumping = true;
-        _nodeEntryTime = Time.time;
+        _nodeEntryTime = Time.time; // 점프 시작 시점 리셋
         
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
@@ -116,7 +117,7 @@ public class Task_TristanaJump : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -124,6 +125,8 @@ public class Task_TristanaJump : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.jumpRange = this.jumpRange;
         node.jumpDuration = this.jumpDuration;
         node.jumpHeight = this.jumpHeight;
@@ -132,6 +135,8 @@ public class Task_TristanaJump : BaseAttackNode
         node.impactDamage = this.impactDamage;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

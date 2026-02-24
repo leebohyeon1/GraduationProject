@@ -26,6 +26,16 @@ public class Task_KSante : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
+        _hasHitPlayer = false;
+        _isRushing = false;
+        _rushStartTime = 0;
+        runner.aIPath.enableRotation = false;
+        Log("KSante 준비 (ActionSO 대기 중)");
+    }
+
+    protected override void OnActionSOTriggered()
+    {
+        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
         Vector3 playerPos = runner.player.transform.position;
         Vector3 myPos = runner.transform.position;
         Vector3 dir = (playerPos - myPos);
@@ -35,18 +45,8 @@ public class Task_KSante : BaseAttackNode
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
         _targetPos = playerPos + (dir * overshootDist) + offset;
-        
-        _hasHitPlayer = false;
-        _isRushing = false;
-        _rushStartTime = 0;
 
-        runner.aIPath.enableRotation = false;
-        Log("KSante 목표 설정 완료: " + _targetPos);
-    }
-
-    protected override void OnActionSOTriggered()
-    {
-        Log("KSante 돌진 시작 (OnActionSOTriggered)");
+        Log("KSante 돌진 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isRushing = true;
         _rushStartTime = Time.time;
         
@@ -174,7 +174,7 @@ public class Task_KSante : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -182,6 +182,8 @@ public class Task_KSante : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.rushSpeed = this.rushSpeed;
         node.hitRadius = this.hitRadius;
         node.overshootDist = this.overshootDist;
@@ -191,6 +193,8 @@ public class Task_KSante : BaseAttackNode
         node.AttackDataKnockback = this.AttackDataKnockback;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

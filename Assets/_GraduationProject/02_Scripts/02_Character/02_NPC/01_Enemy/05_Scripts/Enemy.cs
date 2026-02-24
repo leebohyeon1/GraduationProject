@@ -93,4 +93,44 @@ public class Enemy : MonoBehaviour
     {
         _animationBridge?.SetBool(boolName, value);
     }
+
+    [ContextMenu("Debug/Log Enemy Status")]
+    public void LogEnemyStatus()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine($"<color=yellow>=== Enemy Status Debug: {gameObject.name} ===</color>");
+        
+        sb.AppendLine($"[State] Current: {CurrentState}, Locked: {(_stateController != null ? _stateController.IsStateLocked.ToString() : "N/A")}");
+        sb.AppendLine($"[Anim] IsAttacking (Bridge): {(_animationBridge != null ? _animationBridge.IsAttacking.ToString() : "N/A")}");
+        
+        if (aIPath != null)
+        {
+            sb.AppendLine($"[AIPath] isStopped: {aIPath.isStopped}, canMove: {aIPath.canMove}, maxSpeed: {aIPath.maxSpeed}");
+            sb.AppendLine($"[AIPath] destination: {aIPath.destination}, hasPath: {aIPath.hasPath}, pathPending: {aIPath.pathPending}");
+        }
+        else
+        {
+            sb.AppendLine("[AIPath] Component Missing");
+        }
+
+        if (Movement != null)
+        {
+            sb.AppendLine($"[Movement] NormalSpeed: {Movement._normalSpeed}");
+        }
+
+        if (blackboard != null)
+        {
+            sb.AppendLine("[Blackboard] --- Important Keys ---");
+            string[] keysToLog = { "IsAttacking", "OnTakeHit", "IsPlayerDetected", "CurrentStatus" };
+            foreach (var key in keysToLog)
+            {
+                if (blackboard.HasKey(key))
+                {
+                    sb.AppendLine($" - {key}: {blackboard.GetValue<object>(key)}");
+                }
+            }
+        }
+
+        Debug.Log(sb.ToString());
+    }
 }

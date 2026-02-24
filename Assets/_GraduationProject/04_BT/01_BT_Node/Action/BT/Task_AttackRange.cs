@@ -20,14 +20,19 @@ public class Task_AttackRange : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _hasFired = false;
+        Log("원거리 공격 준비 (ActionSO 대기 중)");
+    }
 
+    protected override void OnActionSOTriggered()
+    {
+        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 발사 방향 계산
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
         Vector3 targetPos = runner.player.transform.position + Vector3.up * 0.5f;
         _attackDir = (targetPos - spawnPos).normalized;
         _attackDir.y = 0;
 
         runner.transform.rotation = Quaternion.LookRotation(_attackDir);
-        Log("원거리 공격 준비 완료. 방향: " + _attackDir);
+        Log("원거리 공격 시작 (OnActionSOTriggered) - 방향 설정: " + _attackDir);
     }
 
     protected override void UpdateMovement()
@@ -64,7 +69,7 @@ public class Task_AttackRange : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -72,12 +77,16 @@ public class Task_AttackRange : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.projectilePrefab = this.projectilePrefab;
         node.projectileSpeed = this.projectileSpeed;
         node.spawnOffset = this.spawnOffset;
         node.damageData = this.damageData;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

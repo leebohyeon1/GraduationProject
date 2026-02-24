@@ -30,7 +30,7 @@ public class Task_HomingMissile : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _projectileInstance = null;
-        Log("유도 미사일 준비 완료");
+        Log("유도 미사일 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
@@ -43,6 +43,7 @@ public class Task_HomingMissile : BaseAttackNode
             ai.isStopped = true;
         }
 
+        // [수정] 발사 시점에 플레이어 방향으로 즉시 회전
         Vector3 dirToPlayer = (runner.player.transform.position - runner.transform.position).normalized;
         dirToPlayer.y = 0;
         if (dirToPlayer != Vector3.zero) runner.transform.rotation = Quaternion.LookRotation(dirToPlayer);
@@ -88,7 +89,7 @@ public class Task_HomingMissile : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -96,6 +97,8 @@ public class Task_HomingMissile : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.projectilePrefab = this.projectilePrefab;
         node.spawnOffset = this.spawnOffset;
         node.HomingDuration = this.HomingDuration;
@@ -109,6 +112,8 @@ public class Task_HomingMissile : BaseAttackNode
         node.facePlayerOnUpdate = this.facePlayerOnUpdate;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

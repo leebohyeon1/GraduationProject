@@ -39,7 +39,7 @@ MonoBehaviour:
   - {fileID: 1811496777038547811}
   - {fileID: -4692299157705872432}
   - {fileID: -4428412024098050606}
-  - {fileID: 4489605913624550641}
+  - {fileID: 4526992843496790656}
   services: []
 --- !u!114 &-5007510015949382687
 MonoBehaviour:
@@ -272,7 +272,7 @@ MonoBehaviour:
   - {fileID: 5785559906818792379}
   - {fileID: -2263067533295341874}
   - {fileID: 4441881582081485876}
-  - {fileID: 3109176346376496314}
+  - {fileID: 1994035089493716298}
   - {fileID: -443099784655628695}
   services: []
 --- !u!114 &1811496777038547811
@@ -294,6 +294,69 @@ MonoBehaviour:
     TargetState: 3
   exceptCondition:
     key: 
+--- !u!114 &1994035089493716298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaec6f0188a7f694a9e45640305480f4, type: 3}
+  m_Name: Task_Rush To Fixed Location
+  m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
+  position: {x: 792, y: -112}
+  attackKey: Attack02_b
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  continuousRotation: 1
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 1
+  debugMode: 0
+  escapeOnHitConfirm: 0
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  rushSpeed: 15
+  hitRadius: 2.5
+  overshootDist: 3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  rushDuration: 0.3
+  rushCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  turnSpeed: 2
+  maxTriggerRange: 15
 --- !u!114 &1998061911425268077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,18 +416,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_Normal Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 792, y: -112}
+  position: {x: 476, y: -150}
   attackKey: Attack02_b
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  continuousRotation: 1
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 1
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &3919280333966606404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,15 +505,70 @@ MonoBehaviour:
   position: {x: 798, y: 502}
   attackKey: Attack01_b
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  continuousRotation: 1
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 8b1d9d704029b1e408febe1be52bb28a, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+--- !u!114 &4526992843496790656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65522a3d0428d3f41b34a40ca98c9fd5, type: 3}
+  m_Name: Task_Attack Range
+  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
+  position: {x: 644, y: 502}
+  attackKey: Attack01_b
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  continuousRotation: 1
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 0
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  projectilePrefab: {fileID: 2916484851320752740, guid: 5e3a8326a8c7f9b4da388e6719563c6f, type: 3}
+  projectileSpeed: 15
+  spawnOffset: {x: 0, y: 1, z: 0.5}
+  damageData:
+    AttackerTransform: {fileID: 0}
+    AttackType: 0
+    DamageAmount: 10
+    StiffnessAmount: 0
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
+    IsMagic: 0
+  maxTriggerRange: 25
 --- !u!114 &4726210464116984691
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,6 +19,14 @@ public class Task_PassingDash : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
+        _isDashing = false;
+        runner.aIPath.enableRotation = false;
+        Log("관통 대시 준비 (ActionSO 대기 중)");
+    }
+
+    protected override void OnActionSOTriggered()
+    {
+        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
         Vector3 startPos = runner.transform.position;
         Vector3 playerPos = runner.player.transform.position;
         Vector3 direction = (playerPos - startPos);
@@ -31,15 +39,8 @@ public class Task_PassingDash : BaseAttackNode
         _targetPos.y = startPos.y;
 
         runner.transform.rotation = Quaternion.LookRotation(direction);
-        runner.aIPath.enableRotation = false;
         
-        _isDashing = false;
-        Log("관통 대시 준비 완료. 목표: " + _targetPos);
-    }
-
-    protected override void OnActionSOTriggered()
-    {
-        Log("관통 대시 시작 (OnActionSOTriggered)");
+        Log("관통 대시 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isDashing = true;
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
@@ -89,7 +90,7 @@ public class Task_PassingDash : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.continuousRotation = this.continuousRotation;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
@@ -97,12 +98,16 @@ public class Task_PassingDash : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.dashSpeed = this.dashSpeed;
         node.extraDist = this.extraDist;
         node.obstacleMask = this.obstacleMask;
         node.arrivalThreshold = this.arrivalThreshold;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }
