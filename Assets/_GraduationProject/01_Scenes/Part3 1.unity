@@ -48044,6 +48044,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4071459789604420831, guid: 9c2649060e890f945a373be98bf857c0, type: 3}
   m_PrefabInstance: {fileID: 327676229}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &327864123 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8406303703004210642, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
+  m_PrefabInstance: {fileID: 1100694599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &328773415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107869,6 +107874,7 @@ GameObject:
   - component: {fileID: 753346853}
   - component: {fileID: 753346855}
   - component: {fileID: 753346856}
+  - component: {fileID: 753346857}
   m_Layer: 0
   m_Name: BossCutSceneTrigger
   m_TagString: Untagged
@@ -107934,6 +107940,10 @@ PlayableDirector:
     value: {fileID: 917128740}
   - key: {fileID: -5836686950224636456, guid: 48a1ff50358a6a0449cef43f7d52d99d, type: 2}
     value: {fileID: 917128737}
+  - key: {fileID: -3048226953345715297, guid: 48a1ff50358a6a0449cef43f7d52d99d, type: 2}
+    value: {fileID: 1100694615}
+  - key: {fileID: -4462571081919698001, guid: 48a1ff50358a6a0449cef43f7d52d99d, type: 2}
+    value: {fileID: 327864123}
   m_ExposedReferences:
     m_References:
     - cf5ee8b0606fd624987643656ffe9423: {fileID: 917128739}
@@ -107951,6 +107961,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleTImelineTrigger
   Director: {fileID: 753346855}
+--- !u!114 &753346857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753346852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalReceiver
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: fdca163a2edfc6948bbcd3834635a3a8, type: 2}
+    - {fileID: 11400000, guid: bae645b2cd588c44c96cd23bfde69ffd, type: 2}
+    - {fileID: 11400000, guid: 04e5a7514d14fb84aaaa23b7c5d75aeb, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1272272630}
+          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
+          m_MethodName: OnCutSceneStart
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1272272630}
+          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
+          m_MethodName: OnCutSceneEnd
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1175035831}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &753823361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127090,7 +127160,7 @@ GameObject:
   - component: {fileID: 888986000}
   - component: {fileID: 888986003}
   - component: {fileID: 888986002}
-  - component: {fileID: 888986001}
+  - component: {fileID: 888986004}
   m_Layer: 0
   m_Name: Cylinder (1)
   m_TagString: Untagged
@@ -127113,29 +127183,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1681857978}
   m_LocalEulerAnglesHint: {x: 0, y: 15, z: 0}
---- !u!136 &888986001
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888985999}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!23 &888986002
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -127192,6 +127239,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 888985999}
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!64 &888986004
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888985999}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &889072686
 PrefabInstance:
@@ -133007,15 +133076,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1411628309000092009, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.203693
+      value: -25.78318
       objectReference: {fileID: 0}
     - target: {fileID: 1411628309000092009, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.478949
+      value: 62.258522
       objectReference: {fileID: 0}
     - target: {fileID: 1411628309000092009, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.595788
+      value: 265.49893
       objectReference: {fileID: 0}
     - target: {fileID: 1411628309000092009, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -133087,15 +133156,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5775447848678631036, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.203693
+      value: -25.78318
       objectReference: {fileID: 0}
     - target: {fileID: 5775447848678631036, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.478949
+      value: 62.258522
       objectReference: {fileID: 0}
     - target: {fileID: 5775447848678631036, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.595788
+      value: 265.49893
       objectReference: {fileID: 0}
     - target: {fileID: 5775447848678631036, guid: 8d3a1e43576f5d64b88f8ff7d114d1d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -156946,9 +157015,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 687645473512743524, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.01932397
+      objectReference: {fileID: 0}
+    - target: {fileID: 687645473512743524, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.37397113
+      objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -157.2
+      value: 76.88
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -156956,7 +157033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -168.8
+      value: -31.3
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -156964,15 +157041,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -156998,6 +157075,11 @@ PrefabInstance:
 --- !u!4 &1100694600 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8179803700943878997, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
+  m_PrefabInstance: {fileID: 1100694599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1100694615 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5465638030384625449, guid: fde6500bdea763f41b36fb121449a43e, type: 3}
   m_PrefabInstance: {fileID: 1100694599}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1100981048
@@ -166853,6 +166935,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8585395419842263493, guid: fd3863f179b16a7478cfb989627e5f06, type: 3}
   m_PrefabInstance: {fileID: 1174085333}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1175035831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7174190106157882077, guid: a8e428dad7a7fc841bb0fa2bb18770ec, type: 3}
+  m_PrefabInstance: {fileID: 6850950360400517083}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &1175102488
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -180460,7 +180553,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1272272631}
   - component: {fileID: 1272272630}
-  - component: {fileID: 1272272629}
   m_Layer: 0
   m_Name: CutSceneManager
   m_TagString: Untagged
@@ -180468,51 +180560,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1272272629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1272272628}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalReceiver
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: fdca163a2edfc6948bbcd3834635a3a8, type: 2}
-    - {fileID: 11400000, guid: bae645b2cd588c44c96cd23bfde69ffd, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1272272630}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1272272630}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1272272630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304014,6 +304061,18 @@ PrefabInstance:
     - target: {fileID: 5931068241938628595, guid: a8e428dad7a7fc841bb0fa2bb18770ec, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7174190106157882077, guid: a8e428dad7a7fc841bb0fa2bb18770ec, type: 3}
+      propertyPath: managedReferences[8283155739547802554].Active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7174190106157882077, guid: a8e428dad7a7fc841bb0fa2bb18770ec, type: 3}
+      propertyPath: managedReferences[8283155739547802554].AutoResume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7174190106157882077, guid: a8e428dad7a7fc841bb0fa2bb18770ec, type: 3}
+      propertyPath: managedReferences[8283155739547802554].ScriptDriven
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
