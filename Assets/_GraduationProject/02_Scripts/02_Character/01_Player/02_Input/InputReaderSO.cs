@@ -5,7 +5,7 @@ using System;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
-[CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/Input/Input Reader")]
+[CreateAssetMenu(fileName = "InputReader", menuName = "Project/Input/Input Reader")]
 public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions
 {
     public enum InputMode
