@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TowerHitPuzzle : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class TowerHitPuzzle : MonoBehaviour
     private bool _isPuzzleCompleted = false;
 
     private Coroutine _puzzleCoroutine;
+
+    public UnityEvent OnPuzzleCompleted;
 
     private void Start()
     {
@@ -41,6 +44,7 @@ public class TowerHitPuzzle : MonoBehaviour
         // 이미 퍼즐이 클리어된 상태이면 리턴
         if(_isPuzzleCompleted)
         {
+            OnPuzzleCompleted?.Invoke();
             return;
         }
 
