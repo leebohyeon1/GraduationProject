@@ -12,19 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_HomingAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1142, y: 123}
+  position: {x: 1141, y: 123}
   attackKey: Attack01_c
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 7855d458914724941a281bce55d36715, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  continuousRotation: 1
-  transitionBuffer: 1
   debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &-7994454844275576254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,6 +45,25 @@ MonoBehaviour:
   position: {x: 1336, y: 747}
   Distance: 3
   speed: 4
+--- !u!114 &-7371073234471199048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 151, y: -132}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 6
+  exceptCondition:
+    key: 
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,7 +83,7 @@ MonoBehaviour:
   - {fileID: 1247630875305046774}
   - {fileID: 1811496777038547811}
   - {fileID: 4640970959790474602}
-  - {fileID: 4489605913624550641}
+  - {fileID: -3003664891901335370}
   services: []
 --- !u!114 &-6173243950670796869
 MonoBehaviour:
@@ -141,6 +165,42 @@ MonoBehaviour:
   key: HasAttackToken
   exceptCondition:
     key: 
+--- !u!114 &-3003664891901335370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3168526b443f3040a239c93371520b8, type: 3}
+  m_Name: Task_Passing Dash
+  m_EditorClassIdentifier: Assembly-CSharp::Task_PassingDash
+  position: {x: 1151, y: -296}
+  attackKey: Attack02_c
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 0
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  dashSpeed: 15
+  extraDist: 10
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  arrivalThreshold: 0.5
+  maxTriggerRange: 10
 --- !u!114 &-2807461823067723660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,9 +215,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 922, y: 354}
   nodes:
+  - {fileID: 8754342361962056781}
   - {fileID: -2031808336131457005}
   - {fileID: 292309848878647992}
   services: []
+--- !u!114 &-2454369788942777699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab654d0018170804a8cd251512972e08, type: 3}
+  m_Name: Task_Homing Missile
+  m_EditorClassIdentifier: Assembly-CSharp::Task_HomingMissile
+  position: {x: 1157, y: 200}
+  attackKey: Attack01_c
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  projectilePrefab: {fileID: 4991264849963691254, guid: f7e2bffddabbfa445b99719bf0de2fd1, type: 3}
+  spawnOffset: {x: 0, y: 0.7, z: 2.5}
+  HomingDuration: 3
+  HomingStartSpeed: 2
+  HomingAcceleration: 5
+  HomingMaxSpeed: 15
+  TurningForce: 90
+  StraightSpeed: 20
+  maxTriggerRange: 30
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  damageData:
+    AttackerTransform: {fileID: 0}
+    AttackType: 6
+    DamageAmount: 10
+    StiffnessAmount: 0
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
+    IsMagic: 1
+  facePlayerOnUpdate: 1
 --- !u!114 &-2031808336131457005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: -72, y: -21}
   nodes:
+  - {fileID: -7371073234471199048}
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
   services:
@@ -346,7 +464,7 @@ MonoBehaviour:
   - {fileID: -785585555750304635}
   - {fileID: -4747025815022784661}
   - {fileID: -5169928796796515572}
-  - {fileID: -8061363964458695047}
+  - {fileID: -2454369788942777699}
   services: []
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -379,16 +497,21 @@ MonoBehaviour:
   position: {x: 1151, y: -373}
   attackKey: Attack02_c
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 6eca5f8f405626c45be45524eca10a5f, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  continuousRotation: 1
-  transitionBuffer: 1
   debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &4640970959790474602
 MonoBehaviour:
   m_ObjectHideFlags: 0

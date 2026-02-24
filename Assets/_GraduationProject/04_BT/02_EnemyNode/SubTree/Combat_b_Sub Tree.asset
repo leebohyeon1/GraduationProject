@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: -51, y: -81}
   nodes:
+  - {fileID: 5040559873387849705}
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
   services:
@@ -311,7 +312,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  continuousRotation: 1
   maintainAtk: 0
   SO: []
   LoopAttack: 0
@@ -421,7 +421,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  continuousRotation: 1
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
@@ -507,7 +506,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  continuousRotation: 1
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 8b1d9d704029b1e408febe1be52bb28a, type: 2}
@@ -538,7 +536,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  continuousRotation: 1
   maintainAtk: 0
   SO: []
   LoopAttack: 0
@@ -583,6 +580,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
   position: {x: 792, y: -403}
   viewAngle: 90
+--- !u!114 &5040559873387849705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 207, y: -133}
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 6
+  exceptCondition:
+    key: 
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0

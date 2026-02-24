@@ -16,6 +16,8 @@ public class Task_EngageCombat : Node
         
         if (!brain._isCombat)
         {
+            runner.AnimationEvent(animationTagName);
+            if (Handler != null) Handler.ResetAllFlags();
             // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
             runner._stateController.SetLock(true);
             _didSetLock = true;
@@ -24,8 +26,6 @@ public class Task_EngageCombat : Node
             brain.CombatEnter(true);
             if (runner.groupAi != null) runner.groupAi.CombatAll();
             
-            runner.AnimationEvent(animationTagName);
-            if (Handler != null) Handler.ResetAllFlags();
         }
     }
 
