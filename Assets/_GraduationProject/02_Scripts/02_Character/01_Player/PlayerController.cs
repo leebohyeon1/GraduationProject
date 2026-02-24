@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerAbility _ability;        // 능력 시스템
     [SerializeField] private PlayerPotion _potion;          // 포션 시스템
     [SerializeField] private PlayerMoney _money;            // 돈 
+    [SerializeField] private PlayerInteract _interact;      // 상호작용 시스템
 
     private StateMachine<PlayerController> _stateMachine;   // 상태 머신
     private List<IDisposable> _disposableList = new List<IDisposable>(); // 해제해야 하는 객체 리스트
@@ -48,6 +49,7 @@ public class PlayerController : MonoBehaviour
     public PlayerAbility Ability => _ability;
     public PlayerPotion Potion => _potion;
     public PlayerMoney Money => _money;
+    public PlayerInteract Interact => _interact;
 
     public StateMachine<PlayerController> FSM => _stateMachine;
 
@@ -184,6 +186,11 @@ public class PlayerController : MonoBehaviour
         if(TryGetComponent<PlayerMoney>(out _money))
         {
             _money.Initialize(this);
+        }
+
+        if(TryGetComponent<PlayerInteract>(out _interact))
+        {
+            _interact.Initialize(this);
         }
     }
 
