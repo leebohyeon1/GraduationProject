@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_HomingAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1142, y: 126}
+  position: {x: 1143, y: 205}
   attackKey: Attack01_c
   animationStateName: 
   useActionTriggered: 0
@@ -154,9 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 922, y: 354}
   nodes:
-  - {fileID: 8754342361962056781}
   - {fileID: -2031808336131457005}
-  - {fileID: 292309848878647992}
   services: []
 --- !u!114 &-2031808336131457005
 MonoBehaviour:
@@ -274,6 +272,20 @@ MonoBehaviour:
     value: 6
   exceptCondition:
     key: 
+--- !u!114 &1614416562406378633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1143, y: 122}
+  waitTime: 1
 --- !u!114 &1811496777038547811
 MonoBehaviour:
   m_ObjectHideFlags: 0
