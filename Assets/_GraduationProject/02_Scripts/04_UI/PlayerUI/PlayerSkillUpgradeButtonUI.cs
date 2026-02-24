@@ -13,6 +13,7 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
 
     [Header("Conditions")]
     [SerializeField] private int _price;    // 가격
+    [SerializeField] private int _specialPrice; // 특수 가격 (필요하다면 사용) 
     [SerializeField] private List<PlayerAbilitySO> _needAbilities;
     private bool _isLearned = false;
 
@@ -102,7 +103,8 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
     private bool CheckPurchaseCondition()
     {
         // 플레이어 현재 돈 체크
-        if (_playerController.Money.CurrentMoney >= _price)
+        if (_playerController.Money.CurrentMoney >= _price 
+            && _playerController.Money.CurrentSpecialMoney >= _specialPrice)
         {
             // 선행 기술 체크
             for (int i = 0; i < _needAbilities.Count; i++)
@@ -140,6 +142,7 @@ public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAb
         // --- 실제 스킬 구매 로직 ---
         // 돈 차감 (필요하다면 로직 추가)
         _playerController.Money.UseMoney(_price); 
+        _playerController.Money.UseSpecialMoney(_specialPrice); 
 
         // 배우는 스킬 이벤트 발생 및 등록
         for (int i = 0; i < _learnAbilities.Count; i++)
