@@ -13,6 +13,7 @@ public class Task_PlayerChase : BaseAttackNode
     public float maxTriggerRange = 20f;
 
     private float _originalAcceleration;
+    private float _originalRotationSpeed; // [신규] 원본 회전 속도 보관
     private bool _hasHit;
     private bool _isChasing;
 
@@ -37,7 +38,10 @@ public class Task_PlayerChase : BaseAttackNode
             ai.canMove = true;
             if (ai is AIPath aiPath)
             {
+                // [수정] Capture only once to prevent corruption during loops
                 _originalAcceleration = aiPath.maxAcceleration;
+                _originalRotationSpeed = aiPath.rotationSpeed;
+                
                 aiPath.maxAcceleration = 10000f;
                 aiPath.rotationSpeed = turnSpeed;
                 aiPath.enableRotation = true;
@@ -48,7 +52,7 @@ public class Task_PlayerChase : BaseAttackNode
 
     protected override void UpdateMovement()
     {
-        if (!_isChasing) return; // _hasHit 상태여도 루프가 끝나기 전까지는 계속 추격하도록 변경
+        if (!_isChasing) return; 
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return;
@@ -60,7 +64,6 @@ public class Task_PlayerChase : BaseAttackNode
         ai.maxSpeed = maxRushSpeed * speedMultiplier;
         ai.destination = runner.player.transform.position;
 
-        // EnemyAttackData를 기반으로 한 정밀 거리 체크
         float currentDist = Vector3.Distance(runner.transform.position, runner.player.transform.position);
         float stopThreshold = GetStoppingDistance();
 
@@ -72,9 +75,6 @@ public class Task_PlayerChase : BaseAttackNode
                 _hasHit = true;
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
             }
-            
-            // [수정] 도달했다고 여기서 강제로 멈추지 않음. 
-            // LoopAction의 타이머가 만료될 때까지 계속 따라붙거나 위치를 갱신함.
         }
     }
 
@@ -96,7 +96,6 @@ public class Task_PlayerChase : BaseAttackNode
         return Mathf.Max(range, 0.5f);
     }
 
-    // [수정] 플레이어에게 도달(_hasHit)했어도 노드 시간이 끝날 때까지는 '이동 완료'로 간주하지 않음
     protected override bool IsMovementFinished => (Time.time - _nodeEntryTime >= expectedDuration);
 
     protected override void SpecificCleanup()
@@ -105,6 +104,7 @@ public class Task_PlayerChase : BaseAttackNode
         if (ai != null && ai is AIPath aiPath)
         {
             aiPath.maxAcceleration = _originalAcceleration;
+            aiPath.rotationSpeed = _originalRotationSpeed; // [수정] 회전 속도 복구
         }
     }
 

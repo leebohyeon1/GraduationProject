@@ -44,6 +44,9 @@ public abstract class BaseAttackNode : Node
     protected bool _hasTriggeredLoop;
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
+    private bool _didSetLock = false; 
+    private bool _wasInTransition = false; 
+    private bool _hasHaltedMovement = false; 
 
     #region Lifecycle (Sealed)
     
@@ -55,6 +58,9 @@ public abstract class BaseAttackNode : Node
         _hasTriggeredLoop = false;
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
+        _didSetLock = false;
+        _wasInTransition = false;
+        _hasHaltedMovement = false;
 
         if (!brain.blackboard.HasKey(attackKey) || !brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
@@ -67,7 +73,9 @@ public abstract class BaseAttackNode : Node
         
         if (runner._stateController.IsStateLocked || isAlreadyInAttackState)
         {
-            Log("진입 거부: 이미 공격 상태이거나 잠겨 있습니다. (State: " + runner.CurrentState + ")");
+            Log(string.Format("진입 거부: 이미 공격 중이거나 잠겨 있음. (상태: {0}, Lock: {1}, AnimAtk: {2})", 
+                runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking));
+            
             _isActionFinishedInternally = true;
             return;
         }
@@ -80,7 +88,8 @@ public abstract class BaseAttackNode : Node
 
         Log("공격 노드 진입 확정: " + _data.AttackName);
 
-        Handler.ResetAllFlags();
+        if (Handler != null) Handler.ResetAllFlags();
+        
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
         brain.blackboard.SetValue(ExceptKey, true);
@@ -93,6 +102,7 @@ public abstract class BaseAttackNode : Node
         runner.SetCurrentAttackData(_data);
         
         runner._stateController.SetLock(true);
+        _didSetLock = true;
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
@@ -119,15 +129,27 @@ public abstract class BaseAttackNode : Node
     {
         if (_isActionFinishedInternally) return NodeState.FAILURE;
         if (_data == null) return NodeState.FAILURE;
+        if (runner.animator == null) return NodeState.FAILURE; 
+
+        if (runner.CurrentState != EnemyStateController.EnemyState.Attack)
+        {
+            Log("상태 변경 감지 (Attack -> " + runner.CurrentState + "): 공격 중단");
+            return NodeState.FAILURE;
+        }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
         float elapsedTime = Time.time - _nodeEntryTime;
 
         bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
-        if (isTagActive) _hasSeenTag = true;
+        
+        if (isTagActive && !_hasSeenTag)
+        {
+            _hasSeenTag = true;
+            if (Handler != null) Handler.ResetAllFlags(); 
+            Log("애니메이션 태그 확인됨 - 신호 대기 시작");
+        }
 
-        // 히트 확정 탈출 체크 (애니메이터 파라미터만 조작, 노드는 대기)
         if (LoopAttack && escapeOnHitConfirm && _hitConfirmTime > 0)
         {
             if (Time.time - _hitConfirmTime >= hitEscapeDelay)
@@ -141,82 +163,120 @@ public abstract class BaseAttackNode : Node
             }
         }
 
-        // [핵심 수정] 탈출 조건 체크: 이동 완료 조건 제거, 오직 애니메이션 종료 및 타임아웃만 체크
         if (Time.frameCount > _entryFrame + 1)
         {
             NodeState finishState = CheckActionFinished(elapsedTime);
-            if (finishState != NodeState.RUNNING) return finishState;
+            if (finishState != NodeState.RUNNING) 
+            {
+                Log("CheckActionFinished에 의해 노드 종료: " + finishState);
+                return finishState;
+            }
         }
 
         if (!isTagActive)
         {
             if (elapsedTime > transitionBuffer)
             {
-                Log("애니메이션 태그 불일치 종료");
+                Log("애니메이션 태그 불일치 종료 (Tag: " + _data.AttackName + ")");
                 return NodeState.FAILURE;
             }
             return NodeState.RUNNING;
         }
 
-        if (runner.animator.IsInTransition(0))
+        bool isInTransition = runner.animator.IsInTransition(0);
+        if (isInTransition && !_wasInTransition)
         {
-            Handler.ResetAllFlags();
+            if (Handler != null) Handler.ResetAllFlags();
         }
+        _wasInTransition = isInTransition;
 
         HandleCommonSystems(stateInfo, nextStateInfo);
 
-        // 이동 제어: 이동이 끝났거나 루프가 끝났다면 물리만 멈추고 노드는 유지
-        bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
+        // 이동 제어 로직 개선
+        bool isLoopEnded = (LoopAttack && _hasTriggeredLoop && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
+        bool movementActive = !IsMovementFinished && !isLoopEnded;
         
-        if (!IsMovementFinished && !isLoopEnded)
+        if (movementActive)
         {
+            _hasHaltedMovement = false; // 이동 중에는 정지 플래그 초기화
             UpdateMovement();
         }
         else
         {
-            Rigidbody rb = runner.GetComponent<Rigidbody>();
-            if (rb != null) rb.linearVelocity = Vector3.zero;
-            IAstarAI ai = runner.GetComponent<IAstarAI>();
-            if (ai != null) 
+            if (!_hasHaltedMovement)
             {
-                ai.isStopped = true;
-                ai.destination = runner.transform.position; 
+                _hasHaltedMovement = true;
+                HaltMovement();
             }
         }
 
         return NodeState.RUNNING;
     }
 
+    private void HaltMovement()
+    {
+        Log("물리 이동 중단 (Halt)");
+        Rigidbody rb = runner.GetComponent<Rigidbody>();
+        if (rb != null) 
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null) 
+        {
+            ai.isStopped = true;
+            ai.destination = runner.transform.position;
+            ai.maxSpeed = 0; 
+            ai.Teleport(runner.transform.position); 
+            ai.SetPath(null); 
+        }
+
+        // Momentum 제거를 위해 CharacterController가 있다면 Move(zero) 수행
+        CharacterController cc = runner.GetComponent<CharacterController>();
+        if (cc != null) cc.Move(Vector3.zero);
+    }
+
     public sealed override void OnExit()
     {
-        Log("공격 노드 종료 (OnExit)");
+        Log("공격 노드 정상 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
         CleanupAllStates();
         brain.StartSkillCooldown(attackKey);
     }
 
     public sealed override void Abort()
     {
-        Log("공격 노드 중단 (Abort)");
-        CleanupAllStates();
+        if (isEntered)
+        {
+            Log("공격 노드 중단 (Abort)");
+            CleanupAllStates();
+            isEntered = false; 
+        }
     }
 
     private void CleanupAllStates()
     {
         SpecificCleanup();
 
-        if (runner._stateController != null)
+        if (_didSetLock && runner._stateController != null)
         {
             runner._stateController.SetLock(false);
+            _didSetLock = false;
         }
 
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
-        Handler.ResetAllFlags();
+        if (Handler != null) Handler.ResetAllFlags();
         
-        runner.SetState(EnemyStateController.EnemyState.Idle);
+        if (runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        {
+            runner.SetState(EnemyStateController.EnemyState.Idle);
+        }
+        
         runner.AnimationBool("Walk", false);
-        runner.AnimationBool("IsRushing", true);
+        runner.AnimationBool("IsRushing", true); 
         
         runner.aIPath.enableRotation = true;
         runner.SetStiffness(0);
@@ -227,7 +287,9 @@ public abstract class BaseAttackNode : Node
         {
             if (SO[i] != null) SO[i].OnExit(runner);
         }
-        Handler.EndSO();
+        if (Handler != null) Handler.EndSO();
+
+        LogStatus("정리 완료 (Cleanup)");
     }
 
     #endregion
@@ -273,27 +335,35 @@ public abstract class BaseAttackNode : Node
 
     private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
     {
-        if (Handler.IsSound) Handler.EndSound();
+        if (Handler != null && Handler.IsSound) Handler.EndSound();
 
-        if (Handler.IsActionSO)
+        if (Handler != null && Handler.IsActionSO)
         {
             if (stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName))
             {
+                Log("ActionSO 트리거 감지");
+                _hasHaltedMovement = false; // 행동 시작 시 플래그 초기화
                 OnActionSOTriggered();
+                for (int i = 0; i < SO.Length; i++)
+                {
+                    if (SO[i] != null)
+                    {
+                        SO[i].OnEnter(runner);
+                    }
+                }
+                Handler.EndSO();
             }
-            Handler.EndSO();
         }
 
-        for (int i = 0; i < SO.Length; i++)
-        {
-            if (SO[i] != null)
-            {
-                SO[i].OnUpdate(runner);
-            }
-        }
-        
         if (stateInfo.IsTag(_data.AttackName))
         {
+            for (int i = 0; i < SO.Length; i++)
+            {
+                if (SO[i] != null)
+                {
+                    SO[i].OnUpdate(runner);
+                }
+            }
             HandleLoopAttackLogic();
         }
 
@@ -315,7 +385,7 @@ public abstract class BaseAttackNode : Node
 
     private void HandleHitDetection()
     {
-        if (!Handler.IsHitWindowOpen) return;
+        if (Handler == null || !Handler.IsHitWindowOpen) return;
         Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
         Collider[] hits = GetHitColliders(origin);
         foreach (var col in hits)
@@ -376,14 +446,25 @@ public abstract class BaseAttackNode : Node
             return NodeState.RUNNING;
         }
 
-        // [수정] 오직 애니메이션 종료 신호와 절대 타임아웃만 체크합니다.
-        // 이동 완료(IsMovementFinished)는 OnUpdate에서 물리 정지만 수행할 뿐 노드를 종료시키지 않습니다.
         bool isTimedOut = elapsedTime >= maxNodeDuration; 
         
-        if (Handler.IsActionFinished || isTimedOut)
+        bool isLoopOngoing = false;
+        if (LoopAttack && _hasTriggeredLoop)
         {
-            if (isTimedOut) Log("시간 만료 강제 종료", true);
-            else Log("애니메이션 종료 신호 수신");
+             isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
+        }
+
+        if (isLoopOngoing && !isTimedOut)
+        {
+            return NodeState.RUNNING;
+        }
+
+        // [수정] 오직 애니메이션 종료 신호와 절대 타임아웃만 체크합니다.
+        // 이동 완료(IsMovementFinished)는 OnUpdate에서 물리 정지만 수행할 뿐 노드를 종료시키지 않습니다.
+        if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
+        {
+            if (isTimedOut) Log("시간 만료 종료", true);
+            else if (Handler != null && Handler.IsActionFinished) Log("애니메이션 신호로 종료");
 
             if (NextBT) return NodeState.SUCCESS;
             bool hit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
@@ -403,6 +484,9 @@ public abstract class BaseAttackNode : Node
             ai.canMove = true;
             ai.isStopped = false;
             ai.maxSpeed = runner.Movement._normalSpeed;
+            
+            ai.destination = runner.transform.position;
+            
             if (!ai.pathPending) ai.SearchPath();
         }
     }
@@ -410,8 +494,19 @@ public abstract class BaseAttackNode : Node
     protected void Log(string message, bool isError = false)
     {
         if (!debugMode) return;
-        string msg = "[" + this.GetType().Name + " : " + runner.name + "] " + message;
+        string msg = string.Format("[{0} : {1}] {2}", this.GetType().Name, runner.name, message);
         if (isError) Debug.LogError(msg); else Debug.Log(msg);
+    }
+
+    private void LogStatus(string context)
+    {
+        if (!debugMode) return;
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        string status = string.Format("[{0}] State: {1}, Lock: {2}, AnimAtk: {3}, ai.canMove: {4}, ai.isStopped: {5}, Speed: {6}",
+            context, runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking, 
+            ai != null ? ai.canMove.ToString() : "N/A", ai != null ? ai.isStopped.ToString() : "N/A",
+            ai != null ? ai.maxSpeed.ToString() : "N/A");
+        Log(status);
     }
     #endregion
 }

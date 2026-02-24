@@ -20,11 +20,11 @@ namespace BehaviorTree
         {
             if (!runner._initializer.IsInitialized("Final"))
             {
-                Debug.LogWarning($"[BehaviorTree] Runner {runner.name} is not fully initialized. Node {this.name} evaluation skipped.");
                 return NodeState.FAILURE;
             }
             if (!isEntered)
             {
+                // Debug.Log(string.Format("[BT] Node Enter: {0} ({1})", this.name, this.GetType().Name));
                 OnEnter();
                 isEntered = true;
             }
@@ -32,10 +32,9 @@ namespace BehaviorTree
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();
+                // Debug.Log(string.Format("[BT] Node Exit: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
                 isEntered = false;
             }
-             // if(currentState == NodeState.SUCCESS)
-            // Debug.Log($"Node: {this.name}, State: <color=green>{currentState}</color>");
             return currentState;
         }
 

@@ -31,7 +31,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
     protected override void OnActionSOTriggered()
     {
-        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
         Vector3 playerPos = runner.player.transform.position;
         Vector3 myPos = runner.transform.position;
         Vector3 dir = (playerPos - myPos);
@@ -40,19 +39,22 @@ public class Task_RushToFixedLocation : BaseAttackNode
         dir.Normalize();
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
-        _targetPos = playerPos + (dir * overshootDist) + offset;
+        Vector3 rawTarget = playerPos + (dir * overshootDist) + offset;
+        
+        NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
+        _targetPos = info.node != null ? info.position : rawTarget;
 
         Log("돌진 시작 (OnActionSOTriggered) - 실시간 목표 설정: " + _targetPos);
         
         _isRushing = true;
         _rushStartTime = Time.time;
         
-        // 물리 정지 해제
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
         {
-            ai.isStopped = false;
-            ai.canMove = true;
+            ai.isStopped = true; 
+            ai.canMove = false; 
+            ai.destination = runner.transform.position;
         }
     }
 
@@ -85,7 +87,18 @@ public class Task_RushToFixedLocation : BaseAttackNode
         {
             if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
             {
-                runner.transform.position = nextPos;
+                CharacterController cc = runner.GetComponent<CharacterController>();
+                if (cc != null)
+                {
+                    cc.Move(nextPos - currentPos);
+                }
+                else
+                {
+                    runner.transform.position = nextPos;
+                }
+                
+                IAstarAI ai = runner.GetComponent<IAstarAI>();
+                if (ai != null) ai.Teleport(runner.transform.position);
             }
             else
             {
@@ -97,6 +110,7 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (Vector3.Distance(runner.transform.position, runner.player.transform.position) <= hitRadius)
         {
+            Log("플레이어 접촉으로 돌진 중단");
             _isRushing = false;
             brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
             return;

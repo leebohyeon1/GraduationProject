@@ -17,7 +17,8 @@ public class Task_Pressure : Node
         base.OnEnter();
         ai = runner.aIPath;
         
-        // [수정] 노드 진입 시 AI 상태 강제 활성화
+        Debug.Log(string.Format("[Task_Pressure : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}", runner.name, runner.CurrentState, runner._stateController.IsStateLocked));
+
         if (ai != null)
         {
             ai.canMove = true;
@@ -30,23 +31,27 @@ public class Task_Pressure : Node
     {
         if(runner._animationBridge.IsAttacking)
         {
+            Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 애니메이션 브릿지가 공격 중임.", runner.name));
             return NodeState.FAILURE;
         }   
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
+            Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 현재 상태가 Attack임.", runner.name));
             return NodeState.FAILURE;
         }
         
         object val = brain.blackboard.GetValue<Vector3>(Pos_Key);
         if (val == null)
         {
+            Debug.LogWarning(string.Format("[Task_Pressure : {0}] OnUpdate 실패: 블랙보드 키 '{1}'가 비어있음.", runner.name, Pos_Key));
             return NodeState.FAILURE;
         }
 
         Vector3 targetPos = (Vector3)val;
+        Debug.Log(string.Format("[Task_Pressure : {0}] targetPos from blackboard: {1}", runner.name, targetPos));
         currentTargetDebug = targetPos; 
         
-        runner.Movement.StartOrUpdateChase(targetPos);
+        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
@@ -56,10 +61,12 @@ public class Task_Pressure : Node
     public override void Abort()
     {
         base.Abort();
+        Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨.", runner.name));
     }
     public override void OnExit()
     {
         base.OnExit();
+        Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
         if (ai != null) ai.enableRotation = true;
     }
     private void RotateTowardsPlayer()

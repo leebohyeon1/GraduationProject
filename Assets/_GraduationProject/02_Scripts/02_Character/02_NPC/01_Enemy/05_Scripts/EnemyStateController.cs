@@ -23,7 +23,6 @@ public class EnemyStateController : MonoBehaviour
     
     public event Action<EnemyState, EnemyState> OnStateChanged;
     
-    /// <summary> 상태 고정 여부 (BT 공격 노드 등에서 사용) </summary>
     public bool IsStateLocked { get; private set; }
 
     public void Initialize(Enemy owner)
@@ -35,37 +34,36 @@ public class EnemyStateController : MonoBehaviour
     
     public void SetState(EnemyState newState)
     {
-        // 상태가 고정되어 있고, 죽는 상태가 아니면 무시
-        if (IsStateLocked && newState != EnemyState.Die)
+        if (IsStateLocked && newState != EnemyState.Die && newState != EnemyState.Stunned)
         {
-            // Debug.Log("[EnemyStateController] State is LOCKED. Ignoring transition to " + newState);
+            Debug.Log(string.Format("[StateController : {0}] 상태 변경 거부 (Locked). 요청: {1}, 현재: {2}", _owner.name, newState, CurrentState));
             return;
         }
 
-        if (CurrentState == newState) return;
+        if (CurrentState == newState)
+        {
+            Debug.Log(string.Format("[StateController : {0}] 상태 변경 시도 (이미 동일 상태): {1}", _owner.name, newState));
+            return;
+        }
         
         EnemyState previousState = CurrentState;
         CurrentState = newState;
         
-        // 블랙보드 동기화는 이 컨트롤러가 담당
-        Blackboard.SetValue(EnemyBlackboardKeys.CurrentStatus, CurrentState);
+        Debug.Log(string.Format("[StateController : {0}] 상태 변경: {1} -> {2}", _owner.name, previousState, newState));
         
-        // 이벤트로 상태 변경 알림
+        Blackboard.SetValue(EnemyBlackboardKeys.CurrentStatus, CurrentState);
         OnStateChanged?.Invoke(previousState, newState);
     }
 
-    /// <summary>
-    /// 상태 전환을 강제로 고정하거나 해제합니다.
-    /// </summary>
     public void SetLock(bool locked)
     {
         IsStateLocked = locked;
-        // Debug.Log("[EnemyStateController] State Lock: " + locked);
+        Debug.Log(string.Format("[StateController : {0}] State Lock: {1}", _owner.name, locked));
     }
     
     public bool CanTransitionTo(EnemyState targetState)
     {
-        if (IsStateLocked && targetState != EnemyState.Die) return false;
+        if (IsStateLocked && targetState != EnemyState.Die && targetState != EnemyState.Stunned) return false;
         return !(CurrentState == EnemyState.Die && targetState != EnemyState.Die);
     }
 }

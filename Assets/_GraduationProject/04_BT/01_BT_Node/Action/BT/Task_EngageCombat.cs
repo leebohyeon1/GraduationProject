@@ -15,7 +15,7 @@ public class Task_EngageCombat : Node
         if (!brain._isCombat)
         {
             runner.AnimationEvent(animationTagName);
-            Debug.Log("애니메이션 작동: ");
+            
             // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
             runner._stateController.SetLock(true);
             
@@ -29,6 +29,12 @@ public class Task_EngageCombat : Node
 
     protected override NodeState OnUpdate()
     {
+        // [중요] 상태 중단 체크: 스턴이나 사망 시 즉시 종료 (락은 OnExit/Abort에서 해제됨)
+        if (runner.CurrentState == EnemyStateController.EnemyState.Stunned || runner.CurrentState == EnemyStateController.EnemyState.Die)
+        {
+            return NodeState.FAILURE;
+        }
+
         float elapsedTime = Time.time - _entryTime;
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);

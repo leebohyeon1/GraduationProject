@@ -62,6 +62,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         IsHitWindowOpen = false;
         IsActionFinished = false;
         IsSound = false;
+        IsActionSO = false; // [추가]
     }
     public void Initalize()
     {
