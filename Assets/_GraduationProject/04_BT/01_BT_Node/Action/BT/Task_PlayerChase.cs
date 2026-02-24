@@ -48,7 +48,7 @@ public class Task_PlayerChase : BaseAttackNode
 
     protected override void UpdateMovement()
     {
-        if (!_isChasing || _hasHit) return;
+        if (!_isChasing) return; // _hasHit 상태여도 루프가 끝나기 전까지는 계속 추격하도록 변경
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return;
@@ -66,24 +66,21 @@ public class Task_PlayerChase : BaseAttackNode
 
         if (currentDist <= stopThreshold)
         {
-            Log("공격 데이터 사거리 도달 (Distance: " + currentDist + " <= " + stopThreshold + ")");
-            _hasHit = true;
-            brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+            if (!_hasHit)
+            {
+                Log("플레이어 도달 (Hit 판정 활성화)");
+                _hasHit = true;
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+            }
             
-            ai.isStopped = true;
-            ai.destination = runner.transform.position; // [추가] 제자리 멈춤 보장
-            Rigidbody rb = runner.GetComponent<Rigidbody>();
-            if (rb != null) rb.linearVelocity = Vector3.zero;
+            // [수정] 도달했다고 여기서 강제로 멈추지 않음. 
+            // LoopAction의 타이머가 만료될 때까지 계속 따라붙거나 위치를 갱신함.
         }
     }
 
-    /// <summary>
-    /// EnemyAttackData의 형상 데이터를 분석하여 추격을 멈출 거리를 계산합니다.
-    /// </summary>
     private float GetStoppingDistance()
     {
         if (_data == null) return 1.5f;
-
         float range = 0f;
         switch (_data.shape)
         {
@@ -96,11 +93,11 @@ public class Task_PlayerChase : BaseAttackNode
                 range = _data.damageRadius + _data.attackOffset.z;
                 break;
         }
-
         return Mathf.Max(range, 0.5f);
     }
 
-    protected override bool IsMovementFinished => _hasHit || (Time.time - _nodeEntryTime >= expectedDuration);
+    // [수정] 플레이어에게 도달(_hasHit)했어도 노드 시간이 끝날 때까지는 '이동 완료'로 간주하지 않음
+    protected override bool IsMovementFinished => (Time.time - _nodeEntryTime >= expectedDuration);
 
     protected override void SpecificCleanup()
     {

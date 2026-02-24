@@ -23,6 +23,15 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
+        _rushStartTime = 0;
+        _isRushing = false;
+        runner.aIPath.enableRotation = false;
+        Log("돌진 준비 (ActionSO 대기 중)");
+    }
+
+    protected override void OnActionSOTriggered()
+    {
+        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
         Vector3 playerPos = runner.player.transform.position;
         Vector3 myPos = runner.transform.position;
         Vector3 dir = (playerPos - myPos);
@@ -32,19 +41,19 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
         _targetPos = playerPos + (dir * overshootDist) + offset;
+
+        Log("돌진 시작 (OnActionSOTriggered) - 실시간 목표 설정: " + _targetPos);
         
-        _rushStartTime = 0;
-        _isRushing = false;
-
-        runner.aIPath.enableRotation = false;
-        Log("목표 지점 계산 완료: " + _targetPos);
-    }
-
-    protected override void OnActionSOTriggered()
-    {
-        Log("돌진 시작 (OnActionSOTriggered)");
         _isRushing = true;
         _rushStartTime = Time.time;
+        
+        // 물리 정지 해제
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.isStopped = false;
+            ai.canMove = true;
+        }
     }
 
     protected override void UpdateMovement()
@@ -108,6 +117,7 @@ public class Task_RushToFixedLocation : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
+        node.maxNodeDuration = this.maxNodeDuration;
         node.continuousRotation = this.continuousRotation;
         node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
@@ -116,6 +126,8 @@ public class Task_RushToFixedLocation : BaseAttackNode
         node.debugMode = this.debugMode;
         node.checkRangeOnEnter = this.checkRangeOnEnter;
         node.rangeThreshold = this.rangeThreshold;
+        node.ignoreYDistance = this.ignoreYDistance;
+        node.allowOutOfCombat = this.allowOutOfCombat;
         node.rushSpeed = this.rushSpeed;
         node.hitRadius = this.hitRadius;
         node.overshootDist = this.overshootDist;
@@ -125,6 +137,8 @@ public class Task_RushToFixedLocation : BaseAttackNode
         node.turnSpeed = this.turnSpeed;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
+        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
+        node.hitEscapeDelay = this.hitEscapeDelay;
         return node;
     }
 }

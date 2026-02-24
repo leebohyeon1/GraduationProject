@@ -125,28 +125,23 @@ public abstract class BaseAttackNode : Node
         float elapsedTime = Time.time - _nodeEntryTime;
 
         bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
-        
-        if (isTagActive && !_hasSeenTag)
-        {
-            _hasSeenTag = true;
-            Handler.ResetAllFlags(); 
-            Log("애니메이션 태그 확인됨 - 신호 대기 시작");
-        }
+        if (isTagActive) _hasSeenTag = true;
 
-        // 히트 확정 탈출 체크
+        // 히트 확정 탈출 체크 (애니메이터 파라미터만 조작, 노드는 대기)
         if (LoopAttack && escapeOnHitConfirm && _hitConfirmTime > 0)
         {
             if (Time.time - _hitConfirmTime >= hitEscapeDelay)
             {
                 if (!brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false))
                 {
-                    Log("타격 성공 후 지연시간 경과: 루프 탈출");
+                    Log("타격 성공 후 지연시간 경과: 루프 탈출 신호 발생");
                     runner.AnimationBool("IsRushing", true);
                     brain.blackboard.SetValue(LoopAction.EndKey, true);
                 }
             }
         }
 
+        // [핵심 수정] 탈출 조건 체크: 이동 완료 조건 제거, 오직 애니메이션 종료 및 타임아웃만 체크
         if (Time.frameCount > _entryFrame + 1)
         {
             NodeState finishState = CheckActionFinished(elapsedTime);
@@ -157,7 +152,7 @@ public abstract class BaseAttackNode : Node
         {
             if (elapsedTime > transitionBuffer)
             {
-                Log("애니메이션 태그 불일치 종료 (Tag: " + _data.AttackName + ")");
+                Log("애니메이션 태그 불일치 종료");
                 return NodeState.FAILURE;
             }
             return NodeState.RUNNING;
@@ -170,7 +165,7 @@ public abstract class BaseAttackNode : Node
 
         HandleCommonSystems(stateInfo, nextStateInfo);
 
-        // 이동 제어: 특수 이동이 끝났거나 루프 시간이 만료되었다면 즉시 물리 정지
+        // 이동 제어: 이동이 끝났거나 루프가 끝났다면 물리만 멈추고 노드는 유지
         bool isLoopEnded = (LoopAttack && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
         
         if (!IsMovementFinished && !isLoopEnded)
@@ -185,7 +180,7 @@ public abstract class BaseAttackNode : Node
             if (ai != null) 
             {
                 ai.isStopped = true;
-                ai.destination = runner.transform.position; // 제자리 멈춤 보장
+                ai.destination = runner.transform.position; 
             }
         }
 
@@ -194,7 +189,7 @@ public abstract class BaseAttackNode : Node
 
     public sealed override void OnExit()
     {
-        Log("공격 노드 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
+        Log("공격 노드 종료 (OnExit)");
         CleanupAllStates();
         brain.StartSkillCooldown(attackKey);
     }
@@ -285,26 +280,20 @@ public abstract class BaseAttackNode : Node
             if (stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName))
             {
                 OnActionSOTriggered();
-                for (int i = 0; i < SO.Length; i++)
-                {
-                    if (SO[i] != null)
-                    {
-                        SO[i].OnEnter(runner);
-                    }
-                }
-                Handler.EndSO();
             }
+            Handler.EndSO();
         }
 
+        for (int i = 0; i < SO.Length; i++)
+        {
+            if (SO[i] != null)
+            {
+                SO[i].OnUpdate(runner);
+            }
+        }
+        
         if (stateInfo.IsTag(_data.AttackName))
         {
-            for (int i = 0; i < SO.Length; i++)
-            {
-                if (SO[i] != null)
-                {
-                    SO[i].OnUpdate(runner);
-                }
-            }
             HandleLoopAttackLogic();
         }
 
@@ -316,7 +305,7 @@ public abstract class BaseAttackNode : Node
 
     private void HandleRotation()
     {
-        if (continuousRotation && !Handler.IsActive)
+        if (continuousRotation)
         {
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;
@@ -341,7 +330,7 @@ public abstract class BaseAttackNode : Node
                 if (LoopAttack && _hitConfirmTime < 0)
                 {
                     _hitConfirmTime = Time.time;
-                    Log("히트 확정: " + hitEscapeDelay + "초 후 루프 탈출 예정");
+                    Log("히트 확정: 지연 후 루프 탈출 예정");
                 }
 
                 if (!maintainAtk) Handler.CloseHitWindow();
@@ -387,25 +376,14 @@ public abstract class BaseAttackNode : Node
             return NodeState.RUNNING;
         }
 
+        // [수정] 오직 애니메이션 종료 신호와 절대 타임아웃만 체크합니다.
+        // 이동 완료(IsMovementFinished)는 OnUpdate에서 물리 정지만 수행할 뿐 노드를 종료시키지 않습니다.
         bool isTimedOut = elapsedTime >= maxNodeDuration; 
-        bool movementEnd = IsMovementFinished && elapsedTime > transitionBuffer + 0.5f;
         
-        bool isLoopOngoing = false;
-        if (LoopAttack && _hasTriggeredLoop)
+        if (Handler.IsActionFinished || isTimedOut)
         {
-             isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
-        }
-
-        if (isLoopOngoing && !isTimedOut)
-        {
-            return NodeState.RUNNING;
-        }
-
-        if (Handler.IsActionFinished || movementEnd || isTimedOut)
-        {
-            if (isTimedOut) Log("시간 만료 종료", true);
-            else if (Handler.IsActionFinished) Log("애니메이션 신호로 종료");
-            else if (movementEnd) Log("특수 이동 완료로 종료");
+            if (isTimedOut) Log("시간 만료 강제 종료", true);
+            else Log("애니메이션 종료 신호 수신");
 
             if (NextBT) return NodeState.SUCCESS;
             bool hit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
@@ -425,10 +403,6 @@ public abstract class BaseAttackNode : Node
             ai.canMove = true;
             ai.isStopped = false;
             ai.maxSpeed = runner.Movement._normalSpeed;
-            
-            // [수정] 종료 시점에 목적지를 현재 위치로 고정하여 밀림 방지
-            ai.destination = runner.transform.position;
-            
             if (!ai.pathPending) ai.SearchPath();
         }
     }
