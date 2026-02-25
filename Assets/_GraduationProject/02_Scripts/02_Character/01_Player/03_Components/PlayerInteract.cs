@@ -40,7 +40,6 @@ public class PlayerInteract : MonoBehaviour, IDisposable
 
     public void SetInteractable(IInteractable interactable)
     {
-        Debug.Log(interactable);
         _interactable = interactable;
     }
 }
