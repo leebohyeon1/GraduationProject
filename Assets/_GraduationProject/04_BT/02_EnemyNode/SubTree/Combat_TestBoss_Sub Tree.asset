@@ -51,15 +51,21 @@ MonoBehaviour:
   position: {x: 1435, y: 613}
   attackKey: 'Boss_S_Attack_1 '
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 1044524670747374ebf1d65e9b17cbd7, type: 2}
-  ExceptKey: 
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: 
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_CloseAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 896, y: 719}
+  position: {x: 950, y: 720}
   nodes:
   - {fileID: 8335210479689113784}
   - {fileID: 4640970959790474602}
@@ -146,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb68bd0f3413b94fb3b0d8053eebb4a, type: 3}
   m_Name: Condition_Is Animation Attack
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAnimationAttack
-  position: {x: 672, y: -108}
+  position: {x: 608, y: -100}
   tagstring: Attack
 --- !u!114 &-4140156646422702466
 MonoBehaviour:
@@ -208,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Opportunity(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 887, y: -108}
+  position: {x: 901, y: -127}
   nodes:
   - {fileID: -3955425885467282472}
   - {fileID: 5099860071830320573}
@@ -295,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 925, y: 1220}
+  position: {x: 967, y: 1186}
   Pos_Key: PressurePos
   MoveSpeed: 5
   StoppingDist: 1
@@ -383,15 +389,21 @@ MonoBehaviour:
   position: {x: 1636, y: 1031}
   attackKey: Boss_B_Attack_1
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &4640970959790474602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -453,7 +465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 672, y: -31}
+  position: {x: 608, y: -23}
   nodes:
   - {fileID: -2165811004991647136}
   - {fileID: 3428122175870849780}
@@ -474,15 +486,21 @@ MonoBehaviour:
   position: {x: 1155, y: 184}
   attackKey: Boss_J_Attack
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 473cc0a6f5c2689458054d4d1e73244e, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,7 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: ATKSet
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 482, y: -31}
+  position: {x: 418, y: -23}
   nodes:
   - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
