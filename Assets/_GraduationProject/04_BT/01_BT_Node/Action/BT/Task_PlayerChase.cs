@@ -23,6 +23,14 @@ public class Task_PlayerChase : BaseAttackNode
     {
         _hasHit = false;
         _isChasing = false;
+
+        IAstarAI ai = runner.GetComponent<IAstarAI>();
+        if (ai != null && ai is AIPath aiPath)
+        {
+            _originalAcceleration = aiPath.maxAcceleration;
+            _originalRotationSpeed = aiPath.rotationSpeed;
+        }
+
         Log("추격 준비 완료 (IsActionSO 대기 중)");
     }
 
@@ -38,10 +46,6 @@ public class Task_PlayerChase : BaseAttackNode
             ai.canMove = true;
             if (ai is AIPath aiPath)
             {
-                // [수정] Capture only once to prevent corruption during loops
-                _originalAcceleration = aiPath.maxAcceleration;
-                _originalRotationSpeed = aiPath.rotationSpeed;
-                
                 aiPath.maxAcceleration = 10000f;
                 aiPath.rotationSpeed = turnSpeed;
                 aiPath.enableRotation = true;
@@ -104,7 +108,7 @@ public class Task_PlayerChase : BaseAttackNode
         if (ai != null && ai is AIPath aiPath)
         {
             aiPath.maxAcceleration = _originalAcceleration;
-            aiPath.rotationSpeed = _originalRotationSpeed; // [수정] 회전 속도 복구
+            aiPath.rotationSpeed = _originalRotationSpeed;
         }
     }
 

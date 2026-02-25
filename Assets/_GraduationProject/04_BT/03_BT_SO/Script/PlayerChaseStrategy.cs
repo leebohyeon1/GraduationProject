@@ -15,6 +15,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
     public AnimationCurve speedCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.2f, 1f), new Keyframe(1, 0));
 
     private float _originalAcceleration;
+    private float _originalRotationSpeed;
 
     public override T OnEnter<T>(T runner)
     {
@@ -26,6 +27,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
         if (ai != null && ai is AIPath aiPath)
         {
             _originalAcceleration = aiPath.maxAcceleration;
+            _originalRotationSpeed = aiPath.rotationSpeed;
             aiPath.maxAcceleration = 10000f; 
             aiPath.rotationSpeed = turnSpeed; 
             aiPath.enableRotation = true;
@@ -96,6 +98,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
         if (ai != null && ai is AIPath aiPath)
         {
             aiPath.maxAcceleration = _originalAcceleration;
+            aiPath.rotationSpeed = _originalRotationSpeed;
             aiPath.destination = enemy.transform.position;
         }
     }
