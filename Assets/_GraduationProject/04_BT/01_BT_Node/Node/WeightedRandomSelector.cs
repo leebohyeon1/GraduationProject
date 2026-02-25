@@ -26,7 +26,7 @@ namespace BehaviorTree
                     return NodeState.FAILURE;
                 }
                 
-                // Debug.Log($"[WeightedRandomSelector : {this.name}] {nodes[_runningChildIndex].name} 선택됨 (인덱스: {_runningChildIndex})");
+                Debug.Log($"[WeightedRandomSelector : {this.name}] {nodes[_runningChildIndex].name} 선택됨 (인덱스: {_runningChildIndex})");
             }
 
             // 선택된 자식 노드 실행
@@ -98,10 +98,17 @@ namespace BehaviorTree
             }
         }
 
+        public override void OnExit()
+        {
+            base.OnExit();
+            // [핵심 수정] 노드가 종료(Success/Failure)되면 인덱스를 리셋하여 		
+            // 다음에 다시 들어올 때 새로운 확률 검사를 수행하도록 합니다.
+            _runningChildIndex = -1;
+        }
+
         public override Node Clone()
         {
             WeightedRandomSelector newNode = (WeightedRandomSelector)base.Clone();
-            // 가중치 리스트 깊은 복사
             newNode.weights = new List<float>(weights);
             return newNode;
         }

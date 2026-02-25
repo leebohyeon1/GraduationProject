@@ -29,6 +29,9 @@ namespace BehaviorTree
                 isEntered = true;
             }
             NodeState currentState = OnUpdate();
+            
+            Debug.Log(string.Format("[BT] Node Update: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
+
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();
