@@ -1,21 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9165121328556541395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2611b85b7b8584eb4ba2822e642748, type: 3}
-  m_Name: Back Moving
-  m_EditorClassIdentifier: Assembly-CSharp::BackMoving
-  position: {x: 0, y: 0}
-  targetDistance: 5
-  acceptanceRadius: 0.5
-  timeout: 1.8
 --- !u!114 &-8069466620819224126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,36 +19,6 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
---- !u!114 &-8061363964458695047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_ChargeAttack(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1435, y: 613}
-  attackKey: 'Boss_S_Attack_1 '
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 1044524670747374ebf1d65e9b17cbd7, type: 2}
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 0
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: 
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,63 +40,6 @@ MonoBehaviour:
   - {fileID: 2818379902901682789}
   - {fileID: 4489605913624550641}
   services: []
---- !u!114 &-5794056097246212893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
-  m_Name: Condition_Distance Hysteresis(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1430, y: 302}
-  exceptCondition:
-    key: 
-  target: {fileID: 0}
-  minRange: 7
-  maxRange: 9
-  checkType: 0
---- !u!114 &-5169928796796515572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
-  m_Name: Condition_Check Cool Time
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1430, y: 536}
-  exceptCondition:
-    key: 
-  skillName: 'Boss_S_Attack_1 '
-  cooldownDuration: 3
-  EnemyAttackData: 1
-  attackData: {fileID: 11400000, guid: 73c236d8817b54f4c8692c0258a6fc70, type: 2}
---- !u!114 &-4747025815022784661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: Dondition_Blackboard Enum Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1430, y: 456}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 1
-    TargetState: 3
 --- !u!114 &-4427913439106785545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,26 +52,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb68bd0f3413b94fb3b0d8053eebb4a, type: 3}
   m_Name: Condition_Is Animation Attack
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAnimationAttack
-  position: {x: 660, y: -247}
+  position: {x: 1288, y: -442}
   exceptCondition:
     key: 
   tagstring: Attack
---- !u!114 &-4091383270736508263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_HasAttackToken
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1430, y: 379}
-  exceptCondition:
-    key: 
-  key: HasAttackToken
 --- !u!114 &-3955425885467282472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,6 +87,7 @@ MonoBehaviour:
   position: {x: 366, y: -109}
   nodes:
   - {fileID: -3955425885467282472}
+  - {fileID: 7939394646320841357}
   services: []
 --- !u!114 &-700661456820620682
 MonoBehaviour:
@@ -271,7 +153,7 @@ MonoBehaviour:
   position: {x: 302, y: 86}
   nodes:
   - {fileID: 5881213401257367860}
-  - {fileID: 3428122175870849780}
+  - {fileID: 8637802748458341298}
   services: []
   weights:
   - 50
@@ -343,26 +225,6 @@ MonoBehaviour:
   exceptCondition:
     key: 
   key: HasAttackToken
---- !u!114 &3428122175870849780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_LongAttack(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 621, y: 86}
-  nodes:
-  - {fileID: -5794056097246212893}
-  - {fileID: -4091383270736508263}
-  - {fileID: -4747025815022784661}
-  - {fileID: -5169928796796515572}
-  - {fileID: -8061363964458695047}
-  services: []
 --- !u!114 &4027494429244999788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,8 +318,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
   m_Name: Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 660, y: -4}
-  waitTime: 10
+  position: {x: 678, y: 61}
+  waitTime: 1
 --- !u!114 &6221964156027925128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 660, y: -170}
+  position: {x: 1738, y: -549}
   nodes:
   - {fileID: -7154228387633228831}
   services: []
@@ -493,6 +355,21 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 6
+--- !u!114 &7939394646320841357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868d6069a6a2a4e4a8b5d8a346c9c798, type: 3}
+  m_Name: Task_Flee From Target
+  m_EditorClassIdentifier: Assembly-CSharp::Task_FleeFromTarget
+  position: {x: 600, y: -32}
+  fleeDistance: 5
+  fleeSpeed: 5
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,6 +437,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 470, y: -365}
   nodes:
-  - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
+  - {fileID: -4427913439106785545}
   services: []
+--- !u!114 &8637802748458341298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
+  m_Name: Task_Normal Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
+  position: {x: 678, y: 138}
+  attackKey: Attack02_a
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking

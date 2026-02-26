@@ -320,6 +320,7 @@ public abstract class BaseAttackNode : Node
         }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
+        if (checkRangeOnEnter)
         {
             float dist = CalculateDistance();
             float range = GetRequiredRange();
