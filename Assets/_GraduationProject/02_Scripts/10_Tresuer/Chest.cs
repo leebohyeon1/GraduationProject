@@ -13,6 +13,13 @@ public class Chest : MonoBehaviour, IInteractable
     [SerializeField] private string _chestID;
     public string ChestID => _chestID;
 
+    [SerializeField] private Transform _interactableUITransform;
+    [SerializeField] private InteractableType _interactableType;
+
+    public Transform InteractableUITransform => _interactableUITransform;
+
+    public InteractableType InteractableType => _interactableType;
+
     private void OnValidate()
     {
         if (string.IsNullOrEmpty(_chestID))

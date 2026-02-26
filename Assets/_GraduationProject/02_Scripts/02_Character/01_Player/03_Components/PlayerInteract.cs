@@ -10,7 +10,8 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     private IInteractable _interactable;
     public IInteractable Interactable => _interactable;
 
-    public event Action OnInteract;
+    public event Action Interacted;
+    public event Action<IInteractable> InteractableChanged;
 
 
     public void Initialize(PlayerController player)
@@ -33,13 +34,24 @@ public class PlayerInteract : MonoBehaviour, IDisposable
         {
             Debug.Log("상호작용");
 
-            Interactable?.Interact();
-            OnInteract?.Invoke();
+            Interactable.Interact();
+            Interacted?.Invoke();
+
+            SetInteractable(null);
         }
     }
 
     public void SetInteractable(IInteractable interactable)
     {
         _interactable = interactable;
+
+        if (Interactable != null)
+        {
+            InteractableChanged?.Invoke(Interactable);
+        }
+        else
+        {
+            InteractableChanged?.Invoke(null);
+        }
     }
 }
