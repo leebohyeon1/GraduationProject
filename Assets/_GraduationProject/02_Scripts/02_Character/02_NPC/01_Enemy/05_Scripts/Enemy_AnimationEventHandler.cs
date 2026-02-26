@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 using UnityEngine;
+
 public class Enemy_AnimationEventHandler : MonoBehaviour
 {
     public bool IsActive { get; private set; }
@@ -10,6 +11,18 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public bool IsSound { get; private set; }
     public bool IsSuperArmor { get; private set; }
     public bool IsActionSO { get; private set; }
+
+    private Enemy _owner;
+
+    public void Initialize()
+    {
+        _owner = GetComponent<Enemy>();
+        
+        foreach (var feedbackPlayer in _feedbacks)
+        {
+            _feedbackDictionary[feedbackPlayer.name] = feedbackPlayer.feedback;
+        }
+    }
 
     public void ActivateAction()
     {
@@ -62,15 +75,9 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         IsHitWindowOpen = false;
         IsActionFinished = false;
         IsSound = false;
-        IsActionSO = false; // [추가]
+        IsActionSO = false;
     }
-    public void Initalize()
-    {
-         foreach (var feedbackPlayer in _feedbacks)
-        {
-            _feedbackDictionary[feedbackPlayer.name] = feedbackPlayer.feedback;
-        }
-    }
+
     [Serializable]
     public struct FeedbackPlayer
     {
@@ -81,60 +88,53 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         public AttackType HitType;
     }
 
-
-
     [Header("Feedbacks")]
     [SerializeField] private List<FeedbackPlayer> _feedbacks;
     Dictionary<string, MMF_Player> _feedbackDictionary = new Dictionary<string, MMF_Player>();
+
     public void PlayFeedback(string feedbackName)
     {
-        if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
+        if (_owner == null) return;
+
+        // 블랙보드에서 현재 Phase를 가져옵니다.
+        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
+
+        // 이름이 일치하고, ID(Phase)가 현재 페이즈보다 작거나 같은 모든 피드백을 재생합니다.
+        foreach (var f in _feedbacks)
         {
-            if( feedback == null)
+            if (f.name == feedbackName && f.id <= currentPhase && f.feedback != null)
             {
-                Debug.LogWarning($"피드백이 null {feedbackName}");
-                return;
+                f.feedback.PlayFeedbacks(transform.position + f.offset);
             }
-            feedback.PlayFeedbacks(transform.position + _feedbacks.Find(f => f.name == feedbackName).offset);
-        }
-        else
-        {
-            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
         }
     }
-        public void PlayFeedback(string feedbackName, AttackType attackType)
+
+    public void PlayFeedback(string feedbackName, AttackType attackType)
     {
-        var target = _feedbacks.Find(f => f.name == feedbackName && f.HitType == attackType);
-        
-        if (target.feedback != null)
+        if (_owner == null) return;
+
+        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
+
+        // 이름, 타입이 일치하고 ID가 현재 페이즈 이하인 모든 피드백을 재생합니다.
+        foreach (var f in _feedbacks)
         {
-            Debug.Log($"[피드백 재생 성공] 이름: {feedbackName}, 타입: {target.HitType}");
-            
-            // 3. 해당 데이터의 피드백을 실행하고 설정된 오프셋을 적용합니다.
-            target.feedback.PlayFeedbacks(transform.position + target.offset);
-        }
-        else
-        {
-            // 4. 리스트에 없거나 피드백이 할당되지 않은 경우에 대한 예외 처리
-            Debug.LogWarning($"[피드백 실패] {feedbackName} (타입: {attackType})를 찾을 수 없거나 피드백이 null입니다.");
+            if (f.name == feedbackName && f.HitType == attackType && f.id <= currentPhase && f.feedback != null)
+            {
+                // Debug.Log($"[피드백 재생 성공] 이름: {feedbackName}, 타입: {attackType}, Phase: {f.id}");
+                f.feedback.PlayFeedbacks(transform.position + f.offset);
+            }
         }
     }
 
     public void StopFeedback(string feedbackName)
     {
-        if (_feedbackDictionary.TryGetValue(feedbackName, out MMF_Player feedback))
+        // 중지는 이름 기준으로만 처리 (모든 Phase의 해당 이름 피드백 중지)
+        foreach (var f in _feedbacks)
         {
-            if( feedback == null)
+            if (f.name == feedbackName && f.feedback != null)
             {
-               Debug.LogWarning($"피드백이 null {feedbackName}");
-                return;
+                f.feedback.StopFeedbacks();
             }
-            
-            feedback.StopFeedbacks();
-        }
-        else
-        {
-            Debug.LogWarning($"피드백 등록안됨 {feedbackName}");
         }
     }
 }

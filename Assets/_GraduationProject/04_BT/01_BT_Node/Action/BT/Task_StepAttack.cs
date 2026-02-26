@@ -28,11 +28,6 @@ public class Task_StepAttack : BaseAttackNode
     [Header("Phase Attack Data Override")]
     public List<string> phaseAttackDataKeys = new List<string>();
 
-    [Header("Magic Effect Settings")]
-    public string magicCheckKey = "IsMagicReady";
-    public GameObject magicEffectPrefab;
-    public Vector3 magicEffectOffset;
-
     [Header("Global Constraints")]
     public LayerMask obstacleMask;
     public float hitRadius = 1.0f;
@@ -92,16 +87,6 @@ public class Task_StepAttack : BaseAttackNode
                 Log($"Step {_currentStep}: {_currentStepData.distance}m 이동 시작 (속도: {_calculatedBaseSpeed:F2}m/s)");
             }
         }
-
-        // 3. 마법 이펙트
-        if (!string.IsNullOrEmpty(magicCheckKey) && brain.blackboard.GetValueOrDefault<bool>(magicCheckKey, false))
-        {
-            if (magicEffectPrefab != null)
-            {
-                Vector3 spawnPos = runner.transform.position + runner.transform.TransformDirection(magicEffectOffset);
-                Instantiate(magicEffectPrefab, spawnPos, runner.transform.rotation);
-            }
-        }
     }
 
     protected override void UpdateMovement()
@@ -159,6 +144,7 @@ public class Task_StepAttack : BaseAttackNode
     protected override void SpecificCleanup()
     {
         _isMoving = false;
+        _currentStep = -1;
         if (runner.aIPath != null) runner.aIPath.enableRotation = true;
     }
 

@@ -10,15 +10,16 @@ public class Service_Phase : ServiceNode
             return;
         }
         float healthPercent = runner.EnemyHealth.CurrentHealth / runner.EnemyHealth.MaxHealth;
-        int phase = 0;
+        int phase = 1;
         if (healthPercent <= 0.5f)
-        {
-            phase = 1;
-        }
-        if (healthPercent <= 0.25f)
         {
             phase = 2;
         }
-        runner._aiController._aiBrain.blackboard.SetValue("Phase", phase);
+        // if (healthPercent <= 0.25f)
+        // {
+        //     phase = 2;
+        // }
+        if(runner._aiController._aiBrain.blackboard.GetValue<int>("Phase") != phase)
+            runner._aiController._aiBrain.blackboard.SetValue("Phase", phase);
     }
 }
