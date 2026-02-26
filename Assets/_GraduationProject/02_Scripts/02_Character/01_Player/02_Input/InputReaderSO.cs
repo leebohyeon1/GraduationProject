@@ -6,7 +6,8 @@ using System;
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
 [CreateAssetMenu(fileName = "InputReader", menuName = "Project/Input/Input Reader")]
-public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions
+public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, 
+    InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions, InputSystem_Actions.IShareActions
 {
     public enum InputMode
     {
@@ -55,6 +56,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action MiddleClickEvent = delegate { };
     public event Action<Vector2> ScrollWheelEvent = delegate { };
     public event Action AnyKeyEvent = delegate { };
+    public event Action NextEvent = delegate { };
+    public event Action PreviousEvent = delegate { };
 
     // Developer Actions;
     public event Action ToggleConsoleEvent = delegate { };  
@@ -71,7 +74,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             _inputActions.Player.SetCallbacks(this);
             _inputActions.UI.SetCallbacks(this);
             _inputActions.Developer.SetCallbacks(this);
+            _inputActions.Share.SetCallbacks(this);
         }
+
+        _inputActions.Share.Enable(); // 공용 입력은 항상 활성화
 
         SetInputMode(InputMode.None);
     }
@@ -79,14 +85,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     private void OnDisable()
     {
         // ScriptableObject가 비활성화되거나 게임이 종료될 때 정리
+        _inputActions.Share.Disable();
         DisableAllInput();
 
         // 이전에 말씀드린 안전한 해제 방식
         _inputActions.Player.RemoveCallbacks(this);
         _inputActions.UI.RemoveCallbacks(this);
         _inputActions.Developer.RemoveCallbacks(this);
+        _inputActions.Share.RemoveCallbacks(this);
 
-        _inputActions.Dispose();
         _inputActions = null;
     }
 
@@ -135,6 +142,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         _inputActions.UI.Disable();
         // 개발자 콘솔조차 막으려면 이것도 Disable
         // _inputActions.Developer.Disable(); 
+    }
+
+
+    public void OnEscape(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            EscapeEvent.Invoke();
+        }
     }
 
     // Player Action Implementations
@@ -261,13 +277,6 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
-    public void OnEscape(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            EscapeEvent.Invoke();
-        }
-    }
 
     // UI Action Implementations
     public void OnCancel(InputAction.CallbackContext context)
@@ -330,6 +339,22 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         if (context.phase == InputActionPhase.Performed)
         {
             AnyKeyEvent.Invoke();
+        }
+    }
+
+    public void OnNext(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            NextEvent.Invoke();
+        }
+    }
+
+    public void OnPrevious(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            PreviousEvent.Invoke();
         }
     }
 

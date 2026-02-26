@@ -55,6 +55,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     [Header("Dodge Setting")]
     // 회피 설정
     public DodgeData DodgeConfig => _runtimeData != null ? _runtimeData.DodgeConfig : null;
+    
+    [SerializeField] private PlayerAbilityTagSO _invincibleSO;
+    public PlayerAbilityTagSO InvincibleSO => _invincibleSO;
 
     [Header("ChargeMove Setting")]
     // 차지 이동 속도

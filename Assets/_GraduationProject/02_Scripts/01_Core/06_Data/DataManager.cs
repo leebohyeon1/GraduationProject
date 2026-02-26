@@ -58,6 +58,11 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public GameData GetGameData()
+    {
+        return _currentGameData;
+    }
+
     //==========================================================================================================================
     // Save Logic ==============================================================================================================
     //==========================================================================================================================
@@ -202,8 +207,4 @@ public class DataManager : MonoBehaviour
         return ability;
     }
 
-    public GameData GetGameData()
-    {
-        return _currentGameData;
-    }
 }
