@@ -133,4 +133,16 @@ public class Enemy : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.collider.CompareTag("Player"))
+        {
+            // 플레이어와 충돌했을 때의 처리
+            Debug.Log($"[Enemy] {gameObject.name} collided with Player.");
+            // 예: 플레이어에게 피해를 주거나, 스턴을 적용하는 등의 로직을 여기에 추가
+            if(hit.point.y < transform.position.y)
+            {
+                
+            }
+        }
+    }
 }

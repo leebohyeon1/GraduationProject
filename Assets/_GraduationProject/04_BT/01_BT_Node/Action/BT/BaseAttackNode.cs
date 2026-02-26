@@ -41,7 +41,8 @@ public abstract class BaseAttackNode : Node
     protected int _entryFrame; 
     protected bool _isActionFinishedInternally;
     protected bool _hasTriggeredLoop;
-    protected string _validationTag; // 공격 데이터가 바뀌어도 애니메이션 동기화를 유지하기 위한 고정 태그
+    protected string _validationTag; 
+    private float _originalStepOffset; // [추가] 밟기 방지를 위한 원본 스텝 오프셋 저장
     
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
@@ -126,6 +127,13 @@ public abstract class BaseAttackNode : Node
                 SO[i].OnEnter(runner);
                 SO[i].OnActionTriggered(runner);
             }
+        }
+
+        CharacterController cc = runner.GetComponent<CharacterController>();
+        if (cc != null)
+        {
+            _originalStepOffset = cc.stepOffset;
+            cc.stepOffset = 0f; // 공격 중에는 플레이어를 계단처럼 밟고 올라가지 못하게 합니다.
         }
 
         InitialMovementSetup();
@@ -297,6 +305,15 @@ public sealed override void OnExit()
         runner.AnimationBool("IsRushing", true); 
         
         runner.aIPath.enableRotation = true;
+        runner.SetStiffness(0);
+
+        CharacterController cc = runner.GetComponent<CharacterController>();
+        if (cc != null)
+        {
+            cc.stepOffset = _originalStepOffset; // 원본 값 복구
+        }
+
+        StopMovementInternal();
         runner.SetStiffness(0);
 
         StopMovementInternal();
