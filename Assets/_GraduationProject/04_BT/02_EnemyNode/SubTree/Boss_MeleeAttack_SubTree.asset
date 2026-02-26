@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7732265786224720936
+--- !u!114 &-9059173665674169058
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_Normal Attack Node(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 730, y: 61}
-  attackKey: 
+  m_Script: {fileID: 11500000, guid: 65004a0c48c2eb142a33baab2e4c49fb, type: 3}
+  m_Name: Task_Step Attack
+  m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
+  position: {x: 732, y: 60}
+  attackKey: Boss_SB_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
   SO: []
   LoopAttack: 0
-  NextBT: 0
+  NextBT: 1
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -29,6 +29,124 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  stepMovements:
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.5
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.9
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  phaseAttackDataKeys:
+  - Boss_SB_Attack
+  - Boss_SB_Attack1
+  - Boss_SB_Attack2
+  - Boss_SB_Attack3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  hitRadius: 1
 --- !u!114 &-7626104631279679915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,7 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
   m_Name: Task_Attack Post Delay(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 1166, y: -69}
+  position: {x: 1166, y: -66}
   parameterName: 
   delayTime: 0
 --- !u!114 &6250396914156787315
@@ -583,9 +701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
   position: {x: 263, y: 21}
   nodes:
-  - {fileID: -4442083341055769656}
   - {fileID: 8206044431509334777}
-  - {fileID: -5272641037691454248}
   services: []
   weights:
   - 50
@@ -623,7 +739,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 8641491558386981526}
   - {fileID: 2053139385156454654}
-  - {fileID: -7732265786224720936}
+  - {fileID: -9059173665674169058}
   - {fileID: -7410752945520309103}
   services: []
 --- !u!114 &8641491558386981526
