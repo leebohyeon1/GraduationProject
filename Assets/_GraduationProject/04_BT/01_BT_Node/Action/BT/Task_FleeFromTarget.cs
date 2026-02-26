@@ -11,6 +11,9 @@ public class Task_FleeFromTarget : Node
     public override void OnEnter()
     {
         base.OnEnter();
+        if(runner._animationBridge.IsAttacking) {
+            return;
+        }
         if (runner.player == null) return;
 
         Vector3 myPos = runner.transform.position;
@@ -64,13 +67,17 @@ public class Task_FleeFromTarget : Node
         Vector3 finalDestination = myPos + (finalDirection * finalDistance);
 
         // 5. 이동 명령 하달
-        runner.Movement.StartOrUpdateChase(finalDestination, EnemyStateController.EnemyState.Rush, fleeSpeed);
+        runner.Movement.StartOrUpdateChase(finalDestination, EnemyStateController.EnemyState.Chase, fleeSpeed);
     }
 
     protected override NodeState OnUpdate()
     {
         if (runner.player == null) return NodeState.FAILURE;
-
+        Debug.Log(runner._animationBridge.IsAttacking);
+        if(runner._animationBridge.IsAttacking) {
+            Debug.Log("<color=red>[Task] 공격 애니메이션이 재생 중입니다. 도망 실패.</color>");
+            return NodeState.FAILURE;
+        }
         var ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return NodeState.FAILURE;
 
@@ -80,5 +87,14 @@ public class Task_FleeFromTarget : Node
         }
 
         return NodeState.RUNNING;
+    }
+    public override void OnExit()
+    {
+        Debug.Log("<color=cyan>[Task] 도망 완료 또는 실패, 이동 멈춤.</color>");
+        runner.Movement.StopMovement();
+        Vector3 playerDir = runner.player.transform.position - runner.transform.position;
+        playerDir.y = 0;
+        playerDir.Normalize();
+        runner.aIPath.destination = playerDir; 
     }
 }

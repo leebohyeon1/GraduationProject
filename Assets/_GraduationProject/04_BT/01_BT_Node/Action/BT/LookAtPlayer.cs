@@ -22,7 +22,7 @@ public class Action_LookAtPlayer : Node
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0;
 
-        if (directionToPlayer != Vector3.zero)
+        if (directionToPlayer.sqrMagnitude > 0.001f)
         {
             // 1. 목표 회전값(Quaternion)을 계산합니다.
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
@@ -36,7 +36,7 @@ public class Action_LookAtPlayer : Node
             );
         }
         
-        return IsSee ? NodeState.SUCCESS : NodeState.FAILURE;
+        return IsSee ? NodeState.SUCCESS : NodeState.RUNNING;
     }
     public override void OnExit()
     {

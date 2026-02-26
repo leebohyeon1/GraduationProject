@@ -62,6 +62,10 @@ public enum EnemyBlackboardKeys
     
     /// <summary>자신의 GameObject (GameObject)</summary>
     Self,
+    /// <summary>
+    /// 플레이어 발견 Discover 전
+    /// </summary>
+    Engage,
     
     #endregion
     

@@ -10,90 +10,98 @@ public class Task_Pressure : Node
     public float StoppingDist = 0.5f;
     public float RotationSpeed = 5.0f;
     private AIPath ai;
-    private Vector3? currentTargetDebug; // 디버그용 그림 그리기 변수
+    private Vector3? currentTargetDebug; 
 
     public override void OnEnter()
     {
         base.OnEnter();
         ai = runner.aIPath;
-        ai.enableRotation = false;
-        // Debug.Log($"[Action_Enter] {runner.name} 압박 이동 노드 진입됨.");
+        
+        Debug.Log(string.Format("[Task_Pressure : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}, AnimAtk: {3}", 
+            runner.name, runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking));
+
+        if (ai != null)
+        {
+            ai.canMove = true;
+            ai.isStopped = false;
+            ai.maxSpeed = MoveSpeed;
+            ai.enableRotation = false;
+            ai.SetPath(null); // 진입 시 잔여 경로 제거
+        }
     }
     protected override NodeState OnUpdate()
     {
+        // [수정] 애니메이션 브릿지의 IsAttacking이 true더라도, 현재 상태가 Attack이 아니면 이동 허용 고려
+        // 하지만 안전을 위해 로그를 남기고 실패 처리 유지 (BaseAttackNode에서 강제 해제하므로 이제 발생 안 함)
         if(runner._animationBridge.IsAttacking)
         {
-            // Debug.Log($"[{runner.name} 공격애니메.");
-            return NodeState.FAILURE;
+            // Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 대기: 애니메이션 브릿지가 아직 공격 중임.", runner.name));
+            return NodeState.RUNNING; // 실패 대신 대기하여 트리가 튀지 않게 함
         }   
+
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
         {
-            // Debug.Log($"[{runner.name} 공격스테이트.");
             return NodeState.FAILURE;
         }
         
-        // 1. 블랙보드 값 확인
         object val = brain.blackboard.GetValue<Vector3>(Pos_Key);
         if (val == null)
         {
-            Debug.LogWarning($"[Action_Warning] 블랙보드 키 '{Pos_Key}'가 비어있습니다. Service가 돌고 있나요?");
             return NodeState.FAILURE;
         }
 
         Vector3 targetPos = (Vector3)val;
-        currentTargetDebug = targetPos; // 기즈모 그리기용 저장
+        currentTargetDebug = targetPos; 
         
-        runner.Movement.StartOrUpdateChase(targetPos);
+        // A* 경로 업데이트 강제
+        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
-        // 이동 상태 디버깅 (너무 많이 뜨면 주석 처리하세요)
-
 
         return NodeState.RUNNING;
     }
     public override void Abort()
     {
         base.Abort();
-        // runner.Movement.StopMovement();
+        Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨.", runner.name));
     }
     public override void OnExit()
     {
         base.OnExit();
-        ai.enableRotation = true;
-        // runner.Movement.StopMovement();
+        Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
+        if (ai != null) ai.enableRotation = true;
     }
     private void RotateTowardsPlayer()
     {
         if (runner.player == null) return;
 
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
-        directionToPlayer.y = 0; // 위아래로 기울지 않도록 Y축 제거
+        directionToPlayer.y = 0; 
 
         if (directionToPlayer != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-            // Slerp를 사용하여 부드럽게 회전
             runner.transform.rotation = Quaternion.Slerp(runner.transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
         }
     }
 
-    // Scene 뷰에 목표 지점과 선을 그려주는 함수
     public void OnDrawGizmos()
     {
         if (runner != null && currentTargetDebug.HasValue)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(currentTargetDebug.Value, 0.3f); // 목표 지점 공
-            Gizmos.DrawLine(runner.transform.position, currentTargetDebug.Value); // 내 위치 -> 목표 선
+            Gizmos.DrawSphere(currentTargetDebug.Value, 0.3f); 
+            Gizmos.DrawLine(runner.transform.position, currentTargetDebug.Value); 
         }
     }
     public override Node Clone()
     {
-        var node = ScriptableObject.CreateInstance<Task_Pressure>();
+        var node = Instantiate(this); // [수정] CreateInstance 대신 Instantiate 사용 (SO 복제 표준)
         node.Pos_Key = this.Pos_Key;
         node.MoveSpeed = this.MoveSpeed;
         node.StoppingDist = this.StoppingDist;
+        node.RotationSpeed = this.RotationSpeed;
         return node;
     }
 }

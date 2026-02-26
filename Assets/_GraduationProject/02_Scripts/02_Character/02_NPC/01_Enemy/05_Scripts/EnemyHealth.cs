@@ -206,21 +206,17 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             switch (damageData.AttackType)
             {
                 case AttackType.Heavy1:
-                    Debug.Log("Heavy1 피격");
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy1);
                     break;
                 case AttackType.Heavy2:
-                    Debug.Log("Heavy2 피격");
 
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy2);
                     break;
                 case AttackType.Heavy3:
-                    Debug.Log("Heavy3 피격");
 
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy3);
                     break;
                 default:
-                    Debug.Log("Normal 피격");
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Normal);
                     break;
             }
@@ -229,25 +225,21 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         else
         {
             
-        Debug.Log(damageData.AttackType);
+        // Debug.Log(damageData.AttackType);
         switch (damageData.AttackType)
             {
                 case AttackType.Heavy1:
-                    Debug.Log("Heavy1 피격");
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
                     break;
                 case AttackType.Heavy2:
-                    Debug.Log("Heavy2 피격");
 
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
                     break;
                 case AttackType.Heavy3:
-                    Debug.Log("Heavy3 피격");
 
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
                     break;
                 default:
-                    Debug.Log("Normal 피격");
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Normal);
                     break;
             }
