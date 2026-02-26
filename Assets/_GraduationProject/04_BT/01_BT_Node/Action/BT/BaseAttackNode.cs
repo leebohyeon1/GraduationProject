@@ -495,7 +495,7 @@ brain.StartSkillCooldown(attackKey);
         bool isLoopOngoing = false;
         if (LoopAttack && _hasTriggeredLoop)
         {
-             isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
+            isLoopOngoing = !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false);
         }
 
         if (isLoopOngoing && !isTimedOut)

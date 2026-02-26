@@ -206,7 +206,7 @@ public class EnemyInitializer : MonoBehaviour
             return;
         }
 
-        animHandler.Initalize();
+        animHandler.Initialize();
 
         var animBridge = GetComponent<EnemyAnimationBridge>();
         if (animBridge == null)

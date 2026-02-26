@@ -14,13 +14,14 @@ public class Task_PassingDash : BaseAttackNode
 
     private Vector3 _targetPos;
     private bool _isDashing;
-
+    public string Exittrigger = "IsRushing";
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()
     {
         _isDashing = false;
         runner.aIPath.enableRotation = false;
+        runner.AnimationBool(Exittrigger, false);
         Log("관통 대시 준비 (ActionSO 대기 중)");
     }
 
@@ -65,10 +66,17 @@ public class Task_PassingDash : BaseAttackNode
             Log("관통 대시 목표 도달");
             runner.transform.position = _targetPos;
             _isDashing = false;
+            runner.AnimationBool(Exittrigger, true);
             brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
             return;
         }
-
+        // ---------------------------------------------------------
+        // [시각적 디버깅] Scene 뷰에서 확인하세요!
+        // 빨간 선: 시작점 -> 목표점 (전체 경로)
+        Debug.DrawLine(runner.transform.position, _targetPos, Color.red);
+        // 초록 선: 내 위치 -> 목표점 (남은 경로)
+        Debug.DrawLine(currentPos, _targetPos, Color.green);
+        // ---------------------------------------------------------
         moveDir.Normalize();
         float moveDistance = dashSpeed * Time.deltaTime;
 
@@ -76,6 +84,7 @@ public class Task_PassingDash : BaseAttackNode
         {
             Log("관통 대시 중 벽 충돌");
             _isDashing = false;
+            runner.AnimationBool(Exittrigger, true);
             return;
         }
 
