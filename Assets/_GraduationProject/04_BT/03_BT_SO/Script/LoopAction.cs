@@ -40,14 +40,15 @@ public class LoopAction : EnemyUseAnything
         float elapsedTime = Time.time - startTime;
 
         // [수정] 지속 시간이 다 되면 루프 탈출을 위해 AnimationBool을 TRUE로 설정
-        if (elapsedTime >= ActionDuration)
-        {
-            if (runner is Enemy enemy)
-            {
+if (elapsedTime >= ActionDuration)
+{
+if (runner is Enemy enemy)
+{
                 enemy.AnimationBool(AnimationBool, true);
-            }
-            blackboard.SetValue(EndKey, true);
-        }
+                enemy.Movement?.StopMovement(); // [추가] 시간 만료 시 이동 즉시 정지
+}
+blackboard.SetValue(EndKey, true);
+}
 
         return runner;
     }
@@ -91,27 +92,29 @@ public class LoopAction : EnemyUseAnything
     public override T OnExit<T>(T runner)
     {
         // OnExit 시에는 확실히 TRUE로 만들어 루프 탈출을 보장함
-        if (runner is Enemy enemy)
-        {
+if (runner is Enemy enemy)
+{
             enemy.AnimationBool(AnimationBool, true);
-            var blackboard = enemy._aiController._aiBrain.blackboard;
-            blackboard.RemoveKey(KEY_START_TIME);
-            blackboard.RemoveKey(KEY_DURATION);
-            blackboard.SetValue(EndKey, false);
-        }
+            enemy.Movement?.StopMovement(); // [추가] 종료 시 이동 정지
+var blackboard = enemy._aiController._aiBrain.blackboard;
+blackboard.RemoveKey(KEY_START_TIME);
+blackboard.RemoveKey(KEY_DURATION);
+blackboard.SetValue(EndKey, false);
+}
         return runner;
     }
 
     public override void Reset<T>(T runner)
     {
         // Reset 시에도 동일하게 처리
-        if (runner is Enemy enemy)
-        {
+if (runner is Enemy enemy)
+{
             enemy.AnimationBool(AnimationBool, true);
-            var blackboard = enemy._aiController._aiBrain.blackboard;
-            blackboard.RemoveKey(KEY_START_TIME);
-            blackboard.RemoveKey(KEY_DURATION);
-            blackboard.SetValue(EndKey, false);
-        }
+            enemy.Movement?.StopMovement(); // [추가] 리셋 시 이동 정지
+var blackboard = enemy._aiController._aiBrain.blackboard;
+blackboard.RemoveKey(KEY_START_TIME);
+blackboard.RemoveKey(KEY_DURATION);
+blackboard.SetValue(EndKey, false);
+}
     }
 }
