@@ -41,6 +41,8 @@ public abstract class BaseAttackNode : Node
     protected int _entryFrame; 
     protected bool _isActionFinishedInternally;
     protected bool _hasTriggeredLoop;
+    protected string _validationTag; // 공격 데이터가 바뀌어도 애니메이션 동기화를 유지하기 위한 고정 태그
+    
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
@@ -63,7 +65,7 @@ public abstract class BaseAttackNode : Node
 
         if (!brain.blackboard.HasKey(attackKey) || !brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
-            Log("[Error] '" + attackKey + "' 키를 블랙보드에서 찾을 수 없습니다.", true);
+            Log("<color=red>[FAILURE]</color> '" + attackKey + "' 키를 블랙보드에서 찾을 수 없습니다.", true);
             _isActionFinishedInternally = true;
             return;
         }
@@ -74,7 +76,7 @@ public abstract class BaseAttackNode : Node
         
         if (runner._stateController.IsStateLocked || isAlreadyInAttackState || isStunnedState || isRecovering)
         {
-            Log(string.Format("진입 거부: 공격 중, 잠겨 있음, 스턴 상태 혹은 회복 중. (상태: {0}, Lock: {1}, AnimAtk: {2}, Recovering: {3})", 
+            Log(string.Format("<color=red>[FAILURE]</color> 진입 거부: 공격 중, 잠겨 있음, 스턴 상태 혹은 회복 중. (상태: {0}, Lock: {1}, AnimAtk: {2}, Recovering: {3})", 
                 runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking, isRecovering));
             
             _isActionFinishedInternally = true;
@@ -83,11 +85,14 @@ public abstract class BaseAttackNode : Node
 
         if (!CanExecuteInternal())
         {
+            // CanExecuteInternal 내부에서 이미 로그를 찍도록 유도하거나 여기서 보충
+            Log("<color=red>[FAILURE]</color> CanExecuteInternal 조건 미충족 (사거리 등)");
             _isActionFinishedInternally = true;
             return;
         }
 
-        Log("공격 노드 진입 확정: " + _data.AttackName);
+        _validationTag = _data.AttackName; 
+        Log("<color=green>[SUCCESS]</color> 공격 노드 진입 확정: " + _validationTag);
 
         if (Handler != null) Handler.ResetAllFlags();
         
@@ -128,13 +133,17 @@ public abstract class BaseAttackNode : Node
 
     protected sealed override NodeState OnUpdate()
     {
-        if (_isActionFinishedInternally) return NodeState.FAILURE;
+        if (_isActionFinishedInternally) 
+        {
+            Log("<color=red>[FAILURE]</color> OnUpdate: 진입 시 실패 예약됨 (_isActionFinishedInternally)");
+            return NodeState.FAILURE;
+        }
         if (_data == null) return NodeState.FAILURE;
         if (runner.animator == null) return NodeState.FAILURE; 
 
         if (runner.CurrentState != EnemyStateController.EnemyState.Attack)
         {
-            Log("상태 변경 감지 (Attack -> " + runner.CurrentState + "): 공격 중단");
+            Log("<color=red>[FAILURE]</color> 상태 변경 감지 (Attack -> " + runner.CurrentState + "): 공격 중단");
             return NodeState.FAILURE;
         }
 
@@ -142,7 +151,7 @@ public abstract class BaseAttackNode : Node
         var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
         float elapsedTime = Time.time - _nodeEntryTime;
 
-        bool isTagActive = stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName);
+        bool isTagActive = stateInfo.IsTag(_validationTag) || nextStateInfo.IsTag(_validationTag);
         
         if (isTagActive && !_hasSeenTag)
         {
@@ -169,7 +178,7 @@ public abstract class BaseAttackNode : Node
             NodeState finishState = CheckActionFinished(elapsedTime);
             if (finishState != NodeState.RUNNING) 
             {
-                Log("CheckActionFinished에 의해 노드 종료: " + finishState);
+                Log($"CheckActionFinished에 의해 노드 종료: <color=yellow>{finishState}</color>");
                 return finishState;
             }
         }
@@ -178,7 +187,7 @@ public abstract class BaseAttackNode : Node
         {
             if (elapsedTime > transitionBuffer)
             {
-                Log("애니메이션 태그 불일치 종료 (Tag: " + _data.AttackName + ")");
+                Log("<color=red>[FAILURE]</color> 애니메이션 태그 불일치 종료 (Tag: " + _validationTag + ")");
                 return NodeState.FAILURE;
             }
             return NodeState.RUNNING;
@@ -193,13 +202,12 @@ public abstract class BaseAttackNode : Node
 
         HandleCommonSystems(stateInfo, nextStateInfo);
 
-        // 이동 제어 로직 개선
         bool isLoopEnded = (LoopAttack && _hasTriggeredLoop && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
         bool movementActive = !IsMovementFinished && !isLoopEnded;
         
         if (movementActive)
         {
-            _hasHaltedMovement = false; // 이동 중에는 정지 플래그 초기화
+            _hasHaltedMovement = false;
             UpdateMovement();
         }
         else
@@ -234,17 +242,21 @@ public abstract class BaseAttackNode : Node
             ai.SetPath(null); 
         }
 
-        // Momentum 제거를 위해 CharacterController가 있다면 Move(zero) 수행
         CharacterController cc = runner.GetComponent<CharacterController>();
         if (cc != null) cc.Move(Vector3.zero);
     }
 
-    public sealed override void OnExit()
+public sealed override void OnExit()
     {
-        Log("공격 노드 정상 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
-        CleanupAllStates();
-        brain.StartSkillCooldown(attackKey);
-    }
+        if (_isActionFinishedInternally)
+        {
+            CleanupAllStates();
+            return;
+        }
+Log("공격 노드 정상 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
+CleanupAllStates();
+brain.StartSkillCooldown(attackKey);
+}
 
     public sealed override void Abort()
     {
@@ -304,27 +316,38 @@ public abstract class BaseAttackNode : Node
 
     private bool CanExecuteInternal()
     {
-        if (!allowOutOfCombat && !brain._isCombat) return false;
-        if (!brain.IsSkillReady(attackKey, _data.Cooltime)) return false;
+        if (!allowOutOfCombat && !brain._isCombat) 
+        {
+            Log("<color=red>[FAILURE]</color> CanExecuteInternal: 비전투 상태임.");
+            return false;
+        }
+        if (!brain.IsSkillReady(attackKey, _data.Cooltime)) 
+        {
+            Log($"<color=red>[FAILURE]</color> CanExecuteInternal: 스킬 쿨타임 중 ({attackKey}).");
+            return false;
+        }
         
         if (runner.CurrentState == EnemyStateController.EnemyState.Stunned)
         {
-            Log("진입 거부: 현재 논리적 스턴 상태임.");
+            Log("<color=red>[FAILURE]</color> CanExecuteInternal: 현재 스턴 상태임.");
             return false;
         }
 
         if (runner._stateController != null && runner._stateController.IsRecoveringFromStun)
         {
-            Log("진입 거부: 스턴 후 회복 중 (0.5초 대기)");
+            Log("<color=red>[FAILURE]</color> CanExecuteInternal: 스턴 후 회복 중임.");
             return false;
         }
 
-        var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         if (checkRangeOnEnter)
         {
             float dist = CalculateDistance();
             float range = GetRequiredRange();
-            if (dist > range + rangeThreshold) return false;
+            if (dist > range + rangeThreshold) 
+            {
+                Log($"<color=red>[FAILURE]</color> CanExecuteInternal: 사거리 밖 (거리: {dist:F2}, 요구: {range:F2}+{rangeThreshold:F2})");
+                return false;
+            }
         }
         return CheckCustomPreconditions();
     }
@@ -359,10 +382,10 @@ public abstract class BaseAttackNode : Node
 
         if (Handler != null && Handler.IsActionSO)
         {
-            if (stateInfo.IsTag(_data.AttackName) || nextStateInfo.IsTag(_data.AttackName))
+            if (stateInfo.IsTag(_validationTag) || nextStateInfo.IsTag(_validationTag))
             {
                 Log("ActionSO 트리거 감지");
-                _hasHaltedMovement = false; // 행동 시작 시 플래그 초기화
+                _hasHaltedMovement = false;
                 OnActionSOTriggered();
                 for (int i = 0; i < SO.Length; i++)
                 {
@@ -375,7 +398,7 @@ public abstract class BaseAttackNode : Node
             }
         }
 
-        if (stateInfo.IsTag(_data.AttackName))
+        if (stateInfo.IsTag(_validationTag))
         {
             for (int i = 0; i < SO.Length; i++)
             {
@@ -414,6 +437,7 @@ public abstract class BaseAttackNode : Node
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
                 Log("플레이어 타격 성공: " + col.name);
+                _data.damageData.AttackerTransform = runner.transform;
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 
@@ -467,7 +491,7 @@ public abstract class BaseAttackNode : Node
         }
 
         bool isTimedOut = elapsedTime >= maxNodeDuration; 
-        
+
         bool isLoopOngoing = false;
         if (LoopAttack && _hasTriggeredLoop)
         {
@@ -479,15 +503,14 @@ public abstract class BaseAttackNode : Node
             return NodeState.RUNNING;
         }
 
-        // [수정] 오직 애니메이션 종료 신호와 절대 타임아웃만 체크합니다.
-        // 이동 완료(IsMovementFinished)는 OnUpdate에서 물리 정지만 수행할 뿐 노드를 종료시키지 않습니다.
         if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
         {
-            if (isTimedOut) Log("시간 만료 종료", true);
+            if (isTimedOut) Log("<color=red>[FAILURE/TERMINATION]</color> 시간 만료 종료", true);
             else if (Handler != null && Handler.IsActionFinished) Log("애니메이션 신호로 종료");
 
             if (NextBT) return NodeState.SUCCESS;
             bool hit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
+            if (!hit) Log("<color=red>[FAILURE]</color> 공격이 빗나갔으며 NextBT가 꺼져 있습니다.");
             return hit ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
@@ -509,7 +532,6 @@ public abstract class BaseAttackNode : Node
             
             if (ai is AIPath aiPath)
             {
-                // [핵심 수정] 어떠한 상황에서도 공격이 끝나면 가속도를 Default(무한대)로 리셋합니다.
                 aiPath.maxAcceleration = float.PositiveInfinity; 
                 aiPath.enableRotation = true;
             }
