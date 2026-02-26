@@ -18,8 +18,9 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     {
         _events = player.Events;
         _data = player.RuntimeData;
+        _inputReader = player.InputReader;
 
-        player.InputReader.InteractEvent += Interact;
+        _inputReader.InteractEvent += Interact;
         player.RegisterDisposable(this);
     }
 
