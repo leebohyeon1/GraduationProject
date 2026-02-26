@@ -18,6 +18,7 @@ public class Task_AnimationNode : Node
     private bool _isAnimFinished;
     private float _endTime;
 
+    private bool _didSetLock = false;
     public override void OnEnter()
     {
         base.OnEnter();
@@ -37,6 +38,8 @@ public class Task_AnimationNode : Node
         if (runner != null && !string.IsNullOrEmpty(triggerName))
         {
             runner.AnimationEvent(triggerName);
+            runner._stateController.SetLock(true); // 행동 도중 다른 행동이 끼어들지 못하도록 잠금
+            _didSetLock = true;
         }
         
         Debug.Log($"<color=white>[Task_AnimationNode]</color> '{triggerName}' 트리거 발송. 애니메이션 완료 및 {postDelayTime}초 대기 시작.");
@@ -73,7 +76,20 @@ public class Task_AnimationNode : Node
     {
         base.OnExit();
         // 트리거는 Bool과 달리 별도의 false 처리가 필요 없으므로 구조가 더 깔끔합니다.
+        if (runner != null && runner._stateController != null && _didSetLock)
+        {
+            runner._stateController.SetLock(false);
+        }
     }
+    public override void Abort()
+    {
+        base.Abort();
+        if (runner != null && runner._stateController != null && _didSetLock)
+        {   
+            runner._stateController.SetLock(false);
+        }
+    }
+
 
     public override Node Clone()
     {

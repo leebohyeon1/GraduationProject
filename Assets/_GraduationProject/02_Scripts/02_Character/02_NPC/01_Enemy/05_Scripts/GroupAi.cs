@@ -86,6 +86,13 @@ public class GroupAi : MonoBehaviour
         UpdateColleaguesCount(); 
         AssignSlots();
     }
+    public void EngageCombatAll()
+    {
+        foreach (var enemy in enemies)
+        {
+            enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
+        }
+    }
 
     public void CombatReset()
     {
