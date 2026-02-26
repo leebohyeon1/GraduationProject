@@ -13,7 +13,7 @@ public class Task_PlayerChase : BaseAttackNode
     public float maxTriggerRange = 20f;
 
     private float _originalAcceleration;
-    private float _originalRotationSpeed; // [신규] 원본 회전 속도 보관
+    private float _originalRotationSpeed;
     private bool _hasHit;
     private bool _isChasing;
 
@@ -107,7 +107,8 @@ public class Task_PlayerChase : BaseAttackNode
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null && ai is AIPath aiPath)
         {
-            aiPath.maxAcceleration = _originalAcceleration;
+            // 중앙 복구 시스템(BaseAttackNode)이 maxAcceleration을 처리하므로
+            // 여기서는 회전 속도만 명시적으로 복구합니다.
             aiPath.rotationSpeed = _originalRotationSpeed;
         }
     }

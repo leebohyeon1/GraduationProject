@@ -97,7 +97,8 @@ public class PlayerChaseStrategy : EnemyUseAnything
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
         if (ai != null && ai is AIPath aiPath)
         {
-            aiPath.maxAcceleration = _originalAcceleration;
+            // 인스펙터의 Default 체크박스 상태로 복구하기 위해 무한대 값 적용
+            aiPath.maxAcceleration = float.PositiveInfinity; 
             aiPath.rotationSpeed = _originalRotationSpeed;
             aiPath.destination = enemy.transform.position;
         }

@@ -507,6 +507,13 @@ public abstract class BaseAttackNode : Node
             
             ai.destination = runner.transform.position;
             
+            if (ai is AIPath aiPath)
+            {
+                // [핵심 수정] 어떠한 상황에서도 공격이 끝나면 가속도를 Default(무한대)로 리셋합니다.
+                aiPath.maxAcceleration = float.PositiveInfinity; 
+                aiPath.enableRotation = true;
+            }
+            
             if (!ai.pathPending) ai.SearchPath();
         }
     }
