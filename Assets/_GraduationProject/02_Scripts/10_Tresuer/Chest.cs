@@ -17,7 +17,7 @@ public class Chest : MonoBehaviour, IInteractable
     {
         if (string.IsNullOrEmpty(_chestID))
         {
-            _chestID = Guid.NewGuid().ToString();
+            SetRandomID();
             Debug.Log($"{gameObject.name}에 새로운 고유 ID가 부여되었습니다!");
         }
     }
@@ -51,6 +51,11 @@ public class Chest : MonoBehaviour, IInteractable
         {
             DataManager.Instance.GetGameData().AddOpendChest(_chestID);
         }
+    }
+
+    public void SetRandomID()
+    {
+        _chestID = Guid.NewGuid().ToString();
     }
 
     private void OnTriggerEnter(Collider other)
