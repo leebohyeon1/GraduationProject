@@ -10,7 +10,7 @@ public class PlayerMoney : MonoBehaviour
     private PlayerEvents _events;
     private PlayerData _data;
 
-    public int CurrentMoney => _data != null ? _data.SpecialMoney : 0;
+    public int CurrentMoney => _data != null ? _data.Money : 0;
     public int CurrentSpecialMoney => _data != null ? _data.SpecialMoney : 0;   
 
     public event Action<int> MoneyChanged;   
@@ -29,7 +29,7 @@ public class PlayerMoney : MonoBehaviour
     /// <returns>사용 가능 여부</returns>
     public bool CanUseMoney(int amount)
     {
-        if (_data.SpecialMoney >= amount)
+        if (_data.Money >= amount)
         {
             return true;
         }
@@ -43,8 +43,8 @@ public class PlayerMoney : MonoBehaviour
     /// <param name="amount">사용량</param>
     public void UseMoney(int amount)
     {
-        _data.SpecialMoney -= amount;
-        MoneyChanged?.Invoke(_data.SpecialMoney);
+        _data.Money -= amount;
+        MoneyChanged?.Invoke(_data.Money);
     }
 
     /// <summary>
@@ -53,8 +53,8 @@ public class PlayerMoney : MonoBehaviour
     /// <param name="amount">획득량</param>
     public void GiveMoney(int amount)
     {
-        _data.SpecialMoney += amount;
-        MoneyChanged?.Invoke(_data.SpecialMoney);
+        _data.Money += amount;
+        MoneyChanged?.Invoke(_data.Money);
     }
 
 

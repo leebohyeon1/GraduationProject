@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(1)]
 public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
 {
     private PlayerController _playerController;
@@ -12,9 +14,13 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
 
     [Header("UI Components")]
     [SerializeField] private GameObject _menuPanel;
-    [SerializeField] private List<MenuUIComponent> _menuUIComponents;
+    [SerializeField] private MenuUITopBar _menuUITopBar;
+    [SerializeField] private List<MenuUIComponent> _mainUIComponents;
+    public List<MenuUIComponent> MainUIComponents => _mainUIComponents;
 
     private int _currentComponentIndex = -1; // 현재 활성화된 UI 컴포넌트 인덱스
+
+    public event Action<int> UIComponentUpdated;
 
     public void Awake()
     {
@@ -23,22 +29,30 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
 
     public void Start()
     {
-        foreach (var ui in _menuUIComponents)
+        _menuUITopBar.Initialize(this);
+
+        foreach (var ui in _mainUIComponents)
         {
             ui.Initialize(this);
         }
 
         _inputReaderSO.EscapeEvent += OnEscape;
+        _inputReaderSO.NextEvent += OnNext;
+        _inputReaderSO.PreviousEvent += OnPrevious;
     }
 
     public void OnDestroy()
     {
-        foreach (var ui in _menuUIComponents)
+        _menuUITopBar.Dispose();
+
+        foreach (var ui in _mainUIComponents)
         {
             ui.Dispose();
         }
 
         _inputReaderSO.EscapeEvent -= OnEscape;
+        _inputReaderSO.NextEvent -= OnNext;
+        _inputReaderSO.PreviousEvent -= OnPrevious;
         _playerSpawnedSO.Unsubscribe(this);
     }
 
@@ -47,13 +61,29 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         if (_menuPanel.activeSelf)
         {
             _menuPanel.SetActive(false);
+            _inputReaderSO.SetInputMode(InputReaderSO.InputMode.Gameplay);
         }
         else
         {
-            UpdateComponenet();
+           UpdateComponenet();
 
             _menuPanel.SetActive(true);
+            _inputReaderSO.SetInputMode(InputReaderSO.InputMode.UI);
         }
+    }
+
+    public void NextComponent()
+    {
+        _currentComponentIndex = (_currentComponentIndex + 1) % _mainUIComponents.Count;
+
+        UpdateComponenet();
+    }
+
+    public void PreviousComponent()
+    {
+        _currentComponentIndex = (_currentComponentIndex - 1 + _mainUIComponents.Count) % _mainUIComponents.Count;
+
+        UpdateComponenet();
     }
 
     public void UpdateComponenet()
@@ -63,17 +93,20 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
             _currentComponentIndex = 0;
         }
 
-        for (int i =0; i < _menuUIComponents.Count; i++)
+        for (int i =0; i < _mainUIComponents.Count; i++)
         {
             if (i == _currentComponentIndex)
             {
-                _menuUIComponents[i].gameObject.SetActive(true);
+                _mainUIComponents[i].gameObject.SetActive(true);
             }
             else
             {
-                _menuUIComponents[i].gameObject.SetActive(false);
+                _mainUIComponents[i].gameObject.SetActive(false);
             }
         }
+
+
+        UIComponentUpdated?.Invoke(_currentComponentIndex);
     }
 
     //==========================================================================================================================
@@ -88,5 +121,15 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
     private void OnEscape()
     {
         TogglePanel();
+    }
+
+    private void OnNext()
+    {
+        NextComponent();
+    }
+
+    private void OnPrevious()
+    {
+        PreviousComponent();
     }
 }
