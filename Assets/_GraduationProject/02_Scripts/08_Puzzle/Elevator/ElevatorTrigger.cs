@@ -33,10 +33,12 @@ public class ElevatorTrigger : MonoBehaviour, IInteractable
     {
         if (other.TryGetComponent<PlayerController>(out PlayerController controller) && controller == _playerController)
         {
-            if (_playerController.Interact != null && _playerController.Interact.Interactable.Equals(this))
+            if (_playerController.Interact != null && _playerController.Interact.Interactable == (IInteractable)this)
             {
                 _playerController.Interact.SetInteractable(null);
             }
+
+            _playerController = null;
         }
     }
 }
