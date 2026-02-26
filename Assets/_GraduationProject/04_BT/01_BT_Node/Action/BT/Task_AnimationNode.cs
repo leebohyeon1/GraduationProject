@@ -2,17 +2,17 @@ using UnityEngine;
 using BehaviorTree;
 
 /// <summary>
-/// 특정 애니메이터 bool 파라미터를 켜서 애니메이션을 시작하고, 
-/// 해당 애니메이션이 완전히 종료(FinishAction 신호)된 후 추가적인 delayTime만큼 대기한 뒤 SUCCESS를 반환하는 노드입니다.
+/// 특정 애니메이션 트리거를 발생시켜 행동을 시작(혹은 루프 탈출)하고, 
+/// 해당 애니메이션이 완전히 종료(FinishAction 신호)된 후 추가적인 postDelayTime만큼 대기한 뒤 SUCCESS를 반환하는 노드입니다.
 /// </summary>
 [CreateAssetMenu(fileName = "Task_AnimationNode", menuName = "BehaviorTree/Action/Task_AnimationNode")]
 public class Task_AnimationNode : Node
 {
     [Header("Settings")]
-    [Tooltip("제어할 애니메이터의 bool 파라미터 이름")]
-    public string parameterName;
+    [Tooltip("실행할 애니메이션 트리거 이름 (Animator Trigger 혹은 이벤트 이름)")]
+    public string triggerName;
     
-    [Tooltip("애니메이션 종료 후 추가로 대기할 시간 (초)")]
+    [Tooltip("애니메이션 종료(FinishAction) 후 추가로 대기할 시간 (초)")]
     public float postDelayTime;
 
     private bool _isAnimFinished;
@@ -23,22 +23,23 @@ public class Task_AnimationNode : Node
         base.OnEnter();
         _isAnimFinished = false;
 
-        // 1. 애니메이션 신호 초기화
+        // 1. 애니메이션 신호 초기화 (이전 행동 잔상 제거)
         if (Handler != null) Handler.ResetAllFlags();
 
-        // 2. 이동 정지
+        // 2. 이동 정지 (애니메이션 연출 집중)
         if (runner != null && runner.Movement != null)
         {
             runner.Movement.StopMovement();
         }
 
-        // 3. 루프/애니메이션 시작
-        if (runner != null && !string.IsNullOrEmpty(parameterName))
+        // 3. 트리거 발생
+        // 보스전의 경우 특정 상태에서 전이하거나 루프를 탈출할 때 트리거가 더 관리하기 쉽습니다.
+        if (runner != null && !string.IsNullOrEmpty(triggerName))
         {
-            runner.AnimationBool(parameterName, true);
+            runner.AnimationEvent(triggerName);
         }
         
-        Debug.Log($"<color=white>[Task_AnimationNode]</color> '{parameterName}' 시작. 종료 신호 대기 중...");
+        Debug.Log($"<color=white>[Task_AnimationNode]</color> '{triggerName}' 트리거 발송. 애니메이션 완료 및 {postDelayTime}초 대기 시작.");
     }
 
     protected override NodeState OnUpdate()
@@ -50,24 +51,18 @@ public class Task_AnimationNode : Node
         {
             if (Handler != null && Handler.IsActionFinished)
             {
-                // 애니메이션 종료 감지
-                if (!string.IsNullOrEmpty(parameterName))
-                {
-                    runner.AnimationBool(parameterName, false);
-                }
-                
                 _isAnimFinished = true;
                 _endTime = Time.time;
                 
-                Debug.Log($"<color=white>[Task_AnimationNode]</color> 애니메이션 종료 감지. 추가 대기 시작: {postDelayTime}s");
+                Debug.Log($"<color=white>[Task_AnimationNode]</color> 애니메이션 종료 신호 감지. 포스트 딜레이({postDelayTime}s) 대기 시작.");
             }
             return NodeState.RUNNING;
         }
 
-        // 상태 2: 애니메이션 종료 후 추가 지연 시간(postDelayTime) 대기
+        // 상태 2: 애니메이션 종료 후 추가 지연 시간 대기
         if (Time.time - _endTime >= postDelayTime)
         {
-            Debug.Log($"<color=white>[Task_AnimationNode]</color> 모든 대기 완료. SUCCESS.");
+            Debug.Log($"<color=white>[Task_AnimationNode]</color> 모든 대기 완료. SUCCESS 반환.");
             return NodeState.SUCCESS;
         }
 
@@ -77,18 +72,13 @@ public class Task_AnimationNode : Node
     public override void OnExit()
     {
         base.OnExit();
-        
-        // 중단되거나 종료될 때 파라미터 안전하게 해제
-        if (runner != null && !string.IsNullOrEmpty(parameterName))
-        {
-            runner.AnimationBool(parameterName, false);
-        }
+        // 트리거는 Bool과 달리 별도의 false 처리가 필요 없으므로 구조가 더 깔끔합니다.
     }
 
     public override Node Clone()
     {
         Task_AnimationNode node = Instantiate(this);
-        node.parameterName = parameterName;
+        node.triggerName = triggerName;
         node.postDelayTime = postDelayTime;
         return node;
     }
