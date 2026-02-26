@@ -140,6 +140,20 @@ MonoBehaviour:
   - {fileID: -2169847181082004984}
   - {fileID: 6055799875146286108}
   services: []
+--- !u!114 &-571219295577504573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
+  m_Name: Decorator_Inverter
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
+  position: {x: 329, y: 4}
+  child: {fileID: 2304345980655835924}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,22 +167,6 @@ MonoBehaviour:
   m_Name: Monster_Boss_Test
   m_EditorClassIdentifier: 
   rootNode: {fileID: 1254360389698641468}
---- !u!114 &193999242879699279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: KeyCh
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 178, y: 1}
-  nodes:
-  - {fileID: 2225612242746855301}
-  services: []
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,8 +196,8 @@ MonoBehaviour:
   position: {x: 0, y: 0}
   nodes:
   - {fileID: -7610850223706687289}
-  - {fileID: 193999242879699279}
   - {fileID: 671970732127053245}
+  - {fileID: 6032628722775086414}
   services:
   - {fileID: 8279960542052063534, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
   - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
@@ -219,7 +217,7 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &2225612242746855301
+--- !u!114 &2304345980655835924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,16 +226,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: KeyCheck
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 360, y: 1}
+  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
+  m_Name: Condition_Is In Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
+  position: {x: 329, y: 73}
   exceptCondition:
     key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 0
-    TargetState: 9
+--- !u!114 &3598595731350612588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
+  m_Name: Task_Discover_Player
+  m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
+  position: {x: 329, y: 245}
+  transitionBuffer: 0.5
+  animationTagName: Discover_Player
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +276,24 @@ MonoBehaviour:
   position: {x: 1023, y: 1148}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &6032628722775086414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 123, y: 189}
+  nodes:
+  - {fileID: -571219295577504573}
+  - {fileID: 6801911828257767253}
+  - {fileID: 3598595731350612588}
+  services: []
 --- !u!114 &6055799875146286108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,6 +323,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 457, y: 93}
   viewAngle: 180
+--- !u!114 &6801911828257767253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
+  m_Name: Task_Engage Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Task_EngageCombat
+  position: {x: 329, y: 150}
 --- !u!114 &7383990784071887038
 MonoBehaviour:
   m_ObjectHideFlags: 0

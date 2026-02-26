@@ -253,10 +253,10 @@ public sealed override void OnExit()
             CleanupAllStates();
             return;
         }
-Log("공격 노드 정상 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
-CleanupAllStates();
-brain.StartSkillCooldown(attackKey);
-}
+        Log("공격 노드 정상 종료 (OnExit): " + (_data != null ? _data.AttackName : "Unknown"));
+        CleanupAllStates();
+        brain.StartSkillCooldown(attackKey);
+    }
 
     public sealed override void Abort()
     {

@@ -85,9 +85,11 @@ public class StateCondition
         switch (Operator)
         {
             case StateOperator.Equal:
+                // Debug.Log(string.Format("Equal[StateCondition] Checking condition:  {0} (Actual: {1})",  TargetState, actualState));
                 return actualState == TargetState;
 
             case StateOperator.NotEqual:
+                // Debug.Log(string.Format("NotEqual[StateCondition] Checking condition: {0} (Actual: {1})",  TargetState, actualState));
                 return actualState != TargetState;
 
             default:

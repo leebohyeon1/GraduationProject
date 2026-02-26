@@ -20,7 +20,7 @@ MonoBehaviour:
   maintainAtk: 0
   SO: []
   LoopAttack: 0
-  NextBT: 1
+  NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -516,13 +516,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 728, y: -15}
+  position: {x: 728, y: -16}
   exceptCondition:
     key: 
   skillName: 
   cooldownDuration: 0
-  EnemyAttackData: 0
-  attackData: {fileID: 0}
+  EnemyAttackData: 1
+  attackData: {fileID: 11400000, guid: c2f6fd771ae109f4da1ad96408eeb03c, type: 2}
 --- !u!114 &3053397596930150145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,6 +571,24 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &4137463322458218953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 537, y: 20}
+  nodes:
+  - {fileID: 8641491558386981526}
+  - {fileID: 2053139385156454654}
+  - {fileID: -9059173665674169058}
+  services: []
 --- !u!114 &4464368409381988131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,7 +719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
   position: {x: 263, y: 21}
   nodes:
-  - {fileID: 8206044431509334777}
+  - {fileID: 4137463322458218953}
   services: []
   weights:
   - 50
@@ -723,25 +741,6 @@ MonoBehaviour:
   exceptCondition:
     key: 
   targetZoneIds: 01000000020000000300000005000000
---- !u!114 &8206044431509334777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
-  m_Name: SEL_ShiftAxe(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 535, y: 21}
-  nodes:
-  - {fileID: 8641491558386981526}
-  - {fileID: 2053139385156454654}
-  - {fileID: -9059173665674169058}
-  - {fileID: -7410752945520309103}
-  services: []
 --- !u!114 &8641491558386981526
 MonoBehaviour:
   m_ObjectHideFlags: 0

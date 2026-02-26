@@ -30,10 +30,14 @@ public class EnemyStateController : MonoBehaviour
     public void Initialize(Enemy owner)
     {
         _owner = owner;
-        CurrentState = EnemyState.Idle;
         IsStateLocked = false;
     }
-    
+    void Start()
+    {
+        
+        SetState(EnemyState.Idle);
+        Blackboard.SetValue(EnemyBlackboardKeys.CurrentStatus, CurrentState);
+    }
     public void SetState(EnemyState newState)
     {
         if (IsStateLocked && newState != EnemyState.Die && newState != EnemyState.Stunned)
@@ -44,7 +48,7 @@ public class EnemyStateController : MonoBehaviour
 
         if (CurrentState == newState)
         {
-            // Debug.Log(string.Format("[StateController : {0}] 상태 변경 시도 (이미 동일 상태): {1}", _owner.name, newState));
+            Debug.Log(string.Format("[StateController : {0}] 상태 변경 시도 (이미 동일 상태): {1}", _owner.name, newState));
             return;
         }
         
