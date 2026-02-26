@@ -6,6 +6,13 @@ public class ElevatorTrigger : MonoBehaviour, IInteractable
     private PlayerController _playerController;
     [SerializeField] private Elevator _elevator;
 
+    [SerializeField] private Transform _interactableUITransform;
+    [SerializeField] private InteractableType _interactableType;
+
+    public Transform InteractableUITransform => _interactableUITransform;
+
+    public InteractableType InteractableType => _interactableType;
+
     public void Interact()
     {
         _elevator.Move();

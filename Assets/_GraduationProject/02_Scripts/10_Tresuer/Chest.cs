@@ -1,6 +1,7 @@
 using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Chest : MonoBehaviour, IInteractable
 {
@@ -8,10 +9,19 @@ public class Chest : MonoBehaviour, IInteractable
     [SerializeField] private ChestRewardSO _rewardSO;
     
     private bool _isInteracted = false;
+    public UnityEvent OnInteracted;
 
     [ReadOnly]
     [SerializeField] private string _chestID;
     public string ChestID => _chestID;
+
+    [Space(20f)]
+    [SerializeField] private Transform _interactableUITransform;
+    [SerializeField] private InteractableType _interactableType;
+
+    public Transform InteractableUITransform => _interactableUITransform;
+
+    public InteractableType InteractableType => _interactableType;
 
     private void OnValidate()
     {
@@ -41,6 +51,7 @@ public class Chest : MonoBehaviour, IInteractable
         }
 
         _isInteracted = true;
+        OnInteracted?.Invoke();
 
         _playerController.Money.GiveMoney(_rewardSO.MoneyAmount);
         _playerController.Money.GiveSpecialMoney(_rewardSO.SpecialMoneyAmount);

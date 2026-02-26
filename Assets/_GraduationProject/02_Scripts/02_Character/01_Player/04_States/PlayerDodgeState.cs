@@ -103,6 +103,11 @@ public class PlayerDodgeState : PlayerBaseState
             p_owner.Combat.TriggerBattleStateChanged(true);
         }
 
+        if (p_owner.Movement.DodgeConfig.isInivicible)
+        {
+            p_owner.Ability.AddTag(p_owner.Movement.InvincibleSO);
+        }
+
         switch(p_owner.Movement.DodgeConfig.Type)
         {
             case DodgeData.DodgeType.Roll:
@@ -130,7 +135,10 @@ public class PlayerDodgeState : PlayerBaseState
     /// </summary>
     public void OnDodgeFinished()
     {
-
+        if (p_owner.Movement.DodgeConfig.isInivicible)
+        {
+            p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
+        }
     }
     #endregion
 
