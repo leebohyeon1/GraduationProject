@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65004a0c48c2eb142a33baab2e4c49fb, type: 3}
   m_Name: Task_Step Attack
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
-  position: {x: 1634, y: 948}
+  position: {x: 1636, y: 948}
   attackKey: Attack01_a
   animationStateName: 
   transitionBuffer: 1
@@ -599,15 +599,71 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
-  stepDistances:
-  - 3
-  - 5
+  stepMovements:
+  - distance: 5
+    duration: 0.2
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 3
+    duration: 0.15
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
   phaseAttackDataKeys:
   - Attack01_a
   - Attack04_a
   magicCheckKey: IsMagicReady
   magicEffectPrefab: {fileID: 0}
   magicEffectOffset: {x: 0, y: 0, z: 0}
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  hitRadius: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

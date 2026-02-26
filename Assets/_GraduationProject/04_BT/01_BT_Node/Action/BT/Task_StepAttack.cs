@@ -4,123 +4,153 @@ using System.Collections.Generic;
 using Pathfinding;
 
 /// <summary>
-/// ActionSO 트리거 시마다 순차적으로 이동하고, 조건부로 마법 이펙트를 생성하는 다단계 공격 노드입니다.
-/// 단계별로 서로 다른 공격 데이터를 적용하여 가변 사거리에 대응합니다.
+/// 각 단계(Step)별 이동 정보를 담는 클래스입니다.
+/// </summary>
+[System.Serializable]
+public class StepMovementData
+{
+    public float distance;
+    public float duration = 0.5f;
+    public float speed = 0f; // 0이면 자동 계산
+    public AnimationCurve curve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 1));
+}
+
+/// <summary>
+/// ActionSO 트리거 시마다 순차적으로 '이동 방식'을 통째로 변경하며 작동하는 다단계 공격 노드입니다.
 /// </summary>
 [CreateAssetMenu(fileName = "Task_StepAttack", menuName = "BehaviorTree/Action/Task_StepAttack")]
 public class Task_StepAttack : BaseAttackNode
 {
-    [Header("Step Movement Settings")]
-    [Tooltip("ActionSO가 트리거될 때마다 이동할 거리 리스트")]
-    public List<float> stepDistances = new List<float>();
+    [Header("Step Management")]
+    [Tooltip("각 ActionSO 트리거 시 사용할 이동 데이터 리스트")]
+    public List<StepMovementData> stepMovements = new List<StepMovementData>();
 
     [Header("Phase Attack Data Override")]
-    [Tooltip("각 단계(ActionSO 트리거 순서)마다 교체할 공격 데이터의 블랙보드 키 리스트")]
     public List<string> phaseAttackDataKeys = new List<string>();
 
     [Header("Magic Effect Settings")]
-    [Tooltip("마법 이펙트 발동 여부를 확인할 블랙보드 불리언 키 (string)")]
     public string magicCheckKey = "IsMagicReady";
-    [Tooltip("발동 시 생성할 이펙트 프리팹")]
     public GameObject magicEffectPrefab;
-    [Tooltip("이펙트 생성 위치 오프셋 (로컬)")]
     public Vector3 magicEffectOffset;
+
+    [Header("Global Constraints")]
+    public LayerMask obstacleMask;
+    public float hitRadius = 1.0f;
 
     private int _currentStep = -1;
     private Vector3 _targetPosition;
     private bool _isMoving;
+    private float _stepStartTime;
+    private float _calculatedBaseSpeed;
+    private StepMovementData _currentStepData;
 
     protected override void InitialMovementSetup()
     {
         _currentStep = -1;
         _isMoving = false;
-        Log("<color=cyan>[StepAttack]</color> 초기화 완료. 준비 단계 시작.");
+        if (runner.aIPath != null) runner.aIPath.enableRotation = false;
+        Log("<color=cyan>[StepAttack]</color> 초기화 완료.");
     }
 
     protected override void OnActionSOTriggered()
     {
         _currentStep++;
-        Log($"<color=cyan>[StepAttack]</color> ActionSO 트리거 감지 - <color=yellow>현재 단계: {_currentStep}</color>");
+        Log($"<color=cyan>[StepAttack]</color> ActionSO 트리거 - Step {_currentStep}");
 
-        // 1. 다단계 공격 데이터 교체 (가변 사거리 대응)
+        // 1. 공격 데이터 교체 로직
         if (phaseAttackDataKeys != null && _currentStep < phaseAttackDataKeys.Count)
         {
             string newKey = phaseAttackDataKeys[_currentStep];
-            if (!string.IsNullOrEmpty(newKey))
+            if (!string.IsNullOrEmpty(newKey) && brain.blackboard.GetValue<EnemyAttackData>(newKey, out var newData))
             {
-if (brain.blackboard.GetValue<EnemyAttackData>(newKey, out var newData))
-{
-                    _data = newData; // 부모 클래스의 히트 판정 데이터 교체
-                    
-                    // [핵심 수정] 교체된 데이터의 공격자 정보를 반드시 갱신해야 합니다.
-                    // 누락 시 PlayerCombat에서 NullReferenceException이 발생하여 FAILURE 원인이 됩니다.
-                    _data.damageData.AttackerTransform = runner.transform;
-runner.SetCurrentAttackData(_data); // Gizmo 및 시스템 동기화
-Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 공격 데이터 교체 -> <color=orange>{_data.AttackName}</color> (사거리: {_data.damageRadius})");
-}
-                else
-                {
-                    Log($"<color=red>[StepAttack Error]</color> 블랙보드에서 키 '{newKey}'에 해당하는 데이터를 찾을 수 없습니다.", true);
-                }
+                _data = newData;
+                var d = _data.damageData;
+                d.AttackerTransform = runner.transform;
+                _data.damageData = d;
+                runner.SetCurrentAttackData(_data);
             }
         }
 
-        // 2. 다단계 이동 처리
-        if (stepDistances != null && _currentStep < stepDistances.Count)
+        // 2. 이동 방식(Mechanics) 통째로 교체
+        if (stepMovements != null && _currentStep < stepMovements.Count)
         {
-            float dist = stepDistances[_currentStep];
-            if (dist > 0)
+            _currentStepData = stepMovements[_currentStep];
+            if (_currentStepData.distance > 0)
             {
-                _targetPosition = runner.transform.position + runner.transform.forward * dist;
+                _targetPosition = runner.transform.position + runner.transform.forward * _currentStepData.distance;
                 _isMoving = true;
-                
+                _stepStartTime = Time.time;
+
+                // 속도 산출 (수동 속도가 0이면 거리/시간으로 계산)
+                _calculatedBaseSpeed = _currentStepData.speed > 0 ? _currentStepData.speed : (_currentStepData.distance / _currentStepData.duration);
+
                 if (runner.aIPath != null)
                 {
-                    runner.aIPath.canMove = true;
-                    runner.aIPath.isStopped = false;
-                    runner.aIPath.destination = _targetPosition;
+                    runner.aIPath.isStopped = true;
+                    runner.aIPath.canMove = false;
                 }
-                
-                Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 이동 시작 -> 목표 거리 {dist}m");
-            }
-            else
-            {
-                Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 이동 거리 0 (정지)");
+                Log($"Step {_currentStep}: {_currentStepData.distance}m 이동 시작 (속도: {_calculatedBaseSpeed:F2}m/s)");
             }
         }
 
-        // 3. 조건부 마법 이펙트 생성
-        if (!string.IsNullOrEmpty(magicCheckKey))
+        // 3. 마법 이펙트
+        if (!string.IsNullOrEmpty(magicCheckKey) && brain.blackboard.GetValueOrDefault<bool>(magicCheckKey, false))
         {
-            if (brain.blackboard.GetValueOrDefault<bool>(magicCheckKey, false))
+            if (magicEffectPrefab != null)
             {
-                if (magicEffectPrefab != null)
-                {
-                    Vector3 spawnPos = runner.transform.position + runner.transform.TransformDirection(magicEffectOffset);
-                    Instantiate(magicEffectPrefab, spawnPos, runner.transform.rotation);
-                    Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 마법 이펙트 발동 성공!");
-                }
-                else
-                {
-                    Log($"<color=orange>[StepAttack Warning]</color> 마법 조건은 충족되었으나 프리팹이 할당되지 않았습니다.");
-                }
+                Vector3 spawnPos = runner.transform.position + runner.transform.TransformDirection(magicEffectOffset);
+                Instantiate(magicEffectPrefab, spawnPos, runner.transform.rotation);
             }
         }
     }
 
     protected override void UpdateMovement()
     {
-        if (!_isMoving) return;
+        if (!_isMoving || _currentStepData == null) return;
 
-        float distToTarget = Vector3.Distance(runner.transform.position, _targetPosition);
-        if (distToTarget <= 0.3f)
+        float elapsedTime = Time.time - _stepStartTime;
+        float normalizedTime = Mathf.Clamp01(elapsedTime / _currentStepData.duration);
+
+        if (normalizedTime >= 1.0f)
         {
             _isMoving = false;
-            if (runner.aIPath != null)
+            return;
+        }
+
+        // 현재 단계의 커브와 속도 적용
+        float currentSpeed = _calculatedBaseSpeed * _currentStepData.curve.Evaluate(normalizedTime);
+        float stepSize = currentSpeed * Time.deltaTime;
+
+        Vector3 currentPos = runner.transform.position;
+        Vector3 nextPos = Vector3.MoveTowards(currentPos, _targetPosition, stepSize);
+        Vector3 moveDir = (nextPos - currentPos).normalized;
+
+        if (moveDir != Vector3.zero)
+        {
+            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, 0.5f, obstacleMask))
             {
-                runner.aIPath.isStopped = true;
+                CharacterController cc = runner.GetComponent<CharacterController>();
+                if (cc != null) cc.Move(nextPos - currentPos);
+                else runner.transform.position = nextPos;
+
+                if (runner.aIPath != null) runner.aIPath.Teleport(runner.transform.position);
             }
-            Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 목표 지점 도달 (이동 종료)");
+            else
+            {
+                _isMoving = false;
+                Log($"Step {_currentStep}: 장애물 충돌 정지");
+                return;
+            }
+        }
+
+        if (Vector3.Distance(runner.transform.position, runner.player.transform.position) <= hitRadius)
+        {
+            _isMoving = false;
+        }
+
+        if (Vector3.Distance(runner.transform.position, _targetPosition) < 0.1f)
+        {
+            _isMoving = false;
         }
     }
 
@@ -128,15 +158,24 @@ Log($"<color=cyan>[StepAttack]</color> Step {_currentStep}: 공격 데이터 교
 
     protected override void SpecificCleanup()
     {
-        Log($"<color=cyan>[StepAttack]</color> 리소스 정리 (현재 단계: {_currentStep}, 이동 중 여부: {_isMoving})");
         _isMoving = false;
-        _currentStep = -1;
+        if (runner.aIPath != null) runner.aIPath.enableRotation = true;
     }
 
     public override Node Clone()
     {
         var node = Instantiate(this);
-        node.stepDistances = new List<float>(stepDistances);
+        // 리스트 데이터 깊은 복사
+        node.stepMovements = new List<StepMovementData>();
+        foreach(var m in stepMovements) 
+        {
+            node.stepMovements.Add(new StepMovementData {
+                distance = m.distance,
+                duration = m.duration,
+                speed = m.speed,
+                curve = new AnimationCurve(m.curve.keys)
+            });
+        }
         node.phaseAttackDataKeys = new List<string>(phaseAttackDataKeys);
         return node;
     }

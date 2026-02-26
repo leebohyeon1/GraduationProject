@@ -28,7 +28,7 @@ public abstract class BaseAttackNode : Node
     public float hitEscapeDelay = 0.5f;
 
     [Header("Execution Gate")]
-    public bool checkRangeOnEnter = true;
+    public bool checkRangeOnEnter = false;
     public float rangeThreshold = 1.0f;
     public bool ignoreYDistance = true;
     public bool allowOutOfCombat = false;
