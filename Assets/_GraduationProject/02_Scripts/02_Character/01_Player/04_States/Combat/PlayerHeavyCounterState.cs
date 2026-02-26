@@ -129,7 +129,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             DamageData damage = new DamageData
             {
                 AttackerTransform = transform,
-                AttackType = p_AttackConfig.AttackType,
+                AttackType = AttackType.HeavyCounter,
                 DamageAmount = p_AttackConfig.AttackDamage,
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,

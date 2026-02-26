@@ -1,4 +1,3 @@
-using GSPAWN;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -133,7 +132,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
-                AttackType = p_AttackConfig.AttackType,
+                AttackType = AttackType.NormalCounter,
                 DamageAmount = p_AttackConfig.AttackDamage,
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,

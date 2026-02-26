@@ -1,6 +1,6 @@
 using HighlightPlus;
 using UnityEngine;
-using DG.Tweening; // DOTween ³×ÀÓ½ºÆäÀÌ½º Ãß°¡
+using DG.Tweening; // DOTween ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì¶”ê°€
 
 [System.Serializable]
 public struct InnerGlowSettings
@@ -21,10 +21,10 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private InnerGlowSettings[] _innerGlowSettings;
 
     [Header("Animation Settings")]
-    [SerializeField] private float _glowDuration = 0.5f; // º¯°æµÇ´Â µ¥ °É¸®´Â ½Ã°£
-    [SerializeField] private AnimationCurve _glowCurve = AnimationCurve.Linear(0, 0, 1, 1); // Àû¿ëÇÒ Ä¿ºê
+    [SerializeField] private float _glowDuration = 0.5f; // ë³€ê²½ë˜ëŠ” ë° ê±¸ë¦¬ëŠ” ì‹œê°„
+    [SerializeField] private AnimationCurve _glowCurve = AnimationCurve.Linear(0, 0, 1, 1); // ì ìš©í•  ì»¤ë¸Œ
 
-    private Tween _glowTween; // ½ÇÇà ÁßÀÎ Æ®À©À» ÀúÀåÇÒ º¯¼ö
+    private Tween _glowTween; // ì‹¤í–‰ ì¤‘ì¸ íŠ¸ìœˆì„ ì €ì¥í•  ë³€ìˆ˜
 
     private void Start()
     {
@@ -41,34 +41,50 @@ public class PlayerWeapon : MonoBehaviour
             return;
         }
 
-        // ¸ñÇ¥ ¼³Á¤°ª °¡Á®¿À±â
-        var targetSetting = _innerGlowSettings[chargeTier];
-
-        // 1. ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ÇÊ¿ä ¾ø´Â °ªµéÀº Áï½Ã Àû¿ë
-        _highLigthEffect.innerGlowWidth = targetSetting.Width;
-        _highLigthEffect.innerGlowColor = targetSetting.Color;
-        _highLigthEffect.innerGlowBlendMode = targetSetting.InnerGlowBlendMode;
-        _highLigthEffect.innerGlowVisibility = targetSetting.InnerGlowVisibility;
-
-        // 2. Intensity °ª ¾Ö´Ï¸ŞÀÌ¼Ç (DOTween)
-
-        // ±âÁ¸¿¡ ½ÇÇà ÁßÀÎ Æ®À©ÀÌ ÀÖ´Ù¸é ÁßÁö (Áßº¹ ½ÇÇà ¹æÁö)
+        // ê¸°ì¡´ì— ì‹¤í–‰ ì¤‘ì¸ íŠ¸ìœˆ ì·¨ì†Œ (DOTween.IsTweeningê³¼ ì¤‘ë³µë˜ë¯€ë¡œ í†µí•©)
         if (_glowTween != null && _glowTween.IsActive())
         {
             _glowTween.Kill();
         }
 
-        // ÇöÀç °ª¿¡¼­ ¸ñÇ¥ °ª(targetSetting.Intensity)±îÁö _glowDuration µ¿¾È º¯°æ
-        _glowTween = DOTween.To(
-            () => _highLigthEffect.innerGlow,                // Getter: ÇöÀç °ª °¡Á®¿À±â
-            x => _highLigthEffect.innerGlow = x,             // Setter: °ª Àû¿ëÇÏ±â
-            targetSetting.Intensity,                         // Target: ¸ñÇ¥ °ª
-            _glowDuration                                    // Duration: Áö¼Ó ½Ã°£
-        )
-        .SetEase(_glowCurve);                                // Ease: ÀÎ½ºÆåÅÍ¿¡¼­ ¼³Á¤ÇÑ Ä¿ºê Àû¿ë
+        // ëª©í‘œ ì„¤ì •ê°’ ê°€ì ¸ì˜¤ê¸°
+        var targetSetting = _innerGlowSettings[chargeTier];
+
+        // 1. ì• ë‹ˆë©”ì´ì…˜ì´ í•„ìš” ì—†ëŠ” ê°’ë“¤(ë¸”ë Œë“œ ëª¨ë“œ, ê°€ì‹œì„± ë“±)ì€ ì¦‰ì‹œ ì ìš©
+        _highLigthEffect.innerGlowBlendMode = targetSetting.InnerGlowBlendMode;
+        _highLigthEffect.innerGlowVisibility = targetSetting.InnerGlowVisibility;
+
+        // 2. DOTween Sequenceë¥¼ ì‚¬ìš©í•´ ì—¬ëŸ¬ ìˆ˜ì¹˜ë¥¼ ë™ì‹œì— ë¶€ë“œëŸ½ê²Œ ë³€ê²½
+        Sequence glowSeq = DOTween.Sequence().SetId(this);
+
+        // [ìˆ˜ì •ë¨] Intensity íŠ¸ìœˆ
+        glowSeq.Join(DOTween.To(
+            () => _highLigthEffect.innerGlow,
+            x => _highLigthEffect.innerGlow = x,
+            targetSetting.Intensity,
+            _glowDuration
+        ).SetEase(_glowCurve));
+
+        // [ì¶”ê°€ë¨] Width(ë‘ê»˜) íŠ¸ìœˆ - ë²„ê·¸ì˜ í•µì‹¬ ì›ì¸ í•´ê²°!
+        glowSeq.Join(DOTween.To(
+            () => _highLigthEffect.innerGlowWidth,
+            x => _highLigthEffect.innerGlowWidth = x,
+            targetSetting.Width,
+            _glowDuration
+        ).SetEase(_glowCurve));
+
+        // [ì¶”ê°€ë¨] Color(ìƒ‰ìƒ) íŠ¸ìœˆ - ìƒ‰ìƒë„ í•¨ê»˜ ë³´ê°„í•˜ë©´ ì—°ì¶œì´ í›¨ì”¬ ìì—°ìŠ¤ëŸ½ìŠµë‹ˆë‹¤.
+        glowSeq.Join(DOTween.To(
+            () => _highLigthEffect.innerGlowColor,
+            x => _highLigthEffect.innerGlowColor = x,
+            targetSetting.Color,
+            _glowDuration
+        ).SetEase(_glowCurve));
+
+        _glowTween = glowSeq;
     }
 
-    // °´Ã¼°¡ ÆÄ±«µÉ ¶§ Æ®À©µµ ¾ÈÀüÇÏ°Ô Á¤¸®
+    // ê°ì²´ê°€ íŒŒê´´ë  ë•Œ íŠ¸ìœˆë„ ì•ˆì „í•˜ê²Œ ì •ë¦¬
     private void OnDestroy()
     {
         if (_glowTween != null) _glowTween.Kill();

@@ -1,10 +1,16 @@
 using System;
 using UnityEngine;
 
+public enum InteractableType
+{
+    None,
+    NPC,
+    Environment
+}
+
 public interface IInteractable
 {
+    public Transform InteractableUITransform {  get; }
+    public InteractableType InteractableType { get; }
     public void Interact();
-
-    public event Action<bool> OnPlayerScan;
-    public event Action OnInteract;
 }

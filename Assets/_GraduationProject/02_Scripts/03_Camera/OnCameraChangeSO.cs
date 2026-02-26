@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "OnCameraChange", menuName = "Scriptable Objects/Events/OnCameraChange")]
+[CreateAssetMenu(fileName = "OnCameraChange", menuName = "Project/Events/OnCameraChange")]
 public class OnCameraChangeSO : EventSO<string>
 {
     
