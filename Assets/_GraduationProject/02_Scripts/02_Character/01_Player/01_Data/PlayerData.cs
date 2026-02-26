@@ -7,6 +7,7 @@ public class PlayerData
 {
     [Header("Basic Info")]
     public int Money;
+    public int SpecialMoney;
     
     [Header("Stats")]
     public int CurrentHealth;

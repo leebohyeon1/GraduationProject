@@ -5,14 +5,15 @@ using System;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
-[CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/Input/Input Reader")]
+[CreateAssetMenu(fileName = "InputReader", menuName = "Project/Input/Input Reader")]
 public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions
 {
     public enum InputMode
     {
-        None,       // 모든 입력 차단 (컷씬 등)
+        None,       // 모든 입력 차단
         Gameplay,   // 캐릭터 조작
-        UI         // 인벤토리, 메뉴 등
+        UI,         // 인벤토리, 메뉴 등
+        CutScene     // 컷씬 전용 
     }
 
     // 현재 상태를 외부에서 읽을 수 있게 프로퍼티 제공
@@ -108,6 +109,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
                 _inputActions.UI.Enable();
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                break;
+            case InputMode.CutScene:
+
                 break;
 
             case InputMode.None:
