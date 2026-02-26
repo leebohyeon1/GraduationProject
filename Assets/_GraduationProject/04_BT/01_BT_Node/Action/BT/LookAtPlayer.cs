@@ -36,7 +36,7 @@ public class Action_LookAtPlayer : Node
             );
         }
         
-        return IsSee ? NodeState.SUCCESS : NodeState.FAILURE;
+        return IsSee ? NodeState.SUCCESS : NodeState.RUNNING;
     }
     public override void OnExit()
     {
