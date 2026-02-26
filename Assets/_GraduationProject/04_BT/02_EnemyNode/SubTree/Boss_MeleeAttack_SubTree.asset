@@ -146,7 +146,23 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
-  hitRadius: 1
+  stopDistance: 1.5
+--- !u!114 &-8070725546458565278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: SEQ_GreatAxe
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 544, y: 368}
+  nodes:
+  - {fileID: -128950410872772317}
+  services: []
 --- !u!114 &-7626104631279679915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +182,167 @@ MonoBehaviour:
   - {fileID: -3108122194902616228}
   - {fileID: 7471085992480400835}
   services: []
+--- !u!114 &-7396230137371092850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65004a0c48c2eb142a33baab2e4c49fb, type: 3}
+  m_Name: Task_Step Attack
+  m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
+  position: {x: 1173, y: 263}
+  attackKey: Boss_B_Attack_1
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  stepMovements:
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  phaseAttackDataKeys:
+  - Boss_B_Attack_1
+  - Boss_B_Attack_1_1
+  - Boss_B_Attack_1_2
+  - Boss_B_Attack_1_3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  stopDistance: 1.5
+--- !u!114 &-7351547790661332615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1180, y: 336}
+  waitTime: 5.5
 --- !u!114 &-6778704532307949681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,7 +536,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
-  hitRadius: 1
+  stopDistance: 1.5
 --- !u!114 &-5973617006391663019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,37 +551,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 1166, y: -70}
   waitTime: 3
---- !u!114 &-5807697180038069716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Task_Attack Post Delay(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 1178, y: 647}
-  parameterName: 
-  delayTime: 0
---- !u!114 &-5272641037691454248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
-  m_Name: SEL_GreatAxe(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 546, y: 370}
-  nodes:
-  - {fileID: -128950410872772317}
-  services: []
 --- !u!114 &-3768489937116087190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,22 +685,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
-  hitRadius: 1
---- !u!114 &-2773539886191565721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Task_Attack Post Delay(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 1173, y: 339}
-  parameterName: 
-  delayTime: 0
+  stopDistance: 1.5
 --- !u!114 &-2629239601289140381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -589,10 +720,10 @@ MonoBehaviour:
   position: {x: 1158, y: -535}
   exceptCondition:
     key: 
-  skillName: 
+  skillName: Boss_S_Attack_1
   cooldownDuration: 3
   EnemyAttackData: 0
-  attackData: {fileID: 11400000, guid: 73c236d8817b54f4c8692c0258a6fc70, type: 2}
+  attackData: {fileID: 0}
 --- !u!114 &-1391808345592509873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -632,35 +763,6 @@ MonoBehaviour:
   weights:
   - 50
   - 50
---- !u!114 &-527842808049467792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_Normal Attack Node(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 1177, y: 569}
-  attackKey: 
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
 --- !u!114 &-128950410872772317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -779,8 +881,8 @@ MonoBehaviour:
   nodes:
   - {fileID: 689744389957806710}
   - {fileID: 7316081164005607354}
-  - {fileID: 3053397596930150145}
-  - {fileID: -2773539886191565721}
+  - {fileID: -7396230137371092850}
+  - {fileID: -7351547790661332615}
   services: []
 --- !u!114 &2053139385156454654
 MonoBehaviour:
@@ -797,39 +899,10 @@ MonoBehaviour:
   position: {x: 728, y: -16}
   exceptCondition:
     key: 
-  skillName: 
+  skillName: Boss_SB_Attack
   cooldownDuration: 5
-  EnemyAttackData: 1
-  attackData: {fileID: 11400000, guid: c2f6fd771ae109f4da1ad96408eeb03c, type: 2}
---- !u!114 &3053397596930150145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_Normal Attack Node(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 1171, y: 262}
-  attackKey: 
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &4130459720122390094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,9 +957,156 @@ MonoBehaviour:
   nodes:
   - {fileID: 4130459720122390094}
   - {fileID: 1773193015763331027}
-  - {fileID: -527842808049467792}
-  - {fileID: -5807697180038069716}
+  - {fileID: 5660923310683099036}
+  - {fileID: 8004741317694334059}
   services: []
+--- !u!114 &5660923310683099036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65004a0c48c2eb142a33baab2e4c49fb, type: 3}
+  m_Name: Task_Step Attack
+  m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
+  position: {x: 1177, y: 571}
+  attackKey: Boss_B_Attack_2
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  stepMovements:
+  - distance: 8
+    duration: 0.5
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.3
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - distance: 8
+    duration: 0.9
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  phaseAttackDataKeys:
+  - Boss_B_Attack_2
+  - Boss_B_Attack_2_1
+  - Boss_B_Attack_2_2
+  - Boss_B_Attack_2_3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  stopDistance: 1.5
 --- !u!114 &7316081164005607354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,7 +1141,7 @@ MonoBehaviour:
   position: {x: 1163, y: -221}
   exceptCondition:
     key: 
-  skillName: 
+  skillName: Boss_S_Attack_2
   cooldownDuration: 3
   EnemyAttackData: 0
   attackData: {fileID: 11400000, guid: 8e5f19b865793e6408058f49f9fb088e, type: 2}
@@ -955,6 +1175,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -3768489937116087190}
   - {fileID: 4137463322458218953}
+  - {fileID: -8070725546458565278}
   services: []
   weights:
   - 50
@@ -976,6 +1197,20 @@ MonoBehaviour:
   exceptCondition:
     key: 
   targetZoneIds: 01000000020000000300000005000000
+--- !u!114 &8004741317694334059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 1181, y: 649}
+  waitTime: 5.5
 --- !u!114 &8641491558386981526
 MonoBehaviour:
   m_ObjectHideFlags: 0
