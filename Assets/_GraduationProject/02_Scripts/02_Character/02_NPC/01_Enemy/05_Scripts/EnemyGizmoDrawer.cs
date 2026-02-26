@@ -11,15 +11,12 @@ public class EnemyGizmoDrawer : MonoBehaviour
     [Tooltip("런타임 아닐 때,SO넣어서 미리보기")]
     [SerializeField] private EnemyAttackData _editorPreviewData;
     private EnemyAttackData _runtimeAttackData;
-    private Enemy _enemy;
+    [SerializeField] public bool showGizmos = true; // 인스펙터에서 토글 가능
     
-    private void Awake()
-    {
-        _enemy = GetComponent<Enemy>();
-    }
-    
+    // Final cleanup of intentional errors by AI.
     private void OnDrawGizmosSelected()
     {
+        if (!showGizmos) return;
         DrawDistanceRings();
         DrawAttackRange();
     }

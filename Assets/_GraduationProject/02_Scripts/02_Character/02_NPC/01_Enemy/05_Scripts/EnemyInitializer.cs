@@ -7,14 +7,20 @@ public class EnemyInitializer : MonoBehaviour
 {
     [Header("Debug")]
     [SerializeField] private bool _enableLogging = true;
+    
+    [Header("Group Settings")]
+    [SerializeField] private GroupAi _targetGroupAi; // 특정 그룹에 명시적으로 할당하고 싶을 때 사용
+
     private Enemy _enemy;
     private PlayerController _player;
     private GroupAi _groupAi;
+    
     // 컴포넌트 캐시 등록
     private Dictionary<Type, Component> _componentCache = new Dictionary<Type, Component>();
 
-    // 초기화 상태 추적 string형태그 사용
+    // 초기화 상태 추적
     private HashSet<string> _initializedSystems = new HashSet<string>();
+
     public void Initialize()
     {
         Log($" starting Initialization Enemy: {gameObject.name}");
@@ -27,32 +33,33 @@ public class EnemyInitializer : MonoBehaviour
             Phase4_InitializeAI();
             Phase5_RegisterGroup();
             Phase6_FinalizeState();
-        
         }
         catch (Exception ex)
         {
             Debug.LogError($"[EnemyInitializer] Initialization failed for {gameObject.name}: {ex.Message}");
         }
     }
+
     private void Log(string message)
     {
-
         if (_enableLogging)
         {
             Debug.Log($"[EnemyInitializer] {message}");
         }
     }
+
     public void Reinitialize()
     {
         Log($"starting Reinitialization Enemy: {gameObject.name}");
 
         Phase2_InitializeData();
-        Phase3_InitializeComponents(skipCache: true); // 캐시 사용
+        Phase3_InitializeComponents(skipCache: true); 
         Phase4_InitializeAI();
         Phase5_RegisterGroup();
         Phase6_FinalizeState();
     }
-    //컴포넌트 캐시에서 가져오기
+
+    // 컴포넌트 캐시에서 가져오기
     public T GetCachedComponent<T>() where T : Component
     {
         if (_componentCache.TryGetValue(typeof(T), out var component))
@@ -68,6 +75,7 @@ public class EnemyInitializer : MonoBehaviour
         }
         return cached;
     }
+
     #region Phase 0 : 초기화 검증
     private void Phase0_Validation()
     {
@@ -79,6 +87,7 @@ public class EnemyInitializer : MonoBehaviour
         _initializedSystems.Clear();
     }
     #endregion
+
     #region Phase 1: 기본 참조 수집 
     private void Phase1_CollectReferences()
     {
@@ -89,8 +98,18 @@ public class EnemyInitializer : MonoBehaviour
 
         Log("Phase 1: Collecting References completed.");
     }
+
     private void FindOrCreateGroupAi()
     {
+        // 1. 이미 명시적으로 할당된 그룹이 있다면 그것을 사용합니다.
+        if (_targetGroupAi != null)
+        {
+            _groupAi = _targetGroupAi;
+            Log($"Using assigned GroupAi: {_groupAi.GroupName}");
+            return;
+        }
+
+        // 2. 할당된 그룹이 없다면 씬에서 찾습니다.
         _groupAi = FindFirstObjectByType<GroupAi>();
         if (_groupAi == null)
         {
@@ -98,10 +117,14 @@ public class EnemyInitializer : MonoBehaviour
             _groupAi = groupObj.AddComponent<GroupAi>();
             Log("Created new GroupAi instance.");
         }
+        else
+        {
+            Log($"Found GroupAi in scene: {_groupAi.GroupName}");
+        }
     }
     #endregion
 
-    #region Phase 2: 시스템 초기화
+    #region Phase 2: 데이터 초기화
     private void Phase2_InitializeData()
     {
         Log("Phase 2 : Initializing data");
@@ -119,13 +142,15 @@ public class EnemyInitializer : MonoBehaviour
         else
         {
             _enemy.Data.StartPosition = _enemy.transform.position;
+            _enemy.Data.GroupAi = _groupAi;
+            _enemy.Data.Player = _player;
         }
         MarkInitialized("Data");
         Log("Phase 2 : Complete");
     }
     #endregion
 
-    #region Phasse 3 : 컴포넌트 초기화
+    #region Phase 3 : 컴포넌트 초기화
     private void Phase3_InitializeComponents(bool skipCache = false)
     {
         Log("Phase 3 : Initializing Components");
@@ -165,6 +190,7 @@ public class EnemyInitializer : MonoBehaviour
         _enemy._stateController = stateController;
         Log("Initialized EnemyStateController");
     }
+
     private void InitializeAnimationSystem()
     {
         var animator = GetComponent<Animator>();
@@ -192,6 +218,7 @@ public class EnemyInitializer : MonoBehaviour
         _enemy._animationBridge = animBridge;
         Log("Initialized Animation System");
     }
+
     private void InitializeHealthSystem(bool skipCache)
     {
         var health = GetOrGetComponent<EnemyHealth>(skipCache);
@@ -203,6 +230,7 @@ public class EnemyInitializer : MonoBehaviour
         health.InitializeHealth(_enemy);
         Log("Initialized Health System");
     }
+
     private void InitializeSpecialAbility(bool skipCache)
     {
         var specialAbility = GetOrGetComponent<EnemySpecialAbility>(skipCache);
@@ -215,6 +243,7 @@ public class EnemyInitializer : MonoBehaviour
         specialAbility.Initialize(_enemy);
         Log("  - Special ability initialized");
     }
+
     private void InitializeParrySystem(bool skipCache)
     {
         var parrySystem = GetOrGetComponent<ParrySystem>(skipCache);
@@ -241,11 +270,9 @@ public class EnemyInitializer : MonoBehaviour
         Log("  - Stiffness system initialized");
     }
 
-
-    // getorgetcomponent : 캐시 사용 옵션 포함
     private T GetOrGetComponent<T>(bool skipCache) where T : Component
     {
-        if (skipCache && _componentCache.TryGetValue(typeof(T), out var cached))
+        if (!skipCache && _componentCache.TryGetValue(typeof(T), out var cached))
         {
             return cached as T;
         }
@@ -258,6 +285,7 @@ public class EnemyInitializer : MonoBehaviour
         return component;
     }
     #endregion
+
     #region Phase 4 : AI 및 이동 초기화
     private void Phase4_InitializeAI()
     {
@@ -286,17 +314,12 @@ public class EnemyInitializer : MonoBehaviour
         _enemy.Movement = movement;
 
         movement.StopMovement();
-        var shield = GetComponent<EnemyShield>();
-        if (shield == null)
-        {
-            Debug.LogError("EnemyShield component is missing.");
-            return;
-        }
         
         MarkInitialized("AI");
         Log("Phase 4 complete");
     }
     #endregion
+
     #region Phase 5 : 그룹 AI 등록
     private void Phase5_RegisterGroup()
     {
@@ -314,13 +337,12 @@ public class EnemyInitializer : MonoBehaviour
         Log("Phase 5 complete");
     }
     #endregion
+
     #region Phase 6 : 최종 상태 설정
     private void Phase6_FinalizeState()
     {
         Log("Phase 6 : Finalizing State");
         _enemy.SetState(EnemyStateController.EnemyState.Idle);
-
-
 
         // 액티브 상태로 설정
         _enemy.gameObject.SetActive(true);
@@ -337,6 +359,7 @@ public class EnemyInitializer : MonoBehaviour
         _initializedSystems.Add(systemName);
         Log($"Marked {systemName} as initialized.");
     }
+
     public bool IsInitialized(string systemName)
     {
         return _initializedSystems.Contains(systemName);
@@ -348,11 +371,11 @@ public class EnemyInitializer : MonoBehaviour
         _initializedSystems.Clear();
     }
     #endregion
+
     #region 디버깅 및 에디터
 #if UNITY_EDITOR
     private void OnValidate()
     {
-
     }
 #endif
     #endregion

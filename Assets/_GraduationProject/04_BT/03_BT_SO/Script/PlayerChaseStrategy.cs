@@ -15,6 +15,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
     public AnimationCurve speedCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.2f, 1f), new Keyframe(1, 0));
 
     private float _originalAcceleration;
+    private float _originalRotationSpeed;
 
     public override T OnEnter<T>(T runner)
     {
@@ -26,6 +27,7 @@ public class PlayerChaseStrategy : EnemyUseAnything
         if (ai != null && ai is AIPath aiPath)
         {
             _originalAcceleration = aiPath.maxAcceleration;
+            _originalRotationSpeed = aiPath.rotationSpeed;
             aiPath.maxAcceleration = 10000f; 
             aiPath.rotationSpeed = turnSpeed; 
             aiPath.enableRotation = true;
@@ -95,7 +97,9 @@ public class PlayerChaseStrategy : EnemyUseAnything
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
         if (ai != null && ai is AIPath aiPath)
         {
-            aiPath.maxAcceleration = _originalAcceleration;
+            // 인스펙터의 Default 체크박스 상태로 복구하기 위해 무한대 값 적용
+            aiPath.maxAcceleration = float.PositiveInfinity; 
+            aiPath.rotationSpeed = _originalRotationSpeed;
             aiPath.destination = enemy.transform.position;
         }
     }

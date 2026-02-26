@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 public class GroupAi : MonoBehaviour
 {
     [Header("Settings")]
+    public string GroupName = "DefaultGroup";
     public int MaxAttackTokenCount = 2; // [추가] 동시에 공격 가능한 몬스터 수
     public float updateInterval = 0.1f;
     List<Enemy> enemies = new List<Enemy>();

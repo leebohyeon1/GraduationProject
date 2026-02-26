@@ -1,5 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
+using Pathfinding;
+using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Stunned", menuName = "BehaviorTree/Stunned")]
 public class Stunned : Node
@@ -83,6 +85,12 @@ public class Stunned : Node
             runner.aIPath.SetPath(null);
             runner.aIPath.destination = runner.transform.position;
             runner.aIPath.isStopped = true;
+
+            // [추가] 스턴 종료 시에도 가속도를 Default로 리셋
+            if (runner.aIPath is AIPath aiPath)
+            {
+                aiPath.maxAcceleration = float.PositiveInfinity;
+            }
         }
 
         // 4. 전역 상태 잠금(Lock) 및 공격 플래그 강제 해제 (가장 중요)
