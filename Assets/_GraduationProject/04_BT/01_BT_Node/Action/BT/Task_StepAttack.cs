@@ -17,7 +17,7 @@ public class StepMovementData
 
 /// <summary>
 /// ActionSO 트리거 시마다 순차적으로 '이동 방식'을 통째로 변경하며 작동하는 다단계 공격 노드입니다.
-/// 플레이어 머리 위로 올라타는 현상을 방지하기 위한 강력한 물리 브레이크 및 수직 벡터 억제 로직이 포함되어 있습니다.
+/// 플레이어와의 거리를 체크하여 지정된 거리(n) 이하일 때 멈추는 로직이 포함되어 있습니다.
 /// </summary>
 [CreateAssetMenu(fileName = "Task_StepAttack", menuName = "BehaviorTree/Action/Task_StepAttack")]
 public class Task_StepAttack : BaseAttackNode
@@ -31,8 +31,8 @@ public class Task_StepAttack : BaseAttackNode
 
     [Header("Global Constraints")]
     public LayerMask obstacleMask;
-    [Tooltip("플레이어와 이 거리 이하로 가까워지면 이동 중단 (Climbing 방지)")]
-    public float hitRadius = 1.2f;
+    [Tooltip("플레이어와 이 거리 이하로 가까워지면 이동 중단 (n)")]
+    public float stopDistance = 1.5f;
 
     private int _currentStep = -1;
     private Vector3 _targetPosition;
@@ -100,25 +100,18 @@ public class Task_StepAttack : BaseAttackNode
         Vector3 myPos = runner.transform.position;
         Vector3 playerPos = runner.player.transform.position;
         
-        // [강화] 플레이어 등반 방지 브레이크 (수평 거리 기반)
-        float horizontalDist = Vector2.Distance(new Vector2(myPos.x, myPos.z), new Vector2(playerPos.x, playerPos.z));
-        
-        // 몬스터 반지름 + 플레이어 반지름 + 안전 여유분
-        float combinedRadius = (runner.Movement != null ? runner.Movement.CharacterRadius : 0.5f) + 0.5f;
-        float stopDistance = Mathf.Max(hitRadius, combinedRadius + 0.15f);
-
-        if (horizontalDist <= stopDistance)
+        // [사용자 요청] 플레이어와 거리 n(stopDistance) 비교 후 정지
+        float currentDist = Vector3.Distance(myPos, playerPos);
+        if (ignoreYDistance)
         {
-            // 전진 방향이 플레이어를 향하고 있는지 확인
-            Vector3 toPlayer = (playerPos - myPos).normalized;
-            Vector3 moveDir = (_targetPosition - myPos).normalized;
-            
-            if (Vector3.Dot(moveDir, toPlayer) > 0.5f) 
-            {
-                _isMoving = false;
-                Log($"<color=orange>[StepAttack]</color> 등반 방지 브레이크: 플레이어 근접 정지 (거리: {horizontalDist:F2}m)");
-                return;
-            }
+            currentDist = Vector2.Distance(new Vector2(myPos.x, myPos.z), new Vector2(playerPos.x, playerPos.z));
+        }
+
+        if (currentDist <= stopDistance)
+        {
+            _isMoving = false;
+            Log($"<color=orange>[StepAttack]</color> 거리 유지 브레이크 작동 (거리: {currentDist:F2}m <= {stopDistance}m)");
+            return;
         }
 
         float elapsedTime = Time.time - _stepStartTime;
@@ -140,29 +133,34 @@ public class Task_StepAttack : BaseAttackNode
 
         if (finalMoveDir != Vector3.zero)
         {
-            // 벽 충돌 체크
-            if (!Physics.Raycast(myPos + Vector3.up * 0.5f, finalMoveDir, 0.5f, obstacleMask))
-            {
-                CharacterController cc = runner.GetComponent<CharacterController>();
-                if (cc != null)
-                {
-                    Vector3 moveVector = nextPos - myPos;
-                    // [핵심 해결] 수평 이동만 추출하고 강제적인 하향 벡터(중력)를 적용하여 플레이어를 밟고 올라가는 것을 물리적으로 차단합니다.
-                    moveVector.y = -0.5f; 
-                    cc.Move(moveVector);
-                }
-                else
-                {
-                    runner.transform.position = nextPos;
-                }
+            // 벽 및 플레이어 충돌 체크
+            int playerLayer = 1 << LayerMask.NameToLayer("Player");
+            int combinedMask = obstacleMask | playerLayer;
+            
+            float castDistance = stepSize + 0.3f;
+            Vector3 castOrigin = myPos + Vector3.up * 0.5f;
+            float castRadius = (runner.Movement != null ? runner.Movement.CharacterRadius : 0.5f);
 
-                if (runner.aIPath != null) runner.aIPath.Teleport(runner.transform.position);
+            if (Physics.SphereCast(castOrigin, castRadius, finalMoveDir, out RaycastHit hit, castDistance, combinedMask))
+            {
+                _isMoving = false;
+                Log($"<color=orange>[StepAttack]</color> 물리 충돌 예측 정지: {hit.collider.name}");
+                return;
+            }
+
+            CharacterController cc = runner.GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                Vector3 moveVector = nextPos - myPos;
+                moveVector.y = -1.5f; // 등반 방지 하향 압력
+                cc.Move(moveVector);
             }
             else
             {
-                _isMoving = false;
-                Log($"Step {_currentStep}: 장애물 충돌 정지");
+                runner.transform.position = nextPos;
             }
+
+            if (runner.aIPath != null) runner.aIPath.Teleport(runner.transform.position);
         }
 
         if (Vector3.Distance(runner.transform.position, _targetPosition) < 0.1f)
@@ -182,7 +180,6 @@ public class Task_StepAttack : BaseAttackNode
             runner.aIPath.enableRotation = true;
         }
         
-        // 스턴 애니메이션이 씹히지 않도록 공격 상태를 확실히 종료
         if (runner._animationBridge != null)
         {
             runner._animationBridge.ClearIsAttacking();
@@ -192,6 +189,8 @@ public class Task_StepAttack : BaseAttackNode
     public override Node Clone()
     {
         var node = Instantiate(this);
+        node.stopDistance = stopDistance;
+        node.obstacleMask = obstacleMask;
         node.stepMovements = new List<StepMovementData>();
         foreach(var m in stepMovements) 
         {

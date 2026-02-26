@@ -312,12 +312,14 @@ public sealed override void OnExit()
         {
             cc.stepOffset = _originalStepOffset; // 원본 값 복구
         }
+        
+        // [추가] 스턴 애니메이션 방해 요소 제거 (트리거 초기화)
+        if (runner._animationBridge != null)
+        {
+            runner._animationBridge.ResetAllTriggers();
+        }
 
         StopMovementInternal();
-        runner.SetStiffness(0);
-
-        StopMovementInternal();
-
         for (int i = 0; i < SO.Length; i++)
         {
             if (SO[i] != null) SO[i].OnExit(runner);
