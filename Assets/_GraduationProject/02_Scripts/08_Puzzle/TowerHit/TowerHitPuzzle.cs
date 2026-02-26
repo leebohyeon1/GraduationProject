@@ -40,11 +40,10 @@ public class TowerHitPuzzle : MonoBehaviour
     }
 
     private void OnTowerDied()
-    {
+    {           
         // 이미 퍼즐이 클리어된 상태이면 리턴
-        if(_isPuzzleCompleted)
+        if (_isPuzzleCompleted)
         {
-            OnPuzzleCompleted?.Invoke();
             return;
         }
 
@@ -57,6 +56,9 @@ public class TowerHitPuzzle : MonoBehaviour
             StopCoroutine(_puzzleCoroutine);
             _puzzleCoroutine = null;
             _isPuzzleCompleted = true;
+
+            OnPuzzleCompleted?.Invoke();
+
             return;
         }
 
