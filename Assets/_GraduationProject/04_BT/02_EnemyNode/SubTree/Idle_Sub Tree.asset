@@ -61,6 +61,8 @@ MonoBehaviour:
   m_Name: Condition_Can See Player_Angle(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
   position: {x: -131, y: -396}
+  exceptCondition:
+    key: 
   viewAngle: 120
 --- !u!114 &-2358090069988742879
 MonoBehaviour:
@@ -133,9 +135,9 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: -446, y: -396}
-  key: IsPlayerDetected
   exceptCondition:
     key: 
+  key: IsPlayerDetected
 --- !u!114 &1435062344627752039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,12 +165,12 @@ MonoBehaviour:
   m_Name: Condition_Can See Player_Value(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: -130, y: -328}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 10
-  exceptCondition:
-    key: 
 --- !u!114 &4195622132772779419
 MonoBehaviour:
   m_ObjectHideFlags: 0
