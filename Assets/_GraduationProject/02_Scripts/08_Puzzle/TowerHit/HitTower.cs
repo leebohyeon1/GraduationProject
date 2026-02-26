@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HitTower : MonoBehaviour, IDamageable
 {
@@ -11,6 +12,9 @@ public class HitTower : MonoBehaviour, IDamageable
 
     public event Action<int, int> OnHealthChanged;
     public event Action OnDied;
+
+    public UnityEvent OnTowerHit;   
+    public UnityEvent OnTowerReset;   
 
     public void ResetTower()
     {
@@ -42,6 +46,7 @@ public class HitTower : MonoBehaviour, IDamageable
             
             if (IsDead)
             {
+                OnTowerHit?.Invoke();
                 OnDied?.Invoke();
             }
         }

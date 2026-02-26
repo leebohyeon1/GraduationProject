@@ -693,6 +693,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6353fd9897e1b664f965ee75bd17aaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitTower
+  OnTowerHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4539916990043642847}
+        m_TargetAssemblyTypeName: PlayerWeapon, Assembly-CSharp
+        m_MethodName: SetWeaponInnerGlowEffect
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnTowerReset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4539916990043642847}
+        m_TargetAssemblyTypeName: PlayerWeapon, Assembly-CSharp
+        m_MethodName: SetWeaponInnerGlowEffect
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!136 &2228900944508939689
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -774,7 +804,7 @@ MonoBehaviour:
   overlayTextureScale: 1
   overlayTextureScrolling: {x: 0, y: 0}
   overlayVisibility: 0
-  outline: 1
+  outline: 0
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineColorStyle: 0
   outlineGradient:
@@ -849,9 +879,9 @@ MonoBehaviour:
     alpha: 0.4
     color: {r: 0.64, g: 1, b: 0, a: 1}
   glowMaskMode: 0
-  innerGlow: 0
+  innerGlow: 0.015
   innerGlowWidth: 1
-  innerGlowColor: {r: 0, g: 1.5258012, b: 2, a: 1}
+  innerGlowColor: {r: 3.5648696, g: 3.5648696, b: 3.5648696, a: 1}
   innerGlowBlendMode: 0
   innerGlowVisibility: 0
   targetFX: 0
@@ -930,9 +960,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeapon
   _highLigthEffect: {fileID: 4370479249102317428}
   _innerGlowSettings:
-  - Intensity: 0
-    Width: 0
-    Color: {r: 0, g: 0, b: 0, a: 0}
+  - Intensity: 0.015
+    Width: 1
+    Color: {r: 1, g: 1, b: 1, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
   - Intensity: 1
