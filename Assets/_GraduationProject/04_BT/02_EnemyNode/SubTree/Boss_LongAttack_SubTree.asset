@@ -49,14 +49,14 @@ MonoBehaviour:
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 496, y: 198}
-  attackKey: 
+  attackKey: Boss_R_Attack_Start
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
   SO: []
-  LoopAttack: 0
-  NextBT: 0
+  LoopAttack: 1
+  NextBT: 1
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -81,15 +81,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 395, y: 45}
-  attackKey: 
+  position: {x: 403, y: 45}
+  attackKey: Boss_R_Attack_Start
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
   SO: []
-  LoopAttack: 0
-  NextBT: 0
+  LoopAttack: 1
+  NextBT: 1
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -122,7 +122,7 @@ MonoBehaviour:
   maintainAtk: 0
   SO: []
   LoopAttack: 0
-  NextBT: 0
+  NextBT: 1
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -215,7 +215,7 @@ MonoBehaviour:
   - {fileID: 1932421519546911441}
   - {fileID: -5866178787055448860}
   - {fileID: 3593469768659168057}
-  - {fileID: 6920304815504269780}
+  - {fileID: 2304183980306281579}
   services: []
 --- !u!114 &1932421519546911441
 MonoBehaviour:
@@ -236,6 +236,20 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &2304183980306281579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 231, y: 280}
+  waitTime: 5
 --- !u!114 &3593469768659168057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,18 +270,3 @@ MonoBehaviour:
   weights:
   - 70
   - 30
---- !u!114 &6920304815504269780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Task_Attack Post Delay(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 227, y: 269}
-  parameterName: 
-  delayTime: 0
