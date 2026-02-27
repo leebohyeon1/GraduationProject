@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MoreMountains.Feedbacks;
+using Packages.Rider.Editor.UnitTesting;
 using UnityEngine;
 
 public class Enemy_AnimationEventHandler : MonoBehaviour
@@ -32,9 +33,12 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         IsActive = false;
     }
-    public void OpenHitWindow()
+    public void OpenHitWindow(int phase = 0)
     {
-        IsHitWindowOpen = true;
+        if(phase <= _owner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase))
+        {
+            IsHitWindowOpen = true;
+        }
     }
     public void CloseHitWindow()
     {
@@ -97,7 +101,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         if (_owner == null) return;
 
         // 블랙보드에서 현재 Phase를 가져옵니다.
-        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
+        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
 
         // 이름이 일치하고, ID(Phase)가 현재 페이즈보다 작거나 같은 모든 피드백을 재생합니다.
         foreach (var f in _feedbacks)

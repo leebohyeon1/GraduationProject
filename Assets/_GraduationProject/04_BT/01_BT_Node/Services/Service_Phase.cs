@@ -6,7 +6,7 @@ public class Service_Phase : ServiceNode
     {
         if (!runner._aiController._aiBrain._isCombat)
         {
-            runner._aiController._aiBrain.blackboard.SetValue("Phase", 0);
+            runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Phase, 0);
             return;
         }
         float healthPercent = runner.EnemyHealth.CurrentHealth / runner.EnemyHealth.MaxHealth;
@@ -19,7 +19,7 @@ public class Service_Phase : ServiceNode
         // {
         //     phase = 2;
         // }
-        if(runner._aiController._aiBrain.blackboard.GetValue<int>("Phase") != phase)
-            runner._aiController._aiBrain.blackboard.SetValue("Phase", phase);
+        if(runner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase) != phase)
+            runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Phase, phase);
     }
 }
