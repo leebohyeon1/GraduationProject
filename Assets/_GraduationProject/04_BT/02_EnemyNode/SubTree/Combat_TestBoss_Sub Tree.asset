@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: SEQ_TailAttack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1131, y: 756}
+  position: {x: 1138, y: 312}
   nodes:
   - {fileID: 8319543934939802812}
   - {fileID: 4640970959790474602}
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
   m_Name: Task_Attack Post Delay
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 1337, y: 910}
+  position: {x: 1344, y: 466}
   parameterName: 
   delayTime: 0
 --- !u!114 &-3142304786435592868
@@ -545,6 +545,20 @@ MonoBehaviour:
   m_Name: Combat_TestBoss_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -700661456820620682}
+--- !u!114 &292558779381751190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: TailAttack
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 897, y: -2}
+  subTreeToRun: {fileID: 11400000, guid: e1bfa4485abfb2f4abadafe2fc8f5d1f, type: 2}
 --- !u!114 &1811496777038547811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,7 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1333, y: 756}
+  position: {x: 1340, y: 312}
   exceptCondition:
     key: 
   stateCondition:
@@ -625,7 +639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Normal
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1336, y: 833}
+  position: {x: 1343, y: 389}
   attackKey: Boss_B_Attack_1
   animationStateName: 
   transitionBuffer: 1
@@ -655,7 +669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1332, y: 680}
+  position: {x: 1339, y: 236}
   exceptCondition:
     key: 
   skillName: Boss_B_Attack_1
@@ -689,7 +703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: MeleeAttack
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 910, y: -2}
+  position: {x: 989, y: -85}
   subTreeToRun: {fileID: 11400000, guid: 4b111de05cb75714c873305783e9fd54, type: 2}
 --- !u!114 &5603222145472695295
 MonoBehaviour:
@@ -755,7 +769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 676, y: 0}
   nodes:
-  - {fileID: 4946100451653063918}
+  - {fileID: 292558779381751190}
   services: []
 --- !u!114 &6329673961569614231
 MonoBehaviour:
@@ -809,7 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc80aa10de6e2ed44a23d8552475d5b8, type: 3}
   m_Name: Condition_Zone Check
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_ZoneCheck
-  position: {x: 1331, y: 604}
+  position: {x: 1338, y: 160}
   exceptCondition:
     key: 
   targetZoneIds: 0400000006000000070000000800000009000000

@@ -59,17 +59,27 @@ public class Task_StepAttack : BaseAttackNode
         _currentStep++;
         Log($"<color=cyan>[StepAttack]</color> ActionSO 트리거 - Step {_currentStep}");
 
-        // 1. 공격 데이터 교체 로직
         if (phaseAttackDataKeys != null && _currentStep < phaseAttackDataKeys.Count)
         {
             string newKey = phaseAttackDataKeys[_currentStep];
             if (!string.IsNullOrEmpty(newKey) && brain.blackboard.GetValue<EnemyAttackData>(newKey, out var newData))
             {
-                _data = newData;
-                var d = _data.damageData;
-                d.AttackerTransform = runner.transform;
-                _data.damageData = d;
-                runner.SetCurrentAttackData(_data);
+                // [사용자 요청] 현재 Phase보다 작거나 같은 데이터인 경우에만 교체 작업을 수행합니다.
+                int currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
+                
+                if (newData.Phase <= currentPhase)
+                {
+                    _data = newData;
+                    var d = _data.damageData;
+                    d.AttackerTransform = runner.transform;
+                    _data.damageData = d;
+                    runner.SetCurrentAttackData(_data);
+                    Log($"Step {_currentStep}: 데이터 교체 완료 -> <color=orange>{_data.AttackName}</color> (Phase {newData.Phase} <= {currentPhase})");
+                }
+                else
+                {
+                    Log($"Step {_currentStep}: 데이터 교체 건너뜀. 요구 Phase: {newData.Phase}, 현재: {currentPhase}");
+                }
             }
         }
 
