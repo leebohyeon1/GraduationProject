@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7797916267144902070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 218, y: 153}
+  waitTime: 5
 --- !u!114 &-1652681671345485194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,11 +26,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 213, y: -75}
+  position: {x: 213, y: -76}
   exceptCondition:
     key: 
   skillName: Boss_T_Attack
-  cooldownDuration: 12
+  cooldownDuration: 10
   EnemyAttackData: 0
   attackData: {fileID: 0}
 --- !u!114 &11400000
@@ -69,22 +83,8 @@ MonoBehaviour:
   - {fileID: -1652681671345485194}
   - {fileID: 124251753123032034}
   - {fileID: 8226844269573546369}
-  - {fileID: 7393503194945769723}
+  - {fileID: -7797916267144902070}
   services: []
---- !u!114 &7393503194945769723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 219, y: 153}
-  waitTime: 5
 --- !u!114 &8216437261290948261
 MonoBehaviour:
   m_ObjectHideFlags: 0
