@@ -1,16 +1,26 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SettingUI : MenuUIComponent
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Initialize(MenuUI menu)
     {
-        
+        base.Initialize(menu);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Dispose()
     {
-        
+
+    }   
+
+    public void OnQuitToTitle()
+    {
+        SceneManager.LoadScene("Title");
     }
+
+    public void OnQuitToDesktop()
+    {
+        Application.Quit();
+    }
+
 }
