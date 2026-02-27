@@ -14,7 +14,7 @@ public struct InnerGlowSettings
     public Visibility InnerGlowVisibility;
 }
 
-public class PlayerWeapon : MonoBehaviour
+public class InnerGlowController : MonoBehaviour
 {
     [Header("Weapon Highlight Effect")]
     [SerializeField] private HighlightEffect _highLigthEffect;
@@ -34,9 +34,9 @@ public class PlayerWeapon : MonoBehaviour
         }
     }
 
-    public void SetWeaponInnerGlowEffect(int chargeTier)
+    public void SetInnerGlowEffect(int glowLevel)
     {
-        if (_highLigthEffect == null || chargeTier >= _innerGlowSettings.Length)
+        if (_highLigthEffect == null || glowLevel >= _innerGlowSettings.Length)
         {
             return;
         }
@@ -48,7 +48,7 @@ public class PlayerWeapon : MonoBehaviour
         }
 
         // 목표 설정값 가져오기
-        var targetSetting = _innerGlowSettings[chargeTier];
+        var targetSetting = _innerGlowSettings[glowLevel];
 
         // 1. 애니메이션이 필요 없는 값들(블렌드 모드, 가시성 등)은 즉시 적용
         _highLigthEffect.innerGlowBlendMode = targetSetting.InnerGlowBlendMode;
@@ -87,6 +87,9 @@ public class PlayerWeapon : MonoBehaviour
     // 객체가 파괴될 때 트윈도 안전하게 정리
     private void OnDestroy()
     {
-        if (_glowTween != null) _glowTween.Kill();
+        if (_glowTween != null)
+        {
+            _glowTween.Kill();
+        }
     }
 }

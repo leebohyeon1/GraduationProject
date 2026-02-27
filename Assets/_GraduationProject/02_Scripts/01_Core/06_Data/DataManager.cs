@@ -236,4 +236,11 @@ public class DataManager : MonoBehaviour
         return ability;
     }
 
+    public void ResetPlayer()
+    {
+        _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.MaxHealth;
+        _currentGameData.PlayerData.LastPosition = new Vector3(-157.7f, -0.17f, -162.7f);   
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.MaxPotion;
+    }
 }
