@@ -50,6 +50,11 @@ public class Chest : MonoBehaviour, IInteractable
             return;
         }
 
+        // 나중에 리펙토링해야 함 지금 너무 심플하고 더러운 버전
+        MenuiTutorial menuiTutorial = FindFirstObjectByType<MenuiTutorial>();
+        menuiTutorial.Show();
+        ////////////////////////////
+
         _isInteracted = true;
         OnInteracted?.Invoke();
 
