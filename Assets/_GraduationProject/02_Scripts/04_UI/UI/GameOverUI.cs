@@ -26,12 +26,14 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
 
     public void OnContinueButton()
     {
+        DataManager.Instance.SaveGame(); // 게임 저장
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);   
     }
 
     public void OnQuitButton()
     {
-        Application.Quit();
+        DataManager.Instance.SaveGame(); // 게임 저장
+        SceneManager.LoadScene("Title");
     }
 
     public void OnEventTrigger(PlayerController player)
