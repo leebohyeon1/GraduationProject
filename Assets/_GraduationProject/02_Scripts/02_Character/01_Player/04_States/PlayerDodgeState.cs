@@ -41,7 +41,6 @@ public class PlayerDodgeState : PlayerBaseState
         base.SetupEvents();
 
         p_owner.Events.DodgeStarted += OnDodgeStarted;
-        p_owner.Events.DodgeFinished += OnDodgeFinished;
     }
 
     protected override void SetupStats()
@@ -68,7 +67,6 @@ public class PlayerDodgeState : PlayerBaseState
         base.ClearEvents();
 
         p_owner.Events.DodgeStarted -= OnDodgeStarted;
-        p_owner.Events.DodgeFinished -= OnDodgeFinished;
 
         DOTween.Kill(this);
     }
@@ -113,7 +111,8 @@ public class PlayerDodgeState : PlayerBaseState
             case DodgeData.DodgeType.Roll:
                 p_owner.Movement.Roll(this, 
                     () => 
-                    { 
+                    {
+                        OnDodgeFinished();
                         p_stateMachine.ChangeState<PlayerIdleState>(); 
                     });
                 break;
@@ -124,6 +123,7 @@ public class PlayerDodgeState : PlayerBaseState
                 p_owner.Movement.Step(dodgeDirection, this, false, 
                     () =>
                     {
+                        OnDodgeFinished();
                         p_stateMachine.ChangeState<PlayerIdleState>();
                     });
                 break;
@@ -137,6 +137,7 @@ public class PlayerDodgeState : PlayerBaseState
     {
         if (p_owner.Movement.DodgeConfig.isInivicible)
         {
+            Debug.Log("회피 종료 - 무적 해제");
             p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
         }
     }
