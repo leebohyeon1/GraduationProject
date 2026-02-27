@@ -6666,6 +6666,7 @@ GameObject:
   - component: {fileID: 5405118734503481128}
   - component: {fileID: 2677758183589702779}
   - component: {fileID: 228070264524569388}
+  - component: {fileID: 5888973127359902339}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -7164,6 +7165,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.86, y: 0.31, z: 0.73}
   m_Center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &5888973127359902339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406303703004210642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c24f22c62be327488756bdf5c2badc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerZoneTracker
+  _primaryZoneId: -1
 --- !u!1 &8495929003467708938
 GameObject:
   m_ObjectHideFlags: 0
@@ -8171,6 +8185,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1698073784121294645, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3617381048456010094}
+    - targetCorrespondingSourceObject: {fileID: 1698073784121294645, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5537215537715007829}
   m_SourcePrefab: {fileID: 100100000, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
 --- !u!1 &501193691854809616 stripped
 GameObject:
@@ -8595,6 +8612,113 @@ MonoBehaviour:
     m_RotationOrder: 4
   RemapIntensityZero: 0
   RemapIntensityOne: 1
+--- !u!114 &5537215537715007829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501193691854809616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94df1ffae0c2c7d4ba695b68267eea10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.FeedbacksForThirdParty.MMVignetteShaker_URP
+  ChannelMode: 0
+  Channel: 0
+  MMChannelDefinition: {fileID: 0}
+  ShakeDuration: 0.2
+  PlayOnAwake: 0
+  PermanentShake: 0
+  Interruptible: 1
+  AlwaysResetTargetValuesAfterShake: 0
+  OnlyUseShakerValues: 0
+  CooldownBetweenShakes: 0
+  Shaking: 0
+  ForwardDirection: 1
+  TimescaleMode: 0
+  RelativeIntensity: 0
+  ShakeIntensity:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapIntensityZero: 0
+  RemapIntensityOne: 1
+  InterpolateColor: 0
+  ColorCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.05
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.95
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapColorZero: 0
+  RemapColorOne: 1
+  TargetColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &4437836588507332334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3238651909542390731, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
@@ -21523,15 +21647,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.b
-      value: 1
+      value: 0.008014846
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.r
-      value: 1
+      value: 0.8018868
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].OriginalLabel
