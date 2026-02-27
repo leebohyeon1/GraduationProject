@@ -15,10 +15,10 @@ MonoBehaviour:
   position: {x: 213, y: -75}
   exceptCondition:
     key: 
-  skillName: Boss_B_Attack_1
-  cooldownDuration: 3
-  EnemyAttackData: 1
-  attackData: {fileID: 11400000, guid: ff1b38fb1071bac4d82f064bd0f38525, type: 2}
+  skillName: Boss_T_Attack
+  cooldownDuration: 12
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,9 +69,9 @@ MonoBehaviour:
   - {fileID: -1652681671345485194}
   - {fileID: 124251753123032034}
   - {fileID: 8226844269573546369}
-  - {fileID: 3977357773725623475}
+  - {fileID: 7393503194945769723}
   services: []
---- !u!114 &3977357773725623475
+--- !u!114 &7393503194945769723
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,12 +80,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Task_Attack Post Delay(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 218, y: 155}
-  parameterName: 
-  delayTime: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 219, y: 153}
+  waitTime: 5
 --- !u!114 &8216437261290948261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,16 +114,15 @@ MonoBehaviour:
   m_Name: Normal(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 217, y: 78}
-  attackKey: Boss_B_Attack_1
+  attackKey: Boss_T_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
+  SO: []
   LoopAttack: 0
-  NextBT: 0
-  debugMode: 0
+  NextBT: 1
+  debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
   checkRangeOnEnter: 1
