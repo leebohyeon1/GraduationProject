@@ -7,13 +7,20 @@ using UnityEngine.UI;
 /// </summary>
 public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>
 {
+    [SerializeField] private string _skillName; // 스킬 이름 
+    public string SkillName => _skillName;
+    [SerializeField] private string _skillDescription;  // 스킬 설명
+    public string SkillDescription => _skillDescription;
+
     [Header("References")]
     [SerializeField] private Toggle _skillToggleButton;
     private PlayerController _playerController;
 
     [Header("Conditions")]
     [SerializeField] private int _price;    // 가격
-    [SerializeField] private int _specialPrice; // 특수 가격 (필요하다면 사용) 
+    public int Price => _price;
+    [SerializeField] private int _specialPrice; // 특수 가격
+    public int SpecialPrice => _specialPrice;                                            
     [SerializeField] private List<PlayerAbilitySO> _needAbilities;
     private bool _isLearned = false;
 
