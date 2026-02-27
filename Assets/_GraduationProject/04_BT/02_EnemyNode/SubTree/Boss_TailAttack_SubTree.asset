@@ -14,6 +14,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 218, y: 153}
   waitTime: 5
+--- !u!114 &-2360795647464065998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65004a0c48c2eb142a33baab2e4c49fb, type: 3}
+  m_Name: Task_Step Attack
+  m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
+  position: {x: 220, y: 75}
+  attackKey: Boss_Tail_Attack
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  stepMovements: []
+  phaseAttackDataKeys:
+  - Boss_Tail_Attack
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  stopDistance: 1.5
 --- !u!114 &-1652681671345485194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29,7 +65,7 @@ MonoBehaviour:
   position: {x: 213, y: -76}
   exceptCondition:
     key: 
-  skillName: Boss_T_Attack
+  skillName: Boss_Tail_Attack
   cooldownDuration: 10
   EnemyAttackData: 0
   attackData: {fileID: 0}
@@ -82,7 +118,7 @@ MonoBehaviour:
   - {fileID: 8216437261290948261}
   - {fileID: -1652681671345485194}
   - {fileID: 124251753123032034}
-  - {fileID: 8226844269573546369}
+  - {fileID: -2360795647464065998}
   - {fileID: -7797916267144902070}
   services: []
 --- !u!114 &8216437261290948261
@@ -101,32 +137,3 @@ MonoBehaviour:
   exceptCondition:
     key: 
   targetZoneIds: 0400000006000000070000000800000009000000
---- !u!114 &8226844269573546369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Normal(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 217, y: 78}
-  attackKey: Boss_T_Attack
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 1
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
