@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSkillUI : PlayerUIBase
 {
-    [SerializeField] private List<PlayerSkillUpgradeButtonUI> _upgradeButtonList;
+    [SerializeField] private List<SkillUpgradeButtonUI> _upgradeButtonList;
 
     public override void Initialize(PlayerController player)
     {

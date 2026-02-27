@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// 스킬 업그레이드 버튼 UI
 /// </summary>
-public class PlayerSkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>
+public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>
 {
     [Header("References")]
     [SerializeField] private Toggle _skillToggleButton;
