@@ -79,8 +79,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        // 객체 해제
-        Disapose();
+        _health.OnDied -= Dispose;
     }
 
     #region Initialize
@@ -142,6 +141,7 @@ public class PlayerController : MonoBehaviour
         if (TryGetComponent<PlayerHealth>(out _health))
         {
             _health.Initialize(this);
+            _health.OnDied += Dispose; // 객체 해제
         }
 
         // PlayerMovement 초기화
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 객체 폐기
     /// </summary>
-    private void Disapose()
+    private void Dispose()
     {
         _stateMachine?.Dispose();
 
@@ -230,6 +230,7 @@ public class PlayerController : MonoBehaviour
             disaposable.Dispose();
         }
 
+        _events.ClearAllEvents();
         _disposableList.Clear();
     }
 

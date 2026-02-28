@@ -40,6 +40,8 @@ public class PlayerPotion : MonoBehaviour, IDisposable
     public void Dispose()
     {
         _inputReader.PotionEvent -= OnPotionEvent;
+
+        OnPotionChange = null;
     }
 
     /// <summary>

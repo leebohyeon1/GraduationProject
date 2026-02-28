@@ -8,6 +8,11 @@ public class SceneChunkVolume : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(!SceneLoadingManager.Instance)
+        {
+            return;
+        }
+
         // 플레이어가 이 구역 안으로 깊숙이 들어왔다면!
         if (other.TryGetComponent<PlayerController>(out var component))
         {

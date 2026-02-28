@@ -16,8 +16,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     [Header("Loading UI")]
     [SerializeField] private CanvasGroup _loadingCanvasGroup; // 투명도(Alpha) 조절로 페이드 효과를 주기 위함
-    [SerializeField] private Slider _progressBar;
-    [SerializeField] private TMP_Text _progressText;
+    [SerializeField] private Image _progressImage;
     [SerializeField] private TMP_Text _tipText; // ScriptableObject에서 가져올 팁 텍스트
     [SerializeField] private Image _backgroundImage; // 배경 이미지
 
@@ -123,6 +122,13 @@ public class SceneLoadingManager : MonoBehaviour
         }
 
         _loadingCanvasGroup.blocksRaycasts = true;
+
+        _loadingCanvasGroup.alpha = 1f;
+        if (_progressImage != null)
+        {
+            _progressImage.fillAmount = 0f;
+        }
+
         float fadeTimer = 0f;
         while (fadeTimer < 0.5f)
         {
@@ -130,11 +136,7 @@ public class SceneLoadingManager : MonoBehaviour
             _loadingCanvasGroup.alpha = Mathf.Lerp(0f, 1f, fadeTimer / 0.5f);
             yield return null;
         }
-        _loadingCanvasGroup.alpha = 1f;
-        if (_progressBar != null)
-        {
-            _progressBar.value = 0f;
-        }
+
 
         yield return new WaitForSeconds(0.2f);
 
@@ -156,19 +158,18 @@ public class SceneLoadingManager : MonoBehaviour
 
         while (!loadOp.IsDone)
         {
-            if (_progressBar != null) _progressBar.value = loadOp.PercentComplete;
-            if (_progressText != null) _progressText.text = Mathf.RoundToInt(loadOp.PercentComplete * 100f) + "%";
+            if (_progressImage != null)
+            {
+                _progressImage.fillAmount = loadOp.PercentComplete;
+            }
+
             yield return null;
         }
 
         // 로드 완료 처리
-        if (_progressBar != null)
+        if (_progressImage != null)
         {
-            _progressBar.value = 1f;
-        }
-        if (_progressText != null)
-        {
-            _progressText.text = "100%";
+            _progressImage.fillAmount = 1f;
         }
 
         SceneInstance newSceneInstance = loadOp.Result;
@@ -234,27 +235,7 @@ public class SceneLoadingManager : MonoBehaviour
 
         while (!loadOp.IsDone)
         {
-            if (_progressBar != null)
-            {
-                _progressBar.value = loadOp.PercentComplete;
-            }
-
-            if (_progressText != null)
-            {
-                _progressText.text = Mathf.RoundToInt(loadOp.PercentComplete * 100f) + "%";
-            }
             yield return null;
-        }
-
-        // 로드 완료 처리
-        if (_progressBar != null)
-        {
-            _progressBar.value = 1f;
-        }
-
-        if (_progressText != null)
-        {
-            _progressText.text = "100%";
         }
 
         SceneInstance newSceneInstance = loadOp.Result;

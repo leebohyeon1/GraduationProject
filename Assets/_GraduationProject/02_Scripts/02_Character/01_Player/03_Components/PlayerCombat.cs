@@ -111,6 +111,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.CounterWindowFinished -= OnCounterWindowFinished;
 
         _events.BeforeDamaged -= OnBeforeDamaged;
+
+        if(_battleStateStopCoroutine != null)
+        {
+            StopCoroutine(_battleStateStopCoroutine);
+            _battleStateStopCoroutine = null;
+        }
+
+        BattleStateChaged = null;
     }
 
     /// <summary>
