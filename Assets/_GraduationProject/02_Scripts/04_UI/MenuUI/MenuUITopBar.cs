@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.AppUI.UI;
-using UnityEditor;
 using UnityEngine;
 
 public class MenuUITopBar : MenuUIComponent 
