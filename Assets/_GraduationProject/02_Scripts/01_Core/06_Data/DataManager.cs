@@ -156,7 +156,7 @@ public class DataManager : MonoBehaviour
     {
         _currentGameData = new GameData();
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
-        _currentGameData.PlayerData.LastPosition = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         DataList.Add(_currentGameData);
         _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
@@ -172,7 +172,7 @@ public class DataManager : MonoBehaviour
     {
         _currentGameData = new GameData();
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
-        _currentGameData.PlayerData.LastPosition = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         DataList[index] = _currentGameData;
         _currentSlotIndex = index;
@@ -196,7 +196,7 @@ public class DataManager : MonoBehaviour
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
         _currentGameData.PlayerData.LastPosition = player.transform.position;
-        _currentGameData.PlayerData.RespawnPostion = player.transform.position;
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         // 보유한 능력(Ability) 저장
         var abilityComp = player.Ability;
@@ -239,8 +239,7 @@ public class DataManager : MonoBehaviour
     public void ResetPlayer()
     {
         _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.MaxHealth;
-        _currentGameData.PlayerData.LastPosition = new Vector3(-157.7f, -0.17f, -162.7f);   
-        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
         _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.MaxPotion;
     }
 }

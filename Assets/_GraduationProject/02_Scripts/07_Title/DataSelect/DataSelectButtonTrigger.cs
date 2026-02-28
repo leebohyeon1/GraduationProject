@@ -30,6 +30,6 @@ public class DataSelectButtonTrigger : MonoBehaviour
         _saveTimeText.text = GameData.LastSaveTime;
         _stageText.text = GameData.StageName;
         _moneyText.text = GameData.PlayerData.Money.ToString();
-        _specialMoneyText.text = GameData.PlayerData.Money.ToString();
+        _specialMoneyText.text = GameData.PlayerData.SpecialMoney.ToString();
     }
 }
