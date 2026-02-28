@@ -12,7 +12,9 @@ public class DataSelectButtonTrigger : MonoBehaviour
     [SerializeField] private TMP_Text _stageText;
     [SerializeField] private TMP_Text _moneyText;
     [SerializeField] private TMP_Text _specialMoneyText;
+    [SerializeField] private string _defaultSceneName;
 
+    private string _loadSceneName = "";
     public GameData GameData { get; private set; } = null;
 
     public void SetData(int index, GameData data)
@@ -31,5 +33,18 @@ public class DataSelectButtonTrigger : MonoBehaviour
         _stageText.text = GameData.StageName;
         _moneyText.text = GameData.PlayerData.Money.ToString();
         _specialMoneyText.text = GameData.PlayerData.SpecialMoney.ToString();
+        _loadSceneName = GameData.LastMainScene; 
+    }
+
+    public void LoadScene()
+    {
+        if(_loadSceneName == "")
+        {
+            SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneName);
+        }
+        else
+        {
+            SceneLoadingManager.Instance.TeleportToSceneByName(_loadSceneName);
+        }
     }
 }

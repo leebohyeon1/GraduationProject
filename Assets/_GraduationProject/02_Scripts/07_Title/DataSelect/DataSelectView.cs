@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +13,7 @@ public class DataSelectView : TitleView
 
     [Header("UI")]
     [SerializeField] private Transform _content;
-    [SerializeField] private List<GameObject> _dataSelectButtonList = new List<GameObject>();
+    [SerializeField] private List<DataSelectButtonTrigger> _dataSelectButtonList = new List<DataSelectButtonTrigger>();
 
     [SerializeField] private GameObject _dataCheckBox;
     private int _selectedIndex = -1;
@@ -41,7 +42,7 @@ public class DataSelectView : TitleView
             for (int i = 0; i < needCount; i++)
             {
                 GameObject obj = Instantiate(_dataSelectPrefab, _content);
-                _dataSelectButtonList.Add(obj);
+                _dataSelectButtonList.Add(obj.GetComponent<DataSelectButtonTrigger>());
             }
         }
 
@@ -49,7 +50,7 @@ public class DataSelectView : TitleView
         for (int i = 0; i < DataManager.Instance.DataList.Count; i++)
         {
             GameData gameData = DataManager.Instance.DataList[i];
-            _dataSelectButtonList[i].GetComponent<DataSelectButtonTrigger>().SetData(i, gameData);
+            _dataSelectButtonList[i].SetData(i, gameData);
         }
 
         // 3. 데이터가 없는 남은 버튼들은 비어있음(null) 처리
@@ -58,7 +59,7 @@ public class DataSelectView : TitleView
             // 수정된 부분: 시작 인덱스를 DataList.Count로 맞추고, 리스트에서 꺼내오는 로직 제거
             for (int i = DataManager.Instance.DataList.Count; i < _dataSelectButtonList.Count; i++)
             {
-                _dataSelectButtonList[i].GetComponent<DataSelectButtonTrigger>().SetData(i, null);
+                _dataSelectButtonList[i].SetData(i, null);
             }
         }
 
@@ -69,7 +70,7 @@ public class DataSelectView : TitleView
             // 이 새로 생성된 버튼의 SetData는 따로 안 해줘도 괜찮은지 확인이 필요할 수 있습니다.
             // 필요하다면 아래 코드를 추가하세요:
             // obj.GetComponent<DataSelectButtonTrigger>().SetData(_dataSelectButtonList.Count, null);
-            _dataSelectButtonList.Add(obj);
+            _dataSelectButtonList.Add(obj.GetComponent<DataSelectButtonTrigger>());
         }
     }
 
@@ -86,12 +87,12 @@ public class DataSelectView : TitleView
             btn.onClick.RemoveAllListeners(); // 중복 등록 방지를 위해 기존 이벤트 지우기
             btn.onClick.AddListener(() =>
             {
-                    if (_dataSelectButtonList[index].GetComponent<DataSelectButtonTrigger>().GameData != null)
-                    {
-                        DataManager.Instance.SelectSaveData(index);
-                        SceneManager.LoadScene("Part3 1");
-                    }
-                });
+                _selectedIndex = index; 
+                if (_dataSelectButtonList[index].GameData != null)
+                {
+                    DataManager.Instance.SelectSaveData(index);
+                }
+            });
         }
     }
 
@@ -108,33 +109,32 @@ public class DataSelectView : TitleView
             btn.onClick.RemoveAllListeners(); // 중복 등록 방지를 위해 기존 이벤트 지우기
             btn.onClick.AddListener(() =>
             {
-                    if (_dataSelectButtonList[index].GetComponent<DataSelectButtonTrigger>().GameData == null)
-                    {
-                        CreateNewGame();
-                    }
-                    else
-                    {
-                        CheckBoxOn(index);
-                    }
-                });
+                _selectedIndex = index;
+                if (_dataSelectButtonList[index].GameData == null)
+                {
+                    CreateNewGame();
+                }
+                else
+                {
+                    CheckBoxOn();
+                }
+            });
         }
     }
 
     public void CreateNewGame()
     {
         DataManager.Instance.CreateNewGame();
-        SceneManager.LoadScene("Part3 1");
+        _dataSelectButtonList[_selectedIndex].LoadScene();
     }
     
     public void OverwriteData()
     {
         DataManager.Instance.CreateNewGame(_selectedIndex);
-        SceneManager.LoadScene("Part3 1");
     }
 
-    public void CheckBoxOn(int index)
+    public void CheckBoxOn()
     {
-        _selectedIndex = index;
         _dataCheckBox.SetActive(true);
     }
 

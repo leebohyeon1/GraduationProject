@@ -76,6 +76,7 @@ public class DataManager : MonoBehaviour
         }
         UpdatePlayerDataFromGame();
 
+        _currentGameData.LastMainScene = SceneLoadingManager.Instance.CurrentActiveChunkName;
         // 3. CurrentPlayer 데이터를 CurrentGameData에 덮어씌움 (동기화)
         _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // 저장 시간 갱신
 
