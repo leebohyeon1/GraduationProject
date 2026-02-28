@@ -14,6 +14,7 @@ public class DataSelectButtonTrigger : MonoBehaviour
     [SerializeField] private TMP_Text _specialMoneyText;
     [SerializeField] private string _defaultSceneName;
 
+    private bool _isDataSet = false;
     private string _loadSceneName = "";
     public GameData GameData { get; private set; } = null;
 
@@ -23,6 +24,10 @@ public class DataSelectButtonTrigger : MonoBehaviour
 
         if (data == null)
         {
+            _saveDataPanel.SetActive(false); // 세이브 정보 패널 끄기
+            GameData = null;                 // 데이터 초기화 (버튼 재사용 시 중요)
+
+            _isDataSet = false;
             return;
         }
 
@@ -33,17 +38,20 @@ public class DataSelectButtonTrigger : MonoBehaviour
         _stageText.text = GameData.StageName;
         _moneyText.text = GameData.PlayerData.Money.ToString();
         _specialMoneyText.text = GameData.PlayerData.SpecialMoney.ToString();
-        _loadSceneName = GameData.LastMainScene; 
+        _loadSceneName = GameData.LastMainScene;
+
+        _isDataSet = true;
     }
 
     public void LoadScene()
     {
-        if(_loadSceneName == "")
+        if(!_isDataSet)
         {
             SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneName);
         }
         else
         {
+            Debug.Log("aaaa");
             SceneLoadingManager.Instance.TeleportToSceneByName(_loadSceneName);
         }
     }

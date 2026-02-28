@@ -73,7 +73,10 @@ public class SceneLoadingManager : MonoBehaviour
             return;
         }
 
-        TeleportToSceneByName(_initializeSceneName);
+        if (_sceneDataLookup.TryGetValue(_initializeSceneName, out SceneDataSO dataToLoad))
+        {
+            StartCoroutine(InitialTeleport(dataToLoad));
+        }
     }
 
     // =================================================================
@@ -132,6 +135,8 @@ public class SceneLoadingManager : MonoBehaviour
         {
             _progressBar.value = 0f;
         }
+
+        yield return new WaitForSeconds(0.2f);
 
         // 2. 기존에 로드된 모든 씬 언로드 (메모리 비우기)
         List<AsyncOperationHandle> unloadOps = new List<AsyncOperationHandle>();
@@ -200,6 +205,81 @@ public class SceneLoadingManager : MonoBehaviour
         }
         _loadingCanvasGroup.alpha = 0f;
         _loadingCanvasGroup.blocksRaycasts = false;
+
+        isTeleporting = false;
+    }
+
+    private IEnumerator InitialTeleport(SceneDataSO targetScene)
+    {
+        isTeleporting = true;
+
+        // 2. 기존에 로드된 모든 씬 언로드 (메모리 비우기)
+        List<AsyncOperationHandle> unloadOps = new List<AsyncOperationHandle>();
+        foreach (var chunk in _loadedChunks.Values)
+        {
+            unloadOps.Add(Addressables.UnloadSceneAsync(chunk));
+        }
+
+        foreach (var op in unloadOps)
+        {
+            while (!op.IsDone)
+            {
+                yield return null;
+            }
+        }
+        _loadedChunks.Clear(); // 명부 초기화
+
+        // 3. 새로운 타겟 씬 로드 (Additive)
+        AsyncOperationHandle<SceneInstance> loadOp = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, false);
+
+        while (!loadOp.IsDone)
+        {
+            if (_progressBar != null)
+            {
+                _progressBar.value = loadOp.PercentComplete;
+            }
+
+            if (_progressText != null)
+            {
+                _progressText.text = Mathf.RoundToInt(loadOp.PercentComplete * 100f) + "%";
+            }
+            yield return null;
+        }
+
+        // 로드 완료 처리
+        if (_progressBar != null)
+        {
+            _progressBar.value = 1f;
+        }
+
+        if (_progressText != null)
+        {
+            _progressText.text = "100%";
+        }
+
+        SceneInstance newSceneInstance = loadOp.Result;
+        _loadedChunks.Add(targetScene.SceneName, newSceneInstance); // 새 씬 명부에 추가
+
+        // 씬 활성화 및 메인 씬으로 세팅
+        AsyncOperation activateOp = newSceneInstance.ActivateAsync();
+        while (!activateOp.isDone)
+        {
+            yield return null;
+        }
+        SceneManager.SetActiveScene(newSceneInstance.Scene);
+
+        // ==========================================================
+        // 스카이박스 및 환경광(Ambient Light) 즉시 교체
+        // ==========================================================
+        if (targetScene.skyboxMaterial != null)
+        {
+            // 1. 스카이박스 머티리얼 교체
+            RenderSettings.skybox = targetScene.skyboxMaterial;
+
+            // 2. 바뀐 스카이박스에 맞춰서 환경광(주변 빛) 다시 계산
+            DynamicGI.UpdateEnvironment();
+        }
+        // ==========================================================
 
         isTeleporting = false;
     }

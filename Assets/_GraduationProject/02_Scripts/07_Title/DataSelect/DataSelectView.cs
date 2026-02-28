@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -7,16 +8,23 @@ using UnityEngine.UI;
 
 public class DataSelectView : TitleView
 {
+    private enum SelectMode
+    {
+        NewGame,
+        Continue
+    }
+
     [Header("References")]
     [SerializeField] private GameObject _dataSelectPrefab;
     [SerializeField] private InputReaderSO _inputReader;
 
     [Header("UI")]
     [SerializeField] private Transform _content;
-    [SerializeField] private List<DataSelectButtonTrigger> _dataSelectButtonList = new List<DataSelectButtonTrigger>();
+    private List<DataSelectButtonTrigger> _dataSelectButtonList = new List<DataSelectButtonTrigger>();
 
     [SerializeField] private GameObject _dataCheckBox;
     private int _selectedIndex = -1;
+    private SelectMode _currentMode = SelectMode.NewGame;
 
     [Header("Event")]
     public UnityEvent OnCancelEvent;
@@ -24,7 +32,10 @@ public class DataSelectView : TitleView
     private void OnEnable()
     {
         _inputReader.CancelEvent += OnCancel;
+    }
 
+    private void Start()
+    {
         Initialize();
     }
 
@@ -35,10 +46,18 @@ public class DataSelectView : TitleView
 
     private void Initialize()
     {
-        // 1. 버튼 갯수가 모자라면 추가 생성
-        if (_dataSelectButtonList.Count < DataManager.Instance.DataList.Count)
+        // 기존 버튼 리스트 가져오기 (이미 씬에 있는 경우)
+        _dataSelectButtonList = _content.GetComponentsInChildren<DataSelectButtonTrigger>().ToList();
+
+        // 1. 데이터 개수에 맞춰 버튼 생성 및 리스트 확보
+        int totalDataCount = DataManager.Instance.DataList.Count;
+        
+        // 버튼 갯수가 모자라면 추가 생성 (데이터 개수 + 새 게임용 빈 칸 1개)
+        int requiredButtonCount = totalDataCount + 1;
+        
+        if (_dataSelectButtonList.Count < requiredButtonCount)
         {
-            int needCount = DataManager.Instance.DataList.Count - _dataSelectButtonList.Count;
+            int needCount = requiredButtonCount - _dataSelectButtonList.Count;
             for (int i = 0; i < needCount; i++)
             {
                 GameObject obj = Instantiate(_dataSelectPrefab, _content);
@@ -46,80 +65,73 @@ public class DataSelectView : TitleView
             }
         }
 
-        // 2. 존재하는 데이터만큼 버튼에 데이터 세팅
-        for (int i = 0; i < DataManager.Instance.DataList.Count; i++)
-        {
-            GameData gameData = DataManager.Instance.DataList[i];
-            _dataSelectButtonList[i].SetData(i, gameData);
-        }
-
-        // 3. 데이터가 없는 남은 버튼들은 비어있음(null) 처리
-        if (DataManager.Instance.DataList.Count < _dataSelectButtonList.Count)
-        {
-            // 수정된 부분: 시작 인덱스를 DataList.Count로 맞추고, 리스트에서 꺼내오는 로직 제거
-            for (int i = DataManager.Instance.DataList.Count; i < _dataSelectButtonList.Count; i++)
-            {
-                _dataSelectButtonList[i].SetData(i, null);
-            }
-        }
-
-        // 4. 모든 버튼에 데이터가 꽉 찼으면 새 게임을 위한 빈 버튼 하나 추가
-        if (DataManager.Instance.DataList.Count == _dataSelectButtonList.Count)
-        {
-            GameObject obj = Instantiate(_dataSelectPrefab, _content);
-            // 이 새로 생성된 버튼의 SetData는 따로 안 해줘도 괜찮은지 확인이 필요할 수 있습니다.
-            // 필요하다면 아래 코드를 추가하세요:
-            // obj.GetComponent<DataSelectButtonTrigger>().SetData(_dataSelectButtonList.Count, null);
-            _dataSelectButtonList.Add(obj.GetComponent<DataSelectButtonTrigger>());
-        }
-    }
-
-    /// <summary>
-    /// 이어하기 버튼 클릭
-    /// </summary>
-    public void OnContinueButton()
-    {
+        // 2. 모든 버튼 초기화 및 클릭 이벤트 등록
         for (int i = 0; i < _dataSelectButtonList.Count; i++)
         {
             int index = i;
-            Button btn = _dataSelectButtonList[index].gameObject.GetComponent<Button>();
+            DataSelectButtonTrigger trigger = _dataSelectButtonList[i];
+            
+            // 데이터 설정 (범위 밖이면 null)
+            GameData gameData = (i < totalDataCount) ? DataManager.Instance.DataList[i] : null;
+            trigger.SetData(i, gameData);
 
-            btn.onClick.RemoveAllListeners(); // 중복 등록 방지를 위해 기존 이벤트 지우기
-            btn.onClick.AddListener(() =>
+            // 클릭 이벤트 등록
+            Button btn = trigger.GetComponent<Button>();
+            if (btn != null)
             {
-                _selectedIndex = index; 
-                if (_dataSelectButtonList[index].GameData != null)
-                {
-                    DataManager.Instance.SelectSaveData(index);
-                }
-            });
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => OnDataButtonClick(index));
+            }
         }
     }
 
     /// <summary>
-    /// 새 게임 버튼 클릭
+    /// 개별 데이터 버튼 클릭 시 실행될 공통 로직
+    /// </summary>
+    private void OnDataButtonClick(int index)
+    {
+        _selectedIndex = index;
+        DataSelectButtonTrigger selectedTrigger = _dataSelectButtonList[index];
+
+        if (_currentMode == SelectMode.Continue)
+        {
+            // 이어하기 모드: 데이터가 있을 때만 선택 가능
+            if (selectedTrigger.GameData != null)
+            {
+                DataManager.Instance.SelectSaveData(index);
+                selectedTrigger.LoadScene(); // 씬 로드 추가 (필요 시)
+            }
+        }
+        else // NewGame 모드
+        {
+            // 새 게임 모드: 데이터가 없으면 즉시 생성, 있으면 덮어쓰기 확인창
+            if (selectedTrigger.GameData == null)
+            {
+                CreateNewGame();
+            }
+            else
+            {
+                CheckBoxOn();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 이어하기 메뉴 진입 시 호출 (외부에서 연결)
+    /// </summary>
+    public void OnContinueButton()
+    {
+        _currentMode = SelectMode.Continue;
+        Initialize(); // 버튼 상태 업데이트를 위해 다시 호출
+    }
+
+    /// <summary>
+    /// 새 게임 메뉴 진입 시 호출 (외부에서 연결)
     /// </summary>
     public void OnNewGameButton()
     {
-        for(int i = 0; i < _dataSelectButtonList.Count; i++)
-        {
-            int index = i;
-            Button btn = _dataSelectButtonList[index].gameObject.GetComponent<Button>();
-
-            btn.onClick.RemoveAllListeners(); // 중복 등록 방지를 위해 기존 이벤트 지우기
-            btn.onClick.AddListener(() =>
-            {
-                _selectedIndex = index;
-                if (_dataSelectButtonList[index].GameData == null)
-                {
-                    CreateNewGame();
-                }
-                else
-                {
-                    CheckBoxOn();
-                }
-            });
-        }
+        _currentMode = SelectMode.NewGame;
+        Initialize(); // 버튼 상태 업데이트를 위해 다시 호출
     }
 
     public void CreateNewGame()
@@ -131,6 +143,9 @@ public class DataSelectView : TitleView
     public void OverwriteData()
     {
         DataManager.Instance.CreateNewGame(_selectedIndex);
+        _dataSelectButtonList[_selectedIndex].SetData(_selectedIndex, null);
+        _dataSelectButtonList[_selectedIndex].LoadScene();
+        CheckBoxOff();
     }
 
     public void CheckBoxOn()

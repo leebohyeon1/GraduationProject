@@ -158,6 +158,7 @@ public class DataManager : MonoBehaviour
         _currentGameData = new GameData();
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
         DataList.Add(_currentGameData);
         _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
@@ -174,6 +175,7 @@ public class DataManager : MonoBehaviour
         _currentGameData = new GameData();
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
         DataList[index] = _currentGameData;
         _currentSlotIndex = index;
