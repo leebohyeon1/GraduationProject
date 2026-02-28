@@ -1,22 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DataSelectView : TitleView
 {
+    [Header("References")]
     [SerializeField] private GameObject _dataSelectPrefab;
-    [SerializeField] private Transform _content;
+    [SerializeField] private InputReaderSO _inputReader;
 
+    [Header("UI")]
+    [SerializeField] private Transform _content;
     [SerializeField] private List<GameObject> _dataSelectButtonList = new List<GameObject>();
 
     [SerializeField] private GameObject _dataCheckBox;
     private int _selectedIndex = -1;
 
+    [Header("Event")]
+    public UnityEvent OnCancelEvent;
+
     private void OnEnable()
     {
-        Initialize();
+        _inputReader.CancelEvent += OnCancel;
 
+        Initialize();
+    }
+
+    private void OnDisable()
+    {
+        _inputReader.CancelEvent -= OnCancel;
     }
 
     private void Initialize()
@@ -128,5 +141,17 @@ public class DataSelectView : TitleView
     public void CheckBoxOff()
     {
         _dataCheckBox.SetActive(false);
+    }
+
+    private void OnCancel()
+    {
+        if(_dataCheckBox.activeSelf)
+        {
+            CheckBoxOff();
+        }
+        else
+        {
+            OnCancelEvent?.Invoke();
+        }
     }
 }
