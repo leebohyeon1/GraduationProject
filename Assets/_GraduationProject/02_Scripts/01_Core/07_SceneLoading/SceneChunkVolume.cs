@@ -3,7 +3,7 @@ using UnityEngine;
 // 이 스크립트는 해당 씬 안에 배치되어, 플레이어가 이 구역 안에 들어왔음을 감지합니다.
 public class SceneChunkVolume : MonoBehaviour
 {
-    [Header("현재 구역의 씬 데이터")]
+    [Header("Current Chunk Scene Data")]
     public SceneDataSO thisChunkData;
 
     private void OnTriggerEnter(Collider other)
