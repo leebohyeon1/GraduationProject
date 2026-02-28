@@ -83,7 +83,6 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.LockOnTargetChangeForKeyboard += OnLockOnTargetChangeForKeyboard;
         p_owner.InputReader.LockOnTargetChangeForGamepadEvent += OnLockOnTargetChangeForGamepadEvent;
 
-        p_owner.InputReader.PotionEvent += OnPotionEvent;
     }
     /// <summary>
     /// 능력치 설정 함수
@@ -119,8 +118,6 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.ToggleLockOnEvent -= OnToggleLockOn;
         p_owner.InputReader.LockOnTargetChangeForKeyboard -= OnLockOnTargetChangeForKeyboard;
         p_owner.InputReader.LockOnTargetChangeForGamepadEvent -= OnLockOnTargetChangeForGamepadEvent;
-
-        p_owner.InputReader.PotionEvent -= OnPotionEvent;
     }
     /// <summary>
     /// 능력치 해제 함수
@@ -228,14 +225,6 @@ public abstract class PlayerBaseState : IState
         }
 
         p_owner.LockOn.ChangeLockOnTargetByGamePad(gamepadInput);
-    }
-
-    /// <summary>
-    /// 포션 이벤트
-    /// </summary>
-    protected virtual void OnPotionEvent()
-    {
-        p_owner.Potion.UsePotion();
     }
     #endregion
 }

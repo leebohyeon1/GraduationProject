@@ -92,7 +92,6 @@ public class PlayerController : MonoBehaviour
         // DataManager에서 런타임 데이터 가져오기
         if (DataManager.Instance != null)
         {
-            DataManager.Instance.LoadGame();
             RuntimeData = DataManager.Instance.GetGameData().PlayerData;
             
             transform.position = RuntimeData.LastPosition;
