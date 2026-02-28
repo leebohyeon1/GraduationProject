@@ -223,6 +223,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Disapose()
     {
+        _stateMachine?.Dispose();
+
         foreach(IDisposable disaposable in _disposableList)
         {
             disaposable.Dispose();

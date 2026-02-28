@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 기본 상태를 정의하는 클래스
 /// </summary>
-public abstract class PlayerBaseState : IState
+public abstract class PlayerBaseState : IState, IDisposable
 {
     /// <summary>
     /// 플레이어 애니메이터 상태 enum
@@ -227,5 +228,17 @@ public abstract class PlayerBaseState : IState
         p_owner.LockOn.ChangeLockOnTargetByGamePad(gamepadInput);
     }
     #endregion
+
+    // 객체가 완전히 파괴되거나 명시적으로 자원을 해제해야 할 때 호출
+    public void Dispose()
+    {
+        ClearEvents();
+        ClearStats();
+        ClearAnimator();
+
+        // 메모리 누수를 방지하기 위해 가비지 컬렉터에게 
+        // "이 객체의 소멸(Finalize) 처리는 안 해도 돼" 라고 알려줌
+        GC.SuppressFinalize(this);
+    }
 }
 
