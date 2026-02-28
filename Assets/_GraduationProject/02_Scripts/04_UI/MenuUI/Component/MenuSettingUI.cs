@@ -16,7 +16,7 @@ public class MenuSettingUI : MenuUIComponent
     public void OnQuitToTitle()
     {
         DataManager.Instance.SaveGame(); // 게임 저장
-        SceneManager.LoadScene("Title");
+        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
     }
 
     public void OnQuitToDesktop()
