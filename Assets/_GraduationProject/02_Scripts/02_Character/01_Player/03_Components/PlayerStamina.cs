@@ -43,6 +43,9 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     public void Dispose()
     {
         _events.RegenStamina -= OnRegenStamina;
+
+        _regenStaminaCoroutine = null;
+        OnStaminaChanged = null;
     }
 
     /// <summary>

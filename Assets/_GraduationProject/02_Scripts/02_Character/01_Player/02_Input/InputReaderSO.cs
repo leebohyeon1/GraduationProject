@@ -22,46 +22,48 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     // 상태가 바뀔 때 알림을 받고 싶다면 이벤트 추가
     public event Action<InputMode> InputModeChanged;
 
+    // Share Actions
+    public event Action EscapeEvent;
+
     // Player Actions
-    public event Action<Vector2> MoveEvent = delegate { };
-    public event Action<Vector2> MousePositionEvent = delegate { };
+    public event Action<Vector2> MoveEvent;
+    public event Action<Vector2> MousePositionEvent;
 
-    public event Action NormalAttackEvent = delegate { };
-    public event Action NormalAttackCancelEvent = delegate { };
-    public event Action NormalCounterEvent = delegate { };
-    public event Action NormalCounterInputEvent = delegate { };
-    public event Action NormalCounterInputCancelEvent = delegate { };    
-    public event Action ChargeStartEvent = delegate { };
-    public event Action ChargeCancelEvent = delegate { };
+    public event Action NormalAttackEvent;
+    public event Action NormalAttackCancelEvent;
+    public event Action NormalCounterEvent;
+    public event Action NormalCounterInputEvent;
+    public event Action NormalCounterInputCancelEvent;    
+    public event Action ChargeStartEvent;
+    public event Action ChargeCancelEvent;
 
-    public event Action DodgeEvent = delegate { };
-    public event Action ToggleLockOnEvent = delegate { };
-    public event Action LockOnTargetChangeForKeyboard = delegate { };
-    public event Action<Vector2> LockOnTargetChangeForGamepadEvent = delegate { };
+    public event Action DodgeEvent;
+    public event Action ToggleLockOnEvent;
+    public event Action LockOnTargetChangeForKeyboard;
+    public event Action<Vector2> LockOnTargetChangeForGamepadEvent;
 
-    public event Action InteractEvent = delegate { };
-    public event Action InteractHoldEvent = delegate { };
-    public event Action InteractCancelEvent = delegate { };
+    public event Action InteractEvent;
+    public event Action InteractHoldEvent;
+    public event Action InteractCancelEvent;
 
-    public event Action PotionEvent = delegate { };
-    public event Action EscapeEvent = delegate { }; 
+    public event Action PotionEvent;
 
     // UI Actions
-    public event Action CancelEvent = delegate { };
-    public event Action<Vector2> NavigateEvent = delegate { };
-    public event Action SubmitEvent = delegate { };
-    public event Action ClickEvent = delegate { };
-    public event Action<Vector2> PointEvent = delegate { };
-    public event Action RightClickEvent = delegate { };
-    public event Action MiddleClickEvent = delegate { };
-    public event Action<Vector2> ScrollWheelEvent = delegate { };
-    public event Action AnyKeyEvent = delegate { };
-    public event Action NextEvent = delegate { };
-    public event Action PreviousEvent = delegate { };
+    public event Action CancelEvent;
+    public event Action<Vector2> NavigateEvent;
+    public event Action SubmitEvent;
+    public event Action ClickEvent;
+    public event Action<Vector2> PointEvent;
+    public event Action RightClickEvent;
+    public event Action MiddleClickEvent;
+    public event Action<Vector2> ScrollWheelEvent;
+    public event Action AnyKeyEvent;
+    public event Action NextEvent;
+    public event Action PreviousEvent;
 
     // Developer Actions;
-    public event Action ToggleConsoleEvent = delegate { };  
-    public event Action EnterEvent = delegate { };
+    public event Action ToggleConsoleEvent;  
+    public event Action EnterEvent;
 
     private InputSystem_Actions _inputActions;
 
@@ -95,6 +97,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         _inputActions.Share.RemoveCallbacks(this);
 
         _inputActions = null;
+
+        // 모든 이벤트 구독 해제
+        ClearAllEvent();
     }
 
     /// <summary>
@@ -375,4 +380,57 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
+    /// <summary>
+    /// 모든 이벤트 구독을 강제로 해제합니다.
+    /// 플레이어 사망 시나 오브젝트 파괴 시 메모리 누수 방지를 위해 호출합니다.
+    /// </summary>
+    public void ClearAllEvent()
+    {
+        InputModeChanged = null;
+
+        // Share Actions
+        EscapeEvent = null;
+
+        // Player Actions
+        MoveEvent = null;
+        MousePositionEvent = null;
+
+        NormalAttackEvent = null;
+        NormalAttackCancelEvent = null;
+        NormalCounterEvent = null;
+        NormalCounterInputEvent = null;
+        NormalCounterInputCancelEvent = null;
+        ChargeStartEvent = null;
+        ChargeCancelEvent = null;
+
+        DodgeEvent = null;
+        ToggleLockOnEvent = null;
+        LockOnTargetChangeForKeyboard = null;
+        LockOnTargetChangeForGamepadEvent = null;
+
+        InteractEvent = null;
+        InteractHoldEvent = null;
+        InteractCancelEvent = null;
+
+        PotionEvent = null;
+
+        // UI Actions
+        CancelEvent = null;
+        NavigateEvent = null;
+        SubmitEvent = null;
+        ClickEvent = null;
+        PointEvent = null;
+        RightClickEvent = null;
+        MiddleClickEvent = null;
+        ScrollWheelEvent = null;
+        AnyKeyEvent = null;
+        NextEvent = null;
+        PreviousEvent = null;
+
+        // Developer Actions;
+        ToggleConsoleEvent = null;
+        EnterEvent = null;
+        
+        Debug.Log("InputReaderSO: 모든 이벤트가 성공적으로 초기화되었습니다.");
+    }
 }

@@ -27,6 +27,9 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     public void Dispose()
     {
         _inputReader.InteractEvent -= Interact;
+
+        Interacted = null;
+        InteractableChanged = null;
     }
 
     public void Interact()

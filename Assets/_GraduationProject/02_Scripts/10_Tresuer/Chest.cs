@@ -11,7 +11,6 @@ public class Chest : MonoBehaviour, IInteractable
     private bool _isInteracted = false;
     public UnityEvent OnInteracted;
 
-    [ReadOnly]
     [SerializeField] private string _chestID;
     public string ChestID => _chestID;
 

@@ -13,6 +13,7 @@ public class GameData
     public string LastSaveTime;
     public string StageName;
 
+    public string LastMainScene; 
     public PlayerData PlayerData;
 
     public List<string> GamePlayTagIdList = new List<string>();

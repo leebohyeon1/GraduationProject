@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SettingUI : MenuUIComponent
+public class MenuSettingUI : MenuUIComponent
 {
     public override void Initialize(MenuUI menu)
     {
@@ -15,11 +15,13 @@ public class SettingUI : MenuUIComponent
 
     public void OnQuitToTitle()
     {
-        SceneManager.LoadScene("Title");
+        DataManager.Instance.SaveGame(); // 게임 저장
+        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
     }
 
     public void OnQuitToDesktop()
     {
+        DataManager.Instance.SaveGame(); // 게임 저장
         Application.Quit();
     }
 

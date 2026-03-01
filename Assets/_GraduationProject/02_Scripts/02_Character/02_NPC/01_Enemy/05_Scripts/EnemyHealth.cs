@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using Packages.Rider.Editor.UnitTesting;
-using UnityEditor.Build.Pipeline;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {

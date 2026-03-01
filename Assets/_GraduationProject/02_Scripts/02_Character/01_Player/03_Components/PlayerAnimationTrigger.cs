@@ -1,8 +1,12 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// 애니메이션 이벤트와 피드백 재생을 관리하는 컴포넌트입니다.
+/// </summary>
 public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 {
     private PlayerController p_owner;
@@ -15,13 +19,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         p_owner = player;
 
-        p_owner.Events.CounterSucceeded += OnCounterSucceeded;
-        p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
-        p_owner.Health.TakeDamged += OnTakeDamaged;
+        if (p_owner.Events != null)
+        {
+            p_owner.Events.CounterSucceeded += OnCounterSucceeded;
+            p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
+            p_owner.Events.BeforeDamaged += OnBeforeDamaged;
+        }
 
-        p_owner.Events.BeforeDamaged += OnBeforeDamaged;
+        if (p_owner.Health != null)
+        {
+            p_owner.Health.TakeDamged += OnTakeDamaged;
+        }
 
-        // 이벤트 해제 구독
+        // 이벤트 해제 구독 등록
         player.RegisterDisposable(this);
     }
 
@@ -30,11 +40,22 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// </summary>
     public void Dispose()
     {
-        p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
-        p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
-        p_owner.Health.TakeDamged -= OnTakeDamaged;
+        if (p_owner != null && p_owner.Events != null)
+        {
+            p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
+            p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
+            p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
+        }
 
-        p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
+        if (p_owner != null && p_owner.Health != null)
+        {
+            p_owner.Health.TakeDamged -= OnTakeDamaged;
+        }
+
+        // 재생 중인 모든 피드백(DOTween) 중단
+        DOTween.Kill(this);
+        
+        Debug.Log("PlayerAnimationTrigger: 리소스가 성공적으로 해제되었습니다.");
     }
 
     //==========================================================================================================================
@@ -198,7 +219,10 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="level">달성한 레벨</param>
     private void OnChargeLevelCompleted(int level)
     {
-        ChargeLevelCompletedFeedbacks[level]?.Invoke();
+        if (ChargeLevelCompletedFeedbacks != null && level >= 0 && level < ChargeLevelCompletedFeedbacks.Count)
+        {
+            ChargeLevelCompletedFeedbacks[level]?.Invoke();
+        }
     }
 
     /// <summary>
@@ -207,7 +231,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="damage">데미지</param>
     private void OnTakeDamaged(int damage)
     {
-        if (p_owner.Ability.HasTag("Clash_IncreaseDamageReduction"))
+        if (p_owner != null && p_owner.Ability != null && p_owner.Ability.HasTag("Clash_IncreaseDamageReduction"))
         {
             ClashDodgeFeedback?.Invoke();
         }
@@ -223,7 +247,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="damageContext">받은 데미지 데이터</param>
     private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
     {
-        if(p_owner.Ability.HasTag("SuperArmor"))
+        if(p_owner != null && p_owner.Ability != null && p_owner.Ability.HasTag("SuperArmor"))
         {
             PlayFeedback("SuperArmor_Damage_FB");
         }

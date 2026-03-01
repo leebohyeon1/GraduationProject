@@ -15,7 +15,8 @@ public class DataManager : MonoBehaviour
     public List<GameData> DataList = new List<GameData>();
 
     private GameData _currentGameData = null;
-    
+    private int _currentSlotIndex = -1; // 핵심: 현재 플레이 중인 데이터의 리스트 인덱스를 기억
+
     [Header("Game Data Library")]
     [SerializeField] private PlayerDataSO _defaultPlayerDataSO;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
@@ -75,14 +76,23 @@ public class DataManager : MonoBehaviour
         }
         UpdatePlayerDataFromGame();
 
+        _currentGameData.LastMainScene = SceneLoadingManager.Instance.CurrentActiveChunkName;
         // 3. CurrentPlayer 데이터를 CurrentGameData에 덮어씌움 (동기화)
         _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // 저장 시간 갱신
 
-        // 4. 리스트가 비어있지 않은지 확인하고 래퍼 클래스로 감싸기
-        if (!DataList.Contains(_currentGameData))
+        // 수정된 핵심 로직: Contains 대신 인덱스를 통한 직접 덮어쓰기
+        if (_currentSlotIndex != -1 && _currentSlotIndex < DataList.Count)
         {
-            DataList.Add(_currentGameData);
+            // 기존 슬롯에 확실하게 덮어씌움
+            DataList[_currentSlotIndex] = _currentGameData;
         }
+        else
+        {
+            // 예외 처리: 인덱스가 -1이거나 범위를 벗어난 경우 (안전망)
+            DataList.Add(_currentGameData);
+            _currentSlotIndex = DataList.Count - 1;
+        }
+
         SaveDataContainer container = new SaveDataContainer(DataList);
 
         // 5. JSON 변환 및 저장
@@ -135,6 +145,7 @@ public class DataManager : MonoBehaviour
         if (index >= 0 && index < DataList.Count)
         {
             _currentGameData = DataList[index];
+            _currentSlotIndex = index; // 선택한 슬롯 번호 기억!
             Debug.Log($"{index}번 세이브 데이터를 불러왔습니다.");
         }
     }
@@ -146,11 +157,32 @@ public class DataManager : MonoBehaviour
     {
         _currentGameData = new GameData();
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
         DataList.Add(_currentGameData);
+        _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
 
         Debug.Log("새로운 게임 데이터를 생성했습니다.");
     }
+
+
+    /// <summary>
+    /// 새 게임 생성 로직
+    /// </summary>
+    public void CreateNewGame(int index)
+    {
+        _currentGameData = new GameData();
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
+
+        DataList[index] = _currentGameData;
+        _currentSlotIndex = index;
+
+        Debug.Log("새로운 게임 데이터를 생성했습니다.");
+    }
+
 
     //==========================================================================================================================
     // Player Data =============================================================================================================
@@ -167,7 +199,7 @@ public class DataManager : MonoBehaviour
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
         _currentGameData.PlayerData.LastPosition = player.transform.position;
-        _currentGameData.PlayerData.RespawnPostion = player.transform.position;
+        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         // 보유한 능력(Ability) 저장
         var abilityComp = player.Ability;
@@ -207,4 +239,10 @@ public class DataManager : MonoBehaviour
         return ability;
     }
 
+    public void ResetPlayer()
+    {
+        _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.MaxHealth;
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
+        _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.MaxPotion;
+    }
 }
