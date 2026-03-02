@@ -18,8 +18,10 @@ public class DataManager : MonoBehaviour
     private int _currentSlotIndex = -1; // 핵심: 현재 플레이 중인 데이터의 리스트 인덱스를 기억
 
     [Header("Game Data Library")]
-    [SerializeField] private PlayerDataSO _defaultPlayerDataSO;
+    [SerializeField] private PlayerDataSO _defaultPlayerData;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
+    [SerializeField] private QuestDatabaseSO _questDatabase;
+    [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
 
     private string _saveFileName = "AllSaveData.json"; // 파일 이름 변경
 
@@ -36,6 +38,18 @@ public class DataManager : MonoBehaviour
         }
 
         LoadGame();
+    }
+
+    private void OnDestroy()
+    {
+        if (GamePlayTagManager.Instance)
+        {
+            QuestManager.Instance.QuestCompleted -= OnQuestCompleted;
+        }
+        if (QuestManager.Instance)
+        {
+            GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;
+        }
     }
 
     /// <summary>
@@ -120,6 +134,7 @@ public class DataManager : MonoBehaviour
 
             // 3. 리스트 복원
             if (container != null && container.DataList != null)
+
             {
                 DataList = container.DataList;
             }
@@ -156,7 +171,7 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame()
     {
         _currentGameData = new GameData();
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
@@ -173,7 +188,7 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame(int index)
     {
         _currentGameData = new GameData();
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
@@ -244,5 +259,50 @@ public class DataManager : MonoBehaviour
         _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.MaxHealth;
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
         _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.MaxPotion;
+    }
+
+    //==========================================================================================================================
+    // Quest Data ==============================================================================================================
+    //==========================================================================================================================
+
+    public void InitQuestEvent()
+    {
+        if (GamePlayTagManager.Instance)
+        {
+            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
+        }
+    }
+
+    public QuestData GetQuestData(int id)
+    {
+        return _questDatabase.QuestList.Find((data) => data.ID == id);
+    }
+
+    private void OnQuestCompleted(QuestData questData)
+    {
+        _currentGameData.AddQuestID(questData.ID);
+    }
+
+    //==========================================================================================================================
+    // GamePlaytag Data ========================================================================================================
+    //==========================================================================================================================
+
+    public void InitGamePlayTagEvent()
+    {
+        if (QuestManager.Instance)
+        {
+            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
+        }
+
+    }
+
+    public GamePlayTagSO GetGamePlayTag(string id)
+    {
+        return _gamePlayTagDatabase.GamePlayTagList.Find((data) => data.ID == id);
+    }
+
+    private void OnUpdateTag(GamePlayTagSO tag)
+    {
+        _currentGameData.AddGamePlayTag(tag.ID);
     }
 }
