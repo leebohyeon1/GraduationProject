@@ -10,7 +10,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-999)]
 public class DataManager : MonoBehaviour
 {
-    public static DataManager Instance;
+    public static DataManager Instance { get; private set; }
 
     public List<GameData> DataList = new List<GameData>();
 

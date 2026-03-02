@@ -14,7 +14,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [Header("References")]
     private PlayerEvents _events;   // 플레이어 이벤트
     private PlayerData _data = null;
-    private Transform _attackPoint;
+    [SerializeField] private Transform _attackPoint;
 
     [SerializeField] private OnSwingMissSO _onSwingMiss;  // 공격 미스 이벤트
 
