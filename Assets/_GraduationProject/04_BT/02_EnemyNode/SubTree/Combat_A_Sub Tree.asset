@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaec6f0188a7f694a9e45640305480f4, type: 3}
   m_Name: Task_Rush To Fixed Location
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
-  position: {x: 1636, y: 965}
+  position: {x: 1634, y: 949}
   attackKey: Attack01_a
   animationStateName: 
   transitionBuffer: 1
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb68bd0f3413b94fb3b0d8053eebb4a, type: 3}
   m_Name: Condition_Is Animation Attack
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAnimationAttack
-  position: {x: 672, y: -108}
+  position: {x: 592, y: -75}
   exceptCondition:
     key: 
   tagstring: Attack
@@ -637,7 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 925, y: 1220}
+  position: {x: 922, y: 1181}
   Pos_Key: PressurePos
   MoveSpeed: 5
   StoppingDist: 1
@@ -685,7 +685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1630, y: 871}
+  position: {x: 1628, y: 877}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_LongAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 950, y: 436}
+  position: {x: 964, y: 436}
   nodes:
   - {fileID: -5794056097246212893}
   - {fileID: -4091383270736508263}
@@ -754,7 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector_CombatTactics(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 149, y: 46}
+  position: {x: 105, y: -4}
   nodes:
   - {fileID: 8463926354739292389}
   - {fileID: 8237416307744218084}
@@ -778,36 +778,6 @@ MonoBehaviour:
     key: DistanceToTarget
     Operator: 1
     value: 5
---- !u!114 &4489605913624550641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Normal
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1636, y: 1031}
-  attackKey: Attack01_a
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
 --- !u!114 &4640970959790474602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,7 +862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 672, y: -31}
+  position: {x: 587, y: -1}
   nodes:
   - {fileID: 1681072726047148729}
   - {fileID: -2165811004991647136}
@@ -1026,7 +996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: ATKSet
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 482, y: -31}
+  position: {x: 385, y: -2}
   nodes:
   - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
