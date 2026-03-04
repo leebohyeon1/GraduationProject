@@ -22,6 +22,7 @@ public class DataManager : MonoBehaviour
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
     [SerializeField] private QuestDatabaseSO _questDatabase;
     [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
+    [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
 
     private string _saveFileName = "AllSaveData.json"; // 파일 이름 변경
 
@@ -304,5 +305,15 @@ public class DataManager : MonoBehaviour
     private void OnUpdateTag(GamePlayTagSO tag)
     {
         _currentGameData.AddGamePlayTag(tag.ID);
+    }
+
+    //==========================================================================================================================
+    // Dialogue Data ========================================================================================================
+    //==========================================================================================================================
+
+    public List<DialogueDataSO> GetDialogueGroupData(int groupID)
+    {
+        // 그룹 아이디가 같으면 리턴
+        return _dialogueDatabase.DialogueList.FindAll((data)=>data.DialogueGroupID == groupID);
     }
 }

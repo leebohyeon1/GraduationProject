@@ -40,8 +40,8 @@ public class GameData
     //==========================================================================================================================
     // Chest Data ==============================================================================================================
     //==========================================================================================================================
-
     public HashSet<string> OpenedChestSet = new HashSet<string>();
+
     /// <summary>
     /// 열리 상자 추가
     /// </summary>
@@ -61,6 +61,20 @@ public class GameData
         return OpenedChestSet.Contains(chestId);
     }
 
+    //==========================================================================================================================
+    // Dialogue Data ==============================================================================================================
+    //==========================================================================================================================
+    public HashSet<int> CompleteDialogueSet = new HashSet<int>();
+
+    public void CompleteDialogue(int groupId)
+    {
+        CompleteDialogueSet.Add (groupId);
+    }
+
+    public bool IsCompleteDialogue(int groupId)
+    {
+        return CompleteDialogueSet.Contains(groupId);
+    }
 }
 
 [Serializable]
