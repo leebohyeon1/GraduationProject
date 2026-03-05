@@ -6,7 +6,7 @@ public class DialogueDataSO : ScriptableObject
 {
     public int DialogueGroupID;
     public int SequenceIndex;
-    public List<int> NeedDialogueIDList;
+    public List<GamePlayTagSO> NeedConditionList;
     public string SpeakerName;
     public string DialogueText;
 }

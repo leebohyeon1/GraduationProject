@@ -17,6 +17,10 @@ public class DataManager : MonoBehaviour
     private GameData _currentGameData = null;
     private int _currentSlotIndex = -1; // 핵심: 현재 플레이 중인 데이터의 리스트 인덱스를 기억
 
+    [Header("Development")]
+    [SerializeField] private bool _useDevelopment = false;
+    [SerializeField] private int _developementDataSlotIndex = 0;
+
     [Header("Game Data Library")]
     [SerializeField] private PlayerDataSO _defaultPlayerData;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
@@ -41,6 +45,11 @@ public class DataManager : MonoBehaviour
         LoadGame();
     }
 
+    private void Start()
+    {
+        SelectSaveData(0);
+    }
+
     private void OnDestroy()
     {
         if (GamePlayTagManager.Instance)
@@ -58,7 +67,11 @@ public class DataManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit()
     {
-        SaveGame();
+        if(_useDevelopment)
+        {
+            CreateNewGame(_developementDataSlotIndex);
+        }
+
     }
 
     /// <summary>

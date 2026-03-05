@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(int groupID)
     {
-        if (_currentDialogue.Count > 1)
+        if (_currentDialogue != null && _currentDialogue.Count > 1)
         {
             return;
         }

@@ -12,6 +12,8 @@ public class SceneLoadingManager : MonoBehaviour
 {
     // 어디서든 이 매니저를 부를 수 있게 싱글톤(Singleton)으로 만듭니다.
     public static SceneLoadingManager Instance;
+
+    [SerializeField] private bool _useInitialScene = true;
     [SerializeField] private string _initializeSceneName;
 
     [Header("Loading UI")]
@@ -67,7 +69,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     private void Start()
     {
-        if(_initializeSceneName == "")
+        if(_initializeSceneName == "" || !_useInitialScene)
         {
             return;
         }
