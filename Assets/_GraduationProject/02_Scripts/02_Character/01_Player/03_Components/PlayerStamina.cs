@@ -119,6 +119,11 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// <param name="canRegen">재생 여부</param>
     private void OnRegenStamina(bool canRegen)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
         if (canRegen)
         {
             if (_regenStaminaCoroutine == null)

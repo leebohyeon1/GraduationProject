@@ -17,9 +17,16 @@ public class DataManager : MonoBehaviour
     private GameData _currentGameData = null;
     private int _currentSlotIndex = -1; // 핵심: 현재 플레이 중인 데이터의 리스트 인덱스를 기억
 
+    [Header("Development")]
+    [SerializeField] private bool _useDevelopment = false;
+    [SerializeField] private int _developementDataSlotIndex = 0;
+
     [Header("Game Data Library")]
-    [SerializeField] private PlayerDataSO _defaultPlayerDataSO;
+    [SerializeField] private PlayerDataSO _defaultPlayerData;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
+    [SerializeField] private QuestDatabaseSO _questDatabase;
+    [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
+    [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
 
     private string _saveFileName = "AllSaveData.json"; // 파일 이름 변경
 
@@ -38,12 +45,33 @@ public class DataManager : MonoBehaviour
         LoadGame();
     }
 
+    private void Start()
+    {
+        SelectSaveData(0);
+    }
+
+    private void OnDestroy()
+    {
+        if (GamePlayTagManager.Instance)
+        {
+            QuestManager.Instance.QuestCompleted -= OnQuestCompleted;
+        }
+        if (QuestManager.Instance)
+        {
+            GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;
+        }
+    }
+
     /// <summary>
     /// 게임 종료 시점에 저장
     /// </summary>
     private void OnApplicationQuit()
     {
-        SaveGame();
+        if(_useDevelopment)
+        {
+            CreateNewGame(_developementDataSlotIndex);
+        }
+
     }
 
     /// <summary>
@@ -76,7 +104,7 @@ public class DataManager : MonoBehaviour
         }
         UpdatePlayerDataFromGame();
 
-        _currentGameData.LastMainScene = SceneLoadingManager.Instance.CurrentActiveChunkName;
+        // _currentGameData.LastMainScene = SceneLoadingManager.Instance.CurrentActiveChunkName;
         // 3. CurrentPlayer 데이터를 CurrentGameData에 덮어씌움 (동기화)
         _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // 저장 시간 갱신
 
@@ -120,6 +148,7 @@ public class DataManager : MonoBehaviour
 
             // 3. 리스트 복원
             if (container != null && container.DataList != null)
+
             {
                 DataList = container.DataList;
             }
@@ -156,7 +185,7 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame()
     {
         _currentGameData = new GameData();
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
@@ -173,7 +202,7 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame(int index)
     {
         _currentGameData = new GameData();
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerDataSO);
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
         _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
@@ -199,7 +228,6 @@ public class DataManager : MonoBehaviour
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
         _currentGameData.PlayerData.LastPosition = player.transform.position;
-        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         // 보유한 능력(Ability) 저장
         var abilityComp = player.Ability;
@@ -244,5 +272,60 @@ public class DataManager : MonoBehaviour
         _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.MaxHealth;
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
         _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.MaxPotion;
+    }
+
+    //==========================================================================================================================
+    // Quest Data ==============================================================================================================
+    //==========================================================================================================================
+
+    public void InitQuestEvent()
+    {
+        if (GamePlayTagManager.Instance)
+        {
+            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
+        }
+    }
+
+    public QuestData GetQuestData(int id)
+    {
+        return _questDatabase.QuestList.Find((data) => data.ID == id);
+    }
+
+    private void OnQuestCompleted(QuestData questData)
+    {
+        _currentGameData.AddQuestID(questData.ID);
+    }
+
+    //==========================================================================================================================
+    // GamePlaytag Data ========================================================================================================
+    //==========================================================================================================================
+
+    public void InitGamePlayTagEvent()
+    {
+        if (QuestManager.Instance)
+        {
+            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
+        }
+
+    }
+
+    public GamePlayTagSO GetGamePlayTag(string id)
+    {
+        return _gamePlayTagDatabase.GamePlayTagList.Find((data) => data.ID == id);
+    }
+
+    private void OnUpdateTag(GamePlayTagSO tag)
+    {
+        _currentGameData.AddGamePlayTag(tag.ID);
+    }
+
+    //==========================================================================================================================
+    // Dialogue Data ========================================================================================================
+    //==========================================================================================================================
+
+    public List<DialogueDataSO> GetDialogueGroupData(int groupID)
+    {
+        // 그룹 아이디가 같으면 리턴
+        return _dialogueDatabase.DialogueList.FindAll((data)=>data.DialogueGroupID == groupID);
     }
 }

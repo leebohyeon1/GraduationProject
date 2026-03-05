@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "SceneDatabase", menuName = "Project/Scene Database")]
+[CreateAssetMenu(fileName = "SceneDatabase", menuName = "Project/Database/Scene Database")]
 public class SceneDatabase : ScriptableObject
 {
     [Header("게임 내 모든 씬 데이터 모음")]
