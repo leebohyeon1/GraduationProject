@@ -179,7 +179,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
-        if(isBattleState)
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (isBattleState)
         {
             if(_battleStateStopCoroutine != null)
             {

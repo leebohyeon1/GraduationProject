@@ -154,14 +154,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            EscapeEvent.Invoke();
+            EscapeEvent?.Invoke();
         }
     }
 
     // Player Action Implementations
     public void OnMove(InputAction.CallbackContext context)
     {
-        MoveEvent.Invoke(context.ReadValue<Vector2>());
+        MoveEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnNormalAttack(InputAction.CallbackContext context)
@@ -169,10 +169,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                    NormalAttackEvent.Invoke();
+                    NormalAttackEvent?.Invoke();
                 break;
             case InputActionPhase.Canceled:
-                    NormalAttackCancelEvent.Invoke();
+                    NormalAttackCancelEvent?.Invoke();
                 break;
         }
     }
@@ -184,15 +184,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    ChargeStartEvent.Invoke();
+                    ChargeStartEvent?.Invoke();
                 }
                 else
                 {
-                    NormalCounterEvent.Invoke();
+                    NormalCounterEvent?.Invoke();
                 }
                 break;
             case InputActionPhase.Canceled:
-                ChargeCancelEvent.Invoke();
+                ChargeCancelEvent?.Invoke();
                 break;
         }
     }
@@ -202,17 +202,17 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                NormalCounterInputEvent.Invoke();
+                NormalCounterInputEvent?.Invoke();
                 break;
             case InputActionPhase.Canceled:
-                NormalCounterInputCancelEvent.Invoke();
+                NormalCounterInputCancelEvent?.Invoke();
                 break;
         }
     }
     public void OnMousePosition(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = context.ReadValue<Vector2>();
-        MousePositionEvent.Invoke(mousePosition);
+        MousePositionEvent?.Invoke(mousePosition);
     }
 
     public void OnInteract(InputAction.CallbackContext context)
@@ -222,15 +222,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    InteractHoldEvent.Invoke();
+                    InteractHoldEvent?.Invoke();
                 }
                 else
                 {
-                    InteractEvent.Invoke();
+                    InteractEvent?.Invoke();
                 }
                 break;
             case InputActionPhase.Canceled:
-                InteractCancelEvent.Invoke();
+                InteractCancelEvent?.Invoke();
                 break;
         }
     }
@@ -239,7 +239,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            DodgeEvent.Invoke();
+            DodgeEvent?.Invoke();
         }
     }
 
@@ -250,11 +250,11 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    ToggleLockOnEvent.Invoke();
+                    ToggleLockOnEvent?.Invoke();
                 }
                 else
                 {
-                    LockOnTargetChangeForKeyboard.Invoke();
+                    LockOnTargetChangeForKeyboard?.Invoke();
                 }
                 break;
         }
@@ -264,21 +264,21 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            ToggleLockOnEvent.Invoke();
+            ToggleLockOnEvent?.Invoke();
         }
     }
 
     public void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context)
     {
         Vector2 lockOnInput = context.ReadValue<Vector2>();
-        LockOnTargetChangeForGamepadEvent.Invoke(lockOnInput);
+        LockOnTargetChangeForGamepadEvent?.Invoke(lockOnInput);
     }
 
     public void OnPotion(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Performed)
         {
-            PotionEvent.Invoke();
+            PotionEvent?.Invoke();
         }
     }
 
@@ -288,7 +288,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            CancelEvent.Invoke();
+            CancelEvent?.Invoke();
         }
     }
 
@@ -296,7 +296,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            ClickEvent.Invoke();
+            ClickEvent?.Invoke();
         }
     }
 
@@ -304,38 +304,38 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            MiddleClickEvent.Invoke();
+            MiddleClickEvent?.Invoke();
         }
     }
 
     public void OnNavigate(InputAction.CallbackContext context)
     {
-        NavigateEvent.Invoke(context.ReadValue<Vector2>());
+        NavigateEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnPoint(InputAction.CallbackContext context)
     {
-        PointEvent.Invoke(context.ReadValue<Vector2>());
+        PointEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnRightClick(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            RightClickEvent.Invoke();
+            RightClickEvent?.Invoke();
         }
     }
 
     public void OnScrollWheel(InputAction.CallbackContext context)
     {
-        ScrollWheelEvent.Invoke(context.ReadValue<Vector2>());
+        ScrollWheelEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnSubmit(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            SubmitEvent.Invoke();
+            SubmitEvent?.Invoke();
         }
     }
 
@@ -343,7 +343,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            AnyKeyEvent.Invoke();
+            AnyKeyEvent?.Invoke();
         }
     }
 
@@ -351,7 +351,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            NextEvent.Invoke();
+            NextEvent?.Invoke();
         }
     }
 
@@ -359,7 +359,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            PreviousEvent.Invoke();
+            PreviousEvent?.Invoke();
         }
     }
 
@@ -368,7 +368,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if(context.phase == InputActionPhase.Performed)
         {
-            ToggleConsoleEvent.Invoke();
+            ToggleConsoleEvent?.Invoke();
         }
     }
 
@@ -376,7 +376,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            EnterEvent.Invoke();
+            EnterEvent?.Invoke();
         }
     }
 
