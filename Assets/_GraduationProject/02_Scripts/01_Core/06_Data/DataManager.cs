@@ -228,7 +228,6 @@ public class DataManager : MonoBehaviour
 
         // 위치 저장 (직접 연동되지 않으므로 복사 필요)
         _currentGameData.PlayerData.LastPosition = player.transform.position;
-        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
 
         // 보유한 능력(Ability) 저장
         var abilityComp = player.Ability;

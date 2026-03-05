@@ -28,13 +28,13 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
     {
         DataManager.Instance.ResetPlayer(); // 플레이어 데이터 초기화
         DataManager.Instance.SaveGame(); // 게임 저장
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);   
+        SceneLoadingManager.Instance.TeleportToSceneByName(DataManager.Instance.GetGameData().LastMainScene);
     }
 
     public void OnQuitButton()
     {
         DataManager.Instance.SaveGame(); // 게임 저장
-        SceneManager.LoadScene("Title");
+        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
     }
 
     public void OnEventTrigger(PlayerController player)
