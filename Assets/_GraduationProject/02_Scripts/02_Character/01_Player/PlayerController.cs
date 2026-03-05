@@ -80,6 +80,7 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         _health.OnDied -= Dispose;
+        Dispose();
     }
 
     #region Initialize

@@ -1,39 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ResourceManagement.Util;
-
-[Serializable]
-public class DialogueItem
-{
-    public List<GamePlayTagSO> Conditions;
-    public int DialogueGroupID;
-
-    public bool CheckCondition()
-    {
-        for(int i=0; i<Conditions.Count; i++)
-        {
-            if (!GamePlayTagManager.Instance.HasTag(Conditions[i]))
-            {
-                return false;
-            }
-        }
-
-        DialogueDataSO initialDialogue = DataManager.Instance.GetDialogueGroupData(DialogueGroupID)[0];
-
-        int id;
-        for(int i = 0; i < initialDialogue.NeedDialogueIDList.Count; i++)
-        {
-            id = initialDialogue.NeedDialogueIDList[i];
-            if (!DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(id))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-}
 
 public class DialogueObject : MonoBehaviour, IInteractable
 {
@@ -45,24 +11,33 @@ public class DialogueObject : MonoBehaviour, IInteractable
     [SerializeField] private InteractableType _interactableType;
     public InteractableType InteractableType => _interactableType;
 
-    [SerializeField] private DialogueItem _defaultDialogueData;
-    [SerializeField] private List<DialogueItem> _dialogueData;
+    [SerializeField] private List<int> _dialogueGroupIDList;
 
     public void Interact()
     {
-        for (int i = 0; i < _dialogueData.Count; i++)
+        for (int i = 0; i < _dialogueGroupIDList.Count; i++)
         {
-            if (_dialogueData[i].CheckCondition())
+            if (CheckConditions(_dialogueGroupIDList[i]))
             {
-                DialogueManager.Instance.StartDialogue(_dialogueData[i].DialogueGroupID);
+                DialogueManager.Instance.StartDialogue(_dialogueGroupIDList[i]);
                 return;
             }
         }
+    }
 
-        if (_defaultDialogueData != null)
+    private bool CheckConditions(int id)
+    {
+        DialogueDataSO initialDialogue = DataManager.Instance.GetDialogueGroupData(id)[0];
+
+        for (int i = 0; i < initialDialogue.NeedConditionList.Count; i++)
         {
-            DialogueManager.Instance.StartDialogue(_defaultDialogueData.DialogueGroupID);
+            if (!GamePlayTagManager.Instance.HasTag(initialDialogue.NeedConditionList[i]))
+            {
+                return false;
+            }
         }
+
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)

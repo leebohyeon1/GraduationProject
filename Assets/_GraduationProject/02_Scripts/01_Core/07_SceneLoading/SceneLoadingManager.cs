@@ -315,13 +315,17 @@ public class SceneLoadingManager : MonoBehaviour
         string chunkName = chunkData.SceneName;
 
         // 이미 거기가 활성 씬이면 무시
-        if (CurrentActiveChunkName == chunkName) return;
+        if (DataManager.Instance.GetGameData().LastMainScene == chunkName)
+        {
+            return;
+        }
 
         // 명부(로드된 씬 목록)에 해당 씬이 있는지 확인
         if (_loadedChunks.TryGetValue(chunkName, out var sceneInstance))
         {
+            Debug.Log(111);
             // 1. 세이브용 이름표 갱신
-            CurrentActiveChunkName = chunkName;
+            DataManager.Instance.GetGameData().LastMainScene = chunkName;
 
             // 2. 유니티 시스템상의 메인 씬(Active Scene) 교체! 
             // (이제 새로 생성되는 오브젝트나 조명 기준이 이 씬으로 바뀝니다)

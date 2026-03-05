@@ -6,7 +6,8 @@ using UnityEngine;
 public class QuestData 
 {
     public int ID;
-    public List<GamePlayTagSO> QuestConditionList;
+    public List<GamePlayTagSO> AcceptedConditionList;
+    public List<GamePlayTagSO> ClearConditionList;
 
     public int NextQuestID;
 
