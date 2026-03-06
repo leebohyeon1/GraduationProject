@@ -1,17 +1,26 @@
 using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Chest : MonoBehaviour, IInteractable
 {
     private PlayerController _playerController;
-    [SerializeField] private ChestRewardSO _rewardSO;
+    [SerializeField] private RewardSO _rewardSO;
     
     private bool _isInteracted = false;
+    public UnityEvent OnInteracted;
 
-    [ReadOnly]
     [SerializeField] private string _chestID;
     public string ChestID => _chestID;
+
+    [Space(20f)]
+    [SerializeField] private Transform _interactableUITransform;
+    [SerializeField] private InteractableType _interactableType;
+
+    public Transform InteractableUITransform => _interactableUITransform;
+
+    public InteractableType InteractableType => _interactableType;
 
     private void OnValidate()
     {
@@ -41,6 +50,7 @@ public class Chest : MonoBehaviour, IInteractable
         }
 
         _isInteracted = true;
+        OnInteracted?.Invoke();
 
         _playerController.Money.GiveMoney(_rewardSO.MoneyAmount);
         _playerController.Money.GiveSpecialMoney(_rewardSO.SpecialMoneyAmount);
@@ -77,10 +87,12 @@ public class Chest : MonoBehaviour, IInteractable
     {
         if (other.TryGetComponent<PlayerController>(out PlayerController controller) && controller == _playerController)
         {
-            if (_playerController.Interact != null && _playerController.Interact.Interactable.Equals(this))
+            if (_playerController.Interact != null && _playerController.Interact.Interactable == (IInteractable)this)
             {
                 _playerController.Interact.SetInteractable(null);
             }
+
+            _playerController = null;
         }
     }
 }

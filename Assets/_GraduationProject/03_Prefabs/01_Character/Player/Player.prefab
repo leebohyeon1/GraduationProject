@@ -550,6 +550,37 @@ Transform:
   - {fileID: 4164348558841275464}
   m_Father: {fileID: 6012957286172848}
   m_LocalEulerAnglesHint: {x: 0.000011023935, y: -0.0000033062631, z: 103.42395}
+--- !u!1 &1417240929101332026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6009268791749006495}
+  m_Layer: 7
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6009268791749006495
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417240929101332026}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8179803700943878997}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1634884810485794184
 GameObject:
   m_ObjectHideFlags: 0
@@ -3318,22 +3349,22 @@ MonoBehaviour:
   _highLigthEffect: {fileID: 5759366138450403199}
   _innerGlowSettings:
   - Intensity: 0
-    Width: 0
+    Width: 0.3
     Color: {r: 1, g: 1, b: 1, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
   - Intensity: 1
-    Width: 0
+    Width: 0.3
     Color: {r: 1, g: 1, b: 1, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
   - Intensity: 3
-    Width: 0
+    Width: 0.3
     Color: {r: 1, g: 0.38176286, b: 0, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
   - Intensity: 5
-    Width: 0
+    Width: 0.3
     Color: {r: 1, g: 0.13757904, b: 0, a: 0}
     InnerGlowBlendMode: 0
     InnerGlowVisibility: 0
@@ -5463,7 +5494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7580640099872699392}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.019323967, y: 0.048904713, z: -0.3739711, w: 0.92594844}
+  m_LocalRotation: {x: -0.01932397, y: 0.048904713, z: -0.37397113, w: 0.92594844}
   m_LocalPosition: {x: -0.1380133, y: -0.02187622, z: -0.000017461776}
   m_LocalScale: {x: 1, y: 0.99999994, z: 1.0000001}
   m_ConstrainProportionsScale: 0
@@ -6665,6 +6696,8 @@ GameObject:
   - component: {fileID: 1288170247013544486}
   - component: {fileID: 5405118734503481128}
   - component: {fileID: 2677758183589702779}
+  - component: {fileID: 228070264524569388}
+  - component: {fileID: 5888973127359902339}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -6682,8 +6715,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.242, y: 0.691, z: -16.381}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9125757547062017592}
   - {fileID: 5371502664780211747}
@@ -6697,6 +6730,7 @@ Transform:
   - {fileID: 9107812908145794620}
   - {fileID: 2903739540554013513}
   - {fileID: 8024968786887459805}
+  - {fileID: 6009268791749006495}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1890978879368711845
@@ -6771,6 +6805,7 @@ MonoBehaviour:
   _ability: {fileID: 7584183168185193458}
   _potion: {fileID: 1288170247013544486}
   _money: {fileID: 5405118734503481128}
+  _interact: {fileID: 7045531422154869315}
   playerSpawnedSO: {fileID: 11400000, guid: 707c6a44acbbe864f895da890194bf93, type: 2}
 --- !u!114 &2938692540566714052
 MonoBehaviour:
@@ -6977,6 +7012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a170f9b7ba6a19d4f9d07af853588ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::player.Refactor.PlayerCombat
+  _attackPoint: {fileID: 6009268791749006495}
   _onSwingMiss: {fileID: 11400000, guid: 02c8d327e4c408d4fbad8f7b755f1298, type: 2}
   _attackLayerMask:
     serializedVersion: 2
@@ -7015,6 +7051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81a725c12c0ae34caaf322fd9dd6bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveSystem
+  _invincibleSO: {fileID: 11400000, guid: 2f767799463b53a47a21173c11bb4e6b, type: 2}
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 768
@@ -7140,6 +7177,40 @@ MonoBehaviour:
   wallAvoidFalloff: 1
   priority: 0.5
   debug: 0
+--- !u!65 &228070264524569388
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406303703004210642}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.86, y: 0.31, z: 0.73}
+  m_Center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &5888973127359902339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8406303703004210642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c24f22c62be327488756bdf5c2badc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerZoneTracker
+  _primaryZoneId: -1
 --- !u!1 &8495929003467708938
 GameObject:
   m_ObjectHideFlags: 0
@@ -8147,6 +8218,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1698073784121294645, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3617381048456010094}
+    - targetCorrespondingSourceObject: {fileID: 1698073784121294645, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5537215537715007829}
   m_SourcePrefab: {fileID: 100100000, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
 --- !u!1 &501193691854809616 stripped
 GameObject:
@@ -8571,6 +8645,113 @@ MonoBehaviour:
     m_RotationOrder: 4
   RemapIntensityZero: 0
   RemapIntensityOne: 1
+--- !u!114 &5537215537715007829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501193691854809616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94df1ffae0c2c7d4ba695b68267eea10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.FeedbacksForThirdParty.MMVignetteShaker_URP
+  ChannelMode: 0
+  Channel: 0
+  MMChannelDefinition: {fileID: 0}
+  ShakeDuration: 0.2
+  PlayOnAwake: 0
+  PermanentShake: 0
+  Interruptible: 1
+  AlwaysResetTargetValuesAfterShake: 0
+  OnlyUseShakerValues: 0
+  CooldownBetweenShakes: 0
+  Shaking: 0
+  ForwardDirection: 1
+  TimescaleMode: 0
+  RelativeIntensity: 0
+  ShakeIntensity:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapIntensityZero: 0
+  RemapIntensityOne: 1
+  InterpolateColor: 0
+  ColorCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.05
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.95
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapColorZero: 0
+  RemapColorOne: 1
+  TargetColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &4437836588507332334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3238651909542390731, guid: 33b32ff60b53940458773efe5269c98a, type: 3}
@@ -10225,11 +10406,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[975093121267007913].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetWeaponInnerGlowEffect
+      value: SetInnerGlowEffect
       objectReference: {fileID: 0}
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[975093121267007913].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerWeapon, Assembly-CSharp
+      value: InnerGlowController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[975093121267007913].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -10658,7 +10839,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetWeaponInnerGlowEffect
+      value: SetInnerGlowEffect
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -10666,7 +10847,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerWeapon, Assembly-CSharp
+      value: InnerGlowController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -12083,11 +12264,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetWeaponInnerGlowEffect
+      value: SetInnerGlowEffect
       objectReference: {fileID: 0}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerWeapon, Assembly-CSharp
+      value: InnerGlowController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -13428,11 +13609,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[975093121267007912].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetWeaponInnerGlowEffect
+      value: SetInnerGlowEffect
       objectReference: {fileID: 0}
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[975093121267007912].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerWeapon, Assembly-CSharp
+      value: InnerGlowController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[975093121267007912].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -21499,15 +21680,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.b
-      value: 1
+      value: 0.008014846
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011583].TargetColor.r
-      value: 1
+      value: 0.8018868
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].OriginalLabel

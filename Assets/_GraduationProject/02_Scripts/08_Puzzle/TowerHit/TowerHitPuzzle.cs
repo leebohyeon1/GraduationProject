@@ -79,6 +79,7 @@ public class TowerHitPuzzle : MonoBehaviour
         foreach (var hitTower in _hitTowers)
         {
             hitTower.ResetTower();
+            hitTower.OnTowerReset?.Invoke();
         }
         _hitTowersCount = 0;
         _puzzleCoroutine = null;

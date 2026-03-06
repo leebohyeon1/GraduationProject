@@ -6,7 +6,8 @@ using System;
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
 [CreateAssetMenu(fileName = "InputReader", menuName = "Project/Input/Input Reader")]
-public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions
+public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, 
+    InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions, InputSystem_Actions.IShareActions
 {
     public enum InputMode
     {
@@ -21,44 +22,48 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     // 상태가 바뀔 때 알림을 받고 싶다면 이벤트 추가
     public event Action<InputMode> InputModeChanged;
 
+    // Share Actions
+    public event Action EscapeEvent;
+
     // Player Actions
-    public event Action<Vector2> MoveEvent = delegate { };
-    public event Action<Vector2> MousePositionEvent = delegate { };
+    public event Action<Vector2> MoveEvent;
+    public event Action<Vector2> MousePositionEvent;
 
-    public event Action NormalAttackEvent = delegate { };
-    public event Action NormalAttackCancelEvent = delegate { };
-    public event Action NormalCounterEvent = delegate { };
-    public event Action NormalCounterInputEvent = delegate { };
-    public event Action NormalCounterInputCancelEvent = delegate { };    
-    public event Action ChargeStartEvent = delegate { };
-    public event Action ChargeCancelEvent = delegate { };
+    public event Action NormalAttackEvent;
+    public event Action NormalAttackCancelEvent;
+    public event Action NormalCounterEvent;
+    public event Action NormalCounterInputEvent;
+    public event Action NormalCounterInputCancelEvent;    
+    public event Action ChargeStartEvent;
+    public event Action ChargeCancelEvent;
 
-    public event Action DodgeEvent = delegate { };
-    public event Action ToggleLockOnEvent = delegate { };
-    public event Action LockOnTargetChangeForKeyboard = delegate { };
-    public event Action<Vector2> LockOnTargetChangeForGamepadEvent = delegate { };
+    public event Action DodgeEvent;
+    public event Action ToggleLockOnEvent;
+    public event Action LockOnTargetChangeForKeyboard;
+    public event Action<Vector2> LockOnTargetChangeForGamepadEvent;
 
-    public event Action InteractEvent = delegate { };
-    public event Action InteractHoldEvent = delegate { };
-    public event Action InteractCancelEvent = delegate { };
+    public event Action InteractEvent;
+    public event Action InteractHoldEvent;
+    public event Action InteractCancelEvent;
 
-    public event Action PotionEvent = delegate { };
-    public event Action EscapeEvent = delegate { }; 
+    public event Action PotionEvent;
 
     // UI Actions
-    public event Action CancelEvent = delegate { };
-    public event Action<Vector2> NavigateEvent = delegate { };
-    public event Action SubmitEvent = delegate { };
-    public event Action ClickEvent = delegate { };
-    public event Action<Vector2> PointEvent = delegate { };
-    public event Action RightClickEvent = delegate { };
-    public event Action MiddleClickEvent = delegate { };
-    public event Action<Vector2> ScrollWheelEvent = delegate { };
-    public event Action AnyKeyEvent = delegate { };
+    public event Action CancelEvent;
+    public event Action<Vector2> NavigateEvent;
+    public event Action SubmitEvent;
+    public event Action ClickEvent;
+    public event Action<Vector2> PointEvent;
+    public event Action RightClickEvent;
+    public event Action MiddleClickEvent;
+    public event Action<Vector2> ScrollWheelEvent;
+    public event Action AnyKeyEvent;
+    public event Action NextEvent;
+    public event Action PreviousEvent;
 
     // Developer Actions;
-    public event Action ToggleConsoleEvent = delegate { };  
-    public event Action EnterEvent = delegate { };
+    public event Action ToggleConsoleEvent;  
+    public event Action EnterEvent;
 
     private InputSystem_Actions _inputActions;
 
@@ -71,7 +76,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             _inputActions.Player.SetCallbacks(this);
             _inputActions.UI.SetCallbacks(this);
             _inputActions.Developer.SetCallbacks(this);
+            _inputActions.Share.SetCallbacks(this);
         }
+
+        _inputActions.Share.Enable(); // 공용 입력은 항상 활성화
 
         SetInputMode(InputMode.None);
     }
@@ -79,15 +87,19 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     private void OnDisable()
     {
         // ScriptableObject가 비활성화되거나 게임이 종료될 때 정리
+        _inputActions.Share.Disable();
         DisableAllInput();
 
         // 이전에 말씀드린 안전한 해제 방식
         _inputActions.Player.RemoveCallbacks(this);
         _inputActions.UI.RemoveCallbacks(this);
         _inputActions.Developer.RemoveCallbacks(this);
+        _inputActions.Share.RemoveCallbacks(this);
 
-        _inputActions.Dispose();
         _inputActions = null;
+
+        // 모든 이벤트 구독 해제
+        ClearAllEvent();
     }
 
     /// <summary>
@@ -137,10 +149,19 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         // _inputActions.Developer.Disable(); 
     }
 
+
+    public void OnEscape(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            EscapeEvent?.Invoke();
+        }
+    }
+
     // Player Action Implementations
     public void OnMove(InputAction.CallbackContext context)
     {
-        MoveEvent.Invoke(context.ReadValue<Vector2>());
+        MoveEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnNormalAttack(InputAction.CallbackContext context)
@@ -148,10 +169,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                    NormalAttackEvent.Invoke();
+                    NormalAttackEvent?.Invoke();
                 break;
             case InputActionPhase.Canceled:
-                    NormalAttackCancelEvent.Invoke();
+                    NormalAttackCancelEvent?.Invoke();
                 break;
         }
     }
@@ -163,15 +184,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    ChargeStartEvent.Invoke();
+                    ChargeStartEvent?.Invoke();
                 }
                 else
                 {
-                    NormalCounterEvent.Invoke();
+                    NormalCounterEvent?.Invoke();
                 }
                 break;
             case InputActionPhase.Canceled:
-                ChargeCancelEvent.Invoke();
+                ChargeCancelEvent?.Invoke();
                 break;
         }
     }
@@ -181,17 +202,17 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                NormalCounterInputEvent.Invoke();
+                NormalCounterInputEvent?.Invoke();
                 break;
             case InputActionPhase.Canceled:
-                NormalCounterInputCancelEvent.Invoke();
+                NormalCounterInputCancelEvent?.Invoke();
                 break;
         }
     }
     public void OnMousePosition(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = context.ReadValue<Vector2>();
-        MousePositionEvent.Invoke(mousePosition);
+        MousePositionEvent?.Invoke(mousePosition);
     }
 
     public void OnInteract(InputAction.CallbackContext context)
@@ -201,15 +222,15 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    InteractHoldEvent.Invoke();
+                    InteractHoldEvent?.Invoke();
                 }
                 else
                 {
-                    InteractEvent.Invoke();
+                    InteractEvent?.Invoke();
                 }
                 break;
             case InputActionPhase.Canceled:
-                InteractCancelEvent.Invoke();
+                InteractCancelEvent?.Invoke();
                 break;
         }
     }
@@ -218,7 +239,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            DodgeEvent.Invoke();
+            DodgeEvent?.Invoke();
         }
     }
 
@@ -229,11 +250,11 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             case InputActionPhase.Performed:
                 if (context.interaction is HoldInteraction)
                 {
-                    ToggleLockOnEvent.Invoke();
+                    ToggleLockOnEvent?.Invoke();
                 }
                 else
                 {
-                    LockOnTargetChangeForKeyboard.Invoke();
+                    LockOnTargetChangeForKeyboard?.Invoke();
                 }
                 break;
         }
@@ -243,38 +264,31 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            ToggleLockOnEvent.Invoke();
+            ToggleLockOnEvent?.Invoke();
         }
     }
 
     public void OnLockOnTargetChangeForGamepad(InputAction.CallbackContext context)
     {
         Vector2 lockOnInput = context.ReadValue<Vector2>();
-        LockOnTargetChangeForGamepadEvent.Invoke(lockOnInput);
+        LockOnTargetChangeForGamepadEvent?.Invoke(lockOnInput);
     }
 
     public void OnPotion(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Performed)
         {
-            PotionEvent.Invoke();
+            PotionEvent?.Invoke();
         }
     }
 
-    public void OnEscape(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            EscapeEvent.Invoke();
-        }
-    }
 
     // UI Action Implementations
     public void OnCancel(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            CancelEvent.Invoke();
+            CancelEvent?.Invoke();
         }
     }
 
@@ -282,7 +296,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            ClickEvent.Invoke();
+            ClickEvent?.Invoke();
         }
     }
 
@@ -290,38 +304,38 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            MiddleClickEvent.Invoke();
+            MiddleClickEvent?.Invoke();
         }
     }
 
     public void OnNavigate(InputAction.CallbackContext context)
     {
-        NavigateEvent.Invoke(context.ReadValue<Vector2>());
+        NavigateEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnPoint(InputAction.CallbackContext context)
     {
-        PointEvent.Invoke(context.ReadValue<Vector2>());
+        PointEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnRightClick(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            RightClickEvent.Invoke();
+            RightClickEvent?.Invoke();
         }
     }
 
     public void OnScrollWheel(InputAction.CallbackContext context)
     {
-        ScrollWheelEvent.Invoke(context.ReadValue<Vector2>());
+        ScrollWheelEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnSubmit(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            SubmitEvent.Invoke();
+            SubmitEvent?.Invoke();
         }
     }
 
@@ -329,7 +343,23 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            AnyKeyEvent.Invoke();
+            AnyKeyEvent?.Invoke();
+        }
+    }
+
+    public void OnNext(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            NextEvent?.Invoke();
+        }
+    }
+
+    public void OnPrevious(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            PreviousEvent?.Invoke();
         }
     }
 
@@ -338,7 +368,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if(context.phase == InputActionPhase.Performed)
         {
-            ToggleConsoleEvent.Invoke();
+            ToggleConsoleEvent?.Invoke();
         }
     }
 
@@ -346,8 +376,61 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            EnterEvent.Invoke();
+            EnterEvent?.Invoke();
         }
     }
 
+    /// <summary>
+    /// 모든 이벤트 구독을 강제로 해제합니다.
+    /// 플레이어 사망 시나 오브젝트 파괴 시 메모리 누수 방지를 위해 호출합니다.
+    /// </summary>
+    public void ClearAllEvent()
+    {
+        InputModeChanged = null;
+
+        // Share Actions
+        EscapeEvent = null;
+
+        // Player Actions
+        MoveEvent = null;
+        MousePositionEvent = null;
+
+        NormalAttackEvent = null;
+        NormalAttackCancelEvent = null;
+        NormalCounterEvent = null;
+        NormalCounterInputEvent = null;
+        NormalCounterInputCancelEvent = null;
+        ChargeStartEvent = null;
+        ChargeCancelEvent = null;
+
+        DodgeEvent = null;
+        ToggleLockOnEvent = null;
+        LockOnTargetChangeForKeyboard = null;
+        LockOnTargetChangeForGamepadEvent = null;
+
+        InteractEvent = null;
+        InteractHoldEvent = null;
+        InteractCancelEvent = null;
+
+        PotionEvent = null;
+
+        // UI Actions
+        CancelEvent = null;
+        NavigateEvent = null;
+        SubmitEvent = null;
+        ClickEvent = null;
+        PointEvent = null;
+        RightClickEvent = null;
+        MiddleClickEvent = null;
+        ScrollWheelEvent = null;
+        AnyKeyEvent = null;
+        NextEvent = null;
+        PreviousEvent = null;
+
+        // Developer Actions;
+        ToggleConsoleEvent = null;
+        EnterEvent = null;
+        
+        Debug.Log("InputReaderSO: 모든 이벤트가 성공적으로 초기화되었습니다.");
+    }
 }

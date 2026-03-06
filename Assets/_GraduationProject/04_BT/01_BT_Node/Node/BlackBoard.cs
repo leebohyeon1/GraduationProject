@@ -74,6 +74,11 @@ public bool HasKey(EnemyBlackboardKeys key)
 {
     return HasKey(key.ToKey());  // string으로 변환해서 호출
 }
+/// <summary>Enum 키로 값 가져오기 (기본값 버전)</summary>
+public T GetValueOrDefault<T>(EnemyBlackboardKeys key, T defaultValue)
+{
+    return GetValueOrDefault<T>(key.ToKey(), defaultValue);
+}
 #endregion
 
     public void LogAllValues()

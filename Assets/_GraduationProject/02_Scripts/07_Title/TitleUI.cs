@@ -13,7 +13,10 @@ public class TitleUI : MonoBehaviour
         _titleManager.TitleStateChanged += OnTitleStateChanged;
 
         // 시작할 때 다 끄고 시작하거나 초기화
-        foreach (var view in _views) view.Hide();
+        foreach (var view in _views)
+        {
+            view.Hide();
+        }
     }
 
     private void OnDestroy()

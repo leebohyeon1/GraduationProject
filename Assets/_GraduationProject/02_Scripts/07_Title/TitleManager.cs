@@ -8,7 +8,8 @@ public enum TitleState
     None = -1,
     TitlePrompt = 0,
     MainMenu = 1,
-    SelectData = 2
+    SelectData = 2,
+    Setting = 3
 }
 
 /// <summary>
@@ -80,7 +81,6 @@ public class TitleManager : MonoBehaviour
         //}
     }
 
-
     /// <summary>
     /// 아무키나 입력했을 때 이벤트
     /// </summary>
@@ -92,6 +92,21 @@ public class TitleManager : MonoBehaviour
         }
         
     }
+
+    /// <summary>
+    /// 메인 메뉴로 가는 함수
+    /// </summary>
+    public void GotoManiMenu()
+    {
+        if (_currentState == TitleState.SelectData || _currentState == TitleState.Setting)
+        {
+            SetState(TitleState.MainMenu);
+        }
+    }
+
+    //====================================================================================================================
+    // Event Handler =====================================================================================================
+    //====================================================================================================================
 
     /// <summary>
     /// 새 게임 버튼 눌렀을 때 
@@ -123,6 +138,14 @@ public class TitleManager : MonoBehaviour
         if (_currentState == TitleState.MainMenu)
         {
             Application.Quit();
+        }
+    }
+
+    public void OnSettingButton()
+    {
+        if (_currentState == TitleState.MainMenu)
+        {
+            SetState(TitleState.Setting);
         }
     }
 }

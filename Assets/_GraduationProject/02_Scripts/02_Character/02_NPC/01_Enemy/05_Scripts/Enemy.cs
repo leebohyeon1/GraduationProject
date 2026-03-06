@@ -24,11 +24,9 @@ public class Enemy : MonoBehaviour
     public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
     public BillboardUI BillboardUI => GetComponentInChildren<BillboardUI>();
     public Transform LaunchPoint { get; set; }
-    //내부 컴포넌트
     internal EnemyStateController _stateController;
     internal EnemyAnimationBridge _animationBridge;
     public EnemyInitializer _initializer{get; private set;}
-    //데이터
     public PlayerController player =>  Data?.Player;
     public int CurrentStiffness
     {
@@ -83,6 +81,11 @@ public class Enemy : MonoBehaviour
     }
      public void AnimationEvent(string eventName)
     {
+        if (_stateController != null && _stateController.IsStateLocked && eventName != "Die")
+        {
+            return;
+        }
+
         Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
         _animationBridge?.TriggerEvent(eventName);
     }
@@ -91,6 +94,55 @@ public class Enemy : MonoBehaviour
         _animationBridge?.SetBool(boolName, value);
     }
 
+    [ContextMenu("Debug/Log Enemy Status")]
+    public void LogEnemyStatus()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine($"<color=yellow>=== Enemy Status Debug: {gameObject.name} ===</color>");
+        
+        sb.AppendLine($"[State] Current: {CurrentState}, Locked: {(_stateController != null ? _stateController.IsStateLocked.ToString() : "N/A")}");
+        sb.AppendLine($"[Anim] IsAttacking (Bridge): {(_animationBridge != null ? _animationBridge.IsAttacking.ToString() : "N/A")}");
+        
+        if (aIPath != null)
+        {
+            sb.AppendLine($"[AIPath] isStopped: {aIPath.isStopped}, canMove: {aIPath.canMove}, maxSpeed: {aIPath.maxSpeed}");
+            sb.AppendLine($"[AIPath] destination: {aIPath.destination}, hasPath: {aIPath.hasPath}, pathPending: {aIPath.pathPending}");
+        }
+        else
+        {
+            sb.AppendLine("[AIPath] Component Missing");
+        }
 
+        if (Movement != null)
+        {
+            sb.AppendLine($"[Movement] NormalSpeed: {Movement._normalSpeed}");
+        }
 
+        if (blackboard != null)
+        {
+            sb.AppendLine("[Blackboard] --- Important Keys ---");
+            string[] keysToLog = { "IsAttacking", "OnTakeHit", "IsPlayerDetected", "CurrentStatus" };
+            foreach (var key in keysToLog)
+            {
+                if (blackboard.HasKey(key))
+                {
+                    sb.AppendLine($" - {key}: {blackboard.GetValue<object>(key)}");
+                }
+            }
+        }
+
+        Debug.Log(sb.ToString());
+    }
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.collider.CompareTag("Player"))
+        {
+            // 플레이어와 충돌했을 때의 처리
+            Debug.Log($"[Enemy] {gameObject.name} collided with Player.");
+            // 예: 플레이어에게 피해를 주거나, 스턴을 적용하는 등의 로직을 여기에 추가
+            if(hit.point.y < transform.position.y)
+            {
+                
+            }
+        }
+    }
 }

@@ -20,6 +20,7 @@ public class SpawnHomingStrategy : EnemyUseAnything
     [Header("Settings")]
     public LayerMask obstacleMask;            
     public DamageData damageData;
+    public bool facePlayerOnUpdate = true;
 
     // Blackboard Key to keep track of the spawned missile
     private const string KEY_PROJECTILE_INSTANCE = "SpawnedHomingMissile";
@@ -91,9 +92,15 @@ public class SpawnHomingStrategy : EnemyUseAnything
 
         // 3. 발사체가 날아가는 동안 본체(Enemy)의 행동
         // 예: 계속 플레이어를 바라보며 서있기 (Channeling)
-        Vector3 dirToPlayer = (enemy.player.transform.position - enemy.transform.position).normalized;
-        dirToPlayer.y = 0;
-        enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, Quaternion.LookRotation(dirToPlayer), Time.deltaTime * 5f);
+        if (facePlayerOnUpdate)
+        {
+            Vector3 dirToPlayer = (enemy.player.transform.position - enemy.transform.position).normalized;
+            dirToPlayer.y = 0;
+            if (dirToPlayer != Vector3.zero)
+            {
+                enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, Quaternion.LookRotation(dirToPlayer), Time.deltaTime * 5f);
+            }
+        }
 
         // *주의* 여기서는 runner를 반환하여 계속 Running 상태를 유지해야 함. 
         // 외부 Task Node에서 이 함수가 계속 실행되도록 해야 합니다.

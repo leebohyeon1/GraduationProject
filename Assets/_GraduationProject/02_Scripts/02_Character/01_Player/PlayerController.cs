@@ -79,8 +79,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        // 객체 해제
-        Disapose();
+        _health.OnDied -= Dispose;
+        Dispose();
     }
 
     #region Initialize
@@ -92,7 +92,6 @@ public class PlayerController : MonoBehaviour
         // DataManager에서 런타임 데이터 가져오기
         if (DataManager.Instance != null)
         {
-            DataManager.Instance.LoadGame();
             RuntimeData = DataManager.Instance.GetGameData().PlayerData;
             
             transform.position = RuntimeData.LastPosition;
@@ -143,6 +142,7 @@ public class PlayerController : MonoBehaviour
         if (TryGetComponent<PlayerHealth>(out _health))
         {
             _health.Initialize(this);
+            _health.OnDied += Dispose; // 객체 해제
         }
 
         // PlayerMovement 초기화
@@ -222,13 +222,16 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 객체 폐기
     /// </summary>
-    private void Disapose()
+    private void Dispose()
     {
+        _stateMachine?.Dispose();
+
         foreach(IDisposable disaposable in _disposableList)
         {
             disaposable.Dispose();
         }
 
+        _events.ClearAllEvents();
         _disposableList.Clear();
     }
 
@@ -247,5 +250,4 @@ public class PlayerController : MonoBehaviour
         _disposableList.Add(disposable);
     }
     #endregion
-
 }

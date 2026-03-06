@@ -7,7 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GamePlayTagSO", menuName = "Project/Tag/GamePlayTag")]
 public class GamePlayTagSO : ScriptableObject 
 {
-    public string Id;
+    public string ID;
 
     public virtual void Apply(PlayerController player)
     {

@@ -20,6 +20,7 @@ public class Condition_CheckCoolTime : ConditionNode
         {
             skillName = attackData.AttackName;
             cooldownDuration = attackData.Cooltime;
+            // Debug.Log($"[Condition_CheckCoolTime] Checking cooldown for skill: {skillName} with duration: {cooldownDuration}");
             return brain.IsSkillReady(skillName, cooldownDuration);
         }
         if (string.IsNullOrEmpty(skillName))

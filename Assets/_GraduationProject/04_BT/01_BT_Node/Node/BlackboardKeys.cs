@@ -62,6 +62,10 @@ public enum EnemyBlackboardKeys
     
     /// <summary>자신의 GameObject (GameObject)</summary>
     Self,
+    /// <summary>
+    /// 플레이어 발견 Discover 전
+    /// </summary>
+    Engage,
     
     #endregion
     
@@ -83,7 +87,8 @@ public enum EnemyBlackboardKeys
     
     /// <summary>전투 시작 여부 (bool)</summary>
     IsPlayerDetected,
-    
+    /// <summary>현재 공격 페이즈 (int)</summary>
+    Phase,
     #endregion
 }
 public static class EnemyBlackboardKeysExtensions
