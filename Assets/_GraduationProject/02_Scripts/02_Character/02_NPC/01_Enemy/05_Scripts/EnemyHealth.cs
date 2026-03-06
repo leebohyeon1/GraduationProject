@@ -249,7 +249,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         curHealth -= finalDamage;
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
-        _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
 
         
