@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class Chest : MonoBehaviour, IInteractable
 {
     private PlayerController _playerController;
-    [SerializeField] private ChestRewardSO _rewardSO;
+    [SerializeField] private RewardSO _rewardSO;
     
     private bool _isInteracted = false;
     public UnityEvent OnInteracted;

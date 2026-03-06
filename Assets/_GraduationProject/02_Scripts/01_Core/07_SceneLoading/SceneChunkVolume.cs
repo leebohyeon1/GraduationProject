@@ -13,6 +13,8 @@ public class SceneChunkVolume : MonoBehaviour
             return;
         }
 
+        Debug.Log("메인 씬 업데이트");
+
         // 플레이어가 이 구역 안으로 깊숙이 들어왔다면!
         if (other.TryGetComponent<PlayerController>(out var component))
         {
