@@ -157,25 +157,12 @@ public class EnemyInitializer : MonoBehaviour
 
         InitializeStateController();
         InitializeAnimationSystem();
-        InitializeBillboardUI();
         InitializeParrySystem(skipCache);
         InitializeHealthSystem(skipCache);
         InitializeStiffnessSystem(skipCache);
         InitializeSpecialAbility(skipCache);
         MarkInitialized("Components");
         Log("Phase 3 complete");
-    }
-
-    private void InitializeBillboardUI()
-    {
-        var billboardUI = GetComponentInChildren<BillboardUI>();
-        if (billboardUI == null)
-        {
-            Debug.LogError("BillboardUI component is missing.");
-            return;
-        }
-        billboardUI.Initialize();
-        Log("Initialized BillboardUI");
     }
 
     private void InitializeStateController()

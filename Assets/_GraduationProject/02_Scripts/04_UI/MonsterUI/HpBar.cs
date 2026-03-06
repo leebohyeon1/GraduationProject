@@ -4,22 +4,27 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
-    [Header("UI Components")]
-    [SerializeField] private Image _hpBarFront;
-    [SerializeField] private Image _hpBarBack;
+    [Header("3D Components")]
+    [SerializeField] private Renderer _renderer; // ì²´ë ¥ë°” Quadì˜ MeshRenderer
 
     [Header("Target Object")]
     [SerializeField] private GameObject _object;
-    [SerializeField] private Vector3 _followOffset;
+    [SerializeField] private Vector3 _followOffset = new Vector3(0, 2f, 0); // ë¨¸ë¦¬ ìœ„ë¡œ ë„ìš¸ ì˜¤í”„ì…‹
 
-    private Camera _mainCamera;
-    private RectTransform _transform;
     private IDamageable _damageable;
+    private MaterialPropertyBlock _propBlock;
+
+    // ì…°ì´ë” í”„ë¡œí¼í‹° ID ìºì‹±
+    private int _frontFillId = Shader.PropertyToID("_FrontFill");
+    private int _backFillId = Shader.PropertyToID("_BackFill");
+
+    // DOTweenì„ ìœ„í•œ í˜„ì¬ ì”ìƒ ê°’ ì €ì¥ìš© ë³€ìˆ˜
+    private float _currentBackFill = 1f;
 
     private void Start()
     {
-        _mainCamera = Camera.main;
-        _transform = GetComponent<RectTransform>();
+        if (_renderer == null) _renderer = GetComponent<Renderer>();
+        _propBlock = new MaterialPropertyBlock();
 
         if (_object != null)
         {
@@ -28,17 +33,22 @@ public class HpBar : MonoBehaviour
             {
                 _damageable.OnHealthChanged += ChangeHpBar;
 
-                // ÃÊ±âÈ­
+                // ì´ˆê¸°í™”
                 float initialRatio = (float)_damageable.CurrentHealth / _damageable.MaxHealth;
-                _hpBarFront.fillAmount = initialRatio;
-                _hpBarBack.fillAmount = initialRatio;
+                _currentBackFill = initialRatio;
+
+                _renderer.GetPropertyBlock(_propBlock);
+                _propBlock.SetFloat(_frontFillId, initialRatio);
+                _propBlock.SetFloat(_backFillId, initialRatio);
+                _renderer.SetPropertyBlock(_propBlock);
             }
         }
+
+        transform.SetParent(null);
     }
 
     private void LateUpdate()
     {
-        // ¾ÈÀüÀåÄ¡: ¸ó½ºÅÍ(_object)°¡ ÀÌ¹Ì ÆÄ±«µÇ¾î »ç¶óÁ³´Ù¸é, HP¹Ùµµ Áï½Ã ÆÄ±«
         if (_object == null)
         {
             Destroy(gameObject);
@@ -55,39 +65,44 @@ public class HpBar : MonoBehaviour
             _damageable.OnHealthChanged -= ChangeHpBar;
         }
 
-        // DOTween ¾ÈÀüÇÏ°Ô Á¾·á (¿ÀºêÁ§Æ® ÆÄ±« ½Ã Æ®À©ÀÌ µ¹°í ÀÖÀ¸¸é ¿¡·¯°¡ ³¯ ¼ö ÀÖÀ½)
-        DOTween.Kill(_hpBarFront);
-        DOTween.Kill(_hpBarBack);
+        // DOTween ì¢…ë£Œ (IDë¥¼ í™œìš©í•˜ì—¬ ì´ ê°ì²´ì— ê±¸ë¦° íŠ¸ìœˆë§Œ ì•ˆì „í•˜ê²Œ ì¢…ë£Œ)
+        DOTween.Kill(this);
     }
 
     private void ChangeHpBar(int previousHp, int currentHp)
     {
         float targetFill = (float)currentHp / _damageable.MaxHealth;
 
-        // 1. ¾ÕÂÊ °ÔÀÌÁö (Áï½Ã ¹İ¿µ)
-        _hpBarFront.fillAmount = targetFill;
+        _renderer.GetPropertyBlock(_propBlock);
 
-        // 2. µÚÂÊ °ÔÀÌÁö (ÀÜ»ó È¿°ú)
-        DOTween.Kill(_hpBarBack);
-        DOTween.To(() => _hpBarBack.fillAmount,
-                    x => _hpBarBack.fillAmount = x,
-                    targetFill,
-                    0.5f)
-                    .SetDelay(0.1f)
-                    .SetEase(Ease.OutCubic);
+        // 1. ì•ìª½ ê²Œì´ì§€ (ì¦‰ì‹œ ë°˜ì˜)
+        _propBlock.SetFloat(_frontFillId, targetFill);
+        _renderer.SetPropertyBlock(_propBlock);
 
-        // 3. »ç¸Á Ã³¸®: HP°¡ 0 ÀÌÇÏ¶ó¸é UI ÆÄ±«
+        // 2. ë’¤ìª½ ê²Œì´ì§€ (ì”ìƒ íš¨ê³¼ - MaterialPropertyBlock ê°’ì„ Tween)
+        DOTween.Kill(this);
+        DOTween.To(() => _currentBackFill, x =>
+        {
+            _currentBackFill = x;
+            _renderer.GetPropertyBlock(_propBlock);
+            _propBlock.SetFloat(_backFillId, _currentBackFill);
+            _renderer.SetPropertyBlock(_propBlock);
+        }, targetFill, 0.5f)
+        .SetDelay(0.1f)
+        .SetEase(Ease.OutCubic)
+        .SetId(this); // íŠ¸ìœˆ ID ì„¤ì •
+
+        // 3. ì‚¬ë§ ì²˜ë¦¬
         if (currentHp <= 0)
         {
-            // ¹Ù·Î »ç¶óÁö¸é 0ÀÌ µÇ´Â ¸ğ½ÀÀÌ ¾È º¸ÀÌ¹Ç·Î, 
-            // ÀÜ»ó ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£(0.1s ´ë±â + 0.5s ÀÌµ¿ = 0.6s)¸¸Å­ ±â´Ù·È´Ù°¡ ÆÄ±«
             Destroy(gameObject, 0.6f);
         }
     }
 
     private void FollowObject()
     {
-        Vector3 screenPos = _mainCamera.WorldToScreenPoint(_object.transform.position) + _followOffset;
-        _transform.position = screenPos;
+        // UIê°€ ì•„ë‹ˆë¯€ë¡œ WorldToScreenPointê°€ í•„ìš” ì—†ìŠµë‹ˆë‹¤.
+        // íƒ€ê²Ÿì˜ ì›”ë“œ ì¢Œí‘œ + ì˜¤í”„ì…‹ ìœ„ì¹˜ë¡œ ë°”ë¡œ ì´ë™ì‹œí‚µë‹ˆë‹¤.
+        transform.position = _object.transform.position + _followOffset;
     }
 }

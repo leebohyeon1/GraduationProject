@@ -4,31 +4,19 @@ using UnityEngine.UI;
 
 public class BillboardUI : MonoBehaviour
 {
-    new Camera camera;
-    Slider slider;
-    void Start()
+    private Camera _mainCamera;
+
+    private void Start()
     {
-        camera = Camera.main;
-        
+        _mainCamera = Camera.main;
     }
-    public void Initialize()
-    {
-        slider = GetComponentInChildren<Slider>();
-        slider.value = 1f;
-    }
-    public void SetHealthBar(int MaxValue, int CurrentValue)
-    {
-        if (slider == null)
-        {
-            Debug.Log("slider없음");
-            return;
-        }
-        float ratio = (float)CurrentValue / MaxValue;
-        Debug.Log($"SliderValue: {slider.value}, ratio: {ratio}, currentvalue: {CurrentValue}");
-        slider.value = Mathf.Clamp01(ratio);
-    }
+
     private void LateUpdate()
     {
-        transform.rotation = camera.transform.rotation;
+        if (_mainCamera == null) return;
+
+        // 체력바가 카메라와 완전히 평행하게(정면으로) 보이게 합니다.
+        // Quad는 기본적으로 뒤집혀 보일 수 있으므로 forward를 카메라와 동일하게 맞춥니다.
+        transform.forward = _mainCamera.transform.forward;
     }
 }
