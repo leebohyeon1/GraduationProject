@@ -102,6 +102,9 @@ namespace INab.Dissolve
                 FindMaterialsInChildren();
             }
 
+            materials.RemoveAll(mat => mat == null);
+            materialsInverted.RemoveAll(mat => mat == null);
+
             updateValues = true;
 
             if (initialState == DissolveState.Dissolved)
@@ -257,6 +260,11 @@ namespace INab.Dissolve
         /// <param name="dissolveAmount"></param>
         private void ChangeDissolveAmount(Material material, float dissolveAmount)
         {
+            if (material == null)
+            {
+                return;
+            }
+
             // Change material value
             material.SetFloat("_DissolveAmount", dissolveAmount);
 

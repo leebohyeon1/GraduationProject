@@ -25,6 +25,7 @@ public class DataManager : MonoBehaviour
     [SerializeField] private PlayerDataSO _defaultPlayerData;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
     [SerializeField] private QuestDatabaseSO _questDatabase;
+    public QuestDatabaseSO QuestDatabase => _questDatabase;
     [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
     [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
 
@@ -72,7 +73,6 @@ public class DataManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit()
     {
-        // 멈춘 상태면 저장
         SaveGame();
     }
 
@@ -282,10 +282,11 @@ public class DataManager : MonoBehaviour
 
     public void InitQuestEvent()
     {
-        if (GamePlayTagManager.Instance)
+        if (QuestManager.Instance)
         {
-            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
+            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
         }
+
     }
 
     public QuestData GetQuestData(int id)
@@ -304,11 +305,10 @@ public class DataManager : MonoBehaviour
 
     public void InitGamePlayTagEvent()
     {
-        if (QuestManager.Instance)
+        if (GamePlayTagManager.Instance)
         {
-            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
+            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
         }
-
     }
 
     public GamePlayTagSO GetGamePlayTag(string id)
