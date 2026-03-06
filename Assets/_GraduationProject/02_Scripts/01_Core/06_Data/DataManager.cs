@@ -43,11 +43,16 @@ public class DataManager : MonoBehaviour
         }
 
         LoadGame();
+
+
     }
 
     private void Start()
     {
-        SelectSaveData(0);
+        if (_useDevelopment)
+        {
+            CreateNewGame(_developementDataSlotIndex);
+        }
     }
 
     private void OnDestroy()
@@ -67,11 +72,8 @@ public class DataManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit()
     {
-        if(_useDevelopment)
-        {
-            CreateNewGame(_developementDataSlotIndex);
-        }
-
+        // 멈춘 상태면 저장
+        SaveGame();
     }
 
     /// <summary>
