@@ -31,7 +31,7 @@ public class SceneLoadingManager : MonoBehaviour
     private Dictionary<string, SceneInstance> _loadedChunks = new Dictionary<string, SceneInstance>();
 
     // 중복 로딩 방지용 플래그
-    private bool isTeleporting = false;
+    public bool IsTeleporting { get; private set; } = false;
     public string CurrentActiveChunkName { get; private set; } = "";
 
     private void Awake()
@@ -100,7 +100,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     public void TeleportToScene(SceneDataSO targetScene)
     {
-        if (isTeleporting)
+        if (IsTeleporting)
         {
             return;
         }
@@ -110,7 +110,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     private IEnumerator TeleportCoroutine(SceneDataSO targetScene)
     {
-        isTeleporting = true;
+        IsTeleporting = true;
 
         // 1. UI 세팅 및 페이드 인 (화면 까맣게)
         if (_tipText != null)
@@ -209,12 +209,12 @@ public class SceneLoadingManager : MonoBehaviour
         _loadingCanvasGroup.alpha = 0f;
         _loadingCanvasGroup.blocksRaycasts = false;
 
-        isTeleporting = false;
+        IsTeleporting = false;
     }
 
     private IEnumerator InitialTeleport(SceneDataSO targetScene)
     {
-        isTeleporting = true;
+        IsTeleporting = true;
 
         // 2. 기존에 로드된 모든 씬 언로드 (메모리 비우기)
         List<AsyncOperationHandle> unloadOps = new List<AsyncOperationHandle>();
@@ -264,7 +264,7 @@ public class SceneLoadingManager : MonoBehaviour
         }
         // ==========================================================
 
-        isTeleporting = false;
+        IsTeleporting = false;
     }
 
     // =================================================================

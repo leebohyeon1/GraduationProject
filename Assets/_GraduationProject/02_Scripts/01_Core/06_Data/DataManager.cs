@@ -50,10 +50,12 @@ public class DataManager : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_EDITOR
         if (_useDevelopment)
         {
             CreateNewGame(_developementDataSlotIndex);
         }
+#endif
     }
 
     private void OnDestroy()
@@ -83,7 +85,7 @@ public class DataManager : MonoBehaviour
     private void OnApplicationPause(bool pause)
     {
         // 멈춘 상태면 저장
-        if (pause)
+        if (pause  && SceneLoadingManager.Instance.IsTeleporting)
         {
             SaveGame();
         }
