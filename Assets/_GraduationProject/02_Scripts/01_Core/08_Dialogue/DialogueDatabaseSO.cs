@@ -4,5 +4,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DialogueDatabaseSO", menuName = "Project/Database/DialogueDatabaseSO")]
 public class DialogueDatabaseSO : ScriptableObject
 {
-    public List<DialogueDataSO> DialogueList;
+    public List<DialogueDataSO> DialogueDataList;
 }

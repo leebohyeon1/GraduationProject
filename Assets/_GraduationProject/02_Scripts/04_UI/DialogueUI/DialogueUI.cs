@@ -28,7 +28,7 @@ public class DialogueUI : MonoBehaviour
         _panel.SetActive(true);
     }
 
-    private void OnDialogueUpdated(DialogueDataSO data)
+    private void OnDialogueUpdated(DialogueDataSO.DialogueData data)
     {
         _speackerNameText.text = data.SpeakerName;
         _dialogueText.text = data.DialogueText;
