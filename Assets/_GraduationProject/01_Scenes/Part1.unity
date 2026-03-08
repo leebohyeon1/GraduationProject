@@ -76052,7 +76052,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea96fd53f5ed2e6458c9dc0ac99b5e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIInputHandler
-  _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
 --- !u!114 &357507205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76065,8 +76064,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc7f2c685170a48acee2e28929010c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  _input: {fileID: 357507204}
-  _onOpenPopUp: {fileID: 0}
 --- !u!4 &357507206
 Transform:
   m_ObjectHideFlags: 0
@@ -93811,7 +93808,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3978082bd673cbf40be2ef722f94753d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
-  _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
 --- !u!4 &451961830
 Transform:
   m_ObjectHideFlags: 0
@@ -298392,77 +298388,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6570698250352059484, guid: a88e30c52305fa0499c78d9438785093, type: 3}
   m_PrefabInstance: {fileID: 1460694733}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1460718062
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1460718065}
-  - component: {fileID: 1460718064}
-  - component: {fileID: 1460718066}
-  m_Layer: 0
-  m_Name: PP Volume LocalCave - Summer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1460718064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1460718062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 0
-  priority: 1
-  blendDistance: 7
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: c43aba9db28b34c4cb8b4795d46d5ec5, type: 2}
---- !u!4 &1460718065
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1460718062}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.30260482, z: -0, w: 0.9531161}
-  m_LocalPosition: {x: -13.36, y: 0.59, z: -64.47}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 35.228, z: 0}
---- !u!65 &1460718066
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1460718062}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 1
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 12.79, y: 4.8, z: 26.81}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1461044744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -306086,7 +306011,7 @@ GameObject:
   - component: {fileID: 1511261813}
   - component: {fileID: 1511261812}
   m_Layer: 0
-  m_Name: PP Volume - Summer
+  m_Name: Volume_Part1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -306108,7 +306033,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: fcd0090c7365e1045a58befab74000de, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 695bd24e1cd3c0f46b747552da76b7fb, type: 2}
 --- !u!4 &1511261811
 Transform:
   m_ObjectHideFlags: 0
@@ -408357,8 +408282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f394297281dacb748a5f147d940ba9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HpBar
-  _hpBarSlider: {fileID: 1478995233}
-  _stiffnessBarSlider: {fileID: 0}
+  _hpBarFront: {fileID: 0}
+  _hpBarBack: {fileID: 0}
   _object: {fileID: 0}
   _followOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &2019447597
@@ -432334,7 +432259,6 @@ SceneRoots:
   - {fileID: 1057069854}
   - {fileID: 258875021}
   - {fileID: 1511261811}
-  - {fileID: 1460718065}
   - {fileID: 683666483}
   - {fileID: 267758097}
   - {fileID: 668770016}
