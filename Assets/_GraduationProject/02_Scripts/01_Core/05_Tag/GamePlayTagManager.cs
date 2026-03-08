@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [DefaultExecutionOrder(-998)]
@@ -7,7 +8,7 @@ public class GamePlayTagManager : MonoBehaviour
 {
     public static GamePlayTagManager Instance { get; private set; }
 
-    [SerializeField] private List<GamePlayTagSO> _activeTagList = new List<GamePlayTagSO>();
+    [SerializeField] private HashSet<GamePlayTagSO> _activeTagList = new HashSet<GamePlayTagSO>();
     public event Action<GamePlayTagSO> UpdateTag;
 
     private void Awake()
@@ -48,8 +49,11 @@ public class GamePlayTagManager : MonoBehaviour
     /// <param name="tag">추가할 태그</param>
     public void AddTag(GamePlayTagSO tag)
     {
-        _activeTagList.Add(tag);
-        UpdateTag?.Invoke(tag);
+        if(!_activeTagList.Contains(tag))
+        {
+            _activeTagList.Add(tag);
+            UpdateTag?.Invoke(tag);
+        }
     }
 
     /// <summary>
@@ -93,6 +97,6 @@ public class GamePlayTagManager : MonoBehaviour
 
     public GamePlayTagSO GetTag(string id)
     {
-        return _activeTagList.Find((tag) => tag.ID == id);
+        return _activeTagList.FirstOrDefault((tag)=>tag.ID == id);
     }
 }

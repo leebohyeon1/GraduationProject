@@ -25,6 +25,7 @@ public class DataManager : MonoBehaviour
     [SerializeField] private PlayerDataSO _defaultPlayerData;
     [SerializeField] private AbilityDatabaseSO _abilityDatabase; // 스크립터블 오브젝트 기반 데이터베이스
     [SerializeField] private QuestDatabaseSO _questDatabase;
+    public QuestDatabaseSO QuestDatabase => _questDatabase;
     [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
     [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
 
@@ -43,11 +44,18 @@ public class DataManager : MonoBehaviour
         }
 
         LoadGame();
+
+
     }
 
     private void Start()
     {
-        SelectSaveData(0);
+#if UNITY_EDITOR
+        if (_useDevelopment)
+        {
+            CreateNewGame(_developementDataSlotIndex);
+        }
+#endif
     }
 
     private void OnDestroy()
@@ -67,11 +75,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit()
     {
-        if(_useDevelopment)
-        {
-            CreateNewGame(_developementDataSlotIndex);
-        }
-
+        SaveGame();
     }
 
     /// <summary>
@@ -81,7 +85,7 @@ public class DataManager : MonoBehaviour
     private void OnApplicationPause(bool pause)
     {
         // 멈춘 상태면 저장
-        if (pause)
+        if (pause  && SceneLoadingManager.Instance.IsTeleporting)
         {
             SaveGame();
         }
@@ -280,10 +284,11 @@ public class DataManager : MonoBehaviour
 
     public void InitQuestEvent()
     {
-        if (GamePlayTagManager.Instance)
+        if (QuestManager.Instance)
         {
-            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
+            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
         }
+
     }
 
     public QuestData GetQuestData(int id)
@@ -302,11 +307,10 @@ public class DataManager : MonoBehaviour
 
     public void InitGamePlayTagEvent()
     {
-        if (QuestManager.Instance)
+        if (GamePlayTagManager.Instance)
         {
-            QuestManager.Instance.QuestCompleted += OnQuestCompleted;
+            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
         }
-
     }
 
     public GamePlayTagSO GetGamePlayTag(string id)

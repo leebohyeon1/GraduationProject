@@ -21,11 +21,13 @@ public class QuestManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
 
     private void Start()
     {
         DataManager.Instance.InitQuestEvent();
+        GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
 
         // 데이터베이스에서 저장된 데이터 불러오기
         if (DataManager.Instance.GetGameData().CurrentQuestId != -1)
@@ -37,6 +39,11 @@ public class QuestManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        if (GamePlayTagManager.Instance != null)
+        {
+            GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;
+        }
+
         QuestAccepted = null;
         QuestCompleted = null;
     }
@@ -63,5 +70,35 @@ public class QuestManager : MonoBehaviour
         }
         
     }
+
+
+    private void OnUpdateTag(GamePlayTagSO sO)
+    {
+        HashSet<string> tagSet = DataManager.Instance.GetGameData().GamePlayTagIdSet;
+        QuestDatabaseSO questDatabase = DataManager.Instance.QuestDatabase;
+
+
+        bool canAccepted = true;
+        foreach (QuestData quest in questDatabase.QuestList)
+        {
+            canAccepted = true;
+            foreach (var needTag in quest.AcceptedConditionList)
+            {
+                if (!tagSet.Contains(needTag.ID))
+                {
+                    canAccepted = false; 
+                    break;
+                }
+            }
+            
+            // 수락 가능한 상태면 수락
+            if(canAccepted)
+            {
+                AccpetedQuest(quest);
+                break;
+            }
+        }
+    }
+
 
 }

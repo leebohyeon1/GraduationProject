@@ -91,6 +91,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void Dispose()
     {
         _characterController.enabled = false;   // 캐릭터 컨트롤러 비활성화
+        DOTween.Kill(this);
 
         Dragged = null;
     }
