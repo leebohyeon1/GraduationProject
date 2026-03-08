@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
 
-public class PlayerPotion : MonoBehaviour
+public class PlayerPotion : MonoBehaviour, IDisposable
 {
     private PlayerEvents _events;
     private PlayerData _data;
+    private InputReaderSO _inputReader;
 
     public event Action<int> OnPotionChange;
 
@@ -16,6 +17,9 @@ public class PlayerPotion : MonoBehaviour
     {
         _events = player.Events;
         _data = player.RuntimeData;
+        _inputReader = player.InputReader;
+
+        _inputReader.PotionEvent += OnPotionEvent;
 
         // _potionHealAmount = player.Data.PotionHealAmount;
         if (_data != null && _data.PotionHealAmount == 0)
@@ -28,6 +32,16 @@ public class PlayerPotion : MonoBehaviour
         {
             OnPotionChange?.Invoke(_data.CurrentPotion);
         }
+
+        // 리소스 해제 등록
+        player.RegisterDisposable(this);
+    }
+
+    public void Dispose()
+    {
+        _inputReader.PotionEvent -= OnPotionEvent;
+
+        OnPotionChange = null;
     }
 
     /// <summary>
@@ -39,6 +53,8 @@ public class PlayerPotion : MonoBehaviour
         {
             return;
         }
+
+        Debug.Log("포션 사용");
 
         _data.CurrentPotion--;
         OnPotionChange?.Invoke(_data.CurrentPotion);
@@ -72,4 +88,10 @@ public class PlayerPotion : MonoBehaviour
 
         _data.MaxPotion += amount;
     }
+
+    private void OnPotionEvent()
+    {
+        UsePotion();
+    }
+
 }

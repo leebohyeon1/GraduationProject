@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using Packages.Rider.Editor.UnitTesting;
-using UnityEditor.Build.Pipeline;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
@@ -252,7 +249,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         curHealth -= finalDamage;
 
         OnHealthChanged?.Invoke(previousHealth, curHealth);
-        _owner.BillboardUI?.SetHealthBar(_maxHealth, curHealth);
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
 
         

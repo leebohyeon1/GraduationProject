@@ -256,4 +256,48 @@ public class PlayerEvents
     #endregion
 
     #endregion
+
+    /// <summary>
+    /// 모든 이벤트를 초기화하여 구독을 해제합니다.
+    /// 플레이어 사망 시 메모리 누수 방지를 위해 호출합니다.
+    /// </summary>
+    public void ClearAllEvents()
+    {
+        // Dodge
+        DodgeStarted = null;
+        DodgeFinished = null;
+
+        // BufferInput
+        BufferInputStarted = null;
+        BufferInputEnded = null;
+
+        // Attack
+        AttackStarted = null;
+        AttackPerformed = null;
+        AttackFinished = null;
+        OnlyChargeAttackSucceded = null;
+        AttackRegained = null;
+        ChangeNextCombatState = null;
+
+        // Charge
+        ChargeStarted = null;
+        ChargeFinished = null;
+        ChargeLevelCompleted = null;
+
+        // Counter
+        CounterWindowStarted = null;
+        CounterWindowFinished = null;
+        CounterSucceeded = null;
+
+        // Health & Damage
+        Heal = null;
+        BeforeDamaged = null;
+        Damaged = null;
+        Knockdown = null;
+
+        // Stamina
+        RegenStamina = null;
+
+        Debug.Log("PlayerEvents: 모든 플레이어 이벤트가 초기화되었습니다.");
+    }
 }

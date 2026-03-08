@@ -1452,13 +1452,14 @@ GameObject:
   - component: {fileID: 6261093762620871676}
   - component: {fileID: 5601303095162705356}
   - component: {fileID: 4228628360497356300}
+  - component: {fileID: 8017400538187907934}
   m_Layer: 5
   m_Name: QuestUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1733311877509088036
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1527,10 +1528,25 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3444621889079549901}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &8017400538187907934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3444621889079549901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d2bde90266634d4b82a8c4c2d4fa69b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerQuestUI
+  _questCanvas: {fileID: 4228628360497356300}
+  _questName: {fileID: 6274924821439921246}
+  _questDiscriptionSummary: {fileID: 7006649955736399284}
 --- !u!1 &3655619797699849684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,7 +1732,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 20, y: 0}
-  m_SizeDelta: {x: 43, y: 43}
+  m_SizeDelta: {x: 49, y: 49}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7173757091985444780
 CanvasRenderer:
@@ -1746,7 +1762,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 65f79e701c389064c93db937ba8ccd87, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2949614641f82c74b9ddf9b325ccbd1c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2225,7 +2241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -42.9}
+  m_AnchoredPosition: {x: 40, y: -42.899902}
   m_SizeDelta: {x: 59, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3974969291904145478
@@ -3842,6 +3858,7 @@ MonoBehaviour:
   - {fileID: 670968996169054298}
   - {fileID: 3622618141053599692}
   - {fileID: 8984637427672339167}
+  - {fileID: 8017400538187907934}
 --- !u!1 &8807667988598536421
 GameObject:
   m_ObjectHideFlags: 0
@@ -3881,7 +3898,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 40.9}
+  m_AnchoredPosition: {x: 0, y: 40.899902}
   m_SizeDelta: {x: 261, y: 75}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &9122073437153242067

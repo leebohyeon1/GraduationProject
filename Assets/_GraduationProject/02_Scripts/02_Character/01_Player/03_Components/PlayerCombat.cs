@@ -13,43 +13,44 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 {
     [Header("References")]
     private PlayerEvents _events;   // 플레이어 이벤트
-    private PlayerData _runtimeData;
+    private PlayerData _data = null;
+    [SerializeField] private Transform _attackPoint;
 
     [SerializeField] private OnSwingMissSO _onSwingMiss;  // 공격 미스 이벤트
 
     [Header("Attack")]
     [SerializeField] private LayerMask _attackLayerMask;
     // 공격 회복 비율
-    public float AttackRegainRate => _runtimeData != null ? _runtimeData.AttackRegainRate : 0f;
+    public float AttackRegainRate => _data != null ? _data.AttackRegainRate : 0f;
     // 공격력 배율
-    public float AttackDamageMultiplier => _runtimeData != null ? _runtimeData.AttackDamageMultiplier : 0f;
+    public float AttackDamageMultiplier => _data != null ? _data.AttackDamageMultiplier : 0f;
 
     [Header("NormalAttack")]
     [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
     // 최대 공속 속도 배율
-    public float MaxNormalAttackSpeedMultiplier => _runtimeData != null ? _runtimeData.MaxNormalAttackSpeedMultiplier : 1.0f;
+    public float MaxNormalAttackSpeedMultiplier => _data != null ? _data.MaxNormalAttackSpeedMultiplier : 1.0f;
     // 추가 공속 속도 배율
-    public float PlusNormalAttackSpeedMultiplier => _runtimeData != null ? _runtimeData.PlusNormalAttackSpeedMultiplier : 0f;
+    public float PlusNormalAttackSpeedMultiplier => _data != null ? _data.PlusNormalAttackSpeedMultiplier : 0f;
     // 일반 공격 리스트
-    public List<PlayerAttackConfig> NormalAttackConfigList => _runtimeData != null ? _runtimeData.NormalAttackConfigList : new List<PlayerAttackConfig>();
+    public List<PlayerAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttackConfigList : new List<PlayerAttackConfig>();
 
     [Header("Charge")]
     // 차지 스테미나
-    public float ChargeStamina => _runtimeData != null ? _runtimeData.ChargeStamina : 5f;
+    public float ChargeStamina => _data != null ? _data.ChargeStamina : 5f;
     // 최대 차지 시간
-    public float MaxChargeTime => _runtimeData != null ? _runtimeData.MaxChargeTime : 5f;
+    public float MaxChargeTime => _data != null ? _data.MaxChargeTime : 5f;
 
     [SerializeField] private int _chargeLevel = -1;      // 차지 레벨
     public int ChargeLevel => _chargeLevel;
 
     [Header("Counter")]
-    public PlayerAttackConfig NormalCounterAttackConfig => _runtimeData.NormalCounterAttackConfig;
-    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _runtimeData.HeavyCounterAttackConfigList;
-    public List<float> ProjectileCounterAddedVelocity => _runtimeData.ProjectileCounterAddedVelocity;
+    public PlayerAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttackConfig;
+    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _data.HeavyCounterAttackConfigList;
+    public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
 
-    public float CounterAngle => _runtimeData != null ? _runtimeData.CounterAngle : 120;   // 상쇄 가능 각도
+    public float CounterAngle => _data != null ? _data.CounterAngle : 120;   // 상쇄 가능 각도
 
     [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
     [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
@@ -80,7 +81,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void Initialize(PlayerController player)
     {
-        _runtimeData = player.RuntimeData;
+        _data = player.RuntimeData;
         _events = player.Events;
 
         _events.CounterWindowStarted += OnCounterWindowStarted;
@@ -94,10 +95,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         InitializeData(player.Data);
 
         // 데이터 초기화 (런타임 데이터가 비어있을 경우 SO에서 가져옴)
-        if (_runtimeData != null)
+        if (_data != null)
         {
-            if (_runtimeData.MaxNormalAttackSpeedMultiplier == 0)
-                _runtimeData.MaxNormalAttackSpeedMultiplier = player.Data.MaxNormalAttackSpeedMultiplier;
+            if (_data.MaxNormalAttackSpeedMultiplier == 0)
+                _data.MaxNormalAttackSpeedMultiplier = player.Data.MaxNormalAttackSpeedMultiplier;
         }
     }
 
@@ -110,6 +111,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.CounterWindowFinished -= OnCounterWindowFinished;
 
         _events.BeforeDamaged -= OnBeforeDamaged;
+
+        if(_battleStateStopCoroutine != null)
+        {
+            StopCoroutine(_battleStateStopCoroutine);
+            _battleStateStopCoroutine = null;
+        }
+
+        BattleStateChaged = null;
     }
 
     /// <summary>
@@ -120,32 +129,32 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _attackLayerMask = data.AttackLayerMask;
 
-        if (_runtimeData != null)
+        if (_data != null)
         {
-            if (_runtimeData.ChargeStamina == 0) { _runtimeData.ChargeStamina = data.ChargeStamina; }
-            if (_runtimeData.MaxChargeTime == 0) {_runtimeData.MaxChargeTime = data.MaxChargeTime;}
-            if (_runtimeData.CounterAngle == 0) { _runtimeData.CounterAngle = data.CounterAngle; }
+            if (_data.ChargeStamina == 0) { _data.ChargeStamina = data.ChargeStamina; }
+            if (_data.MaxChargeTime == 0) {_data.MaxChargeTime = data.MaxChargeTime;}
+            if (_data.CounterAngle == 0) { _data.CounterAngle = data.CounterAngle; }
 
             // Sync Configs
-            if (_runtimeData.NormalAttackConfigList.Count == 0)
+            if (_data.NormalAttackConfigList.Count == 0)
             {
-                _runtimeData.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
+                _data.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
             }
 
-            if (_runtimeData.HeavyCounterAttackConfigList.Count == 0)
+            if (_data.HeavyCounterAttackConfigList.Count == 0)
             {
-                _runtimeData.HeavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);
+                _data.HeavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);
             }
 
             // Check if default (assuming damage 0 is invalid/uninitialized)
-            if (_runtimeData.NormalCounterAttackConfig.AttackDamage == 0)
+            if (_data.NormalCounterAttackConfig.AttackDamage == 0)
             {
-                _runtimeData.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
+                _data.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
             }
 
-            if (_runtimeData.ProjectileCounterAddedVelocity.Count == 0)
+            if (_data.ProjectileCounterAddedVelocity.Count == 0)
             {
-                _runtimeData.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
+                _data.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
             }
         }
     }
@@ -170,7 +179,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
-        if(isBattleState)
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (isBattleState)
         {
             if(_battleStateStopCoroutine != null)
             {
@@ -210,7 +224,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <returns>공격 박스의 중심 위치</returns>
     public Vector3 GetAttackCenter(PlayerAttackConfig attackData)
     {
-        return transform.position + transform.forward * (attackData.AttackRadius.z / 2);
+        return _attackPoint.position + _attackPoint.forward * (attackData.AttackRadius.z / 2);
     }
 
     /// <summary>
@@ -294,7 +308,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">증가량</param>
     public void IncreaseAttackRegainRate(float amount)
     {
-        _runtimeData.AttackRegainRate += amount;
+        _data.AttackRegainRate += amount;
     }
 
     /// <summary>
@@ -303,7 +317,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">감소량</param>
     public void DecreaseAttackRegainRate(float amount)
     {
-        _runtimeData.AttackRegainRate = Mathf.Max(_runtimeData.AttackRegainRate - amount, 0);
+        _data.AttackRegainRate = Mathf.Max(_data.AttackRegainRate - amount, 0);
     }
 
     /// <summary>
@@ -312,7 +326,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">증가 배율</param>
     public void IncreaseAttackDamageMultiplier(float amount)
     {
-        _runtimeData.AttackDamageMultiplier += amount;
+        _data.AttackDamageMultiplier += amount;
     }
 
     /// <summary>
@@ -321,7 +335,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">감소 배울</param>
     public void DecreaseAttackDamageMultiplier(float amount)
     {
-        _runtimeData.AttackDamageMultiplier -= amount;
+        _data.AttackDamageMultiplier -= amount;
     }
     #endregion
 
@@ -362,7 +376,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="rate">증가 배율</param>
     public void IncreaseNormalAttackSpeedMultiplier(float rate)
     {
-        _runtimeData.PlusNormalAttackSpeedMultiplier = Mathf.Min(_runtimeData.PlusNormalAttackSpeedMultiplier + rate, MaxNormalAttackSpeedMultiplier);
+        _data.PlusNormalAttackSpeedMultiplier = Mathf.Min(_data.PlusNormalAttackSpeedMultiplier + rate, MaxNormalAttackSpeedMultiplier);
     }
 
     /// <summary>
@@ -371,7 +385,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="rate">감소 배율</param>
     public void DecreaseNormalAttackSpeedMultiplier(float rate)
     {
-        _runtimeData.PlusNormalAttackSpeedMultiplier = Mathf.Max(_runtimeData.PlusNormalAttackSpeedMultiplier - rate, 0);
+        _data.PlusNormalAttackSpeedMultiplier = Mathf.Max(_data.PlusNormalAttackSpeedMultiplier - rate, 0);
     } 
     #endregion
 
@@ -464,9 +478,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public void SetSpecialAttackSO(CanSpecialAttackSO specialAttackSO)
     {
         _specialAttackSO = specialAttackSO;
-        if (_runtimeData != null && specialAttackSO != null)
+        if (_data != null && specialAttackSO != null)
         {
-             _runtimeData.CurrentSpecialAttackId = specialAttackSO.Id;
+             _data.CurrentSpecialAttackId = specialAttackSO.Id;
         }
     }
 
@@ -476,9 +490,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public void ClearSpecialAttackSO()
     {
         _specialAttackSO = null;
-        if (_runtimeData != null)
+        if (_data != null)
         {
-            _runtimeData.CurrentSpecialAttackId = "";
+            _data.CurrentSpecialAttackId = "";
         }
     }
 
@@ -535,5 +549,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         }
 
         damageContext.Data = damageData;
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_data != null)
+        {
+            foreach (var attackData in _data.NormalAttackConfigList)
+            {
+                Gizmos.DrawWireCube(GetAttackCenter(attackData), attackData.AttackRadius);
+            }
+        }
     }
 }

@@ -47,6 +47,11 @@ public class PlayerLockOn : MonoBehaviour
         LockOff();
     }
 
+    private void OnDestroy()
+    {
+        LockOnEvent = null;
+    }
+
     /// <summary>
     /// 락온
     /// </summary>

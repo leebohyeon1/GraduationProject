@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 플레이어 돈 시스템
 /// </summary>
-public class PlayerMoney : MonoBehaviour
+public class PlayerMoney : MonoBehaviour, IDisposable
 {
     private PlayerEvents _events;
     private PlayerData _data;
@@ -20,6 +20,14 @@ public class PlayerMoney : MonoBehaviour
     {
         _events = player.Events;
         _data = player.RuntimeData;
+
+        player.RegisterDisposable(this);
+    }
+
+    public void Dispose()
+    {
+        MoneyChanged = null;
+        SpecialMoneyChanged = null;
     }
 
     /// <summary>
@@ -92,4 +100,5 @@ public class PlayerMoney : MonoBehaviour
         _data.SpecialMoney += amount;
         SpecialMoneyChanged?.Invoke(_data.SpecialMoney);
     }
+
 }

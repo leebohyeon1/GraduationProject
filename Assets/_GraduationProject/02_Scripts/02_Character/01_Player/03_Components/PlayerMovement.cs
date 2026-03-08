@@ -90,6 +90,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     public void Dispose()
     {
+        _characterController.enabled = false;   // 캐릭터 컨트롤러 비활성화
+        DOTween.Kill(this);
+
+        Dragged = null;
     }
 
     /// <summary>
@@ -100,10 +104,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     {
         if (_runtimeData != null)
         {
-            if (_runtimeData.MoveSpeed == 0) _runtimeData.MoveSpeed = data.MoveSpeed;
-            if (_runtimeData.RotateSpeed == 0) _runtimeData.RotateSpeed = data.RotateSpeed;
-            if (_runtimeData.ChargeMoveSpeed == 0) _runtimeData.ChargeMoveSpeed = data.ChargeMoveSpeed;
-            if (_runtimeData.ChargeRotateSpeed == 0) _runtimeData.ChargeRotateSpeed = data.ChargeRotateSpeed;
+            if (_runtimeData.MoveSpeed == 0) { _runtimeData.MoveSpeed = data.MoveSpeed;}
+            if (_runtimeData.RotateSpeed == 0) { _runtimeData.RotateSpeed = data.RotateSpeed;}
+            if (_runtimeData.ChargeMoveSpeed == 0) { _runtimeData.ChargeMoveSpeed = data.ChargeMoveSpeed;}
+            if (_runtimeData.ChargeRotateSpeed == 0) { _runtimeData.ChargeRotateSpeed = data.ChargeRotateSpeed;}
             
             // DodgeConfig Deep Copy
             if (_runtimeData.DodgeConfig != null && string.IsNullOrEmpty(_runtimeData.DodgeConfig.AnimationStateName))

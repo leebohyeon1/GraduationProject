@@ -7,7 +7,7 @@ using UnityEngine;
 /// 스테이트 머신
 /// </summary>
 /// <typeparam name="T">스테이트 머신 주인</typeparam>
-public class StateMachine<T>
+public class StateMachine<T> : IDisposable
 {
     private T _context;
 
@@ -61,7 +61,7 @@ public class StateMachine<T>
         if(CurrentState != null)
         {
             _currentState?.OnExit();
-            _previousState = _states[CurrentState.GetType()];
+            _previousState = _currentState;
         }
 
         _currentState = _states[stateType];
@@ -72,5 +72,20 @@ public class StateMachine<T>
     public T GetContext()
     {
         return _context;
+    }
+
+    public void Dispose()
+    {
+       foreach(var state in _states.Values)
+       {
+           if(state is IDisposable disposableState)
+           {
+               disposableState.Dispose();
+           }
+       }
+
+        _states.Clear();
+        _currentState = null;
+        _previousState = null;
     }
 }

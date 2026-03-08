@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 496, y: 198}
-  attackKey: Boss_R_Attack_Start
+  position: {x: 496, y: 201}
+  attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
@@ -81,8 +81,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 403, y: 45}
-  attackKey: Boss_R_Attack_Start
+  position: {x: 399, y: 44}
+  attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
@@ -102,72 +102,6 @@ MonoBehaviour:
   stopDistance: 1
   speed: 6
   maxTriggerRange: 15
---- !u!114 &-2634650766323204150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf5707276b07e2e4fac9c932f187eb0c, type: 3}
-  m_Name: Task_Player Chase(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_PlayerChase
-  position: {x: 494, y: 124}
-  attackKey: 
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 1
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  maxRushSpeed: 20
-  turnSpeed: 300
-  expectedDuration: 5
-  speedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.2
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxTriggerRange: 20
 --- !u!114 &-1780693242651229239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,7 +183,7 @@ MonoBehaviour:
   m_Name: Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 231, y: 280}
-  waitTime: 5
+  waitTime: 1.5
 --- !u!114 &3593469768659168057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,9 +198,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
   position: {x: 228, y: 157}
   nodes:
-  - {fileID: -2634650766323204150}
+  - {fileID: 3646297250739070143}
   - {fileID: -3680199345345958982}
   services: []
   weights:
   - 70
   - 30
+--- !u!114 &3646297250739070143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
+  m_Name: Task_Chase Player Node
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
+  position: {x: 498, y: 121}
+  Distance: 10
+  speed: 5
