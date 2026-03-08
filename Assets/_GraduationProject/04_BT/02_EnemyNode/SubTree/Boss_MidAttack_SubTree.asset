@@ -31,25 +31,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc80aa10de6e2ed44a23d8552475d5b8, type: 3}
   m_Name: Condition_Zone Check(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_ZoneCheck
-  position: {x: 223, y: -219}
+  position: {x: 233, y: -210}
   exceptCondition:
     key: 
   targetZoneIds: 0a000000
---- !u!114 &-7625268027791677913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a015bd788c90c8b4d9debd70dd836a04, type: 3}
-  m_Name: Task_Attack Post Delay(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackPostDelay
-  position: {x: 218, y: 250}
-  parameterName: 
-  delayTime: 0
 --- !u!114 &-6667321206085821472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +48,7 @@ MonoBehaviour:
   m_Name: Task_Tristana Jump(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_TristanaJump
   position: {x: 492, y: 190}
-  attackKey: 
+  attackKey: Boss_J_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
@@ -145,78 +130,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
   position: {x: 223, y: 144}
   nodes:
-  - {fileID: -2003247774470273146}
+  - {fileID: 8504607082503552474}
   - {fileID: -6667321206085821472}
   services: []
   weights:
   - 70
   - 30
---- !u!114 &-2003247774470273146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf5707276b07e2e4fac9c932f187eb0c, type: 3}
-  m_Name: Task_Player Chase(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_PlayerChase
-  position: {x: 490, y: 113}
-  attackKey: 
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  maxRushSpeed: 20
-  turnSpeed: 300
-  expectedDuration: 5
-  speedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.2
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxTriggerRange: 20
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,8 +161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e5a6fbb630cde946b2b5de0f2a668d2, type: 3}
   m_Name: Task_Tristana Jump(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_TristanaJump
-  position: {x: 408, y: 30}
-  attackKey: 
+  position: {x: 411, y: 30}
+  attackKey: Boss_J_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
@@ -329,8 +248,22 @@ MonoBehaviour:
   - {fileID: 7876985959237036498}
   - {fileID: 7500381137703552315}
   - {fileID: -3407775901418569900}
-  - {fileID: -7625268027791677913}
+  - {fileID: 7460042992623185209}
   services: []
+--- !u!114 &7460042992623185209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: Assembly-CSharp::Wait
+  position: {x: 261, y: 308}
+  waitTime: 1.5
 --- !u!114 &7500381137703552315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,3 +300,18 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &8504607082503552474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
+  m_Name: Task_Chase Player Node
+  m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
+  position: {x: 493, y: 115}
+  Distance: 10
+  speed: 5
