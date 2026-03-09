@@ -1,7 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
-using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Stunned", menuName = "BehaviorTree/Stunned")]
 public class Stunned : Node
