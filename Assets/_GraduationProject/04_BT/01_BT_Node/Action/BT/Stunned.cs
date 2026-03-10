@@ -35,7 +35,7 @@ public class Stunned : Node
         if(runner.Shield != null)
             runner.Shield.IsActive = false;
             
-        Debug.Log("<color=red>--STUNNED--: OnEnter (Initial Cleanup Done)</color>");
+        // // Debug.Log("<color=red>--STUNNED--: OnEnter (Initial Cleanup Done)</color>");
     }
 
     protected override NodeState OnUpdate()
@@ -48,7 +48,7 @@ public class Stunned : Node
         {
             // 조기 파라미터 정리
             runner.ParrySystem.ClearStun();
-            Debug.Log("<color=red>--STUNNED--: OnUpdate Finished (Signal Received)</color>");
+            // // Debug.Log("<color=red>--STUNNED--: OnUpdate Finished (Signal Received)</color>");
             return NodeState.SUCCESS;
         }
 
@@ -83,7 +83,7 @@ public class Stunned : Node
         {
             runner.aIPath.SetPath(null);
             runner.aIPath.destination = runner.transform.position;
-            runner.aIPath.isStopped = true;
+            runner.Movement.StopMovement();
 
             // [추가] 스턴 종료 시에도 가속도를 Default로 리셋
             if (runner.aIPath is AIPath aiPath)
@@ -112,7 +112,7 @@ public class Stunned : Node
         if(runner.Shield != null)
             runner.Shield.IsActive = true;
             
-        Debug.Log("<color=red>--STUNNED EXIT--: Total State Cleanup Performed</color>");
+        // // Debug.Log("<color=red>--STUNNED EXIT--: Total State Cleanup Performed</color>");
         
         runner.SetState(EnemyStateController.EnemyState.Idle);
         if (Handler != null) Handler.ResetAllFlags();

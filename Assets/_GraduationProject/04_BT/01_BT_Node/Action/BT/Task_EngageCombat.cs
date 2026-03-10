@@ -6,7 +6,7 @@ public class Task_EngageCombat : Node
 
     public override void OnEnter()
     {
-        Debug.Log("[Task_EngageCombat : " + runner.name + "] 전투 돌입.");
+        // // Debug.Log("[Task_EngageCombat : " + runner.name + "] 전투 돌입.");
         
         if (!brain._isCombat)
         {
