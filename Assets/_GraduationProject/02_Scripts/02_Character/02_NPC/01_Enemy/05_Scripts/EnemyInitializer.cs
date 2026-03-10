@@ -186,6 +186,10 @@ public class EnemyInitializer : MonoBehaviour
             Debug.LogError("Animator component is missing.");
             return;
         }
+        
+        // Optimization: Set Animator Culling Mode
+        animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+
         var animHandler = GetComponent<Enemy_AnimationEventHandler>();
         if (animHandler == null)
         {

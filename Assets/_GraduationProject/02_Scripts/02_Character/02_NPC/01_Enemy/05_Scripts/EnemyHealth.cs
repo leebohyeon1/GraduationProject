@@ -2,31 +2,84 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 몬스터의 체력 관리 및 피해 처리를 담당하는 컴포넌트입니다.
+/// </summary>
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private EnemyStat enemyStat;
+    
+    /// <summary>
+    /// 현재 적용 중인 면역 레벨입니다.
+    /// </summary>
     public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
 
+    /// <summary>
+    /// 현재 체력을 반환합니다.
+    /// </summary>
     public int CurrentHealth => curHealth;
+
+    /// <summary>
+    /// 최대 체력을 반환합니다.
+    /// </summary>
     public int MaxHealth => enemyStat.Maxhealth;
 
-    int _maxHealth = 100;
-    int curHealth = 100;
+    private int _maxHealth = 100;
+    private int curHealth = 100;
+
+    /// <summary>
+    /// 몬스터 사망 여부를 확인합니다.
+    /// </summary>
     public bool IsDead => CurrentHealth <= 0;
+
+    /// <summary>
+    /// 체력 변경 시 발생하는 이벤트입니다. (이전 체력, 현재 체력)
+    /// </summary>
     public event Action<int, int> OnHealthChanged;
+
+    /// <summary>
+    /// 체력 회복 상태 변경 시 발생하는 액션입니다.
+    /// </summary>
     public Action<bool> OnRecoveryHealth;
-    public int healthPerSecond = 20; // 초당 회복량
+
+    /// <summary>
+    /// 초당 체력 회복량입니다.
+    /// </summary>
+    public int healthPerSecond = 20;
+
     private Coroutine _recoveryCoroutine;
+
+    /// <summary>
+    /// 사망 시 발생하는 이벤트입니다.
+    /// </summary>
     public event Action OnDied;
+
     private CharacterController _characterController;
     private Coroutine _KnockbackCoroutine;
+
+    /// <summary>
+    /// 피해를 입었을 때 발생하는 액션입니다.
+    /// </summary>
     public Action<AttackType> OnDamageReceived;
+
+    /// <summary>
+    /// 스턴 면역 여부를 확인하는 함수입니다.
+    /// </summary>
     public Func<AttackType, bool> CheckStunImmunity;
   
-    Enemy _owner;
+    private Enemy _owner;
     private float _knockbackResistance = 1f;
+
+    /// <summary>
+    /// 초기 면역 시작 여부 설정입니다.
+    /// </summary>
     public bool ImmunityStart = false;
 
+    /// <summary>
+    /// 체력 시스템을 초기화합니다. 오브젝트 풀 재사용 시에도 호출됩니다.
+    /// </summary>
+    /// <param name="owner">Enemy 본체 참조</param>
+    /// <param name="statMultiplier">스탯 배율 데이터</param>
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _owner = owner;
@@ -34,19 +87,30 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _maxHealth = enemyStat.Maxhealth;
         _maxHealth = (int)(_maxHealth * statMultiplier?.HealthMultiply ?? _maxHealth);
         curHealth = _maxHealth;
-        if (_owner.animator.GetBool("Die"))
-            _owner.animator.SetBool("Die", false);
+        
+        // 풀링을 위한 상태 리셋
+        if (_owner.animator != null)
+        {
+            _owner.animator.enabled = true;
+            if (_owner.animator.GetBool("Die"))
+                _owner.animator.SetBool("Die", false);
+        }
+        
         _characterController = _owner.GetComponent<CharacterController>();
         SetKnockbackable(true);
         _owner.tag = "Enemy";
         _currentImmunityLevel = ImmunityLevel.None;
         if(ImmunityStart)
         {
-        _currentImmunityLevel = ImmunityLevel.Minor;
-            
+            _currentImmunityLevel = ImmunityLevel.Minor;
         }
         CheckStunImmunity = IsImmuneToHitReaction;
     }
+
+    /// <summary>
+    /// 면역 레벨을 설정합니다.
+    /// </summary>
+    /// <param name="level">설정할 면역 레벨</param>
     public void SetImmunityLevel(ImmunityLevel level)
     {
         if (level != _currentImmunityLevel)
@@ -57,6 +121,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             _delayCoroutine = null;
         }
     }
+
     private bool IsImmuneToHitReaction(AttackType incomingAttackType)
     {
         if (_currentImmunityLevel == ImmunityLevel.Minor)
@@ -69,18 +134,22 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             if (incomingAttackType == AttackType.NormalCounter || incomingAttackType == AttackType.Normal) return true;
         }
 
-
         return false;
     }
-    void OnDisable()
+
+    private void OnDisable()
     {
         OnRecoveryHealth -= SetRecovery;
     }
+
+    /// <summary>
+    /// 체력 회복 로직 활성화/비활성화를 설정합니다.
+    /// </summary>
+    /// <param name="isRecovering">회복 활성화 여부</param>
     public void SetRecovery(bool isRecovering)
     {
         if (isRecovering)
         {
-            // 이미 회복 중이 아닐 때만 코루틴 시작
             if (_recoveryCoroutine == null)
             {
                 _recoveryCoroutine = StartCoroutine(RecoveryRoutine());
@@ -88,7 +157,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
         else
         {
-            // 회복 중이라면 중단
             if (_recoveryCoroutine != null)
             {
                 StopCoroutine(_recoveryCoroutine);
@@ -97,73 +165,91 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
     }
 
-    // 4. 점진적 회복 코루틴
     private IEnumerator RecoveryRoutine()
     {
         while (curHealth < _maxHealth)
         {
             curHealth += (int)(healthPerSecond * Time.deltaTime);
-
-            // 최대 체력 초과 방지
             if (curHealth > _maxHealth)
             {
                 curHealth = _maxHealth;
             }
-
-            // UI 갱신 등이 필요하다면 여기서 호출
-            // Debug.Log($"Recovering... {curHealth}");
-
-            yield return null; // 다음 프레임 대기
+            yield return null;
         }
-
-        // 체력이 다 차면 코루틴 종료 및 변수 초기화
         _recoveryCoroutine = null;
     }
 
+    /// <summary>
+    /// 타겟에게 공격을 가합니다.
+    /// </summary>
+    /// <param name="target">공격 대상</param>
     public void Attack(IDamageable target)
     {
         if (target == null || target.IsDead)
         {
             return;
         }
-
     }
 
+    /// <summary>
+    /// 넉백 가능 여부를 확인합니다.
+    /// </summary>
     public bool Knockbackable { get; private set; } = true;
 
+    /// <summary>
+    /// 몬스터 사망 처리를 수행합니다.
+    /// </summary>
     public void Die()
     {
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
-        _owner.player.Money.GiveMoney(_owner.enemyStat.MoneyReward);
+        if (_owner.player != null && _owner.player.Money != null)
+            _owner.player.Money.GiveMoney(_owner.enemyStat.MoneyReward);
+        
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
         _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
-        GetComponent<Animator>().enabled = false;
         _owner.tag = "DeadEnemy";
+        
+        // 사망 후 일정 시간 뒤에 오브젝트 풀로 반납
+        StartCoroutine(ReturnToPoolRoutine(3f));
+    }
+
+    private IEnumerator ReturnToPoolRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (!string.IsNullOrEmpty(_owner.MonsterPrefabName))
+        {
+            MonsterPoolManager.Instance.ReleaseMonster(_owner.MonsterPrefabName, _owner);
+        }
+        else
+        {
+            Destroy(_owner.gameObject);
+        }
     }
 
     private IEnumerator ActivateImmunityAfterDelay(float delay)
     {
-        // 1. 지정된 시간(5초)만큼 대기
         yield return new WaitForSeconds(delay);
-
-        // 2. 시간이 지난 후 면역 활성화
-        if (!_owner.EnemyHealth.IsDead) // 죽지 않았다면 실행
+        if (!_owner.EnemyHealth.IsDead)
         {
-            // ParrySystem에 있는 면역 활성화 함수 호출
             _owner.ParrySystem.ActivateMinorImmunity();
             Debug.Log("5초 경과: 이제부터 소경직 면역입니다!");
         }
-
-        // (선택사항) 코루틴 변수를 null로 초기화하여 나중에 다시 카운트할지, 
-        // 아니면 한 번 켜지면 끝까지 갈지 결정합니다.
-        // 한 번만 켜지고 끝이라면 초기화하지 않습니다.
     }
+
+    /// <summary>
+    /// 소경직 면역 발동까지의 대기 시간입니다.
+    /// </summary>
     public float MinorTime = 5;
     private Coroutine _delayCoroutine;
+
+    /// <summary>
+    /// 피해를 입는 처리를 수행합니다.
+    /// </summary>
+    /// <param name="damageData">피해 데이터</param>
     public void TakeDamage(DamageData damageData)
     {
         if (CurrentHealth <= 0) return;
@@ -190,16 +276,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
         if (!isImmune && !isBlocked )
         {
-            // 액션(공격 등) 중이 아닐 때만 히트 모션 취함
             if (!_owner._aiController.IsActionable())
             {
-                Debug.Log("히트 리액션 적용: 액션 중이 아님");
                 _owner.SetState(EnemyStateController.EnemyState.Hit);
                 _owner.AnimationEvent("Hit");
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
             }
         }
-
 
         int previousHealth = curHealth;
         if (isBlocked)
@@ -210,34 +293,27 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy1);
                     break;
                 case AttackType.Heavy2:
-
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy2);
                     break;
                 case AttackType.Heavy3:
-
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Heavy3);
                     break;
                 default:
                     _owner.animHandler.PlayFeedback("Block_FB", AttackType.Normal);
                     break;
             }
-        
         }
         else
         {
-            
-        // Debug.Log(damageData.AttackType);
-        switch (damageData.AttackType)
+            switch (damageData.AttackType)
             {
                 case AttackType.Heavy1:
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy1);
                     break;
                 case AttackType.Heavy2:
-
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy2);
                     break;
                 case AttackType.Heavy3:
-
                     _owner.animHandler.PlayFeedback("Damage_FB", AttackType.Heavy3);
                     break;
                 default:
@@ -247,11 +323,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
 
         curHealth -= finalDamage;
-
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
-
-        
         OnRecoveryHealth?.Invoke(false);
 
         if (Knockbackable && !isBlocked)
@@ -267,16 +340,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (CurrentHealth <= 0)
         {
             Die();
-
         }
     }
-    void OnEnable()
+
+    private void OnEnable()
     {
         OnRecoveryHealth += SetRecovery;
     }
-    void Start()
-    {
-    }
+
     private bool IsImmune(AttackType attackType)
     {
         if (CheckStunImmunity != null)
@@ -284,8 +355,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         return false;
     }
 
+    /// <summary>
+    /// 기본 넉백 힘 수치입니다.
+    /// </summary>
     public float KnockbackForce = 30f;
+
+    /// <summary>
+    /// 기본 수직 부상 힘 수치입니다.
+    /// </summary>
     public float upwardForce = 5f;
+
+    /// <summary>
+    /// 넉백 가능 여부를 설정합니다.
+    /// </summary>
+    /// <param name="value">설정값</param>
     public void SetKnockbackable(bool value)
     {
         Knockbackable = value;
@@ -304,24 +387,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             yield break;
         }
 
-
         while (elapsedTime < damageData.KnockbackDuration)
         {
             float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
-
             Vector3 move = horizontalDirection * damageData.KnockbackForce * _knockbackResistance * curveValue * Time.deltaTime;
-
-            if (!_characterController.isGrounded)
+            if (_characterController != null && !_characterController.isGrounded)
             {
                 move.y += Physics.gravity.y * Time.deltaTime;
             }
-
-            _characterController.Move(move);
+            if (_characterController != null)
+                _characterController.Move(move);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         _KnockbackCoroutine = null;
     }
-
 }
