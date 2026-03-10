@@ -1,96 +1,60 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class GroupAi : MonoBehaviour
 {
     [Header("Settings")]
     public string GroupName = "DefaultGroup";
-    public int MaxAttackTokenCount = 2; // [추가] 동시에 공격 가능한 몬스터 수
+    public int MaxAttackTokenCount = 2; 
     public float updateInterval = 0.1f;
-    List<Enemy> enemies = new List<Enemy>();
+    
+    private List<Enemy> enemies = new List<Enemy>();
+    
     public string KEY_TOKEN = "HasAttackToken";
     public string KEY_THREAT = "IsTargetAimingMe";
     public string KEY_TARGET_LOC = "TargetLocation";
     public string KEY_COLLEAGUES = "PeripheralColleagues";
-    // [설정] 업데이트 주기 (매 프레임 계산은 낭비일 수 있음)
-    private class EnemyCandidate
-    {
-        public Enemy enemy;
-        public bool isThreatened;
-        public float distance;
-    }
 
+    private class EnemyCandidate { public Enemy enemy; public bool isThreatened; public float distance; }
     private float _updateTimer;
+    private bool CombatGroup = false;
 
-    bool CombatGroup = false;
     public void GroupAdd(Enemy enemy)
     {
-        if (!enemies.Contains(enemy))
-        {
-            enemies.Add(enemy);
-            // 새로 들어온 놈에게도 주변 동료 수 갱신
-            UpdateColleaguesCount();
-        }
-        else
-        {
-            Debug.LogWarning($"이미 그룹에 존재하는 몬스터 {enemy.gameObject.GetInstanceID()}입니다.");
-        }
+        if (!enemies.Contains(enemy)) { enemies.Add(enemy); UpdateColleaguesCount(); }
     }
 
     public void GroupRemove(Enemy enemy)
     {
-        if (enemies.Contains(enemy))
-        {
-            enemies.Remove(enemy);
-            UpdateColleaguesCount();
-            
-            // 나갈 때 토큰 반납
-            if(enemy != null && enemy._aiController != null)
-                enemy._aiController._aiBrain.blackboard.SetValue(KEY_TOKEN, false);
-        }
-    }
-    private void UpdateColleaguesCount()
-    {
-        foreach (var enemy in enemies)
-        {
-            if (enemy != null)
-                enemy._aiController._aiBrain.blackboard.SetValue(KEY_COLLEAGUES, enemies.Count);
-        }
+        if (enemies.Contains(enemy)) { enemies.Remove(enemy); UpdateColleaguesCount(); }
     }
 
-    public bool OnlyCowardly()
+    private void UpdateColleaguesCount()
     {
-        if (enemies.Count == 1)
-        {
-            foreach (var enemy in enemies)
-            {
-                if (enemy.EnemyType == Enemy.Enemy_Type.Cowardly)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        foreach (var enemy in enemies) if (enemy != null) enemy._aiController._aiBrain.blackboard.SetValue(KEY_COLLEAGUES, enemies.Count);
     }
 
     public void CombatAll()
     {
-        
         CombatGroup = true;
-        foreach (var enemy in enemies)
-        {
-            enemy._aiController.CombatEnter();
-        }
+        foreach (var enemy in enemies) if (enemy != null) enemy._aiController.CombatEnter();
         UpdateColleaguesCount(); 
         AssignSlots();
     }
+
     public void EngageCombatAll()
     {
+        CombatGroup = true; // [Fix] 발견 신호 발생 시 그룹 전체를 전투 모드로 간주
         foreach (var enemy in enemies)
         {
-            enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
+            if (enemy != null)
+            {
+                // [핵심 Fix] 블랙보드 키만 설정하는 게 아니라, 실제 전투 상태(CombatEnter)로 강제 진입
+                // 이렇게 해야 BT의 '시야 체크' 등의 조건문을 건너뛰고 전투 트리를 탑니다.
+                enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
+                enemy._aiController.CombatEnter(true); 
+            }
         }
     }
 
@@ -99,102 +63,54 @@ public class GroupAi : MonoBehaviour
         CombatGroup = false;
         foreach (var enemy in enemies)
         {
-            enemy._aiController.CombatEnter(false);
-            // 전투 끝나면 토큰 회수
-            enemy._aiController._aiBrain.blackboard.SetValue(KEY_TOKEN, false);
+            if (enemy != null)
+            {
+                enemy._aiController.CombatEnter(false);
+                enemy._aiController._aiBrain.blackboard.SetValue(KEY_TOKEN, false);
+                enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, false);
+            }
         }
-        UpdateColleaguesCount();
     }
 
     public void AssignSlots()
     {
         for (int i = 0; i < enemies.Count; i++)
         {
-            if(enemies[i].EnemyType != Enemy.Enemy_Type.Cunning)
-            {
-                return;
-            }
-            // 2. 나의 고유 번호 (Slot Index)
+            if (enemies[i] == null) continue;
             enemies[i]._aiController._aiBrain.blackboard.SetValue("SquadSlotIndex", i);
-            // 3. 포위 명령
             enemies[i]._aiController._aiBrain.blackboard.SetValue("IsSurrounding", true);
         }
     }
-    void Update()
+
+    private void Update()
     {
-        // 몬스터가 없으면 계산 안 함
-        if (enemies.Count == 0) return;
-        if(!CombatGroup) return;
-        // 일정 주기마다 토큰 갱신
+        if (enemies.Count == 0 || !CombatGroup) return;
         _updateTimer += Time.deltaTime;
-        if (_updateTimer >= updateInterval)
-        {
-            UpdateAttackToken();
-            _updateTimer = 0f;
-        }
+        if (_updateTimer >= updateInterval) { UpdateAttackToken(); _updateTimer = 0f; }
     }
+
     private void UpdateAttackToken()
     {
         List<EnemyCandidate> candidates = new List<EnemyCandidate>();
-
-        // 1. 모든 몬스터의 상태(위협, 거리)를 조사하여 후보 리스트 생성
         foreach (var enemy in enemies)
         {
-            // 죽거나 비활성화된 놈은 제외
             if (enemy == null || !enemy.gameObject.activeInHierarchy || enemy.EnemyHealth.IsDead) continue;
-            
-            var blackboard = enemy._aiController._aiBrain.blackboard;
-
-            // 위협 상태 확인
-            bool threatened = false;
-            if (blackboard.HasKey(KEY_THREAT))
-                threatened = blackboard.GetValue<bool>(KEY_THREAT);
-
-            // 거리 계산
-            float dist = float.MaxValue;
-            if (blackboard.HasKey(KEY_TARGET_LOC))
-            {
-                dist = Vector3.Distance(enemy.transform.position, blackboard.GetValue<Vector3>(KEY_TARGET_LOC));
-            }
-            else if (enemy.player != null)
-            {
-                dist = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
-            }
-
-            candidates.Add(new EnemyCandidate 
-            { 
+            var bb = enemy._aiController._aiBrain.blackboard;
+            candidates.Add(new EnemyCandidate { 
                 enemy = enemy, 
-                isThreatened = threatened, 
-                distance = dist 
+                isThreatened = bb.GetValue<bool>(KEY_THREAT), 
+                distance = Vector3.Distance(enemy.transform.position, enemy.player.transform.position) 
             });
         }
-
-        // 2. 우선순위대로 정렬 (Sort)
-        // 규칙: 위협받는 놈 우선(내림차순) -> 그 다음 거리 가까운 놈(오름차순)
-        candidates.Sort((a, b) => 
-        {
-            if (a.isThreatened != b.isThreatened)
-                return b.isThreatened.CompareTo(a.isThreatened); // true가 먼저 오도록
-            
-            return a.distance.CompareTo(b.distance); // 거리가 작은 게 먼저 오도록
+        candidates.Sort((a, b) => {
+            if (a.isThreatened != b.isThreatened) return b.isThreatened.CompareTo(a.isThreatened);
+            return a.distance.CompareTo(b.distance);
         });
-
-        // 3. 상위 N명에게 토큰 부여, 나머지는 회수
         int tokenGivenCount = 0;
-        foreach (var candidate in candidates)
-        {
-            bool giveToken = false;
-
-            // 아직 정원이 남았고 + (위협받고 있거나 OR 거리가 공격 범위 내라면)
-            // 여기선 단순히 상위 N명에게 무조건 줍니다.
-            if (tokenGivenCount < MaxAttackTokenCount)
-            {
-                giveToken = true;
-                tokenGivenCount++;
-            }
-
-            // 블랙보드에 반영
-            candidate.enemy._aiController._aiBrain.blackboard.SetValue(KEY_TOKEN, giveToken);
+        foreach (var c in candidates) {
+            bool giveToken = (tokenGivenCount < MaxAttackTokenCount);
+            if (giveToken) tokenGivenCount++;
+            c.enemy._aiController._aiBrain.blackboard.SetValue(KEY_TOKEN, giveToken);
         }
     }
 }

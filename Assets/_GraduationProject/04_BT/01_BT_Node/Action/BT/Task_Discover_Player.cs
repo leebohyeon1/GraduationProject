@@ -12,7 +12,7 @@ public class Task_Discover_Player : Node
     {
         _entryTime = Time.time;
         _didSetLock = false;
-        Debug.Log("[Task_Discover_Player : " + runner.name + "] 전투 돌입.");
+        // Debug.Log("[Task_Discover_Player : " + runner.name + "] 전투 돌입.");
         
         if (!brain._isCombat)
         {
@@ -34,7 +34,7 @@ public class Task_Discover_Player : Node
         // 상태 중단 체크: 스턴이나 사망 시 즉시 종료
         if (runner.CurrentState == EnemyStateController.EnemyState.Stunned || runner.CurrentState == EnemyStateController.EnemyState.Die)
         {
-            Debug.Log("[Task_EngageCombat : " + runner.name + "] 상태 이상으로 인한 중단.");
+            // Debug.Log("[Task_EngageCombat : " + runner.name + "] 상태 이상으로 인한 중단.");
             return NodeState.FAILURE;
         }
 
@@ -46,7 +46,7 @@ public class Task_Discover_Player : Node
 
         if (Handler != null && Handler.IsActionFinished)
         {
-            Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
+            // Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
             return NodeState.SUCCESS;
         }
 
@@ -57,7 +57,7 @@ public class Task_Discover_Player : Node
 
         if (elapsedTime > transitionBuffer + 2.0f)
         {
-             Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
+             // Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
              return NodeState.SUCCESS;
         }
 

@@ -12,10 +12,18 @@ public class RandomPatrol : Node
     public float Radius = 15f;
     public float Delay = 2f;
     public float MoveSpeed = 6.0f;
+
     public override void OnEnter()
     {
         runner.SetState(EnemyStateController.EnemyState.Patrol);
         _aiPath = runner.GetComponent<AIPath>();
+        
+        if (_aiPath != null)
+        {
+            _aiPath.canMove = true;
+            _aiPath.isStopped = false;
+        }
+        
         _hasTarget = false;
         _isWaiting = false;
         _waitTimer = 0f;
@@ -23,7 +31,10 @@ public class RandomPatrol : Node
 
     protected override NodeState OnUpdate()
     {
-        if(brain.blackboard.GetValue<bool>("DetectPlayer", out bool DetectPlayer) && DetectPlayer)
+        if (brain == null || brain.blackboard == null) return NodeState.FAILURE;
+        if (_aiPath == null) _aiPath = runner.GetComponent<AIPath>();
+
+        if (brain.blackboard.GetValue<bool>("DetectPlayer", out bool detectPlayer) && detectPlayer)
         {
             return NodeState.FAILURE;
         }
@@ -31,52 +42,79 @@ public class RandomPatrol : Node
         {
             return NodeState.FAILURE;
         }
-        if( _isWaiting)
+
+        if (_aiPath != null)
+        {
+            if (!_aiPath.canMove) _aiPath.canMove = true;
+            if (_aiPath.isStopped && !_isWaiting) _aiPath.isStopped = false;
+        }
+
+        if (_isWaiting)
         {
             _waitTimer += Time.deltaTime;
-            if(_waitTimer >= Delay)
+            if (_waitTimer >= Delay)
             {
                 _isWaiting = false;
-                _hasTarget = false; // 대기 후 새로운 목표 지점 설정
+                _hasTarget = false;
             }
             else
             {
                 return NodeState.RUNNING;
             }
         }
+
         if (!_hasTarget || (_aiPath != null && _aiPath.reachedDestination))
         {
-            Vector3 randomDirection = runner.StartPos + (Random.insideUnitSphere * Radius);
-
-            GraphNode graphNode = AstarPath.active.GetNearest(randomDirection).node;
-
-            if (graphNode != null && !graphNode.Destroyed)
+            if (_hasTarget && _aiPath != null && _aiPath.reachedDestination)
             {
-                Vector3 nodePos = (Vector3)graphNode.position;
-                Vector3 targetPos = nodePos;
-                if (Physics.Raycast(nodePos + Vector3.up * 10f, Vector3.down, out RaycastHit hitInfo, 20f, LayerMask.GetMask("Ground")))
-                {
-                    targetPos = hitInfo.point;
-                }
-                runner.Movement.StartOrUpdateChase(targetPos,   EnemyStateController.EnemyState.Patrol, MoveSpeed);
-                _hasTarget = true;
-            }
-            if (_hasTarget)
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(runner.transform.position + Vector3.up * 0.25f, runner.transform.forward, out hit, 1f, LayerMask.GetMask("Ground")))
-                {
-                    _hasTarget = false; // 장애물이 감지되면 새로운 목표 지점을 설정하도록 플래그를 재설정
-                }
-            }
-            if(_hasTarget && !_isWaiting && _aiPath != null && _aiPath.reachedDestination)
-            {
-                _isWaiting = true; // 도착 후 대기 상태로 전환
+                _isWaiting = true;
                 _waitTimer = 0f;
                 runner.Movement.StopMovement();
+                return NodeState.RUNNING;
+            }
+
+            Vector3 targetPos = FindValidRandomPoint();
+            if (targetPos != Vector3.zero)
+            {
+                runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
+                _hasTarget = true;
+                
+                // [Fix] 목적지 설정 후 즉시 경로 계산 시작
+                if (_aiPath != null && !_aiPath.pathPending)
+                {
+                    _aiPath.SearchPath();
+                }
             }
         }
+
         return NodeState.RUNNING;
+    }
+
+    private Vector3 FindValidRandomPoint()
+    {
+        GraphNode currentNode = AstarPath.active.GetNearest(runner.transform.position, NNConstraint.Default).node;
+        if (currentNode == null) return Vector3.zero;
+
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 randomPos = runner.StartPos + (Random.insideUnitSphere * Radius);
+            NNInfo info = AstarPath.active.GetNearest(randomPos, NNConstraint.Default);
+            GraphNode targetNode = info.node;
+
+            if (targetNode != null && targetNode.Walkable && !targetNode.Destroyed)
+            {
+                if (PathUtilities.IsPathPossible(currentNode, targetNode))
+                {
+                    Vector3 nodePos = (Vector3)targetNode.position;
+                    if (Physics.Raycast(nodePos + Vector3.up * 5f, Vector3.down, out RaycastHit hitInfo, 10f, LayerMask.GetMask("Ground")))
+                    {
+                        return hitInfo.point;
+                    }
+                    return nodePos;
+                }
+            }
+        }
+        return Vector3.zero;
     }
 
     public override void OnExit()
@@ -84,7 +122,6 @@ public class RandomPatrol : Node
         runner.Movement.StopMovement();
     }
 
-    
     public override Node Clone()
     {
         return Instantiate(this);

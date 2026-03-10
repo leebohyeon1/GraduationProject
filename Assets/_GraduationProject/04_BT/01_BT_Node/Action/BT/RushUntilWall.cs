@@ -89,7 +89,7 @@ public class RushUntilWall : Node
 
         if (Time.time - _startTime > timeout)
         {
-            Debug.LogWarning("RushUntilWall: Timeout reached, stopping rush.");
+            // Debug.LogWarning("RushUntilWall: Timeout reached, stopping rush.");
             return NodeState.SUCCESS;
         }
 

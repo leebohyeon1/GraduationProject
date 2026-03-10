@@ -22,7 +22,7 @@ public class StopMovement : Node
             {
                 runner.Movement.StartOrUpdateChase(runner.transform.position + runner.transform.forward * 0.5f);
                 runner.GetComponent<AIPath>().enableRotation = true;
-                Debug.Log("정면이동");
+                // Debug.Log("정면이동");
             }
 
             runner.SetState(EnemyStateController.EnemyState.Idle);

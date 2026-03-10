@@ -55,7 +55,7 @@ public class PassingDashStrategy : EnemyUseAnything
         enemy.transform.rotation = Quaternion.LookRotation(direction);
 
         // [디버그] 목표 지점 로그 찍기
-        Debug.Log($"[Dash] Start: {startPos} -> Player: {playerPos} -> Final: {finalTarget}");
+        // Debug.Log($"[Dash] Start: {startPos} -> Player: {playerPos} -> Final: {finalTarget}");
 
         return runner;
     }
@@ -100,7 +100,7 @@ public class PassingDashStrategy : EnemyUseAnything
         // 벽 체크 (몸체 높이 1.0f 가정)
         if (Physics.Raycast(currentPos + Vector3.up * 1.0f, moveDir, moveDistance, obstacleMask))
         {
-            Debug.Log("[Dash] 벽 충돌!");
+            // Debug.Log("[Dash] 벽 충돌!");
             StopDash(enemy);
             return runner;
         }

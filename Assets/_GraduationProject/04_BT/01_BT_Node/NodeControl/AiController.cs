@@ -3,134 +3,102 @@ using Pathfinding;
 using UnityEngine;
 
 /// <summary>
-/// 몬스터의 Behavior Tree AI를 제어하고 업데이트 빈도를 관리하는 컴포넌트입니다.
+/// 몬스터의 AI 업데이트를 제어합니다. 거리에 따라 AIPath 활성화/비활성화 및 업데이트 빈도를 조절합니다.
 /// </summary>
 public class AiController : MonoBehaviour, IEventListener<string>
 {
     [SerializeField] private ActionTree _behaviorTree;
-    
-    /// <summary>
-    /// AI의 뇌(Brain) 시스템을 참조합니다.
-    /// </summary>
     public AiBrain _aiBrain { get; private set; }
-    
     private Enemy _enemy;
+    private AIPath _aiPath;
     [SerializeField] private OnSwingMissSO _onSwingMissEvent;
     [SerializeField] private OnHealingSO _onHealingEvent;
 
-    /// <summary>
-    /// 몬스터가 가진 원본 공격 데이터 배열입니다.
-    /// </summary>
     [field: SerializeField] public EnemyAttackData[] enemyAttackDatas { get; private set; }
-
-    /// <summary>
-    /// 인게임에서 복제되어 사용되는 공격 데이터 배열입니다.
-    /// </summary>
     [HideInInspector] public EnemyAttackData[] inGameenemyAttackDatas { get; private set; }
 
     [Header("Optimization Settings")]
     [SerializeField] private float _lodDistance = 25f;
     [SerializeField] private int _tickInterval = 5;
-    private int _frameCounter;
+    private int _staggerOffset;
 
-    /// <summary>
-    /// AI 시스템을 초기화합니다.
-    /// </summary>
-    /// <param name="owner">Enemy 본체 참조</param>
-    /// <param name="statMultiplier">스탯 배율 데이터</param>
     public void Initialize(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _enemy = owner;
-        _aiBrain = new AiBrain(owner);
-        _behaviorTree = _behaviorTree.Clone();
-        _behaviorTree.SetRunner(owner, _aiBrain);
-        inGameenemyAttackDatas = new EnemyAttackData[enemyAttackDatas.Length];
-        for (int i = 0; i < enemyAttackDatas.Length; i++)
+        _aiPath = owner.GetComponent<AIPath>();
+        _staggerOffset = Random.Range(0, _tickInterval);
+
+        if (_aiBrain == null) _aiBrain = new AiBrain(owner);
+        else _aiBrain.ResetBrain();
+
+        if (inGameenemyAttackDatas == null || inGameenemyAttackDatas.Length == 0)
         {
-            inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
-            float c = statMultiplier != null ? statMultiplier.AttackMultiply : 1;
-            inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount * c);
-            Debug.Log($"[AiController] {owner.name} Attack Data {inGameenemyAttackDatas[i].name} Damage set to {inGameenemyAttackDatas[i].damageData.DamageAmount}");
-            _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
+            _behaviorTree = _behaviorTree.Clone();
+            _behaviorTree.SetRunner(owner, _aiBrain);
+            inGameenemyAttackDatas = new EnemyAttackData[enemyAttackDatas.Length];
+            for (int i = 0; i < enemyAttackDatas.Length; i++)
+            {
+                inGameenemyAttackDatas[i] = Instantiate(enemyAttackDatas[i]);
+                float c = statMultiplier != null ? statMultiplier.AttackMultiply : 1;
+                inGameenemyAttackDatas[i].damageData.DamageAmount = (int)(inGameenemyAttackDatas[i].damageData.DamageAmount * c);
+                _aiBrain.AddEnemyAttackData(inGameenemyAttackDatas[i]);
+            }
         }
         _behaviorTree.rootNode?.initNode();
     }
 
     private void OnDisable()
     {
-        _onSwingMissEvent.Unsubscribe(this);
-        _onHealingEvent.Unsubscribe(this);
-    }
-
-    private void OnDestroy()
-    {
-        if (inGameenemyAttackDatas != null)
-        {
-            for (int i = 0; i < inGameenemyAttackDatas.Length; i++)
-            {
-                if (inGameenemyAttackDatas[i] != null)
-                    Destroy(inGameenemyAttackDatas[i]);
-            }
-        }
+        if (_onSwingMissEvent != null) _onSwingMissEvent.Unsubscribe(this);
+        if (_onHealingEvent != null) _onHealingEvent.Unsubscribe(this);
     }
 
     private void Update()
     {
-        if (_enemy.EnemyHealth.IsDead)
-        {
-            return;
-        }
+        if (_enemy == null || _enemy.EnemyHealth.IsDead) return;
 
-        // Optimization: LOD Check (플레이어와의 거리에 따른 업데이트 조절)
-        if (_enemy.player != null)
+        bool isCombat = _aiBrain != null && _aiBrain._isCombat;
+        bool isReturningHome = _aiBrain != null && _aiBrain.blackboard.GetValue<bool>("GoHome");
+        bool isEngaged = _aiBrain != null && _aiBrain.blackboard.GetValue<bool>(EnemyBlackboardKeys.Engage);
+        
+        bool isImportantState = isCombat || isReturningHome || isEngaged ||
+                                _enemy.CurrentState == EnemyStateController.EnemyState.Stunned || 
+                                _enemy.CurrentState == EnemyStateController.EnemyState.Hit;
+
+        if (!isImportantState && _enemy.player != null)
         {
             float distSq = (transform.position - _enemy.player.transform.position).sqrMagnitude;
-            if (distSq > _lodDistance * _lodDistance)
+            bool isFar = distSq > _lodDistance * _lodDistance;
+
+            // [Change] CharacterController 대신 AIPath 컴포넌트 자체를 제어
+            // 멀리 있으면 길찾기 및 이동 연산 자체를 중단 (물리는 중력 정도만 처리되도록 내버려둠)
+            if (_aiPath != null && _aiPath.enabled == isFar) 
             {
-                _frameCounter++;
-                if (_frameCounter < _tickInterval) return;
-                _frameCounter = 0;
+                _aiPath.enabled = !isFar;
             }
+            
+            if (isFar) return; 
+            
+            int effectiveInterval = _tickInterval;
+            if ((Time.frameCount + _staggerOffset) % effectiveInterval != 0) return;
+        }
+        else
+        {
+            // 중요 상태면 무조건 AIPath 활성화
+            if (_aiPath != null && !_aiPath.enabled) _aiPath.enabled = true;
         }
 
         _aiBrain?.Tick(Time.deltaTime);
         _behaviorTree?.rootNode?.Evaluate();
     }
 
-    /// <summary>
-    /// 현재 AI가 행동 가능한 상태인지 확인합니다.
-    /// </summary>
-    /// <returns>행동 가능 여부</returns>
-    public bool IsActionable()
-    {
-        if (_aiBrain == null) return false;
-        return _aiBrain.IsActionable();
-    }
+    public bool IsActionable() => _aiBrain?.IsActionable() ?? false;
+    public void CombatEnter(bool combat = true) { if (_aiBrain != null) _aiBrain.CombatEnter(combat); }
 
-    /// <summary>
-    /// 전투 모드로 진입하거나 해제합니다.
-    /// </summary>
-    /// <param name="combat">전투 상태 여부</param>
-    public void CombatEnter(bool combat = true)
-    {
-        if (!_aiBrain._isCombat)
-            _aiBrain.CombatEnter(combat);
-    }
-
-    /// <summary>
-    /// 외부 이벤트를 수신하여 블랙보드 값을 업데이트합니다.
-    /// </summary>
-    /// <param name="eventName">이벤트 이름</param>
     public void OnEventTrigger(string eventName)
     {
-        if (_aiBrain._isCombat && eventName == "OnSwingMiss")
-        {
-            _aiBrain.blackboard.SetValue("OnPlayerAirshot", true);
-        }
-
-        if (_aiBrain._isCombat && eventName == "OnHealing")
-        {
-            _aiBrain.blackboard.SetValue("OnPlayerRecovery", true);
-        }
+        if (_aiBrain == null || !_aiBrain._isCombat) return;
+        if (eventName == "OnSwingMiss") _aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnPlayerAirshot, true);
+        else if (eventName == "OnHealing") _aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnPlayerRecovery, true);
     }
 }

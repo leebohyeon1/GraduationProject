@@ -23,7 +23,7 @@ public class Task_BackStep : Node
         _startTime = Time.time;
         _verticalVelocity = Vector3.zero;
 
-        Debug.Log(string.Format("[Task_BackStep : {0}] OnEnter 진입. 현재 상태: {1}", runner.name, runner.CurrentState));
+        // Debug.Log(string.Format("[Task_BackStep : {0}] OnEnter 진입. 현재 상태: {1}", runner.name, runner.CurrentState));
 
         if (_aiPath != null) 
         {
