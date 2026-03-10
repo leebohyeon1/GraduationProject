@@ -22,11 +22,11 @@ namespace BehaviorTree
                 _runningChildIndex = PickChildIndex();
                 if (_runningChildIndex == -1) 
                 {
-                    // Debug.LogWarning($"[WeightedRandomSelector : {this.name}] 실행 가능한 자식 노드가 없습니다.");
+                    // // Debug.LogWarning($"[WeightedRandomSelector : {this.name}] 실행 가능한 자식 노드가 없습니다.");
                     return NodeState.FAILURE;
                 }
                 
-                // Debug.Log($"[WeightedRandomSelector : {this.name}] {nodes[_runningChildIndex].name} 선택됨 (인덱스: {_runningChildIndex})");
+                // // Debug.Log($"[WeightedRandomSelector : {this.name}] {nodes[_runningChildIndex].name} 선택됨 (인덱스: {_runningChildIndex})");
             }
 
             // 선택된 자식 노드 실행

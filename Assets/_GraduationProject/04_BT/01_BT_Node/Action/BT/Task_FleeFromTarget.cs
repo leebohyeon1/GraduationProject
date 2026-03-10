@@ -30,7 +30,7 @@ public class Task_FleeFromTarget : Node
         if (runner.Movement.IsPathBlocked(fleeDir, fleeDistance, out RaycastHit hit))
         {
             // [전술적 판단] 뒤가 막혔으니 좌/우(벽 타기) 방향을 계산하자
-            // Debug.Log("<color=yellow>[Task] 뒤가 막혀서 옆길을 찾습니다.</color>");
+            // // Debug.Log("<color=yellow>[Task] 뒤가 막혀서 옆길을 찾습니다.</color>");
 
             // 벽의 법선(Normal)을 이용해 벽을 타고 흐르는 방향(Tangent) 계산
             Vector3 slideLeft = Vector3.Cross(hit.normal, Vector3.up).normalized;
@@ -73,9 +73,9 @@ public class Task_FleeFromTarget : Node
     protected override NodeState OnUpdate()
     {
         if (runner.player == null) return NodeState.FAILURE;
-        // Debug.Log(runner._animationBridge.IsAttacking);
+        // // Debug.Log(runner._animationBridge.IsAttacking);
         if(runner._animationBridge.IsAttacking) {
-            // Debug.Log("<color=red>[Task] 공격 애니메이션이 재생 중입니다. 도망 실패.</color>");
+            // // Debug.Log("<color=red>[Task] 공격 애니메이션이 재생 중입니다. 도망 실패.</color>");
             return NodeState.FAILURE;
         }
         var ai = runner.GetComponent<IAstarAI>();
@@ -90,7 +90,7 @@ public class Task_FleeFromTarget : Node
     }
     public override void OnExit()
     {
-        // Debug.Log("<color=cyan>[Task] 도망 완료 또는 실패, 이동 멈춤.</color>");
+        // // Debug.Log("<color=cyan>[Task] 도망 완료 또는 실패, 이동 멈춤.</color>");
         runner.Movement.StopMovement();
         Vector3 playerDir = runner.player.transform.position - runner.transform.position;
         playerDir.y = 0;

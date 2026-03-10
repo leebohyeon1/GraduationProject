@@ -119,7 +119,7 @@ public class EnemyInitializer : MonoBehaviour
         {
             // [Fix] 렌더러가 있는 경우에만 안전하게 컬링 모드 설정하여 MissingComponentException 방지
             var renderer = GetComponentInChildren<Renderer>();
-            if (renderer != null) anim.cullingMode = AnimatorCullingMode.CullCompletely;
+            if (renderer != null) anim.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
             else anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
         }
 

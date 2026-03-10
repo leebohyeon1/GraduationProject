@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 몬스터 그룹의 AI 협업을 관리합니다.
+/// </summary>
 public class GroupAi : MonoBehaviour
 {
     [Header("Settings")]
@@ -45,13 +48,11 @@ public class GroupAi : MonoBehaviour
 
     public void EngageCombatAll()
     {
-        CombatGroup = true; // [Fix] 발견 신호 발생 시 그룹 전체를 전투 모드로 간주
+        CombatGroup = true;
         foreach (var enemy in enemies)
         {
             if (enemy != null)
             {
-                // [핵심 Fix] 블랙보드 키만 설정하는 게 아니라, 실제 전투 상태(CombatEnter)로 강제 진입
-                // 이렇게 해야 BT의 '시야 체크' 등의 조건문을 건너뛰고 전투 트리를 탑니다.
                 enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
                 enemy._aiController.CombatEnter(true); 
             }

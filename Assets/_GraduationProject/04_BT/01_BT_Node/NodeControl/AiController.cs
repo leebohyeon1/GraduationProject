@@ -3,7 +3,7 @@ using Pathfinding;
 using UnityEngine;
 
 /// <summary>
-/// 몬스터의 AI 업데이트를 제어합니다. 거리에 따라 AIPath 활성화/비활성화 및 업데이트 빈도를 조절합니다.
+/// 몬스터의 AI 업데이트를 제어합니다. 화면 밖에서도 최소 업데이트를 보장하여 자연스러운 패트롤을 구현합니다.
 /// </summary>
 public class AiController : MonoBehaviour, IEventListener<string>
 {
@@ -11,6 +11,8 @@ public class AiController : MonoBehaviour, IEventListener<string>
     public AiBrain _aiBrain { get; private set; }
     private Enemy _enemy;
     private AIPath _aiPath;
+    private Camera _mainCam;
+    
     [SerializeField] private OnSwingMissSO _onSwingMissEvent;
     [SerializeField] private OnHealingSO _onHealingEvent;
 
@@ -18,14 +20,17 @@ public class AiController : MonoBehaviour, IEventListener<string>
     [HideInInspector] public EnemyAttackData[] inGameenemyAttackDatas { get; private set; }
 
     [Header("Optimization Settings")]
-    [SerializeField] private float _lodDistance = 25f;
-    [SerializeField] private int _tickInterval = 5;
+    [SerializeField] private float _lodDistance = 25f;      
+    [SerializeField] private float _hardCullDistance = 60f; 
+    [SerializeField] private int _tickInterval = 5;         
+    [SerializeField] private float _viewMargin = 0.5f;      
     private int _staggerOffset;
 
     public void Initialize(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _enemy = owner;
         _aiPath = owner.GetComponent<AIPath>();
+        _mainCam = Camera.main;
         _staggerOffset = Random.Range(0, _tickInterval);
 
         if (_aiBrain == null) _aiBrain = new AiBrain(owner);
@@ -65,31 +70,40 @@ public class AiController : MonoBehaviour, IEventListener<string>
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Stunned || 
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Hit;
 
-        if (!isImportantState && _enemy.player != null)
+        if (!isImportantState)
         {
-            float distSq = (transform.position - _enemy.player.transform.position).sqrMagnitude;
-            bool isFar = distSq > _lodDistance * _lodDistance;
+            bool isVisible = IsInExtendedView();
+            float distSq = (_enemy.player != null) ? (transform.position - _enemy.player.transform.position).sqrMagnitude : float.MaxValue;
+            
+            // 1. 아주 먼 거리 하드 컬링 (최소화)
+            if (distSq > _hardCullDistance * _hardCullDistance) return;
 
-            // [Change] CharacterController 대신 AIPath 컴포넌트 자체를 제어
-            // 멀리 있으면 길찾기 및 이동 연산 자체를 중단 (물리는 중력 정도만 처리되도록 내버려둠)
-            if (_aiPath != null && _aiPath.enabled == isFar) 
-            {
-                _aiPath.enabled = !isFar;
-            }
-            
-            if (isFar) return; 
-            
-            int effectiveInterval = _tickInterval;
+            // 2. 가변 업데이트 주기 (Soft LOD)
+            // 화면 안이면 정상 속도, 화면 밖이면 4배 느리게 (0.3초 주기)
+            int effectiveInterval = isVisible ? _tickInterval : _tickInterval * 4;
             if ((Time.frameCount + _staggerOffset) % effectiveInterval != 0) return;
+
+            // 3. AIPath 컴포넌트는 항상 켜두고 isStopped로만 제어하여 즉각 반응 유도
+            if (_aiPath != null && !_aiPath.enabled) _aiPath.enabled = true;
         }
         else
         {
-            // 중요 상태면 무조건 AIPath 활성화
             if (_aiPath != null && !_aiPath.enabled) _aiPath.enabled = true;
         }
 
         _aiBrain?.Tick(Time.deltaTime);
         _behaviorTree?.rootNode?.Evaluate();
+    }
+
+    private bool IsInExtendedView()
+    {
+        if (_mainCam == null) _mainCam = Camera.main;
+        if (_mainCam == null) return true;
+
+        Vector3 viewPos = _mainCam.WorldToViewportPoint(transform.position);
+        return viewPos.z > 0 && 
+               viewPos.x > -_viewMargin && viewPos.x < 1f + _viewMargin && 
+               viewPos.y > -_viewMargin && viewPos.y < 1f + _viewMargin;
     }
 
     public bool IsActionable() => _aiBrain?.IsActionable() ?? false;

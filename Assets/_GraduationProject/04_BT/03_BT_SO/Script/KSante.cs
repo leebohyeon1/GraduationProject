@@ -25,7 +25,7 @@ public class KSante : EnemyUseAnything
         var blackboard = runner._aiController._aiBrain.blackboard;
         if(!blackboard.GetValueOrDefault<bool>(KEY_RUSHBOOL, true))
         {
-            // Debug.Log("Already rushing ");
+            // // Debug.Log("Already rushing ");
             return runner; 
         }
         Enemy enemy = runner as Enemy;
@@ -109,7 +109,7 @@ public class KSante : EnemyUseAnything
     // [생략했던 부분] 애니메이션 상태 체크
     if(enemy.animHandler.IsActionSO)
     {
-        // Debug.Log(this.name + " is running SO ");
+        // // Debug.Log(this.name + " is running SO ");
     }
 
     // [생략했던 부분] 시간 경과에 따른 속도 계산 및 종료 체크
@@ -138,7 +138,7 @@ public class KSante : EnemyUseAnything
         }
         else
         {
-            // Debug.Log($"<color=red>[Rush Stop] 벽 충돌! 현재위치: {currentPos}</color>");
+            // // Debug.Log($"<color=red>[Rush Stop] 벽 충돌! 현재위치: {currentPos}</color>");
             StopRush(enemy);
             return runner;
         }

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Pathfinding;
 using System.Diagnostics;
 
+/// <summary>
+/// 공격 노드의 베이스 클래스. Physics.NonAlloc을 사용하여 GC 할당을 방지합니다.
+/// </summary>
 public abstract class BaseAttackNode : Node
 {
     [Header("Base Attack Properties")]
@@ -169,7 +172,7 @@ public abstract class BaseAttackNode : Node
         if (Handler != null) Handler.ResetAllFlags();
         if (runner.CurrentState == EnemyStateController.EnemyState.Attack) runner.SetState(EnemyStateController.EnemyState.Idle);
         
-        StopMovementInternal(); // [핵심 Fix] 여기서 A* 정지 해제 로직 실행
+        StopMovementInternal(); 
         
         foreach (var s in SO) if (s != null) s.OnExit(runner);
     }
@@ -274,7 +277,7 @@ public abstract class BaseAttackNode : Node
         if (ai != null) 
         { 
             ai.canMove = true; 
-            ai.isStopped = false; // [Fix] 공격 종료 시 A* 정지 상태 해제
+            ai.isStopped = false; 
             ai.maxSpeed = runner.Movement._normalSpeed; 
         }
         CharacterController cc = runner.GetComponent<CharacterController>();
@@ -287,7 +290,14 @@ public abstract class BaseAttackNode : Node
     {
         if (!debugMode) return;
         string msg = string.Format("[{0} : {1}] {2}", this.GetType().Name, runner.name, message);
-        if (isError) UnityEngine.Debug.LogError(msg); else UnityEngine.Debug.Log(msg);
+        if (isError) 
+        {
+            // UnityEngine.Debug.LogError(msg);
+        } 
+        else 
+        {
+            // UnityEngine.Debug.Log(msg);
+        }
     }
 
     [Conditional("UNITY_EDITOR")]

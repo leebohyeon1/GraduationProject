@@ -26,7 +26,7 @@ public class Task_HitAction : Node
         // 3. 이동 정지
         if (runner.Movement != null) runner.Movement.StopMovement();
         
-        // Debug.Log($"<color=orange>[Task_HitAction]</color> 히트 대기 시작 (ID: {runner.name})");
+        // // Debug.Log($"<color=orange>[Task_HitAction]</color> 히트 대기 시작 (ID: {runner.name})");
     }
 
     protected override NodeState OnUpdate()
@@ -39,14 +39,14 @@ public class Task_HitAction : Node
         // 1. 애니메이션 종료 이벤트(FinishAction) 감지
         if (Handler != null && Handler.IsActionFinished)
         {
-            // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 애니메이션 종료 감지.");
+            // // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 애니메이션 종료 감지.");
             return NodeState.SUCCESS;
         }
 
         // 2. 안전 타임아웃 (애니메이션 이벤트 누락 대비, 보통 1초면 충분)
         if (Time.time - _entryTime > 1.2f)
         {
-            // Debug.LogWarning("<color=orange>[Task_HitAction]</color> 히트 대기 타임아웃.");
+            // // Debug.LogWarning("<color=orange>[Task_HitAction]</color> 히트 대기 타임아웃.");
             return NodeState.SUCCESS;
         }
 
@@ -68,7 +68,7 @@ public class Task_HitAction : Node
 
         if (Handler != null) Handler.ResetAllFlags();
         
-        // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 상태 해제 및 플래그 초기화.");
+        // // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 상태 해제 및 플래그 초기화.");
     }
 
     public override Node Clone()

@@ -20,7 +20,7 @@ public class Stun : Node
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
         }
         // runner.player.GetComponent<IDamageable>().TakeDamage(Damage, runner.heatSystem.GetTier(), damageData);
-        // Debug.Log("플레이어 기절함");
+        // // Debug.Log("플레이어 기절함");
         return NodeState.SUCCESS;
     }
 

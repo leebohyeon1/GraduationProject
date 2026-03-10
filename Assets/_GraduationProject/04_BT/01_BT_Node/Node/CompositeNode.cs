@@ -23,7 +23,7 @@ namespace BehaviorTree
                 if(services[i] != null)
                 {
                 services[i].Evaluate();
-            // // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{services[i].name}</color>");
+            // // // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{services[i].name}</color>");
 
                 }
             }

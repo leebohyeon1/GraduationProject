@@ -12,7 +12,7 @@ public class Task_ChasePlayerNode : Node
     {
         aIPath = runner.GetComponent<AIPath>();
         
-        // Debug.Log(string.Format("[ChasePlayerNode : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}", runner.name, runner.CurrentState, runner._stateController.IsStateLocked));
+        // // Debug.Log(string.Format("[ChasePlayerNode : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}", runner.name, runner.CurrentState, runner._stateController.IsStateLocked));
 
         if (aIPath != null)
         {
@@ -46,7 +46,7 @@ public class Task_ChasePlayerNode : Node
 
     public override void OnExit()
     {
-        // Debug.Log(string.Format("[ChasePlayerNode : {0}] OnExit 호출됨.", runner.name));
+        // // Debug.Log(string.Format("[ChasePlayerNode : {0}] OnExit 호출됨.", runner.name));
         runner.Movement.StopMovement();
     }
     public override void Abort()
