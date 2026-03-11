@@ -42,7 +42,7 @@ public class Task_AnimationNode : Node
             _didSetLock = true;
         }
         
-        Debug.Log($"<color=white>[Task_AnimationNode]</color> '{triggerName}' 트리거 발송. 애니메이션 완료 및 {postDelayTime}초 대기 시작.");
+        // // Debug.Log($"<color=white>[Task_AnimationNode]</color> '{triggerName}' 트리거 발송. 애니메이션 완료 및 {postDelayTime}초 대기 시작.");
     }
 
     protected override NodeState OnUpdate()
@@ -57,7 +57,7 @@ public class Task_AnimationNode : Node
                 _isAnimFinished = true;
                 _endTime = Time.time;
                 
-                Debug.Log($"<color=white>[Task_AnimationNode]</color> 애니메이션 종료 신호 감지. 포스트 딜레이({postDelayTime}s) 대기 시작.");
+                // // Debug.Log($"<color=white>[Task_AnimationNode]</color> 애니메이션 종료 신호 감지. 포스트 딜레이({postDelayTime}s) 대기 시작.");
             }
             return NodeState.RUNNING;
         }
@@ -65,7 +65,7 @@ public class Task_AnimationNode : Node
         // 상태 2: 애니메이션 종료 후 추가 지연 시간 대기
         if (Time.time - _endTime >= postDelayTime)
         {
-            Debug.Log($"<color=white>[Task_AnimationNode]</color> 모든 대기 완료. SUCCESS 반환.");
+            // // Debug.Log($"<color=white>[Task_AnimationNode]</color> 모든 대기 완료. SUCCESS 반환.");
             return NodeState.SUCCESS;
         }
 

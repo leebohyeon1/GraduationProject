@@ -31,7 +31,6 @@ MonoBehaviour:
   position: {x: -349, y: 78}
   nodes:
   - {fileID: -2086197182714575690}
-  - {fileID: 4195622132772779419}
   services: []
 --- !u!114 &-4941898794227933307
 MonoBehaviour:
@@ -124,8 +123,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
   position: {x: -192, y: 81}
   Radius: 10
-  Delay: 1.5
+  Delay: 1
   MoveSpeed: 3
+  StuckThreshold: 0.2
+  StuckTimeout: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,7 +216,7 @@ MonoBehaviour:
   m_Name: Idle Node
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
   position: {x: -192, y: 161}
-  idleTime: 2
+  idleTime: 1
 --- !u!114 &4272942598619701867
 MonoBehaviour:
   m_ObjectHideFlags: 0
