@@ -133,6 +133,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.groupAi.GroupRemove(_owner);
         _owner.tag = "DeadEnemy";
         
+        if(TryGetComponent<LockOnTarget>(out var lockOnTarget))
+            lockOnTarget.TriggerLockReleased();
+
         StartCoroutine(ReturnToPoolRoutine(3f));
     }
 
