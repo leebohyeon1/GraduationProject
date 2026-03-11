@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-public class DisplaySettingUI : MonoBehaviour
+public class DisplaySettingUI : SettingPageUI
 {
     [Header("UI Elements")]
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
@@ -53,26 +53,20 @@ public class DisplaySettingUI : MonoBehaviour
     private void SetupScreenMode()
     {
         if (_screenModeDropdown == null) return;
-
         _screenModeDropdown.onValueChanged.AddListener(SetScreenMode);
-        // 0: Fullscreen, 1: Windowed
         _screenModeDropdown.value = Screen.fullScreen ? 0 : 1;
     }
 
     private void SetupFrameRate()
     {
         if (_frameRateDropdown == null) return;
-
         _frameRateDropdown.onValueChanged.AddListener(SetFrameRate);
-        // 기본값 설정 (예: 60fps)
-        _frameRateDropdown.value = 1; 
+        _frameRateDropdown.value = 1; // Default 60fps
     }
 
     private void SetupScreenShake()
     {
         if (_screenShakeToggle == null) return;
-
-        // PlayerPrefs 등을 이용해 설정값 저장/로드 가능
         _screenShakeToggle.isOn = PlayerPrefs.GetInt("ScreenShake", 1) == 1;
         _screenShakeToggle.onValueChanged.AddListener(SetScreenShake);
     }
@@ -80,15 +74,11 @@ public class DisplaySettingUI : MonoBehaviour
     public void SetResolution(int index)
     {
         if (index < 0 || index >= _resolutions.Count) return;
-        
         Resolution res = _resolutions[index];
         Screen.SetResolution(res.width, res.height, Screen.fullScreenMode);
     }
 
-    public void SetScreenMode(int index)
-    {
-        Screen.fullScreen = (index == 0);
-    }
+    public void SetScreenMode(int index) => Screen.fullScreen = (index == 0);
 
     public void SetFrameRate(int index)
     {
@@ -103,6 +93,5 @@ public class DisplaySettingUI : MonoBehaviour
     {
         PlayerPrefs.SetInt("ScreenShake", useShake ? 1 : 0);
         PlayerPrefs.Save();
-        // 실제 피드백 매니저 등에서 이 값을 참조하도록 구현이 필요할 수 있습니다.
     }
 }

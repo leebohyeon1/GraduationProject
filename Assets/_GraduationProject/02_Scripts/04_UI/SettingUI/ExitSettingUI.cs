@@ -1,36 +1,36 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExitSettingUI : MonoBehaviour
+public class ExitSettingUI : SettingPageUI
 {
     [SerializeField] private Button _quitToTitleButton;
     [SerializeField] private Button _quitToDesktopButton;
 
+    private MenuSettingUI _parentUI;
+
+    private void Awake()
+    {
+        _parentUI = GetComponentInParent<MenuSettingUI>();
+    }
+
     private void Start()
     {
-        // 버튼 클릭 시 MenuSettingUI의 메서드 호출
+        if (_parentUI == null) return;
+
         if (_quitToTitleButton != null)
-        {
             _quitToTitleButton.onClick.AddListener(OnQuitToTitle);
-        }
 
         if (_quitToDesktopButton != null)
-        {
             _quitToDesktopButton.onClick.AddListener(OnQuitToDesktop);
-        }
     }
 
-
-    public void OnQuitToTitle()
+    private void OnQuitToTitle()
     {
-        DataManager.Instance.SaveGame(); // 게임 저장
-        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
+        _parentUI.OnQuitToTitle();
     }
 
-    public void OnQuitToDesktop()
+    private void OnQuitToDesktop()
     {
-        DataManager.Instance.SaveGame(); // 게임 저장
-        Application.Quit();
+        _parentUI.OnQuitToDesktop();
     }
-
 }

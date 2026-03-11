@@ -2,11 +2,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
+
+public enum SettingPageType
+{
+    Graphic = 0,
+    Audio = 1,
+    Exit = 2
+}
 
 public class MenuSettingUI : MenuUIComponent
 {
     [Header("Settings Pages")]
-    [SerializeField] private GameObject[] _settingPages; // 0: Graphic, 1: Audio, 2: Exit
+    [SerializeField] private GameObject[] _settingPages; // 베이스 클래스 배열로 변경
+    [SerializeField] private List<SettingPageUI> _pageComponents; // 베이스 클래스 배열로 변경
     [SerializeField] private InputReaderSO _inputReader;
 
     [Header("Page")]
@@ -23,8 +32,13 @@ public class MenuSettingUI : MenuUIComponent
         if (_inputReader != null)
         {
             _inputReader.SubNextEvent += OnSubNext;
+            _inputReader.SubPreviousEvent += OnSubPrevious;
         }
 
+        foreach (var page in _settingPages)
+        {
+            _pageComponents.Add(page.GetComponent<SettingPageUI>());
+        }
         UpdatePageUI();
     }
 
@@ -32,6 +46,7 @@ public class MenuSettingUI : MenuUIComponent
     {
         if (_inputReader != null)
         {
+            _inputReader.SubNextEvent -= OnSubNext;
             _inputReader.SubPreviousEvent -= OnSubPrevious;
         }
     }
@@ -43,6 +58,7 @@ public class MenuSettingUI : MenuUIComponent
             ChangePage(1);
         }
     }
+
     private void OnSubPrevious()
     {
         if (gameObject.activeSelf)
@@ -50,6 +66,7 @@ public class MenuSettingUI : MenuUIComponent
             ChangePage(-1);
         }
     }
+
     private void ChangePage(int direction)
     {
         _currentPageIndex += direction;
@@ -69,29 +86,50 @@ public class MenuSettingUI : MenuUIComponent
 
     private void UpdatePageUI()
     {
-        if (_settingPages == null || _settingPages.Length == 0)
+        if (_pageComponents == null || _pageComponents.Count == 0)
         {
             return;
         }
 
-        for (int i = 0; i < _settingPages.Length; i++)
+        // 모든 페이지를 닫고 현재 페이지만 엶
+        for (int i = 0; i < _pageComponents.Count; i++)
         {
-            if (_settingPages[i] != null)
+            if (_pageComponents[i] != null)
             {
-                _settingPages[i].SetActive(i == _currentPageIndex);
-
-                _activePagePoint.SetParent(_pointList[_currentPageIndex], false);
-                _activePagePoint.anchoredPosition = Vector2.zero;
+                if (i == _currentPageIndex)
+                {
+                    _pageComponents[i].OnPageOpen();
+                    
+                    // 현재 페이지의 타이틀 정보로 UI 업데이트
+                    if (_pageTitle != null)
+                    {
+                        _pageTitle.text = _pageComponents[i].PageTitle;
+                    }
+                }
+                else
+                {
+                    _pageComponents[i].OnPageClose();
+                }
             }
         }
-        
-        Debug.Log($"Setting Page Changed: {((SettingPageType)_currentPageIndex)}");
+
+        // 페이지 포인트(인디케이터) 업데이트
+        if (_activePagePoint != null && _pointList != null && _currentPageIndex < _pointList.Count)
+        {
+            _activePagePoint.SetParent(_pointList[_currentPageIndex], false);
+            _activePagePoint.anchoredPosition = Vector2.zero;
+        }
     }
 
-    private enum SettingPageType
+    public void OnQuitToTitle()
     {
-        Graphic = 0,
-        Audio = 1,
-        Exit = 2
+        DataManager.Instance.SaveGame();
+        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
+    }
+
+    public void OnQuitToDesktop()
+    {
+        DataManager.Instance.SaveGame();
+        Application.Quit();
     }
 }
