@@ -690,7 +690,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 845315690741237128}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2078,7 +2078,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114183302554574815}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -5061,6 +5061,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f202a9743e442045bbbadb4bbfb1baf, type: 2}
   - {fileID: 11400000, guid: 463f0fddde83bcb4d8095c4727b9296b, type: 2}
   - {fileID: 11400000, guid: 322dbca6d5b44734f96eacb8dd29260e, type: 2}
+  _lodDistance: 25
+  _hardCullDistance: 60
+  _tickInterval: 5
+  _viewMargin: 0.5
 --- !u!114 &2630407299286313515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5170,7 +5174,6 @@ MonoBehaviour:
   ImmunityStart: 0
   MinorTime: 5
   KnockbackForce: 30
-  upwardForce: 5
 --- !u!114 &2033212805799764935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5237,6 +5240,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   wallBuffer: 0.5
+  wallBufferMultiplier: 1.3
   AnimationBasedMovement: 1
 --- !u!114 &4508837680801409960
 MonoBehaviour:
