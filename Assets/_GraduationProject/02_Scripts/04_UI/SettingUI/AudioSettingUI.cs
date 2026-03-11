@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MoreMountains.Tools;
 using System;
+using System.Collections;
 
 public class AudioSettingUI : SettingPageUI
 {
@@ -11,17 +12,46 @@ public class AudioSettingUI : SettingPageUI
         public string Name;
         public MMSoundManager.MMSoundManagerTracks Track;
         public Image FillImage;      // 슬라이더 대신 사용할 Image (Type: Filled)
-        public GameObject Selector;  // 선택 시 활성화될 하이라이트 오브젝트
+        public GameObject Selector;  // 선택 시 하이라이트 오브젝트
+
+        [HideInInspector] public RectTransform SelectorRect; // 캐싱된 RectTransform
+        [HideInInspector] public Vector2 OriginalSize;       // 초기 크기 저장
+        public Coroutine SizeCoroutine;                      // 개별 애니메이션 관리
     }
 
     [Header("Settings")]
     [SerializeField] private InputReaderSO _inputReader;
     [SerializeField] private AudioSettingRow[] _rows;
-    [SerializeField] private float _changeSpeed = 1.2f; // 음량 변화 속도
+    [SerializeField] private float _changeSpeed = 1.2f; // 기본 음량 변화 속도
+
+    [Header("Volume Acceleration")]
+    [SerializeField] private float _accelerationRate = 2.0f; // 가속도 증가 속도 (초당 배율 증가량)
+    [SerializeField] private float _maxMultiplier = 5.0f;    // 최대 가속 배율
+    private float _currentMultiplier = 1.0f;                 // 현재 가속 배율
+
+    [Header("Selector Animation")]
+    [SerializeField] private Vector2 _selectedSize = new Vector2(370, 28);
+    [SerializeField] private float _animationSpeed = 15f; // 애니메이션 속도
 
     private int _currentRowIndex = 0;
     private Vector2 _navigationInput;
     private bool _isVerticalInputCaptured = false;
+
+    private void Awake()
+    {
+        // 초기 설정 및 데이터 캐싱
+        foreach (var row in _rows)
+        {
+            if (row.Selector != null)
+            {
+                row.SelectorRect = row.Selector.GetComponent<RectTransform>();
+                row.OriginalSize = row.SelectorRect.sizeDelta;
+                
+                // 모든 Selector를 항상 켜둠
+                row.Selector.SetActive(true);
+            }
+        }
+    }
 
     private void OnEnable()
     {
@@ -38,6 +68,12 @@ public class AudioSettingUI : SettingPageUI
         if (_inputReader != null)
         {
             _inputReader.NavigateEvent -= OnNavigate;
+        }
+
+        // 실행 중인 모든 애니메이션 정지
+        foreach (var row in _rows)
+        {
+            if (row.SizeCoroutine != null) StopCoroutine(row.SizeCoroutine);
         }
     }
 
@@ -76,10 +112,19 @@ public class AudioSettingUI : SettingPageUI
 
     private void Update()
     {
-        // 좌우 입력 처리 (음량 조절) - 누르고 있으면 연속 변화
+        // 좌우 입력 처리 (음량 조절)
         if (Mathf.Abs(_navigationInput.x) > 0.2f)
         {
-            AdjustVolume(_navigationInput.x * _changeSpeed * Time.unscaledDeltaTime);
+            // 누르고 있는 동안 배율을 서서히 높입니다.
+            _currentMultiplier = Mathf.Min(_currentMultiplier + _accelerationRate * Time.unscaledDeltaTime, _maxMultiplier);
+            
+            // 기존 속도에 가속 배율을 곱해 적용합니다.
+            AdjustVolume(_navigationInput.x * _changeSpeed * _currentMultiplier * Time.unscaledDeltaTime);
+        }
+        else
+        {
+            // 입력을 떼면 가속 배율을 1.0(기본값)으로 초기화합니다.
+            _currentMultiplier = 1.0f;
         }
     }
 
@@ -107,10 +152,25 @@ public class AudioSettingUI : SettingPageUI
     {
         for (int i = 0; i < _rows.Length; i++)
         {
-            if (_rows[i].Selector != null)
-            {
-                _rows[i].Selector.SetActive(i == _currentRowIndex);
-            }
+            var row = _rows[i];
+            if (row.SelectorRect == null) continue;
+
+            // 이전 애니메이션 중지 후 새로운 목표 크기로 애니메이션 시작
+            if (row.SizeCoroutine != null) StopCoroutine(row.SizeCoroutine);
+
+            Vector2 targetSize = (i == _currentRowIndex) ? _selectedSize : row.OriginalSize;
+            row.SizeCoroutine = StartCoroutine(AnimateSize(row.SelectorRect, targetSize));
         }
+    }
+
+    private IEnumerator AnimateSize(RectTransform target, Vector2 targetSize)
+    {
+        // 목표 크기에 도달할 때까지 부드럽게 보간(Lerp)
+        while (Vector2.Distance(target.sizeDelta, targetSize) > 0.1f)
+        {
+            target.sizeDelta = Vector2.Lerp(target.sizeDelta, targetSize, Time.unscaledDeltaTime * _animationSpeed);
+            yield return null;
+        }
+        target.sizeDelta = targetSize;
     }
 }
