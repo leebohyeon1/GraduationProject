@@ -1,201 +1,292 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening; // DOTween 네임스페이스 추가
 
 public class DisplaySettingUI : SettingPageUI
 {
+    // --- 설정 항목을 위한 추상 베이스 클래스 ---
+    [System.Serializable]
+    public abstract class SettingItem
+    {
+        [Header("UI References")]
+        public TextMeshProUGUI valueText;
+        public RectTransform leftArrow;
+        public RectTransform rightArrow;
+        public RectTransform focusTarget;
+
+        [Header("Animation Settings")]
+        protected float bumpDistance = 15f;
+        protected float shakeDistance = 8f;
+        protected float duration = 0.15f;
+
+        protected MonoBehaviour owner;
+        private Vector2 leftArrowInitialPos;
+        private Vector2 rightArrowInitialPos;
+        private bool initialized = false;
+
+        public virtual void Initialize(MonoBehaviour owner)
+        {
+            if (initialized)
+            {
+                return;
+            }
+
+            this.owner = owner;
+            if (leftArrow != null)
+            {
+                leftArrowInitialPos = leftArrow.anchoredPosition;
+            }
+            if (rightArrow != null)
+            {
+                rightArrowInitialPos = rightArrow.anchoredPosition;
+            }
+            initialized = true;
+        }
+
+        public abstract bool ChangeValue(int direction);
+        public abstract void UpdateUI();
+
+        public void PlayFeedback(bool isBoundary, int direction)
+        {
+            RectTransform arrow = (direction > 0) ? rightArrow : leftArrow;
+            Vector2 initialPos = (direction > 0) ? rightArrowInitialPos : leftArrowInitialPos;
+            if (arrow == null) return;
+
+            // 기존 애니메이션 즉시 종료 및 초기 위치로 복구
+            arrow.DOKill(true);
+            arrow.anchoredPosition = initialPos;
+
+            if (isBoundary)
+            {
+                // 초기 위치 기준 흔들림
+                arrow.DOShakeAnchorPos(0.3f, new Vector2(shakeDistance, 0), 15, 90, false, true)
+                    .SetUpdate(true);
+            }
+            else
+            {
+                // 초기 위치 기준으로 톡 튀어나옴 (Yoyo 루프로 초기 위치 복귀)
+                arrow.DOAnchorPosX(initialPos.x + (direction * bumpDistance), duration)
+                    .SetLoops(2, LoopType.Yoyo)
+                    .SetEase(Ease.OutQuad)
+                    .SetUpdate(true);
+            }
+        }
+    }
+
+    // --- 구체적인 설정 항목 구현체들 ---
+
+    [System.Serializable]
+    public class ResolutionSetting : SettingItem {
+        private List<Resolution> resolutions = new List<Resolution>();
+        private int resIndex;
+
+        public override void Initialize(MonoBehaviour owner) {
+            base.Initialize(owner);
+            resolutions.Clear();
+            Resolution[] allRes = Screen.resolutions;
+            for (int i = 0; i < allRes.Length; i++) {
+                resolutions.Add(allRes[i]);
+                if (allRes[i].width == Screen.width && allRes[i].height == Screen.height) resIndex = i;
+            }
+            UpdateUI();
+        }
+
+        public override bool ChangeValue(int dir) {
+            int prev = resIndex;
+            resIndex = Mathf.Clamp(resIndex + dir, 0, resolutions.Count - 1);
+            if (prev == resIndex) return true;
+            
+            Resolution res = resolutions[resIndex];
+            Screen.SetResolution(res.width, res.height, Screen.fullScreenMode);
+            UpdateUI();
+            return false;
+        }
+
+        public override void UpdateUI() {
+            if (valueText != null && resolutions.Count > 0) {
+                Resolution res = resolutions[resIndex];
+                valueText.text = $"{res.width} x {res.height} @ {res.refreshRateRatio.value:F0}Hz";
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class ScreenModeSetting : SettingItem {
+        private readonly string[] modes = { "Full Screen", "Windowed" };
+        private int modeIndex;
+
+        public override void Initialize(MonoBehaviour owner) {
+            base.Initialize(owner);
+            modeIndex = Screen.fullScreen ? 0 : 1;
+            UpdateUI();
+        }
+
+        public override bool ChangeValue(int dir) {
+            int prev = modeIndex;
+            modeIndex = Mathf.Clamp(modeIndex + dir, 0, modes.Length - 1);
+            if (prev == modeIndex) return true;
+            
+            Screen.fullScreen = (modeIndex == 0);
+            UpdateUI();
+            return false;
+        }
+
+        public override void UpdateUI() {
+            if (valueText != null) valueText.text = modes[modeIndex];
+        }
+    }
+
+    [System.Serializable]
+    public class FrameRateSetting : SettingItem {
+        private readonly string[] labels = { "30 FPS", "60 FPS", "144 FPS", "Unlimited" };
+        private readonly int[] values = { 30, 60, 144, -1 };
+        private int frameIndex;
+
+        public override void Initialize(MonoBehaviour owner) {
+            base.Initialize(owner);
+            int current = Application.targetFrameRate;
+            frameIndex = 1; // Default 60
+            for (int i = 0; i < values.Length; i++) if (values[i] == current) { frameIndex = i; break; }
+            UpdateUI();
+        }
+
+        public override bool ChangeValue(int dir) {
+            int prev = frameIndex;
+            frameIndex = Mathf.Clamp(frameIndex + dir, 0, labels.Length - 1);
+            if (prev == frameIndex) return true;
+            
+            Application.targetFrameRate = values[frameIndex];
+            UpdateUI();
+            return false;
+        }
+
+        public override void UpdateUI() {
+            if (valueText != null) valueText.text = labels[frameIndex];
+        }
+    }
+
+    [System.Serializable]
+    public class ScreenShakeSetting : SettingItem {
+        private bool isShake;
+        public override void Initialize(MonoBehaviour owner) {
+            base.Initialize(owner);
+            isShake = PlayerPrefs.GetInt("ScreenShake", 1) == 1;
+            UpdateUI();
+        }
+
+        public override bool ChangeValue(int dir) {
+            bool prev = isShake;
+            if (dir > 0) isShake = false; else isShake = true;
+            
+            if (prev == isShake) return true;
+            
+            PlayerPrefs.SetInt("ScreenShake", isShake ? 1 : 0);
+            PlayerPrefs.Save();
+            UpdateUI();
+            return false;
+        }
+
+        public override void UpdateUI() {
+            if (valueText != null) valueText.text = isShake ? "On" : "Off";
+        }
+    }
+
+    // --- 메인 DisplaySettingUI 클래스 로직 ---
+
     [Header("Input")]
     [SerializeField] private InputReaderSO _inputReader;
 
-    [Header("Visual Elements (Texts)")]
-    [SerializeField] private TextMeshProUGUI _resolutionText;
-    [SerializeField] private TextMeshProUGUI _screenModeText;
-    [SerializeField] private TextMeshProUGUI _frameRateText;
-    [SerializeField] private TextMeshProUGUI _screenShakeText;
+    [Header("Settings Items")]
+    [SerializeField] private ResolutionSetting _resSetting;
+    [SerializeField] private ScreenModeSetting _modeSetting;
+    [SerializeField] private FrameRateSetting _frameSetting;
+    [SerializeField] private ScreenShakeSetting _shakeSetting;
 
-    [Header("Selectable Buttons")]
-    [SerializeField] private Button _resolutionButton;
-    [SerializeField] private Button _screenModeButton;
-    [SerializeField] private Button _frameRateButton;
-    [SerializeField] private Button _screenShakeButton;
+    [Header("Visual Feedback")]
+    [SerializeField] private GameObject _selectionIndicator;
+    [SerializeField] private float _indicatorSpeed = 0.2f; // 초 단위로 변경 (DOTween용)
 
-    private List<Resolution> _resolutions = new List<Resolution>();
-    private int _resIndex;
-    private int _modeIndex;
-    private int _frameIndex;
-    private bool _isScreenShake;
+    private SettingItem[] _items;
+    private SettingItem[] Items
+    {
+        get
+        {
+            if (_items == null)
+            {
+                _items = new SettingItem[] { _resSetting, _modeSetting, _frameSetting, _shakeSetting };
+            }
+            return _items;
+        }
+    }
 
-    private readonly string[] _screenModes = { "Full Screen", "Windowed" };
-    private readonly string[] _frameRates = { "30 FPS", "60 FPS", "144 FPS", "Unlimited" };
-    private readonly int[] _frameRateValues = { 30, 60, 144, -1 };
+    private int _currentIndex = 0;
+
+    private void Awake() { }
 
     private void Start()
     {
-        InitializeSettings();
+        foreach (var item in Items) item.Initialize(this);
     }
 
     private void OnEnable()
     {
-        if (_inputReader != null)
-        {
-            _inputReader.NavigateEvent += OnNavigate;
-        }
-        FocusFirstButton();
+        if (_inputReader != null) _inputReader.NavigateEvent += OnNavigate;
+        _currentIndex = 0;
+        UpdateSelectionVisuals();
     }
 
     private void OnDisable()
     {
-        if (_inputReader != null)
-        {
-            _inputReader.NavigateEvent -= OnNavigate;
-        }
+        if (_inputReader != null) _inputReader.NavigateEvent -= OnNavigate;
+        _selectionIndicator?.transform.DOKill();
     }
 
     public override void OnPageOpen()
     {
         base.OnPageOpen();
-        FocusFirstButton();
-    }
-
-    private void FocusFirstButton()
-    {
-        if (_resolutionButton != null)
-        {
-            _resolutionButton.Select();
-        }
-    }
-
-    private void InitializeSettings()
-    {
-        // 1. 해상도 목록 초기화 및 현재 설정 찾기
-        _resolutions.Clear();
-        // Screen.resolutions는 모든 가능한 해상도를 가져옵니다.
-        Resolution[] allRes = Screen.resolutions;
-        
-        if (allRes.Length > 0)
-        {
-            for (int i = 0; i < allRes.Length; i++)
-            {
-                _resolutions.Add(allRes[i]);
-                if (allRes[i].width == Screen.width && allRes[i].height == Screen.height)
-                {
-                    _resIndex = i;
-                }
-            }
-        }
-
-        // 2. 화면 모드 초기화
-        _modeIndex = Screen.fullScreen ? 0 : 1;
-
-        // 3. 프레임 제한 초기화 (저장된 값이 없으면 60 FPS)
-        int currentRate = Application.targetFrameRate;
-        _frameIndex = 1; // Default 60
-        for (int i = 0; i < _frameRateValues.Length; i++)
-        {
-            if (_frameRateValues[i] == currentRate)
-            {
-                _frameIndex = i;
-                break;
-            }
-        }
-
-        // 4. 화면 흔들림 초기화
-        _isScreenShake = PlayerPrefs.GetInt("ScreenShake", 1) == 1;
-
-        UpdateAllUI();
+        _currentIndex = 0;
+        UpdateSelectionVisuals();
     }
 
     private void OnNavigate(Vector2 axis)
     {
-        // 상하 이동은 EventSystem이 처리하므로, 여기서는 좌우 입력만 체크합니다.
-        if (Mathf.Abs(axis.x) < 0.5f) return;
-
-        GameObject current = EventSystem.current.currentSelectedGameObject;
-        if (current == null) return;
-
-        int direction = axis.x > 0 ? 1 : -1;
-
-        if (current == _resolutionButton.gameObject)
-            ChangeResolution(direction);
-        else if (current == _screenModeButton.gameObject)
-            ChangeScreenMode(direction);
-        else if (current == _frameRateButton.gameObject)
-            ChangeFrameRate(direction);
-        else if (current == _screenShakeButton.gameObject)
-            ChangeScreenShake(direction);
-    }
-
-    private void ChangeResolution(int dir)
-    {
-        if (_resolutions.Count == 0) return;
-        _resIndex = (_resIndex + dir + _resolutions.Count) % _resolutions.Count;
-        
-        Resolution res = _resolutions[_resIndex];
-        Screen.SetResolution(res.width, res.height, Screen.fullScreenMode);
-        
-        UpdateResolutionUI();
-    }
-
-    private void ChangeScreenMode(int dir)
-    {
-        _modeIndex = (_modeIndex + dir + _screenModes.Length) % _screenModes.Length;
-        Screen.fullScreen = (_modeIndex == 0);
-        
-        UpdateScreenModeUI();
-    }
-
-    private void ChangeFrameRate(int dir)
-    {
-        _frameIndex = (_frameIndex + dir + _frameRates.Length) % _frameRates.Length;
-        Application.targetFrameRate = _frameRateValues[_frameIndex];
-        
-        UpdateFrameRateUI();
-    }
-
-    private void ChangeScreenShake(int dir)
-    {
-        // 토글 방식이지만 좌우 입력 모두 반전 처리
-        _isScreenShake = !_isScreenShake;
-        PlayerPrefs.SetInt("ScreenShake", _isScreenShake ? 1 : 0);
-        PlayerPrefs.Save();
-        
-        UpdateScreenShakeUI();
-    }
-
-    private void UpdateAllUI()
-    {
-        UpdateResolutionUI();
-        UpdateScreenModeUI();
-        UpdateFrameRateUI();
-        UpdateScreenShakeUI();
-    }
-
-    private void UpdateResolutionUI()
-    {
-        if (_resolutionText != null && _resolutions.Count > 0)
+        if (Mathf.Abs(axis.y) > 0.5f)
         {
-            Resolution res = _resolutions[_resIndex];
-            _resolutionText.text = $"{res.width} x {res.height} @ {res.refreshRateRatio.value:F0}Hz";
+            int prev = _currentIndex;
+            _currentIndex = Mathf.Clamp(_currentIndex + (axis.y > 0 ? -1 : 1), 0, Items.Length - 1);
+            if (prev != _currentIndex) UpdateSelectionVisuals();
+        }
+        else if (Mathf.Abs(axis.x) > 0.5f)
+        {
+            int dir = axis.x > 0 ? 1 : -1;
+            bool isBoundary = Items[_currentIndex].ChangeValue(dir);
+            Items[_currentIndex].PlayFeedback(isBoundary, dir);
         }
     }
 
-    private void UpdateScreenModeUI()
+    private void UpdateSelectionVisuals()
     {
-        if (_screenModeText != null)
-            _screenModeText.text = _screenModes[_modeIndex];
-    }
+        if (_selectionIndicator != null && Items[_currentIndex].focusTarget != null)
+        {
+            Transform target = Items[_currentIndex].focusTarget;
+            
+            _selectionIndicator.transform.DOKill();
+            _selectionIndicator.transform.SetParent(target, true);
 
-    private void UpdateFrameRateUI()
-    {
-        if (_frameRateText != null)
-            _frameRateText.text = _frameRates[_frameIndex];
-    }
+            // 이동 및 스케일 애니메이션
+            _selectionIndicator.transform.DOScale(Vector3.one * 1.15f, _indicatorSpeed * 0.5f)
+                .SetLoops(2, LoopType.Yoyo)
+                .SetUpdate(true).OnComplete(() => { _selectionIndicator.transform.localScale = Vector3.one; });
+            ;
+                
+            _selectionIndicator.transform.DOLocalMove(Vector3.zero, _indicatorSpeed)
+                .SetEase(Ease.OutBack)
+                .SetUpdate(true);
 
-    private void UpdateScreenShakeUI()
-    {
-        if (_screenShakeText != null)
-            _screenShakeText.text = _isScreenShake ? "On" : "Off";
+            if (!_selectionIndicator.activeSelf) _selectionIndicator.SetActive(true);
+        }
     }
 }
