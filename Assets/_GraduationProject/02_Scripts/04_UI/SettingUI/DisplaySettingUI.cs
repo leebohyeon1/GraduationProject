@@ -277,10 +277,9 @@ public class DisplaySettingUI : SettingPageUI
             _selectionIndicator.transform.SetParent(target, true);
 
             // 이동 및 스케일 애니메이션
-            _selectionIndicator.transform.DOScale(Vector3.one * 1.15f, _indicatorSpeed * 0.5f)
-                .SetLoops(2, LoopType.Yoyo)
-                .SetUpdate(true).OnComplete(() => { _selectionIndicator.transform.localScale = Vector3.one; });
-            ;
+            _selectionIndicator.transform.localScale = Vector3.one * 1.15f;
+            _selectionIndicator.transform.DOScale(Vector3.one, _indicatorSpeed)
+                .SetUpdate(true);
                 
             _selectionIndicator.transform.DOLocalMove(Vector3.zero, _indicatorSpeed)
                 .SetEase(Ease.OutBack)
