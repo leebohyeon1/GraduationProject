@@ -12,6 +12,7 @@ public class AudioSettingUI : SettingPageUI
         public string Name;
         public MMSoundManager.MMSoundManagerTracks Track;
         public Image FillImage;      // 슬라이더 대신 사용할 Image (Type: Filled)
+        public RectTransform HandleRect; // 핸들 아이콘/이미지의 RectTransform
         public GameObject Selector;  // 선택 시 하이라이트 오브젝트
 
         [HideInInspector] public RectTransform SelectorRect; // 캐싱된 RectTransform
@@ -85,6 +86,7 @@ public class AudioSettingUI : SettingPageUI
         {
             float currentVol = MMSoundManager.Instance.GetTrackVolume(row.Track, false);
             row.FillImage.fillAmount = Mathf.Clamp01(currentVol);
+            UpdateHandlePosition(row); // 초기 위치 설정
         }
 
         UpdateSelectionVisual();
@@ -140,12 +142,29 @@ public class AudioSettingUI : SettingPageUI
         
         float newFillAmount = Mathf.Clamp01(currentRow.FillImage.fillAmount + delta);
         currentRow.FillImage.fillAmount = newFillAmount;
+        
+        UpdateHandlePosition(currentRow); // 음량 변경 시 핸들 위치 업데이트
 
         if (MMSoundManager.HasInstance)
         {
             MMSoundManager.Instance.SetTrackVolume(currentRow.Track, newFillAmount);
             MMSoundManager.Instance.SaveSettings();
         }
+    }
+
+    /// <summary>
+    /// FillImage의 fillAmount에 따라 핸들의 위치를 이동시킵니다.
+    /// </summary>
+    private void UpdateHandlePosition(AudioSettingRow row)
+    {
+        if (row.HandleRect == null || row.FillImage == null) return;
+
+        // FillImage의 Rect 크기를 기준으로 fillAmount를 곱해 X 좌표를 계산합니다.
+        float width = row.FillImage.rectTransform.rect.width;
+        float xPos = width * row.FillImage.fillAmount;
+
+        // 핸들의 anchoredPosition X값을 업데이트합니다. (Y값은 기존 유지)
+        row.HandleRect.anchoredPosition = new Vector2(xPos, row.HandleRect.anchoredPosition.y);
     }
 
     private void UpdateSelectionVisual()
