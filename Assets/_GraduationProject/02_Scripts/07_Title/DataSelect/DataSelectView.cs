@@ -25,6 +25,8 @@ public class DataSelectView : TitleView
     private List<DataSelectButtonTrigger> _dataSelectButtonList = new List<DataSelectButtonTrigger>();
 
     [SerializeField] private GameObject _dataCheckBox;
+    [SerializeField] private Button _checkBoxInitialButton;
+
     private int _selectedIndex = -1;
     private SelectMode _currentMode = SelectMode.NewGame;
     private GameObject _lastSelected;
@@ -37,6 +39,13 @@ public class DataSelectView : TitleView
         _inputReader.CancelEvent += OnCancel;
 
         Initialize();
+
+        // 스크롤 위치 초기화 (가장 위로)
+        if (_scrollRect != null)
+        {
+            _scrollRect.verticalNormalizedPosition = 1f;
+        }
+
         if (_dataSelectButtonList.Count > 0)
         {
             SelectButton(0);
@@ -99,7 +108,7 @@ public class DataSelectView : TitleView
 
     private void Update()
     {
-        if (EventSystem.current == null) return;
+        if (EventSystem.current == null || _dataCheckBox.activeSelf) return;
 
         GameObject current = EventSystem.current.currentSelectedGameObject;
         if (current == null || current == _lastSelected) return;
@@ -216,11 +225,20 @@ public class DataSelectView : TitleView
     public void CheckBoxOn()
     {
         _dataCheckBox.SetActive(true);
+
+        // 체크박스 내의 첫 번째 버튼을 자동으로 선택
+        _checkBoxInitialButton.Select();
     }
 
     public void CheckBoxOff()
     {
         _dataCheckBox.SetActive(false);
+        
+        // 체크박스가 닫히면 다시 리스트의 이전에 선택했던 버튼으로 포커스 복구
+        if (_selectedIndex != -1)
+        {
+            SelectButton(_selectedIndex);
+        }
     }
 
     private void OnCancel()
