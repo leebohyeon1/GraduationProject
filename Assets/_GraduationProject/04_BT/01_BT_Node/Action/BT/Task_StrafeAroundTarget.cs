@@ -52,7 +52,6 @@ public class Task_StrafeAroundTarget : Node
         NNInfo info = AstarPath.active.GetNearest(desiredPos);
         if (info.node != null) desiredPos = info.position; 
 
-        _ai.destination = desiredPos;
         runner.Movement.StartOrUpdateChase(desiredPos);
         RotateTowards(targetPos);
 

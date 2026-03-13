@@ -33,7 +33,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 221, y: -32}
   nodes:
-  - {fileID: -6436947357573883109}
   - {fileID: -2731556191852606048}
   services: []
 --- !u!114 &-5121587373199791709
@@ -48,13 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: SEL_LongAttack
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 2, y: 6}
-  nodes:
-  - {fileID: -1780693242651229239}
-  - {fileID: 1932421519546911441}
-  - {fileID: -5866178787055448860}
-  - {fileID: 3593469768659168057}
-  - {fileID: 2304183980306281579}
+  position: {x: -10, y: -124}
+  nodes: []
   services: []
 --- !u!114 &-3680199345345958982
 MonoBehaviour:
@@ -86,9 +80,27 @@ MonoBehaviour:
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
   rushSpeed: 15
-  stopDistance: 1
-  speed: 6
+  lockDistance: 5
+  maxChargeDuration: 3
   maxTriggerRange: 15
+  trailVfxPrefab: {fileID: 0}
+  trailSpawnInterval: 1.5
+  explosionDelay: 1
+  explosionRadius: 2
+  explosionDamage:
+    AttackerTransform: {fileID: 0}
+    AttackType: 0
+    DamageAmount: 0
+    StiffnessAmount: 0
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
+    IsMagic: 0
 --- !u!114 &-2731556191852606048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,27 +113,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 400, y: 41}
+  position: {x: 400, y: 36}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
+  maxNodeDuration: 50
   maintainAtk: 0
-  SO: []
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
-  NextBT: 1
+  NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
   checkRangeOnEnter: 0
-  rangeThreshold: 1
+  rangeThreshold: 4
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
-  rushSpeed: 15
-  stopDistance: 1
-  speed: 6
+  rushSpeed: 30
+  lockDistance: 5
+  maxChargeDuration: 3
   maxTriggerRange: 15
+  trailVfxPrefab: {fileID: 0}
+  trailSpawnInterval: 1.5
+  explosionDelay: 1
+  explosionRadius: 2
+  explosionDamage:
+    AttackerTransform: {fileID: 0}
+    AttackType: 0
+    DamageAmount: 0
+    StiffnessAmount: 0
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
+    IsMagic: 0
 --- !u!114 &-1780693242651229239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
   m_Name: Boss_LongAttack_SubTree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
-  rootNode: {fileID: -5121587373199791709}
+  rootNode: {fileID: 3431776804123636484}
 --- !u!114 &1932421519546911441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 219, y: -113}
+  position: {x: 208, y: -99}
   exceptCondition:
     key: 
   stateCondition:
@@ -184,6 +215,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 221, y: 278}
   waitTime: 1.5
+--- !u!114 &3431776804123636484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: -22, y: -22}
+  nodes:
+  - {fileID: -1780693242651229239}
+  - {fileID: 1932421519546911441}
+  - {fileID: -5866178787055448860}
+  services: []
 --- !u!114 &3593469768659168057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd338289a3119c246b1b17f53eee392e, type: 3}
   m_Name: Weighted Random Selector(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
-  position: {x: 219, y: 161}
+  position: {x: 219, y: 162}
   nodes:
   - {fileID: 3646297250739070143}
   - {fileID: -3680199345345958982}
