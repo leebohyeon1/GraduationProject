@@ -87,9 +87,14 @@ public class DisplaySettingUI : SettingPageUI
             base.Initialize(owner);
             resolutions.Clear();
             Resolution[] allRes = Screen.resolutions;
+            
+            // 저장된 해상도 값 로드 (없으면 현재 화면 해상도)
+            int savedWidth = PlayerPrefs.GetInt("ResWidth", Screen.width);
+            int savedHeight = PlayerPrefs.GetInt("ResHeight", Screen.height);
+
             for (int i = 0; i < allRes.Length; i++) {
                 resolutions.Add(allRes[i]);
-                if (allRes[i].width == Screen.width && allRes[i].height == Screen.height) resIndex = i;
+                if (allRes[i].width == savedWidth && allRes[i].height == savedHeight) resIndex = i;
             }
             UpdateUI();
         }
@@ -101,6 +106,12 @@ public class DisplaySettingUI : SettingPageUI
             
             Resolution res = resolutions[resIndex];
             Screen.SetResolution(res.width, res.height, Screen.fullScreenMode);
+
+            // 설정값 저장
+            PlayerPrefs.SetInt("ResWidth", res.width);
+            PlayerPrefs.SetInt("ResHeight", res.height);
+            PlayerPrefs.Save();
+
             UpdateUI();
             return false;
         }
@@ -108,7 +119,7 @@ public class DisplaySettingUI : SettingPageUI
         public override void UpdateUI() {
             if (valueText != null && resolutions.Count > 0) {
                 Resolution res = resolutions[resIndex];
-                valueText.text = $"{res.width} x {res.height} @ {res.refreshRateRatio.value:F0}Hz";
+                valueText.text = $"{res.width} x {res.height}";
             }
         }
     }
@@ -120,7 +131,8 @@ public class DisplaySettingUI : SettingPageUI
 
         public override void Initialize(MonoBehaviour owner) {
             base.Initialize(owner);
-            modeIndex = Screen.fullScreen ? 0 : 1;
+            // 저장된 화면 모드 로드 (0: Full Screen, 1: Windowed, 기본값 0)
+            modeIndex = PlayerPrefs.GetInt("ScreenMode", Screen.fullScreen ? 0 : 1);
             UpdateUI();
         }
 
@@ -130,6 +142,11 @@ public class DisplaySettingUI : SettingPageUI
             if (prev == modeIndex) return true;
             
             Screen.fullScreen = (modeIndex == 0);
+
+            // 설정값 저장
+            PlayerPrefs.SetInt("ScreenMode", modeIndex);
+            PlayerPrefs.Save();
+
             UpdateUI();
             return false;
         }
@@ -147,9 +164,12 @@ public class DisplaySettingUI : SettingPageUI
 
         public override void Initialize(MonoBehaviour owner) {
             base.Initialize(owner);
-            int current = Application.targetFrameRate;
+            // 저장된 프레임 제한 로드 (기본값 60)
+            int savedFrameRate = PlayerPrefs.GetInt("TargetFrameRate", 60);
+            Application.targetFrameRate = savedFrameRate;
+
             frameIndex = 1; // Default 60
-            for (int i = 0; i < values.Length; i++) if (values[i] == current) { frameIndex = i; break; }
+            for (int i = 0; i < values.Length; i++) if (values[i] == savedFrameRate) { frameIndex = i; break; }
             UpdateUI();
         }
 
@@ -158,7 +178,13 @@ public class DisplaySettingUI : SettingPageUI
             frameIndex = Mathf.Clamp(frameIndex + dir, 0, labels.Length - 1);
             if (prev == frameIndex) return true;
             
-            Application.targetFrameRate = values[frameIndex];
+            int targetVal = values[frameIndex];
+            Application.targetFrameRate = targetVal;
+
+            // 설정값 저장
+            PlayerPrefs.SetInt("TargetFrameRate", targetVal);
+            PlayerPrefs.Save();
+
             UpdateUI();
             return false;
         }

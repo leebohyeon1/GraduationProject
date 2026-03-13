@@ -7,6 +7,7 @@ public abstract class SettingPageUI : MonoBehaviour
     [SerializeField] protected SettingPageType _pageType;
 
     public string PageTitle => _pageTitle;
+    public string SettingName => _pageTitle; // SettingComponent 통합을 위해 추가
     public SettingPageType PageType => _pageType;
 
     public virtual void OnPageOpen() 
