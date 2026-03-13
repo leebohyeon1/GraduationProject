@@ -17,6 +17,9 @@ public class SavePoint : MonoBehaviour, IInteractable
         _playerController.Health.Heal(gameData.PlayerData.MaxHealth);
         _playerController.Potion.ReloadPotion();
 
+        // 죽은 몬스터 목록 초기화 (리스폰)
+        gameData.ClearDeadMonsters();
+
         DataManager.Instance.SaveGame();
         SceneLoadingManager.Instance.TeleportToSceneByName(gameData.LastMainScene);
     }
