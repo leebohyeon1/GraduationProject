@@ -1,24 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8995290014526863605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
-  m_Name: Condition_Check Cool Time
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1150, y: 30}
-  exceptCondition:
-    key: 
-  skillName: 
-  cooldownDuration: 0
-  EnemyAttackData: 1
-  attackData: {fileID: 11400000, guid: 7b811b2cceea080488d5da69b564c94f, type: 2}
 --- !u!114 &-8249379415562615602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,7 +28,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaec6f0188a7f694a9e45640305480f4, type: 3}
   m_Name: Task_Rush To Fixed Location
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
-  position: {x: 1634, y: 949}
+  position: {x: 1182, y: 724}
   attackKey: Attack01_a
   animationStateName: 
   transitionBuffer: 1
@@ -116,52 +97,6 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
---- !u!114 &-8061363964458695047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_ChargeAttack(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1371, y: 572}
-  attackKey: Attack03_a
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 1044524670747374ebf1d65e9b17cbd7, type: 2}
-  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
-  LoopAttack: 1
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: 
---- !u!114 &-7160845693968442229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 937, y: 896}
-  nodes: []
-  services: []
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_CloseAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 937, y: 688}
+  position: {x: 908, y: 509}
   nodes:
   - {fileID: 8335210479689113784}
   - {fileID: 4640970959790474602}
@@ -197,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaec6f0188a7f694a9e45640305480f4, type: 3}
   m_Name: Task_Rush To Fixed Location
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
-  position: {x: 1155, y: 184}
+  position: {x: 1184, y: 279}
   attackKey: Attack02_a
   animationStateName: 
   transitionBuffer: 1
@@ -268,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1365, y: 261}
+  position: {x: 1181, y: -123}
   exceptCondition:
     key: 
   target: {fileID: 0}
@@ -287,13 +222,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1365, y: 495}
+  position: {x: 1183, y: 202}
   exceptCondition:
     key: 
-  skillName: Attack03_a
-  cooldownDuration: 3
-  EnemyAttackData: 1
-  attackData: {fileID: 11400000, guid: 9e20ad6ff726a754ab6416a053e340bf, type: 2}
+  skillName: Attack02_a
+  cooldownDuration: 5
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &-4747025815022784661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1365, y: 415}
+  position: {x: 1183, y: 125}
   exceptCondition:
     key: 
   stateCondition:
@@ -346,89 +281,6 @@ MonoBehaviour:
   position: {x: 592, y: -75}
   exceptCondition:
     key: 
---- !u!114 &-4164804880626014990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf5707276b07e2e4fac9c932f187eb0c, type: 3}
-  m_Name: Task_Player Chase
-  m_EditorClassIdentifier: Assembly-CSharp::Task_PlayerChase
-  position: {x: 1373, y: 650}
-  attackKey: Attack03_a
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 10
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
-  LoopAttack: 1
-  NextBT: 1
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  maxRushSpeed: 7
-  turnSpeed: 1
-  expectedDuration: 5
-  speedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0041656494
-      value: 0.102386475
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.0912343
-      value: 0.79429567
-      inSlope: 0.7572859
-      outSlope: 0.7572859
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.118786305
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxTriggerRange: 20
---- !u!114 &-4140156646422702466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_HasAttackToken
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1155, y: 107}
-  exceptCondition:
-    key: 
-  key: HasAttackToken
 --- !u!114 &-4091383270736508263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,46 +293,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1365, y: 338}
+  position: {x: 1183, y: 48}
   exceptCondition:
     key: 
   key: HasAttackToken
---- !u!114 &-3955425885467282472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_IsPlayerVulnerable
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1155, y: -128}
-  exceptCondition:
-    key: 
-  key: IsPlayerVulnerable
---- !u!114 &-2165811004991647136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_Opportunity(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 887, y: -108}
-  nodes:
-  - {fileID: -3955425885467282472}
-  - {fileID: 5099860071830320573}
-  - {fileID: -8995290014526863605}
-  - {fileID: -4140156646422702466}
-  - {fileID: -5940353699662107700}
-  services: []
 --- !u!114 &-1894843701333497225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1188, y: -705}
+  position: {x: 1179, y: -687}
   exceptCondition:
     key: 
   key: IsPlayerAimingMe
@@ -509,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_CheckCoolTime(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1190, y: -628}
+  position: {x: 1181, y: -610}
   exceptCondition:
     key: 
   skillName: BackStep
@@ -617,7 +433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1630, y: 811}
+  position: {x: 1178, y: 586}
   exceptCondition:
     key: 
   stateCondition:
@@ -653,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1562, y: 1162}
+  position: {x: 1176, y: 806}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -669,9 +485,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_ChasePlayer
   m_EditorClassIdentifier: Assembly-CSharp::ChasePlayerNode
-  position: {x: 1562, y: 1316}
+  position: {x: 1176, y: 960}
   Distance: 5
   speed: 6
+--- !u!114 &2837172194022243857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 1176, y: -36}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 4
+    value: 7
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -684,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1628, y: 877}
+  position: {x: 1176, y: 652}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -700,13 +535,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_LongAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 964, y: 436}
+  position: {x: 908, y: 75}
   nodes:
   - {fileID: -5794056097246212893}
+  - {fileID: 2837172194022243857}
   - {fileID: -4091383270736508263}
   - {fileID: -4747025815022784661}
   - {fileID: -5169928796796515572}
-  - {fileID: -4164804880626014990}
+  - {fileID: -5940353699662107700}
   services: []
 --- !u!114 &3510316772557543878
 MonoBehaviour:
@@ -720,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1562, y: 1239}
+  position: {x: 1176, y: 883}
   exceptCondition:
     key: 
   stateCondition:
@@ -770,7 +606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1190, y: -551}
+  position: {x: 1181, y: -533}
   exceptCondition:
     key: 
   floatCondition:
@@ -789,32 +625,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1634, y: 734}
+  position: {x: 1182, y: 509}
   exceptCondition:
     key: 
   skillName: Attack01_a
   cooldownDuration: 3
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: 7b811b2cceea080488d5da69b564c94f, type: 2}
---- !u!114 &5099860071830320573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: Condition_Blackboard Enum Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1155, y: -51}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 1
-    TargetState: 3
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,7 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1190, y: -794}
+  position: {x: 1181, y: -764}
   exceptCondition:
     key: 
   stateCondition:
@@ -864,7 +681,7 @@ MonoBehaviour:
   position: {x: 587, y: -1}
   nodes:
   - {fileID: 1681072726047148729}
-  - {fileID: -2165811004991647136}
+  - {fileID: 3428122175870849780}
   - {fileID: -7154228387633228831}
   services: []
 --- !u!114 &6499966363312988759
@@ -912,7 +729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_LeapAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1471, y: 107}
+  position: {x: 1707, y: 115}
   attackKey: Attack02_a
   animationStateName: 
   transitionBuffer: 1
@@ -976,7 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1634, y: 657}
+  position: {x: 1182, y: 432}
   exceptCondition:
     key: 
   target: {fileID: 0}
