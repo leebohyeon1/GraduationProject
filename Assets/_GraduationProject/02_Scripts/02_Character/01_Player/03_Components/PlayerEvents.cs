@@ -68,7 +68,6 @@ public class PlayerEvents
     public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
     public event Action OnlyChargeAttackSucceded;   // 오직 차지 공격 성공
     public event Action<int> AttackRegained;        // 공격 흡혈
-    public Func<int, int> FilterAttackRegain; // 공격 흡혈량 필터링
     public event Action ChangeNextCombatState;
 
     /// <summary>
@@ -110,15 +109,7 @@ public class PlayerEvents
     /// <param name="amount">회복 량</param>
     public void TriggerAttackRegained(int amount)
     {
-        int finalAmount = amount;
-        if (FilterAttackRegain != null)
-        {
-            foreach (Delegate filter in FilterAttackRegain.GetInvocationList())
-            {
-                finalAmount = (int)filter.DynamicInvoke(finalAmount);
-            }
-        }
-        AttackRegained?.Invoke(finalAmount);
+        AttackRegained?.Invoke(amount);
     }
 
     public void TriggerChangeNextCombatState()
@@ -286,7 +277,6 @@ public class PlayerEvents
         AttackFinished = null;
         OnlyChargeAttackSucceded = null;
         AttackRegained = null;
-        FilterAttackRegain = null;
         ChangeNextCombatState = null;
 
         // Charge

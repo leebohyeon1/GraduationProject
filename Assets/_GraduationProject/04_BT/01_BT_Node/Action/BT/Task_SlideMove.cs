@@ -50,7 +50,7 @@ public class Task_SlideMove : Node
             ai.enableRotation = false; 
         }
 
-        // // Debug.Log($"<color=cyan>[Task_SlideMove]</color> 슬라이드 시작. 기준점: {_centerPos}, 첫 목표: {(_movingRight ? "Right" : "Left")}");
+        Debug.Log($"<color=cyan>[Task_SlideMove]</color> 슬라이드 시작. 기준점: {_centerPos}, 첫 목표: {(_movingRight ? "Right" : "Left")}");
     }
 
     protected override NodeState OnUpdate()
@@ -70,7 +70,7 @@ public class Task_SlideMove : Node
             ai.endReachedDistance = arrivalThreshold;
             
             float actualDist = Vector3.Distance(_centerPos, _currentTarget);
-            // // Debug.Log($"<color=cyan>[Task_SlideMove]</color> 목표 도달. 방향 전환 -> {(_movingRight ? "Right" : "Left")}, 실제 거리: {actualDist:F2}m");
+            Debug.Log($"<color=cyan>[Task_SlideMove]</color> 목표 도달. 방향 전환 -> {(_movingRight ? "Right" : "Left")}, 실제 거리: {actualDist:F2}m");
         }
         else
         {

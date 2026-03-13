@@ -164,7 +164,7 @@ public class TristanaJump : EnemyUseAnything
                 // (선택) 슬로우 효과 추가 가능
             }
         }
-        // // // Debug.Log($"[TristanaJump] 쿵! {landPos} 착지 완료");
+        // Debug.Log($"[TristanaJump] 쿵! {landPos} 착지 완료");
         enemy.animator.SetBool("IsRushing" , true);
         // 4. A* 및 물리 복구
        

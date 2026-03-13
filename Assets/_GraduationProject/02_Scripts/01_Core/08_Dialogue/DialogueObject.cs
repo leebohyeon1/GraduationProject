@@ -27,7 +27,7 @@ public class DialogueObject : MonoBehaviour, IInteractable
 
     private bool CheckConditions(int id)
     {
-        DialogueDataSO initialDialogue = DataManager.Instance.GetDialogueGroupData(id);
+        DialogueDataSO initialDialogue = DataManager.Instance.GetDialogueGroupData(id)[0];
 
         for (int i = 0; i < initialDialogue.NeedConditionList.Count; i++)
         {

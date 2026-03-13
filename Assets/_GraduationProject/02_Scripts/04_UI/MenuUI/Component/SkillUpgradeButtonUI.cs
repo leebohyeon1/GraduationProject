@@ -75,7 +75,6 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
         // 배웠다면 토글을 켜진 상태로 변경 (이벤트 트리거 방지를 위해 SetIsOnWithoutNotify 사용 권장)
         _skillToggleButton.SetIsOnWithoutNotify(alreadyHasSkill);
-        _skillToggleButton.image.color = Color.yellow;
 
         if (alreadyHasSkill)
         {

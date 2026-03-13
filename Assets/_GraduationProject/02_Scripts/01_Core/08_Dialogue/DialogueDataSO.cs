@@ -1,27 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DialogueType
-{
-    Narration,
-    Dialogue,
-}
-
 [CreateAssetMenu(fileName = "DialogueDataSO", menuName = "Project/DialogueDataSO")]
 public class DialogueDataSO : ScriptableObject
 {
-    [System.Serializable]
-    public struct DialogueData
-    {
-        public string SpeakerName;
-        public string DialogueText;
-        public AudioClip Sound;
-    }
-
     public int DialogueGroupID;
-    public DialogueType DialogueType;
+    public int SequenceIndex;
     public List<GamePlayTagSO> NeedConditionList;
-    public List<DialogueData> DialogueList;
+    public string SpeakerName;
+    public string DialogueText;
 }
-
-

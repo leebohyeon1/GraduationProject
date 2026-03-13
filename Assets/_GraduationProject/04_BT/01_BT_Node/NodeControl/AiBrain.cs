@@ -10,117 +10,162 @@ public class AiBrain
     private PlayerController _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
-    private Coroutine _lateUpdateCoroutine;
-
+    public Coroutine lateUpdateCoroutine;
     public AiBrain(Enemy ai)
     {
         _owner = ai;
+
         blackboard = new BlackBoard();
         _player = _owner.player;
-        ResetBrain();
-    }
 
-    public void ResetBrain()
-    {
         blackboard.SetValue(EnemyBlackboardKeys.HomePosition, _owner.StartPos);
         blackboard.SetValue(EnemyBlackboardKeys.Self, _owner.gameObject);
-        _lastUsedSkillTimes.Clear();
-        if (_lateUpdateCoroutine != null) _owner.StopCoroutine(_lateUpdateCoroutine);
-        _lateUpdateCoroutine = _owner.StartCoroutine(StaggeredStart());
+        lateUpdateCoroutine = _owner.StartCoroutine(TickCoroutine());
     }
 
-    private IEnumerator StaggeredStart()
+    public void Tick(float deltaTime)
     {
-        yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 0.2f));
-        yield return TickCoroutine();
+
     }
-
-    public void Tick(float deltaTime) { }
-
     private IEnumerator TickCoroutine()
     {
-        var wait = new WaitForSeconds(0.1f);
         while (true)
         {
-            if (_player != null) { CheckPlayerVisibility(); PlayerVisibilityEnemy(); }
-            yield return wait;
-        }
-    }
-
-    private void CheckPlayerVisibility()
-    {
-        if (_isCombat || blackboard.GetValue<bool>(EnemyBlackboardKeys.Engage))
-        {
-            blackboard.SetValue(EnemyBlackboardKeys.IsHasLOS, true);
-            blackboard.SetValue(EnemyBlackboardKeys.DetectPlayer, true);
-            if (_player != null) blackboard.SetValue(EnemyBlackboardKeys.LastPlayerPos, _player.transform.position);
-            return;
-        }
-
-        Vector3 myPos = _owner.transform.position;
-        Vector3 targetPos = _player.transform.position;
-        Vector3 toPlayer = targetPos - myPos;
-        float dist = toPlayer.magnitude;
-        
-        blackboard.SetValue(EnemyBlackboardKeys.DistanceBetween, dist);
-        blackboard.SetValue(EnemyBlackboardKeys.DetectPlayer, dist <= _owner.enemyStat.DetectRange);
-
-        bool hasLos = false;
-        if(dist > _owner.enemyStat.CircleSeeRange) hasLos = true;
-        else if(dist <= _owner.enemyStat.SeeRange)
-        {
-            if (Vector3.Angle(_owner.transform.forward, toPlayer.normalized) <= 90 * 0.5f)
+            if (_player != null)
             {
-                hasLos = true;
-                blackboard.SetValue(EnemyBlackboardKeys.LastPlayerPos, targetPos);
+                
+                bool IsHasLOS = CheckPlayerVisibility();
+                blackboard.SetValue(EnemyBlackboardKeys.IsHasLOS, IsHasLOS);
+                bool OnPlayerLooking = PlayerVisibilityEnemy();
+                blackboard.SetValue(EnemyBlackboardKeys.OnPlayerLooking, OnPlayerLooking);
+                // counter++;
+                // if (counter >= 10)
+                // {
+                //     counter = 0;
+                //     blackboard.LogAllValues();
+                // }
             }
+            yield return new WaitForSeconds(0.1f);
         }
-        blackboard.SetValue(EnemyBlackboardKeys.IsHasLOS, hasLos);
     }
 
-    private void PlayerVisibilityEnemy()
+    private bool CheckPlayerVisibility()
     {
-        if (_player == null) return;
-        Vector3 toEnemy = _owner.transform.position - _player.transform.position;
-        bool isLooking = Vector3.Angle(_player.transform.forward, toEnemy.normalized) <= 70 * 0.5f;
-        blackboard.SetValue(EnemyBlackboardKeys.OnPlayerLooking, isLooking);
+        Vector3 toPlayer = _player.transform.position - _owner.transform.position;
+        float distance = Vector3.Distance(_owner.transform.position, _player.transform.position);
+        blackboard.SetValue(EnemyBlackboardKeys.DistanceBetween, distance);
+        blackboard.SetValue(EnemyBlackboardKeys.DetectPlayer, distance <= _owner.enemyStat.DetectRange);
+        if(distance > _owner.enemyStat.CircleSeeRange)
+        {
+            return true;
+        }
+        if(distance > _owner.enemyStat.SeeRange)
+        {
+            return false;
+        }
+        if (Vector3.Angle(_owner.transform.forward, toPlayer.normalized) > 90 * 0.5f)
+        {
+            return false;
+        }
+        blackboard.SetValue(EnemyBlackboardKeys.LastPlayerPos, _player.transform.position);
+        return true;
+    }
+    private bool PlayerVisibilityEnemy()
+    {
+        Vector3 toPlayer = _owner.transform.position - _player.transform.position;
+
+        if (Vector3.Angle(_player.transform.forward, toPlayer.normalized) > 70 * 0.5f)
+        {
+            return false;
+        }
+        return true;
     }
 
+    #region Behavior Tree Condition
+    public bool IsSkillReady(string skillName, float cooldownDuration)
+    {
+        if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
+        {
+            return Time.time >= lastUsedTime + cooldownDuration;
+        }
+        return true;
+    }
+
+    public bool IsActionable()
+    {
+        switch (CurrentState)
+        {
+            case EnemyStateController.EnemyState.Attack:
+            case EnemyStateController.EnemyState.Rush:
+            case EnemyStateController.EnemyState.Die:
+                return true; // 이 상태에서는 행동을 중단할 수 없습니다.
+            default:
+                return false; // Idle, Patrol 등은 행동을 중단할 수 있습니다.
+
+        }
+    }
+
+    public bool IsInAttackRange(float atkRange)
+    {
+        return Vector3.Distance(_owner.transform.position, _player.transform.position) <= atkRange;
+    }
+
+    // IsInDetectionRange, IsInChaseRange 등도 동일한 방식으로 이전
+
+    // --- BT Node가 요청할 상태 변경 로직 ---
+    public void StartSkillCooldown(string skillName)
+    {
+        _lastUsedSkillTimes[skillName] = Time.time;
+    }
+
+
+    public float GetLastSkillUseTime(string skillName)
+    {
+        if (_lastUsedSkillTimes.TryGetValue(skillName, out float time))
+        {
+            return time;
+        }
+        return -1f;
+    }
     public bool _isCombat { get; private set; } = false;
 
     public void CombatEnter(bool combat = true)
     {
-        // [Optimization] 이미 해당 상태라면 중복 처리를 방지하여 'StopMovement'가 반복 호출되는 것을 막음
-        if (_isCombat == combat) return;
-
         _isCombat = combat;
+
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
-        
-        if (_owner.animator != null)
-        {
-            foreach (var param in _owner.animator.parameters)
-            {
-                if (param.name == "IsCombat") { _owner.AnimationBool("IsCombat", _isCombat); break; }
-            }
-        }
-
-        if (_owner.Shield != null) _owner.Shield.IsActive = _isCombat; 
-        
-        // 전투 진입 시에만 이동을 멈추고 다음 BT 판단을 대기
-        if (_isCombat) _owner.Movement.StopMovement();
-    }
-
-    public bool IsSkillReady(string skillName, float cooldownDuration)
+        _owner.AnimationBool("IsCombat", _isCombat);
+        if (_owner.Shield != null)
     {
-        if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
-            return Time.time >= lastUsedTime + cooldownDuration;
-        return true;
+        _owner.Shield.IsActive = _isCombat; 
+        
+     }
+     
+        
+        if (_isCombat)
+        {
+            _owner.Movement.StopMovement();
+        }
     }
-    public bool IsActionable() {
-        switch (CurrentState) { case EnemyStateController.EnemyState.Attack: case EnemyStateController.EnemyState.Rush: case EnemyStateController.EnemyState.Die: return true; default: return false; }
+    public void SurroundTarget(bool surround = true)
+    {
+        blackboard.SetValue(EnemyBlackboardKeys.IsSurrounding, surround);
     }
-    public bool IsInAttackRange(float atkRange) => _player != null && (_player.transform.position - _owner.transform.position).sqrMagnitude <= atkRange * atkRange;
-    public void StartSkillCooldown(string skillName) => _lastUsedSkillTimes[skillName] = Time.time;
-    public float GetLastSkillUseTime(string skillName) => _lastUsedSkillTimes.TryGetValue(skillName, out float time) ? time : -1f;
-    public void AddEnemyAttackData(EnemyAttackData data) { blackboard.SetValue(data.AttackName, data); _lastUsedSkillTimes[data.AttackName] = -9999f; }
+    public void AddEnemyAttackData(EnemyAttackData enemyAttackData)
+    {
+        blackboard.SetValue(enemyAttackData.AttackName, enemyAttackData);
+        
+        if (_lastUsedSkillTimes.ContainsKey(enemyAttackData.AttackName))
+    {
+        _lastUsedSkillTimes[enemyAttackData.AttackName] = -9999f;
+    }
+    else
+    {
+        _lastUsedSkillTimes.Add(enemyAttackData.AttackName, -9999f);
+    }
+    }
+
+    public bool _isStunned { get; private set; } = false;
+
+    #endregion
 }

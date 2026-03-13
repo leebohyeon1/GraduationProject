@@ -85,7 +85,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         // 시간이 다 되면 종료
         if (normalizedTime >= 1.0f)
         {
-            // // Debug.Log("[Rush] 지속 시간 종료");
+            Debug.Log("[Rush] 지속 시간 종료");
             StopRush(enemy);
             return runner;
         }
@@ -122,7 +122,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
             }
             else
             {
-                // // // Debug.Log("[Rush] 벽에 부딪힘!");
+                // Debug.Log("[Rush] 벽에 부딪힘!");
                 StopRush(enemy);
                 return runner;
             }
@@ -132,7 +132,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         float distToPlayer = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
         if (distToPlayer <= hitRadius)
         {
-            // // // Debug.Log("[Rush] 플레이어 명중!");
+            // Debug.Log("[Rush] 플레이어 명중!");
             StopRush(enemy);
             return runner;
         }
@@ -140,7 +140,7 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         // 3. [도착 체크]
         if (Vector3.Distance(enemy.transform.position, targetPos) < 0.1f)
         {
-            // // // Debug.Log("[Rush] 목표 도착");
+            // Debug.Log("[Rush] 목표 도착");
             StopRush(enemy);
         }
 

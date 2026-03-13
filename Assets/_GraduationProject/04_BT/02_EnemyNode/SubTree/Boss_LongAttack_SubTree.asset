@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 398, y: -32}
+  position: {x: 397, y: -29}
   exceptCondition:
     key: 
   floatCondition:
@@ -31,30 +31,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 221, y: -32}
+  position: {x: 220, y: -29}
   nodes:
   - {fileID: -6436947357573883109}
   - {fileID: -2731556191852606048}
-  services: []
---- !u!114 &-5121587373199791709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
-  m_Name: SEL_LongAttack
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 2, y: 6}
-  nodes:
-  - {fileID: -1780693242651229239}
-  - {fileID: 1932421519546911441}
-  - {fileID: -5866178787055448860}
-  - {fileID: 3593469768659168057}
-  - {fileID: 2304183980306281579}
   services: []
 --- !u!114 &-3680199345345958982
 MonoBehaviour:
@@ -68,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 494, y: 215}
+  position: {x: 496, y: 201}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
@@ -101,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 400, y: 41}
+  position: {x: 399, y: 44}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
@@ -150,7 +130,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
   m_Name: Boss_LongAttack_SubTree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
-  rootNode: {fileID: -5121587373199791709}
+  rootNode: {fileID: 1688792360410569667}
+--- !u!114 &1688792360410569667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: SEQ_LongAttack(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 0, y: 0}
+  nodes:
+  - {fileID: -1780693242651229239}
+  - {fileID: 1932421519546911441}
+  - {fileID: -5866178787055448860}
+  - {fileID: 3593469768659168057}
+  - {fileID: 2304183980306281579}
+  services: []
 --- !u!114 &1932421519546911441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
   m_Name: Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 221, y: 278}
+  position: {x: 231, y: 280}
   waitTime: 1.5
 --- !u!114 &3593469768659168057
 MonoBehaviour:
@@ -196,14 +196,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd338289a3119c246b1b17f53eee392e, type: 3}
   m_Name: Weighted Random Selector(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
-  position: {x: 219, y: 161}
+  position: {x: 228, y: 157}
   nodes:
   - {fileID: 3646297250739070143}
   - {fileID: -3680199345345958982}
   services: []
   weights:
-  - 10
-  - 90
+  - 70
+  - 30
 --- !u!114 &3646297250739070143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_Chase Player Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
-  position: {x: 494, y: 138}
+  position: {x: 498, y: 121}
   Distance: 10
   speed: 5

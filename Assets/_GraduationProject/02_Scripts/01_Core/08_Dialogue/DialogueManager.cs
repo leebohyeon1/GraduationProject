@@ -10,11 +10,11 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance { get; private set; }
     [SerializeField] private InputReaderSO _inputReader;
 
-    private DialogueDataSO _currentDialogue; 
+    private List<DialogueDataSO> _currentDialogue = new List<DialogueDataSO>(); 
     private int _currentDialogueIndex = -1;
 
     public event Action DialogueStarted, DialogueCompleted;
-    public event Action<DialogueDataSO.DialogueData> DialogueUpdated;
+    public event Action<DialogueDataSO> DialogueUpdated;
 
     private void Awake()
     {
@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(int groupID)
     {
-        if (_currentDialogue != null && _currentDialogue.DialogueList.Count > 1)
+        if (_currentDialogue != null && _currentDialogue.Count > 1)
         {
             return;
         }
@@ -49,14 +49,14 @@ public class DialogueManager : MonoBehaviour
         _inputReader.SetInputMode(InputReaderSO.InputMode.UI);
         _currentDialogue = DataManager.Instance.GetDialogueGroupData(groupID);
         _currentDialogueIndex = 0;
-        DialogueUpdated?.Invoke(_currentDialogue.DialogueList[_currentDialogueIndex]);
+        DialogueUpdated?.Invoke(_currentDialogue[_currentDialogueIndex]);
 
         DialogueStarted?.Invoke();
     }
 
     private void EndDialogue()
     {
-        DataManager.Instance.GetGameData().CompleteDialogueSet.Add(_currentDialogue.DialogueGroupID);
+        DataManager.Instance.GetGameData().CompleteDialogueSet.Add(_currentDialogue[0].DialogueGroupID);
 
         _inputReader.SubmitEvent -= OnSubmit;
         _inputReader.SetInputMode(InputReaderSO.InputMode.Gameplay);
@@ -69,13 +69,13 @@ public class DialogueManager : MonoBehaviour
     {
         _currentDialogueIndex++;
 
-        if(_currentDialogueIndex >= _currentDialogue.DialogueList.Count)
+        if(_currentDialogueIndex >= _currentDialogue.Count)
         {
             EndDialogue();
         }
         else
         {
-            DialogueUpdated?.Invoke(_currentDialogue.DialogueList[_currentDialogueIndex]);
+            DialogueUpdated?.Invoke(_currentDialogue[_currentDialogueIndex]);
         }
     }
 
