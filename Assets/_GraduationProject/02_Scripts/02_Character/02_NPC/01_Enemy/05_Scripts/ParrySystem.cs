@@ -1,4 +1,6 @@
 using UnityEngine;
+public enum StunType { None, Weak, Full, Any }
+
     public enum ImmunityLevel
 {
     None,       // 면역 없음
@@ -10,7 +12,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     // Parry system implementation
     public bool IsCounterable { get; private set; } = false;
     float _stunExitTime = -Mathf.Infinity;
-    public bool _isStunned { get; private set; } = false;
+    public StunType CurrentStun { get; private set; } = StunType.None;
+    public bool _isStunned => CurrentStun != StunType.None;
     public float StunExitTime => _stunExitTime;
     
     public enum EnemyState
@@ -73,7 +76,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyStun()
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
-        _isStunned = true;
+        CurrentStun = StunType.Full;
         _stunExitTime = Time.time + _stunTime;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
@@ -84,7 +87,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyStun(float stunDuration)
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
-        _isStunned = true;
+        CurrentStun = StunType.Full;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
@@ -95,7 +98,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyWeakStun(float stunDuration)
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
-        _isStunned = true;
+        CurrentStun = StunType.Weak;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.animator.SetBool("WeakStun", true); // 스턴 애니메이션 트리거
@@ -107,7 +110,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     {
         _owner.animator.SetBool("Stun", false);
         _owner.animator.SetBool("WeakStun", false);
-        _isStunned = false;
+        CurrentStun = StunType.None;
         CurrentState = EnemyState.StunnedExit;
     }
     public void StateNormal()
