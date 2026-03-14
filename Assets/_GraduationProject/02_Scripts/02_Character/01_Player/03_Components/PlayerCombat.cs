@@ -118,6 +118,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         _events.CounterWindowStarted += OnCounterWindowStarted;
         _events.CounterWindowFinished += OnCounterWindowFinished;
+        _events.CounterSucceeded += OnCounterSucceeded;
 
         _events.BeforeDamaged += OnBeforeDamaged;
 
@@ -138,6 +139,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _parryStackTimer = 0f;
     }
 
+
+
     private void Update()
     {
         // 패링 스택 타이머 관리
@@ -148,6 +151,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             {
                 // 스택 1개 감소 및 타이머 재설정
                 _parryStacks--;
+                ParryStackChanged?.Invoke(_parryStacks);
                 if (_parryStacks > 0)
                 {
                     _parryStackTimer = PARRY_STACK_DURATION;
@@ -662,6 +666,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         SetCounterable(false);
     }
 
+    private void OnCounterSucceeded(Transform transform)
+    {
+        // 패링 스택 획득 및 타이머 초기화
+        _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
+        _parryStackTimer = PARRY_STACK_DURATION;
+        ParryStackChanged?.Invoke(_parryStacks);
+    }
+
     /// <summary>
     /// 데미지 받기 전 이벤트 발행
     /// </summary>
@@ -690,10 +702,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             damageContext.HasSuperArmor = true;
 
-            // 패링 스택 획득 및 타이머 초기화
-            _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
-            _parryStackTimer = PARRY_STACK_DURATION;
-            ParryStackChanged?.Invoke(_parryStacks);
 
             // 카운터 성공 이벤트 발행
             _events.TriggerCounterSucceeded(damageData.AttackerTransform);

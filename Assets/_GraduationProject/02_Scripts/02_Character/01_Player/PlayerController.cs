@@ -205,6 +205,7 @@ public class PlayerController : MonoBehaviour
         _stateMachine.AddState(new PlayerMoveState(_stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(_stateMachine));
         _stateMachine.AddState(new PlayerNormalAttackState(_stateMachine));
+        _stateMachine.AddState(new PlayerHeavyAttackState(_stateMachine));
         _stateMachine.AddState(new PlayerNormalCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerHeavyCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerChargeState(_stateMachine));
