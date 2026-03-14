@@ -75,6 +75,31 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private Coroutine _battleStateStopCoroutine; // 전투 상태 종료 코루틴
     public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
 
+    [Header("Parry Stack")]
+    [SerializeField] private int _parryStacks = 0;
+    public int ParryStacks => _parryStacks;
+    public event Action<int> ParryStackChanged;
+
+    [SerializeField] private float _parryStackTimer = 0f;
+    public float ParryStackTimer => _parryStackTimer;
+    private const int MAX_PARRY_STACKS = 3;
+    private const float PARRY_STACK_DURATION = 30f;
+
+    /// <summary>
+    /// 현재 패링 스택에 따른 데미지 배율을 반환합니다.
+    /// </summary>
+    public float ParryStackMultiplier
+    {
+        get
+        {
+            if (_data == null || _data.ParryStackDamageMultipliers == null || _data.ParryStackDamageMultipliers.Count == 0)
+                return 1f;
+
+            int index = Mathf.Clamp(_parryStacks, 0, _data.ParryStackDamageMultipliers.Count - 1);
+            return _data.ParryStackDamageMultipliers[index];
+        }
+    }
+
 
     /// <summary>
     /// 초기화 함수
@@ -99,6 +124,28 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         {
             if (_data.MaxNormalAttackSpeedMultiplier == 0)
                 _data.MaxNormalAttackSpeedMultiplier = player.Data.MaxNormalAttackSpeedMultiplier;
+        }
+
+        // 패링 스택 초기화
+        _parryStacks = 0;
+        _parryStackTimer = 0f;
+    }
+
+    private void Update()
+    {
+        // 패링 스택 타이머 관리
+        if (_parryStacks > 0)
+        {
+            _parryStackTimer -= Time.deltaTime;
+            if (_parryStackTimer <= 0)
+            {
+                // 스택 1개 감소 및 타이머 재설정
+                _parryStacks--;
+                if (_parryStacks > 0)
+                {
+                    _parryStackTimer = PARRY_STACK_DURATION;
+                }
+            }
         }
     }
 
@@ -273,7 +320,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 {
                     AttackerTransform = transform,
                     AttackType = attackData.AttackType,
-                    DamageAmount = attackData.AttackDamage + Mathf.RoundToInt(attackData.AttackDamage * AttackDamageMultiplier),
+                    DamageAmount = CalculateFinalDamage(attackData.AttackDamage),
                     StiffnessAmount = 0,
                     KnockbackCurve = attackData.KnockbackCofig.StepCurve,
                     KnockbackDuration = attackData.KnockbackCofig.StepDuration,
@@ -336,6 +383,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public void DecreaseAttackDamageMultiplier(float amount)
     {
         _data.AttackDamageMultiplier -= amount;
+    }
+
+    /// <summary>
+    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
+    /// </summary>
+    /// <param name="baseDamage">기본 데미지</param>
+    /// <returns>최종 데미지</returns>
+    public int CalculateFinalDamage(int baseDamage)
+    {
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
+        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier);
     }
     #endregion
 
@@ -543,6 +601,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             damageData.KnockbackForce = 0;
 
             damageContext.HasSuperArmor = true;
+
+            // 패링 스택 획득 및 타이머 초기화
+            _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
+            _parryStackTimer = PARRY_STACK_DURATION;
+            ParryStackChanged?.Invoke(_parryStacks);
 
             // 카운터 성공 이벤트 발행
             _events.TriggerCounterSucceeded(damageData.AttackerTransform);

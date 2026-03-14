@@ -20,6 +20,7 @@ public class PlayerData
     public float AttackRegainRate;
     public float PlusNormalAttackSpeedMultiplier;
     public float MaxNormalAttackSpeedMultiplier;
+    public List<float> ParryStackDamageMultipliers; // 스택별 데미지 배율
     public string CurrentSpecialAttackId;
     
     [Header("Combat Config")]
@@ -73,6 +74,7 @@ public class PlayerData
         AttackRegainRate = 0f;
         PlusNormalAttackSpeedMultiplier = 0f;
         MaxNormalAttackSpeedMultiplier = 0f;
+        ParryStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f };
         StaminaRegenPerSecond = 5f;
         CurrentSpecialAttackId = "";
         
@@ -132,6 +134,7 @@ public class PlayerData
         AttackRegainRate = 0f;
         PlusNormalAttackSpeedMultiplier = 0f;
         MaxNormalAttackSpeedMultiplier = so.MaxNormalAttackSpeedMultiplier;
+        ParryStackDamageMultipliers = new List<float>(so.ParryStackDamageMultipliers);
         CurrentSpecialAttackId = "";
 
         // Combat Config
