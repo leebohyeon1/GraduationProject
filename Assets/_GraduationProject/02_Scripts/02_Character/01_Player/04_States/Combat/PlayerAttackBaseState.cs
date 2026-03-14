@@ -119,6 +119,38 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     }
 
     /// <summary>
+    /// 강공격 입력 처리
+    /// </summary>
+    protected override void OnHeavyAttack()
+    {
+        if (p_owner.Combat.ParryStacks <= 0)
+        {
+            // 패리 스택이 없으면 일반 공격으로 대체
+            OnNormalAttack();
+            return;
+        }
+
+        if (p_nextState != null)
+        {
+            return;
+        }
+
+        if (!p_owner.Stamina.CheckStamina())
+        {
+            return;
+        }
+
+        if (p_canChangeCombatState)
+        {
+            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+        }
+        else if (p_canBufferInput)
+        {
+            p_nextState = typeof(PlayerHeavyAttackState);
+        }
+    }
+
+    /// <summary>
     /// 회피 입력 처리
     /// </summary>
     protected override void OnDodge()
@@ -180,6 +212,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
+
         if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
@@ -242,8 +275,9 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         bool isAttackState = typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState);
         bool isDodgeState = p_nextState == typeof(PlayerDodgeState);
         bool isChargeState = p_nextState == typeof(PlayerChargeState);
+        bool isHeavyAttackState = p_nextState == typeof(PlayerHeavyAttackState);
         
-        if (isAttackState || isDodgeState || isChargeState)
+        if (isAttackState || isDodgeState || isChargeState || isHeavyAttackState)
         {
             p_stateMachine.ChangeState(p_nextState);
         }

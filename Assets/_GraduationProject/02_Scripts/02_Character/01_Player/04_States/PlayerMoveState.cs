@@ -86,6 +86,25 @@ public class PlayerMoveState : PlayerBaseState
     }
 
     /// <summary>
+    /// 강공격 입력 이벤트 처리
+    /// </summary>
+    protected override void OnHeavyAttack()
+    {
+        base.OnHeavyAttack();
+        
+        // 패리 스택이 1개 이상이면 강공격 상태로 전환
+        if (p_owner.Combat.ParryStacks > 0 && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+        }
+        else
+        {
+            // 패리 스택이 없으면 일반 공격 처리
+            OnNormalAttack();
+        }
+    }
+
+    /// <summary>
     /// 일반 상쇄 이벤트 처리
     /// </summary>
     protected override void OnNormalCounter()
@@ -98,14 +117,16 @@ public class PlayerMoveState : PlayerBaseState
     }
 
     /// <summary>
-    /// 차지 시작 이벤트 처리
+    /// 차지 시작 입력 처리
     /// </summary>
     protected override void OnChargeStart()
     {
         base.OnChargeStart();
+
         if (p_owner.Stamina.CheckStamina())
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
+            return;
         }
     }
     #endregion

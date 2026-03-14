@@ -36,6 +36,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     // 일반 공격 리스트
     public List<PlayerAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttackConfigList : new List<PlayerAttackConfig>();
 
+    [Header("HeavyAttack")]
+    [SerializeField] private int _heavyAttackComboIndex = -1;
+    public int HeavyAttackComboIndex => _heavyAttackComboIndex;
+    public List<PlayerAttackConfig> HeavyAttackConfigList => _data != null ? _data.HeavyAttackConfigList : new List<PlayerAttackConfig>();
+    
+    [SerializeField] private int _heavyAttackConsumedStacks = 0; // 이번 연속 강공격에서 소모한 총 스택 수
+
     [Header("Charge")]
     // 차지 스테미나
     public float ChargeStamina => _data != null ? _data.ChargeStamina : 5f;
@@ -300,11 +307,33 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
+    /// 공격을 실행합니다. (커스텀 데미지 계산 지원)
+    /// </summary>
+    public Collider[] ExecuteAttackWithCustomDamage(PlayerAttackConfig attackData, Func<int, int> damageCalculator)
+    {
+        Vector3 attackCenter = GetAttackCenter(attackData);
+        Vector3 halfExtents = attackData.AttackRadius / 2f;
+
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+
+        if (hitEnemies.Length > 0)
+        {
+            ProcessHitEnemies(attackData, hitEnemies, damageCalculator);
+        }
+        else
+        {
+            _onSwingMiss.Publish("OnSwingMiss");
+        }
+
+        return hitEnemies;
+    }
+
+    /// <summary>
     /// 공격에 맞은 적들에게 데미지를 입힙니다.
     /// </summary>
     /// <param name="attackData">공격 데이터</param>
     /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
-    private void ProcessHitEnemies(PlayerAttackConfig attackData, Collider[] hitObjects)
+    private void ProcessHitEnemies(PlayerAttackConfig attackData, Collider[] hitObjects, Func<int, int> damageCalculator = null)
     {
         foreach (Collider obj in hitObjects)
         {
@@ -316,11 +345,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
+                int finalDamage = (damageCalculator != null) ? damageCalculator(attackData.AttackDamage) : CalculateFinalDamage(attackData.AttackDamage);
+
                 DamageData damage = new DamageData
                 {
                     AttackerTransform = transform,
                     AttackType = attackData.AttackType,
-                    DamageAmount = CalculateFinalDamage(attackData.AttackDamage),
+                    DamageAmount = finalDamage,
                     StiffnessAmount = 0,
                     KnockbackCurve = attackData.KnockbackCofig.StepCurve,
                     KnockbackDuration = attackData.KnockbackCofig.StepDuration,
@@ -330,7 +361,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 Attack(damageable, damage);
             }
         }
-
     }
 
     /// <summary>
@@ -426,6 +456,64 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public bool CanNormalAttack()
     {
         return _normalAttackComboIndex < (NormalAttackConfigList.Count - 1);
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 증가
+    /// </summary>
+    public void IncreaseHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex++;
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 리셋 (연속 공격 종료 시 호출)
+    /// </summary>
+    public void ResetHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex = -1;
+        _heavyAttackConsumedStacks = 0;
+    }
+
+    /// <summary>
+    /// 강공격 가능 여부 확인 (패리 스택이 있고 최대 3콤보까지만 가능하도록 제한)
+    /// </summary>
+    public bool CanHeavyAttack()
+    {
+        // 패리 스택이 1개 이상 있어야 함
+        return _parryStacks > 0;
+    }
+
+    /// <summary>
+    /// 패리 스택 소모 (강공격 시 호출)
+    /// </summary>
+    public void ConsumeParryStack()
+    {
+        if (_parryStacks > 0)
+        {
+            _parryStacks--;
+            _heavyAttackConsumedStacks++;
+            _parryStackTimer = _parryStacks > 0 ? PARRY_STACK_DURATION : 0f;
+            ParryStackChanged?.Invoke(_parryStacks);
+        }
+    }
+
+    /// <summary>
+    /// 강공격 전용 최종 데미지 계산 (소모 스택 배율 적용)
+    /// </summary>
+    public int CalculateHeavyAttackDamage(int baseDamage)
+    {
+        // 1타: base * stackMultiplier
+        // 2타 이상: base * stackMultiplier * consumedStacks
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
+        float damage = modifiedBase * ParryStackMultiplier;
+        
+        if (_heavyAttackComboIndex > 0)
+        {
+            damage *= _heavyAttackConsumedStacks;
+        }
+
+        return Mathf.RoundToInt(damage);
     }
 
     /// <summary>

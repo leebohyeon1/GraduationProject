@@ -29,6 +29,7 @@ public class PlayerData
     public float CounterAngle;
     
     public List<PlayerAttackConfig> NormalAttackConfigList;
+    public List<PlayerAttackConfig> HeavyAttackConfigList;
     public PlayerAttackConfig NormalCounterAttackConfig;
     public List<PlayerChargeConfig> HeavyCounterAttackConfigList;
 
@@ -83,6 +84,7 @@ public class PlayerData
         CounterAngle = 0f;
         
         NormalAttackConfigList = new List<PlayerAttackConfig>();
+        HeavyAttackConfigList = new List<PlayerAttackConfig>();
         NormalCounterAttackConfig = new PlayerAttackConfig(); // Struct defaults
         HeavyCounterAttackConfigList = new List<PlayerChargeConfig>();
         DodgeConfig = new DodgeData(); // Class defaults
@@ -151,6 +153,7 @@ public class PlayerData
 
         // Lists & Complex Types (Deep Copy)
         NormalAttackConfigList = new List<PlayerAttackConfig>(so.NormalAttackConfigList);
+        HeavyAttackConfigList = new List<PlayerAttackConfig>(so.HeavyAttackConfigList);
         NormalCounterAttackConfig = so.NormalCounterAttackConfig;
         HeavyCounterAttackConfigList = new List<PlayerChargeConfig>(so.HeavyCounterAttackConfigList);
         ProjectileCounterAddedVelocity = new List<float>(so.ProjectileCounterAddedVelocity);
