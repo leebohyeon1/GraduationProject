@@ -6,15 +6,48 @@ using Pathfinding;
 public class Task_TristanaJump : BaseAttackNode
 {
     [Header("Jump Settings")]
+    /// <summary>
+    /// 최대 점프 사거리입니다.
+    /// </summary>
     public float jumpRange = 8.0f;
+    /// <summary>
+    /// 점프 지속 시간입니다.
+    /// </summary>
     public float jumpDuration = 0.8f;
+    /// <summary>
+    /// 점프 높이입니다.
+    /// </summary>
     public float jumpHeight = 5.0f;
+    /// <summary>
+    /// 점프 높이 커브입니다.
+    /// </summary>
     public AnimationCurve heightCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
+    /// <summary>
+    /// 트리거 사거리입니다.
+    /// </summary>
     public float maxTriggerRange = 10f;
 
     [Header("Landing Settings")]
+    /// <summary>
+    /// 착지 충격 반경입니다.
+    /// </summary>
     public float impactRadius = 2.5f;
+    /// <summary>
+    /// 착지 충격 피해 데이터입니다.
+    /// </summary>
     public DamageData impactDamage;
+    /// <summary>
+    /// 착지 지면 레이어입니다.
+    /// </summary>
+    public LayerMask groundLayer;
+    /// <summary>
+    /// 지면 체크 시작 높이입니다.
+    /// </summary>
+    public float groundCheckHeight = 2.0f;
+    /// <summary>
+    /// 지면 체크 거리입니다.
+    /// </summary>
+    public float groundCheckDistance = 6.0f;
 
     private Vector3 _startPos;
     private Vector3 _targetPos;
@@ -26,6 +59,7 @@ public class Task_TristanaJump : BaseAttackNode
     {
         _isJumping = false;
         Log("점프 준비 (ActionSO 대기 중)");
+        Debug.Log("[Task_TristanaJump] 점프 준비");
     }
 
     protected override void OnActionSOTriggered()
@@ -89,7 +123,12 @@ public class Task_TristanaJump : BaseAttackNode
         _isJumping = false;
 
         Vector3 landPos = _targetPos;
-        landPos.y = AstarPath.active.GetNearest(landPos).position.y;
+        Vector3 rayOrigin = landPos + Vector3.up * groundCheckHeight;
+        float rayDistance = groundCheckHeight + groundCheckDistance;
+        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, groundLayer, QueryTriggerInteraction.Ignore))
+        {
+            landPos.y = hit.point.y;
+        }
         runner.transform.position = landPos;
 
         Collider[] hitColliders = Physics.OverlapSphere(landPos, impactRadius, LayerMask.GetMask("Player"));
@@ -103,7 +142,7 @@ public class Task_TristanaJump : BaseAttackNode
             }
         }
 
-        runner.animator.SetBool("IsRushing", true);
+        runner.AnimationBool("IsRushing", true);
     }
 
     protected override void SpecificCleanup()
@@ -133,6 +172,9 @@ public class Task_TristanaJump : BaseAttackNode
         node.heightCurve = this.heightCurve;
         node.impactRadius = this.impactRadius;
         node.impactDamage = this.impactDamage;
+        node.groundLayer = this.groundLayer;
+        node.groundCheckHeight = this.groundCheckHeight;
+        node.groundCheckDistance = this.groundCheckDistance;
         node.maxTriggerRange = this.maxTriggerRange;
         node.ExceptKey = this.ExceptKey;
         node.escapeOnHitConfirm = this.escapeOnHitConfirm;

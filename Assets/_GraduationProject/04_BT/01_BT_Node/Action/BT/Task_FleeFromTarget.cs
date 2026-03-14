@@ -92,9 +92,10 @@ public class Task_FleeFromTarget : Node
     {
         // // Debug.Log("<color=cyan>[Task] 도망 완료 또는 실패, 이동 멈춤.</color>");
         runner.Movement.StopMovement();
+        if (runner.player == null) return;
         Vector3 playerDir = runner.player.transform.position - runner.transform.position;
         playerDir.y = 0;
         playerDir.Normalize();
-        runner.aIPath.destination = playerDir; 
+        if (playerDir != Vector3.zero) runner.transform.rotation = Quaternion.LookRotation(playerDir);
     }
 }

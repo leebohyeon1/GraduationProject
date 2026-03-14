@@ -14,6 +14,7 @@ public class DialogueDataSO : ScriptableObject
     public struct DialogueData
     {
         public string SpeakerName;
+        [TextArea]
         public string DialogueText;
         public AudioClip Sound;
     }

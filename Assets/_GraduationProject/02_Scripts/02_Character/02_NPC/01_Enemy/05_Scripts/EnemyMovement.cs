@@ -30,6 +30,10 @@ public class EnemyMovement : MonoBehaviour
         _seeker = _runner.GetComponent<Seeker>();
         _rvo = _runner.GetComponent<RVOController>();
         
+        // [Fix] AIDestinationSetter가 있다면 비활성화 (BT에서 직접 목적지 제어)
+        var ds = _runner.GetComponent<AIDestinationSetter>();
+        if (ds != null) ds.enabled = false;
+
         if (_aIPath != null)
         {
             _aIPath.maxSpeed = _normalSpeed;
@@ -41,18 +45,24 @@ public class EnemyMovement : MonoBehaviour
             _seeker.traversalProvider = new RadiusTraversalProvider(CharacterRadius * wallBufferMultiplier, nodeSize, obstacleMask);
         }
     }
-
     public void StartRush(Vector3 targetPosition, float rushSpeed)
     {
         if (_aIPath == null) return;
+        
         _aIPath.enabled = true;
         _aIPath.canMove = true;
         _aIPath.isStopped = false;
         _aIPath.maxSpeed = rushSpeed;
-        _aIPath.destination = GetNearestSafePosition(targetPosition);
-        _aIPath.SearchPath(); 
+        
+        Vector3 newDest = GetNearestSafePosition(targetPosition);
+        Debug.Log($"[EnemyMovement] StartRush - From: {transform.position}, To: {newDest}, Target: {targetPosition}");
+        
+        if (Vector3.Distance(_aIPath.destination, newDest) > 0.1f)
+        {
+            _aIPath.destination = newDest;
+            _aIPath.SearchPath();
+        }
     }
-
     public void StartOrUpdateChase(Vector3 target) => StartOrUpdateChase(target, EnemyStateController.EnemyState.Chase);
 
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState chaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
@@ -85,7 +95,11 @@ public class EnemyMovement : MonoBehaviour
     public Vector3 GetNearestSafePosition(Vector3 target)
     {
         float checkRadius = CharacterRadius * wallBufferMultiplier;
-        if (!Physics.CheckSphere(target + Vector3.up * 0.5f, checkRadius, obstacleMask)) return target;
+        if (!Physics.CheckSphere(target + Vector3.up * 0.5f, checkRadius, obstacleMask))
+        {
+            Debug.Log($"[EnemyMovement] Target position {target} is safe for rush.");
+          return target;  
+        } 
 
         float step = 0.5f;
         for (float r = step; r <= 3.0f; r += step)
@@ -141,6 +155,7 @@ public class EnemyMovement : MonoBehaviour
             _aIPath.isStopped = true;
             _aIPath.destination = _runner.transform.position;
             _runner.AnimationBool("Walk", false);
+            Debug.Log($"[EnemyMovement] StopMovement called by: {System.Environment.StackTrace}");
         }
     }
 }

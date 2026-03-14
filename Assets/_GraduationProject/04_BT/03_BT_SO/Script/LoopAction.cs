@@ -1,18 +1,42 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 일정 시간 동안 루프 액션을 유지하는 전략입니다.
+/// </summary>
 [CreateAssetMenu(fileName = "LoopAction", menuName = "Enemy/Strategy/LoopAction")]
 public class LoopAction : EnemyUseAnything
 {
     [Header("Settings")]
+    /// <summary>
+    /// 루프 제어용 애니메이터 Bool 파라미터 이름입니다.
+    /// </summary>
     public string AnimationBool = "IsRushing";
+    /// <summary>
+    /// 액션 지속 시간입니다.
+    /// </summary>
     public float ActionDuration = 5.0f;
+    /// <summary>
+    /// 액션 시작 지연 시간입니다.
+    /// </summary>
     public float StartDelay = 0.5f;
 
+    /// <summary>
+    /// 블랙보드 시작 시간 키입니다.
+    /// </summary>
     public const string KEY_START_TIME = "Shared_StartTime";
+    /// <summary>
+    /// 블랙보드 지속 시간 키입니다.
+    /// </summary>
     public const string KEY_DURATION = "Shared_Duration";
+    /// <summary>
+    /// 루프 종료 키입니다.
+    /// </summary>
     public const string EndKey = "Shared_Ended";
 
+    /// <summary>
+    /// 루프 액션에 진입합니다.
+    /// </summary>
     public override T OnEnter<T>(T runner)
     {
         var blackboard = runner._aiController._aiBrain.blackboard;
@@ -31,6 +55,9 @@ public class LoopAction : EnemyUseAnything
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션을 갱신합니다.
+    /// </summary>
     public override T OnUpdate<T>(T runner)
     {
         var blackboard = runner._aiController._aiBrain.blackboard;
@@ -42,17 +69,20 @@ public class LoopAction : EnemyUseAnything
         // [수정] 지속 시간이 다 되면 루프 탈출을 위해 AnimationBool을 TRUE로 설정
 if (elapsedTime >= ActionDuration)
 {
-if (runner is Enemy enemy)
-{
+            if (runner is Enemy enemy)
+            {
                 enemy.AnimationBool(AnimationBool, true);
                 enemy.Movement?.StopMovement(); // [추가] 시간 만료 시 이동 즉시 정지
-}
+            }
 blackboard.SetValue(EndKey, true);
 }
 
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션을 지연 실행합니다.
+    /// </summary>
     public override bool UseSomeThing<T>(T runner)
     {
         MonoBehaviour monoRunner = runner as MonoBehaviour;
@@ -89,6 +119,9 @@ blackboard.SetValue(EndKey, true);
         }
     }
 
+    /// <summary>
+    /// 루프 액션에서 이탈합니다.
+    /// </summary>
     public override T OnExit<T>(T runner)
     {
         // OnExit 시에는 확실히 TRUE로 만들어 루프 탈출을 보장함
@@ -104,17 +137,19 @@ blackboard.SetValue(EndKey, false);
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션 상태를 초기화합니다.
+    /// </summary>
     public override void Reset<T>(T runner)
     {
         // Reset 시에도 동일하게 처리
-if (runner is Enemy enemy)
-{
+        if (runner is Enemy enemy)
+        {
             enemy.AnimationBool(AnimationBool, true);
-            enemy.Movement?.StopMovement(); // [추가] 리셋 시 이동 정지
-var blackboard = enemy._aiController._aiBrain.blackboard;
-blackboard.RemoveKey(KEY_START_TIME);
-blackboard.RemoveKey(KEY_DURATION);
-blackboard.SetValue(EndKey, false);
-}
+            var blackboard = enemy._aiController._aiBrain.blackboard;
+            blackboard.RemoveKey(KEY_START_TIME);
+            blackboard.RemoveKey(KEY_DURATION);
+            blackboard.SetValue(EndKey, false);
+        }
     }
 }
