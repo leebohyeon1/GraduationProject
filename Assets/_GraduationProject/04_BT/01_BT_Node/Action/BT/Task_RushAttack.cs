@@ -27,6 +27,10 @@ public class Task_RushAttack : BaseAttackNode
     /// 트리거 사거리입니다.
     /// </summary>
     public float maxTriggerRange = 15f;
+    /// <summary>
+    /// 추적 방향 보정 속도입니다.
+    /// </summary>
+    public float trackingTurnSpeed = 2.0f;
 
     [Header("Phase 2 Trail Settings")]
     [SerializeField] private string trailFeedbackName = "RushTrail";
@@ -55,6 +59,7 @@ public class Task_RushAttack : BaseAttackNode
         runner.AnimationBool("IsRushing", false);
         _currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 1);
         Log("돌진 공격 준비 (Tracking 시작)");
+        Debug.Log("[Task_RushAttack] TrackingTurnSpeed: " + trackingTurnSpeed);
     }
 
     protected override void OnActionSOTriggered()
@@ -95,6 +100,14 @@ public class Task_RushAttack : BaseAttackNode
         {
             // 직선 돌진 수행
             float moveStep = rushSpeed * Time.deltaTime;
+
+            Vector3 desiredDir = playerPos - myPos;
+            desiredDir.y = 0;
+            if (desiredDir.sqrMagnitude > 0.001f)
+            {
+                float turnFactor = Mathf.Clamp01(trackingTurnSpeed * Time.deltaTime);
+                _chargeDirection = Vector3.Slerp(_chargeDirection, desiredDir.normalized, turnFactor);
+            }
             
             // 벽 충돌 체크
             if (runner.Movement.IsPathBlocked(_chargeDirection, 0.5f, out RaycastHit hit))
@@ -184,6 +197,7 @@ public class Task_RushAttack : BaseAttackNode
         node.lockDistance = this.lockDistance;
         node.maxChargeDuration = this.maxChargeDuration;
         node.maxTriggerRange = this.maxTriggerRange;
+        node.trackingTurnSpeed = this.trackingTurnSpeed;
         
         node.trailSpawnInterval = this.trailSpawnInterval;
 
