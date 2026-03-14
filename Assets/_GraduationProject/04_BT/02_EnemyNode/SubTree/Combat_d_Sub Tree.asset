@@ -32,6 +32,8 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1198, y: 2}
+  exceptCondition:
+    key: 
   skillName: Attack01_d
   cooldownDuration: 2
   EnemyAttackData: 1
@@ -96,9 +98,9 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1371, y: -478}
-  key: IsAttacking
   exceptCondition:
     key: 
+  key: IsAttacking
 --- !u!114 &-8155721956500781392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,12 +114,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1321, y: 1312}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 5.5
-  exceptCondition:
-    key: 
 --- !u!114 &-8061363964458695047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,15 +135,21 @@ MonoBehaviour:
   position: {x: 1203, y: 622}
   attackKey: Attack02_d
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 37a38b3b56d96ed419bc0347073c4ff6, type: 2}
-  ExceptKey: 
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: 
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,12 +184,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1200, y: 397}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 6
-  exceptCondition:
-    key: 
 --- !u!114 &-5794056097246212893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +203,8 @@ MonoBehaviour:
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1199, y: 246}
+  exceptCondition:
+    key: 
   target: {fileID: 0}
   minRange: 5
   maxRange: 7
@@ -226,6 +236,8 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1203, y: 471}
+  exceptCondition:
+    key: 
   skillName: Attack02_d
   cooldownDuration: 3
   EnemyAttackData: 1
@@ -243,12 +255,12 @@ MonoBehaviour:
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 1199, y: 323}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &-4692035725226766666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +274,8 @@ MonoBehaviour:
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
   position: {x: 1194, y: -400}
+  exceptCondition:
+    key: 
   checkName: BackStep
   cooldownDuration: 1
   successChance: 65
@@ -278,7 +292,8 @@ MonoBehaviour:
   m_Name: Condition_Is Animation Attack
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsAnimationAttack
   position: {x: 610, y: -61}
-  tagstring: Attack
+  exceptCondition:
+    key: 
 --- !u!114 &-4140156646422702466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,9 +307,9 @@ MonoBehaviour:
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1198, y: 75}
-  key: HasAttackToken
   exceptCondition:
     key: 
+  key: HasAttackToken
 --- !u!114 &-4091383270736508263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,9 +323,9 @@ MonoBehaviour:
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1203, y: 544}
-  key: HasAttackToken
   exceptCondition:
     key: 
+  key: HasAttackToken
 --- !u!114 &-2165811004991647136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,9 +359,9 @@ MonoBehaviour:
   m_Name: Condition_IsPlayerAimingMe
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1191, y: -710}
-  key: IsPlayerAimingMe
   exceptCondition:
     key: 
+  key: IsPlayerAimingMe
 --- !u!114 &-1487819243410853138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,6 +375,8 @@ MonoBehaviour:
   m_Name: Condition_CheckCoolTime(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1193, y: -634}
+  exceptCondition:
+    key: 
   skillName: BackStep
   cooldownDuration: 2
   EnemyAttackData: 0
@@ -447,12 +464,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 1202, y: 799}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &1902608469412581356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,12 +483,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1199, y: -74}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 5
     value: 6
-  exceptCondition:
-    key: 
 --- !u!114 &2387793599396479645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,6 +520,8 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1320, y: 1238}
+  exceptCondition:
+    key: 
   skillName: flee
   cooldownDuration: 0
   EnemyAttackData: 0
@@ -520,9 +539,9 @@ MonoBehaviour:
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1206, y: 1031}
-  key: HasAttackToken
   exceptCondition:
     key: 
+  key: HasAttackToken
 --- !u!114 &3428122175870849780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,12 +576,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1204, y: 878}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 6
-  exceptCondition:
-    key: 
 --- !u!114 &4004705957746359045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,12 +625,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1193, y: -555}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 5
-  exceptCondition:
-    key: 
 --- !u!114 &4489605913624550641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,18 +643,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_TripleComboAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1207, y: 1109}
+  position: {x: 1206, y: 1108}
   attackKey: Attack03_d
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4bd3b20fb4da6b74f91a5d274fde97ed, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 1
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &4640970959790474602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,6 +674,8 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1203, y: 955}
+  exceptCondition:
+    key: 
   skillName: Attack03_d
   cooldownDuration: 3
   EnemyAttackData: 1
@@ -666,12 +693,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 1196, y: -147}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -685,6 +712,8 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
   position: {x: 138, y: -68}
+  exceptCondition:
+    key: 
 --- !u!114 &5785559906818792379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -698,12 +727,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 1189, y: -786}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &6093973120132377529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,15 +797,21 @@ MonoBehaviour:
   position: {x: 1198, y: 149}
   attackKey: Attack01_d
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
 --- !u!114 &7570425074222747312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -790,12 +825,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 1325, y: 1541}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 5
     value: 6.5
-  exceptCondition:
-    key: 
 --- !u!114 &8279960542052063534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -826,6 +861,8 @@ MonoBehaviour:
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1200, y: 724}
+  exceptCondition:
+    key: 
   target: {fileID: 0}
   minRange: 5
   maxRange: 7
