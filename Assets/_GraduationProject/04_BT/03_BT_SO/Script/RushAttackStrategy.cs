@@ -28,8 +28,8 @@ public class RushAttackStrategy : EnemyUseAnything
             endStrategy = false;
         }
         return runner;
-         // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
-        Debug.Log($"{runner.name}가 돌진 전략을 시작함");
+         // // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
+        // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
     }
 
 
@@ -43,7 +43,7 @@ public class RushAttackStrategy : EnemyUseAnything
         
         if (dist > stopDistance && !runner.animHandler.IsHitWindowOpen && !endStrategy)
         {
-             runner.Movement.StartRush(runner.player.transform.position, speed);
+             runner.Movement.StartRush(runner.player.transform.position, rushSpeed);
              // 회전 로직 등...
         }
         else

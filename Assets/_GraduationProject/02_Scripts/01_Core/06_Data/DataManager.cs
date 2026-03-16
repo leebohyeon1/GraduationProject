@@ -28,6 +28,7 @@ public class DataManager : MonoBehaviour
     public QuestDatabaseSO QuestDatabase => _questDatabase;
     [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
     [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
+    public DialogueDatabaseSO DialogueDatabase => _dialogueDatabase;
 
     private string _saveFileName = "AllSaveData.json"; // 파일 이름 변경
 
@@ -327,9 +328,9 @@ public class DataManager : MonoBehaviour
     // Dialogue Data ========================================================================================================
     //==========================================================================================================================
 
-    public List<DialogueDataSO> GetDialogueGroupData(int groupID)
+    public DialogueDataSO GetDialogueGroupData(int groupID)
     {
         // 그룹 아이디가 같으면 리턴
-        return _dialogueDatabase.DialogueList.FindAll((data)=>data.DialogueGroupID == groupID);
+        return _dialogueDatabase.DialogueDataList.Find((data)=>data.DialogueGroupID == groupID);
     }
 }

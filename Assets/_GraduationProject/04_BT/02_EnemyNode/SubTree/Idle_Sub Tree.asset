@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: -99, y: -379}
+  position: {x: -98, y: -299}
   exceptCondition:
     key: 
   key: Engage
@@ -28,10 +28,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -349, y: 78}
+  position: {x: -262, y: 273}
   nodes:
   - {fileID: -2086197182714575690}
-  - {fileID: 4195622132772779419}
   services: []
 --- !u!114 &-4941898794227933307
 MonoBehaviour:
@@ -61,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_EngageCombat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: 11, y: 95}
+  position: {x: -52, y: 192}
 --- !u!114 &-2436545328585954225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 534b25f725490fb4b88f9cd33e65596e, type: 3}
   m_Name: Condition_Can See Player_Angle(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
-  position: {x: 17, y: -213}
+  position: {x: -52, y: -113}
   exceptCondition:
     key: 
   viewAngle: 120
@@ -90,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -287, y: -290}
+  position: {x: -282, y: -300}
   nodes:
   - {fileID: -7876035546921331707}
   - {fileID: 8160394492237284882}
@@ -107,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Patrol_Logic
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: -397, y: 217}
+  position: {x: -446, y: 413}
   nodes: []
   services: []
 --- !u!114 &-2086197182714575690
@@ -122,10 +121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Task_RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: -192, y: 81}
+  position: {x: -105, y: 276}
   Radius: 10
-  Delay: 1.5
+  Delay: 1
   MoveSpeed: 3
+  StuckThreshold: 0.2
+  StuckTimeout: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
-  position: {x: -446, y: -473}
+  position: {x: -465, y: -380}
   child: {fileID: 497410341139032330}
 --- !u!114 &497410341139032330
 MonoBehaviour:
@@ -165,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: -446, y: -396}
+  position: {x: -284, y: -381}
   exceptCondition:
     key: 
   key: IsPlayerDetected
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
   m_Name: Stop Movement
   m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: 18, y: 18}
+  position: {x: -51, y: 118}
   juststop: 1
 --- !u!114 &3249966189030680422
 MonoBehaviour:
@@ -195,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Can See Player_Value(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 18, y: -145}
+  position: {x: -51, y: -37}
   exceptCondition:
     key: 
   floatCondition:
@@ -214,8 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
   m_Name: Idle Node
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: -192, y: 161}
-  idleTime: 2
+  position: {x: -187, y: 395}
+  idleTime: 1
 --- !u!114 &4272942598619701867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,9 +229,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Detect(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -279, y: -116}
+  position: {x: -277, y: -112}
   nodes:
-  - {fileID: -2436545328585954225}
   - {fileID: 3249966189030680422}
   - {fileID: 4298692548849664335}
   - {fileID: 1435062344627752039}
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 18, y: -59}
+  position: {x: -51, y: 41}
   IsSee: 1
   rotationSpeed: 5
 --- !u!114 &5427365917279850068
@@ -263,7 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: -612, y: -289}
+  position: {x: -465, y: -300}
   nodes:
   - {fileID: -2364569869062935594}
   - {fileID: 4272942598619701867}
@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -597, y: -434}
+  position: {x: -640, y: -300}
   nodes:
   - {fileID: 349469003420780475}
   - {fileID: 5427365917279850068}
@@ -298,6 +298,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -99, y: -290}
+  position: {x: -97, y: -219}
   transitionBuffer: 0.5
   animationTagName: Discover_Player

@@ -45,7 +45,7 @@ public class EnemyMovement : MonoBehaviour
 
         aIPath.enabled = true;
         aIPath.maxSpeed = rushSpeed;
-        aIPath.destination = targetPosition;
+        aIPath.destination = GetNearestSafePosition(targetPosition);
         aIPath.isStopped = false;
 
     }
@@ -108,6 +108,28 @@ public class EnemyMovement : MonoBehaviour
         
         hit = new RaycastHit(); 
         return false; 
+    }
+
+    public Vector3 GetNearestSafePosition(Vector3 target)
+    {
+        float checkRadius = CharacterRadius;
+        if (!Physics.CheckSphere(target + Vector3.up * 0.5f, checkRadius, obstacleMask)) return target;
+
+        float step = 0.5f;
+        for (float r = step; r <= 3.0f; r += step)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                float angle = i * 45f * Mathf.Deg2Rad;
+                Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * r;
+                NNInfo info = AstarPath.active.GetNearest(target + offset, NNConstraint.Walkable);
+                if (info.node != null && info.node.Walkable)
+                {
+                    if (!Physics.CheckSphere(info.position + Vector3.up * 0.5f, checkRadius, obstacleMask)) return info.position;
+                }
+            }
+        }
+        return target;
     }
     public void UpdateStrafeAnim()
     {

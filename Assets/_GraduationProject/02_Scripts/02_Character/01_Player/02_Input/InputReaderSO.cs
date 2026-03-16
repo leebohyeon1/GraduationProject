@@ -58,8 +58,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action MiddleClickEvent;
     public event Action<Vector2> ScrollWheelEvent;
     public event Action AnyKeyEvent;
-    public event Action NextEvent;
-    public event Action PreviousEvent;
+    public event Action NextEvent, SubNextEvent;
+    public event Action PreviousEvent, SubPreviousEvent;
 
     // Developer Actions;
     public event Action ToggleConsoleEvent;  
@@ -363,6 +363,22 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
     }
 
+    public void OnSubNext(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SubNextEvent?.Invoke();
+        }
+    }
+
+    public void OnSubPrevious(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SubPreviousEvent?.Invoke();
+        }
+    }
+
     // Developer Action Implementations
     public void OnToggleConsole(InputAction.CallbackContext context)
     {
@@ -433,4 +449,5 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         
         Debug.Log("InputReaderSO: 모든 이벤트가 성공적으로 초기화되었습니다.");
     }
+
 }

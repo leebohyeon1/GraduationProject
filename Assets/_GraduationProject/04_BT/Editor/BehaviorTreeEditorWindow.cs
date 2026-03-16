@@ -16,8 +16,8 @@ public class BehaviorTreeEditorWindow : EditorWindow
     [OnOpenAsset]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        var asset = EditorUtility.InstanceIDToObject(instanceID) as ActionTree;
-        if (asset == null && EditorUtility.InstanceIDToObject(instanceID) is BehaviorTree.Node node)
+        var asset = EditorUtility.EntityIdToObject(instanceID) as ActionTree;
+        if (asset == null && EditorUtility.EntityIdToObject(instanceID) is BehaviorTree.Node node)
         {
             string path = AssetDatabase.GetAssetPath(node);
             asset = AssetDatabase.LoadAssetAtPath<ActionTree>(path);

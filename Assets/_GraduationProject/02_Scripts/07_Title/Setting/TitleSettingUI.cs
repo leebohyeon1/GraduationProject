@@ -8,7 +8,10 @@ public class TitleSettingUI : TitleView
 {
     [Header("References")]
     [SerializeField] private InputReaderSO _inputReader;
-    [SerializeField] private List<SettingComponent> _settingComponentList;
+    [SerializeField] private List<SettingPageUI> _settingComponentList;
+
+    [SerializeField] private RectTransform _activePagePoint;
+    [SerializeField] private List<RectTransform> _pointList;
 
     [Header("UI")]
     [SerializeField] private TMP_Text _currentSettingTitle;
@@ -56,6 +59,13 @@ public class TitleSettingUI : TitleView
         _currentSettingTitle.text = _settingComponentList[_currentIndex].gameObject.name;
         _nextSettingTitle.text = _settingComponentList[nextIndex].SettingName;
         _previousSettingTitle.text = _settingComponentList[prevIndex].SettingName;
+
+        // 페이지 포인트(인디케이터) 업데이트
+        if (_activePagePoint != null && _pointList != null && _currentIndex < _pointList.Count)
+        {
+            _activePagePoint.SetParent(_pointList[_currentIndex], false);
+            _activePagePoint.anchoredPosition = Vector2.zero;
+        }
     }
 
     private void OnNext()
