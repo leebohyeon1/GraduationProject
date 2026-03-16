@@ -28,6 +28,7 @@ public class DataManager : MonoBehaviour
     public QuestDatabaseSO QuestDatabase => _questDatabase;
     [SerializeField] private GamePlayTagDatabaseSO _gamePlayTagDatabase;
     [SerializeField] private DialogueDatabaseSO _dialogueDatabase;
+    public DialogueDatabaseSO DialogueDatabase => _dialogueDatabase;
 
     private string _saveFileName = "AllSaveData.json"; // 파일 이름 변경
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -19,12 +20,16 @@ public class DataSelectView : TitleView
     [SerializeField] private InputReaderSO _inputReader;
 
     [Header("UI")]
+    [SerializeField] private ScrollRect _scrollRect;
     [SerializeField] private Transform _content;
     private List<DataSelectButtonTrigger> _dataSelectButtonList = new List<DataSelectButtonTrigger>();
 
     [SerializeField] private GameObject _dataCheckBox;
+    [SerializeField] private Button _checkBoxInitialButton;
+
     private int _selectedIndex = -1;
     private SelectMode _currentMode = SelectMode.NewGame;
+    private GameObject _lastSelected;
 
     [Header("Event")]
     public UnityEvent OnCancelEvent;
@@ -32,11 +37,19 @@ public class DataSelectView : TitleView
     private void OnEnable()
     {
         _inputReader.CancelEvent += OnCancel;
-    }
 
-    private void Start()
-    {
         Initialize();
+
+        // 스크롤 위치 초기화 (가장 위로)
+        if (_scrollRect != null)
+        {
+            _scrollRect.verticalNormalizedPosition = 1f;
+        }
+
+        if (_dataSelectButtonList.Count > 0)
+        {
+            SelectButton(0);
+        }
     }
 
     private void OnDisable()
@@ -82,6 +95,67 @@ public class DataSelectView : TitleView
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() => OnDataButtonClick(index));
             }
+        }
+    }
+
+    private void SelectButton(int index)
+    {
+        _selectedIndex = Mathf.Clamp(index, 0, _dataSelectButtonList.Count - 1);
+        _dataSelectButtonList[_selectedIndex].GetComponent<Button>().Select();
+        _lastSelected = _dataSelectButtonList[_selectedIndex].gameObject;
+        ScrollToSelected();
+    }
+
+    private void Update()
+    {
+        if (EventSystem.current == null || _dataCheckBox.activeSelf) return;
+
+        GameObject current = EventSystem.current.currentSelectedGameObject;
+        if (current == null || current == _lastSelected) return;
+
+        // 현재 선택된 버튼이 리스트에 있는지 확인
+        int index = _dataSelectButtonList.FindIndex(t => t.gameObject == current);
+        if (index != -1)
+        {
+            _selectedIndex = index;
+            _lastSelected = current;
+            ScrollToSelected();
+        }
+    }
+
+    private void ScrollToSelected()
+    {
+        if (_scrollRect == null || _selectedIndex == -1 || _dataSelectButtonList.Count == 0) return;
+
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform targetRect = _dataSelectButtonList[_selectedIndex].GetComponent<RectTransform>();
+        RectTransform viewportRect = _scrollRect.viewport;
+        RectTransform contentRect = _scrollRect.content;
+
+        // 버튼의 세계 좌표 모서리 가져오기 (0:좌하, 1:좌상, 2:우상, 3:우하)
+        Vector3[] corners = new Vector3[4];
+        targetRect.GetWorldCorners(corners);
+
+        // 세계 좌표를 뷰포트의 로컬 좌표로 변환
+        float targetBottom = viewportRect.InverseTransformPoint(corners[0]).y;
+        float targetTop = viewportRect.InverseTransformPoint(corners[1]).y;
+
+        // 뷰포트의 로컬 영역 (피벗에 상관없이 yMin, yMax 사용)
+        float viewportBottom = viewportRect.rect.yMin;
+        float viewportTop = viewportRect.rect.yMax;
+
+        // 상단이 뷰포트 위로 나갔을 때 (위로 스크롤 필요)
+        if (targetTop > viewportTop)
+        {
+            float offset = targetTop - viewportTop;
+            contentRect.anchoredPosition -= new Vector2(0, offset);
+        }
+        // 하단이 뷰포트 아래로 나갔을 때 (아래로 스크롤 필요)
+        else if (targetBottom < viewportBottom)
+        {
+            float offset = targetBottom - viewportBottom;
+            contentRect.anchoredPosition -= new Vector2(0, offset);
         }
     }
 
@@ -151,11 +225,20 @@ public class DataSelectView : TitleView
     public void CheckBoxOn()
     {
         _dataCheckBox.SetActive(true);
+
+        // 체크박스 내의 첫 번째 버튼을 자동으로 선택
+        _checkBoxInitialButton.Select();
     }
 
     public void CheckBoxOff()
     {
         _dataCheckBox.SetActive(false);
+        
+        // 체크박스가 닫히면 다시 리스트의 이전에 선택했던 버튼으로 포커스 복구
+        if (_selectedIndex != -1)
+        {
+            SelectButton(_selectedIndex);
+        }
     }
 
     private void OnCancel()
