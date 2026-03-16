@@ -5,7 +5,7 @@ using UnityEngine;
 /// 플레이어 레이어 감지 시 escape를 활성화하고, 웨이브 단위로 몬스터를 소환/진행하는 트리거 스크립트입니다.
 /// </summary>
 [RequireComponent(typeof(BoxCollider))]
-public class EscapeWaveSpawner : MonoBehaviour
+public class MonsterWave : MonoBehaviour
 {
     [Serializable]
     private class WaveSettings
