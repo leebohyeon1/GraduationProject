@@ -23,10 +23,15 @@ public class PlayerDodgeState : PlayerBaseState
 
         // 카메라 방향 기준 벡터 반환
         Vector3 moveInput = p_owner.InputHandler.MoveInput;
-        Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
 
-        // 회전은 따로 처리
-        p_owner.Movement.Rotate(dodgeDirection, p_owner.Movement.DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
+        // 입력이 있을 때만 회전 처리
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+            Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+
+            // 회전은 따로 처리
+            p_owner.Movement.Rotate(dodgeDirection, p_owner.Movement.DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
+        }
     }
 
     public override void OnExit()
