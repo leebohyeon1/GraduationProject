@@ -680,6 +680,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="damageContext">받은 데미지 데이터</param>
     private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
     {
+        Debug.Log("health");
+
         DamageData damageData = damageContext.Data;
 
         Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;        // 적으로 가는 벡터 구하기
