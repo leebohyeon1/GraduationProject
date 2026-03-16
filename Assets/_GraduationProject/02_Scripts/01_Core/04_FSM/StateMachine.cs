@@ -53,7 +53,7 @@ public class StateMachine<T> : IDisposable
 
     public void ChangeState(Type stateType)
     {
-        if (!_states.ContainsKey(stateType))
+        if (!_states.ContainsKey(stateType) || (_currentState != null && _currentState.GetType() == stateType))
         {
             return;
         }
