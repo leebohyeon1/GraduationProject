@@ -78,5 +78,6 @@ public class DodgeData
     public DodgeType Type;      // 회피 타입
     public float StaminaAmount; // 스테미나 사용량
     public bool isInivicible;   // 무적 여부
+    public float Cooldown;      // 회피 쿨타임
     public StepData MoveConfig; // 회피 움직임 설정
 }

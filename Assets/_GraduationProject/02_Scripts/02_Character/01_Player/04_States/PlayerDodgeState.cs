@@ -97,6 +97,14 @@ public class PlayerDodgeState : PlayerBaseState
     }
     #endregion
 
+    #region InputEventHandle
+    protected override void OnDodge()
+    {
+        // 회피 중에는 추가 회피 입력을 무시하여 애니메이션 꼬임 방지
+        return;
+    }
+    #endregion
+
     #region EventHandle
     public void OnDodgeStarted()
     {
@@ -140,6 +148,8 @@ public class PlayerDodgeState : PlayerBaseState
     /// </summary>
     public void OnDodgeFinished()
     {
+        p_owner.Movement.SetLastDodgeEndTime(); // 쿨타임 타이머 시작
+
         if (p_owner.Movement.DodgeConfig.isInivicible)
         {
             Debug.Log("회피 종료 - 무적 해제");

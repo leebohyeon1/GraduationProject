@@ -159,7 +159,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-        if (!p_owner.Stamina.CheckStamina())
+        if (!p_owner.Stamina.CheckStamina() || !p_owner.Movement.CanDodge)
         {
             return;
         }

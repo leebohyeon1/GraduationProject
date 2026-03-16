@@ -67,7 +67,7 @@ public class PlayerMoveState : PlayerBaseState
     /// </summary>
     protected override void OnDodge()
     {
-        if (p_owner.Stamina.CheckStamina())
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
         }
