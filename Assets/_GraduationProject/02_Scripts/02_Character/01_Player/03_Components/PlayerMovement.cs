@@ -52,10 +52,14 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     private float _moveAccelTimer;              // 이동 가속 타이머
     private float _rotateAccelTimer;            // 회전 가속 타이머
 
+    private float _lastDodgeEndTime;            // 마지막 회피 종료 시간
+
     [Header("Dodge Setting")]
     // 회피 설정
     public DodgeData DodgeConfig => _runtimeData != null ? _runtimeData.DodgeConfig : null;
     
+    public bool CanDodge => DodgeConfig == null || Time.time >= _lastDodgeEndTime + DodgeConfig.Cooldown;
+
     [SerializeField] private PlayerAbilityTagSO _invincibleSO;
     public PlayerAbilityTagSO InvincibleSO => _invincibleSO;
 
@@ -116,6 +120,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 _runtimeData.DodgeConfig.Type = data.DodgeConfig.Type;
                 _runtimeData.DodgeConfig.StaminaAmount = data.DodgeConfig.StaminaAmount;
                 _runtimeData.DodgeConfig.isInivicible = data.DodgeConfig.isInivicible;
+                _runtimeData.DodgeConfig.Cooldown = data.DodgeConfig.Cooldown;
                 _runtimeData.DodgeConfig.MoveConfig = data.DodgeConfig.MoveConfig;
             }
         }
@@ -347,6 +352,14 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void SetDodgeConfig(DodgeData dodgeData)
     {
         _runtimeData.DodgeConfig = dodgeData;
+    }
+
+    /// <summary>
+    /// 회피 종료 시간을 기록합니다.
+    /// </summary>
+    public void SetLastDodgeEndTime()
+    {
+        _lastDodgeEndTime = Time.time;
     }
 
     /// <summary>
