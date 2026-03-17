@@ -32,7 +32,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
-        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.ChargeCounterCounterAttack);
+        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.ChargeCounterAttack);
     }
     #endregion
 
@@ -130,7 +130,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             {
                 AttackerTransform = transform,
                 AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_AttackConfig.AttackDamage,
+                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,

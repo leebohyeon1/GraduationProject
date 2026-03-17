@@ -22,6 +22,13 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void OnFixedUpdate()
     {
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환
+        if (!p_owner.GetComponent<CharacterController>().isGrounded)
+        {
+            p_stateMachine.ChangeState<PlayerFallingState>();
+            return;
+        }
+
         if (p_owner.LockOn.IsLockOn)
         {
             Vector3 targetPosition = new Vector3(p_owner.LockOn.CurrentTarget.position.x, 0, p_owner.LockOn.CurrentTarget.position.z);
@@ -76,7 +83,7 @@ public class PlayerIdleState : PlayerBaseState
     /// </summary>
     protected override void OnDodge()
     {
-        if (p_owner.Stamina.CheckStamina())
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
             p_stateMachine.ChangeState<PlayerDodgeState>();
         }
@@ -96,6 +103,25 @@ public class PlayerIdleState : PlayerBaseState
     }
 
     /// <summary>
+    /// 강공격 입력 이벤트 처리
+    /// </summary>
+    protected override void OnHeavyAttack()
+    {
+        base.OnHeavyAttack();
+
+        // 패리 스택이 1개 이상이면 강공격 상태로 전환
+        if (p_owner.Combat.ParryStacks > 0 && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+        }
+        else
+        {
+            // 패리 스택이 없으면 일반 공격 처리
+            OnNormalAttack();
+        }
+    }
+
+    /// <summary>
     /// 일반 상쇄 이벤트 처리
     /// </summary>
     protected override void OnNormalCounter()
@@ -108,16 +134,17 @@ public class PlayerIdleState : PlayerBaseState
     }
 
     /// <summary>
-    /// 차지 시작 이벤트 처리
+    /// 차지 시작 입력 처리
     /// </summary>
     protected override void OnChargeStart()
     {
         base.OnChargeStart();
+
         if (p_owner.Stamina.CheckStamina())
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
+            return;
         }
     }
-
     #endregion
 }

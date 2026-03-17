@@ -96,9 +96,9 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(int groupID)
     {
-        if (_currentDialogue != null && _currentDialogue.DialogueList.Count > 1)
+        if (_currentDialogue != null)
         {
-            return;
+            EndDialogue();
         }
 
         _currentDialogue = DataManager.Instance.GetDialogueGroupData(groupID);

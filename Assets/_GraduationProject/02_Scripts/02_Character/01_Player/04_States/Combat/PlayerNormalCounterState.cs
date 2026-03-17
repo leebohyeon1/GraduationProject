@@ -32,6 +32,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
+        p_animator.SetTrigger("Counter");
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalCounterAttack);
     }
     #endregion
@@ -133,7 +134,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             { 
                 AttackerTransform = transform,
                 AttackType = AttackType.NormalCounter,
-                DamageAmount = p_AttackConfig.AttackDamage,
+                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,

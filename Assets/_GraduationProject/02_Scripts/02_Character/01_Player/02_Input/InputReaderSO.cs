@@ -31,6 +31,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public event Action NormalAttackEvent;
     public event Action NormalAttackCancelEvent;
+    public event Action HeavyAttackEvent;
     public event Action NormalCounterEvent;
     public event Action NormalCounterInputEvent;
     public event Action NormalCounterInputCancelEvent;    
@@ -169,7 +170,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         switch (context.phase)
         {
             case InputActionPhase.Performed:
+                if(context.interaction is HoldInteraction)
+                {
+                    HeavyAttackEvent?.Invoke();
+                }
+                else
+                {
                     NormalAttackEvent?.Invoke();
+                }
                 break;
             case InputActionPhase.Canceled:
                     NormalAttackCancelEvent?.Invoke();
@@ -413,6 +421,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
         NormalAttackEvent = null;
         NormalAttackCancelEvent = null;
+        HeavyAttackEvent = null;
         NormalCounterEvent = null;
         NormalCounterInputEvent = null;
         NormalCounterInputCancelEvent = null;
