@@ -17,8 +17,8 @@ public class PlayerMoveState : PlayerBaseState
     {
         base.OnFixedUpdate();
 
-        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환
-        if (!p_owner.GetComponent<CharacterController>().isGrounded)
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환 (후한 판정 사용)
+        if (!p_owner.Movement.IsGrounded())
         {
             p_stateMachine.ChangeState<PlayerFallingState>();
             return;
