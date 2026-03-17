@@ -329,7 +329,6 @@ public class SceneLoadingManager : MonoBehaviour
         // 명부(로드된 씬 목록)에 해당 씬이 있는지 확인
         if (_loadedChunks.TryGetValue(chunkName, out var sceneInstance))
         {
-            Debug.Log(111);
             // 1. 세이브용 이름표 갱신
             DataManager.Instance.GetGameData().LastMainScene = chunkName;
 

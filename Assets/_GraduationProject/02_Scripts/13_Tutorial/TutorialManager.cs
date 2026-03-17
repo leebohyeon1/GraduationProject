@@ -1,15 +1,13 @@
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class TutorialManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private SceneDataSO _currentSceneData;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private PlayableDirector InitialCutScene;
+
+    private void Start()
     {
         
     }
