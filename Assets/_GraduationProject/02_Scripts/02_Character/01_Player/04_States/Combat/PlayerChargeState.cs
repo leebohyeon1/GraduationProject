@@ -32,6 +32,7 @@ public class PlayerChargeState : PlayerBaseState
         if (_chargeLevel < (p_owner.Combat.HeavyCounterAttackConfigList.Count - 1) &&
             _chargeTimer >= p_owner.Combat.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
         {
+            p_animator.SetTrigger("ChargeReady");
             p_owner.Combat.IncreaseChargeLevel();
             p_owner.Events.TriggerChargeLevelCompleted(_chargeLevel);
         }
@@ -125,8 +126,8 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.SetupAnimator();
 
+        p_animator.SetTrigger("Counter");
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Charge);
-        p_animator.SetTrigger("ChargeStart");
     }
     #endregion
 
