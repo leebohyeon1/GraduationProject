@@ -19,6 +19,10 @@ public abstract class PlayerBaseState : IState, IDisposable
         Charge = 5,
         ChargeCounterCounterAttack = 6,
         SpecialAttack = 7,
+        HeavyAttack = 8,    
+
+        Falling = 9,
+        Landing = 10,
 
         NormalDamaged = -1,
         HeavyDamaged = -2,
@@ -76,6 +80,7 @@ public abstract class PlayerBaseState : IState, IDisposable
 
         p_owner.InputReader.DodgeEvent += OnDodge;
         p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
+        p_owner.InputReader.HeavyAttackEvent += OnHeavyAttack;
         p_owner.InputReader.NormalCounterEvent += OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent += OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
@@ -112,6 +117,7 @@ public abstract class PlayerBaseState : IState, IDisposable
 
         p_owner.InputReader.DodgeEvent -= OnDodge;
         p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
+        p_owner.InputReader.HeavyAttackEvent -= OnHeavyAttack;
         p_owner.InputReader.NormalCounterEvent -= OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent -= OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
@@ -159,6 +165,11 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// 공격 입력 처리
     /// </summary>
     protected virtual void OnNormalAttack() { }
+
+    /// <summary>
+    /// 강공격 입력 처리
+    /// </summary>
+    protected virtual void OnHeavyAttack() { }
     
     /// <summary>
     /// 일반 상쇄 입력 처리

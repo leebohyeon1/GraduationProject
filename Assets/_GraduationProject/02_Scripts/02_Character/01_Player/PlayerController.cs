@@ -205,6 +205,7 @@ public class PlayerController : MonoBehaviour
         _stateMachine.AddState(new PlayerMoveState(_stateMachine));
         _stateMachine.AddState(new PlayerDodgeState(_stateMachine));
         _stateMachine.AddState(new PlayerNormalAttackState(_stateMachine));
+        _stateMachine.AddState(new PlayerHeavyAttackState(_stateMachine));
         _stateMachine.AddState(new PlayerNormalCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerHeavyCounterState(_stateMachine));
         _stateMachine.AddState(new PlayerChargeState(_stateMachine));
@@ -212,6 +213,8 @@ public class PlayerController : MonoBehaviour
         _stateMachine.AddState(new PlayerKnockdownState(_stateMachine));
         _stateMachine.AddState(new PlayerSpecialAttackState(_stateMachine));
         _stateMachine.AddState(new PlayerDraggedState(_stateMachine));
+        _stateMachine.AddState(new PlayerFallingState(_stateMachine));
+        _stateMachine.AddState(new PlayerLandingState(_stateMachine));
 
         // Idle 상태에서 시작
         _stateMachine.ChangeState(typeof(PlayerIdleState));
