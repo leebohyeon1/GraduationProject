@@ -7969,12 +7969,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _normalAttackComboIndex: -1
+  _heavyAttackComboIndex: -1
+  _heavyAttackConsumedStacks: 0
   _chargeLevel: -1
   _isCounterable: 0
   _counterSuccessTagSO: {fileID: 11400000, guid: 2f767799463b53a47a21173c11bb4e6b, type: 2}
   _specialAttackSO: {fileID: 0}
   _lastBattleTime: 0
   _isBattleState: 0
+  _parryStacks: 0
+  _parryStackTimer: 0
 --- !u!114 &5785969070339328951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8006,6 +8010,11 @@ MonoBehaviour:
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 768
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _groundCheckDistance: 0.3
+  _groundCheckRadius: 0.25
   _dragSuperArmorSO: {fileID: 11400000, guid: 8d345798b710d334b8aa06224fcf3c16, type: 2}
 --- !u!114 &7045531422154869315
 MonoBehaviour:

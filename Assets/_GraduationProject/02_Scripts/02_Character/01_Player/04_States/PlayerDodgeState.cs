@@ -131,7 +131,15 @@ public class PlayerDodgeState : PlayerBaseState
                 break;
             case DodgeData.DodgeType.Step:
                 Vector3 moveInput = p_owner.InputHandler.MoveInput;
-                Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                Vector3 dodgeDirection;
+                if (moveInput == Vector3.zero)
+                {
+                    dodgeDirection = p_owner.transform.forward;
+                }
+                else
+                {
+                    dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                }
 
                 p_owner.Movement.Step(dodgeDirection, this, false, 
                     () =>

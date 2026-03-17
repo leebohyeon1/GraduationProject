@@ -453,7 +453,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
             () => currentDistance,
             x =>
             {
-                Vector3 moveDirection = direction;
+                Vector3 moveDirection = direction == Vector3.zero ? transform.forward : direction;
                 float deltaDistance = x - currentDistance;
                 Vector3 displacement = moveDirection * deltaDistance;
 
