@@ -62,7 +62,7 @@ public class PlayerDodgeState : PlayerBaseState
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Dodge);       // 애니메이션 상태 설정
         p_animator.SetInteger("DodgeType", (int)p_owner.Movement.DodgeConfig.Type); // 회피 타입 설정
 
-        p_animator.Play(p_owner.Movement.DodgeConfig.AnimationStateName, 0, 0f);    // 0부터 재생
+        // p_animator.Play(p_owner.Movement.DodgeConfig.AnimationStateName, 0, 0f);    // 0부터 재생
     }
     #endregion
 
@@ -152,7 +152,6 @@ public class PlayerDodgeState : PlayerBaseState
 
         if (p_owner.Movement.DodgeConfig.isInivicible)
         {
-            Debug.Log("회피 종료 - 무적 해제");
             p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
         }
     }
