@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -24,10 +25,13 @@ public class MonsterWave : MonoBehaviour
     [Header("Wave")]
     [SerializeField] private WaveSettings[] waves;
 
+    [SerializeField] private float nextWaveDelay = 2f;
+
     private BoxCollider _boxCollider;
     private int _currentWaveIndex;
     private int _aliveInCurrentWave;
     private bool _isRunning;
+    private Coroutine _nextWaveCoroutine;
 
     private void Reset()
     {
@@ -156,7 +160,7 @@ public class MonsterWave : MonoBehaviour
         if (_aliveInCurrentWave == 0)
         {
             _currentWaveIndex++;
-            StartWave();
+            StartNextWaveWithDelay();
         }
     }
 
@@ -174,5 +178,28 @@ public class MonsterWave : MonoBehaviour
     private static bool IsInLayerMask(int layer, LayerMask layerMask)
     {
         return (layerMask.value & (1 << layer)) != 0;
+    }
+
+    private void StartNextWaveWithDelay()
+    {
+        if (_nextWaveCoroutine != null)
+        {
+            StopCoroutine(_nextWaveCoroutine);
+        }
+
+        float delay = Mathf.Max(0f, nextWaveDelay);
+        _nextWaveCoroutine = StartCoroutine(NextWaveDelayRoutine(delay));
+    }
+
+    private IEnumerator NextWaveDelayRoutine(float delay)
+    {
+        Debug.Log($"[EscapeWaveSpawner] {name}: 다음 웨이브까지 {delay}초 대기합니다.");
+        if (delay > 0f)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+
+        _nextWaveCoroutine = null;
+        StartWave();
     }
 }
