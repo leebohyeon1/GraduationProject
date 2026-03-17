@@ -9,9 +9,11 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
     [SerializeField] private InputReaderSO _inputReader;
+    [SerializeField] private AudioSource _audioSource;
 
     private DialogueDataSO _currentDialogue; 
     private int _currentDialogueIndex = -1;
+    private Coroutine _autoNextCoroutine;
 
     public event Action DialogueStarted, DialogueCompleted;
     public event Action<DialogueDataSO.DialogueData> DialogueUpdated;
@@ -22,6 +24,11 @@ public class DialogueManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            if (_audioSource == null)
+            {
+                _audioSource = gameObject.AddComponent<AudioSource>();
+            }
         }
         else
         {
@@ -103,20 +110,19 @@ public class DialogueManager : MonoBehaviour
         }
         else if (_currentDialogue.DialogueType == DialogueType.Narration)
         {
-            // 나레이션은 별도의 입력 없이 일정 시간 후 넘어가거나 할 수 있지만, 
-            // 현재 구조상 Submit으로 넘기는 기능을 유지하려면 Gameplay 모드에서도 Submit 이벤트를 받아야 함.
-            // 일단 Gameplay 모드를 유지하면서 Submit 이벤트를 연결함.
             _inputReader.SubmitEvent += OnSubmit;
         }
 
         _currentDialogueIndex = 0;
-        DialogueUpdated?.Invoke(_currentDialogue.DialogueList[_currentDialogueIndex]);
+        UpdateDialogue();
 
         DialogueStarted?.Invoke();
     }
 
     private void EndDialogue()
     {
+        StopAutoNext();
+
         DataManager.Instance.GetGameData().CompleteDialogueSet.Add(_currentDialogue.DialogueGroupID);
 
         _inputReader.SubmitEvent -= OnSubmit;
@@ -132,6 +138,7 @@ public class DialogueManager : MonoBehaviour
 
     private void NextDialogue()
     {
+        StopAutoNext();
         _currentDialogueIndex++;
 
         if(_currentDialogueIndex >= _currentDialogue.DialogueList.Count)
@@ -140,14 +147,59 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            DialogueUpdated?.Invoke(_currentDialogue.DialogueList[_currentDialogueIndex]);
+            UpdateDialogue();
         }
     }
 
+    private void UpdateDialogue()
+    {
+        var data = _currentDialogue.DialogueList[_currentDialogueIndex];
+        DialogueUpdated?.Invoke(data);
+
+        if (_currentDialogue.DialogueType == DialogueType.Narration)
+        {
+            StartAutoNext(data);
+        }
+    }
+
+    private void StartAutoNext(DialogueDataSO.DialogueData data)
+    {
+        StopAutoNext();
+        _autoNextCoroutine = StartCoroutine(AutoNextProcess(data));
+    }
+
+    private void StopAutoNext()
+    {
+        if (_autoNextCoroutine != null)
+        {
+            StopCoroutine(_autoNextCoroutine);
+            _autoNextCoroutine = null;
+        }
+        
+        if (_audioSource != null && _audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+        }
+    }
+
+    private System.Collections.IEnumerator AutoNextProcess(DialogueDataSO.DialogueData data)
+    {
+        if (data.Sound != null && _audioSource != null)
+        {
+            _audioSource.clip = data.Sound;
+            _audioSource.Play();
+            yield return new WaitWhile(() => _audioSource.isPlaying);
+        }
+        else
+        {
+            yield return new WaitForSeconds(3f);
+        }
+
+        NextDialogue();
+    }
 
     private void OnSubmit()
     {
         NextDialogue();
     }
-
 }

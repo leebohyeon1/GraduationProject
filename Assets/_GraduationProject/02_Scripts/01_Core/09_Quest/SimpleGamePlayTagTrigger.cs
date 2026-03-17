@@ -7,6 +7,11 @@ public class SimpleGamePlayTagTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(!other.CompareTag("Player"))
+        {
+            return;
+        }
+
         foreach(var  tag in _gamePlayTags)
         {
             GamePlayTagManager.Instance.AddTag(tag);

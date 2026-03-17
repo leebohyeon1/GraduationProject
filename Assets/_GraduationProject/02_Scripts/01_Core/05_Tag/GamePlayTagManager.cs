@@ -53,6 +53,7 @@ public class GamePlayTagManager : MonoBehaviour
         {
             _activeTagList.Add(tag);
             UpdateTag?.Invoke(tag);
+            Debug.Log("태그 추가");
         }
     }
 
