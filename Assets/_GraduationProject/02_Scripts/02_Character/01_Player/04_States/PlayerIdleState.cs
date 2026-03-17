@@ -22,6 +22,13 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void OnFixedUpdate()
     {
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환
+        if (!p_owner.GetComponent<CharacterController>().isGrounded)
+        {
+            p_stateMachine.ChangeState<PlayerFallingState>();
+            return;
+        }
+
         if (p_owner.LockOn.IsLockOn)
         {
             Vector3 targetPosition = new Vector3(p_owner.LockOn.CurrentTarget.position.x, 0, p_owner.LockOn.CurrentTarget.position.z);

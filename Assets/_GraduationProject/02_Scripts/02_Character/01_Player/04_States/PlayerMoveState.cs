@@ -17,6 +17,13 @@ public class PlayerMoveState : PlayerBaseState
     {
         base.OnFixedUpdate();
 
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환
+        if (!p_owner.GetComponent<CharacterController>().isGrounded)
+        {
+            p_stateMachine.ChangeState<PlayerFallingState>();
+            return;
+        }
+
         // 플레이어를 카메라 기준으로 이동
         p_owner.Movement.MoveByInput(p_owner.InputHandler.MoveInput, Time.fixedDeltaTime);
         p_owner.Movement.RotateToVelocity(Time.fixedDeltaTime);

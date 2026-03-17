@@ -21,6 +21,9 @@ public abstract class PlayerBaseState : IState, IDisposable
         SpecialAttack = 7,
         HeavyAttack = 8,    
 
+        Falling = 9,
+        Landing = 10,
+
         NormalDamaged = -1,
         HeavyDamaged = -2,
         Knockdown = -3,
