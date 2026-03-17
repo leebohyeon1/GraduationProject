@@ -32,7 +32,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
-        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.ChargeCounterCounterAttack);
+        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.ChargeCounterAttack);
     }
     #endregion
 

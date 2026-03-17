@@ -32,6 +32,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
+        p_animator.SetTrigger("Counter");
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalCounterAttack);
     }
     #endregion

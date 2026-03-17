@@ -1679,6 +1679,269 @@ CapsuleCollider:
   m_Height: 0.2
   m_Direction: 0
   m_Center: {x: -0.09, y: 0, z: 0}
+--- !u!1 &2516963727258457503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1071515855208257980}
+  - component: {fileID: 1348542084331462725}
+  m_Layer: 7
+  m_Name: CameraZoom_FB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1071515855208257980
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2516963727258457503}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5571388687056563757}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1348542084331462725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2516963727258457503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
+  Feedbacks: []
+  InitializationMode: 2
+  AutoInitialization: 1
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  TimescaleMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 0
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnStop:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnChangeDirection:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRestoreInitialValues:
+      m_PersistentCalls:
+        m_Calls: []
+    OnSkipToTheEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    OnInitializationComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnEnable:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDisable:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  InScriptDrivenPause: 0
+  FeedbacksList:
+  - rid: 6735772455237065688
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  RestoreInitialValuesOnDisable: 0
+  StopFeedbacksOnDisable: 0
+  PlayCount: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 6735772455237065688
+      type: {class: MMF_CameraZoom, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+      data:
+        Active: 1
+        UniqueID: -1885429031
+        Label: Camera Zoom
+        OriginalLabel: Camera Zoom
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          PlayCount: 28
+          LimitPlayCount: 0
+          MaxPlayCount: 3
+          SetPlayCountToZeroOnReset: 0
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        AutomaticShakerSetupButton:
+          ButtonText: Automatic Shaker Setup
+        Owner: {fileID: 1348542084331462725}
+        DebugActive: 0
+        ZoomMode: 1
+        ZoomFieldOfView: -4
+        ZoomTransitionDuration: 0.18
+        ZoomDuration: 0.1
+        RelativeFieldOfView: 1
+        ZoomTween:
+          MMTweenDefinitionType: 1
+          MMTweenCurve: 4
+          Curve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 2
+              outSlope: 2
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 0.21020313
+              value: 0.5961404
+              inSlope: 1.3295937
+              outSlope: 1.3295937
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0.33333334
+              outWeight: 0.33333334
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          Initialized: 0
+          ConditionPropertyName: 
+          EnumConditionPropertyName: 
+          EnumConditions: 0000000000000000000000000000000000000000000000000000000000000000
 --- !u!1 &2604699964244901643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1980,7 +2243,7 @@ MonoBehaviour:
     Feedback: {fileID: 0}
   - type: ChargeLevel3_FB
     Feedback: {fileID: 0}
-  - type: ChargeAttackStartLevel1_FB
+  - type: Atk_Strong_01_FB
     Feedback: {fileID: 4264550087278333901}
   - type: ChargeAttackStartLevel2_FB
     Feedback: {fileID: 0}
@@ -1998,6 +2261,8 @@ MonoBehaviour:
     Feedback: {fileID: 6957283502501940636}
   - type: Player_Recovery_HP_FB
     Feedback: {fileID: 4442965246782187031}
+  - type: CameraZoom_FB
+    Feedback: {fileID: 1348542084331462725}
   ClashDodgeFeedback:
     m_PersistentCalls:
       m_Calls:
@@ -3873,6 +4138,7 @@ Transform:
   - {fileID: 6720471352250440966}
   - {fileID: 3856167816751569843}
   - {fileID: 1446795409434471241}
+  - {fileID: 1071515855208257980}
   m_Father: {fileID: 3311785964103832997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4697386292202483405
@@ -10777,7 +11043,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 1
+      value: 0.99144495
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalRotation.y
@@ -10785,7 +11051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.13052607
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -10793,7 +11059,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 195
       objectReference: {fileID: 0}
     - target: {fileID: 7676808499988465645, guid: 977e97dbc84511d4f8f49b472d4ad4ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -11995,6 +12261,42 @@ PrefabInstance:
     - target: {fileID: 39834030906294164, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[0]'
+      value: 6735772383924978087
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[1]'
+      value: 6735772383924978088
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[2]'
+      value: 6735772383924978089
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[3]'
+      value: 6735772383924978090
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[4]'
+      value: 6735772383924978091
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: managedReferences[6735772383924978091].ZoomMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: managedReferences[6735772383924978091].ZoomFieldOfView
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509100832651096936, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
+      propertyPath: managedReferences[6735772383924978091].RelativeFieldOfView
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8193369378929144179, guid: a6e760c8c878df942a7e41704acfe2b0, type: 3}
       propertyPath: m_Name
@@ -20072,35 +20374,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.579228
+      value: 0.43381754
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.40557975
+      value: -0.25046468
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.579228
+      value: 0.7495347
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.40557975
+      value: 0.4327441
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -70
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: 119.877
       objectReference: {fileID: 0}
     - target: {fileID: 4136480813124722885, guid: 7f7a4611012fd964284d59fdf4543e97, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
