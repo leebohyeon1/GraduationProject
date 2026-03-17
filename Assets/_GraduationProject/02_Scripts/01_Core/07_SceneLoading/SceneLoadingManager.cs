@@ -198,6 +198,9 @@ public class SceneLoadingManager : MonoBehaviour
         }
         // ==========================================================
 
+        // 플레이어 스폰 위치 처리
+        HandlePlayerSpawn(targetScene);
+
         // 4. 페이드 아웃 (화면 밝게)
         fadeTimer = 0f;
         while (fadeTimer < 0.5f)
@@ -263,6 +266,9 @@ public class SceneLoadingManager : MonoBehaviour
             DynamicGI.UpdateEnvironment();
         }
         // ==========================================================
+
+        // 플레이어 스폰 위치 처리
+        HandlePlayerSpawn(targetScene);
 
         IsTeleporting = false;
     }
@@ -339,6 +345,40 @@ public class SceneLoadingManager : MonoBehaviour
             }
 
             Debug.Log($"[Level Streaming] 메인 씬이 '{chunkName}'(으)로 변경되었습니다!");
+        }
+    }
+
+    private void HandlePlayerSpawn(SceneDataSO loadedSceneData)
+    {
+        var gameData = DataManager.Instance.GetGameData();
+        if (gameData == null) return;
+
+        string sceneName = loadedSceneData.SceneName;
+
+        if (gameData.IsFirstVisit(sceneName))
+        {
+            // 1. 처음 방문 시: SO에 설정된 좌표로 이동
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                // 캐릭터 컨트롤러가 있다면 잠시 꺼줘야 위치 이동이 정확함
+                CharacterController cc = player.GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false;
+
+                player.transform.position = loadedSceneData.DefaultSpawnPosition;
+                player.transform.rotation = Quaternion.Euler(loadedSceneData.DefaultSpawnRotation);
+
+                if (cc != null) cc.enabled = true;
+
+                // 방문 기록 남기기
+                gameData.MarkSceneAsVisited(sceneName);
+                Debug.Log($"[Spawn] {sceneName} 첫 방문: 기본 위치({loadedSceneData.DefaultSpawnPosition})로 스폰합니다.");
+            }
+        }
+        else
+        {
+            // 2. 재방문 시: 기존 세이브 데이터의 위치를 유지 (DataManager에서 처리됨)
+            Debug.Log($"[Spawn] {sceneName} 재방문: 기존 위치를 유지합니다.");
         }
     }
 }

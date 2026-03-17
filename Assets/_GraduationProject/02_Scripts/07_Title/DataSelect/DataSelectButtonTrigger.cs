@@ -12,7 +12,7 @@ public class DataSelectButtonTrigger : MonoBehaviour
     [SerializeField] private TMP_Text _stageText;
     [SerializeField] private TMP_Text _moneyText;
     [SerializeField] private TMP_Text _specialMoneyText;
-    [SerializeField] private string _defaultSceneName;
+    [SerializeField] private SceneDataSO _defaultSceneDataSO;
 
     private bool _isDataSet = false;
     private string _loadSceneName = "";
@@ -47,11 +47,10 @@ public class DataSelectButtonTrigger : MonoBehaviour
     {
         if(!_isDataSet)
         {
-            SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneName);
+            SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneDataSO.SceneName);
         }
         else
         {
-            Debug.Log("aaaa");
             SceneLoadingManager.Instance.TeleportToSceneByName(_loadSceneName);
         }
     }
