@@ -113,6 +113,9 @@ public static class LLMClient
     private static string BuildPrompt(List<ProfilerDataCollector.SpikeData> spikes)
     {
         StringBuilder dataInput = new StringBuilder();
+        StringBuilder codeContext = new StringBuilder();
+        HashSet<string> seenMethods = new HashSet<string>();
+
         int count = 1;
         foreach (var spike in spikes)
         {
@@ -122,18 +125,38 @@ public static class LLMClient
             dataInput.AppendLine($"- Physics: ActiveBodies={spike.physicsActiveBodies}, Contacts={spike.physicsContacts}");
             dataInput.AppendLine($"- Memory: Total={spike.memoryTotalUsedMb:F1}MB, Gfx={spike.memoryGfxUsedMb:F1}MB");
             dataInput.AppendLine("  * Hot Path:");
-            foreach (var sample in spike.topSamples) dataInput.AppendLine($"    - {sample}");
+            
+            foreach (var sample in spike.topSamples) 
+            {
+                dataInput.AppendLine($"    - {sample}");
+
+                // 가장 병목이 큰 첫 번째 샘플들의 코드를 추출하여 컨텍스트에 추가
+                if (!seenMethods.Contains(sample))
+                {
+                    string snippet = SourceCodeUtility.GetCodeSnippet(sample);
+                    if (!string.IsNullOrEmpty(snippet))
+                    {
+                        codeContext.AppendLine("--- Source Code Snippet ---");
+                        codeContext.AppendLine(snippet);
+                        codeContext.AppendLine("---------------------------");
+                        seenMethods.Add(sample);
+                    }
+                }
+            }
             dataInput.AppendLine();
         }
 
-        // 🔥 [디버깅용] AI에게 넘어가는 실제 콜스택 데이터를 콘솔에 출력해서 눈으로 확인해봅시다!
-        Debug.Log("[Auto-Profiler AI] AI에게 전송되는 확장 데이터:\n" + dataInput.ToString());
+        // 🔥 [디버깅용] 소스 코드까지 포함된 최종 데이터를 확인합니다.
+        Debug.Log("[Auto-Profiler AI] AI에게 전송되는 컨텍스트 포함 데이터:\n" + dataInput.ToString());
 
-        return $@"다음 유니티 프로파일러 데이터를 분석하여 최적화 리포트를 작성해줘. 
-CPU/GC뿐만 아니라 GPU(드로우콜), 물리(컨택트), 메모리 사용량 지표를 모두 종합해서 판단해줘.
+        return $@"다음 유니티 프로파일러 데이터와 관련 소스 코드를 분석하여 최적화 리포트를 작성해줘. 
+사용자의 스크립트 코드가 제공된 경우, 해당 코드를 분석하여 구체적인 수정 가이드라인을 제시해.
 
-분석 데이터:
+[프로파일러 데이터]
 {dataInput.ToString()}
+
+[관련 소스 코드]
+{codeContext.ToString()}
 
 다음 JSON 스키마를 엄격히 따라 응답해:
 {{
@@ -142,10 +165,10 @@ CPU/GC뿐만 아니라 GPU(드로우콜), 물리(컨택트), 메모리 사용량
   ""bottlenecks"": [
     {{
       ""severity"": ""High/Medium/Low"",
-      ""target_file"": ""병목이 발생한 C# 파일명(예: Test.cs). 엔진 자체 문제(Rendering, Physics, GC 등)라면 null"",
+      ""target_file"": ""병목이 발생한 C# 파일명(예: Test.cs). 엔진 자체 문제라면 null"",
       ""line_number"": 0,
-      ""description"": ""지표를 근거로 한 병목 원인 설명"",
-      ""solution"": ""구체적인 최적화 및 해결 방법""
+      ""description"": ""지표와 소스 코드를 근거로 한 병목 원인 설명"",
+      ""solution"": ""구체적인 최적화 코드를 포함한 해결 방법""
     }}
   ]
 }}";
