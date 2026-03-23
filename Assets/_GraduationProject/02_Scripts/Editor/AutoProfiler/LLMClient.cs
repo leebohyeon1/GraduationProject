@@ -93,7 +93,7 @@ public static class LLMClient
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = 30; // 분석 요청은 시간이 걸릴 수 있으므로 30초 대기
+            request.timeout = 90; // 분석 데이터가 많으므로 90초로 넉넉하게 대기
 
             var operation = request.SendWebRequest();
             while (!operation.isDone) await Task.Yield();
@@ -113,30 +113,39 @@ public static class LLMClient
     private static string BuildPrompt(List<ProfilerDataCollector.SpikeData> spikes)
     {
         StringBuilder dataInput = new StringBuilder();
+        int count = 1;
         foreach (var spike in spikes)
         {
+            dataInput.AppendLine($"[Spike #{count++}]");
             dataInput.AppendLine($"- CPU: {spike.cpuTimeMs:F2}ms, GC: {spike.gcAllocKb:F2}KB");
-            foreach (var sample in spike.topSamples) dataInput.AppendLine($" * {sample}");
+            dataInput.AppendLine($"- GPU: SetPassCalls={spike.gpuSetPassCalls}, Batches={spike.gpuBatches}, Triangles={spike.gpuTriangles}");
+            dataInput.AppendLine($"- Physics: ActiveBodies={spike.physicsActiveBodies}, Contacts={spike.physicsContacts}");
+            dataInput.AppendLine($"- Memory: Total={spike.memoryTotalUsedMb:F1}MB, Gfx={spike.memoryGfxUsedMb:F1}MB");
+            dataInput.AppendLine("  * Hot Path:");
+            foreach (var sample in spike.topSamples) dataInput.AppendLine($"    - {sample}");
+            dataInput.AppendLine();
         }
 
         // 🔥 [디버깅용] AI에게 넘어가는 실제 콜스택 데이터를 콘솔에 출력해서 눈으로 확인해봅시다!
-        Debug.Log("[Auto-Profiler AI] AI에게 전송되는 원본 데이터:\n" + dataInput.ToString());
+        Debug.Log("[Auto-Profiler AI] AI에게 전송되는 확장 데이터:\n" + dataInput.ToString());
 
-        // 마크다운 요구 제거, 스키마만 명시
-        return $@"다음 유니티 프로파일러 스파이크 데이터를 분석해줘:
+        return $@"다음 유니티 프로파일러 데이터를 분석하여 최적화 리포트를 작성해줘. 
+CPU/GC뿐만 아니라 GPU(드로우콜), 물리(컨택트), 메모리 사용량 지표를 모두 종합해서 판단해줘.
+
+분석 데이터:
 {dataInput.ToString()}
 
 다음 JSON 스키마를 엄격히 따라 응답해:
 {{
   ""health_score"": 80,
-  ""summary"": ""전반적인 상태 요약"",
+  ""summary"": ""종합적인 성능 진단 및 개선 방향"",
   ""bottlenecks"": [
     {{
       ""severity"": ""High/Medium/Low"",
-      ""target_file"": ""반드시 '.cs'로 끝나는 정확한 C# 스크립트 파일명만 작성 (예: BadScriptTest.cs). 만약 콜스택에 명확한 사용자 스크립트가 안 보이고 엔진 내부 이슈(GC, 렌더링 등)라면 무조건 null 로 작성할 것!"",
+      ""target_file"": ""병목이 발생한 C# 파일명(예: Test.cs). 엔진 자체 문제(Rendering, Physics, GC 등)라면 null"",
       ""line_number"": 0,
-      ""description"": ""병목 원인 설명"",
-      ""solution"": ""구체적인 최적화 방법""
+      ""description"": ""지표를 근거로 한 병목 원인 설명"",
+      ""solution"": ""구체적인 최적화 및 해결 방법""
     }}
   ]
 }}";

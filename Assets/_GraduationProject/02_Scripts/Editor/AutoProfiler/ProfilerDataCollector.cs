@@ -15,6 +15,20 @@ public static class ProfilerDataCollector
     {
         public float cpuTimeMs;
         public float gcAllocKb;
+        
+        // GPU 지표
+        public int gpuSetPassCalls;
+        public int gpuBatches;
+        public int gpuTriangles;
+        
+        // 물리 지표
+        public int physicsActiveBodies;
+        public int physicsContacts;
+        
+        // 메모리 지표
+        public float memoryTotalUsedMb;
+        public float memoryGfxUsedMb;
+
         public List<string> topSamples = new List<string>();
         public double timestamp;
 
@@ -23,8 +37,23 @@ public static class ProfilerDataCollector
 
     public static List<SpikeData> CollectedSpikes = new List<SpikeData>();
     
+    // 기본 레코더
     private static ProfilerRecorder mainThreadRecorder;
     private static ProfilerRecorder gcAllocRecorder;
+    
+    // 확장 레코더 (GPU)
+    private static ProfilerRecorder setPassCallsRecorder;
+    private static ProfilerRecorder batchesRecorder;
+    private static ProfilerRecorder trianglesRecorder;
+    
+    // 확장 레코더 (Physics)
+    private static ProfilerRecorder activeBodiesRecorder;
+    private static ProfilerRecorder contactsRecorder;
+    
+    // 확장 레코더 (Memory)
+    private static ProfilerRecorder totalMemoryRecorder;
+    private static ProfilerRecorder gfxMemoryRecorder;
+
     private static bool isMonitoring = false;
 
     static ProfilerDataCollector()
@@ -40,20 +69,43 @@ public static class ProfilerDataCollector
 
     private static void StartMonitoring()
     {
+        // CPU & GC
         mainThreadRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "Main Thread", 15);
         gcAllocRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame", 15);
+        
+        // GPU
+        setPassCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "SetPass Calls Count", 15);
+        batchesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "Batches Count", 15);
+        trianglesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "Triangles Count", 15);
+        
+        // Physics
+        activeBodiesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Active Dynamic Bodies Count", 15);
+        contactsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Contacts Count", 15);
+        
+        // Memory
+        totalMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Total Used Memory", 1);
+        gfxMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Gfx Used Memory", 1);
         
         CollectedSpikes.Clear();
         EditorApplication.update += MonitorUpdate;
         isMonitoring = true;
-        Debug.Log("[Auto-Profiler AI] 데이터 수집 시작");
+        Debug.Log("[Auto-Profiler AI] 데이터 수집 시작 (지표 확장 모드)");
     }
 
     private static void StopMonitoring()
     {
         if (!isMonitoring) return;
+        
         mainThreadRecorder.Dispose();
         gcAllocRecorder.Dispose();
+        setPassCallsRecorder.Dispose();
+        batchesRecorder.Dispose();
+        trianglesRecorder.Dispose();
+        activeBodiesRecorder.Dispose();
+        contactsRecorder.Dispose();
+        totalMemoryRecorder.Dispose();
+        gfxMemoryRecorder.Dispose();
+
         EditorApplication.update -= MonitorUpdate;
         isMonitoring = false;
     }
@@ -76,7 +128,25 @@ public static class ProfilerDataCollector
         if (CollectedSpikes.Count > 0 && EditorApplication.timeSinceStartup - CollectedSpikes.Last().timestamp < 0.5f) return;
         if (CollectedSpikes.Count >= 15) return;
 
-        SpikeData spike = new SpikeData { cpuTimeMs = cpuMs, gcAllocKb = gcKb, timestamp = EditorApplication.timeSinceStartup };
+        SpikeData spike = new SpikeData 
+        { 
+            cpuTimeMs = cpuMs, 
+            gcAllocKb = gcKb, 
+            timestamp = EditorApplication.timeSinceStartup,
+            
+            // GPU 데이터 캡처
+            gpuSetPassCalls = (int)setPassCallsRecorder.LastValue,
+            gpuBatches = (int)batchesRecorder.LastValue,
+            gpuTriangles = (int)trianglesRecorder.LastValue,
+            
+            // 물리 데이터 캡처
+            physicsActiveBodies = (int)activeBodiesRecorder.LastValue,
+            physicsContacts = (int)contactsRecorder.LastValue,
+            
+            // 메모리 데이터 캡처 (Byte -> MB)
+            memoryTotalUsedMb = totalMemoryRecorder.LastValue / (1024f * 1024f),
+            memoryGfxUsedMb = gfxMemoryRecorder.LastValue / (1024f * 1024f)
+        };
         int frameIndex = ProfilerDriver.lastFrameIndex;
 
         // 🔥 유니티 프로파일러의 'Time ms' 컬럼 고유 번호는 5번입니다!

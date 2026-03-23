@@ -40,14 +40,20 @@ public class AutoProfilerWindow : EditorWindow
         int spikeCount = ProfilerDataCollector.CollectedSpikes.Count;
         EditorGUILayout.LabelField($"수집된 데이터: {spikeCount} 개의 성능 스파이크 감지됨");
 
-        if (spikeCount > 0 && !isAnalyzing)
+        if (spikeCount > 0)
         {
-            if (GUILayout.Button("AI 성능 분석 시작", GUILayout.Height(30)))
+            DrawMetricsSummary();
+
+            if (!isAnalyzing)
             {
-                RunAnalysis();
+                if (GUILayout.Button("AI 성능 분석 시작", GUILayout.Height(30)))
+                {
+                    RunAnalysis();
+                }
             }
         }
-        else if (isAnalyzing)
+        
+        if (isAnalyzing)
         {
             EditorGUILayout.HelpBox("AI가 데이터를 분석 중입니다. 잠시만 기다려주세요...", MessageType.Info);
         }
@@ -58,6 +64,41 @@ public class AutoProfilerWindow : EditorWindow
             ProfilerDataCollector.CollectedSpikes.Clear();
         }
         EditorGUILayout.EndVertical();
+    }
+
+    private void DrawMetricsSummary()
+    {
+        var spikes = ProfilerDataCollector.CollectedSpikes;
+        if (spikes.Count == 0) return;
+
+        // 가장 최근 스파이크 데이터 기준 요약
+        var last = spikes[spikes.Count - 1];
+
+        EditorGUILayout.BeginHorizontal(EditorStyles.textArea);
+        
+        // 컬럼 1: CPU/GC
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("⚡ CPU/GC", EditorStyles.miniBoldLabel);
+        EditorGUILayout.LabelField($"CPU: {last.cpuTimeMs:F1}ms");
+        EditorGUILayout.LabelField($"GC: {last.gcAllocKb:F1}KB");
+        EditorGUILayout.EndVertical();
+
+        // 컬럼 2: GPU
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("🎨 GPU", EditorStyles.miniBoldLabel);
+        EditorGUILayout.LabelField($"Batches: {last.gpuBatches}");
+        EditorGUILayout.LabelField($"Tris: {last.gpuTriangles / 1000}k");
+        EditorGUILayout.EndVertical();
+
+        // 컬럼 3: Physics/Memory
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("🏗️ Phys/Mem", EditorStyles.miniBoldLabel);
+        EditorGUILayout.LabelField($"Contacts: {last.physicsContacts}");
+        EditorGUILayout.LabelField($"Mem: {last.memoryTotalUsedMb:F0}MB");
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space(5);
     }
 
     private void DrawEmptyState()
