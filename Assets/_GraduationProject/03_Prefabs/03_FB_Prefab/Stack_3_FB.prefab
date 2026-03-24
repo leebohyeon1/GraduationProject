@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8238265296957268309
+--- !u!1 &8529406608854102149
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,37 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1763245080760930700}
-  - component: {fileID: 4730811866603123579}
+  - component: {fileID: 4458056920140898382}
+  - component: {fileID: 3131146355765286646}
   m_Layer: 0
-  m_Name: Charge_UP_2_FB
+  m_Name: Stack_3_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1763245080760930700
+--- !u!4 &4458056920140898382
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8238265296957268309}
+  m_GameObject: {fileID: 8529406608854102149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4730811866603123579
+--- !u!114 &3131146355765286646
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8238265296957268309}
+  m_GameObject: {fileID: 8529406608854102149}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
@@ -135,8 +135,8 @@ MonoBehaviour:
   DebugActive: 0
   InScriptDrivenPause: 0
   FeedbacksList:
-  - rid: 7215927260334784883
-  - rid: 1882149068633801254
+  - rid: 7215927260334784884
+  - rid: 1882149068633801255
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   RestoreInitialValuesOnDisable: 0
@@ -145,11 +145,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 1882149068633801254
+    - rid: 1882149068633801255
       type: {class: MMF_ShaderController, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: 356905257
+        UniqueID: -1150018455
         Label: ShaderController
         OriginalLabel: ShaderController
         ChannelMode: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: 
-        Owner: {fileID: 4730811866603123579}
+        Owner: {fileID: 3131146355765286646}
         DebugActive: 0
         Mode: 0
         TargetShaderController: {fileID: 0}
@@ -242,8 +242,8 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.125
-            value: 0.9928589
+            time: 0.13749695
+            value: 0.9904747
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -298,11 +298,11 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-    - rid: 7215927260334784883
+    - rid: 7215927260334784884
       type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: -1983122704
+        UniqueID: 1531289996
         Label: MMSoundManager Sound
         OriginalLabel: MMSoundManager Sound
         ChannelMode: 0
@@ -370,7 +370,7 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         AutomaticShakerSetupButton:
           ButtonText: Automatic Shaker Setup
-        Owner: {fileID: 4730811866603123579}
+        Owner: {fileID: 3131146355765286646}
         DebugActive: 0
         Source: 0
         Sfx: {fileID: 8300000, guid: 3f05fb273ad8e2347852c8692b9182c1, type: 3}
@@ -383,8 +383,8 @@ MonoBehaviour:
         SoundDataSO: {fileID: 0}
         MinVolume: 0.3
         MaxVolume: 0.3
-        MinPitch: 0.9
-        MaxPitch: 0.9
+        MinPitch: 1.1
+        MaxPitch: 1.1
         MmSoundManagerTrack: 0
         ID: 0
         AudioGroup: {fileID: 0}

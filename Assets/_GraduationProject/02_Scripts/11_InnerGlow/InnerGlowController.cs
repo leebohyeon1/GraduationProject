@@ -9,6 +9,7 @@ public struct InnerGlowSettings
     public float Intensity;
     [Range(0, 2f)]
     public float Width;
+    [ColorUsage(true, true)]
     public Color Color;
     public InnerGlowBlendMode InnerGlowBlendMode;
     public Visibility InnerGlowVisibility;
