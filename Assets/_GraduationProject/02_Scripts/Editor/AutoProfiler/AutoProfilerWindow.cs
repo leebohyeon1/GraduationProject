@@ -60,32 +60,26 @@ public class AutoProfilerWindow : EditorWindow
     {
         EditorGUILayout.BeginHorizontal();
 
-        // 좌측: 히스토리 목록
-        EditorGUILayout.BeginVertical(GUILayout.Width(200));
-        EditorGUILayout.LabelField("분석 기록", EditorStyles.boldLabel);
+        // 좌측: 히스토리 목록 (카드 디자인 적용)
+        EditorGUILayout.BeginVertical(GUILayout.Width(250));
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField(" 📑 ANALYSIS HISTORY", EditorStyles.miniBoldLabel);
         
-        if (GUILayout.Button("새로고침"))
+        if (GUILayout.Button("새로고침", GUILayout.Height(25)))
         {
             historyItems = HistoryManager.LoadAllHistory();
         }
 
+        EditorGUILayout.Space(5);
         historyScrollPos = EditorGUILayout.BeginScrollView(historyScrollPos, EditorStyles.helpBox);
         for (int i = 0; i < historyItems.Count; i++)
         {
-            var item = historyItems[i];
-            bool isSelected = (selectedHistoryIndex == i);
-            
-            GUI.backgroundColor = isSelected ? new Color(0.7f, 0.7f, 1f) : Color.white;
-            if (GUILayout.Button($"{item.timestamp}\nScore: {item.report.health_score}", GUILayout.Height(40)))
-            {
-                selectedHistoryIndex = i;
-                selectedIssueIndex = 0; // 히스토리 선택 시 이슈 선택 초기화
-            }
+            DrawHistoryCard(historyItems[i], i);
         }
-        GUI.backgroundColor = Color.white;
         EditorGUILayout.EndScrollView();
         
-        if (GUILayout.Button("기록 모두 삭제", GUILayout.Width(200)))
+        GUI.backgroundColor = new Color(1, 0.7f, 0.7f);
+        if (GUILayout.Button("전체 기록 삭제", GUILayout.Height(30)))
         {
             if (EditorUtility.DisplayDialog("경고", "모든 분석 기록을 삭제하시겠습니까?", "예", "아니오"))
             {
@@ -94,6 +88,8 @@ public class AutoProfilerWindow : EditorWindow
                 selectedHistoryIndex = -1;
             }
         }
+        GUI.backgroundColor = Color.white;
+        EditorGUILayout.Space(5);
         EditorGUILayout.EndVertical();
 
         // 우측: 상세 내용
@@ -111,6 +107,40 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawHistoryCard(HistoryManager.HistoryItem item, int index)
+    {
+        bool isSelected = (selectedHistoryIndex == index);
+        Rect cardRect = GUILayoutUtility.GetRect(0, 45, GUILayout.ExpandWidth(true));
+        
+        // 배경 디자인
+        if (isSelected) EditorGUI.DrawRect(cardRect, new Color(0.2f, 0.4f, 0.7f, 0.25f));
+        else if (cardRect.Contains(Event.current.mousePosition)) EditorGUI.DrawRect(cardRect, new Color(1, 1, 1, 0.03f));
+
+        // 하단 구분선
+        Rect lineRect = new Rect(cardRect.x + 10, cardRect.yMax - 1, cardRect.width - 20, 1);
+        EditorGUI.DrawRect(lineRect, new Color(1, 1, 1, 0.05f));
+
+        // 점수 인디케이터 바
+        Color scoreColor = GetHealthColor(item.report.health_score);
+        EditorGUI.DrawRect(new Rect(cardRect.x + 4, cardRect.y + 6, 3, cardRect.height - 12), scoreColor);
+
+        // 텍스트 레이아웃
+        var timeStyle = new GUIStyle(EditorStyles.label) { fontSize = 11, fontStyle = isSelected ? FontStyle.Bold : FontStyle.Normal, normal = { textColor = isSelected ? Color.white : new Color(0.8f, 0.8f, 0.8f) } };
+        EditorGUI.LabelField(new Rect(cardRect.x + 15, cardRect.y + 6, cardRect.width - 25, 18), item.timestamp, timeStyle);
+
+        var scoreStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = scoreColor } };
+        EditorGUI.LabelField(new Rect(cardRect.x + 15, cardRect.y + 24, cardRect.width - 25, 16), $"Health Score: {item.report.health_score}%", scoreStyle);
+
+        // 인터랙션
+        if (Event.current.type == EventType.MouseDown && cardRect.Contains(Event.current.mousePosition))
+        {
+            selectedHistoryIndex = index;
+            selectedIssueIndex = 0;
+            GUI.FocusControl(null);
+            Repaint();
+        }
     }
 
     private void DrawHeader()
@@ -360,6 +390,16 @@ public class AutoProfilerWindow : EditorWindow
         
         // --- 섹션 1: 원인 분석 ---
         DrawGlassHeader("🔍 ROOT CAUSE ANALYSIS", new Color(1, 0.3f, 0.3f, 0.12f));
+
+        // 타겟 스크립트 정보 표시 (새로 추가됨)
+        if (!string.IsNullOrEmpty(selected.target_file))
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            var targetIconStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = new Color(0.6f, 0.8f, 1f) } };
+            GUILayout.Label("  📍 TARGET SCRIPT: ", EditorStyles.miniBoldLabel, GUILayout.Width(110));
+            GUILayout.Label($"{selected.target_file} (Line: {selected.line_number})", targetIconStyle);
+            EditorGUILayout.EndHorizontal();
+        }
         
         var contentStyle = new GUIStyle(EditorStyles.label) 
         { 
@@ -372,15 +412,18 @@ public class AutoProfilerWindow : EditorWindow
 
         string formattedDescription = FormatAiText(selected.description);
         
-        // 가용 너비 계산 (사이드바 280 + 간격/스크롤바 여유 70)
-        float availableWidth = position.width - 350; 
+        // FIX: 히스토리 탭일 경우 좌측 리스트(250px)만큼 너비를 더 제외해야 함
+        float sidebarWidths = (currentTab == Tab.History) ? (250 + 280) : 280;
+        float availableWidth = position.width - sidebarWidths - 100; 
         if (availableWidth < 150) availableWidth = 150;
         
         float descHeight = contentStyle.CalcHeight(new GUIContent(formattedDescription), availableWidth);
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        // SelectableLabel은 높이를 약간 더 넉넉하게 주어야 짤리지 않음
-        EditorGUILayout.SelectableLabel(formattedDescription, contentStyle, GUILayout.Height(descHeight + 40));
+        var descRect = EditorGUILayout.BeginVertical();
+        EditorGUI.DrawRect(descRect, new Color(0, 0, 0, 0.15f)); // 텍스트 배경을 약간 어둡게
+        EditorGUILayout.SelectableLabel(formattedDescription, contentStyle, GUILayout.Height(descHeight + 50));
+        EditorGUILayout.EndVertical();
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space(15);
@@ -395,7 +438,10 @@ public class AutoProfilerWindow : EditorWindow
         float solHeight = solutionStyle.CalcHeight(new GUIContent(formattedSolution), availableWidth);
 
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.SelectableLabel(formattedSolution, solutionStyle, GUILayout.Height(solHeight + 40));
+        var solRect = EditorGUILayout.BeginVertical();
+        EditorGUI.DrawRect(solRect, new Color(0, 0, 0, 0.15f));
+        EditorGUILayout.SelectableLabel(formattedSolution, solutionStyle, GUILayout.Height(solHeight + 50));
+        EditorGUILayout.EndVertical();
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space(25);
@@ -418,11 +464,15 @@ public class AutoProfilerWindow : EditorWindow
     }
 
     /// <summary>
-    /// AI가 보낸 마크다운 텍스트를 유니티 리치 텍스트로 변환하여 가독성을 높입니다.
+    /// AI가 보낸 마크다운 텍스트를 유니티 리치 텍스트로 변환하고 줄바꿈을 정상화합니다.
     /// </summary>
     private string FormatAiText(string text)
     {
         if (string.IsNullOrEmpty(text)) return "";
+
+        // 0. 전처리: 리터럴 "\n" 문자열을 실제 줄바꿈 문자로 변환 (JSON 이스케이프 해결)
+        text = text.Replace("\\n", "\n");
+        text = text.Replace("\r\n", "\n").Trim();
 
         // 1. 마크다운 굵게: **text** -> <b>text</b>
         text = System.Text.RegularExpressions.Regex.Replace(text, @"\*\*(.*?)\*\*", "<b>$1</b>");
@@ -430,20 +480,23 @@ public class AutoProfilerWindow : EditorWindow
         // 2. 마크다운 기울임: *text* -> <i>text</i>
         text = System.Text.RegularExpressions.Regex.Replace(text, @"\*(.*?)\*", "<i>$1</i>");
 
-        // 3. 마크다운 제목: # Header -> <size=14><b>Header</b></size>
-        text = System.Text.RegularExpressions.Regex.Replace(text, @"^#+\s+(.*)$", "<b><size=15><color=#FFFFFF>$1</color></size></b>", System.Text.RegularExpressions.RegexOptions.Multiline);
+        // 3. 마크다운 제목: # Header -> 간격 확보 및 스타일 적용
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"^#+\s+(.*)$", "\n<b><size=15><color=#FFFFFF>$1</color></size></b>\n", System.Text.RegularExpressions.RegexOptions.Multiline);
 
-        // 4. 불렛포인트 강조 (줄 시작 부분의 - 또는 * 만 변경)
-        text = System.Text.RegularExpressions.Regex.Replace(text, @"^[-\*]\s+", "  •  ", System.Text.RegularExpressions.RegexOptions.Multiline);
+        // 4. 불렛포인트 강조 및 항목 간 간격 추가
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"^[-\*]\s+", "\n  •  ", System.Text.RegularExpressions.RegexOptions.Multiline);
 
-        // 5. 숫자로 된 리스트 강조 (1. 2. 등)
-        text = System.Text.RegularExpressions.Regex.Replace(text, @"^(\d+)\.", @"<color=#7ABFFF><b>$1.</b></color>", System.Text.RegularExpressions.RegexOptions.Multiline);
+        // 5. 숫자로 된 리스트 강조 (1. 2. 등) 및 줄바꿈 추가
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"^(\d+)\.\s*", "\n<color=#7ABFFF><b>$1.</b></color> ", System.Text.RegularExpressions.RegexOptions.Multiline);
 
         // 6. 주요 단어(따옴표 안) 강조
         text = System.Text.RegularExpressions.Regex.Replace(text, @"'([^']*)'", @"<color=#FFD67A>'$1'</color>");
         text = System.Text.RegularExpressions.Regex.Replace(text, @"""([^""]*)""", @"<color=#FFD67A>""$1""</color>");
 
-        return text;
+        // 7. 후처리: 너무 많은 연속 줄바꿈(3개 이상)은 2개로 축소
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"\n{3,}", "\n\n");
+
+        return text.Trim();
     }
 
     private void DrawGlassHeader(string title, Color color)
