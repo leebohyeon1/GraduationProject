@@ -668,7 +668,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     private void OnCounterSucceeded(Transform transform)
     {
-        // 패링 스택 획득 및 타이머 초기화
+            // 패링 스택 획득 및 타이머 초기화
         _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
         _parryStackTimer = PARRY_STACK_DURATION;
         ParryStackChanged?.Invoke(_parryStacks);

@@ -436,7 +436,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2181828058676980523}
   - component: {fileID: 7144713188581540225}
-  - component: {fileID: 1754431808700363811}
+  - component: {fileID: 707552466450067075}
+  - component: {fileID: 543445894175968786}
   m_Layer: 0
   m_Name: Player_Weapon_low
   m_TagString: Untagged
@@ -527,7 +528,7 @@ SkinnedMeshRenderer:
     m_Center: {x: -1.7471673, y: 0.11086254, z: -0.0024607778}
     m_Extent: {x: 1.7697251, y: 0.3040427, z: 0.07453223}
   m_DirtyAABB: 0
---- !u!114 &1754431808700363811
+--- !u!114 &707552466450067075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -662,7 +663,7 @@ MonoBehaviour:
   glowMaskMode: 0
   innerGlow: 0
   innerGlowWidth: 1
-  innerGlowColor: {r: 0, g: 0.5921569, b: 1, a: 1}
+  innerGlowColor: {r: 0, g: 1.7604336, b: 2.9960785, a: 1}
   innerGlowBlendMode: 0
   innerGlowVisibility: 0
   targetFX: 0
@@ -727,6 +728,65 @@ MonoBehaviour:
   hitFxFadeOutDuration: 0.25
   hitFxColor: {r: 1, g: 1, b: 1, a: 1}
   hitFxRadius: 0.5
+--- !u!114 &543445894175968786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381428622615371632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53be99f17c0b263409339a6a7edda597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InnerGlowController
+  _highLigthEffect: {fileID: 707552466450067075}
+  _innerGlowSettings:
+  - Intensity: 0.5
+    Width: 1
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    InnerGlowBlendMode: 0
+    InnerGlowVisibility: 0
+  - Intensity: 0.5
+    Width: 1
+    Color: {r: 0, g: 0.4700334, b: 0.7264151, a: 1}
+    InnerGlowBlendMode: 0
+    InnerGlowVisibility: 0
+  - Intensity: 0.5
+    Width: 1
+    Color: {r: 0, g: 1.2732859, b: 2, a: 1}
+    InnerGlowBlendMode: 0
+    InnerGlowVisibility: 0
+  - Intensity: 0.5
+    Width: 1
+    Color: {r: 0, g: 2.092636, b: 4, a: 1}
+    InnerGlowBlendMode: 0
+    InnerGlowVisibility: 0
+  _glowDuration: 0.5
+  _glowCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &396559721084472520
 GameObject:
   m_ObjectHideFlags: 0
@@ -2093,7 +2153,6 @@ GameObject:
   - component: {fileID: 8573477260097079251}
   - component: {fileID: 4002449055639936847}
   - component: {fileID: 9200893034343478285}
-  - component: {fileID: 208449258654432945}
   - component: {fileID: 6438771968402588075}
   m_Layer: 7
   m_Name: Player
@@ -2336,6 +2395,63 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Counter_Sucess_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+  ParryStackChangeFeedbacks:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1200511892659626272}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3986382951821265924}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2293650797651942157}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1140321314431913989}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   ChargeLevelCompletedFeedbacks:
@@ -2595,65 +2711,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerZoneTracker
   _primaryZoneId: -1
---- !u!114 &208449258654432945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3044615312439933131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53be99f17c0b263409339a6a7edda597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InnerGlowController
-  _highLigthEffect: {fileID: 1754431808700363811}
-  _innerGlowSettings:
-  - Intensity: 0.5
-    Width: 1
-    Color: {r: 0, g: 0, b: 0, a: 0}
-    InnerGlowBlendMode: 0
-    InnerGlowVisibility: 0
-  - Intensity: 0.5
-    Width: 1
-    Color: {r: 0, g: 0.4700334, b: 0.7264151, a: 1}
-    InnerGlowBlendMode: 0
-    InnerGlowVisibility: 0
-  - Intensity: 0.5
-    Width: 1
-    Color: {r: 0, g: 1.2732859, b: 2, a: 1}
-    InnerGlowBlendMode: 0
-    InnerGlowVisibility: 0
-  - Intensity: 0.5
-    Width: 1
-    Color: {r: 0, g: 2.092636, b: 4, a: 1}
-    InnerGlowBlendMode: 0
-    InnerGlowVisibility: 0
-  _glowDuration: 0.5
-  _glowCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &6438771968402588075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11924,7 +11981,7 @@ PrefabInstance:
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[6735772605221699886].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 208449258654432945}
+      objectReference: {fileID: 543445894175968786}
     - target: {fileID: 3131146355765286646, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: managedReferences[6735772605221699886].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -12004,6 +12061,10 @@ PrefabInstance:
     - target: {fileID: 8529406608854102149, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
       propertyPath: m_Name
       value: Stack_3_FB
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529406608854102149, guid: f05f1526bc5fbba468a05707e25b8c3b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12396,6 +12457,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stack_1_FB
       objectReference: {fileID: 0}
+    - target: {fileID: 5641581550442693150, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 6347102390663811105, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.7311
@@ -12459,7 +12524,7 @@ PrefabInstance:
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 208449258654432945}
+      objectReference: {fileID: 543445894175968786}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetInnerGlowEffect
@@ -12474,6 +12539,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6347102390663811105, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
   m_PrefabInstance: {fileID: 6514754619053317996}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3986382951821265924 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+  m_PrefabInstance: {fileID: 6514754619053317996}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &6604216151046394143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13267,7 +13343,7 @@ PrefabInstance:
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[6735772605221699885].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 208449258654432945}
+      objectReference: {fileID: 543445894175968786}
     - target: {fileID: 4730811866603123579, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: managedReferences[6735772605221699885].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -13307,6 +13383,10 @@ PrefabInstance:
     - target: {fileID: 8238265296957268309, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
       propertyPath: m_Name
       value: Stack_2_FB
+      objectReference: {fileID: 0}
+    - target: {fileID: 8238265296957268309, guid: 0fa566326cb30874da553a2d2a5a0b9d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13497,18 +13577,18 @@ PrefabInstance:
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 6438771968402588075}
+      objectReference: {fileID: 3044615312439933131}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: HitFX
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: HighlightPlus.HighlightEffect, Assembly-CSharp
+      value: RadialBlurFeedback, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -13765,10 +13845,10 @@ PrefabInstance:
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6438771968402588075}
+      objectReference: {fileID: 3044615312439933131}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HitFX
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -17824,6 +17904,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stack_0_FB
       objectReference: {fileID: 0}
+    - target: {fileID: 5641581550442693150, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 6347102390663811105, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.7311
@@ -17887,7 +17971,7 @@ PrefabInstance:
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 208449258654432945}
+      objectReference: {fileID: 543445894175968786}
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[975093121267007902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetInnerGlowEffect
@@ -17901,6 +17985,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+--- !u!114 &1200511892659626272 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
+  m_PrefabInstance: {fileID: 9048408774873920072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!4 &2704139077412692585 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6347102390663811105, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}

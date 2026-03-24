@@ -31,6 +31,11 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
             p_owner.Health.TakeDamged += OnTakeDamaged;
         }
 
+        if(p_owner.Combat != null)
+        {
+            p_owner.Combat.ParryStackChanged += OnParryStackChanged;
+        }
+
         // 이벤트 해제 구독 등록
         player.RegisterDisposable(this);
     }
@@ -142,6 +147,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     #region Counter
     public List<UnityEvent> HeavyCounterFeedbacks;
     public UnityEvent CounterSuccessFeedback;
+    public List<UnityEvent> ParryStackChangeFeedbacks;
 
     /// <summary>
     /// 상쇄 가능 상태 시작
@@ -173,6 +179,15 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     public void CheckProjectileCounter()
     {
         p_owner.Combat.TriggerCheckedProjectileCounter();
+    }
+
+    /// <summary>
+    /// 패리 스택 변경 이벤트
+    /// </summary>
+    /// <param name="obj">스택</param>
+    private void OnParryStackChanged(int obj)
+    {
+        ParryStackChangeFeedbacks[obj]?.Invoke();
     }
     #endregion
 
