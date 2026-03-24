@@ -23,7 +23,7 @@ public static class HistoryManager
     }
 
     /// <summary>
-    /// AI 분석 리포트를 파일로 저장합니다.
+    /// Saves the AI analysis report to a file.
     /// </summary>
     public static void SaveReport(LLMClient.AIReportResponse report)
     {
@@ -41,11 +41,11 @@ public static class HistoryManager
         string json = JsonConvert.SerializeObject(item, Formatting.Indented);
         File.WriteAllText(fullPath, json);
         
-        Debug.Log($"[Auto-Profiler AI] 분석 리포트 저장 완료: {fileName}");
+        Debug.Log($"[Auto-Profiler AI] Analysis report saved: {fileName}");
     }
 
     /// <summary>
-    /// 저장된 모든 히스토리 항목을 불러옵니다. (최신순)
+    /// Loads all saved history items (newest first).
     /// </summary>
     public static List<HistoryItem> LoadAllHistory()
     {
@@ -53,7 +53,7 @@ public static class HistoryManager
         if (!Directory.Exists(HistoryPath)) return items;
 
         var files = Directory.GetFiles(HistoryPath, "*.json")
-                             .OrderByDescending(f => f) // 파일명 기준 정렬 (시간순)
+                             .OrderByDescending(f => f) // Sort by filename (chronological)
                              .ToList();
 
         foreach (var file in files)
@@ -66,7 +66,7 @@ public static class HistoryManager
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"[Auto-Profiler AI] 히스토리 파일 로드 실패 ({Path.GetFileName(file)}): {e.Message}");
+                Debug.LogWarning($"[Auto-Profiler AI] Failed to load history file ({Path.GetFileName(file)}): {e.Message}");
             }
         }
 
@@ -74,14 +74,14 @@ public static class HistoryManager
     }
 
     /// <summary>
-    /// 히스토리 데이터를 모두 삭제합니다.
+    /// Deletes all history data.
     /// </summary>
     public static void ClearHistory()
     {
         if (Directory.Exists(HistoryPath))
         {
             Directory.Delete(HistoryPath, true);
-            Debug.Log("[Auto-Profiler AI] 모든 히스토리 데이터 삭제 완료");
+            Debug.Log("[Auto-Profiler AI] All history data cleared.");
         }
     }
 }

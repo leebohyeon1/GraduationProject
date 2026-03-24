@@ -89,7 +89,7 @@ public static class ProfilerDataCollector
         CollectedSpikes.Clear();
         EditorApplication.update += MonitorUpdate;
         isMonitoring = true;
-        Debug.Log("[Auto-Profiler AI] 데이터 수집 시작 (지표 확장 모드)");
+        Debug.Log("[Auto-Profiler AI] Data collection started (Extended Metrics Mode)");
     }
 
     private static void StopMonitoring()
@@ -166,11 +166,11 @@ public static class ProfilerDataCollector
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning($"[Auto-Profiler AI] 프레임 데이터 추출 실패: {e.Message}");
+            Debug.LogWarning($"[Auto-Profiler AI] Failed to extract frame data: {e.Message}");
         }
 
         CollectedSpikes.Add(spike);
-        Debug.LogWarning($"[Auto-Profiler AI] 스파이크 감지! CPU: {cpuMs:F2}ms, GC: {gcKb:F2}KB");
+        Debug.LogWarning($"[Auto-Profiler AI] Spike detected! CPU: {cpuMs:F2}ms, GC: {gcKb:F2}KB");
     }
 
     // 🔥 가장 부하가 심한 경로를 끝까지 추적하는 재귀 함수

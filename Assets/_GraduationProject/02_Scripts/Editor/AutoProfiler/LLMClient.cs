@@ -76,7 +76,7 @@ public static class LLMClient
             }
             else
             {
-                Debug.LogError($"[Auto-Profiler AI] 모델 목록 로드 실패: {request.error}");
+                Debug.LogError($"[Auto-Profiler AI] Failed to load model list: {request.error}");
                 return null;
             }
         }
@@ -103,12 +103,12 @@ public static class LLMClient
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"[Auto-Profiler AI] 연결 성공! 모델: {ModelID}");
+                Debug.Log($"[Auto-Profiler AI] Connection Successful! Model: {ModelID}");
                 return true;
             }
             else
             {
-                Debug.LogError($"[Auto-Profiler AI] 연결 실패!\n사용 모델: {ModelID}\n응답: {request.downloadHandler.text}");
+                Debug.LogError($"[Auto-Profiler AI] Connection Failed!\nModel Used: {ModelID}\nResponse: {request.downloadHandler.text}");
                 return false;
             }
         }
@@ -126,7 +126,7 @@ public static class LLMClient
         {
             systemInstruction = new
             {
-                parts = new[] { new { text = $"너는 유니티 엔진 최적화 전문가야. 다음은 이 게임의 타겟 환경 및 최적화 목표야:\n[{targetContext}]\n이 타겟 환경을 기준으로 가장 치명적인 병목 현상을 찾아내고, 해결책을 JSON으로만 응답해." } }
+                parts = new[] { new { text = $"You are a Unity Engine Performance Optimization Expert. The following is the target environment and optimization goals for this game:\n[{targetContext}]\nBased on this target environment, identify the most critical bottlenecks and provide solutions. RESPOND ONLY IN ENGLISH AND IN JSON FORMAT." } }
             },
             contents = new[]
             {

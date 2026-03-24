@@ -15,12 +15,12 @@ public class AutoProfilerWindow : EditorWindow
 
     // 설정 및 상태 관련
     private List<LLMClient.ModelInfo> availableModels = new List<LLMClient.ModelInfo>();
-    private string[] modelDisplayNames = { "모델 목록을 불러오는 중..." };
+    private string[] modelDisplayNames = { "Loading models..." };
     private bool isFetchingModels = false;
     private bool showAdvancedSettings = false; // 고급 설정 폴드아웃 토글
     
     // 연결 상태 표시용 변수
-    private string apiStatusText = "연결 상태 확인 중...";
+    private string apiStatusText = "Checking connection...";
     private Color apiStatusColor = Color.gray;
 
     // 히스토리 관련
@@ -45,7 +45,7 @@ public class AutoProfilerWindow : EditorWindow
         }
         else
         {
-            apiStatusText = "API 키가 설정되지 않았습니다.";
+            apiStatusText = "API Key not set.";
             apiStatusColor = new Color(1f, 0.4f, 0.4f);
         }
     }
@@ -70,7 +70,7 @@ public class AutoProfilerWindow : EditorWindow
         }
         else
         {
-            modelDisplayNames = new string[] { "사용 가능한 모델이 없습니다." };
+            modelDisplayNames = new string[] { "No available models." };
         }
         isFetchingModels = false;
         Repaint();
@@ -105,7 +105,7 @@ public class AutoProfilerWindow : EditorWindow
         DrawGlassHeader("📱 TARGET HARDWARE CONTEXT", new Color(0.3f, 0.8f, 1f, 0.12f));
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.Space(5);
-        EditorGUILayout.LabelField("AI가 분석할 때 기준으로 삼을 타겟 기기와 최적화 목표를 자유롭게 적어주세요.", EditorStyles.wordWrappedMiniLabel);
+        EditorGUILayout.LabelField("Describe the target device and optimization goals for the AI to consider during analysis.", EditorStyles.wordWrappedMiniLabel);
         EditorGUILayout.Space(2);
         
         GUIStyle textAreaStyle = new GUIStyle(EditorStyles.textArea);
@@ -124,7 +124,7 @@ public class AutoProfilerWindow : EditorWindow
         if (showAdvancedSettings)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUILayout.LabelField("성능 스파이크를 감지할 내부 수치 기준을 설정합니다.", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField("Set the threshold values for performance spike detection.", EditorStyles.miniLabel);
             AutoProfilerSettings.CpuThresholdMs = EditorGUILayout.Slider("CPU Spike (ms)", AutoProfilerSettings.CpuThresholdMs, 5f, 100f);
             AutoProfilerSettings.GcThresholdKb = EditorGUILayout.Slider("GC Allocation (KB)", AutoProfilerSettings.GcThresholdKb, 10f, 1000f);
             AutoProfilerSettings.MaxSpikeCount = EditorGUILayout.IntSlider("Max Data Points", AutoProfilerSettings.MaxSpikeCount, 5, 50);
@@ -140,10 +140,10 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.Space(5);
         
-        AutoProfilerSettings.AutoAnalyzeOnDetection = EditorGUILayout.Toggle("자동 분석 시작", AutoProfilerSettings.AutoAnalyzeOnDetection);
+        AutoProfilerSettings.AutoAnalyzeOnDetection = EditorGUILayout.Toggle("Enable Auto-Analysis", AutoProfilerSettings.AutoAnalyzeOnDetection);
         if (AutoProfilerSettings.AutoAnalyzeOnDetection)
         {
-            EditorGUILayout.HelpBox("성능 저하 감지 시 AI 분석을 자동으로 요청합니다. (API 할당량 주의)", MessageType.Info);
+            EditorGUILayout.HelpBox("Automatically request AI analysis when performance drops are detected. (Mind your API quota)", MessageType.Info);
         }
         
         EditorGUILayout.Space(5);
@@ -158,7 +158,7 @@ public class AutoProfilerWindow : EditorWindow
         
         if (isFetchingModels)
         {
-            EditorGUILayout.LabelField("사용 가능한 모델을 확인 중입니다...", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField("Checking available models...", EditorStyles.miniLabel);
         }
         else if (availableModels.Count > 0)
         {
@@ -174,10 +174,10 @@ public class AutoProfilerWindow : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("API 키를 입력하면 모델 목록이 활성화됩니다.", MessageType.Info);
+            EditorGUILayout.HelpBox("Enter API Key to enable model selection.", MessageType.Info);
         }
 
-        if (GUILayout.Button("모델 목록 새로고침", GUILayout.Height(25)))
+        if (GUILayout.Button("Refresh Models", GUILayout.Height(25)))
         {
             RefreshModels();
         }
@@ -202,7 +202,7 @@ public class AutoProfilerWindow : EditorWindow
             TestConnectionSilent(newKey);
         }
 
-        if (GUILayout.Button("지금 연결 테스트 실행", GUILayout.Height(25)))
+        if (GUILayout.Button("Test Connection Now", GUILayout.Height(25)))
         {
             TestConnectionManual(newKey);
         }
@@ -241,7 +241,7 @@ public class AutoProfilerWindow : EditorWindow
 
     private async void TestConnectionManual(string key)
     {
-        apiStatusText = "연결 시도 중...";
+        apiStatusText = "Connecting...";
         apiStatusColor = Color.white;
         Repaint();
 
@@ -260,12 +260,12 @@ public class AutoProfilerWindow : EditorWindow
     {
         if (success)
         {
-            apiStatusText = "API 연결됨 (정상)";
+            apiStatusText = "Connected (OK)";
             apiStatusColor = new Color(0.4f, 1f, 0.4f);
         }
         else
         {
-            apiStatusText = "API 연결 끊김 (오류)";
+            apiStatusText = "Disconnected (Error)";
             apiStatusColor = new Color(1f, 0.4f, 0.4f);
         }
         Repaint();
@@ -280,7 +280,7 @@ public class AutoProfilerWindow : EditorWindow
         {
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("Auto-Profiler AI Dashboard", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Play Mode에서 성능 저하가 감지되면 여기에 분석 도구가 나타납니다.", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField("Analysis tools will appear here when performance spikes are detected in Play Mode.", EditorStyles.miniLabel);
             return;
         }
 
@@ -303,7 +303,7 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.Space(5);
         EditorGUILayout.LabelField(" 📑 ANALYSIS HISTORY", EditorStyles.miniBoldLabel);
         
-        if (GUILayout.Button("새로고침", GUILayout.Height(25)))
+        if (GUILayout.Button("Refresh", GUILayout.Height(25)))
         {
             historyItems = HistoryManager.LoadAllHistory();
         }
@@ -317,9 +317,9 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.EndScrollView();
         
         GUI.backgroundColor = new Color(1, 0.7f, 0.7f);
-        if (GUILayout.Button("전체 기록 삭제", GUILayout.Height(30)))
+        if (GUILayout.Button("Clear All History", GUILayout.Height(30)))
         {
-            if (EditorUtility.DisplayDialog("경고", "모든 분석 기록을 삭제하시겠습니까?", "예", "아니오"))
+            if (EditorUtility.DisplayDialog("Warning", "Delete all analysis history?", "Yes", "No"))
             {
                 HistoryManager.ClearHistory();
                 historyItems.Clear();
@@ -339,7 +339,7 @@ public class AutoProfilerWindow : EditorWindow
         else
         {
             GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField("왼쪽 목록에서 기록을 선택하세요.", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.LabelField("Select a record from the list on the left.", EditorStyles.centeredGreyMiniLabel);
             GUILayout.FlexibleSpace();
         }
         EditorGUILayout.EndVertical();
@@ -388,9 +388,9 @@ public class AutoProfilerWindow : EditorWindow
         if (hasData)
         {
             GUI.enabled = !isAnalyzing;
-            if (GUILayout.Button("데이터 초기화", GUILayout.Width(100)))
+            if (GUILayout.Button("Reset Data", GUILayout.Width(100)))
             {
-                if (EditorUtility.DisplayDialog("데이터 초기화", "수집된 스파이크와 분석 결과를 모두 삭제하시겠습니까?", "예", "아니오"))
+                if (EditorUtility.DisplayDialog("Reset Data", "Delete all collected spikes and analysis results?", "Yes", "No"))
                 {
                     lastReport = null;
                     ProfilerDataCollector.CollectedSpikes.Clear();
@@ -402,14 +402,14 @@ public class AutoProfilerWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.LabelField($"수집된 데이터: {spikeCount} 개의 성능 스파이크 감지됨");
+        EditorGUILayout.LabelField($"Captured Data: {spikeCount} spikes detected");
 
         if (spikeCount > 0)
         {
             DrawMetricsSummary();
             if (!isAnalyzing)
             {
-                if (GUILayout.Button("AI 성능 분석 시작", GUILayout.Height(30)))
+                if (GUILayout.Button("Start AI Analysis", GUILayout.Height(30)))
                 {
                     RunAnalysis();
                 }
@@ -418,7 +418,7 @@ public class AutoProfilerWindow : EditorWindow
         
         if (isAnalyzing)
         {
-            EditorGUILayout.HelpBox("AI가 데이터를 분석 중입니다. 잠시만 기다려주세요...", MessageType.Info);
+            EditorGUILayout.HelpBox("AI is analyzing data. Please wait...", MessageType.Info);
         }
         EditorGUILayout.EndVertical();
     }
