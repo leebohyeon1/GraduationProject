@@ -17,6 +17,7 @@ public class AutoProfilerWindow : EditorWindow
     private List<LLMClient.ModelInfo> availableModels = new List<LLMClient.ModelInfo>();
     private string[] modelDisplayNames = { "모델 목록을 불러오는 중..." };
     private bool isFetchingModels = false;
+    private bool showAdvancedSettings = false; // 고급 설정 폴드아웃 토글
     
     // 연결 상태 표시용 변수
     private string apiStatusText = "연결 상태 확인 중...";
@@ -100,16 +101,36 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.LabelField("⚙️ AUTO-PROFILER SETTINGS", EditorStyles.boldLabel);
         EditorGUILayout.Space(10);
 
-        // 1. 성능 감지 임계값 (PERFORMANCE THRESHOLDS)
-        DrawGlassHeader("📊 PERFORMANCE THRESHOLDS", new Color(0.3f, 0.8f, 1f, 0.12f));
+        // 1. AI 분석 컨텍스트 (메인 설정)
+        DrawGlassHeader("📱 TARGET HARDWARE CONTEXT", new Color(0.3f, 0.8f, 1f, 0.12f));
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField("AI가 분석할 때 기준으로 삼을 타겟 기기와 최적화 목표를 자유롭게 적어주세요.", EditorStyles.wordWrappedMiniLabel);
+        EditorGUILayout.Space(2);
         
-        AutoProfilerSettings.CpuThresholdMs = EditorGUILayout.Slider("CPU Spike (ms)", AutoProfilerSettings.CpuThresholdMs, 5f, 100f);
-        AutoProfilerSettings.GcThresholdKb = EditorGUILayout.Slider("GC Allocation (KB)", AutoProfilerSettings.GcThresholdKb, 10f, 1000f);
-        AutoProfilerSettings.MaxSpikeCount = EditorGUILayout.IntSlider("Max Data Points", AutoProfilerSettings.MaxSpikeCount, 5, 50);
+        GUIStyle textAreaStyle = new GUIStyle(EditorStyles.textArea);
+        textAreaStyle.wordWrap = true;
+        
+        string contextText = EditorGUILayout.TextArea(AutoProfilerSettings.TargetHardwareContext, textAreaStyle, GUILayout.Height(60));
+        if (contextText != AutoProfilerSettings.TargetHardwareContext)
+        {
+            AutoProfilerSettings.TargetHardwareContext = contextText;
+        }
         
         EditorGUILayout.Space(5);
+        
+        // 고급 설정 (기존 수치 기반 슬라이더)
+        showAdvancedSettings = EditorGUILayout.Foldout(showAdvancedSettings, "Advanced Trigger Settings", true, EditorStyles.foldoutHeader);
+        if (showAdvancedSettings)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("성능 스파이크를 감지할 내부 수치 기준을 설정합니다.", EditorStyles.miniLabel);
+            AutoProfilerSettings.CpuThresholdMs = EditorGUILayout.Slider("CPU Spike (ms)", AutoProfilerSettings.CpuThresholdMs, 5f, 100f);
+            AutoProfilerSettings.GcThresholdKb = EditorGUILayout.Slider("GC Allocation (KB)", AutoProfilerSettings.GcThresholdKb, 10f, 1000f);
+            AutoProfilerSettings.MaxSpikeCount = EditorGUILayout.IntSlider("Max Data Points", AutoProfilerSettings.MaxSpikeCount, 5, 50);
+            EditorGUILayout.EndVertical();
+        }
+
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space(15);
@@ -252,15 +273,22 @@ public class AutoProfilerWindow : EditorWindow
 
     private void DrawDashboardTab()
     {
+        int spikeCount = ProfilerDataCollector.CollectedSpikes.Count;
+        bool hasReport = lastReport != null;
+
+        if (spikeCount == 0 && !hasReport)
+        {
+            EditorGUILayout.Space(10);
+            EditorGUILayout.LabelField("Auto-Profiler AI Dashboard", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Play Mode에서 성능 저하가 감지되면 여기에 분석 도구가 나타납니다.", EditorStyles.miniLabel);
+            return;
+        }
+
         DrawHeader();
 
         EditorGUILayout.Space(10);
 
-        if (lastReport == null)
-        {
-            DrawEmptyState();
-        }
-        else
+        if (hasReport)
         {
             DrawAnalysisResult(lastReport);
         }
@@ -421,17 +449,6 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(5);
-    }
-
-    private void DrawEmptyState()
-    {
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.LabelField("Play Mode에서 성능 저하가 감지되면 여기에 분석 버튼이 나타납니다.", EditorStyles.centeredGreyMiniLabel);
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
-        GUILayout.FlexibleSpace();
     }
 
     private void DrawAnalysisResult(LLMClient.AIReportResponse report)

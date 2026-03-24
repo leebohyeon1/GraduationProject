@@ -120,12 +120,13 @@ public static class LLMClient
         if (string.IsNullOrEmpty(apiKey)) return null;
 
         string prompt = BuildPrompt(spikes);
+        string targetContext = AutoProfilerSettings.TargetHardwareContext;
 
         var requestBody = new
         {
             systemInstruction = new
             {
-                parts = new[] { new { text = "너는 유니티 엔진 최적화 전문가야. 사용자의 프로파일러 데이터를 분석하고 JSON으로만 응답해." } }
+                parts = new[] { new { text = $"너는 유니티 엔진 최적화 전문가야. 다음은 이 게임의 타겟 환경 및 최적화 목표야:\n[{targetContext}]\n이 타겟 환경을 기준으로 가장 치명적인 병목 현상을 찾아내고, 해결책을 JSON으로만 응답해." } }
             },
             contents = new[]
             {
