@@ -100,7 +100,37 @@ public class AutoProfilerWindow : EditorWindow
         EditorGUILayout.LabelField("⚙️ AUTO-PROFILER SETTINGS", EditorStyles.boldLabel);
         EditorGUILayout.Space(10);
 
-        // 1. AI 모델 선택 섹션
+        // 1. 성능 감지 임계값 (PERFORMANCE THRESHOLDS)
+        DrawGlassHeader("📊 PERFORMANCE THRESHOLDS", new Color(0.3f, 0.8f, 1f, 0.12f));
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.Space(5);
+        
+        AutoProfilerSettings.CpuThresholdMs = EditorGUILayout.Slider("CPU Spike (ms)", AutoProfilerSettings.CpuThresholdMs, 5f, 100f);
+        AutoProfilerSettings.GcThresholdKb = EditorGUILayout.Slider("GC Allocation (KB)", AutoProfilerSettings.GcThresholdKb, 10f, 1000f);
+        AutoProfilerSettings.MaxSpikeCount = EditorGUILayout.IntSlider("Max Data Points", AutoProfilerSettings.MaxSpikeCount, 5, 50);
+        
+        EditorGUILayout.Space(5);
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.Space(15);
+
+        // 2. AI 자동화 설정 (AUTOMATION)
+        DrawGlassHeader("⚡ AUTOMATION", new Color(1f, 0.5f, 0.3f, 0.12f));
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.Space(5);
+        
+        AutoProfilerSettings.AutoAnalyzeOnDetection = EditorGUILayout.Toggle("자동 분석 시작", AutoProfilerSettings.AutoAnalyzeOnDetection);
+        if (AutoProfilerSettings.AutoAnalyzeOnDetection)
+        {
+            EditorGUILayout.HelpBox("성능 저하 감지 시 AI 분석을 자동으로 요청합니다. (API 할당량 주의)", MessageType.Info);
+        }
+        
+        EditorGUILayout.Space(5);
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.Space(15);
+
+        // 3. AI 모델 선택 섹션
         DrawGlassHeader("🤖 AI MODEL SELECTION", new Color(0.3f, 0.6f, 1f, 0.12f));
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.Space(5);
@@ -136,7 +166,7 @@ public class AutoProfilerWindow : EditorWindow
 
         EditorGUILayout.Space(15);
 
-        // 2. API 설정 섹션
+        // 4. API 설정 섹션
         DrawGlassHeader("🔑 API CONFIGURATION", new Color(1f, 0.8f, 0.3f, 0.12f));
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.Space(5);
@@ -194,7 +224,6 @@ public class AutoProfilerWindow : EditorWindow
         apiStatusColor = Color.white;
         Repaint();
 
-        // 🚀 이제 팝업창(Dialog)을 띄우지 않고 상태 텍스트만 갱신합니다.
         bool success = await LLMClient.ValidateApiKey(key);
         UpdateStatusUI(success);
     }

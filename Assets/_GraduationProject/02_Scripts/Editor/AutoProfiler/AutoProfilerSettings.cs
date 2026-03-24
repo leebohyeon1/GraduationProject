@@ -1,111 +1,35 @@
 using UnityEditor;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
+/// <summary>
+/// 성능 스파이크 감지 임계값 및 AI 설정을 관리하는 정적 클래스입니다.
+/// </summary>
 public static class AutoProfilerSettings
 {
-    private const string PrefsPrefix = "AutoProfilerAI_";
-    private const string ApiKeyPath = PrefsPrefix + "ApiKey";
-    private const string CpuThresholdPath = PrefsPrefix + "CpuThreshold";
-    private const string GcThresholdPath = PrefsPrefix + "GcThreshold";
-
-    private static string _verificationStatus = "";
-    private static MessageType _statusMessageType = MessageType.None;
-    private static bool _isVerifying = false;
-
-    public static string ApiKey
-    {
-        get => EditorPrefs.GetString(ApiKeyPath, "");
-        set => EditorPrefs.SetString(ApiKeyPath, value);
-    }
-
+    // 1. CPU 성능 임계값 (기본 20ms)
     public static float CpuThresholdMs
     {
-        get => EditorPrefs.GetFloat(CpuThresholdPath, 20f);
-        set => EditorPrefs.SetFloat(CpuThresholdPath, value);
+        get => EditorPrefs.GetFloat("AutoProfiler_CpuThreshold", 20.0f);
+        set => EditorPrefs.SetFloat("AutoProfiler_CpuThreshold", value);
     }
 
+    // 2. GC 할당량 임계값 (기본 100KB)
     public static float GcThresholdKb
     {
-        get => EditorPrefs.GetFloat(GcThresholdPath, 50f);
-        set => EditorPrefs.SetFloat(GcThresholdPath, value);
+        get => EditorPrefs.GetFloat("AutoProfiler_GcThreshold", 100.0f);
+        set => EditorPrefs.SetFloat("AutoProfiler_GcThreshold", value);
     }
 
-    [SettingsProvider]
-    public static SettingsProvider CreateAutoProfilerSettingsProvider()
+    // 3. 자동 분석 여부 (기본 false)
+    public static bool AutoAnalyzeOnDetection
     {
-        var provider = new SettingsProvider("Preferences/Auto-Profiler AI", SettingsScope.User)
-        {
-            label = "Auto-Profiler AI",
-            guiHandler = (searchContext) =>
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("LLM API Settings", EditorStyles.boldLabel);
-
-                // API Key 필드
-                EditorGUI.BeginChangeCheck();
-                string newKey = EditorGUILayout.PasswordField("API Key", ApiKey);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ApiKey = newKey;
-                    _verificationStatus = ""; // 키가 바뀌면 상태 초기화
-                }
-
-                // 검증 버튼
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                GUI.enabled = !_isVerifying && !string.IsNullOrEmpty(ApiKey);
-                if (GUILayout.Button(_isVerifying ? "Verifying..." : "Verify API Key", GUILayout.Width(120)))
-                {
-                    VerifyKeyAsync();
-                }
-                GUI.enabled = true;
-                EditorGUILayout.EndHorizontal();
-
-                // 검증 결과 표시
-                if (!string.IsNullOrEmpty(_verificationStatus))
-                {
-                    EditorGUILayout.HelpBox(_verificationStatus, _statusMessageType);
-                }
-
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("Performance Thresholds", EditorStyles.boldLabel);
-
-                CpuThresholdMs = EditorGUILayout.FloatField("CPU Spike Threshold (ms)", CpuThresholdMs);
-                GcThresholdKb = EditorGUILayout.FloatField("GC Alloc Threshold (KB)", GcThresholdKb);
-
-                EditorGUILayout.Space();
-                EditorGUILayout.HelpBox("임계값을 초과하는 프레임이 감지되면 프로파일러 데이터가 자동으로 기록됩니다.", MessageType.Info);
-            },
-
-            keywords = new HashSet<string>(new[] { "Auto", "Profiler", "AI", "LLM", "Performance" })
-        };
-
-        return provider;
+        get => EditorPrefs.GetBool("AutoProfiler_AutoAnalyze", false);
+        set => EditorPrefs.SetBool("AutoProfiler_AutoAnalyze", value);
     }
-
-    private static async void VerifyKeyAsync()
+    
+    // 4. 최대 수집 데이터 수 (기본 15개)
+    public static int MaxSpikeCount
     {
-        _isVerifying = true;
-        _verificationStatus = "API 키를 검증 중입니다...";
-        _statusMessageType = MessageType.Info;
-
-        bool isValid = await LLMClient.ValidateApiKey(ApiKey);
-
-        if (isValid)
-        {
-            _verificationStatus = "API 키 검증 성공! 정상적으로 사용할 수 있습니다.";
-            _statusMessageType = MessageType.Info;
-        }
-        else
-        {
-            _verificationStatus = "API 키 검증 실패. 키를 다시 확인해주세요.";
-            _statusMessageType = MessageType.Error;
-        }
-
-        _isVerifying = false;
-        // SettingsProvider 화면 갱신을 위해 InspectorWindow 등을 Repaint해야 할 수 있지만 
-        // Preferences 창은 마우스 오버 시 대개 자동 갱신됩니다.
+        get => EditorPrefs.GetInt("AutoProfiler_MaxSpikes", 15);
+        set => EditorPrefs.SetInt("AutoProfiler_MaxSpikes", value);
     }
 }
