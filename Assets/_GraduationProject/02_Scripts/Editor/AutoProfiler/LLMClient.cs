@@ -100,7 +100,9 @@ public static class LLMClient
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                return ParseAiResponse(request.downloadHandler.text);
+                var report = ParseAiResponse(request.downloadHandler.text);
+                if (report != null) HistoryManager.SaveReport(report);
+                return report;
             }
             else
             {
