@@ -13,10 +13,14 @@ public class AutoProfilerWindow : EditorWindow
     private Vector2 scrollPosRight;
     private bool isAnalyzing = false;
 
-    // 설정 관련
+    // 설정 및 상태 관련
     private List<LLMClient.ModelInfo> availableModels = new List<LLMClient.ModelInfo>();
     private string[] modelDisplayNames = { "모델 목록을 불러오는 중..." };
     private bool isFetchingModels = false;
+    
+    // 연결 상태 표시용 변수
+    private string apiStatusText = "연결 상태 확인 중...";
+    private Color apiStatusColor = Color.gray;
 
     // 히스토리 관련
     private List<HistoryManager.HistoryItem> historyItems = new List<HistoryManager.HistoryItem>();
@@ -32,7 +36,17 @@ public class AutoProfilerWindow : EditorWindow
     private void OnEnable()
     {
         historyItems = HistoryManager.LoadAllHistory();
-        RefreshModels();
+        string key = EditorPrefs.GetString("AutoProfiler_ApiKey", "");
+        if (!string.IsNullOrEmpty(key))
+        {
+            RefreshModels();
+            TestConnectionSilent(key);
+        }
+        else
+        {
+            apiStatusText = "API 키가 설정되지 않았습니다.";
+            apiStatusColor = new Color(1f, 0.4f, 0.4f);
+        }
     }
 
     private async void RefreshModels()
@@ -48,7 +62,6 @@ public class AutoProfilerWindow : EditorWindow
             modelDisplayNames = new string[models.Count];
             for (int i = 0; i < models.Count; i++)
             {
-                // 이름 다듬기: "models/gemini-1.5-flash-latest" -> "Gemini 1.5 Flash Latest"
                 string displayName = models[i].name.Replace("models/", "");
                 displayName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName.Replace("-", " "));
                 modelDisplayNames[i] = displayName;
@@ -56,7 +69,7 @@ public class AutoProfilerWindow : EditorWindow
         }
         else
         {
-            modelDisplayNames = new string[] { "사용 가능한 모델이 없습니다. API 키를 확인하세요." };
+            modelDisplayNames = new string[] { "사용 가능한 모델이 없습니다." };
         }
         isFetchingModels = false;
         Repaint();
@@ -68,12 +81,16 @@ public class AutoProfilerWindow : EditorWindow
 
         EditorGUILayout.Space(5);
 
+        EditorGUILayout.BeginVertical();
         switch (currentTab)
         {
             case Tab.Dashboard: DrawDashboardTab(); break;
             case Tab.History: DrawHistoryTab(); break;
             case Tab.Settings: DrawSettingsTab(); break;
         }
+        EditorGUILayout.EndVertical();
+        
+        EditorGUILayout.Space(5);
     }
 
     private void DrawSettingsTab()
@@ -101,12 +118,12 @@ public class AutoProfilerWindow : EditorWindow
             if (newModelIndex != currentModelIndex)
             {
                 LLMClient.ModelID = availableModels[newModelIndex].name;
-                Debug.Log($"[Auto-Profiler AI] 모델 변경됨: {LLMClient.ModelID}");
+                TestConnectionSilent(EditorPrefs.GetString("AutoProfiler_ApiKey", ""));
             }
         }
         else
         {
-            EditorGUILayout.HelpBox("API 키를 입력하고 '모델 목록 새로고침'을 눌러주세요.", MessageType.Warning);
+            EditorGUILayout.HelpBox("API 키를 입력하면 모델 목록이 활성화됩니다.", MessageType.Info);
         }
 
         if (GUILayout.Button("모델 목록 새로고침", GUILayout.Height(25)))
@@ -131,26 +148,77 @@ public class AutoProfilerWindow : EditorWindow
         {
             EditorPrefs.SetString("AutoProfiler_ApiKey", newKey);
             RefreshModels();
+            TestConnectionSilent(newKey);
         }
 
-        if (GUILayout.Button("API 연결 테스트", GUILayout.Height(25)))
+        if (GUILayout.Button("지금 연결 테스트 실행", GUILayout.Height(25)))
         {
-            TestConnection(newKey);
+            TestConnectionManual(newKey);
         }
+
+        DrawInlineStatus();
 
         EditorGUILayout.EndVertical();
 
         GUILayout.FlexibleSpace();
-        EditorGUILayout.LabelField("Auto-Profiler AI v1.5 (Dynamic Gemini Selection)", EditorStyles.centeredGreyMiniLabel);
+        EditorGUILayout.LabelField("Auto-Profiler AI v1.5", EditorStyles.centeredGreyMiniLabel);
         EditorGUILayout.Space(5);
         EditorGUILayout.EndVertical();
     }
 
-    private async void TestConnection(string key)
+    private void DrawInlineStatus()
     {
+        EditorGUILayout.Space(5);
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.Space(5);
+        
+        Rect dotRect = GUILayoutUtility.GetRect(10, 10, GUILayout.Width(10));
+        dotRect.y += 3;
+        EditorGUI.DrawRect(dotRect, apiStatusColor);
+        
+        EditorGUILayout.Space(5);
+        
+        var statusStyle = new GUIStyle(EditorStyles.miniLabel) { 
+            normal = { textColor = apiStatusColor },
+            fontStyle = FontStyle.Bold
+        };
+        EditorGUILayout.LabelField(apiStatusText, statusStyle);
+        
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space(5);
+    }
+
+    private async void TestConnectionManual(string key)
+    {
+        apiStatusText = "연결 시도 중...";
+        apiStatusColor = Color.white;
+        Repaint();
+
+        // 🚀 이제 팝업창(Dialog)을 띄우지 않고 상태 텍스트만 갱신합니다.
         bool success = await LLMClient.ValidateApiKey(key);
-        if (success) EditorUtility.DisplayDialog("성공", "API 키가 유효합니다! 분석을 시작할 수 있습니다.", "확인");
-        else EditorUtility.DisplayDialog("실패", "API 키가 유효하지 않거나 네트워크 오류가 발생했습니다.", "확인");
+        UpdateStatusUI(success);
+    }
+
+    private async void TestConnectionSilent(string key)
+    {
+        if (string.IsNullOrEmpty(key)) return;
+        bool success = await LLMClient.ValidateApiKey(key);
+        UpdateStatusUI(success);
+    }
+
+    private void UpdateStatusUI(bool success)
+    {
+        if (success)
+        {
+            apiStatusText = "API 연결됨 (정상)";
+            apiStatusColor = new Color(0.4f, 1f, 0.4f);
+        }
+        else
+        {
+            apiStatusText = "API 연결 끊김 (오류)";
+            apiStatusColor = new Color(1f, 0.4f, 0.4f);
+        }
+        Repaint();
     }
 
     private void DrawDashboardTab()
