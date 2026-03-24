@@ -101,23 +101,5 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
             return p_owner.Combat.CalculateHeavyAttackDamage(baseDmg);
         });
     }
-
-    protected override void OnAttackFinished()
-    {
-        // 상태 전환으로 인해 애니메이션 초반이면 리턴
-        if (Time.time - p_enterTime < 0.3f)
-        {
-            return;
-        }
-
-        if (p_nextState != null)
-        {
-            p_stateMachine.ChangeState(p_nextState);
-        }
-        else
-        {
-            p_stateMachine.ChangeState<PlayerIdleState>();
-        }
-    }
     #endregion
 }
