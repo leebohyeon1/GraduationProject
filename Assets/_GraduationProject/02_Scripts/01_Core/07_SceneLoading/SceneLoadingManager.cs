@@ -14,7 +14,7 @@ public class SceneLoadingManager : MonoBehaviour
     public static SceneLoadingManager Instance;
 
     [SerializeField] private bool _useInitialScene = true;
-    [SerializeField] private string _initializeSceneName;
+    [SerializeField] private SceneDataSO _initializeScene;
 
     [Header("Loading UI")]
     [SerializeField] private CanvasGroup _loadingCanvasGroup; // 투명도(Alpha) 조절로 페이드 효과를 주기 위함
@@ -69,12 +69,12 @@ public class SceneLoadingManager : MonoBehaviour
 
     private void Start()
     {
-        if(_initializeSceneName == "" || !_useInitialScene)
+        if(_initializeScene == null || !_useInitialScene)
         {
             return;
         }
 
-        if (_sceneDataLookup.TryGetValue(_initializeSceneName, out SceneDataSO dataToLoad))
+        if (_sceneDataLookup.TryGetValue(_initializeScene.SceneName, out SceneDataSO dataToLoad))
         {
             StartCoroutine(InitialTeleport(dataToLoad));
         }

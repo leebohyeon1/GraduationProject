@@ -55,6 +55,13 @@ public class DataManager : MonoBehaviour
         if (_useDevelopment)
         {
             CreateNewGame(_developementDataSlotIndex);
+
+            PlayerController player = FindFirstObjectByType<PlayerController>();
+            if (player != null)
+            {
+                _currentGameData.PlayerData.RespawnPostion = player.transform.position;
+                _currentGameData.PlayerData.LastPosition = player.transform.position;
+            }
         }
 #endif
     }
