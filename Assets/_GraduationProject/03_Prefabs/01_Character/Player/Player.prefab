@@ -2181,6 +2181,7 @@ MonoBehaviour:
   _animator: {fileID: 5376193912871817898}
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _data: {fileID: 11400000, guid: 3ae4178c070adfd409313f1ad126c3f3, type: 2}
+  playerSpawnedSO: {fileID: 11400000, guid: 707c6a44acbbe864f895da890194bf93, type: 2}
   _inputHandler: {fileID: 29921031807327584}
   _health: {fileID: 4704667906256295335}
   _movement: {fileID: 1186553582571618302}
@@ -2192,7 +2193,6 @@ MonoBehaviour:
   _potion: {fileID: 2569505479145178853}
   _money: {fileID: 8573477260097079251}
   _interact: {fileID: 5712847895968568263}
-  playerSpawnedSO: {fileID: 11400000, guid: 707c6a44acbbe864f895da890194bf93, type: 2}
 --- !u!114 &29921031807327584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2245,8 +2245,8 @@ MonoBehaviour:
     Feedback: {fileID: 0}
   - type: Atk_Strong_01_FB
     Feedback: {fileID: 4264550087278333901}
-  - type: ChargeAttackStartLevel2_FB
-    Feedback: {fileID: 0}
+  - type: Atk_Strong_02_FB
+    Feedback: {fileID: 9092900479427618579}
   - type: ChargeAttackStartLevel3_FB
     Feedback: {fileID: 0}
   - type: Counter_Sucess_FB
@@ -6317,10 +6317,10 @@ MonoBehaviour:
         Owner: {fileID: 822644388295698512}
         DebugActive: 0
         Mode: 0
-        TargetShaderController: {fileID: 4660188398828594597}
+        TargetShaderController: {fileID: 0}
         TargetShaderControllerList:
-        - {fileID: 3321068778080361003}
-        - {fileID: 3552117537151177686}
+        - {fileID: 0}
+        - {fileID: 0}
         RevertToInitialValueAfterEnd: 0
         GetInitialValueOnOneTime: 0
         OneTimeDuration: 0.3
@@ -9250,7 +9250,7 @@ PrefabInstance:
     - target: {fileID: 7871013295127843688, guid: f47dab4f87d96ab49a35917c4b4c4b10, type: 3}
       propertyPath: managedReferences[1882149068633801253].TargetShaderController
       value: 
-      objectReference: {fileID: 5681733971634424498}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10946,6 +10946,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8788898376424396920, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
   m_PrefabInstance: {fileID: 6706269008518296471}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9092900479427618579 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+  m_PrefabInstance: {fileID: 6706269008518296471}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &7023998096388930725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11066,15 +11077,15 @@ PrefabInstance:
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011580].TargetShaderController
       value: 
-      objectReference: {fileID: 4660188398828594597}
+      objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: 'managedReferences[554611939034011580].TargetShaderControllerList.Array.data[0]'
       value: 
-      objectReference: {fileID: 3321068778080361003}
+      objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: 'managedReferences[554611939034011580].TargetShaderControllerList.Array.data[1]'
       value: 
-      objectReference: {fileID: 3552117537151177686}
+      objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
