@@ -41,7 +41,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
 
     protected override void ClearAnimator()
     {
-        base.SetupAnimator();
+        base.ClearAnimator();
 
         p_animator.speed = 1;
     }

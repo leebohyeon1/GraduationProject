@@ -15,7 +15,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     protected bool p_canBufferInput => p_owner.InputHandler.CanBufferInput;
     protected bool p_canChangeCombatState = false;
   
-    protected float p_enterTime; // 상태에 진입한 시간
+    protected bool p_isAttackActive = false; // 공격이 실제로 시작되었는지 확인하는 플래그
 
     public PlayerAttackBaseState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -53,7 +53,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         base.SetupStats();
 
         p_nextState = null; // 다음 상태 초기화
-        p_enterTime = Time.time;    // 현재 시간 기록
+        p_isAttackActive = false;                       // 공격 활성 플래그 초기화
         p_owner.Stamina.UseStamina(p_AttackConfig.AttackStamina);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
@@ -83,6 +83,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
         p_canChangeCombatState = false;
         p_nextState = null;                                 // 다음 상태 null 처리
+        p_isAttackActive = false;
     }
     #endregion
 
@@ -123,15 +124,15 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected override void OnHeavyAttack()
     {
+        if (p_nextState != null)
+        {
+            return;
+        }
+
         if (p_owner.Combat.ParryStacks <= 0)
         {
             // 패리 스택이 없으면 일반 공격으로 대체
             OnNormalAttack();
-            return;
-        }
-
-        if (p_nextState != null)
-        {
             return;
         }
 
@@ -231,6 +232,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackStarted()
     {
+        
         AttackStep();
     }
 
@@ -239,6 +241,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackPerformed()
     {
+        p_isAttackActive = true;
         p_owner.Combat.ExecuteAttack(p_AttackConfig);
     }
 
@@ -247,11 +250,13 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackFinished()
     {
-        // 상태 전환으로 인해 애니메이션 초반이면 리턴
-        if (Time.time - p_enterTime < 0.3f)
+        // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
+        if (!p_isAttackActive)
         {
             return;
         }
+
+        p_isAttackActive = false;
 
         if (p_nextState != null)
         {
@@ -265,6 +270,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected virtual void OnChangeNextCombatState()
     {
+        // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
+        if (!p_isAttackActive)
+        {
+            return;
+        }
+
         p_canChangeCombatState = true;
 
         if (p_nextState == null)
@@ -279,6 +290,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         
         if (isAttackState || isDodgeState || isChargeState || isHeavyAttackState)
         {
+            p_isAttackActive = false;
             p_stateMachine.ChangeState(p_nextState);
         }
     }

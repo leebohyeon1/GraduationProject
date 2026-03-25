@@ -62,7 +62,7 @@ public class PlayerDodgeState : PlayerBaseState
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Dodge);       // 애니메이션 상태 설정
         p_animator.SetInteger("DodgeType", (int)p_owner.Movement.DodgeConfig.Type); // 회피 타입 설정
 
-        // p_animator.Play(p_owner.Movement.DodgeConfig.AnimationStateName, 0, 0f);    // 0부터 재생
+        p_animator.Play(p_owner.Movement.DodgeConfig.AnimationStateName, 0, 0f);    // 0부터 재생
     }
     #endregion
 
@@ -131,7 +131,15 @@ public class PlayerDodgeState : PlayerBaseState
                 break;
             case DodgeData.DodgeType.Step:
                 Vector3 moveInput = p_owner.InputHandler.MoveInput;
-                Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                Vector3 dodgeDirection;
+                if (moveInput == Vector3.zero)
+                {
+                    dodgeDirection = p_owner.transform.forward;
+                }
+                else
+                {
+                    dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                }
 
                 p_owner.Movement.Step(dodgeDirection, this, false, 
                     () =>

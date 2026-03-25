@@ -72,6 +72,11 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     [Header("Obstacle Detection")]
     [SerializeField] private LayerMask _obstacleMask = -1;
 
+    [Header("Ground Detection")]
+    [SerializeField] private LayerMask _groundMask = -1;
+    [SerializeField] private float _groundCheckDistance = 0.3f; // 바닥 감지 여유 거리
+    [SerializeField] private float _groundCheckRadius = 0.25f;  // 바닥 감지 반경
+
     [Header("Drag Setting")]
     [SerializeField] private PlayerAbilityTagSO _dragSuperArmorSO; // 드래그 슈퍼 아머
     public PlayerAbilityTagSO DragSuperArmorSO => _dragSuperArmorSO;
@@ -224,6 +229,21 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         Vector3 relativeDirection = GetRelativeVectorToCamera(moveInput);
 
         Move(relativeDirection, deltaTime);
+    }
+
+    /// <summary>
+    /// 캐릭터가 지면에 있는지 확인합니다. (후한 판정)
+    /// </summary>
+    public bool IsGrounded()
+    {
+        if (_characterController == null) return false;
+        if (_characterController.isGrounded) return true;
+
+        // 약간 위에서 아래로 SphereCast를 쏘아 바닥을 감지
+        Vector3 origin = transform.position + Vector3.up * _characterController.radius;
+        float castDistance = _groundCheckDistance + _characterController.radius;
+        
+        return Physics.SphereCast(origin, _groundCheckRadius, -transform.up, out _, castDistance, _groundMask, QueryTriggerInteraction.Ignore);
     }
 
     /// <summary>
@@ -433,7 +453,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
             () => currentDistance,
             x =>
             {
-                Vector3 moveDirection = direction;
+                Vector3 moveDirection = direction == Vector3.zero ? transform.forward : direction;
                 float deltaDistance = x - currentDistance;
                 Vector3 displacement = moveDirection * deltaDistance;
 

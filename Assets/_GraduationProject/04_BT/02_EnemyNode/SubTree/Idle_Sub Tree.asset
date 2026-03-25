@@ -28,7 +28,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -262, y: 273}
+  position: {x: -233, y: 452}
   nodes:
   - {fileID: -2086197182714575690}
   services: []
@@ -60,7 +60,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_EngageCombat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: -52, y: 192}
+  position: {x: -51, y: 275}
+--- !u!114 &-3050961389098973839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
+  m_Name: Task_Discover_Player
+  m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
+  position: {x: -51, y: 195}
+  transitionBuffer: 0.5
+  animationTagName: Discover_Player
 --- !u!114 &-2436545328585954225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Task_RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: -105, y: 276}
+  position: {x: -76, y: 455}
   Radius: 10
   Delay: 1
   MoveSpeed: 3
@@ -182,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
   m_Name: Stop Movement
   m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: -51, y: 118}
+  position: {x: -44, y: 40}
   juststop: 1
 --- !u!114 &3249966189030680422
 MonoBehaviour:
@@ -215,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
   m_Name: Idle Node
   m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: -187, y: 395}
+  position: {x: -158, y: 574}
   idleTime: 1
 --- !u!114 &4272942598619701867
 MonoBehaviour:
@@ -232,8 +247,9 @@ MonoBehaviour:
   position: {x: -277, y: -112}
   nodes:
   - {fileID: 3249966189030680422}
-  - {fileID: 4298692548849664335}
   - {fileID: 1435062344627752039}
+  - {fileID: 4298692548849664335}
+  - {fileID: -3050961389098973839}
   - {fileID: -4323218897466019289}
   services: []
 --- !u!114 &4298692548849664335
@@ -248,8 +264,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: -51, y: 41}
-  IsSee: 1
+  position: {x: -51, y: 118}
+  IsSee: 0
   rotationSpeed: 5
 --- !u!114 &5427365917279850068
 MonoBehaviour:
@@ -265,7 +281,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: -465, y: -300}
   nodes:
-  - {fileID: -2364569869062935594}
   - {fileID: 4272942598619701867}
   - {fileID: -6212856105988776067}
   services: []

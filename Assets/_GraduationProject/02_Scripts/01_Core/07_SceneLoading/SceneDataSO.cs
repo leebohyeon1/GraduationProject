@@ -17,4 +17,8 @@ public class SceneDataSO : ScriptableObject
     [Header("Addressable Reference")]
     // Build Settings 대신 Addressables의 에셋 레퍼런스를 사용합니다!
     public AssetReference SceneReference;
+
+    [Header("Spawn Settings")]
+    public Vector3 DefaultSpawnPosition;
+    public Vector3 DefaultSpawnRotation;
 }

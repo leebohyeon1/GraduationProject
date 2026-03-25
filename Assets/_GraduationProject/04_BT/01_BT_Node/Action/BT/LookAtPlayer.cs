@@ -34,7 +34,19 @@ public class Action_LookAtPlayer : Node
                 targetRotation, 
                 realRotationSpeed * Time.deltaTime
             );
+            // 3. 회전이 거의 완료되었는지 확인하여, 완료되었다면 IsSee를 true로 설정합니다.
+            float angleDifference = Quaternion.Angle(runner.transform.rotation, targetRotation);
+            if (angleDifference < 5f) // 5도 이내로 회전이 완료되었다고 간주
+            {
+                IsSee = true;
+            }
+             else
+            {
+                IsSee = false;
+            }
+
         }
+        
         
         return IsSee ? NodeState.SUCCESS : NodeState.RUNNING;
     }

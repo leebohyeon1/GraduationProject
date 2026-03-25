@@ -96,28 +96,12 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
     #region EventHandle
     protected override void OnAttackPerformed()
     {
+        p_isAttackActive = true;
+
         // 강공격 전용 데미지 계산 로직 사용
         Collider[] hitEnemies = p_owner.Combat.ExecuteAttackWithCustomDamage(p_AttackConfig, (baseDmg) => {
             return p_owner.Combat.CalculateHeavyAttackDamage(baseDmg);
         });
-    }
-
-    protected override void OnAttackFinished()
-    {
-        // 상태 전환으로 인해 애니메이션 초반이면 리턴
-        if (Time.time - p_enterTime < 0.3f)
-        {
-            return;
-        }
-
-        if (p_nextState != null)
-        {
-            p_stateMachine.ChangeState(p_nextState);
-        }
-        else
-        {
-            p_stateMachine.ChangeState<PlayerIdleState>();
-        }
     }
     #endregion
 }

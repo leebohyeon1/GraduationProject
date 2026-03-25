@@ -21,7 +21,10 @@ public class PlayerQuestUI : PlayerUIBase
     {
         base.Initialize(player);
 
-        QuestManager.Instance.QuestAccepted += OnQuestAccepted;
+        if(QuestManager.Instance != null)
+        {
+            QuestManager.Instance.QuestAccepted += OnQuestAccepted;
+        }
     }
 
     public override void Dispose()

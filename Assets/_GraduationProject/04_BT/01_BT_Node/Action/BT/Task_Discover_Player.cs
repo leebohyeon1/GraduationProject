@@ -16,7 +16,7 @@ public class Task_Discover_Player : Node
         
         if (!brain._isCombat)
         {
-            runner._aiController._aiBrain.blackboard.SetValue("Engage", true);
+            // runner._aiController._aiBrain.blackboard.SetValue("Engage", true);
             runner.AnimationEvent(animationTagName);
             if (Handler != null) Handler.ResetAllFlags();
             // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
@@ -46,7 +46,7 @@ public class Task_Discover_Player : Node
 
         if (Handler != null && Handler.IsActionFinished)
         {
-            // // Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
+            Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
             return NodeState.SUCCESS;
         }
 
@@ -57,7 +57,7 @@ public class Task_Discover_Player : Node
 
         if (elapsedTime > transitionBuffer + 2.0f)
         {
-             // // Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
+             Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
              return NodeState.SUCCESS;
         }
 
@@ -70,8 +70,8 @@ public class Task_Discover_Player : Node
         {
             runner._stateController.SetLock(false);
             _didSetLock = false;
-            brain.CombatEnter(true);
-            if (runner.groupAi != null) runner.groupAi.CombatAll();
+            // brain.CombatEnter(true);
+            // if (runner.groupAi != null) runner.groupAi.CombatAll();
         }
         if (Handler != null) Handler.ResetAllFlags();
     }
