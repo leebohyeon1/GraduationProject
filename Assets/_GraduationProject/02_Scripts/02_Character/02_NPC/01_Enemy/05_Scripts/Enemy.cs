@@ -268,14 +268,4 @@ public class Enemy : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
-
-    private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.collider.CompareTag("Player"))
-        {
-            Debug.Log($"[Enemy] {gameObject.name} collided with Player.");
-            if(hit.point.y < transform.position.y)
-            {
-            }
-        }
-    }
 }
