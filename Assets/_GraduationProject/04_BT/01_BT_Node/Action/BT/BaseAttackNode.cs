@@ -33,6 +33,9 @@ public abstract class BaseAttackNode : Node
     [Header("State Control")]
     public string ExceptKey = "IsAttacking";
 
+    [Header("Hit Detection")]
+    [SerializeField] private LayerMask _hitMask = 7;
+
     protected EnemyAttackData _data;
     protected float _nodeEntryTime;
     protected int _entryFrame; 
@@ -228,10 +231,36 @@ public abstract class BaseAttackNode : Node
     {
         if (Handler == null || !Handler.IsHitWindowOpen) return;
         Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
+        LayerMask hitMask = _hitMask.value != 0 ? _hitMask : LayerMask.GetMask("Player");
         
         int hitCount = 0;
-        if (_data.shape == AttackShape.Sphere) hitCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer);
-        else if (_data.shape == AttackShape.Box) hitCount = Physics.OverlapBoxNonAlloc(origin, _data.boxSize * 0.5f, _hitBuffer, runner.transform.rotation);
+        if (_data.shape == AttackShape.Sphere)
+        {
+            hitCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+        }
+        else if (_data.shape == AttackShape.Box)
+        {
+            hitCount = Physics.OverlapBoxNonAlloc(origin, _data.boxSize * 0.5f, _hitBuffer, runner.transform.rotation, hitMask, QueryTriggerInteraction.Collide);
+        }
+        else if (_data.shape == AttackShape.Fan)
+        {
+            int rawCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+            float halfAngle = _data.fanAngle * 0.5f;
+            for (int i = 0; i < rawCount; i++)
+            {
+                Collider col = _hitBuffer[i];
+                if (col == null) continue;
+                Vector3 toTarget = col.transform.position - origin;
+                toTarget.y = 0f;
+                if (toTarget.sqrMagnitude <= 0.0001f) continue;
+                float angleToTarget = Vector3.Angle(runner.transform.forward, toTarget.normalized);
+                if (angleToTarget <= halfAngle)
+                {
+                    _hitBuffer[hitCount] = col;
+                    hitCount++;
+                }
+            }
+        }
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -239,6 +268,7 @@ public abstract class BaseAttackNode : Node
             if (col.gameObject == runner.gameObject) continue;
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
+                UnityEngine.Debug.Log($"Hit detected on {Character.name} with attack {_data.AttackName}");
                 _data.damageData.AttackerTransform = runner.transform;
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
