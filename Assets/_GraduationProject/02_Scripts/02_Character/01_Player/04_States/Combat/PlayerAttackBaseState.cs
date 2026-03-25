@@ -232,7 +232,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackStarted()
     {
-        p_isAttackActive = true;
+        
         AttackStep();
     }
 
@@ -241,6 +241,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackPerformed()
     {
+        p_isAttackActive = true;
         p_owner.Combat.ExecuteAttack(p_AttackConfig);
     }
 
