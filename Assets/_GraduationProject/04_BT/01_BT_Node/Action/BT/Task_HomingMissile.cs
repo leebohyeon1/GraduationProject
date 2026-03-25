@@ -73,7 +73,7 @@ public class Task_HomingMissile : BaseAttackNode
         if (facePlayerOnUpdate && runner.player != null)
         {
             Vector3 dirToPlayer = (runner.player.transform.position - runner.transform.position).normalized;
-            dirToPlayer.y = 0;
+            // dirToPlayer.y = 0;
             if (dirToPlayer != Vector3.zero)
             {
                 runner.transform.rotation = Quaternion.Slerp(runner.transform.rotation, Quaternion.LookRotation(dirToPlayer), Time.deltaTime * 5f);
