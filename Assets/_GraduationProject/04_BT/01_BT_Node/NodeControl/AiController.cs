@@ -65,8 +65,12 @@ public class AiController : MonoBehaviour, IEventListener<string>
         bool isCombat = _aiBrain != null && _aiBrain._isCombat;
         bool isReturningHome = _aiBrain != null && _aiBrain.blackboard.GetValue<bool>("GoHome");
         bool isEngaged = _aiBrain != null && _aiBrain.blackboard.GetValue<bool>(EnemyBlackboardKeys.Engage);
+        bool isDetecting = _aiBrain != null && (
+            _aiBrain.blackboard.GetValue<bool>(EnemyBlackboardKeys.DetectPlayer) ||
+            _aiBrain.blackboard.GetValue<bool>(EnemyBlackboardKeys.IsHasLOS)
+        );
         
-        bool isImportantState = isCombat || isReturningHome || isEngaged ||
+        bool isImportantState = isCombat || isReturningHome || isEngaged || isDetecting ||
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Stunned || 
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Hit;
 
