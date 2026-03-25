@@ -159,6 +159,7 @@ public class Task_RushAttack : BaseAttackNode
         _endStrategy = true;
         brain.blackboard.SetValue(LoopAction.EndKey, true);
         runner.AnimationBool("IsRushing", true);
+        runner._aiController._aiBrain.blackboard.SetValue("WalkingTime",false);
     }
 
     protected override bool IsMovementFinished => _endStrategy;

@@ -10,31 +10,48 @@ using System.Diagnostics;
 public abstract class BaseAttackNode : Node
 {
     [Header("Base Attack Properties")]
+    [Tooltip("이 노드가 사용할 블랙보드 공격 데이터 키")]
     public string attackKey;
+    [Tooltip("이 공격에서 재생할 애니메이터 상태 태그 또는 트리거 이름")]
     public string animationStateName = "";
+    [Tooltip("태그가 안 잡혔을 때 실패로 처리하기 전 유예 시간")]
     public float transitionBuffer = 1f;
+    [Tooltip("이 노드가 유지될 수 있는 최대 시간(초)")]
     public float maxNodeDuration = 6.0f;
+    [Tooltip("피격 확인 후에도 공격 상태를 유지")]
     public bool maintainAtk = false;
+    [Tooltip("공격 중 실행되는 액션 ScriptableObject들")]
     public EnemyUseAnything[] SO = null;
+    [Tooltip("연속(루프) 공격 동작 사용")]
     public bool LoopAttack = false;
+    [Tooltip("즉시 성공 처리하여 다음 BT 분기로 이동")]
     public bool NextBT = false;
+    [Tooltip("이 노드의 에디터 전용 디버그 로그 활성화")]
     public bool debugMode = false;
 
     [Header("Escape Settings")]
+    [Tooltip("피격 확인 시 조기 종료(회피) 허용")]
     public bool escapeOnHitConfirm = true;
+    [Tooltip("피격 확인 후 종료까지의 지연 시간(초)")]
     public float hitEscapeDelay = 0.5f;
 
     [Header("Execution Gate")]
+    [Tooltip("공격 진입 전에 거리 체크")]
     public bool checkRangeOnEnter = false;
+    [Tooltip("필요 사거리 대비 허용 여유 거리")]
     public float rangeThreshold = 1.0f;
+    [Tooltip("거리 체크 시 Y축 높이 무시")]
     public bool ignoreYDistance = true;
+    [Tooltip("전투 중이 아니어도 실행 허용")]
     public bool allowOutOfCombat = false;
 
     [Header("State Control")]
+    [Tooltip("공격 상태 잠금에 사용하는 블랙보드 키")]
     public string ExceptKey = "IsAttacking";
 
     [Header("Hit Detection")]
-    [SerializeField] private LayerMask _hitMask = 7;
+    [Tooltip("히트 판정에 사용하는 레이어 마스크")]
+    [SerializeField] private LayerMask _hitMasks = 1<<7;
 
     protected EnemyAttackData _data;
     protected float _nodeEntryTime;
@@ -231,7 +248,7 @@ public abstract class BaseAttackNode : Node
     {
         if (Handler == null || !Handler.IsHitWindowOpen) return;
         Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
-        LayerMask hitMask = _hitMask.value != 0 ? _hitMask : LayerMask.GetMask("Player");
+        LayerMask hitMask = _hitMasks.value != 0 ? _hitMasks : LayerMask.GetMask("Player");
         
         int hitCount = 0;
         if (_data.shape == AttackShape.Sphere)

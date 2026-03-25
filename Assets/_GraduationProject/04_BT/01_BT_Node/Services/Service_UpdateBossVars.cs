@@ -53,7 +53,10 @@ public class Service_UpdateBossVars : ServiceNode
         {
             if (_accumulatedTime > 0)
             {
+                Debug.Log("리셋 조건 충족: " + (isOutsideBoundary ? "경계 밖" : "리셋 구역 진입") + ". 누적 시간 초기화.");
                 _accumulatedTime = 0f;
+                brain.blackboard.SetValue(ResultKey, false);
+
             }
             return;
         }
@@ -68,6 +71,8 @@ public class Service_UpdateBossVars : ServiceNode
             if (!brain.blackboard.GetValueOrDefault<bool>(ResultKey, false))
             {
                 brain.blackboard.SetValue(ResultKey, true);
+                Debug.Log("임계치 도달: " + _accumulatedTime + "초. 블랙보드 플래그 활성화.");
+                runner.Movement.StopMovement();
             }
         }
     }

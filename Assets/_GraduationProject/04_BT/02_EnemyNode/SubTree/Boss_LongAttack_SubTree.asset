@@ -17,25 +17,6 @@ MonoBehaviour:
   - {fileID: -5866178787055448860}
   - {fileID: 3593469768659168057}
   services: []
---- !u!114 &-6436947357573883109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
-  m_Name: Condition_Blackboard Float Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 542, y: -14}
-  exceptCondition:
-    key: 
-  floatCondition:
-    key: WalkingTime
-    Operator: 4
-    value: 10
 --- !u!114 &-5866178787055448860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,7 +31,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 367, y: -19}
   nodes:
-  - {fileID: -6436947357573883109}
+  - {fileID: -388549244133243732}
   - {fileID: -3680199345345958982}
   services: []
 --- !u!114 &-3680199345345958982
@@ -65,24 +46,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 540, y: 69}
+  position: {x: 540, y: 58}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
-  SO: []
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 1
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
   checkRangeOnEnter: 0
-  rangeThreshold: 1
+  rangeThreshold: 4
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
-  rushSpeed: 15
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
+  rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3
   maxTriggerRange: 15
@@ -101,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 657, y: 247}
+  position: {x: 655, y: 274}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
@@ -119,6 +104,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
   rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3
@@ -142,6 +130,22 @@ MonoBehaviour:
   exceptCondition:
     key: 
   targetZoneIds: 0b000000
+--- !u!114 &-388549244133243732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 540, y: -20}
+  exceptCondition:
+    key: 
+  key: WalkingTime
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd338289a3119c246b1b17f53eee392e, type: 3}
   m_Name: Weighted Random Selector(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
-  position: {x: 384, y: 170}
+  position: {x: 382, y: 170}
   nodes:
   - {fileID: 3646297250739070143}
   - {fileID: -2731556191852606048}
@@ -239,6 +243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
   m_Name: Task_Chase Player Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
-  position: {x: 655, y: 169}
+  position: {x: 655, y: 170}
   Distance: 10
   speed: 5
