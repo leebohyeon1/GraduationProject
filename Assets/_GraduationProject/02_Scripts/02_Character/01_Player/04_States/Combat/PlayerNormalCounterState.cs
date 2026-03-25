@@ -154,6 +154,8 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     /// </summary>
     protected override void OnAttackPerformed()
     {
+        p_isAttackActive = true;
+
         Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
 
         foreach (Collider collider in colliders)

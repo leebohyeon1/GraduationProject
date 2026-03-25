@@ -83,6 +83,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
         p_canChangeCombatState = false;
         p_nextState = null;                                 // 다음 상태 null 처리
+        p_isAttackActive = false;
     }
     #endregion
 
