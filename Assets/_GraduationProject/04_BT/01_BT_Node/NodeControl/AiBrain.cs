@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using BehaviorTree;
 
 public class AiBrain
 {
@@ -123,4 +124,12 @@ public class AiBrain
     public void StartSkillCooldown(string skillName) => _lastUsedSkillTimes[skillName] = Time.time;
     public float GetLastSkillUseTime(string skillName) => _lastUsedSkillTimes.TryGetValue(skillName, out float time) ? time : -1f;
     public void AddEnemyAttackData(EnemyAttackData data) { blackboard.SetValue(data.AttackName, data); _lastUsedSkillTimes[data.AttackName] = -9999f; }
+
+    public T getService<T>() where T : ServiceNode
+    {
+        var controller = _owner != null ? _owner._aiController : null;
+        return controller != null ? controller.GetService<T>() : null;
+    }
+
+
 }

@@ -119,4 +119,51 @@ public class AiController : MonoBehaviour, IEventListener<string>
         if (eventName == "OnSwingMiss") _aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnPlayerAirshot, true);
         else if (eventName == "OnHealing") _aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnPlayerRecovery, true);
     }
+
+    public T GetService<T>() where T : ServiceNode
+    {
+        if (_behaviorTree == null || _behaviorTree.rootNode == null)
+        {
+            return null;
+        }
+
+        return FindServiceInNode<T>(_behaviorTree.rootNode);
+    }
+
+    private T FindServiceInNode<T>(Node node) where T : ServiceNode
+    {
+        if (node == null)
+        {
+            return null;
+        }
+
+        if (node is CompositeNode composite)
+        {
+            if (composite.services != null)
+            {
+                for (int i = 0; i < composite.services.Count; i++)
+                {
+                    ServiceNode service = composite.services[i];
+                    if (service is T matched)
+                    {
+                        return matched;
+                    }
+                }
+            }
+
+            if (composite.nodes != null)
+            {
+                for (int i = 0; i < composite.nodes.Length; i++)
+                {
+                    T childResult = FindServiceInNode<T>(composite.nodes[i]);
+                    if (childResult != null)
+                    {
+                        return childResult;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }
