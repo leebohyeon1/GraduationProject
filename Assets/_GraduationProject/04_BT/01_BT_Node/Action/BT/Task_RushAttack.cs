@@ -159,6 +159,11 @@ public class Task_RushAttack : BaseAttackNode
         _endStrategy = true;
         brain.blackboard.SetValue(LoopAction.EndKey, true);
         runner.AnimationBool("IsRushing", true);
+        var service = brain.getService<Service_UpdateBossVars>();
+        if (service != null)
+        {
+            service.initNode();
+        }
     }
 
     protected override bool IsMovementFinished => _endStrategy;

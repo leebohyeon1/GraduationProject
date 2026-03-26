@@ -63,6 +63,7 @@ namespace BehaviorTree
             return Instantiate(this);
             
         }
+        
         public virtual void initNode() { isEntered = false; }
         public virtual void SetRunner(Enemy runner, AiBrain brain) { this.runner = runner; this.brain = brain; }
     }

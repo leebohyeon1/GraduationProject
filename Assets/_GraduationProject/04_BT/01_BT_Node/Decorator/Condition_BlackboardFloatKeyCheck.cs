@@ -5,6 +5,12 @@ public class Condition_BlackboardFloatKeyCheck : ConditionNode
 {
     [Tooltip("float 비교용")]
     public FloatCondition floatCondition; // 이전에 만든 float 조건
+    public override void OnEnter()
+    {
+        base.OnEnter();
+                bool keyValue = floatCondition.isCondition(brain.blackboard);
+        Debug.Log("resultkey : " + keyValue);
+    }
     protected override bool CheckCondition()
     {
         
@@ -12,8 +18,9 @@ public class Condition_BlackboardFloatKeyCheck : ConditionNode
         {
             return true;
         }
-
+        
         bool keyValue = floatCondition.isCondition(brain.blackboard);
+        Debug.Log("resultkey : " + keyValue);
         return keyValue;
     }
     public override Node Clone()

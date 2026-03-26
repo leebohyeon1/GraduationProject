@@ -47,6 +47,8 @@ public class PlayerKnockdownState : PlayerBaseState
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
         
         _knockbackTimer = 0f;   // 타이머 초기화
+
+        p_owner.AnimationTrigger.PlayFeedback("Player_KnockDown_Damage_FB");
     }
 
     protected override void SetupAnimator()

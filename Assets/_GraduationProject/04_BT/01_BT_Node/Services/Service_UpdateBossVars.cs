@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using BehaviorTree;
+using System;
 
 /// <summary>
 /// 특정 구역들을 감시하여 플레이어가 안전 구역에 머무는 시간을 누적합니다.
@@ -24,13 +25,17 @@ public class Service_UpdateBossVars : ServiceNode
     public string ResultKey = "TargetZoneCheck";
 
     private float _accumulatedTime = 0f;
-
     public override void OnEnter()
     {
         base.OnEnter();
         _accumulatedTime = 0f;
     }
+    public override void initNode()
+    {
+        _accumulatedTime = 0f;
+        brain.blackboard.SetValue(ResultKey, false);
 
+    }
     protected override void OnServiceLogic()
     {
         if (runner == null || runner.player == null) return;
@@ -53,7 +58,9 @@ public class Service_UpdateBossVars : ServiceNode
         {
             if (_accumulatedTime > 0)
             {
-                _accumulatedTime = 0f;
+                Debug.Log("리셋 조건 충족: " + (isOutsideBoundary ? "경계 밖" : "리셋 구역 진입") + ". 누적 시간 초기화.");
+                initNode();
+
             }
             return;
         }
@@ -68,6 +75,8 @@ public class Service_UpdateBossVars : ServiceNode
             if (!brain.blackboard.GetValueOrDefault<bool>(ResultKey, false))
             {
                 brain.blackboard.SetValue(ResultKey, true);
+                Debug.Log("임계치 도달: " + _accumulatedTime + "초. 블랙보드 플래그 활성화.");
+                runner.Movement.StopMovement();
             }
         }
     }

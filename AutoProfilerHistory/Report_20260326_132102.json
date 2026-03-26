@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-03-26 13:21:02",
+  "report": {
+    "health_score": 10,
+    "summary": "The game suffers from severe performance bottlenecks, primarily due to inefficient AI behavior tree logic. Massive CPU spikes (1.6s to 5.7s) are caused by frequent, unnecessary instantiation/cloning of behavior tree nodes and excessive logging in critical paths. Secondary, though less severe, bottlenecks exist within the Universal Render Pipeline (URP), specifically related to lighting and post-processing effects like Bloom. The profiling data includes editor-specific overhead which inflates rendering timings.",
+    "bottlenecks": [
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll!BehaviorTree::CompositeNode.Clone()",
+        "line_number": 0,
+        "description": "Massive CPU spikes (1.2s - 1.6s within `UpdateScene`, leading to total spikes of 4.9s - 5.7s) are observed due to frequent cloning and instantiation of behavior tree nodes (`CompositeNode`, `Task_RushToFixedLocation`, `Condition_RandomChance`) via `UnityEngine.Object.Instantiate()`. This suggests the behavior tree or its sub-nodes are being dynamically rebuilt or modified by cloning during `OnEnter` or `OnUpdate` methods, which is extremely expensive and generates significant GC allocations (272KB-378KB per spike).",
+        "solution": "Refactor the behavior tree system to eliminate or drastically reduce dynamic node instantiation/cloning. Behavior trees should be built once per AI agent (e.g., in `Awake` or `Start`) and then evaluated. If dynamic behavior or shared nodes with unique state are required, consider: 1. Using a node pooling system to reuse existing nodes. 2. Designing nodes to be stateless or to have their state managed externally. 3. Employing a factory pattern that returns existing instances rather than creating new ones via `Instantiate`."
+      },
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll!::Condition_BlackboardFloatKeyCheck.OnEnter()",
+        "line_number": 0,
+        "description": "Frequent calls to `UnityEngine.Debug.Log()` are present within the critical path of the AI controller's `Update()` method and behavior tree evaluation. Each `Debug.Log()` call is expensive (0.25ms - 0.32ms) due to string formatting and stack trace generation (`StackTraceUtility.ExtractStackTrace`), and when called thousands of times per frame, contributes significantly to the massive CPU spikes.",
+        "solution": "Remove all `Debug.Log()` calls from performance-critical code paths for release builds. Use a custom logging solution that strips logs in non-development builds, or wrap `Debug.Log()` calls in preprocessor directives like `#if UNITY_EDITOR` or `#if DEVELOPMENT_BUILD`. Reserve `Debug.LogWarning()` or `Debug.LogError()` for exceptional circumstances."
+      },
+      {
+        "severity": "Medium",
+        "target_file": "Unity.RenderPipelines.Universal.Runtime.dll!UnityEngine.Rendering.Universal::UniversalRenderPipeline.RenderSingleCamera()",
+        "line_number": 0,
+        "description": "The Universal Render Pipeline (URP) shows consistent rendering overhead, with `UniversalRenderPipeline.RenderSingleCamera()` and `RecordAndExecuteRenderGraph()` consuming 7-10ms per frame. Specific contributors include `Setup Forward Lights` (0.25-0.27ms) and `Bloom` post-processing (0.21-0.22ms). The overall `RenderPlayModeViewCameras` duration (approx. 9-10ms) indicates editor overhead is included, making the true game rendering cost slightly lower but still significant.",
+        "solution": "1. Conduct profiling in a standalone build or with the Game View minimized/hidden to eliminate `RenderPlayModeViewCameras` editor overhead. 2. Optimize forward lighting: Reduce the number of real-time lights, bake static lights, use light probes, and simplify shaders if they perform complex lighting calculations. 3. Optimize Bloom: Reduce Bloom intensity, lower its resolution, or decrease the number of blur iterations in the URP asset settings. 4. If reflection probes are updating frequently (`ReflectionProbeManager.UpdateGpuData`), ensure they are not set to 'Every Frame' and consider manual updates or time-slicing."
+      },
+      {
+        "severity": "Low",
+        "target_file": "LeylineOverloadSO.cs",
+        "line_number": 40,
+        "description": "The line `_runtimeSpecialAttackSO = Instantiate(SpecialAttackSO);` instantiates a ScriptableObject. While this appears to be guarded by a null check (`_runtimeSpecialAttackSO == null`), if the `RegisterAbility` method is called frequently or if `_runtimeSpecialAttackSO` is often reset to null, this could lead to unnecessary instantiations and associated GC allocations. This is a potential source of minor performance hits and GC if not managed carefully.",
+        "solution": "Ensure that `RegisterAbility` is only called once per ability lifetime, or that `_runtimeSpecialAttackSO` is only instantiated once and persistently reused. If the `SpecialAttackSO` needs unique runtime data per player or instance, consider alternatives to `Instantiate` for ScriptableObjects, such as creating a C# class instance to hold runtime state, or investigate if a pooled system for these objects would be beneficial if many are active or created/destroyed frequently."
+      }
+    ]
+  }
+}

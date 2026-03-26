@@ -29,7 +29,6 @@ public class Task_AttackRange : BaseAttackNode
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
         Vector3 targetPos = runner.player.transform.position + Vector3.up * 0.5f;
         _attackDir = (targetPos - spawnPos).normalized;
-        _attackDir.y = 0;
 
         runner.transform.rotation = Quaternion.LookRotation(_attackDir);
         Log("원거리 공격 시작 (OnActionSOTriggered) - 방향 설정: " + _attackDir);

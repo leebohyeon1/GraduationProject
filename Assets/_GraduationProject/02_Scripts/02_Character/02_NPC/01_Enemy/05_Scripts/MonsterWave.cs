@@ -25,6 +25,9 @@ public class MonsterWave : MonoBehaviour
     [Header("Wave")]
     [SerializeField] private WaveSettings[] waves;
 
+    [SerializeField] private string spawnFeedbackName;
+    [SerializeField] private string spawnAnimationTrigger;
+
     [SerializeField] private float nextWaveDelay = 2f;
 
     private BoxCollider _boxCollider;
@@ -48,6 +51,7 @@ public class MonsterWave : MonoBehaviour
             Debug.Log($"[EscapeWaveSpawner] {name}: BoxCollider.isTrigger를 true로 설정했습니다.");
         }
 
+        DeactivateWaveEnemies();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -113,6 +117,16 @@ public class MonsterWave : MonoBehaviour
                 }
 
                 target.gameObject.SetActive(true);
+                if (!string.IsNullOrEmpty(spawnFeedbackName) || !string.IsNullOrEmpty(spawnAnimationTrigger))
+                {
+                    StartCoroutine(PlaySpawnFeedbackAfterActivation(target, spawnFeedbackName, spawnAnimationTrigger));
+                }
+
+                AiController aiController = target.GetComponent<AiController>();
+                if (aiController != null)
+                {
+                    aiController.enabled = true;
+                }
 
                 EnemyHealth health = target.EnemyHealth;
                 if (health == null)
@@ -201,5 +215,67 @@ public class MonsterWave : MonoBehaviour
 
         _nextWaveCoroutine = null;
         StartWave();
+    }
+
+    private void DeactivateWaveEnemies()
+    {
+        if (waves == null || waves.Length == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < waves.Length; i++)
+        {
+            WaveSettings settings = waves[i];
+            Enemy[] waveEnemies = settings != null ? settings.Enemies : null;
+            if (waveEnemies == null || waveEnemies.Length == 0)
+            {
+                continue;
+            }
+
+            for (int j = 0; j < waveEnemies.Length; j++)
+            {
+                Enemy target = waveEnemies[j];
+                if (target == null)
+                {
+                    continue;
+                }
+
+                AiController aiController = target.GetComponent<AiController>();
+                if (aiController != null)
+                {
+                    aiController.enabled = false;
+                }
+
+                target.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator PlaySpawnFeedbackAfterActivation(Enemy target, string feedbackName, string animationTrigger)
+    {
+        yield return null;
+        if (target == null || !target.gameObject.activeInHierarchy)
+        {
+            yield break;
+        }
+
+        if (!string.IsNullOrEmpty(feedbackName))
+        {
+            Enemy_AnimationEventHandler animationHandler = target.GetComponent<Enemy_AnimationEventHandler>();
+            if (animationHandler != null)
+            {
+                animationHandler.PlayFeedback(feedbackName);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(animationTrigger))
+        {
+            EnemyAnimationBridge animationBridge = target.GetComponent<EnemyAnimationBridge>();
+            if (animationBridge != null)
+            {
+                animationBridge.TriggerEvent(animationTrigger);
+            }
+        }
     }
 }

@@ -24,11 +24,13 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
             p_owner.Events.CounterSucceeded += OnCounterSucceeded;
             p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
             p_owner.Events.BeforeDamaged += OnBeforeDamaged;
+            p_owner.Events.Heal += OnHeal;
         }
 
         if (p_owner.Health != null)
         {
             p_owner.Health.TakeDamged += OnTakeDamaged;
+            p_owner.Health.OnHealthChanged += OnHealthChanged;
         }
 
         if(p_owner.Combat != null)
@@ -50,11 +52,13 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
             p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
             p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
             p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
+            p_owner.Events.Heal -= OnHeal;
         }
 
         if (p_owner != null && p_owner.Health != null)
         {
             p_owner.Health.TakeDamged -= OnTakeDamaged;
+            p_owner.Health.OnHealthChanged -= OnHealthChanged;
         }
 
         // 재생 중인 모든 피드백(DOTween) 중단
@@ -189,6 +193,16 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     {
         ParryStackChangeFeedbacks[obj]?.Invoke();
     }
+
+    /// <summary>
+    /// 상쇄 성공 이벤트 
+    /// </summary>
+    /// <param name="transform"></param>
+    private void OnCounterSucceeded(Transform transform)
+    {
+        CounterSuccessFeedback?.Invoke();
+    }
+
     #endregion
 
     //==========================================================================================================================
@@ -213,21 +227,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         ChargeCancelFeedback?.Invoke();
     }
 
-    #endregion
-
-    //==========================================================================================================================
-    // Event Handler ===========================================================================================================
-    //==========================================================================================================================
-
-    /// <summary>
-    /// 상쇄 성공 이벤트 
-    /// </summary>
-    /// <param name="transform"></param>
-    private void OnCounterSucceeded(Transform transform)
-    {
-        CounterSuccessFeedback?.Invoke();
-    }
-
     /// <summary>
     /// 차지 레벨 달성 이벤트
     /// </summary>
@@ -239,7 +238,11 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
             ChargeLevelCompletedFeedbacks[level]?.Invoke();
         }
     }
+    #endregion
 
+    //==========================================================================================================================
+    // Damaged =================================================================================================================
+    //==========================================================================================================================
     /// <summary>
     /// 플레이어가 데미지 받았을 때 이벤트
     /// </summary>
@@ -252,9 +255,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         }
     }
 
-    //==========================================================================================================================
-    // Damaged =================================================================================================================
-    //==========================================================================================================================
+    /// <summary>
+    /// 체력 변경 이벤트
+    /// </summary>
+    /// <param name="previousHealth"></param>
+    /// <param name="currentHealth"></param>
+    private void OnHealthChanged(int previousHealth, int currentHealth)
+    {
+        int lowHp = Mathf.RoundToInt((p_owner.Health.MaxHealth / 100f) * 20f);
+        if (currentHealth <= lowHp)
+        {
+            PlayFeedback("Player_Low_HP_FB");
+        }
+    }
 
     /// <summary>
     /// 데미지 받기 전 이벤트 발행
@@ -266,6 +279,15 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         {
             PlayFeedback("SuperArmor_Damage_FB");
         }
+    }
+
+    /// <summary>
+    /// 체력 회복했을 때
+    /// </summary>
+    /// <param name="amount">포션량</param>
+    private void OnHeal(int amount)
+    {
+        PlayFeedback("Player_Recovery_HP_FB");
     }
 
     //==========================================================================================================================
