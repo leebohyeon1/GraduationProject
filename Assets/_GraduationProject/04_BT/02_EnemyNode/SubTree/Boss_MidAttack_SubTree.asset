@@ -19,6 +19,25 @@ MonoBehaviour:
     key: WalkingTime
     Operator: 4
     value: 5
+--- !u!114 &-8068821425827602005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 230, y: -79}
+  exceptCondition:
+    key: 
+  skillName: Boss_J_Attack
+  cooldownDuration: 5
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &-7773006586555318720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc80aa10de6e2ed44a23d8552475d5b8, type: 3}
   m_Name: Condition_Zone Check(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_ZoneCheck
-  position: {x: 227, y: -162}
+  position: {x: 225, y: -262}
   exceptCondition:
     key: 
   targetZoneIds: 0a000000
@@ -297,6 +316,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -7773006586555318720}
   - {fileID: 7876985959237036498}
+  - {fileID: -8068821425827602005}
   - {fileID: -7621308188008895873}
   - {fileID: 7460042992623185209}
   services: []
@@ -313,7 +333,7 @@ MonoBehaviour:
   m_Name: Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 233, y: 287}
-  waitTime: 1.5
+  waitTime: 0.7
 --- !u!114 &7500381137703552315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,7 +363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 227, y: -89}
+  position: {x: 230, y: -156}
   exceptCondition:
     key: 
   stateCondition:
