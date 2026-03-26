@@ -198,7 +198,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &74301708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2628,9 +2628,9 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1ad4982c368b6ac468c9dbf5b31ef4a9, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2879,6 +2879,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+--- !u!114 &1060205498 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7909295674386306905, guid: 34644d0976e0fd94dbc3e699319217bc, type: 3}
+  m_PrefabInstance: {fileID: 263477795}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b7a4796a61cdd4faa250034d6f9902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadialBlurFeedback
 --- !u!1 &1062498189
 GameObject:
   m_ObjectHideFlags: 0
@@ -4608,22 +4619,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3891587937587777780, guid: ad16eb09384b90a46839be64f405e467, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1060205498}
     - target: {fileID: 4109392148540564850, guid: ad16eb09384b90a46839be64f405e467, type: 3}
       propertyPath: m_Name
       value: Boss
       objectReference: {fileID: 0}
-    - target: {fileID: 4109392148540564850, guid: ad16eb09384b90a46839be64f405e467, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5408663188867990682, guid: ad16eb09384b90a46839be64f405e467, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7293758720336244189, guid: ad16eb09384b90a46839be64f405e467, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 4508837680801409960, guid: ad16eb09384b90a46839be64f405e467, type: 3}
+      propertyPath: _editorPreviewData
+      value: 
+      objectReference: {fileID: 11400000, guid: 4f202a9743e442045bbbadb4bbfb1baf, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
