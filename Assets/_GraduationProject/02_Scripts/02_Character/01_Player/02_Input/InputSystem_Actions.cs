@@ -1128,18 +1128,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""id"": ""9d04a6f4-aec1-4d0a-8fda-3c79a093531e"",
             ""actions"": [
                 {
-                    ""name"": ""ToggleConsole"",
+                    ""name"": ""Reload"",
                     ""type"": ""Button"",
-                    ""id"": ""48ad3ea4-1014-421f-af77-a625fd06e75c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Enter"",
-                    ""type"": ""Button"",
-                    ""id"": ""f2e84983-3b04-4207-a7f3-7a3d1e52f5c4"",
+                    ""id"": ""e3b562f1-5e7c-46f7-9db7-257868e153db"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1149,23 +1140,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""9eb3fc4a-8565-407d-9933-05140df69134"",
-                    ""path"": ""<Keyboard>/backquote"",
+                    ""id"": ""b14fd6b5-f9e9-41c3-9b53-90e92cabfc7f"",
+                    ""path"": ""<Keyboard>/f5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""ToggleConsole"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1faf2e84-4400-45d2-8606-7147dd7baf5d"",
-                    ""path"": ""<Keyboard>/enter"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Enter"",
+                    ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1304,8 +1284,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_SubPrevious = m_UI.FindAction("SubPrevious", throwIfNotFound: true);
         // Developer
         m_Developer = asset.FindActionMap("Developer", throwIfNotFound: true);
-        m_Developer_ToggleConsole = m_Developer.FindAction("ToggleConsole", throwIfNotFound: true);
-        m_Developer_Enter = m_Developer.FindAction("Enter", throwIfNotFound: true);
+        m_Developer_Reload = m_Developer.FindAction("Reload", throwIfNotFound: true);
         // Share
         m_Share = asset.FindActionMap("Share", throwIfNotFound: true);
         m_Share_Escape = m_Share.FindAction("Escape", throwIfNotFound: true);
@@ -1826,8 +1805,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // Developer
     private readonly InputActionMap m_Developer;
     private List<IDeveloperActions> m_DeveloperActionsCallbackInterfaces = new List<IDeveloperActions>();
-    private readonly InputAction m_Developer_ToggleConsole;
-    private readonly InputAction m_Developer_Enter;
+    private readonly InputAction m_Developer_Reload;
     /// <summary>
     /// Provides access to input actions defined in input action map "Developer".
     /// </summary>
@@ -1840,13 +1818,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public DeveloperActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Developer/ToggleConsole".
+        /// Provides access to the underlying input action "Developer/Reload".
         /// </summary>
-        public InputAction @ToggleConsole => m_Wrapper.m_Developer_ToggleConsole;
-        /// <summary>
-        /// Provides access to the underlying input action "Developer/Enter".
-        /// </summary>
-        public InputAction @Enter => m_Wrapper.m_Developer_Enter;
+        public InputAction @Reload => m_Wrapper.m_Developer_Reload;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1873,12 +1847,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_DeveloperActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_DeveloperActionsCallbackInterfaces.Add(instance);
-            @ToggleConsole.started += instance.OnToggleConsole;
-            @ToggleConsole.performed += instance.OnToggleConsole;
-            @ToggleConsole.canceled += instance.OnToggleConsole;
-            @Enter.started += instance.OnEnter;
-            @Enter.performed += instance.OnEnter;
-            @Enter.canceled += instance.OnEnter;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         /// <summary>
@@ -1890,12 +1861,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="DeveloperActions" />
         private void UnregisterCallbacks(IDeveloperActions instance)
         {
-            @ToggleConsole.started -= instance.OnToggleConsole;
-            @ToggleConsole.performed -= instance.OnToggleConsole;
-            @ToggleConsole.canceled -= instance.OnToggleConsole;
-            @Enter.started -= instance.OnEnter;
-            @Enter.performed -= instance.OnEnter;
-            @Enter.canceled -= instance.OnEnter;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         /// <summary>
@@ -2282,19 +2250,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IDeveloperActions
     {
         /// <summary>
-        /// Method invoked when associated input action "ToggleConsole" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Reload" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnToggleConsole(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Enter" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnEnter(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Share" which allows adding and removing callbacks.
