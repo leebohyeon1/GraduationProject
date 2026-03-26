@@ -259,7 +259,7 @@ public class GenericExcelEditor : EditorWindow
             int colIndex = 0;
             if (rowProp.propertyType == SerializedPropertyType.ObjectReference)
             {
-                // 💡 false를 추가하여 리스트가 내부에서 펼쳐지는 것을 방지
+                // 💡 ObjectReference 자체는 폴드 기능을 끄고(false) 옆으로 필드들을 펼쳐서 보여줌
                 EditorGUILayout.PropertyField(rowProp, GUIContent.none, false, GUILayout.Width(GetColumnWidth(colIndex++)));
                 if (rowProp.objectReferenceValue != null)
                 {
@@ -271,8 +271,10 @@ public class GenericExcelEditor : EditorWindow
                     {
                         enter = false;
                         if (innerProp.name == "m_Script") continue;
-                        // 💡 여기서도 false를 추가하여 하위 리스트 확장을 막음
-                        EditorGUILayout.PropertyField(innerProp, GUIContent.none, false, GUILayout.Width(GetColumnWidth(colIndex++)));
+                        
+                        // 💡 리스트 등의 변수인 경우 폴드 기능이 작동하도록 true로 변경
+                        // 이렇게 하면 화살표를 눌러 내부 요소를 볼 수 있습니다.
+                        EditorGUILayout.PropertyField(innerProp, GUIContent.none, true, GUILayout.Width(GetColumnWidth(colIndex++)));
                     }
                     innerSO.ApplyModifiedProperties();
                 }
@@ -286,8 +288,9 @@ public class GenericExcelEditor : EditorWindow
                 {
                     isFirst = false;
                     if (SerializedProperty.EqualContents(fieldProp, endProp)) break;
-                    // 💡 여기서도 false를 추가
-                    EditorGUILayout.PropertyField(fieldProp, GUIContent.none, false, GUILayout.Width(GetColumnWidth(colIndex++)));
+                    
+                    // 💡 일반 구조체 내부의 리스트 등도 폴드 기능이 작동하도록 true로 변경
+                    EditorGUILayout.PropertyField(fieldProp, GUIContent.none, true, GUILayout.Width(GetColumnWidth(colIndex++)));
                 }
             }
 
