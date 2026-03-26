@@ -6904,7 +6904,7 @@ MonoBehaviour:
   FeedbacksList:
   - rid: 554611939034011562
   - rid: 554611939034011563
-  - rid: 554611939034011569
+  - rid: 7623217076188224411
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   RestoreInitialValuesOnDisable: 0
@@ -7248,13 +7248,13 @@ MonoBehaviour:
         Velocity: {x: 0.5, y: 0.5, z: 0.5}
         ClearImpulseOnStop: 0
         DrawGizmos: 0
-    - rid: 554611939034011569
-      type: {class: MMF_ShaderController, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+    - rid: 7623217076188224411
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
         Active: 1
-        UniqueID: 855067354
-        Label: ShaderController
-        OriginalLabel: ShaderController
+        UniqueID: -1052247989
+        Label: Unity Events
+        OriginalLabel: Unity Events
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -7269,7 +7269,7 @@ MonoBehaviour:
           NumberOfRepeats: 0
           RepeatForever: 0
           DelayBetweenRepeats: 1
-          PlayCount: 112
+          PlayCount: 0
           LimitPlayCount: 0
           MaxPlayCount: 3
           SetPlayCountToZeroOnReset: 0
@@ -7322,104 +7322,30 @@ MonoBehaviour:
           ButtonText: 
         Owner: {fileID: 822644388295698512}
         DebugActive: 0
-        Mode: 0
-        TargetShaderController: {fileID: 0}
-        TargetShaderControllerList:
-        - {fileID: 0}
-        - {fileID: 0}
-        RevertToInitialValueAfterEnd: 0
-        GetInitialValueOnOneTime: 0
-        OneTimeDuration: 0.3
-        OneTimeAmplitude: 10
-        OneTimeRemapMin: 0
-        OneTimeRemapMax: 1
-        OneTimeCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.20000306
-            value: 0.99310744
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5216817
-            value: -0.4463154
-            inSlope: 0.00054095977
-            outSlope: 0.00054095977
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.7832048
-            value: 0.99880874
-            inSlope: -0.00073123426
-            outSlope: -0.00073123426
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 1
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        ToDestinationValue: 1
-        ToDestinationDuration: 1
-        ToDestinationColor: {r: 1, g: 0, b: 0, a: 1}
-        ToDestinationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.5
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 6438771968402588075}
+              m_TargetAssemblyTypeName: HighlightPlus.HighlightEffect, Assembly-CSharp
+              m_MethodName: HitFX
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &6433486966438830965
 GameObject:
   m_ObjectHideFlags: 0
@@ -13577,18 +13503,18 @@ PrefabInstance:
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 3044615312439933131}
+      objectReference: {fileID: 6438771968402588075}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: 
+      value: HitFX
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: RadialBlurFeedback, Assembly-CSharp
+      value: HighlightPlus.HighlightEffect, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -13845,10 +13771,10 @@ PrefabInstance:
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3044615312439933131}
+      objectReference: {fileID: 6438771968402588075}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: HitFX
       objectReference: {fileID: 0}
     - target: {fileID: 3631605152301842359, guid: fd15c8d240479d249b4bb5e9c24a0d5d, type: 3}
       propertyPath: managedReferences[554611939034011584].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
