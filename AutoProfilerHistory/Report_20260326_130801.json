@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-03-26 13:08:01",
+  "report": {
+    "health_score": 25,
+    "summary": "The game exhibits severe performance bottlenecks primarily driven by dynamic instantiation of Behavior Tree nodes, resulting in high CPU spikes and massive garbage collection (GC) allocations. Additionally, frequent UI raycasting and input processing, as well as repetitive physics checks, contribute to performance instability. The current AI system design appears to be a major source of runtime overhead.",
+    "bottlenecks": [
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll!BehaviorTree::CompositeNode.Clone()",
+        "line_number": 0,
+        "description": "Repeated instantiation of Behavior Tree nodes (e.g., CompositeNode, StartSkillCooldown, Task_RushToFixedLocation) and related ScriptableObjects via `UnityEngine.Object.Instantiate()` or `Clone()` methods during the 'OnEnter' phase or evaluation. This is evident across Spikes #4, #5, #6, and #7, leading to significant CPU time and GC allocations.",
+        "solution": "Avoid dynamic instantiation of Behavior Tree nodes at runtime. Instead, implement an object pooling system for frequently used nodes. Nodes that are ScriptableObjects should be created once at initialization or pre-warmed. If nodes represent unique states, consider a data-driven approach where data is passed to reusable node instances rather than creating new node objects. For `LeylineOverloadSO.cs` line 40, ensure `Instantiate(SpecialAttackSO)` happens only once upon activation or is part of a pre-initialized pool."
+      },
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll!BehaviorTree::Node.Evaluate()",
+        "line_number": 0,
+        "description": "Large GC allocations (e.g., 95GB, 77GB, 52GB) are consistently observed during `AiController.Update()` and Behavior Tree evaluation (Spikes #1, #2, #3). While some GC is from instantiation, the sheer volume suggests other temporary objects are being created frequently within the behavior tree's logic, such as intermediate lists, status objects, or string allocations.",
+        "solution": "Profile the Behavior Tree evaluation methods (`Evaluate()`, `OnUpdate()`, `OnEnter()`, `OnExit()`) to identify specific allocation sites. Focus on reducing LINQ queries, allocations of `new List<T>()`, `string` concatenations, boxing/unboxing, and unnecessary struct copies. Reuse existing collections (e.g., `List<T>` via `Clear()` instead of `new`) and use `ReadOnlySpan<char>` or `string.Intern()` where appropriate for strings if they are frequently compared or passed around. Convert frequently called methods to use `ref` parameters or struct returns to avoid heap allocations."
+      },
+      {
+        "severity": "Medium",
+        "target_file": "UnityEngine.UI.dll!UnityEngine.EventSystems::EventSystem.Update()",
+        "line_number": 0,
+        "description": "Significant CPU time and high GC (95GB in Spike #1) spent in UI EventSystem updates and InputSystemUIInputModule processing, specifically during raycasting (`PerformRaycast`, `RaycastAll`, `GraphicRaycaster.Raycast`) and pointer button processing. This indicates an inefficient UI setup or excessive interactive elements being processed.",
+        "solution": "Optimize UI Canvas setups by reducing the number of canvases and complex nested hierarchies. Minimize the use of `GraphicRaycaster` on non-interactive elements, and ensure only necessary UI elements have raycast targets. Reduce the frequency of raycasts by disabling `EventSystem` or `InputSystemUIInputModule` when UI is not active. For complex UIs, consider using UI Toolkit for better performance or manually manage raycasting with fewer `GraphicRaycaster` components. Cache `PointerEventData` objects if they are frequently re-created."
+      },
+      {
+        "severity": "Medium",
+        "target_file": "Assembly-CSharp.dll!::RandomPatrol.FindValidRandomPoint()",
+        "line_number": 0,
+        "description": "Repetitive calls to `UnityEngine::Physics.CheckSphere()` within `RandomPatrol.FindValidRandomPoint()` (Spike #2). While individual calls are fast, multiple checks per frame for potentially many AI agents can accumulate into a significant CPU cost.",
+        "solution": "Implement strategies to reduce the frequency or scope of physics checks. For `FindValidRandomPoint()`, consider using a pre-calculated navigation mesh (NavMesh) for valid points instead of sphere casts. If sphere casts are necessary, optimize by: 1) Batching physics queries (e.g., using `Physics.OverlapSphereNonAlloc` if applicable). 2) Limiting the maximum number of attempts to find a point per frame. 3) Spreading physics checks over multiple frames for multiple AI agents using coroutines or a custom update manager."
+      }
+    ]
+  }
+}

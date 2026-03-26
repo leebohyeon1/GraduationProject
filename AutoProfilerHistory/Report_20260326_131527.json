@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-26 13:15:27",
+  "report": {
+    "health_score": 25,
+    "summary": "The game is experiencing severe CPU spikes (up to 5.9 seconds) and extremely high garbage collection (up to 59 MB per spike), leading to significant performance degradation. The primary issue appears to be an overall excessive workload within the `MonoBehaviour.Update()` phase, with specific identified bottlenecks including frequent behavior tree node cloning, inefficient UI raycasting, and critically, the use of `Debug.Log()` in performance-critical code paths. While components of the A* Pathfinding Project RVO system are present, they are not the dominant factor in the provided traces. A large portion of the `Update` time remains unexplained by the provided call stacks, indicating a need for deeper profiling.",
+    "bottlenecks": [
+      {
+        "severity": "High",
+        "target_file": null,
+        "line_number": 0,
+        "description": "Across all spikes, the `Update.ScriptRunBehaviourUpdate` phase consistently consumes an extremely large portion (1.5s to 2.7s) of the main thread's time. However, the detailed call stacks provided within this phase only account for a very small fraction (often less than 2%) of this total duration. This indicates that numerous other scripts' `Update()` methods, which are not detailed in the provided traces, are collectively consuming the vast majority of CPU time during these spikes.",
+        "solution": "Conduct deeper profiling (e.g., using Unity's Deep Profiling mode or on-device captures) to identify the specific `MonoBehaviour.Update()`, `LateUpdate()`, and `FixedUpdate()` methods that are contributing most to the `ScriptRunBehaviourUpdate` time. Review all such methods for expensive calculations, redundant logic, unnecessary loops, allocations, or excessive component lookups. Implement strategies to update scripts less frequently, optimize algorithms, and leverage Unity's Job System/Burst for parallelizable tasks."
+      },
+      {
+        "severity": "Critical",
+        "target_file": "Assembly-CSharp.dll",
+        "line_number": 0,
+        "description": "Spike #5 clearly shows `Debug.Log()` and its internal stack trace generation taking significant time within `Condition_BlackboardFloatKeyCheck.OnEnter()`, which is part of an `AiController`'s behavior tree evaluation. Calling `Debug.Log` in `Update` or frequently executed methods is a severe performance bottleneck due to string formatting, console output, and stack trace generation, even if the direct time in one sample appears small.",
+        "solution": "Remove all `Debug.Log` calls from release builds. Use conditional compilation (`[Conditional(\"UNITY_EDITOR\")]` for methods or `#if UNITY_EDITOR ... #endif` blocks) to ensure debug logging only occurs in the Unity Editor. Implement a custom logging system with different log levels that can be toggled at runtime or compile time. Avoid `Debug.Log` in `Update`, `FixedUpdate`, `LateUpdate`, or any other frequently called performance-critical methods."
+      },
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll",
+        "line_number": 0,
+        "description": "Spike #4 reveals `BehaviorTree::CompositeNode.Clone()` being called repeatedly, adding up to significant CPU time and contributing to the spike's 6.8MB GC allocation. This indicates a design flaw where behavior tree nodes, especially composite ones, are being instantiated or cloned frequently (likely per frame or per evaluation), which is extremely inefficient.",
+        "solution": "Implement a robust object pooling system for Behavior Tree nodes to reuse existing instances instead of creating new ones. Redesign the Behavior Tree logic to primarily evaluate existing nodes rather than cloning them. Node creation/destruction should ideally only happen on agent spawn/despawn or major state changes, not during per-frame evaluation. Consider a data-oriented design if many agents use behavior trees."
+      },
+      {
+        "severity": "High",
+        "target_file": "UnityEngine.UI.dll",
+        "line_number": 0,
+        "description": "Spike #2 highlights `UnityEngine.EventSystems::EventSystem.Update()`, `Unity.InputSystem.UI::InputSystemUIInputModule.Process()`, `PerformRaycast()`, and `GraphicRaycaster.Raycast()` consuming CPU time and contributing to an extremely high GC (59.5MB). This suggests that the UI system is performing frequent or complex raycasts, possibly over many interactive UI elements, leading to significant allocations and processing overhead.",
+        "solution": "Reduce the number of interactive UI elements that require raycasting. Only add `GraphicRaycaster` components to canvases that truly need them. Optimize UI hierarchy to reduce overdraw and complex layouts. Use `CanvasGroup` for culling inactive UI branches. For complex UIs, consider manually managing event subscriptions to bypass some `EventSystem` overhead. Profile UI elements specifically to identify which ones are causing the most raycast hits or allocations."
+      },
+      {
+        "severity": "Medium",
+        "target_file": "AstarPathfindingProject.dll",
+        "line_number": 0,
+        "description": "Spike #1 shows `Pathfinding.RVO::RVOSimulator.Update()` and `Pathfinding.RVO::SimulatorBurst.Update()` contributing to CPU time (around 20-30ms for the listed calls) and significant GC (36.1MB for the overall spike). While not the dominant cause of the `BehaviourUpdate` time in this specific trace, RVO simulations can be computationally intensive, especially with many agents or complex environments, and can generate GC if not managed carefully.",
+        "solution": "Optimize RVO agent count by only using RVO for agents that genuinely need dynamic collision avoidance. Lower the `RVOSimulator`'s `Desired Simulation FPS` if real-time, per-frame accuracy is not strictly required. Only update agent properties in `RVOController.UpdateAgentProperties()` when they actually change. Ensure Burst compilation is fully utilized for A* Burst-enabled components. Profile A* Pathfinding Project specific details to pinpoint bottlenecks."
+      }
+    ]
+  }
+}

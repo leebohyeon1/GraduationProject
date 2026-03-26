@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Reflection; // 리플렉션 사용을 위해 추가
+using System.Reflection;
 
 public class GenericExcelEditor : EditorWindow
 {
@@ -17,248 +17,216 @@ public class GenericExcelEditor : EditorWindow
     private bool isResizing = false;
     private int resizingColumnIndex = -1;
 
+    // Styles
+    private GUIStyle headerStyle;
+    private GUIStyle rowStyle;
+    private GUIStyle toolbarSearchStyle;
+    private GUIStyle toolbarSearchCancelStyle;
+
     [MenuItem("Tools/Universal Data Editor")]
     public static void ShowWindow()
     {
-        GetWindow<GenericExcelEditor>("범용 데이터 에디터");
+        GenericExcelEditor window = GetWindow<GenericExcelEditor>("범용 데이터 에디터");
+        window.minSize = new Vector2(600, 400);
+    }
+
+    private void OnEnable()
+    {
+        InitStyles();
+    }
+
+    private void InitStyles()
+    {
+        headerStyle = new GUIStyle(EditorStyles.toolbarButton);
+        headerStyle.fontStyle = FontStyle.Bold;
+        headerStyle.alignment = TextAnchor.MiddleLeft;
+
+        rowStyle = new GUIStyle();
+        rowStyle.padding = new RectOffset(2, 2, 2, 2);
+
+        toolbarSearchStyle = GUI.skin.FindStyle("ToolbarSearchTextField");
+        toolbarSearchCancelStyle = GUI.skin.FindStyle("ToolbarSearchCancelButton");
     }
 
     private void OnGUI()
     {
-        GUILayout.Space(10);
+        if (headerStyle == null) InitStyles();
 
-        EditorGUI.BeginChangeCheck();
-        targetSO = (ScriptableObject)EditorGUILayout.ObjectField("Target Data (SO)", targetSO, typeof(ScriptableObject), false);
+        DrawTopToolbar();
 
-        if (EditorGUI.EndChangeCheck() && targetSO != null)
+        // 💡 자동 복구 로직: targetSO는 있는데 내부 참조가 깨진 경우 재연결
+        if (targetSO != null && (serializedObject == null || targetListProperty == null || serializedObject.targetObject != targetSO))
         {
             serializedObject = new SerializedObject(targetSO);
             FindListProperty();
-            columnWidths.Clear();
         }
 
         if (targetSO == null || targetListProperty == null)
         {
-            EditorGUILayout.HelpBox(targetSO == null ? "데이터가 담긴 ScriptableObject를 여기에 드래그 앤 드롭 하세요." : "이 ScriptableObject에는 표시할 리스트나 배열이 없습니다.", MessageType.Info);
+            DrawEmptyState();
             return;
         }
 
         serializedObject.Update();
 
-        GUILayout.Space(10);
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("🔍 Search:", GUILayout.Width(70));
-        searchQuery = EditorGUILayout.TextField(searchQuery);
-        if (GUILayout.Button("Clear", GUILayout.Width(50)))
-        {
-            searchQuery = "";
-            GUI.FocusControl(null);
-        }
-        GUILayout.EndHorizontal();
-
-        GUILayout.Space(10);
-
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
-
+        // 1. 고정 헤더 (수평 스크롤만 본문과 동기화)
+        EditorGUILayout.BeginHorizontal();
+        float currentScrollX = scrollPos.x;
+        scrollPos.x = EditorGUILayout.BeginScrollView(new Vector2(currentScrollX, 0), GUIStyle.none, GUIStyle.none, GUILayout.Height(25)).x;
         DrawHeader();
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndHorizontal();
 
-        for (int i = 0; i < targetListProperty.arraySize; i++)
+        // 2. 메인 바디 (수평/수직 스크롤)
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+        DrawBody();
+        EditorGUILayout.EndScrollView();
+
+        // 3. 푸터
+        DrawFooter();
+
+        serializedObject.ApplyModifiedProperties();
+        HandleColumnResizing();
+
+        if (isResizing) Repaint();
+    }
+
+    private void DrawTopToolbar()
+    {
+        // 💡 1단: 데이터 선택 및 추가 버튼
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+        EditorGUI.BeginChangeCheck();
+        targetSO = (ScriptableObject)EditorGUILayout.ObjectField(GUIContent.none, targetSO, typeof(ScriptableObject), false, GUILayout.Width(300));
+        if (EditorGUI.EndChangeCheck())
         {
-            SerializedProperty rowProp = targetListProperty.GetArrayElementAtIndex(i);
-
-            if (!RowMatchesSearch(rowProp, searchQuery)) continue;
-
-            GUILayout.BeginHorizontal("box");
-            GUILayout.Label(i.ToString(), EditorStyles.boldLabel, GUILayout.Width(30));
-
-            int colIndex = 0;
-
-            if (rowProp.propertyType == SerializedPropertyType.ObjectReference)
+            if (targetSO != null)
             {
-                EditorGUILayout.PropertyField(rowProp, GUIContent.none, GUILayout.Width(GetColumnWidth(colIndex++)));
+                serializedObject = new SerializedObject(targetSO);
+                FindListProperty();
+                columnWidths.Clear();
+            }
+            else
+            {
+                serializedObject = null;
+                targetListProperty = null;
+            }
+        }
 
-                if (rowProp.objectReferenceValue != null)
+        GUILayout.FlexibleSpace();
+
+        if (targetListProperty != null)
+        {
+            if (GUILayout.Button(new GUIContent(" Add Row", EditorGUIUtility.IconContent("Toolbar Plus").image), EditorStyles.toolbarButton, GUILayout.Width(90)))
+            {
+                AddNewRow();
+            }
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        // 💡 2단: 전용 검색바 (더 잘 보이게 별도 행으로 분리)
+        if (targetListProperty != null)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+            GUILayout.Space(5);
+            
+            // 돋보기 아이콘과 레이블
+            GUILayout.Label(EditorGUIUtility.IconContent("d_SearchIcon"), GUILayout.Width(20));
+            GUILayout.Label("Search Filter:", EditorStyles.miniLabel, GUILayout.Width(75));
+            
+            // 전용 검색 텍스트 필드
+            searchQuery = EditorGUILayout.TextField(searchQuery, EditorStyles.toolbarSearchField);
+            
+            // 검색 지우기 버튼 (X 아이콘)
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                if (GUILayout.Button("", GUI.skin.FindStyle("ToolbarSearchCancelButton")))
                 {
-                    SerializedObject innerSO = new SerializedObject(rowProp.objectReferenceValue);
-                    innerSO.Update();
-                    SerializedProperty innerProp = innerSO.GetIterator();
-                    bool enterChildren = true;
+                    searchQuery = "";
+                    GUI.FocusControl(null);
+                }
+            }
+            
+            GUILayout.Space(5);
+            EditorGUILayout.EndHorizontal();
+        }
+    }
 
-                    while (innerProp.NextVisible(enterChildren))
+    private void DrawEmptyState()
+    {
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        
+        string message = targetSO == null ? "데이터가 담긴 ScriptableObject를 여기에 드래그 하세요." : "이 ScriptableObject에는 편집 가능한 리스트나 배열이 없습니다.";
+        EditorGUILayout.HelpBox(message, MessageType.Info);
+        
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+        GUILayout.FlexibleSpace();
+    }
+
+    private void DrawHeader()
+    {
+        if (targetListProperty == null) return;
+
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+        GUILayout.Label("No.", headerStyle, GUILayout.Width(35));
+
+        int colIndex = 0;
+        SerializedProperty firstElement = null;
+        if (targetListProperty.arraySize > 0)
+            firstElement = targetListProperty.GetArrayElementAtIndex(0);
+
+        if (firstElement != null)
+        {
+            if (firstElement.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                DrawHeaderCell("SO Reference", colIndex++);
+
+                UnityEngine.Object sampleObj = null;
+                for (int i = 0; i < targetListProperty.arraySize; i++)
+                {
+                    var val = targetListProperty.GetArrayElementAtIndex(i).objectReferenceValue;
+                    if (val != null) { sampleObj = val; break; }
+                }
+
+                if (sampleObj != null)
+                {
+                    SerializedObject sampleSO = new SerializedObject(sampleObj);
+                    SerializedProperty prop = sampleSO.GetIterator();
+                    bool enterChildren = true;
+                    while (prop.NextVisible(enterChildren))
                     {
                         enterChildren = false;
-                        if (innerProp.name == "m_Script") continue;
-
-                        EditorGUILayout.PropertyField(innerProp, GUIContent.none, GUILayout.Width(GetColumnWidth(colIndex++)));
+                        if (prop.name == "m_Script") continue;
+                        DrawHeaderCell(prop.displayName, colIndex++);
                     }
-                    innerSO.ApplyModifiedProperties();
                 }
             }
             else
             {
-                SerializedProperty fieldProp = rowProp.Copy();
-                SerializedProperty endProp = rowProp.GetEndProperty();
+                SerializedProperty fieldProp = firstElement.Copy();
+                SerializedProperty endProp = firstElement.GetEndProperty();
                 bool isFirst = true;
-
                 while (fieldProp.NextVisible(isFirst))
                 {
                     isFirst = false;
                     if (SerializedProperty.EqualContents(fieldProp, endProp)) break;
-
-                    EditorGUILayout.PropertyField(fieldProp, GUIContent.none, GUILayout.Width(GetColumnWidth(colIndex++)));
-                }
-            }
-
-            if (GUILayout.Button("X", GUILayout.Width(30)))
-            {
-                targetListProperty.DeleteArrayElementAtIndex(i);
-                break;
-            }
-
-            GUILayout.EndHorizontal();
-        }
-
-        GUILayout.EndScrollView();
-
-        // 💡 새 행 추가 버튼 로직 변경
-        if (GUILayout.Button("Add New Row", GUILayout.Height(30)))
-        {
-            AddNewRow();
-        }
-
-        serializedObject.ApplyModifiedProperties();
-
-        HandleColumnResizing();
-    }
-
-    // 💡 새 행 추가 및 에셋 자동 생성 로직
-    private void AddNewRow()
-    {
-        targetListProperty.arraySize++;
-        int newIndex = targetListProperty.arraySize - 1;
-        SerializedProperty newElement = targetListProperty.GetArrayElementAtIndex(newIndex);
-
-        // 추가된 열이 Object Reference 타입일 때만 자동 생성 시도
-        if (newElement.propertyType == SerializedPropertyType.ObjectReference)
-        {
-            System.Type elementType = GetListElementType();
-
-            // 리스트의 타입이 ScriptableObject를 상속받는 타입일 경우
-            if (elementType != null && elementType.IsSubclassOf(typeof(ScriptableObject)))
-            {
-                // 1. 메모리상에 새로운 SO 인스턴스 생성
-                ScriptableObject newAsset = ScriptableObject.CreateInstance(elementType);
-
-                // 2. 현재 Target SO가 위치한 폴더 경로 가져오기
-                string dbPath = AssetDatabase.GetAssetPath(targetSO);
-                string folderPath = string.IsNullOrEmpty(dbPath) ? "Assets" : System.IO.Path.GetDirectoryName(dbPath);
-
-                // 3. 중복되지 않는 고유한 파일명 자동 생성 (예: New QuestData.asset)
-                string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/New {elementType.Name}.asset");
-
-                // 4. 프로젝트 폴더에 실제 .asset 파일로 저장
-                AssetDatabase.CreateAsset(newAsset, assetPath);
-                AssetDatabase.SaveAssets();
-
-                // 5. 새로 만든 에셋을 방금 추가한 리스트 슬롯에 할당
-                newElement.objectReferenceValue = newAsset;
-
-                Debug.Log($"[데이터 에디터] 새 에셋이 생성되었습니다: {assetPath}");
-            }
-            else
-            {
-                // SO가 아닌 프리팹 등의 참조형일 경우, 이전 요소가 복제되는 것을 막기 위해 슬롯을 비움
-                newElement.objectReferenceValue = null;
-            }
-        }
-    }
-
-    // 💡 현재 리스트(배열)가 어떤 클래스/타입을 담고 있는지 리플렉션으로 알아내는 함수
-    private System.Type GetListElementType()
-    {
-        System.Type targetType = targetSO.GetType();
-        FieldInfo fieldInfo = targetType.GetField(targetListProperty.name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-        if (fieldInfo != null)
-        {
-            if (fieldInfo.FieldType.IsArray)
-            {
-                return fieldInfo.FieldType.GetElementType(); // 배열일 경우
-            }
-            else if (fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-            {
-                return fieldInfo.FieldType.GetGenericArguments()[0]; // List<T>일 경우 T 반환
-            }
-        }
-        return null;
-    }
-
-    private float GetColumnWidth(int index)
-    {
-        while (columnWidths.Count <= index) columnWidths.Add(100f);
-        return columnWidths[index];
-    }
-
-    // (이하 DrawHeader, DrawHeaderCell, HandleColumnResizing, RowMatchesSearch, CheckPropertyContainsSearch, FindListProperty 함수는 이전 코드와 동일합니다.)
-    private void DrawHeader()
-    {
-        if (targetListProperty.arraySize == 0) return;
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("No.", EditorStyles.boldLabel, GUILayout.Width(30));
-
-        SerializedProperty firstElement = targetListProperty.GetArrayElementAtIndex(0);
-        int colIndex = 0;
-
-        if (firstElement.propertyType == SerializedPropertyType.ObjectReference)
-        {
-            DrawHeaderCell("SO Reference", colIndex++);
-
-            UnityEngine.Object sampleObj = null;
-            for (int i = 0; i < targetListProperty.arraySize; i++)
-            {
-                if (targetListProperty.GetArrayElementAtIndex(i).objectReferenceValue != null)
-                {
-                    sampleObj = targetListProperty.GetArrayElementAtIndex(i).objectReferenceValue;
-                    break;
-                }
-            }
-
-            if (sampleObj != null)
-            {
-                SerializedObject sampleSO = new SerializedObject(sampleObj);
-                SerializedProperty prop = sampleSO.GetIterator();
-                bool enterChildren = true;
-                while (prop.NextVisible(enterChildren))
-                {
-                    enterChildren = false;
-                    if (prop.name == "m_Script") continue;
-                    DrawHeaderCell(prop.displayName, colIndex++);
+                    DrawHeaderCell(fieldProp.displayName, colIndex++);
                 }
             }
         }
-        else
-        {
-            SerializedProperty fieldProp = firstElement.Copy();
-            SerializedProperty endProp = firstElement.GetEndProperty();
-            bool isFirst = true;
 
-            while (fieldProp.NextVisible(isFirst))
-            {
-                isFirst = false;
-                if (SerializedProperty.EqualContents(fieldProp, endProp)) break;
-                DrawHeaderCell(fieldProp.displayName, colIndex++);
-            }
-        }
-
-        GUILayout.Label("", GUILayout.Width(30));
-        GUILayout.EndHorizontal();
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
     }
 
     private void DrawHeaderCell(string label, int colIndex)
     {
-        GUILayout.Label(label, EditorStyles.boldLabel, GUILayout.Width(GetColumnWidth(colIndex)));
+        float width = GetColumnWidth(colIndex);
+        GUILayout.Label(label, headerStyle, GUILayout.Width(width));
 
         Rect headerRect = GUILayoutUtility.GetLastRect();
         Rect resizeRect = new Rect(headerRect.xMax - 3f, headerRect.y, 6f, headerRect.height);
@@ -273,10 +241,152 @@ public class GenericExcelEditor : EditorWindow
         }
     }
 
+    private void DrawBody()
+    {
+        for (int i = 0; i < targetListProperty.arraySize; i++)
+        {
+            SerializedProperty rowProp = targetListProperty.GetArrayElementAtIndex(i);
+            if (!RowMatchesSearch(rowProp, searchQuery)) continue;
+
+            Rect rect = EditorGUILayout.BeginHorizontal(rowStyle);
+            
+            // Zebra Striping (홀수 행 배경색 강조)
+            if (i % 2 == 0)
+                EditorGUI.DrawRect(rect, new Color(1f, 1f, 1f, 0.03f));
+
+            GUILayout.Label(i.ToString(), EditorStyles.miniLabel, GUILayout.Width(35));
+
+            int colIndex = 0;
+            if (rowProp.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                // 💡 ObjectReference 자체는 폴드 기능을 끄고(false) 옆으로 필드들을 펼쳐서 보여줌
+                EditorGUILayout.PropertyField(rowProp, GUIContent.none, false, GUILayout.Width(GetColumnWidth(colIndex++)));
+                if (rowProp.objectReferenceValue != null)
+                {
+                    SerializedObject innerSO = new SerializedObject(rowProp.objectReferenceValue);
+                    innerSO.Update();
+                    SerializedProperty innerProp = innerSO.GetIterator();
+                    bool enter = true;
+                    while (innerProp.NextVisible(enter))
+                    {
+                        enter = false;
+                        if (innerProp.name == "m_Script") continue;
+                        
+                        // 💡 리스트 등의 변수인 경우 폴드 기능이 작동하도록 true로 변경
+                        // 이렇게 하면 화살표를 눌러 내부 요소를 볼 수 있습니다.
+                        EditorGUILayout.PropertyField(innerProp, GUIContent.none, true, GUILayout.Width(GetColumnWidth(colIndex++)));
+                    }
+                    innerSO.ApplyModifiedProperties();
+                }
+            }
+            else
+            {
+                SerializedProperty fieldProp = rowProp.Copy();
+                SerializedProperty endProp = rowProp.GetEndProperty();
+                bool isFirst = true;
+                while (fieldProp.NextVisible(isFirst))
+                {
+                    isFirst = false;
+                    if (SerializedProperty.EqualContents(fieldProp, endProp)) break;
+                    
+                    // 💡 일반 구조체 내부의 리스트 등도 폴드 기능이 작동하도록 true로 변경
+                    EditorGUILayout.PropertyField(fieldProp, GUIContent.none, true, GUILayout.Width(GetColumnWidth(colIndex++)));
+                }
+            }
+
+            if (GUILayout.Button(EditorGUIUtility.IconContent("d_TreeEditor.Trash"), GUILayout.Width(30), GUILayout.Height(18)))
+            {
+                if (EditorUtility.DisplayDialog("데이터 삭제", $"{i}번 항목을 삭제하시겠습니까?", "삭제", "취소"))
+                {
+                    targetListProperty.DeleteArrayElementAtIndex(i);
+                    break;
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    private void DrawFooter()
+    {
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+        int total = targetListProperty.arraySize;
+        int filtered = GetFilteredCount();
+        GUILayout.Label($"Total: {total} | Filtered: {filtered}", EditorStyles.miniLabel);
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Scroll to Top", EditorStyles.toolbarButton))
+        {
+            scrollPos = Vector2.zero;
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private int GetFilteredCount()
+    {
+        if (string.IsNullOrEmpty(searchQuery)) return targetListProperty.arraySize;
+        int count = 0;
+        for (int i = 0; i < targetListProperty.arraySize; i++)
+        {
+            if (RowMatchesSearch(targetListProperty.GetArrayElementAtIndex(i), searchQuery)) count++;
+        }
+        return count;
+    }
+
+    private void AddNewRow()
+    {
+        serializedObject.Update(); // 현재 상태 동기화
+
+        int newIndex = targetListProperty.arraySize;
+        targetListProperty.InsertArrayElementAtIndex(newIndex);
+        SerializedProperty newElement = targetListProperty.GetArrayElementAtIndex(newIndex);
+
+        if (newElement.propertyType == SerializedPropertyType.ObjectReference)
+        {
+            System.Type elementType = GetListElementType();
+            if (elementType != null && elementType.IsSubclassOf(typeof(ScriptableObject)))
+            {
+                ScriptableObject newAsset = ScriptableObject.CreateInstance(elementType);
+                string dbPath = AssetDatabase.GetAssetPath(targetSO);
+                string folderPath = string.IsNullOrEmpty(dbPath) ? "Assets" : System.IO.Path.GetDirectoryName(dbPath);
+                string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/New {elementType.Name}.asset");
+                
+                AssetDatabase.CreateAsset(newAsset, assetPath);
+                AssetDatabase.SaveAssets();
+                
+                newElement.objectReferenceValue = newAsset;
+            }
+            else
+            {
+                newElement.objectReferenceValue = null;
+            }
+        }
+
+        serializedObject.ApplyModifiedProperties(); // 💡 변경사항 즉시 적용
+        AssetDatabase.SaveAssets(); // SO 파일 저장
+    }
+
+    private System.Type GetListElementType()
+    {
+        if (targetSO == null) return null;
+        System.Type targetType = targetSO.GetType();
+        FieldInfo fieldInfo = targetType.GetField(targetListProperty.name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (fieldInfo != null)
+        {
+            if (fieldInfo.FieldType.IsArray) return fieldInfo.FieldType.GetElementType();
+            else if (fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+                return fieldInfo.FieldType.GetGenericArguments()[0];
+        }
+        return null;
+    }
+
+    private float GetColumnWidth(int index)
+    {
+        while (columnWidths.Count <= index) columnWidths.Add(120f);
+        return columnWidths[index];
+    }
+
     private void HandleColumnResizing()
     {
         if (!isResizing) return;
-
         if (Event.current.type == EventType.MouseDrag)
         {
             columnWidths[resizingColumnIndex] += Event.current.delta.x;
@@ -300,7 +410,6 @@ public class GenericExcelEditor : EditorWindow
             if (rowProp.objectReferenceValue != null)
             {
                 if (rowProp.objectReferenceValue.name.ToLower().Contains(lowerQuery)) return true;
-
                 SerializedObject innerSO = new SerializedObject(rowProp.objectReferenceValue);
                 SerializedProperty innerProp = innerSO.GetIterator();
                 bool enter = true;
@@ -335,6 +444,10 @@ public class GenericExcelEditor : EditorWindow
                 return prop.stringValue.ToLower().Contains(lowerQuery);
             case SerializedPropertyType.Integer:
                 return prop.intValue.ToString().Contains(lowerQuery);
+            case SerializedPropertyType.Float:
+                return prop.floatValue.ToString().Contains(lowerQuery);
+            case SerializedPropertyType.Enum:
+                return prop.enumDisplayNames[prop.enumValueIndex].ToLower().Contains(lowerQuery);
             case SerializedPropertyType.ObjectReference:
                 return prop.objectReferenceValue != null && prop.objectReferenceValue.name.ToLower().Contains(lowerQuery);
         }
@@ -344,6 +457,7 @@ public class GenericExcelEditor : EditorWindow
     private void FindListProperty()
     {
         targetListProperty = null;
+        if (targetSO == null) return;
         SerializedProperty prop = serializedObject.GetIterator();
         bool enterChildren = true;
         while (prop.NextVisible(enterChildren))
