@@ -29,6 +29,8 @@ public class PlayerDamagedState : PlayerBaseState
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
 
         KnockbackMovement();
+
+        p_owner.AnimationTrigger.PlayFeedback("Player_Normal_Damage_FB");
     }
 
     protected override void SetupAnimator()

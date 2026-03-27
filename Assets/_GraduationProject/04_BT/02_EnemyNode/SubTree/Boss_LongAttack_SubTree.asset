@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841c3a28debe8e840b89adc6dc33b7c0, type: 3}
   m_Name: Task_Rush Attack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
-  position: {x: 655, y: 274}
+  position: {x: 657, y: 252}
   attackKey: Boss_R_Attack
   animationStateName: 
   transitionBuffer: 1
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc80aa10de6e2ed44a23d8552475d5b8, type: 3}
   m_Name: Condition_Zone Check(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_ZoneCheck
-  position: {x: 209, y: -183}
+  position: {x: 209, y: -254}
   exceptCondition:
     key: 
   targetZoneIds: 0b000000
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 540, y: -20}
+  position: {x: 543, y: -21}
   exceptCondition:
     key: 
   key: WalkingTime
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 208, y: -106}
+  position: {x: 208, y: -177}
   exceptCondition:
     key: 
   stateCondition:
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: Wait
   m_EditorClassIdentifier: Assembly-CSharp::Wait
   position: {x: 222, y: 338}
-  waitTime: 1.5
+  waitTime: 0.7
 --- !u!114 &3431776804123636484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +208,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -1780693242651229239}
   - {fileID: 1932421519546911441}
+  - {fileID: 6489115892790116431}
   - {fileID: -6991997620131266274}
   - {fileID: 2304183980306281579}
   services: []
@@ -246,3 +247,22 @@ MonoBehaviour:
   position: {x: 655, y: 170}
   Distance: 10
   speed: 5
+--- !u!114 &6489115892790116431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
+  m_Name: Condition_Check Cool Time
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
+  position: {x: 209, y: -100}
+  exceptCondition:
+    key: 
+  skillName: Boss_R_Attack
+  cooldownDuration: 7
+  EnemyAttackData: 0
+  attackData: {fileID: 0}

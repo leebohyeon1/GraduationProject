@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using System;
+using UnityEngine.SceneManagement;
 
 // Input Actions 에셋에서 C# 클래스를 생성(Generate C# Class)해야 합니다.
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
@@ -63,8 +64,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action PreviousEvent, SubPreviousEvent;
 
     // Developer Actions;
-    public event Action ToggleConsoleEvent;  
-    public event Action EnterEvent;
+    public event Action ReloadEvent;
 
     private InputSystem_Actions _inputActions;
 
@@ -111,7 +111,10 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         // 우선 모든 맵을 비활성화 (개발자 맵 같은 상시 맵 제외)
         DisableAllInput();
-
+#if UNITY_EDITOR
+        _inputActions.Developer.Enable();
+#endif
+        _inputActions.Share.Enable();
         switch (newMode)
         {
             case InputMode.Gameplay:
@@ -146,8 +149,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     {
         _inputActions.Player.Disable();
         _inputActions.UI.Disable();
-        // 개발자 콘솔조차 막으려면 이것도 Disable
-        // _inputActions.Developer.Disable(); 
+        _inputActions.Share.Disable();
+        _inputActions.Developer.Disable(); 
     }
 
 
@@ -388,19 +391,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     }
 
     // Developer Action Implementations
-    public void OnToggleConsole(InputAction.CallbackContext context)
-    {
-        if(context.phase == InputActionPhase.Performed)
-        {
-            ToggleConsoleEvent?.Invoke();
-        }
-    }
-
-    public void OnEnter(InputAction.CallbackContext context)
+    public void OnReload(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            EnterEvent?.Invoke();
+            ReloadEvent?.Invoke();
+#if UNITY_EDITOR
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+#endif
         }
     }
 
@@ -453,8 +451,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         PreviousEvent = null;
 
         // Developer Actions;
-        ToggleConsoleEvent = null;
-        EnterEvent = null;
+        ReloadEvent = null;
         
         Debug.Log("InputReaderSO: 모든 이벤트가 성공적으로 초기화되었습니다.");
     }

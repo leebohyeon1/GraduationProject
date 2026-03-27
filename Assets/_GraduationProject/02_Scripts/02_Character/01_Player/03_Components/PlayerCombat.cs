@@ -682,7 +682,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         DamageData damageData = damageContext.Data;
 
-        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position;        // 적으로 가는 벡터 구하기
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position; // 적으로 가는 벡터 구하기
         // 적을 마주보고 있는가
         bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (CounterAngle / 2f);
 
