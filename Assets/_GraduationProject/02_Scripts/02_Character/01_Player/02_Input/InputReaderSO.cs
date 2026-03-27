@@ -396,9 +396,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         if (context.phase == InputActionPhase.Performed)
         {
             ReloadEvent?.Invoke();
-#if UNITY_EDITOR
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-#endif
         }
     }
 
