@@ -31,8 +31,8 @@ public class PlayerData
     public List<PlayerAttackConfig> NormalAttackConfigList;
     public List<PlayerAttackConfig> HeavyAttackConfigList;
     public PlayerAttackConfig NormalCounterAttackConfig;
-    public List<PlayerChargeConfig> HeavyCounterAttackConfigList;
-
+    public PlayerChargeConfig HeavyCounterAttackConfig;
+    public List<float> CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity;
 
     [Header("Dodge Config")]
@@ -86,7 +86,7 @@ public class PlayerData
         NormalAttackConfigList = new List<PlayerAttackConfig>();
         HeavyAttackConfigList = new List<PlayerAttackConfig>();
         NormalCounterAttackConfig = new PlayerAttackConfig(); // Struct defaults
-        HeavyCounterAttackConfigList = new List<PlayerChargeConfig>();
+        HeavyCounterAttackConfig = new PlayerChargeConfig();
         DodgeConfig = new DodgeData(); // Class defaults
 
         CurrentPotion = 3;
@@ -155,7 +155,8 @@ public class PlayerData
         NormalAttackConfigList = new List<PlayerAttackConfig>(so.NormalAttackConfigList);
         HeavyAttackConfigList = new List<PlayerAttackConfig>(so.HeavyAttackConfigList);
         NormalCounterAttackConfig = so.NormalCounterAttackConfig;
-        HeavyCounterAttackConfigList = new List<PlayerChargeConfig>(so.HeavyCounterAttackConfigList);
+        HeavyCounterAttackConfig = so.HeavyCounterAttackConfig;
+        CounterDamageMultiply = new List<float>(so.CounterDamageMultiply);
         ProjectileCounterAddedVelocity = new List<float>(so.ProjectileCounterAddedVelocity);
 
         DodgeConfig = new DodgeData();

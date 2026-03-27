@@ -21,7 +21,7 @@ public class AncientPowerSO : PlayerAbilitySO
         p_ability = ability;
         p_owner = p_ability.GetComponent<PlayerController>();
 
-        p_owner.Combat.HeavyCounterAttackConfigList.AddRange(AdditionalChargeDataList);
+        //p_owner.Combat.HeavyCounterAttackConfig.AddRange(AdditionalChargeDataList);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class AncientPowerSO : PlayerAbilitySO
     {
         foreach (var data in AdditionalChargeDataList)
         {
-            p_owner.Combat.HeavyCounterAttackConfigList.Remove(data);
+            //p_owner.Combat.HeavyCounterAttackConfig.Remove(data);
         }
 
         p_ability = null;

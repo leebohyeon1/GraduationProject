@@ -29,8 +29,7 @@ public class PlayerChargeState : PlayerBaseState
         _chargeTimer += Time.deltaTime;
 
         // 차지 레벨이 차지 카운터 리스트 갯수보다 작고, 다음 차지 시간이 지났으면
-        if (_chargeLevel < (p_owner.Combat.HeavyCounterAttackConfigList.Count - 1) &&
-            _chargeTimer >= p_owner.Combat.HeavyCounterAttackConfigList[_chargeLevel + 1].ChargeTime)
+        if (_chargeTimer >= p_owner.Combat.HeavyCounterAttackConfig.ChargeTime)
         {
             p_animator.SetTrigger("ChargeReady");
             p_owner.Combat.IncreaseChargeLevel();
