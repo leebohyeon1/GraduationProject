@@ -36,6 +36,8 @@ public class MonsterWave : MonoBehaviour
     private bool _isRunning;
     private Coroutine _nextWaveCoroutine;
 
+    [SerializeField] private float feedbackDelay = 0.5f;
+
     private void Reset()
     {
         var box = GetComponent<BoxCollider>();
@@ -82,7 +84,7 @@ public class MonsterWave : MonoBehaviour
             Debug.LogWarning($"[EscapeWaveSpawner] {name}: escape가 비어있습니다.");
         }
 
-        StartWave();
+        StartNextWaveWithDelay();
     }
 
     private void StartWave()
@@ -265,7 +267,7 @@ public class MonsterWave : MonoBehaviour
             Enemy_AnimationEventHandler animationHandler = target.GetComponent<Enemy_AnimationEventHandler>();
             if (animationHandler != null)
             {
-                animationHandler.PlayFeedback(feedbackName);
+                animationHandler.PlayFeedbackDelayed(feedbackName,target.transform.position, feedbackDelay);
             }
         }
 
