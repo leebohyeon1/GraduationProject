@@ -267,6 +267,10 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         {
             PlayFeedback("Player_Low_HP_FB");
         }
+        else
+        {
+            StopFeedback("Player_Low_HP_FB");
+        }
     }
 
     /// <summary>
