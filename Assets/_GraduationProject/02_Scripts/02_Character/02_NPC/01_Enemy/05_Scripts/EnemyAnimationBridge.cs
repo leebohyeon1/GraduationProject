@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAnimationBridge : MonoBehaviour
@@ -18,6 +19,18 @@ public class EnemyAnimationBridge : MonoBehaviour
         if(_animator != null)
         {
             _animator.SetTrigger(eventName);
+        }
+    }
+    public void TriggerEvent(string eventNamm,float delay)
+    {
+        delayAnimationTrigger(eventNamm, delay);
+    }
+    IEnumerator delayAnimationTrigger(string triggerName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (_animator != null)
+        {
+            _animator.SetTrigger(triggerName);
         }
     }
     public void SetBool(string boolName, bool value)
