@@ -5,8 +5,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeavyCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyCounterAttackConfigList[p_owner.Combat.ChargeLevel].AttackConfig;
-     
+    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyCounterAttackConfig.AttackConfig;
+
     public PlayerHeavyCounterState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
 
@@ -120,6 +120,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         {
             parryable.Parry(AttackType.HeavyCounter);
             p_owner.Combat.AddCounterEnemy(parryable);
+            p_owner.Events.TriggerOnlyChargeAttackSucceded();
         }
 
 
@@ -130,13 +131,14 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             {
                 AttackerTransform = transform,
                 AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage),
+                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage, 1),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
                 KnockbackForce = p_AttackConfig.KnockbackCofig.StepDistance,
             };
 
+            Debug.Log("강패링 데미지: " + damage.DamageAmount);
             p_owner.Combat.Attack(damageable, damage);
         }
     }
@@ -149,23 +151,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         p_isAttackActive = true;
 
         Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
-
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent<IParryable>(out var parryable))
-            {
-                // 카운터가 되지 않았다면 차지 공격만 인정
-                if(!p_owner.Combat.IsEnemyCountered(parryable))
-                {
-                    p_owner.Events.TriggerOnlyChargeAttackSucceded();
-                }
-
-                p_owner.Combat.AddCounterEnemy(parryable);
-            }
-
-
-           
-        }
     }
 
     private void OnChecekdProjectileCounter()
@@ -194,7 +179,8 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
                     // 투사체를 튕겨낼 시 
                     // 상쇄 이벤트 발생
-                    p_owner.Events.TriggerCounterSucceeded(projectile.transform);
+                    p_owner.Events.TriggerCounterSucceeded(projectile.transform); 
+                    p_owner.Events.TriggerOnlyChargeAttackSucceded();
                 }
             }
         }

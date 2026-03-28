@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
+// Todo: 차지 레벨 사라짐에 따른 리펙토링 필요
+
 
 /// <summary>
 /// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
@@ -54,7 +56,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Counter")]
     public PlayerAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttackConfig;
-    public List<PlayerChargeConfig> HeavyCounterAttackConfigList => _data.HeavyCounterAttackConfigList;
+    public PlayerChargeConfig HeavyCounterAttackConfig => _data.HeavyCounterAttackConfig;
+    public List<float> CounterDamageMultiply => _data.CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
 
     public float CounterAngle => _data != null ? _data.CounterAngle : 120;   // 상쇄 가능 각도
@@ -199,21 +202,28 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 _data.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
             }
 
-            if (_data.HeavyCounterAttackConfigList.Count == 0)
+            if (_data.CounterDamageMultiply.Count == 0)
             {
-                _data.HeavyCounterAttackConfigList.AddRange(data.HeavyCounterAttackConfigList);
-            }
-
-            // Check if default (assuming damage 0 is invalid/uninitialized)
-            if (_data.NormalCounterAttackConfig.AttackDamage == 0)
-            {
-                _data.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
+                _data.CounterDamageMultiply.AddRange(data.CounterDamageMultiply);
             }
 
             if (_data.ProjectileCounterAddedVelocity.Count == 0)
             {
                 _data.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
             }
+
+            // Check if default (assuming damage 0 is invalid/uninitialized)
+
+            if (_data.HeavyCounterAttackConfig.AttackConfig.AttackDamage == 0)
+            {
+                _data.HeavyCounterAttackConfig = data.HeavyCounterAttackConfig;
+            }
+
+            if (_data.NormalCounterAttackConfig.AttackDamage == 0)
+            {
+                _data.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
+            }
+
         }
     }
 
@@ -342,7 +352,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         foreach (Collider obj in hitObjects)
         {
             // 패링된 적일 경우 넘긴다.
-            if (obj.TryGetComponent<IParryable>(out var parryable) && _counterEnemySet.Contains(parryable))
+            if (obj.TryGetComponent<IParryable>(out var parryable) && IsEnemyCountered(parryable))
             {
                 continue;
             }
@@ -428,7 +438,20 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
         return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier);
+
     }
+
+    /// <summary>
+    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
+    /// </summary>
+    /// <param name="baseDamage">기본 데미지</param>
+    /// <returns>최종 데미지</returns>
+    public int CalculateFinalDamage(int baseDamage, int chargeLevel)
+    {        
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier );
+        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier * CounterDamageMultiply[chargeLevel]);
+    }
+
     #endregion
 
     //==========================================================================================================================
@@ -581,6 +604,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="enemy">카운터된 적</param>
     public void AddCounterEnemy(IParryable enemy)
     {
+        Debug.Log(111);
         _counterEnemySet.Add(enemy);
     }
 
@@ -589,6 +613,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void ClearCounterEnemySet()
     {
+        Debug.Log(222);
         _counterEnemySet.Clear();   
     }
 

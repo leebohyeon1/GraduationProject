@@ -138,7 +138,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             { 
                 AttackerTransform = transform,
                 AttackType = AttackType.NormalCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage),
+                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage, 0),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
@@ -157,16 +157,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         p_isAttackActive = true;
 
         Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
-
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent<IParryable>(out var parryable))
-            {
-                p_owner.Combat.AddCounterEnemy(parryable);
-            }
-
-          
-        }
     }
 
     private void OnChecekdProjectileCounter()
