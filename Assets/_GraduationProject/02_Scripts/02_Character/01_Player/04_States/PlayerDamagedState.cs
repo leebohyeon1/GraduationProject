@@ -37,15 +37,7 @@ public class PlayerDamagedState : PlayerBaseState
     {
         base.SetupAnimator();
 
-        if(_damageData.AttackType == AttackType.Normal)
-        {
-            p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalDamaged);
-            p_animator.Play("NormalDamaged", 0, 0f);
-        }
-        else if(_damageData.AttackType >= AttackType.Heavy1)
-        {
-            p_animator.SetInteger(p_stateParamter, (int)AnimatorState.HeavyDamaged);
-        }
+        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Damaged);
     }
     #endregion
 
@@ -55,6 +47,7 @@ public class PlayerDamagedState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.TriggerBattleStateChanged(true);
+        _damageData = default;
     }
     #endregion
 
@@ -84,12 +77,6 @@ public class PlayerDamagedState : PlayerBaseState
     {
         // Knockdown 상태이면 반환
         if(p_stateMachine.CurrentState.GetType() == typeof(PlayerKnockdownState))
-        {
-            return;
-        }
-
-        // Heavy 공격을 맞았을 때는 다시 상태 변화 X
-        if(_damageData.AttackType >= AttackType.Heavy1)
         {
             return;
         }

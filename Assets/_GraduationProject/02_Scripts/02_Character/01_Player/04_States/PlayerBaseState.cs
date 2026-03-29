@@ -24,8 +24,7 @@ public abstract class PlayerBaseState : IState, IDisposable
         Falling = 9,
         Landing = 10,
 
-        NormalDamaged = -1,
-        HeavyDamaged = -2,
+        Damaged = -1,
         Knockdown = -3,
     }
 
