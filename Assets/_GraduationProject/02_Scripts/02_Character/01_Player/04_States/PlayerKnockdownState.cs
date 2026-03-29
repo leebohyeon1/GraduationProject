@@ -28,8 +28,6 @@ public class PlayerKnockdownState : PlayerBaseState
     {
         _knockbackTimer += Time.deltaTime;
 
-        p_owner.Movement?.Move(Vector3.zero, 0f, 0f);
-
         // 경직 시간이 지나면 상태 전환
         if (_knockbackTimer >= p_owner.Health.KnockDownDuration)
         {
@@ -48,7 +46,28 @@ public class PlayerKnockdownState : PlayerBaseState
         
         _knockbackTimer = 0f;   // 타이머 초기화
 
+        KnockbackMovement();
+
         p_owner.AnimationTrigger.PlayFeedback("Player_KnockDown_Damage_FB");
+    }
+
+    /// <summary>
+    /// 넉백 움직임
+    /// </summary>
+    private void KnockbackMovement()
+    {
+        // 항상 플레이어의 뒤쪽 방향으로 설정
+        Vector3 moveDirection = -p_owner.transform.forward;
+        StepData knockbackData = new StepData
+        {
+            StepCurve = p_owner.Data.KnockdownStepCurve,
+            StepDuration = p_owner.Data.KnockdownStepDuration,
+            StepDistance = p_owner.Data.KnockdownStepDistance,
+            StepRotateSpeed = 0f
+        };
+
+        // Step을 사용하여 뒤로 밀려남
+        p_owner.Movement.Step(moveDirection, knockbackData, this, true);
     }
 
     protected override void SetupAnimator()

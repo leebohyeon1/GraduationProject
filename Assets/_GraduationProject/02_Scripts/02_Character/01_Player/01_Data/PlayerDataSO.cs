@@ -61,6 +61,9 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("KnockDown")]
     public float KnockDownDuration = 10;    // 기절 지속시간
+    public float KnockdownStepDistance = 1.5f; // 기절 시 밀려나는 거리
+    public float KnockdownStepDuration = 0.2f; // 기절 시 밀려나는 시간
+    public AnimationCurve KnockdownStepCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 기절 시 밀려나는 곡선
 }
 
 /// <summary>

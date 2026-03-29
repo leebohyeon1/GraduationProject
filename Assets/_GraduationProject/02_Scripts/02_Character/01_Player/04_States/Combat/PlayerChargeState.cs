@@ -9,6 +9,7 @@ public class PlayerChargeState : PlayerBaseState
     private int _chargeLevel => p_owner.Combat.ChargeLevel;
     private float _chargeTimer = 0f;
 
+    private bool _isCharge = false;
     private bool _isStep;           // 차지 대시 중인가
     private bool _shouldTransition; // 상태 전환해야 하는지 여부
 
@@ -28,9 +29,10 @@ public class PlayerChargeState : PlayerBaseState
 
         _chargeTimer += Time.deltaTime;
 
-        // 차지 레벨이 차지 카운터 리스트 갯수보다 작고, 다음 차지 시간이 지났으면
-        if (_chargeTimer >= p_owner.Combat.HeavyCounterAttackConfig.ChargeTime)
+        // 차지가 안된 상태에서 차지 타이머가 차지 시간에 도달하면 차지 시작
+        if (!_isCharge && _chargeTimer >= p_owner.Combat.HeavyCounterAttackConfig.ChargeTime)
         {
+            _isCharge = true;
             p_animator.SetTrigger("ChargeReady");
             p_owner.Combat.IncreaseChargeLevel();
             p_owner.Events.TriggerChargeLevelCompleted(_chargeLevel);
@@ -117,6 +119,7 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 On
         _chargeTimer = 0f;
         _shouldTransition = false;
+        _isCharge = false;
 
         p_owner.AnimationTrigger.ChargeCanceled();
     }
@@ -149,6 +152,7 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.AnimationTrigger.ChargeCanceled();  // 차지 종료 피드백
 
         _shouldTransition = false;
+        _isCharge = false;
         _chargeTimer = 0f;
     }
 
