@@ -149,7 +149,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Counter
-    public List<UnityEvent> HeavyCounterFeedbacks;
     public UnityEvent CounterSuccessFeedback;
     public List<UnityEvent> ParryStackChangeFeedbacks;
 
@@ -167,14 +166,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     public void DisableCounterWindow()
     {
         p_owner.Events.TriggerCounterWindowFinished();
-    }
-
-    /// <summary>
-    /// 강한 상쇄 시작
-    /// </summary>
-    public void HeavyCounterFeedbackPlay()
-    {
-        HeavyCounterFeedbacks[1]?.Invoke();
     }
 
     /// <summary>

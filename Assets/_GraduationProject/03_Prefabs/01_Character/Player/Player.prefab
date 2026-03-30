@@ -2339,49 +2339,7 @@ MonoBehaviour:
           m_StringArgument: Clash_Dodge_FB
           m_BoolArgument: 0
         m_CallState: 2
-  HeavyCounterFeedbacks:
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4019221314009144522}
-        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
-        m_MethodName: PlayFeedback
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ChargeAttackStartLevel1_FB
-          m_BoolArgument: 0
-        m_CallState: 2
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4019221314009144522}
-        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
-        m_MethodName: PlayFeedback
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ChargeAttackStartLevel2_FB
-          m_BoolArgument: 0
-        m_CallState: 2
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4019221314009144522}
-        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
-        m_MethodName: PlayFeedback
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ChargeAttackStartLevel3_FB
-          m_BoolArgument: 0
-        m_CallState: 2
+  HeavyCounterFeedbacks: []
   CounterSuccessFeedback:
     m_PersistentCalls:
       m_Calls:
@@ -2454,36 +2412,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  ChargeLevelCompletedFeedbacks:
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4019221314009144522}
-        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
-        m_MethodName: PlayFeedback
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ChargeLevel1_FB
-          m_BoolArgument: 0
-        m_CallState: 2
-  ChargeCancelFeedback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4019221314009144522}
-        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
-        m_MethodName: PlayFeedback
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ChargeCancel_FB
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6188486078117210061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2504,10 +2432,9 @@ MonoBehaviour:
   _normalAttackComboIndex: -1
   _heavyAttackComboIndex: -1
   _heavyAttackConsumedStacks: 0
-  _chargeLevel: -1
+  _isCharge: 0
   _isCounterable: 0
   _counterSuccessTagSO: {fileID: 11400000, guid: 2f767799463b53a47a21173c11bb4e6b, type: 2}
-  _specialAttackSO: {fileID: 0}
   _lastBattleTime: 0
   _isBattleState: 0
   _parryStacks: 0
@@ -4319,37 +4246,6 @@ Transform:
   - {fileID: 7899591395031004127}
   m_Father: {fileID: 9016685256171536230}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4622956474906308255
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7174995901559864600}
-  m_Layer: 7
-  m_Name: Swing_3_Impact
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7174995901559864600
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622956474906308255}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5571388687056563757}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4650309582290841082
 GameObject:
   m_ObjectHideFlags: 0
@@ -4429,7 +4325,6 @@ Transform:
   - {fileID: 7013173896813314136}
   - {fileID: 3121742343449294862}
   - {fileID: 8270382984119440206}
-  - {fileID: 7174995901559864600}
   - {fileID: 4501902777333987767}
   - {fileID: 8030797264290277309}
   - {fileID: 788155862832543323}
@@ -12117,10 +12012,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 2762735562361087460, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
-      propertyPath: managedReferences[6735772383924978203].InstantiateParticlesPosition
-      value: 
-      objectReference: {fileID: 7174995901559864600}
     - target: {fileID: 4712875104975631509, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
       propertyPath: m_Name
       value: Swing_4_FB
@@ -12544,10 +12435,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Atk_Strong_02_FB
       objectReference: {fileID: 0}
-    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
-      propertyPath: managedReferences[6735772383924978118].InstantiateParticlesPosition
-      value: 
-      objectReference: {fileID: 7174995901559864600}
     - target: {fileID: 8788898376424396920, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
