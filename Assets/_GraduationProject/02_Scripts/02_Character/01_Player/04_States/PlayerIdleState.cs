@@ -56,7 +56,7 @@ public class PlayerIdleState : PlayerBaseState
         p_owner.Combat.ResetNormalAttackComboIndex();
 
         // 차지 레벨 초기화
-        p_owner.Combat.ResetChargeLevel();
+        p_owner.Combat.SetCharge(false);
     }
 
     protected override void SetupAnimator()

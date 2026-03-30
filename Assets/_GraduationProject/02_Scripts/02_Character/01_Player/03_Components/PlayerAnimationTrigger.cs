@@ -22,7 +22,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if (p_owner.Events != null)
         {
             p_owner.Events.CounterSucceeded += OnCounterSucceeded;
-            p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
+            p_owner.Events.ChargeCompleted += OnChargeCompleted;
             p_owner.Events.BeforeDamaged += OnBeforeDamaged;
             p_owner.Events.Heal += OnHeal;
         }
@@ -50,7 +50,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if (p_owner != null && p_owner.Events != null)
         {
             p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
-            p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
+            p_owner.Events.ChargeCompleted -= OnChargeCompleted;
             p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
             p_owner.Events.Heal -= OnHeal;
         }
@@ -174,7 +174,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// </summary>
     public void HeavyCounterFeedbackPlay()
     {
-        HeavyCounterFeedbacks[p_owner.Combat.ChargeLevel]?.Invoke();
+        HeavyCounterFeedbacks[1]?.Invoke();
     }
 
     /// <summary>
@@ -210,10 +210,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Charge
-    public List<UnityEvent> ChargeLevelCompletedFeedbacks;
-    public UnityEvent ChargeCancelFeedback;
-
-
     /// <summary>
     /// 차지 시작 
     /// </summary>
@@ -222,20 +218,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner.Events.TriggerChargeStarted();  
     }
 
-    public void ChargeCanceled()
-    {
-        ChargeCancelFeedback?.Invoke();
-    }
-
     /// <summary>
     /// 차지 레벨 달성 이벤트
     /// </summary>
-    /// <param name="level">달성한 레벨</param>
-    private void OnChargeLevelCompleted(int level)
+    /// <param name="isCharge">차지 여부</param>
+    private void OnChargeCompleted(bool isCharge)
     {
-        if (ChargeLevelCompletedFeedbacks != null && level >= 0 && level < ChargeLevelCompletedFeedbacks.Count)
+        if (isCharge)
         {
-            ChargeLevelCompletedFeedbacks[level]?.Invoke();
+            PlayFeedback("ChargeLevel1_FB");
+        }
+        else
+        {
+            PlayFeedback("ChargeCancel_FB");
         }
     }
     #endregion

@@ -51,8 +51,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     // 최대 차지 시간
     public float MaxChargeTime => _data != null ? _data.MaxChargeTime : 5f;
 
-    [SerializeField] private int _chargeLevel = -1;      // 차지 레벨
-    public int ChargeLevel => _chargeLevel;
+    [SerializeField] private bool _isCharge = false;      // 차지 여부
+    public bool IsCharge => _isCharge;
 
     [Header("Counter")]
     public PlayerAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttackConfig;
@@ -69,11 +69,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public PlayerAbilityTagSO CounterSuccessTagSO => _counterSuccessTagSO;
 
     public event Action CheckedProjectileCounter;
-
-    [Header("SpecialAttack")]
-    [SerializeField] private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
-    public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
-
 
     [Header("BattleState")]
     [SerializeField] private float _lastBattleTime;  // 마지막 전투 시간
@@ -570,17 +565,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <summary>
     /// 차지 레벨 증가
     /// </summary>
-    public void IncreaseChargeLevel()
+    public void SetCharge(bool isCharge)
     {
-        _chargeLevel++;
-    }
-
-    /// <summary>
-    /// 차지 레벨 초기화
-    /// </summary>
-    public void ResetChargeLevel()
-    {
-        _chargeLevel = -1;
+        if(isCharge != _isCharge)
+        {
+            _isCharge = isCharge;
+        }
     }
     #endregion
 
@@ -643,35 +633,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     #endregion
 
     //==========================================================================================================================
-    // Special Attack ==========================================================================================================
-    //==========================================================================================================================
-
-    /// <summary>
-    /// 특수 공격 스크립터블 오브젝트 설정
-    /// </summary>
-    /// <param name="specialAttackSO">특수 공격</param>
-    public void SetSpecialAttackSO(CanSpecialAttackSO specialAttackSO)
-    {
-        _specialAttackSO = specialAttackSO;
-        if (_data != null && specialAttackSO != null)
-        {
-             _data.CurrentSpecialAttackId = specialAttackSO.Id;
-        }
-    }
-
-    /// <summary>
-    /// 특수 공격 스크립터블 오브젝트 초기화
-    /// </summary>
-    public void ClearSpecialAttackSO()
-    {
-        _specialAttackSO = null;
-        if (_data != null)
-        {
-            _data.CurrentSpecialAttackId = "";
-        }
-    }
-
-    //==========================================================================================================================
     // Event Handler ===========================================================================================================
     //==========================================================================================================================
 
@@ -713,7 +674,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
 
         // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
-        bool validateAttackType = damageData.AttackType >= AttackType.Heavy1 && ChargeLevel >= 0 || damageData.AttackType == AttackType.Normal;
+        bool validateAttackType = (damageData.AttackType >= AttackType.Heavy1 && _isCharge) || damageData.AttackType == AttackType.Normal;
 
 
         // 카운터에 성공하면 데미지 데이터 전부 0으로 처리

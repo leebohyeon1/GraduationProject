@@ -133,8 +133,8 @@ public class PlayerEvents
     //==========================================================================================================================
 
     #region Charge
-    public event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
-    public event Action<int> ChargeLevelCompleted;                     // 차지 레벨 완료 이벤트
+    public event Action ChargeStarted;                 // 차지 시작 종료 이벤트
+    public event Action<bool> ChargeCompleted;                     // 차지 완료 이벤트
 
     /// <summary>
     /// 차지 시작 이벤트 발행
@@ -145,20 +145,11 @@ public class PlayerEvents
     }
 
     /// <summary>
-    /// 차지 종료 이벤트 발행
-    /// </summary>
-    public void TriggerChargeFinshed()
-    {
-        ChargeFinished?.Invoke();
-    }
-
-    /// <summary>
     /// 차지 레벨 완료 이벤트 발행
     /// </summary>
-    /// <param name="chargeLevel">차지 레벨</param>
-    public void TriggerChargeLevelCompleted(int chargeLevel)
+    public void TriggerChargeCompleted(bool isCharge)
     {
-        ChargeLevelCompleted?.Invoke(chargeLevel);
+        ChargeCompleted?.Invoke(isCharge);
     }
     #endregion
 
@@ -304,8 +295,7 @@ public class PlayerEvents
 
         // Charge
         ChargeStarted = null;
-        ChargeFinished = null;
-        ChargeLevelCompleted = null;
+        ChargeCompleted = null;
 
         // Counter
         CounterWindowStarted = null;

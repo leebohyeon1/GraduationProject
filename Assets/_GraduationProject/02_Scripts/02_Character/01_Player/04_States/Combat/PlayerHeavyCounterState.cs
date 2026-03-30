@@ -51,16 +51,8 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
         p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
-        p_owner.Combat.ResetChargeLevel();
-
-        // Smahs 가능 상태면 취소
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            CanSpecialAttackSO smashAttackTag
-                = p_owner.Ability.GetTag("Smash_Attack") as CanSpecialAttackSO;
-
-            p_owner.Ability.RemoveTag(smashAttackTag);
-        }
+        p_owner.Combat.SetCharge(false);
+        p_owner.Events.TriggerChargeCompleted(false);
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
         if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
@@ -80,16 +72,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         // 일반 공격이 가능하지 않으면 리턴
         if (!p_owner.Combat.CanNormalAttack())
         {
-            return;
-        }
-
-        // Smash가 가능하면 Smahs
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            SmashSO smash = p_owner.Ability.GetAbility("Smash") as SmashSO;
-            smash.Smash();
-
-            Debug.Log("Smash");
             return;
         }
 
@@ -173,7 +155,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                     DamageData damageData = projectile.Data;
                     damageData.DamageAmount += p_AttackConfig.AttackDamage;
 
-                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.ChargeLevel + 1];
+                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.IsCharge ? 1 : 0];
 
                     projectile.Setup(direction, speed, p_owner.gameObject, damageData);
 

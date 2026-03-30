@@ -57,15 +57,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
 
-        // Smahs 가능 상태면 취소
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            CanSpecialAttackSO smashAttackTag 
-                = p_owner.Ability.GetTag("Smash_Attack") as CanSpecialAttackSO;
-
-            p_owner.Ability.RemoveTag(smashAttackTag);
-        }
-
         // 상쇄로 인한 수퍼아머 태그가 있으면
         if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
@@ -84,14 +75,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 일반 공격이 가능하지 않으면 리턴
         if (!p_owner.Combat.CanNormalAttack())
         {
-            return;
-        }
-
-        // Smash가 가능하면 Smahs
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            SmashSO smash = p_owner.Ability.GetAbility("Smash") as SmashSO;
-            smash.Smash();
             return;
         }
 
