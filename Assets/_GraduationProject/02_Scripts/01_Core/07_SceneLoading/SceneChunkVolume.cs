@@ -13,11 +13,11 @@ public class SceneChunkVolume : MonoBehaviour
             return;
         }
 
-        Debug.Log("메인 씬 업데이트");
-
         // 플레이어가 이 구역 안으로 깊숙이 들어왔다면!
         if (other.TryGetComponent<PlayerController>(out var component))
         {
+            Debug.Log("메인 씬 업데이트");
+
             // 매니저에게 "이제부터 여기가 메인(Active) 구역이야!" 라고 알려줍니다.
             SceneLoadingManager.Instance.SetActiveChunk(thisChunkData);
         }
