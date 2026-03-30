@@ -37,7 +37,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
     [Header("Properties")]
     public int CurrentHealth => _data != null ? _data.CurrentHealth : 0;
-    public int MaxHealth => _data != null ? _data.MaxHealth : 100;
+    public int MaxHealth => _data != null ? (int)_data.Health.Value : 100;
     public bool IsDead => CurrentHealth <= 0; // 사망 여부
 
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
@@ -164,7 +164,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         int previousHealth = _data.CurrentHealth;
         
         // 데이터 직접 수정
-        _data.CurrentHealth = Mathf.Clamp(_data.CurrentHealth + amount, 0, _data.MaxHealth);
+        _data.CurrentHealth = Mathf.Clamp(_data.CurrentHealth + amount, 0, (int)_data.Health.Value);
 
         if (previousHealth != _data.CurrentHealth)
         {

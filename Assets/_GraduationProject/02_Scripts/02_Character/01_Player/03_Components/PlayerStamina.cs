@@ -16,7 +16,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
     #region Properties
     public float CurrentStamina => _runtimeData != null ? _runtimeData.CurrentStamina : 0;
-    public float MaxStamina => _runtimeData != null ? _runtimeData.MaxStamina : 100;
+    public float MaxStamina => _runtimeData != null ? _runtimeData.Stamina : 100;
     public float StaminaRegenPerSecond => _runtimeData != null ? _runtimeData.StaminaRegenPerSecond : 5f;
     #endregion
 

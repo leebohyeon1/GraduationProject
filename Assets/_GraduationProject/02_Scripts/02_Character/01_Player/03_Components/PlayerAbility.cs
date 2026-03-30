@@ -7,9 +7,11 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     [Header("References")]
     private PlayerEvents _events;
     private PlayerData _runtimeData;
+    public PlayerData RuntimeData => _runtimeData;
 
-    [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();    // 태그 해시셋
-    [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>();
+    [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();
+    private Dictionary<PlayerAbilityTagSO, int> _tagCounts = new Dictionary<PlayerAbilityTagSO, int>();
+    [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>(); // For Inspector visibility if needed
 
     [Header("Event")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
@@ -171,21 +173,41 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
     #region Tag Management
     /// <summary>
-    /// 태그 추가 함수
+    /// 태그 추가 함수 (중첩 관리)
     /// </summary>
     /// <param name="tag">등록할 태그</param>
     public void AddTag(PlayerAbilityTagSO tag)
     {
-        _abilityTags.Add(tag);
+        if (tag == null) return;
+
+        if (_tagCounts.ContainsKey(tag))
+        {
+            _tagCounts[tag]++;
+        }
+        else
+        {
+            _tagCounts[tag] = 1;
+            _abilityTags.Add(tag); // Inspector view
+        }
     }
 
     /// <summary>
-    /// 태그 제거 함수
+    /// 태그 제거 함수 (중첩 관리)
     /// </summary>
-    /// <param name="tag">등록할 태그</param>
+    /// <param name="tag">제거할 태그</param>
     public void RemoveTag(PlayerAbilityTagSO tag)
     {
-        _abilityTags.Remove(tag);
+        if (tag == null) return;
+
+        if (_tagCounts.ContainsKey(tag))
+        {
+            _tagCounts[tag]--;
+            if (_tagCounts[tag] <= 0)
+            {
+                _tagCounts.Remove(tag);
+                _abilityTags.Remove(tag); // Inspector view
+            }
+        }
     }
 
     /// <summary>
@@ -195,20 +217,13 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <returns>가지고 있는지 여부</returns>
     public bool HasTag(string id)
     {
-        foreach (var tag in _abilityTags)
+        foreach (var pair in _tagCounts)
         {
-            // 태그가 비어있으면 계속
-            if (tag == null)
+            if (pair.Key != null && pair.Key.Id == id)
             {
-                continue;
-            }
-
-            if (tag.Id == id)
-            {
-                return true;
+                return pair.Value > 0;
             }
         }
-
         return false;
     }
 
@@ -219,21 +234,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <returns>가지고 있는지 여부</returns>
     public bool HasTag(PlayerAbilityTagSO validTag)
     {
-        foreach (var tag in _abilityTags)
-        {
-            // 태그가 비어있으면 계속
-            if (tag == null)
-            {
-                continue;
-            }
-
-            if (tag == validTag)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return _tagCounts.TryGetValue(validTag, out int count) && count > 0;
     }
 
     /// <summary>
@@ -243,20 +244,13 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <returns>스킬 태그</returns>
     public PlayerAbilityTagSO GetTag(string id)
     {
-        foreach (var tag in _abilityTags)
+        foreach (var pair in _tagCounts)
         {
-            // 태그가 비어있으면 계속
-            if (tag == null)
+            if (pair.Key != null && pair.Key.Id == id)
             {
-                continue;
-            }
-
-            if (tag.Id == id)
-            {
-                return tag;
+                return pair.Key;
             }
         }
-
         return null;
     }
     #endregion

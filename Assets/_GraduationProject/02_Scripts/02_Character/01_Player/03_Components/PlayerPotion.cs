@@ -9,7 +9,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
 
     public event Action<int> OnPotionChange;
 
-    public int MaxPotion => _data != null ? _data.MaxPotion : 3;
+    public int MaxPotion => _data != null ? _data.Potion : 3;
     public int CurrentPotion => _data != null ? _data.CurrentPotion : 0;
     public int PotionHealAmount => _data != null ? _data.PotionHealAmount : 40;
 
@@ -71,7 +71,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
             return;
         }
 
-        _data.CurrentPotion = _data.MaxPotion;
+        _data.CurrentPotion = _data.Potion;
         OnPotionChange?.Invoke(_data.CurrentPotion);
     }
 
@@ -86,7 +86,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
             return;
         }
 
-        _data.MaxPotion += amount;
+        _data.Potion += amount;
     }
 
     private void OnPotionEvent()

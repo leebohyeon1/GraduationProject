@@ -14,7 +14,7 @@ public class SavePoint : MonoBehaviour, IInteractable
     {
         GameData gameData = DataManager.Instance.GetGameData();
         gameData.PlayerData.RespawnPostion = _playerController.transform.position;
-        _playerController.Health.Heal(gameData.PlayerData.MaxHealth);
+        _playerController.Health.Heal(gameData.PlayerData.Health);
         _playerController.Potion.ReloadPotion();
 
         // 죽은 몬스터 목록 초기화 (리스폰)

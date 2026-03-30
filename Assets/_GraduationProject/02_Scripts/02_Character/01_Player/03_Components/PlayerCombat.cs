@@ -23,9 +23,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [Header("Attack")]
     [SerializeField] private LayerMask _attackLayerMask;
     // 공격 회복 비율
-    public float AttackRegainRate => _data != null ? _data.AttackRegainRate : 0f;
+    public float AttackRegainRate => _data != null ? _data.Regain : 0f;
     // 공격력 배율
-    public float AttackDamageMultiplier => _data != null ? _data.AttackDamageMultiplier : 0f;
+    public float AttackDamageMultiplier => _data != null ? _data.AttackDamage.Value : 0f;
 
     [Header("NormalAttack")]
     [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
@@ -36,12 +36,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     // 추가 공속 속도 배율
     public float PlusNormalAttackSpeedMultiplier => _data != null ? _data.PlusNormalAttackSpeedMultiplier : 0f;
     // 일반 공격 리스트
-    public List<PlayerAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttackConfigList : new List<PlayerAttackConfig>();
+    public List<RuntimeAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttacks : new List<RuntimeAttackConfig>();
 
     [Header("HeavyAttack")]
     [SerializeField] private int _heavyAttackComboIndex = -1;
     public int HeavyAttackComboIndex => _heavyAttackComboIndex;
-    public List<PlayerAttackConfig> HeavyAttackConfigList => _data != null ? _data.HeavyAttackConfigList : new List<PlayerAttackConfig>();
+    public List<RuntimeAttackConfig> HeavyAttackConfigList => _data != null ? _data.HeavyAttacks : new List<RuntimeAttackConfig>();
     
     [SerializeField] private int _heavyAttackConsumedStacks = 0; // 이번 연속 강공격에서 소모한 총 스택 수
 
@@ -55,7 +55,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public bool IsCharge => _isCharge;
 
     [Header("Counter")]
-    public PlayerAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttackConfig;
+    public RuntimeAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttack;
     public PlayerChargeConfig HeavyCounterAttackConfig => _data.HeavyCounterAttackConfig;
     public List<float> CounterDamageMultiply => _data.CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
@@ -394,7 +394,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">증가량</param>
     public void IncreaseAttackRegainRate(float amount)
     {
-        _data.AttackRegainRate += amount;
+        _data.Regain.BaseOffset += amount;
     }
 
     /// <summary>
@@ -403,7 +403,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">감소량</param>
     public void DecreaseAttackRegainRate(float amount)
     {
-        _data.AttackRegainRate = Mathf.Max(_data.AttackRegainRate - amount, 0);
+        _data.Regain.BaseOffset = Mathf.Max(_data.Regain.BaseOffset - amount, 0);
     }
 
     /// <summary>
@@ -412,7 +412,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">증가 배율</param>
     public void IncreaseAttackDamageMultiplier(float amount)
     {
-        _data.AttackDamageMultiplier += amount;
+        _data.AttackDamage.BaseOffset += amount;
     }
 
     /// <summary>
@@ -421,7 +421,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="amount">감소 배울</param>
     public void DecreaseAttackDamageMultiplier(float amount)
     {
-        _data.AttackDamageMultiplier -= amount;
+        _data.AttackDamage.BaseOffset -= amount;
     }
 
     /// <summary>

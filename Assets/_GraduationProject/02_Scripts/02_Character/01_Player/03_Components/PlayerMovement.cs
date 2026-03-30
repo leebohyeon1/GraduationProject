@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     [Header("Movement Setting")]
     // 최대 이동 속도
-    public float MaxMoveSpeed => _runtimeData != null ? _runtimeData.MoveSpeed : 5f;
+    public float MaxMoveSpeed => _runtimeData != null ? _runtimeData.MoveSpeed.Value : 5f;
 
     private float _moveAccelerationTime;    // 이동 가속 시간
     public float MoveAccelerationTime => _moveAccelerationTime;
@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public AnimationCurve MoveCurve => _moveCurve;
 
    // 최대 회전 속도
-    public float MaxRotateSpeed => _runtimeData != null ? _runtimeData.RotateSpeed : 5f;
+    public float MaxRotateSpeed => _runtimeData != null ? _runtimeData.RotateSpeed.Value : 5f;
 
     private float _rotateAccelerationTime;    // 회전 가속 시간
     public float RotateAccelerationTime => _rotateAccelerationTime;    
@@ -56,9 +56,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     [Header("Dodge Setting")]
     // 회피 설정
-    public DodgeData DodgeConfig => _runtimeData != null ? _runtimeData.DodgeConfig : null;
+    public RuntimeDodgeConfig DodgeConfig => _runtimeData != null ? _runtimeData.RuntimeDodge : null;
     
-    public bool CanDodge => DodgeConfig == null || Time.time >= _lastDodgeEndTime + DodgeConfig.Cooldown;
+    public bool CanDodge => DodgeConfig == null || Time.time >= _lastDodgeEndTime + DodgeConfig.Cooldown.Value;
 
     [SerializeField] private PlayerAbilityTagSO _invincibleSO;
     public PlayerAbilityTagSO InvincibleSO => _invincibleSO;
@@ -113,10 +113,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     {
         if (_runtimeData != null)
         {
-            if (_runtimeData.MoveSpeed == 0) { _runtimeData.MoveSpeed = data.MoveSpeed;}
-            if (_runtimeData.RotateSpeed == 0) { _runtimeData.RotateSpeed = data.RotateSpeed;}
-            if (_runtimeData.ChargeMoveSpeed == 0) { _runtimeData.ChargeMoveSpeed = data.ChargeMoveSpeed;}
-            if (_runtimeData.ChargeRotateSpeed == 0) { _runtimeData.ChargeRotateSpeed = data.ChargeRotateSpeed;}
+            if (_runtimeData.MoveSpeed.BaseValue == 0) { _runtimeData.MoveSpeed.BaseValue = data.MoveSpeed;}
+            if (_runtimeData.RotateSpeed.BaseValue == 0) { _runtimeData.RotateSpeed.BaseValue = data.RotateSpeed;}
+            if (_runtimeData.ChargeMoveSpeed.BaseValue == 0) { _runtimeData.ChargeMoveSpeed.BaseValue = data.ChargeMoveSpeed;}
+            if (_runtimeData.ChargeRotateSpeed.BaseValue == 0) { _runtimeData.ChargeRotateSpeed.BaseValue = data.ChargeRotateSpeed;}
             
             // DodgeConfig Deep Copy
             if (_runtimeData.DodgeConfig != null && string.IsNullOrEmpty(_runtimeData.DodgeConfig.AnimationStateName))
@@ -553,7 +553,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void SetChargeMoveSpeed(float speed)
     {
         // _chargeMoveSpeed = speed;
-        if (_runtimeData != null) _runtimeData.ChargeMoveSpeed = speed;
+        if (_runtimeData != null) _runtimeData.ChargeMoveSpeed.BaseValue = speed;
     }
 
     //==========================================================================================================================
