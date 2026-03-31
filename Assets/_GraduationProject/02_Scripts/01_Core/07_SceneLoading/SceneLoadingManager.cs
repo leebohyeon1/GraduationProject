@@ -15,6 +15,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     [SerializeField] private bool _useInitialScene = true;
     [SerializeField] private SceneDataSO _initializeScene;
+    public SceneDataSO InitializeScene => _initializeScene;
 
     [Header("Loading UI")]
     [SerializeField] private CanvasGroup _loadingCanvasGroup; // 투명도(Alpha) 조절로 페이드 효과를 주기 위함
@@ -32,7 +33,7 @@ public class SceneLoadingManager : MonoBehaviour
 
     // 중복 로딩 방지용 플래그
     public bool IsTeleporting { get; private set; } = false;
-    public string CurrentActiveChunkName { get; private set; } = "";
+    public SceneDataSO CurrentActiveChunk;
 
     private void Awake()
     {
@@ -183,6 +184,8 @@ public class SceneLoadingManager : MonoBehaviour
         {
             yield return null;
         }
+
+        SetActiveChunk(targetScene);
         SceneManager.SetActiveScene(newSceneInstance.Scene);
 
         // ==========================================================
@@ -329,6 +332,7 @@ public class SceneLoadingManager : MonoBehaviour
         // 명부(로드된 씬 목록)에 해당 씬이 있는지 확인
         if (_loadedChunks.TryGetValue(chunkName, out var sceneInstance))
         {
+            CurrentActiveChunk = chunkData;
             // 1. 세이브용 이름표 갱신
             DataManager.Instance.GetGameData().LastMainScene = chunkName;
 
