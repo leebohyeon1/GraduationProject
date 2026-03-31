@@ -51,7 +51,6 @@ public class DataManager : MonoBehaviour
 
     private void Start()
     {
-#if UNITY_EDITOR
         if (_useDevelopment)
         {
             CreateNewGame(_developementDataSlotIndex);
@@ -63,16 +62,16 @@ public class DataManager : MonoBehaviour
                 _currentGameData.PlayerData.LastPosition = player.transform.position;
             }
         }
-#endif
     }
 
     private void OnDestroy()
     {
-        if (GamePlayTagManager.Instance)
+        
+        if (QuestManager.Instance)
         {
             QuestManager.Instance.QuestCompleted -= OnQuestCompleted;
         }
-        if (QuestManager.Instance)
+        if (GamePlayTagManager.Instance)
         {
             GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;
         }
@@ -197,8 +196,9 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame()
     {
         _currentGameData = new GameData();
+        _currentGameData.LastMainScene = SceneLoadingManager.Instance.InitializeScene.SceneName;  
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
-        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.RespawnPostion = SceneLoadingManager.Instance.InitializeScene.DefaultSpawnPosition;
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
         DataList.Add(_currentGameData);
@@ -214,8 +214,9 @@ public class DataManager : MonoBehaviour
     public void CreateNewGame(int index)
     {
         _currentGameData = new GameData();
+        _currentGameData.LastMainScene = SceneLoadingManager.Instance.InitializeScene.SceneName;
         _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
-        _currentGameData.PlayerData.RespawnPostion = new Vector3(-157.7f, -0.17f, -162.7f);
+        _currentGameData.PlayerData.RespawnPostion = SceneLoadingManager.Instance.InitializeScene.DefaultSpawnPosition;
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
 
         DataList[index] = _currentGameData;
