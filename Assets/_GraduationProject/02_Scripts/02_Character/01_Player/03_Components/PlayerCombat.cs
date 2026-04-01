@@ -301,7 +301,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
-                int finalDamage = damageCalculator(runtimeDamage);
+                int finalDamage = (damageCalculator != null) ? damageCalculator(runtimeDamage) : runtimeDamage;
 
                 DamageData damage = new DamageData
                 {
