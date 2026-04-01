@@ -44043,8 +44043,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 839515587250944850}
-  - {fileID: 803090933}
   - {fileID: 293810270}
+  - {fileID: 803090933}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &383073795
@@ -212800,7 +212800,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1885677666}
-  - component: {fileID: 1885677667}
   m_Layer: 0
   m_Name: ==================Manager
   m_TagString: Untagged
@@ -212823,20 +212822,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1885677667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1885677665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 347ac1e6c4ad5dc4aa99f2d9868eecf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PerformanceTestScenario
-  enableBadCode: 1
-  loopCount: 5000
 --- !u!1001 &1886062860
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -244242,9 +244227,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 4e7f9f7a6bf6bd644943d1e548d19d30, type: 2}
     - target: {fileID: 6309994549220529878, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
-      propertyPath: _learnAbilities.Array.size
+      propertyPath: _price
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6309994549220529878, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
+      propertyPath: _specialPrice
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6309994549220529878, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
+      propertyPath: _needAbilities.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6309994549220529878, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
+      propertyPath: _learnAbilities.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6309994549220529878, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
+      propertyPath: '_learnAbilities.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ae83f6fd851eab6479c0e1e4aa0ba64c, type: 2}
     - target: {fileID: 6777103626316536109, guid: 85a3fd34e73f4da41ba62e811b6952fe, type: 3}
       propertyPath: m_Name
       value: MenuCanvas

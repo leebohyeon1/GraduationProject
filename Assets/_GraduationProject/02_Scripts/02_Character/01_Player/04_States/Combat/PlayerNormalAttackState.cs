@@ -19,6 +19,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
         // 일반 공격 콤보 순서 증가
         p_owner.Combat.IncreaseNormalAttackComboIndex();
 
+        p_animator.speed = p_owner.RuntimeData.AttackSpeed.Value;
         base.SetupStats();
     }
 

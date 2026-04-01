@@ -14,8 +14,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected bool p_canBufferInput => p_owner.InputHandler.CanBufferInput;
     protected bool p_canChangeCombatState = false;
-  
-    protected bool p_isAttackActive = false; // 공격이 실제로 시작되었는지 확인하는 플래그
+    protected bool p_isAttackPerformed = false; // 현재 애니메이션의 공격 시작 이벤트 수신 여부
 
     public PlayerAttackBaseState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -46,7 +45,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed += OnAttackPerformed;
         p_owner.Events.AttackFinished += OnAttackFinished;
         p_owner.Events.ChangeNextCombatState += OnChangeNextCombatState;
-        p_owner.Combat.ParryStackChanged += OnParryStackChanged;
+        p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
     }
 
     protected override void SetupStats()
@@ -54,7 +53,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         base.SetupStats();
 
         p_nextState = null; // 다음 상태 초기화
-        p_isAttackActive = false;                       // 공격 활성 플래그 초기화
+        p_isAttackPerformed = false; // 상태 진입 시 플래그 초기화
         p_owner.Stamina.UseStamina(p_AttackConfig.Stamina.Value);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
@@ -72,7 +71,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed -= OnAttackPerformed;
         p_owner.Events.AttackFinished -= OnAttackFinished;
         p_owner.Events.ChangeNextCombatState -= OnChangeNextCombatState;
-        p_owner.Combat.ParryStackChanged -= OnParryStackChanged;
+        p_owner.Combat.CounterStackChanged -= OnCounterStackChanged;
         DOTween.Kill(this);
     }
 
@@ -84,8 +83,8 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.TriggerBufferInputEnded();           // 선입력 종료
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
         p_canChangeCombatState = false;
+        p_isAttackPerformed = false;                          // 플래그 초기화
         p_nextState = null;                                 // 다음 상태 null 처리
-        p_isAttackActive = false;
     }
     #endregion
 
@@ -131,7 +130,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             return;
         }
 
-        if (p_owner.Combat.ParryStacks <= 0)
+        if (p_owner.Combat.CounterStacks <= 0)
         {
             // 패리 스택이 없으면 일반 공격으로 대체
             OnNormalAttack();
@@ -234,7 +233,6 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackStarted()
     {
-        
         AttackStep();
     }
 
@@ -243,8 +241,8 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackPerformed()
     {
-        p_isAttackActive = true;
         p_owner.Combat.ExecuteAttack(p_AttackConfig);
+        p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
     }
 
     /// <summary>    
@@ -253,12 +251,31 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     protected virtual void OnAttackFinished()
     {
         // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
-        if (!p_isAttackActive)
+        if (!p_isAttackPerformed)
         {
             return;
         }
 
-        p_isAttackActive = false;
+        // 현재 재생 중인 애니메이션의 진행도(NormalizedTime) 체크
+        // 이전 애니메이션의 잔여 이벤트는 진행도가 매우 낮으므로 여기서 걸러짐
+        AnimatorStateInfo stateInfo;
+        if (p_animator.IsInTransition(0))
+        {
+            stateInfo = p_animator.GetNextAnimatorStateInfo(0);
+        }
+        else
+        {
+            stateInfo = p_animator.GetCurrentAnimatorStateInfo(0);
+        }
+
+        // 애니메이션이 최소 70% 이상 진행되지 않았다면 종료 이벤트로 인정하지 않음
+        if (stateInfo.normalizedTime < 0.7f)
+        {
+            Debug.Log("이전 공격 종료 이벤트 호출: " + stateInfo.normalizedTime);
+        }
+
+        p_canChangeCombatState = false;
+        p_isAttackPerformed = false;
 
         if (p_nextState != null)
         {
@@ -272,12 +289,6 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected virtual void OnChangeNextCombatState()
     {
-        // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
-        if (!p_isAttackActive)
-        {
-            return;
-        }
-
         p_canChangeCombatState = true;
 
         if (p_nextState == null)
@@ -292,7 +303,6 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         
         if (isAttackState || isDodgeState || isChargeState || isHeavyAttackState)
         {
-            p_isAttackActive = false;
             p_stateMachine.ChangeState(p_nextState);
         }
     }
@@ -322,12 +332,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this,true);
     }
 
-    private void OnParryStackChanged(int currentStack)
+    private void OnCounterStackChanged(int currentStack)
     {
         p_AttackConfig.Damage.RemoveAllModifiersFromSource("CounterStack");
 
         StatModifier NormalCounterModifier = new StatModifier(p_owner.RuntimeData.CounterStackDamageMultipliers[currentStack].Value,
-            StatModifierType.PercentAdd, $"CounterStack");
+            StatModifierType.PercentAdd, "CounterStack");
         p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
     }
 }

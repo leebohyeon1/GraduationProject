@@ -19,7 +19,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
 
         // 강공격 콤보 순서 증가 및 스택 소모
         p_owner.Combat.IncreaseHeavyAttackComboIndex();
-        p_owner.Combat.ConsumeParryStack();
+        p_owner.Combat.ConsumeCounterStack();
 
         base.SetupStats();
     }
@@ -72,7 +72,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
     protected override void OnHeavyAttack()
     {
         // 패리 스택이 남아있고 다음 콤보가 가능하면 강공격 지속
-        if (p_owner.Combat.ParryStacks > 0 && p_owner.Combat.CanHeavyAttack())
+        if (p_owner.Combat.CounterStacks > 0 && p_owner.Combat.CanHeavyAttack())
         {
             if (p_nextState != null) return;
             if (!p_owner.Stamina.CheckStamina()) return;
@@ -97,12 +97,12 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
     #region EventHandle
     protected override void OnAttackPerformed()
     {
-        p_isAttackActive = true;
-
         // 강공격 전용 데미지 계산 로직 사용
         p_owner.Combat.ExecuteAttackWithCustomDamage(p_AttackConfig, (baseDmg) => {
             return p_owner.Combat.CalculateHeavyAttackDamage(baseDmg);
         });
+
+        p_isAttackPerformed = true;
     }
     #endregion
 }

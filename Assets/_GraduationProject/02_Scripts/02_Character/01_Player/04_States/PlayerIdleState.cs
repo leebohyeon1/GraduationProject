@@ -110,7 +110,7 @@ public class PlayerIdleState : PlayerBaseState
         base.OnHeavyAttack();
 
         // 패리 스택이 1개 이상이면 강공격 상태로 전환
-        if (p_owner.Combat.ParryStacks > 0 && p_owner.Stamina.CheckStamina())
+        if (p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
         {
             p_stateMachine.ChangeState<PlayerHeavyAttackState>();
         }

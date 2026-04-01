@@ -35,7 +35,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 
         if(p_owner.Combat != null)
         {
-            p_owner.Combat.ParryStackChanged += OnParryStackChanged;
+            p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
         }
 
         // 이벤트 해제 구독 등록
@@ -59,6 +59,11 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         {
             p_owner.Health.TakeDamged -= OnTakeDamaged;
             p_owner.Health.OnHealthChanged -= OnHealthChanged;
+        }
+
+        if (p_owner.Combat != null)
+        {
+            p_owner.Combat.CounterStackChanged -= OnCounterStackChanged;
         }
 
         // 재생 중인 모든 피드백(DOTween) 중단
@@ -180,7 +185,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// 패리 스택 변경 이벤트
     /// </summary>
     /// <param name="obj">스택</param>
-    private void OnParryStackChanged(int obj)
+    private void OnCounterStackChanged(int obj)
     {
         ParryStackChangeFeedbacks[obj]?.Invoke();
     }

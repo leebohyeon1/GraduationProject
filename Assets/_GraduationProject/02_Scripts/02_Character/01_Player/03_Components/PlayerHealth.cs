@@ -18,16 +18,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private PlayerEvents _events; // 플레이어 이벤트
     private PlayerData _data;     // 런타임 데이터 (직접 참조)
 
-    [Header("Health Settings")]
-    [SerializeField] private float _damageReductionMultiplyRate; // 데미지 감소량
-
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트 (Previous, Current)
     public event Action OnDied; // 사망 이벤트
     public event Action<int> TakeDamged;
-
-    [Header("Shield")]
-    [SerializeField] private int _currentshieldAmount;   // 현재 보호막 양
-    public int CurrentShieldAmount => _currentshieldAmount;
 
     [Header("Stiffness")]
     [SerializeField] private int _currentStiffness; // 현재 경직도
@@ -97,24 +90,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
         damageData = damageContext.Data;
 
-        // 데미지 감소 적용
-        damageData.DamageAmount -= Mathf.RoundToInt(damageData.DamageAmount * _damageReductionMultiplyRate);
-
-        // 보호막 양만큼 데미지 감소
-        int shieldDamage = 0;
-        if(damageData.DamageAmount >= _currentshieldAmount)
-        {
-            shieldDamage = _currentshieldAmount;
-        }
-        else
-        {
-            shieldDamage = damageData.DamageAmount;    
-        }
-
-        // 실드 피해 만큼 데미지 양에서 제거
-        damageData.DamageAmount = Mathf.Max(damageData.DamageAmount - shieldDamage, 0); 
-        DecreaseShield(shieldDamage);               // 보호막 감소
-
         TakeDamged?.Invoke(damageData.DamageAmount);
         ChangeHealth(-damageData.DamageAmount);
 
@@ -167,43 +142,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         }
     }
 
-    #region DamageReduction Management
-    /// <summary>
-    /// 데미지 감소량 설정
-    /// </summary>
-    /// <param name="value">설정할 값</param>
-    public void SetDamageReductionMultiplyRate(float value)
-    {
-        _damageReductionMultiplyRate = value;
-    }
-
-    /// <summary>
-    /// 데미지 감소량 초기화
-    /// </summary>
-    public void ResetDamageReductionMultiplyRate()
-    {
-        SetDamageReductionMultiplyRate(0);
-    }
-
-    /// <summary>
-    /// 데미지 감소량 증가
-    /// </summary>
-    /// <param name="value">증가량</param>
-    public void IncreaseDamageReductionMultiplyRate(float value)
-    {
-        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate + value);
-    }
-
-    /// <summary>
-    /// 데미지 감소량 감소
-    /// </summary>
-    /// <param name="value">감소량</param>
-    public void DecreaseDamageReductionMultiplyRate(float value)
-    {
-        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate - value);
-    }
-    #endregion
-
     /// <summary>
     /// 사망 처리
     /// </summary>
@@ -212,34 +150,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         OnDied?.Invoke();
         gameObject.SetActive(false);
     }
-
-    //==========================================================================================================================
-    // Shiled ==================================================================================================================
-    //==========================================================================================================================
-
-    /// <summary>
-    /// 보호막 양 증가
-    /// </summary>
-    /// <param name="shieldAmount">보호막 양</param>
-    public void IncreaseShield(int  shieldAmount)
-    {
-        _currentshieldAmount += shieldAmount;
-    }
-
-    /// <summary>
-    /// 보호막 양 감소
-    /// </summary>
-    /// <param name="shieldAmount">보호막 양</param>
-    public void DecreaseShield(int shieldAmount)
-    {
-        _currentshieldAmount -= shieldAmount;
-
-        if(_currentshieldAmount <= 0)
-        {
-            _currentshieldAmount = 0;
-        }
-    }
-
 
     //==========================================================================================================================
     // Stiffness ===============================================================================================================

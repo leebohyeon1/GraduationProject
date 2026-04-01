@@ -75,27 +75,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
 
     [Header("Parry Stack")]
-    [SerializeField] private int _parryStacks = 0;
-    public int ParryStacks => _parryStacks;
-    public event Action<int> ParryStackChanged;
+    [SerializeField] private int _counterStacks = 0;
+    public int CounterStacks => _counterStacks;
+    public event Action<int> CounterStackChanged;
 
     [SerializeField] private float _parryStackTimer = 0f;
     public float ParryStackTimer => _parryStackTimer;
-
-    /// <summary>
-    /// 현재 패링 스택에 따른 데미지 배율을 반환합니다.
-    /// </summary>
-    public float ParryStackMultiplier;
-    //{
-    //    get
-    //    {
-    //        if (_data == null || _data.ParryStackDamageMultipliers == null || _data.ParryStackDamageMultipliers.Count == 0)
-    //            return 1f;
-
-    //        int index = Mathf.Clamp(_parryStacks, 0, _data.ParryStackDamageMultipliers.Count - 1);
-    //        return _data.ParryStackDamageMultipliers[index];
-    //    }
-    //}
 
 
     /// <summary>
@@ -118,7 +103,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         InitializeData(player.Data);
 
         // 패링 스택 초기화
-        _parryStacks = 0;
+        _counterStacks = 0;
         _parryStackTimer = 0f;
     }
 
@@ -127,15 +112,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private void Update()
     {
         // 패링 스택 타이머 관리
-        if (_parryStacks > 0)
+        if (_counterStacks > 0)
         {
             _parryStackTimer -= Time.deltaTime;
             if (_parryStackTimer <= 0)
             {
                 // 스택 1개 감소 및 타이머 재설정
-                _parryStacks--;
-                ParryStackChanged?.Invoke(_parryStacks);
-                if (_parryStacks > 0)
+                _counterStacks--;
+                CounterStackChanged?.Invoke(_counterStacks);
+                if (_counterStacks > 0)
                 {
                     _parryStackTimer = _data.CounterStackDuration.Value;
                 }
@@ -391,22 +376,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public bool CanHeavyAttack()
     {
         // 패리 스택이 1개 이상 있어야 함
-        return _parryStacks > 0;
+        return _counterStacks > 0;
     }
 
-    /// <summary>
-    /// 패리 스택 소모 (강공격 시 호출)
-    /// </summary>
-    public void ConsumeParryStack()
-    {
-        if (_parryStacks > 0)
-        {
-            _parryStacks--;
-            _heavyAttackConsumedStacks++;
-            _parryStackTimer = _parryStacks > 0 ? _data.CounterStackDuration.Value : 0f;
-            ParryStackChanged?.Invoke(_parryStacks);
-        }
-    }
 
     /// <summary>
     /// 강공격 전용 최종 데미지 계산 (소모 스택 배율 적용)
@@ -476,6 +448,28 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
+    /// 패리 스택 소모 (강공격 시 호출)
+    /// </summary>
+    public void ConsumeCounterStack()
+    {
+        if (_counterStacks > 0)
+        {
+            _counterStacks--;
+            _heavyAttackConsumedStacks++;
+            _parryStackTimer = _counterStacks > 0 ? _data.CounterStackDuration.Value : 0f;
+            CounterStackChanged?.Invoke(_counterStacks);
+        }
+    }
+
+    public void ResetCounterStack()
+    {
+        _counterStacks = 0;
+        _heavyAttackConsumedStacks = 0;
+        _parryStackTimer = 0f;
+        CounterStackChanged?.Invoke(_counterStacks);
+    }
+
+    /// <summary>
     /// 이미 적이 상쇄되었는지 체크
     /// </summary>
     /// <returns>있는지 여부</returns>
@@ -523,9 +517,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private void OnCounterSucceeded(Transform transform)
     {
         // 패링 스택 획득 및 타이머 초기화
-        _parryStacks = Mathf.Min(_parryStacks + 1, (int)_data.MaxCounterStack.Value);
+        _counterStacks = Mathf.Min(_counterStacks + 1, (int)_data.MaxCounterStack.Value);
         _parryStackTimer = _data.CounterStackDuration.Value;
-        ParryStackChanged?.Invoke(_parryStacks);
+        CounterStackChanged?.Invoke(_counterStacks);
     }
 
     /// <summary>

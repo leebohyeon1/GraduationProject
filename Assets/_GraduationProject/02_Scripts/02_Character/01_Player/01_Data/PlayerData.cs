@@ -45,6 +45,7 @@ public class PlayerData
     public Stat KnockDownDuration;
 
     [Header("Combat Configuration (Runtime Wrappers)")]
+    public Stat AttackSpeed;
     public List<RuntimeAttackConfig> NormalAttacks = new List<RuntimeAttackConfig>();   // 일반 공격 설정
     public List<RuntimeAttackConfig> HeavyAttacks = new List<RuntimeAttackConfig>();    // 강공격 설정
     
@@ -92,6 +93,8 @@ public class PlayerData
         KnockDownDuration = new Stat(() => _baseData.KnockDownDuration);
 
         // 2. 콤보 공격 데이터 래퍼 초기화 (개별 데미지 버프 가능)
+        AttackSpeed = new Stat(() => 1);
+
         NormalAttacks.Clear();
         foreach (var config in _baseData.NormalAttackConfigList)
         {

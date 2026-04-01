@@ -20,17 +20,17 @@ public class PlayerParryStackUI : PlayerUIBase
         base.Initialize(player);
 
         // 이벤트 구독
-        p_player.Combat.ParryStackChanged += UpdateStackDisplay;
+        p_player.Combat.CounterStackChanged += UpdateStackDisplay;
 
         // 초기 상태 설정
-        UpdateStackDisplay(p_player.Combat.ParryStacks);
+        UpdateStackDisplay(p_player.Combat.CounterStacks);
     }
 
     public override void Dispose()
     {
         if (p_player != null && p_player.Combat != null)
         {
-            p_player.Combat.ParryStackChanged -= UpdateStackDisplay;
+            p_player.Combat.CounterStackChanged -= UpdateStackDisplay;
         }
         base.Dispose();
     }

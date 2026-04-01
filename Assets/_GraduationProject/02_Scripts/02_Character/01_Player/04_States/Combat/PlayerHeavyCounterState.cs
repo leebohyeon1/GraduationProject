@@ -135,16 +135,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         }
     }
 
-    /// <summary>
-    /// 공격 판정이 발생하는 시점에 호출됩니다.
-    /// </summary>
-    protected override void OnAttackPerformed()
-    {
-        p_isAttackActive = true;
-
-        Collider[] colliders = p_owner.Combat.ExecuteAttack(_ChargeAttackConfig);
-    }
-
     private void OnChecekdProjectileCounter()
     {
         Vector3 attackCenter = p_owner.Combat.GetAttackCenter(_ChargeAttackConfig.BaseAttackConfig);

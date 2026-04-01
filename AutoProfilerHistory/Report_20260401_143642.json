@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-04-01 14:36:42",
+  "report": {
+    "health_score": 20,
+    "summary": "The game is experiencing severe performance bottlenecks, consistently dropping below 15 FPS with significant garbage collection overhead (600-750KB per frame). The primary culprits are an inefficient Behavior Tree implementation that clones nodes at runtime, excessive `Debug.Log` calls in critical paths, and unoptimized usage of the Astar Pathfinding Project, particularly its RVO and Character Controller movement integration. These issues combined lead to frequent CPU spikes and memory churn, resulting in a poor user experience.",
+    "bottlenecks": [
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll",
+        "line_number": 0,
+        "description": "Behavior Tree nodes (e.g., CompositeNode, Condition_BlackboardKeyCheck, Condition_BlackboardEnumKeyCheck) are being cloned or instantiated using `ScriptableObject.CreateInstance()` during runtime, specifically within `RunSubTreeNode.OnEnter()`. This leads to extremely high CPU overhead and significant GC allocations every time a sub-tree is entered or a new node state is evaluated, causing constant memory churn and frame rate spikes.",
+        "solution": "Refactor the Behavior Tree system to avoid runtime cloning or instantiation of nodes. Behavior Tree nodes should ideally be pre-allocated, reused, or designed as immutable data assets. If node-specific runtime data is required, consider using an object pool for state objects or decoupling runtime state from the ScriptableObject assets. Ensure `RunSubTreeNode.OnEnter()` (and similar methods) only reference existing nodes or manage their lifecycle efficiently without constant `new` or `CreateInstance` calls."
+      },
+      {
+        "severity": "High",
+        "target_file": "Assembly-CSharp.dll",
+        "line_number": 0,
+        "description": "The `UnityEngine.Debug.Log()` function is being called from within a performance-critical path, specifically `Condition_BlackboardFloatKeyCheck.CheckCondition()`. This contributes significantly to CPU spikes (3.35ms in Spike #2) and memory allocations, as logging operations involve string formatting, console I/O, and other expensive operations.",
+        "solution": "Remove or conditionally compile `Debug.Log` statements from all performance-critical code paths for release builds. Use `[Conditional(\"UNITY_EDITOR\")]` or `#if UNITY_EDITOR` preprocessor directives to ensure logging only occurs in development builds or the Unity Editor. For runtime debugging, implement a custom logging solution that can be toggled off or made asynchronous."
+      },
+      {
+        "severity": "Medium",
+        "target_file": "AstarPathfindingProject.dll",
+        "line_number": 0,
+        "description": "The Astar Pathfinding Project, particularly the `AIPath` component, `BatchedEvents.Update()`, `AIBase.OnUpdate()`, `MovementUpdate()`, `RVOController.CalculateMovementDelta()`, and `CharacterController.Move()` methods, are consistently consuming a large portion of CPU time (2-3ms per call stack across multiple spikes). This indicates that path recalculations, RVO simulation, and movement application for AI agents are a significant performance burden.",
+        "solution": "Optimize Astar Pathfinding settings and usage. Reduce `AIPath.RepathRate` and target update frequency if not every frame is necessary. Review RVO settings, potentially reducing the number of RVO agents, increasing `AgentRadius`, or adjusting simulation parameters. Consider decoupling `CharacterController.Move()` for less critical agents, or implementing a simpler movement system if full physics collision isn't strictly required, to reduce `Physics.SyncTransforms` overhead. Ensure that `SimulatorBurst.BlockUntilSimulationStepDone()` calls are minimized on the main thread if Burst integration is used."
+      },
+      {
+        "severity": "Medium",
+        "target_file": null,
+        "line_number": 0,
+        "description": "Consistently high GC allocations (ranging from 583.9KB to 754.2KB) per frame are present across all spikes. This memory churn indicates frequent object creations, which will inevitably trigger the garbage collector often, leading to noticeable hitches and stutters in gameplay.",
+        "solution": "Utilize Unity's Memory Profiler to identify specific sources of these allocations. Focus on eliminating common allocation patterns: avoid string concatenations in hot paths (use `StringBuilder`), reuse collections (e.g., `List<T>.Clear()` instead of `new List<T>()`), reduce boxing/unboxing, and minimize dynamic delegate allocations. Implement object pooling for frequently created objects. Cache references to Unity components and assets rather than repeatedly using methods like `GetComponent()` or `FindObjectOfType()`."
+      }
+    ]
+  }
+}
