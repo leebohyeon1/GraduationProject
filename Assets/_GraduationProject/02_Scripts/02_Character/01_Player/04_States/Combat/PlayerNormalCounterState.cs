@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerNormalCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.NormalCounterAttackConfig;
+    protected override IRuntimeAttackConfig p_AttackConfig => p_owner.Combat.NormalCounterAttackConfig;
 
     public PlayerNormalCounterState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
@@ -121,7 +121,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             { 
                 AttackerTransform = transform,
                 AttackType = AttackType.NormalCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage, 0),
+                DamageAmount = p_owner.Combat.CalculateCounterDamage((int)p_AttackConfig.Damage.Value, 0),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
@@ -160,7 +160,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     direction.Normalize();
 
                     DamageData damageData = projectile.Data;
-                    damageData.DamageAmount += p_AttackConfig.AttackDamage;
+                    damageData.DamageAmount += (int)p_AttackConfig.Damage.Value;
                     
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
 

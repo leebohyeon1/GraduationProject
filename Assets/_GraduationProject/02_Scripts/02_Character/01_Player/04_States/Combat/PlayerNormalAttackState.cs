@@ -10,7 +10,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
     public PlayerNormalAttackState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
 
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.NormalAttackConfigList[p_owner.Combat.NormalAttackComboIndex];
+    protected override IRuntimeAttackConfig p_AttackConfig => p_owner.Combat.NormalAttackConfigList[p_owner.Combat.NormalAttackComboIndex];
 
 
     #region Setup Function

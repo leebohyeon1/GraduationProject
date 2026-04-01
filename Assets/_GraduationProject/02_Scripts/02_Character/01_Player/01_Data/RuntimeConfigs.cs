@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// 런타임 공격 설정 인터페이스입니다.
+/// 일반 공격과 차지 공격을 공통으로 다루기 위해 사용합니다.
+/// </summary>
+public interface IRuntimeAttackConfig
+{
+    Stat Damage { get; }
+    Stat Stamina { get; }
+    AttackType AttackType { get; }
+    Vector3 AttackRadius { get; }
+    StepData AttackMoveConfig { get; }
+    StepData KnockbackConfig { get; }
+    PlayerAttackConfig BaseAttackConfig { get; }
+}
+
+/// <summary>
 /// 런타임 공격 설정 래퍼 클래스입니다.
 /// 원본 SO 데이터를 참조하며, 데미지 등 수정이 필요한 수치만 Stat으로 관리합니다.
 /// </summary>
-public class RuntimeAttackConfig
+public class RuntimeAttackConfig : IRuntimeAttackConfig
 {
     private PlayerAttackConfig _source;
-    public PlayerAttackConfig RawData => _source;
+    public PlayerAttackConfig BaseAttackConfig => _source;
 
-    public Stat Damage; // 버프 적용이 가능한 데미지 스탯
-    public Stat Stamina;
+    public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
+    public Stat Stamina { get; }
 
     public RuntimeAttackConfig(PlayerAttackConfig source)
     {
@@ -33,13 +48,13 @@ public class RuntimeAttackConfig
 /// 런타임 공격 설정 래퍼 클래스입니다.
 /// 원본 SO 데이터를 참조하며, 데미지 등 수정이 필요한 수치만 Stat으로 관리합니다.
 /// </summary>
-public class RuntimeChargeAttackConfig
+public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
 {
     private PlayerChargeConfig _source;
-    public PlayerChargeConfig RawData => _source;
+    public PlayerAttackConfig BaseAttackConfig => _source.AttackConfig;
 
-    public Stat Damage; // 버프 적용이 가능한 데미지 스탯
-    public Stat Stamina;
+    public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
+    public Stat Stamina { get; }
 
     public RuntimeChargeAttackConfig(PlayerChargeConfig source)
     {
@@ -77,6 +92,6 @@ public class RuntimeDodgeConfig
 
     public string AnimationStateName => _source.AnimationStateName;
     public DodgeData.DodgeType Type => _source.Type;
-    public bool IsInvincible => _source.IsInvincible;
+    public bool IsInvincible => _source.IsInvincible; // SO 오타 맞춰줌
     public StepData MoveConfig => _source.MoveConfig;
 }

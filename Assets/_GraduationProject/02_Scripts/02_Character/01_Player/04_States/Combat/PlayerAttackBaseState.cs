@@ -10,7 +10,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 {
     protected Type p_nextState; // 다음 전환될 상태
 
-    protected abstract PlayerAttackConfig p_AttackConfig { get; } // 현재 공격의 데이터
+    protected abstract IRuntimeAttackConfig p_AttackConfig { get; } // 현재 공격의 런타임 데이터
 
     protected bool p_canBufferInput => p_owner.InputHandler.CanBufferInput;
     protected bool p_canChangeCombatState = false;
@@ -54,7 +54,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
         p_nextState = null; // 다음 상태 초기화
         p_isAttackActive = false;                       // 공격 활성 플래그 초기화
-        p_owner.Stamina.UseStamina(p_AttackConfig.AttackStamina);       // 스테미나 사용
+        p_owner.Stamina.UseStamina(p_AttackConfig.Stamina.Value);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
         p_owner.Combat.TriggerBattleStateChanged(true);                 // 전투 상태 On  

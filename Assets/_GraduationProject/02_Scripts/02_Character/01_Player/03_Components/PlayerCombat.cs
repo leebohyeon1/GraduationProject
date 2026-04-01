@@ -32,6 +32,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     // 일반 공격 리스트
     public List<RuntimeAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttacks : new List<RuntimeAttackConfig>();
 
+    public float PlusNormalAttackSpeedMultiplier => 0f; // TODO: 스탯 시스템에 통합 필요시 Stat으로 변경
+
     [Header("HeavyAttack")]
     [SerializeField] private int _heavyAttackComboIndex = -1;
     public int HeavyAttackComboIndex => _heavyAttackComboIndex;
@@ -249,43 +251,43 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 공격을 실행합니다. (일반/차지 공격 등)
-    /// Physics.OverlapBox를 사용하여 박스 범위 내의 적을 감지합니다.
+    /// 공격의 중심 위치를 계산합니다. (IRuntimeAttackConfig 인터페이스 사용)
     /// </summary>
-    /// <param name="attackData">공격 데이터</param>
-    /// <returns>타격한 대상의 콜라이더 배열</returns>
-    public Collider[] ExecuteAttack(PlayerAttackConfig attackData)
+    /// <returns>공격 박스의 중심 위치</returns>
+    public Vector3 GetAttackCenter(IRuntimeAttackConfig attackData)
     {
-        Vector3 attackCenter = GetAttackCenter(attackData);
-        Vector3 halfExtents = attackData.AttackRadius / 2f;
+        return _attackPoint.position + _attackPoint.forward * (attackData.AttackRadius.z / 2);
+    }
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
-
-        if (hitEnemies.Length > 0)
-        {
-            ProcessHitEnemies(attackData, hitEnemies);
-        }
-        else
-        {
-            _onSwingMiss.Publish("OnSwingMiss");
-        }
-
-        return hitEnemies;
+    /// <summary>
+    /// 공격을 실행합니다. (IRuntimeAttackConfig 인터페이스 사용)
+    /// </summary>
+    public Collider[] ExecuteAttack(IRuntimeAttackConfig attackData)
+    {
+        return ExecuteAttackInternal(attackData, (int)attackData.Damage.Value);
     }
 
     /// <summary>
     /// 공격을 실행합니다. (커스텀 데미지 계산 지원)
     /// </summary>
-    public Collider[] ExecuteAttackWithCustomDamage(PlayerAttackConfig attackData, Func<int, int> damageCalculator)
+    public Collider[] ExecuteAttackWithCustomDamage(IRuntimeAttackConfig attackData, Func<int, int> damageCalculator)
     {
-        Vector3 attackCenter = GetAttackCenter(attackData);
-        Vector3 halfExtents = attackData.AttackRadius / 2f;
+        return ExecuteAttackInternal(attackData, (int)attackData.Damage.Value, damageCalculator);
+    }
+
+    /// <summary>
+    /// 내부 공격 실행 로직
+    /// </summary>
+    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, int runtimeDamage, Func<int, int> damageCalculator = null)
+    {
+        Vector3 attackCenter = GetAttackCenter(data);
+        Vector3 halfExtents = data.AttackRadius / 2f;
 
         Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
 
         if (hitEnemies.Length > 0)
         {
-            ProcessHitEnemies(attackData, hitEnemies, damageCalculator);
+            ProcessHitEnemiesInternal(data, runtimeDamage, hitEnemies, damageCalculator);
         }
         else
         {
@@ -296,11 +298,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 공격에 맞은 적들에게 데미지를 입힙니다.
+    /// 공격에 맞은 적들에게 데미지를 입힙니다. (내부용)
     /// </summary>
-    /// <param name="attackData">공격 데이터</param>
-    /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
-    private void ProcessHitEnemies(PlayerAttackConfig attackData, Collider[] hitObjects, Func<int, int> damageCalculator = null)
+    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, int runtimeDamage, Collider[] hitObjects, Func<int, int> damageCalculator = null)
     {
         foreach (Collider obj in hitObjects)
         {
@@ -312,17 +312,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
-                int finalDamage = (damageCalculator != null) ? damageCalculator(attackData.AttackDamage) : CalculateFinalDamage(attackData.AttackDamage);
+                int finalDamage = (damageCalculator != null) ? damageCalculator(runtimeDamage) : CalculateFinalDamage(runtimeDamage);
 
                 DamageData damage = new DamageData
                 {
                     AttackerTransform = transform,
-                    AttackType = attackData.AttackType,
+                    AttackType = data.AttackType,
                     DamageAmount = finalDamage,
                     StiffnessAmount = 0,
-                    KnockbackCurve = attackData.KnockbackConfig.StepCurve,
-                    KnockbackDuration = attackData.KnockbackConfig.StepDuration,
-                    KnockbackForce = attackData.KnockbackConfig.StepDistance,
+                    KnockbackCurve = data.KnockbackConfig.StepCurve,
+                    KnockbackDuration = data.KnockbackConfig.StepDuration,
+                    KnockbackForce = data.KnockbackConfig.StepDistance,
                 };
 
                 Attack(damageable, damage);
@@ -358,13 +358,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
+    /// 최종 데미지를 계산합니다. (카운터 데미지 배율 적용)
     /// </summary>
-    /// <param name="baseDamage">기본 데미지</param>
-    /// <returns>최종 데미지</returns>
-    public int CalculateFinalDamage(int baseDamage, int chargeLevel)
-    {        
-        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier * CounterDamageMultiply[chargeLevel]);
+    public int CalculateCounterDamage(int baseDamage, int counterIndex)
+    {
+        if (CounterDamageMultiply == null || counterIndex >= CounterDamageMultiply.Count)
+            return CalculateFinalDamage(baseDamage);
+
+        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier * CounterDamageMultiply[counterIndex]);
     }
 
     #endregion
@@ -605,7 +606,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         {
             foreach (var attackData in _data.NormalAttacks)
             {
-                Gizmos.DrawWireCube(GetAttackCenter(attackData.RawData), attackData.AttackRadius);
+                Gizmos.DrawWireCube(GetAttackCenter(attackData), attackData.AttackRadius);
             }
         }
     }

@@ -8,7 +8,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
     public PlayerHeavyAttackState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
 
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyAttackConfigList[p_owner.Combat.HeavyAttackComboIndex 
+    protected override IRuntimeAttackConfig p_AttackConfig => p_owner.Combat.HeavyAttackConfigList[p_owner.Combat.HeavyAttackComboIndex 
                                                                                                     % p_owner.Combat.HeavyAttackConfigList.Count];
 
     #region Setup Function

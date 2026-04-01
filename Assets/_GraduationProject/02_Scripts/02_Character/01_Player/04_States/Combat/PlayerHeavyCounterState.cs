@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeavyCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyCounterAttackConfig.RawData.AttackConfig;
+    protected override IRuntimeAttackConfig p_AttackConfig => _ChargeAttackConfig;
 
     private RuntimeChargeAttackConfig _ChargeAttackConfig => p_owner.Combat.HeavyCounterAttackConfig;
 
@@ -24,7 +24,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     protected override void SetupStats()
     {
         base.SetupStats();
-
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
     }
@@ -115,7 +114,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             {
                 AttackerTransform = transform,
                 AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)_ChargeAttackConfig.Damage.Value, 1),
+                DamageAmount = p_owner.Combat.CalculateCounterDamage((int)_ChargeAttackConfig.Damage.Value, 1),
                 StiffnessAmount = 0,
                 KnockbackCurve = _ChargeAttackConfig.KnockbackConfig.StepCurve,
                 KnockbackDuration = _ChargeAttackConfig.KnockbackConfig.StepDuration,
@@ -139,8 +138,8 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
     private void OnChecekdProjectileCounter()
     {
-        Vector3 attackCenter = p_owner.Combat.GetAttackCenter(p_AttackConfig);
-        Vector3 halfExtents = p_AttackConfig.AttackRadius / 2f;
+        Vector3 attackCenter = p_owner.Combat.GetAttackCenter(_ChargeAttackConfig.BaseAttackConfig);
+        Vector3 halfExtents = _ChargeAttackConfig.AttackRadius / 2f;
 
         Collider[] hitObjects = Physics.OverlapBox(attackCenter, halfExtents, p_owner.transform.rotation, p_owner.Data.AttackLayerMask);
 
@@ -155,7 +154,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                     direction.Normalize();
 
                     DamageData damageData = projectile.Data;
-                    damageData.DamageAmount += p_AttackConfig.AttackDamage;
+                    damageData.DamageAmount += (int)_ChargeAttackConfig.Damage.Value;
 
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.IsCharge ? 1 : 0];
 
