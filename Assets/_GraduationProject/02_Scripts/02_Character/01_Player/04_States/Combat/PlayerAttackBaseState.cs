@@ -289,6 +289,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected virtual void OnChangeNextCombatState()
     {
+        if (!p_isAttackPerformed)
+        {
+            return;
+        }
+
         p_canChangeCombatState = true;
 
         if (p_nextState == null)
