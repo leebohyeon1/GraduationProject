@@ -14,13 +14,17 @@ public class PlayerData
     public PlayerDataSO BaseData => _baseData;
 
     [Header("Basic Info")]
-    public int Money;
-    public int SpecialMoney;
+    public int Money;               // 현재 재화
+    public int SpecialMoney;        // 현재 특수 재화
     
-    [Header("Current State")]
-    public int CurrentHealth;
-    public float CurrentStamina;
-    public int CurrentPotion;
+    public int CurrentHealth;       // 현재 체력
+    public float CurrentStamina;    // 현재 스테미나
+    public int CurrentPotion;       // 현재 포션 수
+
+    public Vector3 LastPosition;    // 마지막 위치
+    public Vector3 RespawnPostion;  // 리스폰 위치
+
+    public List<string> AcquiredAbilityIds = new List<string>();    // 획득한 능력 ID 리스트
 
     [Header("Runtime Stats (Global 버프 적용용)")]
     public Stat Health;
@@ -38,33 +42,19 @@ public class PlayerData
     public Stat ChargeMoveSpeed;
     public Stat ChargeRotateSpeed;
 
+    public Stat KnockDownDuration;
+
     [Header("Combat Configuration (Runtime Wrappers)")]
-    public List<RuntimeAttackConfig> NormalAttacks = new List<RuntimeAttackConfig>();
-    public List<RuntimeAttackConfig> HeavyAttacks = new List<RuntimeAttackConfig>();
-    public RuntimeAttackConfig NormalCounterAttack;
-    public RuntimeChargeAttackConfig HeavyCounterAttack;
+    public List<RuntimeAttackConfig> NormalAttacks = new List<RuntimeAttackConfig>();   // 일반 공격 설정
+    public List<RuntimeAttackConfig> HeavyAttacks = new List<RuntimeAttackConfig>();    // 강공격 설정
+    
+    public RuntimeAttackConfig NormalCounterAttack;         // 일반 상쇄 설정
+    public Stat ChargeStamina;                              // 차징 공격 시 소모하는 스테미나
+    public Stat MaxChargeTime;                              // 최대 차징 시간
+    public RuntimeChargeAttackConfig HeavyCounterAttack;    // 차징 상쇄 설정
+
     public RuntimeDodgeConfig RuntimeDodge;
-    
-    // 복사 불가능하거나 단순 참조할 값들
-    public List<float> ParryStackDamageMultipliers;
-    public string CurrentSpecialAttackId;
-    public float ChargeStamina;
-    public float MaxChargeTime;
-    public float CounterAngle;
-    public List<float> CounterDamageMultiply;
-    public List<float> ProjectileCounterAddedVelocity;
 
-
-    
-    [Header("Status Config")]
-    public float KnockDownDuration;
-    
-    [Header("Position")]
-    public Vector3 LastPosition;
-    public Vector3 RespawnPostion;
-
-    [Header("Abilities")]
-    public List<string> AcquiredAbilityIds = new List<string>();
 
     public PlayerData()
     {
@@ -95,6 +85,8 @@ public class PlayerData
         ChargeMoveSpeed = new Stat(() => _baseData.ChargeMoveSpeed);
         ChargeRotateSpeed = new Stat(() => _baseData.ChargeRotateSpeed);
 
+        KnockDownDuration = new Stat(() => _baseData.KnockDownDuration);
+
         // 2. 콤보 공격 데이터 래퍼 초기화 (개별 데미지 버프 가능)
         NormalAttacks.Clear();
         foreach (var config in _baseData.NormalAttackConfigList)
@@ -107,7 +99,10 @@ public class PlayerData
         {
             HeavyAttacks.Add(new RuntimeAttackConfig(config));
         }
+
         NormalCounterAttack = new RuntimeAttackConfig(_baseData.NormalCounterAttackConfig);
+        ChargeStamina = new Stat(() => _baseData.ChargeStamina);
+        MaxChargeTime = new Stat(() => _baseData.MaxChargeTime); 
         HeavyCounterAttack = new RuntimeChargeAttackConfig(_baseData.HeavyCounterAttackConfig);
 
         RuntimeDodge = new RuntimeDodgeConfig(_baseData.DodgeConfig);
@@ -117,13 +112,5 @@ public class PlayerData
         CurrentStamina = Stamina.Value;
 
         CurrentPotion = (int)Potion.Value;
-        ParryStackDamageMultipliers = new List<float>(so.ParryStackDamageMultipliers);
-        CurrentSpecialAttackId = "";
-        ChargeStamina = so.ChargeStamina;
-        MaxChargeTime = so.MaxChargeTime;
-        CounterAngle = so.CounterAngle;
-        KnockDownDuration = so.KnockDownDuration;
-        CounterDamageMultiply = new List<float>(so.CounterDamageMultiply);
-        ProjectileCounterAddedVelocity = new List<float>(so.ProjectileCounterAddedVelocity);
     }
 }

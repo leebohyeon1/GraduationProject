@@ -10,7 +10,6 @@ public class PlayerParryStackUI : PlayerUIBase
 {
     [Header("UI Elements")]
     [SerializeField] private List<Image> _stackIcons;       // 스택 아이콘 (최대 3개)
-    [SerializeField] private TextMeshProUGUI _multiplierText; // 데미지 배율 텍스트
 
     [Header("Settings")]
     [SerializeField] private Color _activeColor = Color.white;
@@ -34,22 +33,6 @@ public class PlayerParryStackUI : PlayerUIBase
             p_player.Combat.ParryStackChanged -= UpdateStackDisplay;
         }
         base.Dispose();
-    }
-
-    private void Update()
-    {
-        if (p_player == null)
-        {
-            return;
-        }
-
-        // 데미지 배율 텍스트 갱신 (실시간 데이터 반영)
-        if (_multiplierText != null)
-        {
-            float multiplier = p_player.Combat.ParryStackMultiplier;
-            _multiplierText.text = $"x{multiplier:F1}";
-            _multiplierText.gameObject.SetActive(p_player.Combat.ParryStacks > 0);
-        }
     }
 
     /// <summary>

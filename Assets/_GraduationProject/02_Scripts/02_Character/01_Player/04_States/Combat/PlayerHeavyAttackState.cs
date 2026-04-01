@@ -100,7 +100,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
         p_isAttackActive = true;
 
         // 강공격 전용 데미지 계산 로직 사용
-        Collider[] hitEnemies = p_owner.Combat.ExecuteAttackWithCustomDamage(p_AttackConfig, (baseDmg) => {
+        p_owner.Combat.ExecuteAttackWithCustomDamage(p_AttackConfig, (baseDmg) => {
             return p_owner.Combat.CalculateHeavyAttackDamage(baseDmg);
         });
     }

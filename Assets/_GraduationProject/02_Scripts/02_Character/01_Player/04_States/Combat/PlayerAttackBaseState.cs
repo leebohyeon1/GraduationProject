@@ -46,6 +46,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed += OnAttackPerformed;
         p_owner.Events.AttackFinished += OnAttackFinished;
         p_owner.Events.ChangeNextCombatState += OnChangeNextCombatState;
+        p_owner.Combat.ParryStackChanged += OnParryStackChanged;
     }
 
     protected override void SetupStats()
@@ -71,6 +72,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed -= OnAttackPerformed;
         p_owner.Events.AttackFinished -= OnAttackFinished;
         p_owner.Events.ChangeNextCombatState -= OnChangeNextCombatState;
+        p_owner.Combat.ParryStackChanged -= OnParryStackChanged;
         DOTween.Kill(this);
     }
 
@@ -320,4 +322,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this,true);
     }
 
+    private void OnParryStackChanged(int currentStack)
+    {
+        p_AttackConfig.Damage.RemoveAllModifiersFromSource("CounterStack");
+
+        StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.ParryStackDamageMultipliers[currentStack],
+            StatModifierType.PercentAdd, $"CounterStack");
+        p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
+    }
 }

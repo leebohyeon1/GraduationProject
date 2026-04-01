@@ -110,19 +110,22 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
+            StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[1], StatModifierType.PercentAdd, "HeavyCounter");
+            p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
+
             DamageData damage = new DamageData
             {
                 AttackerTransform = transform,
                 AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_owner.Combat.CalculateCounterDamage((int)_ChargeAttackConfig.Damage.Value, 1),
+                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)_ChargeAttackConfig.Damage.Value),
                 StiffnessAmount = 0,
                 KnockbackCurve = _ChargeAttackConfig.KnockbackConfig.StepCurve,
                 KnockbackDuration = _ChargeAttackConfig.KnockbackConfig.StepDuration,
                 KnockbackForce = _ChargeAttackConfig.KnockbackConfig.StepDistance,
             };
-
-            Debug.Log("강패링 데미지: " + damage.DamageAmount);
             p_owner.Combat.Attack(damageable, damage);
+
+            p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
         }
     }
 

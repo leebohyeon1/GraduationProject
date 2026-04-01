@@ -43,9 +43,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Charge")]
     // 차지 스테미나
-    public float ChargeStamina => _data != null ? _data.ChargeStamina : 5f;
+    public float ChargeStamina => _data != null ? _data.ChargeStamina.Value : 5f;
     // 최대 차지 시간
-    public float MaxChargeTime => _data != null ? _data.MaxChargeTime : 5f;
+    public float MaxChargeTime => _data != null ? _data.MaxChargeTime.Value : 5f;
 
     [SerializeField] private bool _isCharge = false;      // 차지 여부
     public bool IsCharge => _isCharge;
@@ -53,10 +53,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [Header("Counter")]
     public RuntimeAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttack;
     public RuntimeChargeAttackConfig HeavyCounterAttackConfig => _data.HeavyCounterAttack;
-    public List<float> CounterDamageMultiply => _data.CounterDamageMultiply;
-    public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
+    public List<float> ProjectileCounterAddedVelocity => _data.BaseData.ProjectileCounterAddedVelocity;
 
-    public float CounterAngle => _data != null ? _data.CounterAngle : 120;   // 상쇄 가능 각도
+    public float CounterAngle => _data != null ? _data.BaseData.CounterAngle : 120;   // 상쇄 가능 각도
 
     [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
     [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
@@ -89,17 +88,17 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <summary>
     /// 현재 패링 스택에 따른 데미지 배율을 반환합니다.
     /// </summary>
-    public float ParryStackMultiplier
-    {
-        get
-        {
-            if (_data == null || _data.ParryStackDamageMultipliers == null || _data.ParryStackDamageMultipliers.Count == 0)
-                return 1f;
+    public float ParryStackMultiplier;
+    //{
+    //    get
+    //    {
+    //        if (_data == null || _data.ParryStackDamageMultipliers == null || _data.ParryStackDamageMultipliers.Count == 0)
+    //            return 1f;
 
-            int index = Mathf.Clamp(_parryStacks, 0, _data.ParryStackDamageMultipliers.Count - 1);
-            return _data.ParryStackDamageMultipliers[index];
-        }
-    }
+    //        int index = Mathf.Clamp(_parryStacks, 0, _data.ParryStackDamageMultipliers.Count - 1);
+    //        return _data.ParryStackDamageMultipliers[index];
+    //    }
+    //}
 
 
     /// <summary>
@@ -173,13 +172,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private void InitializeData(PlayerDataSO data)
     {
         _attackLayerMask = data.AttackLayerMask;
-
-        if (_data != null)
-        {
-            if (_data.ChargeStamina == 0) { _data.ChargeStamina = data.ChargeStamina; }
-            if (_data.MaxChargeTime == 0) {_data.MaxChargeTime = data.MaxChargeTime;}
-            if (_data.CounterAngle == 0) { _data.CounterAngle = data.CounterAngle; }
-        }
     }
 
     //==========================================================================================================================
@@ -353,19 +345,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <returns>최종 데미지</returns>
     public int CalculateFinalDamage(int baseDamage)
     {
-        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier);
+        return Mathf.RoundToInt(baseDamage);
 
-    }
-
-    /// <summary>
-    /// 최종 데미지를 계산합니다. (카운터 데미지 배율 적용)
-    /// </summary>
-    public int CalculateCounterDamage(int baseDamage, int counterIndex)
-    {
-        if (CounterDamageMultiply == null || counterIndex >= CounterDamageMultiply.Count)
-            return CalculateFinalDamage(baseDamage);
-
-        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier * CounterDamageMultiply[counterIndex]);
     }
 
     #endregion
@@ -449,7 +430,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         // 1타: base * stackMultiplier
         // 2타 이상: base * stackMultiplier * consumedStacks
         int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage);
-        float damage = modifiedBase * ParryStackMultiplier;
+        float damage = modifiedBase;
         
         if (_heavyAttackComboIndex > 0)
         {
@@ -497,7 +478,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="enemy">카운터된 적</param>
     public void AddCounterEnemy(IParryable enemy)
     {
-        Debug.Log(111);
         _counterEnemySet.Add(enemy);
     }
 
@@ -506,7 +486,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void ClearCounterEnemySet()
     {
-        Debug.Log(222);
         _counterEnemySet.Clear();   
     }
 
@@ -557,7 +536,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     private void OnCounterSucceeded(Transform transform)
     {
-            // 패링 스택 획득 및 타이머 초기화
+        // 패링 스택 획득 및 타이머 초기화
         _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
         _parryStackTimer = PARRY_STACK_DURATION;
         ParryStackChanged?.Invoke(_parryStacks);

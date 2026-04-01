@@ -117,29 +117,23 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
+            StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
+            p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
+            
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
                 AttackType = AttackType.NormalCounter,
-                DamageAmount = p_owner.Combat.CalculateCounterDamage((int)p_AttackConfig.Damage.Value, 0),
+                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)p_AttackConfig.Damage.Value),
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
                 KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
             };
-
             p_owner.Combat.Attack(damageable, damage);
+
+            p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
         }
-    }
-
-    /// <summary>
-    /// 공격 판정이 발생하는 시점에 호출됩니다.
-    /// </summary>
-    protected override void OnAttackPerformed()
-    {
-        p_isAttackActive = true;
-
-        Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
     }
 
     private void OnChecekdProjectileCounter()
@@ -172,5 +166,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             }
         }
     }
+
     #endregion
 }
