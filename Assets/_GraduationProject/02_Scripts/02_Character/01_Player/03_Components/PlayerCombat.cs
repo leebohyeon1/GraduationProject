@@ -82,8 +82,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [SerializeField] private float _parryStackTimer = 0f;
     public float ParryStackTimer => _parryStackTimer;
-    private const int MAX_PARRY_STACKS = 3;
-    private const float PARRY_STACK_DURATION = 30f;
 
     /// <summary>
     /// 현재 패링 스택에 따른 데미지 배율을 반환합니다.
@@ -140,7 +138,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 ParryStackChanged?.Invoke(_parryStacks);
                 if (_parryStacks > 0)
                 {
-                    _parryStackTimer = PARRY_STACK_DURATION;
+                    _parryStackTimer = _data.CounterStackDuration.Value;
                 }
             }
         }
@@ -417,7 +415,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         {
             _parryStacks--;
             _heavyAttackConsumedStacks++;
-            _parryStackTimer = _parryStacks > 0 ? PARRY_STACK_DURATION : 0f;
+            _parryStackTimer = _parryStacks > 0 ? _data.CounterStackDuration.Value : 0f;
             ParryStackChanged?.Invoke(_parryStacks);
         }
     }
@@ -537,8 +535,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     private void OnCounterSucceeded(Transform transform)
     {
         // 패링 스택 획득 및 타이머 초기화
-        _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
-        _parryStackTimer = PARRY_STACK_DURATION;
+        _parryStacks = Mathf.Min(_parryStacks + 1, (int)_data.MaxCounterStack.Value);
+        _parryStackTimer = _data.CounterStackDuration.Value;
         ParryStackChanged?.Invoke(_parryStacks);
     }
 

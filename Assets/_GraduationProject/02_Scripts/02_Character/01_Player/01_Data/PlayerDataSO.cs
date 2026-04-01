@@ -50,13 +50,15 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("Counter")]
     public float CounterAngle;
-    public List<float> ParryStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
+    public List<float> CounterStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
     public StepData CounterKnockbackConfig; // 카운터 성공 시 넉백 설정
     public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
     public PlayerChargeConfig HeavyCounterAttackConfig;   // 차징 카운터 공격 설정
     public List<float> CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity;  // 투사체 카운터 시 투사체에 적용하는 추가 이동속도
- 
+    public int MaxCounterStack = 3;             // 최대 카운터 스택 수 
+    public float CounterStackDuration = 30f;    // 카운터 스택 지속 시간
+
 
     [Header("KnockDown")]
     public float KnockDownDuration = 10;    // 기절 지속시간

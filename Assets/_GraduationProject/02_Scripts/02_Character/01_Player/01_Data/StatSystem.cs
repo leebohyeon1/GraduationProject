@@ -10,6 +10,14 @@ public enum StatModifierType
 }
 
 [Serializable]
+public struct StatModifierConfig
+{
+    public float Amount;
+    public StatModifierType Type;
+}
+
+
+[Serializable]
 public class StatModifier
 {
     public float Value;
@@ -22,15 +30,21 @@ public class StatModifier
         Type = type;
         Source = source;
     }
+
+    public StatModifier(StatModifierConfig changeConfig, object source = null)
+    {
+        Value = changeConfig.Amount;
+        Type = changeConfig.Type;
+        Source = source;
+    }
 }
 
 [Serializable]
 public class Stat
 {
-    private Func<float> _baseValueProvider; 
-    public float BaseOffset;               
+    private Func<float> _baseValueProvider;    
 
-    public float BaseValue => (_baseValueProvider?.Invoke() ?? 0) + BaseOffset;
+    public float BaseValue => (_baseValueProvider?.Invoke() ?? 0);
 
     private readonly List<StatModifier> _modifiers = new List<StatModifier>();
     public IReadOnlyList<StatModifier> Modifiers => _modifiers.AsReadOnly();

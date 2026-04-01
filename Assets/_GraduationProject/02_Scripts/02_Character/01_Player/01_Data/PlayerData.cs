@@ -53,6 +53,10 @@ public class PlayerData
     public Stat MaxChargeTime;                              // 최대 차징 시간
     public RuntimeChargeAttackConfig HeavyCounterAttack;    // 차징 상쇄 설정
 
+    public Stat MaxCounterStack;             // 최대 카운터 스택 수 
+    public List<Stat> CounterStackDamageMultipliers = new List<Stat>(); // 카운터 스택당 데미지 배율 증가량
+    public Stat CounterStackDuration;    // 카운터 스택 지속 시간
+
     public RuntimeDodgeConfig RuntimeDodge;
 
 
@@ -104,6 +108,15 @@ public class PlayerData
         ChargeStamina = new Stat(() => _baseData.ChargeStamina);
         MaxChargeTime = new Stat(() => _baseData.MaxChargeTime); 
         HeavyCounterAttack = new RuntimeChargeAttackConfig(_baseData.HeavyCounterAttackConfig);
+        
+        MaxCounterStack = new Stat(() => _baseData.MaxCounterStack);
+        CounterStackDamageMultipliers.Clear();
+        foreach (var config in _baseData.CounterStackDamageMultipliers)
+        {
+            CounterStackDamageMultipliers.Add(new Stat(() => config));
+        }
+        CounterStackDuration = new Stat(() => _baseData.CounterStackDuration);
+
 
         RuntimeDodge = new RuntimeDodgeConfig(_baseData.DodgeConfig);
 

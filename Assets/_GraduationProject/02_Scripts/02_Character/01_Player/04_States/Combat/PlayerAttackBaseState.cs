@@ -326,7 +326,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     {
         p_AttackConfig.Damage.RemoveAllModifiersFromSource("CounterStack");
 
-        StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.ParryStackDamageMultipliers[currentStack],
+        StatModifier NormalCounterModifier = new StatModifier(p_owner.RuntimeData.CounterStackDamageMultipliers[currentStack].Value,
             StatModifierType.PercentAdd, $"CounterStack");
         p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
     }
