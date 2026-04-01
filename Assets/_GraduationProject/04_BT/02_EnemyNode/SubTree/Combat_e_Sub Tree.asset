@@ -18,8 +18,9 @@ MonoBehaviour:
   transitionBuffer: 1
   maxNodeDuration: 6
   maintainAtk: 0
-  SO: []
-  LoopAttack: 0
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
+  LoopAttack: 1
   NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 0
@@ -29,6 +30,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
   rushSpeed: 15
   hitRadius: 3
   overshootDist: 3
@@ -36,7 +40,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   rushDuration: 1
-  PushDistance: 10
+  PushDistance: 7
   AttackDataKnockback:
     AttackerTransform: {fileID: 0}
     AttackType: 2
@@ -69,7 +73,7 @@ MonoBehaviour:
     KnockbackDuration: 1
     KnockbackForce: 8
     IsMagic: 0
-  maxTriggerRange: 10
+  maxTriggerRange: 7
 --- !u!114 &-8069466620819224126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_SlamAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1014, y: 906}
+  position: {x: 1005, y: 906}
   attackKey: Attack03_e
   animationStateName: 
   transitionBuffer: 1
@@ -118,6 +122,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &-7917068014566437409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 719, y: -420}
+  position: {x: 720, y: -415}
   exceptCondition:
     key: 
   skillName: totalAttack
@@ -260,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1014, y: 829}
+  position: {x: 1005, y: 829}
   exceptCondition:
     key: 
   target: {fileID: 0}
@@ -279,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1013, y: 674}
+  position: {x: 1005, y: 675}
   exceptCondition:
     key: 
   stateCondition:
@@ -298,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1013, y: 752}
+  position: {x: 1005, y: 752}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -548,6 +555,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0
