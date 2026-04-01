@@ -22,7 +22,6 @@ public class HomingProjectile : MonoBehaviour
     private Enemy _enemy;
     // 초기화 함수 (전략 스크립트에서 호출)
 
-    [SerializeField] private float FeedbackDelay = 0.1f; // 피드백 딜레이 (예: 폭발 효과)
     [SerializeField] private string feedbackname = "null"; // 피격 효과 프리팹
     public void Initialize(Transform target, DamageData damage, LayerMask obstacleMask, Enemy enemy,
                            float duration, float startSpd, float accel, float maxSpd, float turnForce, float straightSpd)
