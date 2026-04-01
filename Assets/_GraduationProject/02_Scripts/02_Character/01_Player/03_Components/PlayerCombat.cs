@@ -23,18 +23,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     [Header("Attack")]
     [SerializeField] private LayerMask _attackLayerMask;
     // 공격 회복 비율
-    public float AttackRegainRate => _data != null ? _data.Regain : 0f;
-    // 공격력 배율
-    public float AttackDamageMultiplier => _data != null ? _data.AttackDamage.Value : 0f;
+    public float AttackRegainRate => _data != null ? _data.Regain.Value : 0f;
 
     [Header("NormalAttack")]
     [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
     public int NormalAttackComboIndex => _normalAttackComboIndex;
 
-    // 최대 공속 속도 배율
-    public float MaxNormalAttackSpeedMultiplier => _data != null ? _data.MaxNormalAttackSpeedMultiplier : 1.0f;
-    // 추가 공속 속도 배율
-    public float PlusNormalAttackSpeedMultiplier => _data != null ? _data.PlusNormalAttackSpeedMultiplier : 0f;
     // 일반 공격 리스트
     public List<RuntimeAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttacks : new List<RuntimeAttackConfig>();
 
@@ -56,7 +50,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Counter")]
     public RuntimeAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttack;
-    public PlayerChargeConfig HeavyCounterAttackConfig => _data.HeavyCounterAttackConfig;
+    public RuntimeChargeAttackConfig HeavyCounterAttackConfig => _data.HeavyCounterAttack;
     public List<float> CounterDamageMultiply => _data.CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
 
@@ -125,13 +119,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         InitializeData(player.Data);
 
-        // 데이터 초기화 (런타임 데이터가 비어있을 경우 SO에서 가져옴)
-        if (_data != null)
-        {
-            if (_data.MaxNormalAttackSpeedMultiplier == 0)
-                _data.MaxNormalAttackSpeedMultiplier = player.Data.MaxNormalAttackSpeedMultiplier;
-        }
-
         // 패링 스택 초기화
         _parryStacks = 0;
         _parryStackTimer = 0f;
@@ -190,35 +177,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             if (_data.ChargeStamina == 0) { _data.ChargeStamina = data.ChargeStamina; }
             if (_data.MaxChargeTime == 0) {_data.MaxChargeTime = data.MaxChargeTime;}
             if (_data.CounterAngle == 0) { _data.CounterAngle = data.CounterAngle; }
-
-            // Sync Configs
-            if (_data.NormalAttackConfigList.Count == 0)
-            {
-                _data.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
-            }
-
-            if (_data.CounterDamageMultiply.Count == 0)
-            {
-                _data.CounterDamageMultiply.AddRange(data.CounterDamageMultiply);
-            }
-
-            if (_data.ProjectileCounterAddedVelocity.Count == 0)
-            {
-                _data.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
-            }
-
-            // Check if default (assuming damage 0 is invalid/uninitialized)
-
-            if (_data.HeavyCounterAttackConfig.AttackConfig.AttackDamage == 0)
-            {
-                _data.HeavyCounterAttackConfig = data.HeavyCounterAttackConfig;
-            }
-
-            if (_data.NormalCounterAttackConfig.AttackDamage == 0)
-            {
-                _data.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
-            }
-
         }
     }
 
@@ -362,9 +320,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                     AttackType = attackData.AttackType,
                     DamageAmount = finalDamage,
                     StiffnessAmount = 0,
-                    KnockbackCurve = attackData.KnockbackCofig.StepCurve,
-                    KnockbackDuration = attackData.KnockbackCofig.StepDuration,
-                    KnockbackForce = attackData.KnockbackCofig.StepDistance,
+                    KnockbackCurve = attackData.KnockbackConfig.StepCurve,
+                    KnockbackDuration = attackData.KnockbackConfig.StepDuration,
+                    KnockbackForce = attackData.KnockbackConfig.StepDistance,
                 };
 
                 Attack(damageable, damage);
@@ -389,50 +347,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     }
 
     /// <summary>
-    /// 공격 흡혈 비율 증가
-    /// </summary>
-    /// <param name="amount">증가량</param>
-    public void IncreaseAttackRegainRate(float amount)
-    {
-        _data.Regain.BaseOffset += amount;
-    }
-
-    /// <summary>
-    /// 공격 흡혈 비율 감소
-    /// </summary>
-    /// <param name="amount">감소량</param>
-    public void DecreaseAttackRegainRate(float amount)
-    {
-        _data.Regain.BaseOffset = Mathf.Max(_data.Regain.BaseOffset - amount, 0);
-    }
-
-    /// <summary>
-    /// 공격력 배율 증가 함수
-    /// </summary>
-    /// <param name="amount">증가 배율</param>
-    public void IncreaseAttackDamageMultiplier(float amount)
-    {
-        _data.AttackDamage.BaseOffset += amount;
-    }
-
-    /// <summary>
-    /// 공격력 배율 감소 함수
-    /// </summary>
-    /// <param name="amount">감소 배울</param>
-    public void DecreaseAttackDamageMultiplier(float amount)
-    {
-        _data.AttackDamage.BaseOffset -= amount;
-    }
-
-    /// <summary>
     /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
     /// </summary>
     /// <param name="baseDamage">기본 데미지</param>
     /// <returns>최종 데미지</returns>
     public int CalculateFinalDamage(int baseDamage)
     {
-        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
-        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier);
+        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier);
 
     }
 
@@ -443,8 +364,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <returns>최종 데미지</returns>
     public int CalculateFinalDamage(int baseDamage, int chargeLevel)
     {        
-        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier );
-        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier * CounterDamageMultiply[chargeLevel]);
+        return Mathf.RoundToInt(baseDamage * ParryStackMultiplier * CounterDamageMultiply[chargeLevel]);
     }
 
     #endregion
@@ -527,7 +447,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         // 1타: base * stackMultiplier
         // 2타 이상: base * stackMultiplier * consumedStacks
-        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage);
         float damage = modifiedBase * ParryStackMultiplier;
         
         if (_heavyAttackComboIndex > 0)
@@ -537,24 +457,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         return Mathf.RoundToInt(damage);
     }
-
-    /// <summary>
-    /// 일반 공속 배율 증가 함수
-    /// </summary>
-    /// <param name="rate">증가 배율</param>
-    public void IncreaseNormalAttackSpeedMultiplier(float rate)
-    {
-        _data.PlusNormalAttackSpeedMultiplier = Mathf.Min(_data.PlusNormalAttackSpeedMultiplier + rate, MaxNormalAttackSpeedMultiplier);
-    }
-
-    /// <summary>
-    /// 일반 공속 배율 감소 함수
-    /// </summary>
-    /// <param name="rate">감소 배율</param>
-    public void DecreaseNormalAttackSpeedMultiplier(float rate)
-    {
-        _data.PlusNormalAttackSpeedMultiplier = Mathf.Max(_data.PlusNormalAttackSpeedMultiplier - rate, 0);
-    } 
     #endregion
 
     //==========================================================================================================================
@@ -701,9 +603,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         if (_data != null)
         {
-            foreach (var attackData in _data.NormalAttackConfigList)
+            foreach (var attackData in _data.NormalAttacks)
             {
-                Gizmos.DrawWireCube(GetAttackCenter(attackData), attackData.AttackRadius);
+                Gizmos.DrawWireCube(GetAttackCenter(attackData.RawData), attackData.AttackRadius);
             }
         }
     }

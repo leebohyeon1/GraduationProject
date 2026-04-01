@@ -282,9 +282,9 @@ public class DataManager : MonoBehaviour
 
     public void ResetPlayer()
     {
-        _currentGameData.PlayerData.CurrentHealth = _currentGameData.PlayerData.Health;
+        _currentGameData.PlayerData.CurrentHealth = (int)_currentGameData.PlayerData.Health.BaseValue;
         _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
-        _currentGameData.PlayerData.CurrentPotion = _currentGameData.PlayerData.Potion;
+        _currentGameData.PlayerData.CurrentPotion = (int)_currentGameData.PlayerData.Potion.BaseValue;
     }
 
     //==========================================================================================================================

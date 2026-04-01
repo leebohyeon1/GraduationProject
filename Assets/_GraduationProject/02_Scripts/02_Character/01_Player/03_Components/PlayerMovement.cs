@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     [Header("Movement Setting")]
     // 최대 이동 속도
-    public float MaxMoveSpeed => _runtimeData != null ? _runtimeData.MoveSpeed.Value : 5f;
+    public float MaxMoveSpeed => _runtimeData.MoveSpeed.Value;
 
     private float _moveAccelerationTime;    // 이동 가속 시간
     public float MoveAccelerationTime => _moveAccelerationTime;
@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public AnimationCurve MoveCurve => _moveCurve;
 
    // 최대 회전 속도
-    public float MaxRotateSpeed => _runtimeData != null ? _runtimeData.RotateSpeed.Value : 5f;
+    public float MaxRotateSpeed => _runtimeData.RotateSpeed.Value;
 
     private float _rotateAccelerationTime;    // 회전 가속 시간
     public float RotateAccelerationTime => _rotateAccelerationTime;    
@@ -65,9 +65,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     [Header("ChargeMove Setting")]
     // 차지 이동 속도
-    public float ChargeMoveSpeed => _runtimeData != null ? _runtimeData.ChargeMoveSpeed : 0f;
+    public float ChargeMoveSpeed => _runtimeData.ChargeMoveSpeed.Value;
     // 차지 이동 속도
-    public float ChargeRoataeSpeed => _runtimeData != null ? _runtimeData.ChargeRotateSpeed : 0f;
+    public float ChargeRoataeSpeed => _runtimeData.ChargeRotateSpeed.Value;
 
     [Header("Obstacle Detection")]
     [SerializeField] private LayerMask _obstacleMask = -1;
@@ -111,25 +111,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     /// <param name="data">플레이어 데이터</param>
     private void InitializeData(PlayerDataSO data)
     {
-        if (_runtimeData != null)
-        {
-            if (_runtimeData.MoveSpeed.BaseValue == 0) { _runtimeData.MoveSpeed.BaseValue = data.MoveSpeed;}
-            if (_runtimeData.RotateSpeed.BaseValue == 0) { _runtimeData.RotateSpeed.BaseValue = data.RotateSpeed;}
-            if (_runtimeData.ChargeMoveSpeed.BaseValue == 0) { _runtimeData.ChargeMoveSpeed.BaseValue = data.ChargeMoveSpeed;}
-            if (_runtimeData.ChargeRotateSpeed.BaseValue == 0) { _runtimeData.ChargeRotateSpeed.BaseValue = data.ChargeRotateSpeed;}
-            
-            // DodgeConfig Deep Copy
-            if (_runtimeData.DodgeConfig != null && string.IsNullOrEmpty(_runtimeData.DodgeConfig.AnimationStateName))
-            {
-                _runtimeData.DodgeConfig.AnimationStateName = data.DodgeConfig.AnimationStateName;
-                _runtimeData.DodgeConfig.Type = data.DodgeConfig.Type;
-                _runtimeData.DodgeConfig.StaminaAmount = data.DodgeConfig.StaminaAmount;
-                _runtimeData.DodgeConfig.isInivicible = data.DodgeConfig.isInivicible;
-                _runtimeData.DodgeConfig.Cooldown = data.DodgeConfig.Cooldown;
-                _runtimeData.DodgeConfig.MoveConfig = data.DodgeConfig.MoveConfig;
-            }
-        }
-
         _moveAccelerationTime = data.MoveAccelerationTime;
         _moveDecelerationnTime = data.MoveDecelerationnTime;
         _moveCurve = data.MoveCurve;
@@ -365,14 +346,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     //==========================================================================================================================
 
     #region Dodge
-    /// <summary>
-    /// 회피 데이터 설정
-    /// </summary>
-    /// <param name="dodgeData">회피 데이터</param>
-    public void SetDodgeConfig(DodgeData dodgeData)
-    {
-        _runtimeData.DodgeConfig = dodgeData;
-    }
 
     /// <summary>
     /// 회피 종료 시간을 기록합니다.
@@ -553,7 +526,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void SetChargeMoveSpeed(float speed)
     {
         // _chargeMoveSpeed = speed;
-        if (_runtimeData != null) _runtimeData.ChargeMoveSpeed.BaseValue = speed;
+        // if (_runtimeData != null) _runtimeData.ChargeMoveSpeed.BaseValue = speed;
     }
 
     //==========================================================================================================================

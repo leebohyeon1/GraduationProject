@@ -123,9 +123,9 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                 AttackType = AttackType.NormalCounter,
                 DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage, 0),
                 StiffnessAmount = 0,
-                KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
-                KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
-                KnockbackForce = p_AttackConfig.KnockbackCofig.StepDistance,
+                KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
+                KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
+                KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
             };
 
             p_owner.Combat.Attack(damageable, damage);

@@ -5,7 +5,9 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeavyCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyCounterAttackConfig.AttackConfig;
+    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.HeavyCounterAttackConfig.RawData.AttackConfig;
+
+    private RuntimeChargeAttackConfig _ChargeAttackConfig => p_owner.Combat.HeavyCounterAttackConfig;
 
     public PlayerHeavyCounterState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -113,11 +115,11 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             {
                 AttackerTransform = transform,
                 AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage(p_AttackConfig.AttackDamage, 1),
+                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)_ChargeAttackConfig.Damage.Value, 1),
                 StiffnessAmount = 0,
-                KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
-                KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
-                KnockbackForce = p_AttackConfig.KnockbackCofig.StepDistance,
+                KnockbackCurve = _ChargeAttackConfig.KnockbackConfig.StepCurve,
+                KnockbackDuration = _ChargeAttackConfig.KnockbackConfig.StepDuration,
+                KnockbackForce = _ChargeAttackConfig.KnockbackConfig.StepDistance,
             };
 
             Debug.Log("강패링 데미지: " + damage.DamageAmount);
@@ -132,7 +134,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     {
         p_isAttackActive = true;
 
-        Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+        Collider[] colliders = p_owner.Combat.ExecuteAttack(_ChargeAttackConfig);
     }
 
     private void OnChecekdProjectileCounter()

@@ -26,7 +26,7 @@ public class RuntimeAttackConfig
     public AttackType AttackType => _source.AttackType;
     public Vector3 AttackRadius => _source.AttackRadius;
     public StepData AttackMoveConfig => _source.AttackMoveConfig;
-    public StepData KnockbackConfig => _source.KnockbackCofig;
+    public StepData KnockbackConfig => _source.KnockbackConfig;
 }
 
 /// <summary>
@@ -54,7 +54,7 @@ public class RuntimeChargeAttackConfig
     public AttackType AttackType => _source.AttackConfig.AttackType;
     public Vector3 AttackRadius => _source.AttackConfig.AttackRadius;
     public StepData AttackMoveConfig => _source.AttackConfig.AttackMoveConfig;
-    public StepData KnockbackConfig => _source.AttackConfig.KnockbackCofig;
+    public StepData KnockbackConfig => _source.AttackConfig.KnockbackConfig;
 }
 
 /// <summary>
@@ -77,6 +77,6 @@ public class RuntimeDodgeConfig
 
     public string AnimationStateName => _source.AnimationStateName;
     public DodgeData.DodgeType Type => _source.Type;
-    public bool IsInvincible => _source.isInivicible;
+    public bool IsInvincible => _source.IsInvincible;
     public StepData MoveConfig => _source.MoveConfig;
 }

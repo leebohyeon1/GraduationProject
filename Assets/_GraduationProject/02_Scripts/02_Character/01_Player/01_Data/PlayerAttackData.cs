@@ -23,5 +23,5 @@ public struct PlayerAttackConfig
     public StepData AttackMoveConfig;           // 공격 이동 설정
 
     [Header("Knockback")]
-    public StepData KnockbackCofig;        // 넉백 설정
+    public StepData KnockbackConfig;        // 넉백 설정
 }

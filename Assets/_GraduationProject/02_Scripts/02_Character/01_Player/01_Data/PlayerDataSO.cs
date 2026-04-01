@@ -38,7 +38,6 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("NormalAttack Setting")]
     public List<PlayerAttackConfig> NormalAttackConfigList;         // 일반 공격 데이터 배열
-    public float MaxNormalAttackSpeedMultiplier = 1.0f;
 
     [Header("HeavyAttack Setting")]
     public List<PlayerAttackConfig> HeavyAttackConfigList;          // 강공격 데이터 배열 (스택 소모 시 사용)
@@ -82,7 +81,7 @@ public class DodgeData
 
     public DodgeType Type;      // 회피 타입
     public float StaminaAmount; // 스테미나 사용량
-    public bool isInivicible;   // 무적 여부
+    public bool IsInvincible;   // 무적 여부
     public float Cooldown;      // 회피 쿨타임
     public StepData MoveConfig; // 회피 움직임 설정
 }
