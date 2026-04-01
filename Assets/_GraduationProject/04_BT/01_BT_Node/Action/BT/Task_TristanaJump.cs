@@ -51,6 +51,7 @@ public class Task_TristanaJump : BaseAttackNode
 
     private Vector3 _startPos;
     private Vector3 _targetPos;
+    [SerializeField] float TargetOffset = 0f;
     private bool _isJumping;
 
     protected override float GetRequiredRange() => maxTriggerRange;
@@ -69,7 +70,7 @@ public class Task_TristanaJump : BaseAttackNode
         Vector3 playerPos = runner.player.transform.position;
         Vector3 direction = (playerPos - _startPos);
         direction.y = 0;
-        float distance = direction.magnitude;
+        float distance = direction.magnitude - TargetOffset;
         direction.Normalize();
 
         float jumpDist = Mathf.Min(distance, jumpRange);
@@ -77,7 +78,6 @@ public class Task_TristanaJump : BaseAttackNode
 
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
         _targetPos = info.node != null ? info.position : rawTarget;
-
         Log("점프 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isJumping = true;
         _nodeEntryTime = Time.time; // 점프 시작 시점 리셋
