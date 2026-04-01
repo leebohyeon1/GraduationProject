@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 /// <summary>
 /// 런타임 공격 설정 인터페이스입니다.
@@ -10,6 +11,7 @@ public interface IRuntimeAttackConfig
 {
     Stat Damage { get; }
     Stat Stamina { get; }
+    Stat Regain { get; }
     AttackType AttackType { get; }
     Vector3 AttackRadius { get; }
     StepData AttackMoveConfig { get; }
@@ -28,6 +30,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
 
     public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
     public Stat Stamina { get; }
+    public Stat Regain { get; }
 
     public RuntimeAttackConfig(PlayerAttackConfig source)
     {
@@ -35,6 +38,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
         // 원본 SO의 공격력을 실시간으로 바라보는 Stat 생성
         Damage = new Stat(() => _source.AttackDamage);
         Stamina = new Stat(() => _source.AttackStamina);
+        Regain = new Stat(() => _source.RegainRate);
     }
 
     // 변하지 않는 데이터는 원본에서 직접 참조 (프록시 패턴)
@@ -42,6 +46,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
     public Vector3 AttackRadius => _source.AttackRadius;
     public StepData AttackMoveConfig => _source.AttackMoveConfig;
     public StepData KnockbackConfig => _source.KnockbackConfig;
+
 }
 
 /// <summary>
@@ -55,6 +60,7 @@ public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
 
     public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
     public Stat Stamina { get; }
+    public Stat Regain { get; }
 
     public RuntimeChargeAttackConfig(PlayerChargeConfig source)
     {
@@ -62,6 +68,7 @@ public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
         // 원본 SO의 공격력을 실시간으로 바라보는 Stat 생성
         Damage = new Stat(() => _source.AttackConfig.AttackDamage);
         Stamina = new Stat(() => _source.AttackConfig.AttackStamina);
+        Regain = new Stat(() => _source.AttackConfig.RegainRate);
     }
 
     // 변하지 않는 데이터는 원본에서 직접 참조 (프록시 패턴)

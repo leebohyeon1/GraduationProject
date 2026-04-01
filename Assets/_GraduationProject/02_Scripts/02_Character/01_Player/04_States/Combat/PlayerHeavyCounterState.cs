@@ -113,16 +113,22 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[1], StatModifierType.PercentAdd, "HeavyCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
 
+            int finalDamage = (int)p_AttackConfig.Damage.Value;
+
             DamageData damage = new DamageData
             {
                 AttackerTransform = transform,
-                AttackType = AttackType.HeavyCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)_ChargeAttackConfig.Damage.Value),
+                AttackType = AttackType.NormalCounter,
+                DamageAmount = finalDamage,
                 StiffnessAmount = 0,
-                KnockbackCurve = _ChargeAttackConfig.KnockbackConfig.StepCurve,
-                KnockbackDuration = _ChargeAttackConfig.KnockbackConfig.StepDuration,
-                KnockbackForce = _ChargeAttackConfig.KnockbackConfig.StepDistance,
+                KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
+                KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
+                KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
             };
+
+            int regainAmount = Mathf.RoundToInt(finalDamage * p_AttackConfig.Regain.Value);
+            p_owner.Events.TriggerAttackRegained(regainAmount);
+
             p_owner.Combat.Attack(damageable, damage);
 
             p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);

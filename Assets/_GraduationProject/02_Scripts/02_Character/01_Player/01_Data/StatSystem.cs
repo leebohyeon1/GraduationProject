@@ -16,6 +16,13 @@ public struct StatModifierConfig
     public StatModifierType Type;
 }
 
+[Serializable]
+public struct AttackStatModifierConfig
+{
+    public StatModifierConfig DamageModifierConfig; // 데미지
+    public StatModifierConfig StaminaModifierConfig; // 스테미나
+    public StatModifierConfig RegainModifierConfig; // 흡혈
+}
 
 [Serializable]
 public class StatModifier

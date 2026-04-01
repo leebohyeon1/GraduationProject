@@ -120,16 +120,22 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
             
+            int finalDamage = (int)p_AttackConfig.Damage.Value;    
+
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
                 AttackType = AttackType.NormalCounter,
-                DamageAmount = p_owner.Combat.CalculateFinalDamage((int)p_AttackConfig.Damage.Value),
+                DamageAmount = finalDamage,
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
                 KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
                 KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
             };
+
+            int regainAmount = Mathf.RoundToInt(finalDamage * p_AttackConfig.Regain.Value);
+            p_owner.Events.TriggerAttackRegained(regainAmount);
+
             p_owner.Combat.Attack(damageable, damage);
 
             p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);

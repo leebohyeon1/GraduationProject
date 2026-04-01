@@ -22,8 +22,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [Header("Attack")]
     [SerializeField] private LayerMask _attackLayerMask;
-    // 공격 회복 비율
-    public float AttackRegainRate => _data != null ? _data.Regain.Value : 0f;
+    public event Action<IDamageable, DamageData> AttackEvent; // 공격 이벤트 (데미지 입힐 때마다 발생)
 
     [Header("NormalAttack")]
     [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
@@ -302,7 +301,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
-                int finalDamage = (damageCalculator != null) ? damageCalculator(runtimeDamage) : CalculateFinalDamage(runtimeDamage);
+                int finalDamage = damageCalculator(runtimeDamage);
 
                 DamageData damage = new DamageData
                 {
@@ -314,6 +313,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                     KnockbackDuration = data.KnockbackConfig.StepDuration,
                     KnockbackForce = data.KnockbackConfig.StepDistance,
                 };
+
+                int regainAmount = Mathf.RoundToInt(finalDamage * data.Regain.Value);
+                _events.TriggerAttackRegained(regainAmount);
 
                 Attack(damageable, damage);
             }
@@ -330,23 +332,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         if (!damageable.IsDead)
         {
             damageable.TakeDamage(damageData);
-
-            int regainAmount = Mathf.RoundToInt(damageData.DamageAmount * AttackRegainRate);
-            _events.TriggerAttackRegained(regainAmount);
+            AttackEvent?.Invoke(damageable, damageData);
         }
     }
-
-    /// <summary>
-    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
-    /// </summary>
-    /// <param name="baseDamage">기본 데미지</param>
-    /// <returns>최종 데미지</returns>
-    public int CalculateFinalDamage(int baseDamage)
-    {
-        return Mathf.RoundToInt(baseDamage);
-
-    }
-
     #endregion
 
     //==========================================================================================================================
