@@ -1,7 +1,5 @@
 using UnityEngine;
 using BehaviorTree;
-using System.Collections.Generic;
-using System.Collections;
 using Pathfinding;
 
 [CreateAssetMenu(fileName = "Task_KSante", menuName = "BehaviorTree/Action/Task_KSante")]
@@ -47,8 +45,9 @@ public class Task_KSante : BaseAttackNode
         _targetPos = playerPos + (dir * overshootDist) + offset;
 
         Log("KSante 돌진 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
-        _isRushing = true;
+        _isRushing = false;
         _rushStartTime = Time.time;
+        runner.AnimationBool("IsRushing", _isRushing);
         
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
@@ -60,7 +59,7 @@ public class Task_KSante : BaseAttackNode
 
     protected override void UpdateMovement()
     {
-        if (!_isRushing) return;
+        if (_isRushing) return;
 
         float rushElapsedTime = Time.time - _rushStartTime;
         float normalizedTime = rushElapsedTime / rushDuration;
@@ -68,7 +67,7 @@ public class Task_KSante : BaseAttackNode
         if (normalizedTime >= 1.0f)
         {
             Log("KSante 돌진 시간 만료");
-            _isRushing = false;
+            StopRush();
             return;
         }
 
@@ -89,7 +88,7 @@ public class Task_KSante : BaseAttackNode
             else
             {
                 Log("KSante 장애물 충돌");
-                _isRushing = false;
+                StopRush();
                 return;
             }
         }
@@ -107,11 +106,12 @@ public class Task_KSante : BaseAttackNode
         if (Vector3.Distance(runner.transform.position, _targetPos) < 0.1f)
         {
             Log("KSante 목표 지점 도달");
-            _isRushing = false;
+            StopRush();
+            return;
         }
     }
 
-    protected override bool IsMovementFinished => !_isRushing;
+    protected override bool IsMovementFinished => _isRushing;
 
     private void PlayerTORush()
     {
@@ -122,6 +122,7 @@ public class Task_KSante : BaseAttackNode
         {
             dragable.Drag();
         }
+        runner.animHandler.KsanteAtk += KsanteKnockback;
 
         runner.player.transform.parent = runner.transform;
 
@@ -139,33 +140,52 @@ public class Task_KSante : BaseAttackNode
         _targetPos = newDestination;
         _rushStartTime = Time.time;
     }
+    private void StopRush()
+    {
+        _isRushing = true;
+        runner.AnimationBool("IsRushing", _isRushing);
+        brain.blackboard.SetValue(LoopAction.EndKey, true);
+
+    }
+    
+
+    private void KsanteKnockback()
+    {
+        runner.player.transform.parent = null;
+
+        AttackDataKnockback.AttackerTransform = runner.transform;
+            
+        if (runner.player.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.TakeDamage(AttackDataKnockback);
+        }
+
+        if (runner.player.TryGetComponent<IDragable>(out var dragable))
+        {
+            dragable.Drop();
+        }
+
+        runner.player.Movement.Step(runner.transform.forward, new StepData()
+        {
+            StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
+            StepDuration = AttackDataKnockback.KnockbackDuration,
+            StepCurve = AttackDataKnockback.KnockbackCurve,
+            StepRotateSpeed = 0f
+        }, this, false, null);
+        runner.animHandler.KsanteAtk -= KsanteKnockback;
+
+    }
 
     protected override void SpecificCleanup()
     {
-        if (_hasHitPlayer)
+        StopRush();
+
+        if (runner.animHandler != null)
         {
-            Log("KSante 플레이어 드랍 및 넉백 적용");
-            runner.player.transform.parent = null;
-            AttackDataKnockback.AttackerTransform = runner.transform;
-            
-            if (runner.player.TryGetComponent<IDamageable>(out var damageable))
-            {
-                damageable.TakeDamage(AttackDataKnockback);
-            }
-
-            if (runner.player.TryGetComponent<IDragable>(out var dragable))
-            {
-                dragable.Drop();
-            }
-
-            runner.player.Movement.Step(runner.transform.forward, new StepData()
-            {
-                StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
-                StepDuration = AttackDataKnockback.KnockbackDuration,
-                StepCurve = AttackDataKnockback.KnockbackCurve,
-                StepRotateSpeed = 0f
-            }, this, false, null);
+            runner.animHandler.KsanteAtk -= KsanteKnockback;
         }
+
+
     }
 
     public override Node Clone()

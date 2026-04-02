@@ -33,8 +33,12 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
 
     public void OnQuitButton()
     {
+        Application.Quit();
+
+        /*
         DataManager.Instance.SaveGame(); // 게임 저장
         SceneLoadingManager.Instance.TeleportToSceneByName("Title");
+        */
     }
 
     public void OnEventTrigger(PlayerController player)

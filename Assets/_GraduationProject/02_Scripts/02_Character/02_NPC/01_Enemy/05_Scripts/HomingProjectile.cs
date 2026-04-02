@@ -21,6 +21,8 @@ public class HomingProjectile : MonoBehaviour
     private bool _isStraightMode = false;
     private Enemy _enemy;
     // 초기화 함수 (전략 스크립트에서 호출)
+
+    [SerializeField] private string feedbackname = "null"; // 피격 효과 프리팹
     public void Initialize(Transform target, DamageData damage, LayerMask obstacleMask, Enemy enemy,
                            float duration, float startSpd, float accel, float maxSpd, float turnForce, float straightSpd)
     {
@@ -113,6 +115,7 @@ public class HomingProjectile : MonoBehaviour
         if (((1 << other.gameObject.layer) & _obstacleMask) != 0)
         {
             // 벽에 부딪힘 -> 소멸
+            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
             Destroy(gameObject);
             return;
         }
@@ -129,6 +132,8 @@ public class HomingProjectile : MonoBehaviour
                 _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
             }
+            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
+
             Destroy(gameObject);
         }
     }
