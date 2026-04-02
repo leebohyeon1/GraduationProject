@@ -37,6 +37,8 @@ public class MonsterWave : MonoBehaviour
     private Coroutine _nextWaveCoroutine;
     Action<Enemy> wave;
     [SerializeField] private float feedbackDelay = 0.5f;
+    [SerializeField] private float minDistance = 5;
+    PlayerController player;
 
     private void Reset()
     {
@@ -57,6 +59,8 @@ public class MonsterWave : MonoBehaviour
 
         wave += waveAiController;
         wave += waveTrigger;
+
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -131,8 +135,22 @@ public class MonsterWave : MonoBehaviour
                 {
                     continue;
                 }
-
                 target.gameObject.SetActive(true);
+                Vector3 playerPos = player.transform.position;
+                float dist = Vector3.Distance(target.transform.position, playerPos);
+                Debug.Log($"targetPos{target.transform.position}, playerPosition{player.transform.position}, dist{dist}");
+                if (dist < minDistance)
+                {
+                    Debug.Log(0);
+                    // 플레이어로부터 소환 지점까지의 방향
+                    Vector3 awayDir = (target.transform.position - playerPos).normalized;
+                    
+                    if (awayDir == Vector3.zero) awayDir = UnityEngine.Random.insideUnitSphere;
+                    awayDir.y = 0;
+
+                    // 최소 거리만큼 떨어진 위치로 재설정
+                    target.transform.position = playerPos + (awayDir * minDistance);
+                }
                 if (!string.IsNullOrEmpty(spawnFeedbackName) || !string.IsNullOrEmpty(spawnAnimationTrigger))
                 {
                     {
