@@ -16,10 +16,11 @@ MonoBehaviour:
   attackKey: Attack02_e
   animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
+  maxNodeDuration: 10
   maintainAtk: 0
-  SO: []
-  LoopAttack: 0
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
+  LoopAttack: 1
   NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 0
@@ -29,13 +30,16 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
   rushSpeed: 15
   hitRadius: 3
   overshootDist: 3
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
-  rushDuration: 1
+  rushDuration: 3
   PushDistance: 10
   AttackDataKnockback:
     AttackerTransform: {fileID: 0}
@@ -118,6 +122,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &-7917068014566437409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,6 +555,9 @@ MonoBehaviour:
   ignoreYDistance: 1
   allowOutOfCombat: 0
   ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0

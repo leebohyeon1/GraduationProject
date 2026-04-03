@@ -3,6 +3,7 @@ using BehaviorTree;
 using System.Collections.Generic;
 using Pathfinding;
 using System.Diagnostics;
+using System;
 
 /// <summary>
 /// 공격 노드의 베이스 클래스. Physics.NonAlloc을 사용하여 GC 할당을 방지합니다.

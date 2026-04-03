@@ -8,8 +8,6 @@ public class Condition_BlackboardFloatKeyCheck : ConditionNode
     public override void OnEnter()
     {
         base.OnEnter();
-                bool keyValue = floatCondition.isCondition(brain.blackboard);
-        Debug.Log("resultkey : " + keyValue);
     }
     protected override bool CheckCondition()
     {
@@ -20,7 +18,6 @@ public class Condition_BlackboardFloatKeyCheck : ConditionNode
         }
         
         bool keyValue = floatCondition.isCondition(brain.blackboard);
-        Debug.Log("resultkey : " + keyValue);
         return keyValue;
     }
     public override Node Clone()
