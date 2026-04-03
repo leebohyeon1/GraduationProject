@@ -37,6 +37,9 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     private Enemy _owner;
     private const int DefaultPlayerLayerMask = 1 << 9;
 
+    public event Action KsanteAtk;
+
+
     /// <summary>
     /// Initializes owner reference and feedback dictionary.
     /// </summary>
@@ -50,6 +53,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         }
     }
 
+    public void KsanteKnockback()
+    {
+        KsanteAtk?.Invoke();
+    }
     /// <summary>
     /// Marks action as active.
     /// </summary>
@@ -202,7 +209,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
                 Vector3 spawnPos = position + f.offset;
                 f.feedback.PlayFeedbacks(spawnPos);
 
-                if (f.attackData != null)
+                if (f.attackData != null && f.damageDelay >= 0f)
                 {
                     StartCoroutine(DealDamageAfterDelay(spawnPos, f));
                 }
@@ -210,20 +217,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 지정 딜레이 후 피드백을 재생합니다.
-    /// </summary>
-    internal void PlayFeedbackDelayed(string feedbackName, Vector3 position, float delay)
-    {
-        if (_owner == null) return;
-        StartCoroutine(PlayFeedbackDelayedRoutine(feedbackName, position, delay));
-    }
 
-    private IEnumerator PlayFeedbackDelayedRoutine(string feedbackName, Vector3 position, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        PlayFeedbackAtPosition(feedbackName, position);
-    }
 
     /// <summary>
     /// damageDelay 후 OverlapSphere로 범위 내 IDamageable에게 데미지를 적용합니다.
