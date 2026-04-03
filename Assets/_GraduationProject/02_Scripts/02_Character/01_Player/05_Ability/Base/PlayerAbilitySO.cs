@@ -13,7 +13,7 @@ public class PlayerAbilitySO : ScriptableObject
     protected PlayerController p_owner;
     protected PlayerAbility p_ability;  // 능력 주체
     public List<PlayerAbilityTagSO> Tags;    // 이 능력이 부여하는 태그들
-    private List<PlayerAbilityTagSO> _tagInstances;
+    protected List<PlayerAbilityTagSO> p_tagInstances;
 
     /// <summary>
     /// 기능 등록
@@ -23,7 +23,7 @@ public class PlayerAbilitySO : ScriptableObject
     {
         p_ability = ability;
         p_owner = p_ability.GetComponent<PlayerController>();
-        _tagInstances = new List<PlayerAbilityTagSO>();
+        p_tagInstances = new List<PlayerAbilityTagSO>();
 
         AddAllSkillTags();
     }
@@ -39,7 +39,7 @@ public class PlayerAbilitySO : ScriptableObject
 
         RemoveAllSkillTags();
 
-        _tagInstances = null;
+        p_tagInstances = null;
     }
 
     /// <summary>
@@ -47,14 +47,12 @@ public class PlayerAbilitySO : ScriptableObject
     /// </summary>
     protected virtual void AddAllSkillTags()
     {
-        _tagInstances.Clear();
-
         foreach (var tag in Tags)
         {
              PlayerAbilityTagSO instance = Instantiate(tag);
             instance.Apply(p_owner);
             p_ability.AddTag(instance);
-            _tagInstances.Add(instance); // 나중에 Revert를 위해 저장
+            p_tagInstances.Add(instance); // 나중에 Revert를 위해 저장
         }
     }
 
@@ -63,11 +61,13 @@ public class PlayerAbilitySO : ScriptableObject
     /// </summary>
     protected virtual void RemoveAllSkillTags()
     {
-        foreach (var instance in _tagInstances)
+        foreach (var instance in p_tagInstances)
         {
             instance.Revert(p_owner);        // 태그 해제
             p_ability.RemoveTag(instance);   // 어빌리티에 제거
             Destroy(instance);              // 인스턴스 제거   
         }
+
+        p_tagInstances.Clear();
     }
 }

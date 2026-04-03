@@ -58,6 +58,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
     [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
+    [SerializeField] private HashSet<IDamageable> _damagedEnemySet = new HashSet<IDamageable>();
 
     [SerializeField] private PlayerAbilityTagSO _counterSuccessTagSO; // 카운터 성공 시 슈퍼아머
     public PlayerAbilityTagSO CounterSuccessTagSO => _counterSuccessTagSO;
@@ -316,6 +317,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         if (!damageable.IsDead)
         {
+            Debug.Log("공격 데미지: " + damageData.DamageAmount);
             damageable.TakeDamage(damageData);
             AttackEvent?.Invoke(damageable, damageData);
         }
@@ -491,6 +493,28 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public void TriggerCheckedProjectileCounter()
     {
         CheckedProjectileCounter?.Invoke();
+    }
+
+    public void AddCounterDamagedEnemy(IDamageable enemy)
+    {
+        _damagedEnemySet.Add(enemy);
+    }
+
+    public void ClearCounterDamagedEnemy()
+    {
+        _damagedEnemySet.Clear();
+    }
+
+    public bool IsEnemyCounterDamaged(IDamageable enemy)
+    {
+        if(_damagedEnemySet.Contains(enemy))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     #endregion
 

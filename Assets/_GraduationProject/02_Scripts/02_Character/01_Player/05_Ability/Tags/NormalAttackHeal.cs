@@ -6,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NormalAttackHeal", menuName = "Project/Player/Ability/Tag/NormalAttackHeal")]
 public class NormalAttackHeal : PlayerAbilityTagSO
 {
-    public int HealAmount = 5;
+    [SerializeField] private int _healAmount = 5;
     private PlayerController _controller;
 
     public override void Apply(PlayerController player)
@@ -26,7 +26,7 @@ public class NormalAttackHeal : PlayerAbilityTagSO
     {
         if(data.AttackType == AttackType.Normal)
         {
-            _controller.Health.Heal(10);
+            _controller.Health.Heal(_healAmount);
         }
     }
 }

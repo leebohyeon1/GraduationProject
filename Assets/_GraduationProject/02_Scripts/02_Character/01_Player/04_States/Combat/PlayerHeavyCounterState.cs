@@ -52,6 +52,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
         p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ClearCounterDamagedEnemy();
         p_owner.Combat.SetCharge(false);
         p_owner.Events.TriggerChargeCompleted(false);
 
@@ -86,6 +87,20 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     #endregion
 
     #region EventHandle
+    protected override void OnAttackPerformed()
+    {
+        p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
+        Collider[] colldiers = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+
+        foreach (var collider in colldiers)
+        {
+            if(collider.TryGetComponent<IDamageable>(out var damageable) && !p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                p_owner.Combat.AddCounterDamagedEnemy(damageable);
+            }
+        }
+    }
+
     /// <summary>
     /// 상쇄 성공
     /// </summary>
@@ -106,14 +121,26 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             p_owner.Events.TriggerOnlyChargeAttackSucceded();
         }
 
-
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
+            float previousDamage = 0f;
+            StatModifier prevDamageModifier = null;
+
+            if (p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                previousDamage = p_AttackConfig.Damage.Value;
+                Debug.Log("삭제할 데미지: " + previousDamage);
+
+                prevDamageModifier = new StatModifier(-previousDamage, StatModifierType.Flat, "prevDamage");
+                p_AttackConfig.Damage.AddModifier(prevDamageModifier);
+            }
+
             StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[1], StatModifierType.PercentAdd, "HeavyCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
 
             int finalDamage = (int)p_AttackConfig.Damage.Value;
+            Debug.Log("최종 데미지: " + finalDamage);
 
             DamageData damage = new DamageData
             {
@@ -132,6 +159,11 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             p_owner.Combat.Attack(damageable, damage);
 
             p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
+
+            if(prevDamageModifier != null)
+            {
+                p_AttackConfig.Damage.RemoveModifier(prevDamageModifier);
+            }
         }
     }
 

@@ -139,6 +139,8 @@ public class Stat
             {
                 finalValue *= mod.Value;
             }
+
+            Debug.Log($"Modifier {i}: Type={mod.Type}, Value={mod.Value}, Intermediate FinalValue={finalValue}");
         }
 
         return (float)Math.Round(finalValue, 4);

@@ -41,6 +41,14 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     {
         _events.BeforeDamaged -= OnBeforeDamaged;
         _abilitySelected.Unsubscribe(this);
+
+        foreach(var ability in _abilitySet)
+        {
+            if (ability != null)
+            {
+                RemoveAbility(ability);
+            }
+        }
     }
 
     private void InitializeData(PlayerData data)

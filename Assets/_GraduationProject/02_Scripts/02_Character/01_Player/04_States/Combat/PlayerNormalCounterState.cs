@@ -56,9 +56,10 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
 
         p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ClearCounterDamagedEnemy();
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
             p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
         }
@@ -95,6 +96,20 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     #endregion
 
     #region EventHandle
+    protected override void OnAttackPerformed()
+    {
+        p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
+        Collider[] colldiers = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+
+        foreach (var collider in colldiers)
+        {
+            if (collider.TryGetComponent<IDamageable>(out var damageable) && !p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                p_owner.Combat.AddCounterDamagedEnemy(damageable);
+            }
+        }
+    }
+
     /// <summary>
     /// 상쇄 성공
     /// </summary>
@@ -117,11 +132,23 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
+            float previousDamage = 0f;
+            StatModifier prevDamageModifier = null;
+
+            if (p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                previousDamage = p_AttackConfig.Damage.Value;
+                Debug.Log("삭제할 데미지: " + previousDamage);
+
+                prevDamageModifier = new StatModifier(-previousDamage, StatModifierType.Flat, "prevDamage");
+                p_AttackConfig.Damage.AddModifier(prevDamageModifier);
+            }
+
             StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
             
-            int finalDamage = (int)p_AttackConfig.Damage.Value;    
-
+            int finalDamage = (int)p_AttackConfig.Damage.Value;
+            Debug.Log("상쇄 데미지: " + finalDamage);
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
@@ -139,6 +166,11 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             p_owner.Combat.Attack(damageable, damage);
 
             p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
+
+            if (prevDamageModifier != null)
+            {
+                p_AttackConfig.Damage.RemoveModifier(prevDamageModifier);
+            }
         }
     }
 
