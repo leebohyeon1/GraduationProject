@@ -57,4 +57,26 @@ public class EnemyAnimationBridge : MonoBehaviour
             }
         }
     }
+
+    public void ResetAllAnimationStates()
+    {
+        if (_animator == null) return;
+        
+        foreach (var parameter in _animator.parameters)
+        {
+            Debug.Log($"[EnemyAnimationBridge] Resetting parameter '{parameter.name}' of type '{parameter.type}'");
+            switch (parameter.type)
+            {
+                case AnimatorControllerParameterType.Trigger:
+                    _animator.ResetTrigger(parameter.name);
+                    Debug.Log($"[EnemyAnimationBridge] Trigger '{parameter.name}' 초기화");
+                    break;
+                case AnimatorControllerParameterType.Bool:
+                    _animator.SetBool(parameter.name, false);
+                    break;
+            }
+        }
+        
+        IsAttacking = false;
+    }
 }
