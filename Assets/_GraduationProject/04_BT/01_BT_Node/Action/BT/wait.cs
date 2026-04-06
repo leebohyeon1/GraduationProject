@@ -19,6 +19,7 @@ public class Wait : Node
         {
             return NodeState.SUCCESS;
         }
+        runner.Movement.StopMovement();
         return NodeState.RUNNING;
     }
 

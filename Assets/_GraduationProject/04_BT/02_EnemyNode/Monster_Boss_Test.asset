@@ -34,9 +34,23 @@ MonoBehaviour:
   nodes:
   - {fileID: -4550029414498384946}
   - {fileID: -8083445270588989208}
-  - {fileID: -3196566831083087633}
-  - {fileID: -3997098967953484569}
+  - {fileID: -8103599830428575101}
+  - {fileID: -726254382828273572}
   services: []
+--- !u!114 &-8103599830428575101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f1078cf888891459a9e448fec64e1f, type: 3}
+  m_Name: Action_Clear Stun
+  m_EditorClassIdentifier: Assembly-CSharp::Action_ClearStun
+  position: {x: 553, y: -325}
+  invertDelay: 0
 --- !u!114 &-8083445270588989208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,12 +63,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2140f7fb10b07a4988b0daaeec316d8, type: 3}
   m_Name: Condition_Random Chance
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RandomChance
-  position: {x: 555, y: -395}
+  position: {x: 553, y: -402}
   exceptCondition:
     key: 
   checkName: WeakCounter
-  cooldownDuration: 1
-  successChance: 70
+  cooldownDuration: 2
+  successChance: 100
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
   m_Name: Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 553, y: -77}
+  position: {x: 554, y: -8}
 --- !u!114 &-7610850223706687289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Stun
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 372, y: -79}
+  position: {x: 373, y: -10}
   nodes:
   - {fileID: 8701554609853382117}
   - {fileID: -7778356412862204304}
@@ -164,52 +178,6 @@ MonoBehaviour:
   - {fileID: -8486432058413888401}
   - {fileID: -7610850223706687289}
   services: []
---- !u!114 &-3997098967953484569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_Normal Attack Node
-  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 553, y: -238}
-  attackKey: Boss_Fake_Attack
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
-  NextBT: 1
-  debugMode: 1
-  escapeOnHitConfirm: 0
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  _hitMasks:
-    serializedVersion: 2
-    m_Bits: 128
---- !u!114 &-3196566831083087633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07f1078cf888891459a9e448fec64e1f, type: 3}
-  m_Name: Action_Clear Stun
-  m_EditorClassIdentifier: Assembly-CSharp::Action_ClearStun
-  position: {x: 553, y: -315}
-  invertDelay: 0
 --- !u!114 &-2169847181082004984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +224,39 @@ MonoBehaviour:
   - {fileID: -2169847181082004984}
   - {fileID: 6055799875146286108}
   services: []
+--- !u!114 &-726254382828273572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df80bc6edc72d3d4ca2020992ceebc48, type: 3}
+  m_Name: Task_Boss Fake Attack Node
+  m_EditorClassIdentifier: Assembly-CSharp::Task_BossFakeAttackNode
+  position: {x: 551, y: -248}
+  attackKey: Boss_Fake_Attack
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 1
+  debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
+  counterCooldownSkillName: WeakCounter
 --- !u!114 &-571219295577504573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,7 +526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
   m_Name: Condition_Is Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 553, y: -154}
+  position: {x: 554, y: -85}
   exceptCondition:
     key: 
   targetStunType: 3
