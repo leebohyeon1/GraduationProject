@@ -7,7 +7,7 @@ public class SeamlessFlow : PlayerAbilitySO
 {
     [SerializeField] private int _requiredCounterStacks = 3; // 필요한 카운터 스택 수
     [SerializeField] private float _duration = 5.0f;          // 태그 유지 시간
-    private bool _isActive = false; // 기능 활성화 여부    
+
     private Coroutine _timerCoroutine;
 
     /// <summary>
