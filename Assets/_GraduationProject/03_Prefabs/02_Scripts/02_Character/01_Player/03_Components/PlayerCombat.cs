@@ -1,0 +1,748 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
+
+// Todo: 차지 레벨 사라짐에 따른 리펙토링 필요
+
+
+/// <summary>
+/// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
+/// </summary>
+public class PlayerCombat : MonoBehaviour, IDisposable
+{
+    [Header("References")]
+    private PlayerEvents _events;   // 플레이어 이벤트
+    private PlayerData _data = null;
+    [SerializeField] private Transform _attackPoint;
+
+    [SerializeField] private OnSwingMissSO _onSwingMiss;  // 공격 미스 이벤트
+
+    [Header("Attack")]
+    [SerializeField] private LayerMask _attackLayerMask;
+    // 공격 회복 비율
+    public float AttackRegainRate => _data != null ? _data.AttackRegainRate : 0f;
+    // 공격력 배율
+    public float AttackDamageMultiplier => _data != null ? _data.AttackDamageMultiplier : 0f;
+
+    [Header("NormalAttack")]
+    [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
+    public int NormalAttackComboIndex => _normalAttackComboIndex;
+
+    // 최대 공속 속도 배율
+    public float MaxNormalAttackSpeedMultiplier => _data != null ? _data.MaxNormalAttackSpeedMultiplier : 1.0f;
+    // 추가 공속 속도 배율
+    public float PlusNormalAttackSpeedMultiplier => _data != null ? _data.PlusNormalAttackSpeedMultiplier : 0f;
+    // 일반 공격 리스트
+    public List<PlayerAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttackConfigList : new List<PlayerAttackConfig>();
+
+    [Header("HeavyAttack")]
+    [SerializeField] private int _heavyAttackComboIndex = -1;
+    public int HeavyAttackComboIndex => _heavyAttackComboIndex;
+    public List<PlayerAttackConfig> HeavyAttackConfigList => _data != null ? _data.HeavyAttackConfigList : new List<PlayerAttackConfig>();
+    
+    [SerializeField] private int _heavyAttackConsumedStacks = 0; // 이번 연속 강공격에서 소모한 총 스택 수
+
+    [Header("Charge")]
+    // 차지 스테미나
+    public float ChargeStamina => _data != null ? _data.ChargeStamina : 5f;
+    // 최대 차지 시간
+    public float MaxChargeTime => _data != null ? _data.MaxChargeTime : 5f;
+
+    [SerializeField] private int _chargeLevel = -1;      // 차지 레벨
+    public int ChargeLevel => _chargeLevel;
+
+    [Header("Counter")]
+    public PlayerAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttackConfig;
+    public PlayerChargeConfig HeavyCounterAttackConfig => _data.HeavyCounterAttackConfig;
+    public List<float> CounterDamageMultiply => _data.CounterDamageMultiply;
+    public List<float> ProjectileCounterAddedVelocity => _data.ProjectileCounterAddedVelocity;
+
+    public float CounterAngle => _data != null ? _data.CounterAngle : 120;   // 상쇄 가능 각도
+
+    [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
+    [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
+
+    [SerializeField] private PlayerAbilityTagSO _counterSuccessTagSO; // 카운터 성공 시 슈퍼아머
+    public PlayerAbilityTagSO CounterSuccessTagSO => _counterSuccessTagSO;
+
+    public event Action CheckedProjectileCounter;
+
+    [Header("SpecialAttack")]
+    [SerializeField] private CanSpecialAttackSO _specialAttackSO;      // 특수 공격 SO
+    public CanSpecialAttackSO SpecialAttackSO => _specialAttackSO;
+
+
+    [Header("BattleState")]
+    [SerializeField] private float _lastBattleTime;  // 마지막 전투 시간
+    public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
+
+    [SerializeField] private bool _isBattleState;    // 전투 중인지 여부
+    public bool IsBattleState => _isBattleState; // 전투 상태 여부
+
+    private Coroutine _battleStateStopCoroutine; // 전투 상태 종료 코루틴
+    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
+
+    [Header("Parry Stack")]
+    [SerializeField] private int _parryStacks = 0;
+    public int ParryStacks => _parryStacks;
+    public event Action<int> ParryStackChanged;
+
+    [SerializeField] private float _parryStackTimer = 0f;
+    public float ParryStackTimer => _parryStackTimer;
+    private const int MAX_PARRY_STACKS = 3;
+    private const float PARRY_STACK_DURATION = 30f;
+
+    /// <summary>
+    /// 현재 패링 스택에 따른 데미지 배율을 반환합니다.
+    /// </summary>
+    public float ParryStackMultiplier
+    {
+        get
+        {
+            if (_data == null || _data.ParryStackDamageMultipliers == null || _data.ParryStackDamageMultipliers.Count == 0)
+                return 1f;
+
+            int index = Mathf.Clamp(_parryStacks, 0, _data.ParryStackDamageMultipliers.Count - 1);
+            return _data.ParryStackDamageMultipliers[index];
+        }
+    }
+
+
+    /// <summary>
+    /// 초기화 함수
+    /// </summary>
+    public void Initialize(PlayerController player)
+    {
+        _data = player.RuntimeData;
+        _events = player.Events;
+
+        _events.CounterWindowStarted += OnCounterWindowStarted;
+        _events.CounterWindowFinished += OnCounterWindowFinished;
+        _events.CounterSucceeded += OnCounterSucceeded;
+
+        _events.BeforeDamaged += OnBeforeDamaged;
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
+
+        InitializeData(player.Data);
+
+        // 데이터 초기화 (런타임 데이터가 비어있을 경우 SO에서 가져옴)
+        if (_data != null)
+        {
+            if (_data.MaxNormalAttackSpeedMultiplier == 0)
+                _data.MaxNormalAttackSpeedMultiplier = player.Data.MaxNormalAttackSpeedMultiplier;
+        }
+
+        // 패링 스택 초기화
+        _parryStacks = 0;
+        _parryStackTimer = 0f;
+    }
+
+
+
+    private void Update()
+    {
+        // 패링 스택 타이머 관리
+        if (_parryStacks > 0)
+        {
+            _parryStackTimer -= Time.deltaTime;
+            if (_parryStackTimer <= 0)
+            {
+                // 스택 1개 감소 및 타이머 재설정
+                _parryStacks--;
+                ParryStackChanged?.Invoke(_parryStacks);
+                if (_parryStacks > 0)
+                {
+                    _parryStackTimer = PARRY_STACK_DURATION;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 리소스 해제 함수
+    /// </summary>
+    public void Dispose()
+    {
+        _events.CounterWindowStarted -= OnCounterWindowStarted;
+        _events.CounterWindowFinished -= OnCounterWindowFinished;
+
+        _events.BeforeDamaged -= OnBeforeDamaged;
+
+        if(_battleStateStopCoroutine != null)
+        {
+            StopCoroutine(_battleStateStopCoroutine);
+            _battleStateStopCoroutine = null;
+        }
+
+        BattleStateChaged = null;
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    /// <param name="data">플레이어 데이터</param>
+    private void InitializeData(PlayerDataSO data)
+    {
+        _attackLayerMask = data.AttackLayerMask;
+
+        if (_data != null)
+        {
+            if (_data.ChargeStamina == 0) { _data.ChargeStamina = data.ChargeStamina; }
+            if (_data.MaxChargeTime == 0) {_data.MaxChargeTime = data.MaxChargeTime;}
+            if (_data.CounterAngle == 0) { _data.CounterAngle = data.CounterAngle; }
+
+            // Sync Configs
+            if (_data.NormalAttackConfigList.Count == 0)
+            {
+                _data.NormalAttackConfigList.AddRange(data.NormalAttackConfigList);
+            }
+
+            if (_data.CounterDamageMultiply.Count == 0)
+            {
+                _data.CounterDamageMultiply.AddRange(data.CounterDamageMultiply);
+            }
+
+            if (_data.ProjectileCounterAddedVelocity.Count == 0)
+            {
+                _data.ProjectileCounterAddedVelocity.AddRange(data.ProjectileCounterAddedVelocity);
+            }
+
+            // Check if default (assuming damage 0 is invalid/uninitialized)
+
+            if (_data.HeavyCounterAttackConfig.AttackConfig.AttackDamage == 0)
+            {
+                _data.HeavyCounterAttackConfig = data.HeavyCounterAttackConfig;
+            }
+
+            if (_data.NormalCounterAttackConfig.AttackDamage == 0)
+            {
+                _data.NormalCounterAttackConfig = data.NormalCounterAttackConfig;
+            }
+
+        }
+    }
+
+    //==========================================================================================================================
+    // BattleState =============================================================================================================
+    //==========================================================================================================================
+
+    #region BattleState
+
+    /// <summary>
+    /// 전투 상태를 변경합니다.
+    /// </summary>
+    /// <param name="isBattleState">새로운 전투 상태</param>
+    public void SetBattleState(bool isBattleState)
+    {
+        _isBattleState = isBattleState;
+    }
+
+    /// <summary>
+    /// 전투 상태 변경 이벤트를 발생시킵니다.
+    /// </summary>
+    public void TriggerBattleStateChanged(bool isBattleState)
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (isBattleState)
+        {
+            if(_battleStateStopCoroutine != null)
+            {
+                StopCoroutine(_battleStateStopCoroutine);
+            }
+            
+            _battleStateStopCoroutine = StartCoroutine(BattleStateStopCoroutine());
+        }
+
+        SetBattleState(isBattleState);
+        BattleStateChaged?.Invoke(isBattleState);
+    }
+
+    /// <summary>
+    /// 전투 상태 종료 코루틴
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator BattleStateStopCoroutine()
+    {
+        yield return new WaitForSeconds(8f);
+        
+        TriggerBattleStateChanged(false);
+        _battleStateStopCoroutine = null;
+    }
+
+    #endregion
+
+
+    //==========================================================================================================================
+    // Attack ==================================================================================================================
+    //==========================================================================================================================
+
+    #region Attack
+    /// <summary>
+    /// 공격의 중심 위치를 계산합니다.
+    /// </summary>
+    /// <returns>공격 박스의 중심 위치</returns>
+    public Vector3 GetAttackCenter(PlayerAttackConfig attackData)
+    {
+        return _attackPoint.position + _attackPoint.forward * (attackData.AttackRadius.z / 2);
+    }
+
+    /// <summary>
+    /// 공격을 실행합니다. (일반/차지 공격 등)
+    /// Physics.OverlapBox를 사용하여 박스 범위 내의 적을 감지합니다.
+    /// </summary>
+    /// <param name="attackData">공격 데이터</param>
+    /// <returns>타격한 대상의 콜라이더 배열</returns>
+    public Collider[] ExecuteAttack(PlayerAttackConfig attackData)
+    {
+        Vector3 attackCenter = GetAttackCenter(attackData);
+        Vector3 halfExtents = attackData.AttackRadius / 2f;
+
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+
+        if (hitEnemies.Length > 0)
+        {
+            ProcessHitEnemies(attackData, hitEnemies);
+        }
+        else
+        {
+            _onSwingMiss.Publish("OnSwingMiss");
+        }
+
+        return hitEnemies;
+    }
+
+    /// <summary>
+    /// 공격을 실행합니다. (커스텀 데미지 계산 지원)
+    /// </summary>
+    public Collider[] ExecuteAttackWithCustomDamage(PlayerAttackConfig attackData, Func<int, int> damageCalculator)
+    {
+        Vector3 attackCenter = GetAttackCenter(attackData);
+        Vector3 halfExtents = attackData.AttackRadius / 2f;
+
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+
+        if (hitEnemies.Length > 0)
+        {
+            ProcessHitEnemies(attackData, hitEnemies, damageCalculator);
+        }
+        else
+        {
+            _onSwingMiss.Publish("OnSwingMiss");
+        }
+
+        return hitEnemies;
+    }
+
+    /// <summary>
+    /// 공격에 맞은 적들에게 데미지를 입힙니다.
+    /// </summary>
+    /// <param name="attackData">공격 데이터</param>
+    /// <param name="hitObjects">타격한 대상의 콜라이더 배열</param>
+    private void ProcessHitEnemies(PlayerAttackConfig attackData, Collider[] hitObjects, Func<int, int> damageCalculator = null)
+    {
+        foreach (Collider obj in hitObjects)
+        {
+            // 패링된 적일 경우 넘긴다.
+            if (obj.TryGetComponent<IParryable>(out var parryable) && IsEnemyCountered(parryable))
+            {
+                continue;
+            }
+
+            if (obj.TryGetComponent<IDamageable>(out var damageable))
+            {
+                int finalDamage = (damageCalculator != null) ? damageCalculator(attackData.AttackDamage) : CalculateFinalDamage(attackData.AttackDamage);
+
+                DamageData damage = new DamageData
+                {
+                    AttackerTransform = transform,
+                    AttackType = attackData.AttackType,
+                    DamageAmount = finalDamage,
+                    StiffnessAmount = 0,
+                    KnockbackCurve = attackData.KnockbackCofig.StepCurve,
+                    KnockbackDuration = attackData.KnockbackCofig.StepDuration,
+                    KnockbackForce = attackData.KnockbackCofig.StepDistance,
+                };
+
+                Attack(damageable, damage);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 데미지를 입을 수 있는 객체에 타격
+    /// </summary>
+    /// <param name="damageable">타격 받을 객체</param>
+    /// <param name="damageData">데미지 데이터</param>
+    public void Attack(IDamageable damageable, DamageData damageData)
+    {
+        if (!damageable.IsDead)
+        {
+            damageable.TakeDamage(damageData);
+
+            int regainAmount = Mathf.RoundToInt(damageData.DamageAmount * AttackRegainRate);
+            _events.TriggerAttackRegained(regainAmount);
+        }
+    }
+
+    /// <summary>
+    /// 공격 흡혈 비율 증가
+    /// </summary>
+    /// <param name="amount">증가량</param>
+    public void IncreaseAttackRegainRate(float amount)
+    {
+        _data.AttackRegainRate += amount;
+    }
+
+    /// <summary>
+    /// 공격 흡혈 비율 감소
+    /// </summary>
+    /// <param name="amount">감소량</param>
+    public void DecreaseAttackRegainRate(float amount)
+    {
+        _data.AttackRegainRate = Mathf.Max(_data.AttackRegainRate - amount, 0);
+    }
+
+    /// <summary>
+    /// 공격력 배율 증가 함수
+    /// </summary>
+    /// <param name="amount">증가 배율</param>
+    public void IncreaseAttackDamageMultiplier(float amount)
+    {
+        _data.AttackDamageMultiplier += amount;
+    }
+
+    /// <summary>
+    /// 공격력 배율 감소 함수
+    /// </summary>
+    /// <param name="amount">감소 배울</param>
+    public void DecreaseAttackDamageMultiplier(float amount)
+    {
+        _data.AttackDamageMultiplier -= amount;
+    }
+
+    /// <summary>
+    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
+    /// </summary>
+    /// <param name="baseDamage">기본 데미지</param>
+    /// <returns>최종 데미지</returns>
+    public int CalculateFinalDamage(int baseDamage)
+    {
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
+        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier);
+
+    }
+
+    /// <summary>
+    /// 최종 데미지를 계산합니다. (공격력 배율 및 패링 스택 배율 적용)
+    /// </summary>
+    /// <param name="baseDamage">기본 데미지</param>
+    /// <returns>최종 데미지</returns>
+    public int CalculateFinalDamage(int baseDamage, int chargeLevel)
+    {        
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier );
+        return Mathf.RoundToInt(modifiedBase * ParryStackMultiplier * CounterDamageMultiply[chargeLevel]);
+    }
+
+    #endregion
+
+    //==========================================================================================================================
+    // NormalAttack ============================================================================================================
+    //==========================================================================================================================
+
+    #region NormalAttack
+    /// <summary>
+    /// 일반 공격 콤보 번호 증가
+    /// </summary>
+    public void IncreaseNormalAttackComboIndex()
+    {
+        _normalAttackComboIndex++;
+    }
+
+    /// <summary>
+    /// 일반 공격 콤보 리셋
+    /// </summary>
+    public void ResetNormalAttackComboIndex()
+    {
+        _normalAttackComboIndex = -1;
+    }
+
+    /// <summary>
+    /// 일반 공격 콤보 번호와 일반 공격 데이터 크기 비교 후
+    /// 일반 공격이 가능한지 여부 반환
+    /// </summary>
+    /// <returns>일반 공격 가능 여부</returns>
+    public bool CanNormalAttack()
+    {
+        return _normalAttackComboIndex < (NormalAttackConfigList.Count - 1);
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 증가
+    /// </summary>
+    public void IncreaseHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex++;
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 리셋 (연속 공격 종료 시 호출)
+    /// </summary>
+    public void ResetHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex = -1;
+        _heavyAttackConsumedStacks = 0;
+    }
+
+    /// <summary>
+    /// 강공격 가능 여부 확인 (패리 스택이 있고 최대 3콤보까지만 가능하도록 제한)
+    /// </summary>
+    public bool CanHeavyAttack()
+    {
+        // 패리 스택이 1개 이상 있어야 함
+        return _parryStacks > 0;
+    }
+
+    /// <summary>
+    /// 패리 스택 소모 (강공격 시 호출)
+    /// </summary>
+    public void ConsumeParryStack()
+    {
+        if (_parryStacks > 0)
+        {
+            _parryStacks--;
+            _heavyAttackConsumedStacks++;
+            _parryStackTimer = _parryStacks > 0 ? PARRY_STACK_DURATION : 0f;
+            ParryStackChanged?.Invoke(_parryStacks);
+        }
+    }
+
+    /// <summary>
+    /// 강공격 전용 최종 데미지 계산 (소모 스택 배율 적용)
+    /// </summary>
+    public int CalculateHeavyAttackDamage(int baseDamage)
+    {
+        // 1타: base * stackMultiplier
+        // 2타 이상: base * stackMultiplier * consumedStacks
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage * AttackDamageMultiplier);
+        float damage = modifiedBase * ParryStackMultiplier;
+        
+        if (_heavyAttackComboIndex > 0)
+        {
+            damage *= _heavyAttackConsumedStacks;
+        }
+
+        return Mathf.RoundToInt(damage);
+    }
+
+    /// <summary>
+    /// 일반 공속 배율 증가 함수
+    /// </summary>
+    /// <param name="rate">증가 배율</param>
+    public void IncreaseNormalAttackSpeedMultiplier(float rate)
+    {
+        _data.PlusNormalAttackSpeedMultiplier = Mathf.Min(_data.PlusNormalAttackSpeedMultiplier + rate, MaxNormalAttackSpeedMultiplier);
+    }
+
+    /// <summary>
+    /// 일반 공속 배율 감소 함수
+    /// </summary>
+    /// <param name="rate">감소 배율</param>
+    public void DecreaseNormalAttackSpeedMultiplier(float rate)
+    {
+        _data.PlusNormalAttackSpeedMultiplier = Mathf.Max(_data.PlusNormalAttackSpeedMultiplier - rate, 0);
+    } 
+    #endregion
+
+    //==========================================================================================================================
+    // Charge ==================================================================================================================
+    //==========================================================================================================================
+    
+    #region Charge
+    /// <summary>
+    /// 차지 레벨 증가
+    /// </summary>
+    public void IncreaseChargeLevel()
+    {
+        _chargeLevel++;
+    }
+
+    /// <summary>
+    /// 차지 레벨 초기화
+    /// </summary>
+    public void ResetChargeLevel()
+    {
+        _chargeLevel = -1;
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // Counter =================================================================================================================
+    //==========================================================================================================================
+
+    #region Counter
+    /// <summary>
+    /// 상쇄 가능 여부 설정
+    /// </summary>
+    /// <param name="value">설정값</param>
+    public void SetCounterable(bool value)
+    {
+        _isCounterable = value;
+    }
+
+    /// <summary>
+    /// 카운터된 적 추가
+    /// </summary>
+    /// <param name="enemy">카운터된 적</param>
+    public void AddCounterEnemy(IParryable enemy)
+    {
+        Debug.Log(111);
+        _counterEnemySet.Add(enemy);
+    }
+
+    /// <summary>
+    /// 카운터된 적들 초기화
+    /// </summary>
+    public void ClearCounterEnemySet()
+    {
+        _counterEnemySet.Clear();   
+    }
+
+    /// <summary>
+    /// 이미 적이 상쇄되었는지 체크
+    /// </summary>
+    /// <returns>있는지 여부</returns>
+    public bool IsEnemyCountered(IParryable enemy)
+    {
+        if(_counterEnemySet.Contains(enemy))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 투사체 체크 이벤트 발행
+    /// </summary>
+    public void TriggerCheckedProjectileCounter()
+    {
+        CheckedProjectileCounter?.Invoke();
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // Special Attack ==========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 특수 공격 스크립터블 오브젝트 설정
+    /// </summary>
+    /// <param name="specialAttackSO">특수 공격</param>
+    public void SetSpecialAttackSO(CanSpecialAttackSO specialAttackSO)
+    {
+        _specialAttackSO = specialAttackSO;
+        if (_data != null && specialAttackSO != null)
+        {
+             _data.CurrentSpecialAttackId = specialAttackSO.Id;
+        }
+    }
+
+    /// <summary>
+    /// 특수 공격 스크립터블 오브젝트 초기화
+    /// </summary>
+    public void ClearSpecialAttackSO()
+    {
+        _specialAttackSO = null;
+        if (_data != null)
+        {
+            _data.CurrentSpecialAttackId = "";
+        }
+    }
+
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 카운터 검사 시작
+    /// </summary>
+    private void OnCounterWindowStarted()
+    {
+        SetCounterable(true);
+    }
+
+    /// <summary>
+    /// 카운터 검사 종료
+    /// </summary>
+    private void OnCounterWindowFinished()
+    {
+        SetCounterable(false);
+    }
+
+    private void OnCounterSucceeded(Transform transform)
+    {
+            // 패링 스택 획득 및 타이머 초기화
+        _parryStacks = Mathf.Min(_parryStacks + 1, MAX_PARRY_STACKS);
+        _parryStackTimer = PARRY_STACK_DURATION;
+        ParryStackChanged?.Invoke(_parryStacks);
+    }
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        DamageData damageData = damageContext.Data;
+
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position; // 적으로 가는 벡터 구하기
+        // 적을 마주보고 있는가
+        bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (CounterAngle / 2f);
+
+
+        // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
+        bool validateAttackType = damageData.AttackType >= AttackType.Heavy1 && ChargeLevel >= 0 || damageData.AttackType == AttackType.Normal;
+
+
+        // 카운터에 성공하면 데미지 데이터 전부 0으로 처리
+        if (_isCounterable && isFacingEnemy && validateAttackType && !damageData.IsMagic
+            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        {
+            damageData.DamageAmount = 0;
+            damageData.StiffnessAmount = 0;
+            damageData.KnockbackDuration = 0;
+            damageData.KnockbackForce = 0;
+
+            damageContext.HasSuperArmor = true;
+
+
+            // 카운터 성공 이벤트 발행
+            _events.TriggerCounterSucceeded(damageData.AttackerTransform);
+        }
+
+        damageContext.Data = damageData;
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_data != null)
+        {
+            foreach (var attackData in _data.NormalAttackConfigList)
+            {
+                Gizmos.DrawWireCube(GetAttackCenter(attackData), attackData.AttackRadius);
+            }
+        }
+    }
+}
