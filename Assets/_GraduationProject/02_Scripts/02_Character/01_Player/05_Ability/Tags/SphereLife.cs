@@ -2,12 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "LastDetermination", menuName = "Project/Player/Ability/Tag/LastDetermination")]
-public class LastDetermination : PlayerAbilityTagSO
+[CreateAssetMenu(fileName = "SphereLife", menuName = "Project/Player/Ability/Tag/SphereLife")]
+public class SphereLife : PlayerAbilityTagSO
 {
     private PlayerController _player;
 
-    public int _requiredCounterStacks = 3; // 필요한 카운터 스택 수
     public float _invincibleDuration = 2f; // 지속 시간 (초)
     public PlayerAbilityTagSO _invincibleTag;
 
@@ -25,12 +24,6 @@ public class LastDetermination : PlayerAbilityTagSO
 
     private void OnHealthChanged(int previousHealth, int currentHealth)
     {
-        // 카운터 스택 없으면 리턴
-        if(_player.Combat.CounterStacks < _requiredCounterStacks)
-        {
-            return;
-        }
-
         if (currentHealth <= 0 && previousHealth > 0)
         {
             // 플레이어가 사망하기 직전에 체력이 0 이하로 떨어지는 경우
