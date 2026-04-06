@@ -1,23 +1,43 @@
 using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "Stunned", menuName = "BehaviorTree/Stunned")]
 public class Stunned : Node
 {
+    [Header("Attack Block Settings")]
+    [Tooltip("스턴 종료 후 모든 공격 차단 활성화")]
+    public bool enableAttackBlock = true;
+    [Tooltip("스턴 종료 후 공격 차단 지속시간 (초)")]
+    public float attackBlockDuration = 1.0f;
+    
     private int _enterFrame;
+    string[] attackSkills;
+    public override void initNode()
+    {
+        base.initNode();
+        attackSkills = runner._aiController.enemyAttackDatas.Select(data => data.AttackName).ToArray();
+    }
+
 
     public override void OnEnter()
     {
+        Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
         base.OnEnter();
         _enterFrame = Time.frameCount;
-        
+                // 스턴 시작 시점부터 모든 공격 차단 (사용자 요청)
+        if (enableAttackBlock)
+        {
+            BlockAllAttacks();
+        }
+            
         // 1. 애니메이션 신호 및 공격 상태 즉시 초기화 (이전 행동의 잔상 제거)
         if (Handler != null) Handler.ResetAllFlags();
         
         if (runner._animationBridge != null)
         {
-            runner._animationBridge.ClearIsAttacking();
+            runner._animationBridge.ResetAllAnimationStates(); // 모든 애니메이션 상태 완전 초기화
         }
 
         // 2. 진입 시 물리 관성 제거
@@ -35,6 +55,7 @@ public class Stunned : Node
         if(runner.Shield != null)
             runner.Shield.IsActive = false;
             
+
         // // Debug.Log("<color=red>--STUNNED--: OnEnter (Initial Cleanup Done)</color>");
     }
 
@@ -63,12 +84,37 @@ public class Stunned : Node
         }
     }
 
+    /// <summary>
+    /// 스턴 시작/종료 시점에 모든 Boss 공격을 일정시간 차단
+    /// </summary>
+    private void BlockAllAttacks()
+    {
+        // WeakCounter Random Chance 노드 차단
+        brain.StartSkillCooldown("WeakCounter", attackBlockDuration);
+        UnityEngine.Debug.Log($"[Stunned] WeakCounter 차단 시작 ({attackBlockDuration}초)");
+        
+        // 모든 Boss 공격 스킬 차단
+        for(int i = 0; i < attackSkills.Length; i++)
+        {
+            string attackSkill = attackSkills[i];
+            brain.StartSkillCooldown(attackSkill, attackBlockDuration);
+            UnityEngine.Debug.Log($"[Stunned] {attackSkill} 차단 시작 ({attackBlockDuration}초)");
+        }
+    }
+
     public override void OnExit()
     {
         // [사용자 요청] 스턴 종료 시 예기치 않게 정리되지 않은 타 노드들의 상태를 강제 초기화 (Total Cleanup)
         
         // 1. 스턴 시스템 종료 처리
         runner.ParrySystem.ClearStun();
+                // 1. 애니메이션 신호 및 공격 상태 즉시 초기화 (이전 행동의 잔상 제거)
+        if (Handler != null) Handler.ResetAllFlags();
+        
+        if (runner._animationBridge != null)
+        {
+            runner._animationBridge.ResetAllAnimationStates(); // 모든 애니메이션 상태 완전 초기화
+        }
         
         // 2. 물리적 관성 및 잔류 속도 완전 소거 (미끄러짐 방지)
         Rigidbody rb = runner.GetComponent<Rigidbody>();
@@ -101,7 +147,7 @@ public class Stunned : Node
         
         if (runner._animationBridge != null)
         {
-            runner._animationBridge.ClearIsAttacking();
+            runner._animationBridge.ResetAllAnimationStates(); // 스턴 종료시 애니메이션 상태 완전 초기화
         }
 
         // 5. 블랙보드 전투 관련 변수 초기화
@@ -112,6 +158,12 @@ public class Stunned : Node
         if(runner.Shield != null)
             runner.Shield.IsActive = true;
             
+        // 7. 스턴 종료 후 공격 차단 (사용자 요청 기능)
+        if (enableAttackBlock)
+        {
+            BlockAllAttacks();
+        }
+        
         // // Debug.Log("<color=red>--STUNNED EXIT--: Total State Cleanup Performed</color>");
         
         runner.SetState(EnemyStateController.EnemyState.Idle);

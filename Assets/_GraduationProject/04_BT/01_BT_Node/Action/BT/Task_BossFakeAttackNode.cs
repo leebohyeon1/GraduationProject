@@ -12,34 +12,17 @@ public class Task_BossFakeAttackNode : BaseAttackNode
 
     protected override void SpecificCleanup()
     {
-        base.SpecificCleanup();
+        base.SpecificCleanup(); // BaseAttackNode의 공통 패리 차단 로직 실행
 
         _isActionFinishedInternally = true;
 
-        if (ShouldStartCooldown())
-        {
-            StartBossFakeAttackCooldown();
-        }
-        else
-        {
-            LogCooldownSkipReason();
-        }
+        LogParryDebugInfo();
     }
 
-    private bool ShouldStartCooldown()
+    private void LogParryDebugInfo()
     {
-        return !_wasParriedDuringAttack;
-    }
-
-    private void StartBossFakeAttackCooldown()
-    {
-        brain.StartSkillCooldown(attackKey);
-        Debug.Log($"[Task_BossFakeAttackNode] {attackKey} 쿨타임 시작");
-    }
-
-    private void LogCooldownSkipReason()
-    {
-        Debug.Log($"[Task_BossFakeAttackNode] 패리당했으므로 {attackKey} 쿨타임 시작하지 않음");
+        bool isStunned = runner.ParrySystem != null && runner.ParrySystem._isStunned;
+        Debug.Log($"[Task_BossFakeAttackNode] SpecificCleanup - _wasStunnedDuringAttack: {_wasStunnedDuringAttack}, ParrySystem._isStunned: {isStunned}");
     }
 
     public override Node Clone()
