@@ -19,7 +19,12 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
 
         // 강공격 콤보 순서 증가 및 스택 소모
         p_owner.Combat.IncreaseHeavyAttackComboIndex();
-        p_owner.Combat.ConsumeCounterStack();
+
+        // 강공격 무시 태그가 없으면 
+        if(!p_owner.Ability.HasTag("IgnoreStrongAttackStack"))
+        {
+            p_owner.Combat.ConsumeCounterStack();
+        }
 
         base.SetupStats();
     }
