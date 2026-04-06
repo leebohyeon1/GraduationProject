@@ -114,7 +114,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     /// 상쇄 성공
     /// </summary>
     /// <param name="transform">상쇄한 적</param>
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         // 상쇄 성공 시 슈퍼 아머
         if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
@@ -125,7 +125,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
-            parryable.Parry(AttackType.NormalCounter);
+            parryable.Parry(AttackType.Normal_Counter);
             p_owner.Combat.AddCounterEnemy(parryable);
         }
 
@@ -152,7 +152,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
-                AttackType = AttackType.NormalCounter,
+                AttackType = AttackType.Normal_Counter,
                 DamageAmount = finalDamage,
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
@@ -199,7 +199,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     projectile.Setup(direction, speed, p_owner.gameObject, damageData);
 
                     // 카운터 성공 이벤트 발행
-                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform);
+                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, p_AttackConfig.AttackType);
                 }
             }
         }

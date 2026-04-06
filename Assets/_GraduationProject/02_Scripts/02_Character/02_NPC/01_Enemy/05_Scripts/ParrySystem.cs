@@ -58,7 +58,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
                 return false;
             }
         }   
-        if(attackType == AttackType.NormalCounter)
+        if(attackType == AttackType.Normal_Counter)
         {
             Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
             _owner.StiffnessSystem.AddStiffness(0);

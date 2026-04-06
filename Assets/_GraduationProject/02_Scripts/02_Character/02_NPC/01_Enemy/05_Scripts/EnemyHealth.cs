@@ -71,11 +71,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (_currentImmunityLevel == ImmunityLevel.Minor)
         {
-            if (incomingAttackType == AttackType.Normal) return true;
+            if (incomingAttackType <= AttackType.Normal_3) return true;
         }
         if (_currentImmunityLevel == ImmunityLevel.Major)
         {
-            if (incomingAttackType == AttackType.NormalCounter || incomingAttackType == AttackType.Normal) return true;
+            if (incomingAttackType == AttackType.Normal_Counter || incomingAttackType <= AttackType.Normal_3) return true;
         }
         return false;
     }

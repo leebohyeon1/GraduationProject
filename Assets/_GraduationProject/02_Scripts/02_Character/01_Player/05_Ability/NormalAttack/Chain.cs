@@ -38,7 +38,7 @@ public class Chain : PlayerAbilitySO
             return; // 최대 체인 수에 도달한 경우 더 이상 적용하지 않음
         }
 
-        if(data.AttackType == AttackType.Normal)
+        if(data.AttackType <= AttackType.Normal_3)
         {
             if (_chaingCoroutine == null)
             {

@@ -24,7 +24,7 @@ public class NormalAttackHeal : PlayerAbilityTagSO
 
     private void OnAttackEvent(IDamageable damageable, DamageData data)
     {
-        if(data.AttackType == AttackType.Normal)
+        if(data.AttackType <= AttackType.Normal_3)
         {
             _controller.Health.Heal(_healAmount);
         }

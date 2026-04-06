@@ -36,7 +36,7 @@ public class HitTower : MonoBehaviour, IDamageable
             return;
         }
 
-        if (damageData.AttackType >= AttackType.Heavy1)
+        if (damageData.AttackType >= AttackType.Strong_1)
         {
             Debug.Log("타워 때리기 퍼즐 상호작용!");
 

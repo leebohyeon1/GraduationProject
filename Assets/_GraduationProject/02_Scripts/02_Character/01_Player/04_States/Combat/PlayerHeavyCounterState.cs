@@ -105,7 +105,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     /// 상쇄 성공
     /// </summary>
     /// <param name="transform">상쇄한 적</param>
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         // 상쇄 성공 시 슈퍼 아머
         if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
@@ -116,7 +116,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
-            parryable.Parry(AttackType.HeavyCounter);
+            parryable.Parry(AttackType.Strong_Counter);
             p_owner.Combat.AddCounterEnemy(parryable);
             p_owner.Events.TriggerOnlyChargeAttackSucceded();
         }
@@ -145,7 +145,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             DamageData damage = new DamageData
             {
                 AttackerTransform = transform,
-                AttackType = AttackType.NormalCounter,
+                AttackType = AttackType.Normal_Counter,
                 DamageAmount = finalDamage,
                 StiffnessAmount = 0,
                 KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
@@ -193,7 +193,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
                     // 투사체를 튕겨낼 시 
                     // 상쇄 이벤트 발생
-                    p_owner.Events.TriggerCounterSucceeded(projectile.transform); 
+                    p_owner.Events.TriggerCounterSucceeded(projectile.transform, p_AttackConfig.AttackType); 
                     p_owner.Events.TriggerOnlyChargeAttackSucceded();
                 }
             }

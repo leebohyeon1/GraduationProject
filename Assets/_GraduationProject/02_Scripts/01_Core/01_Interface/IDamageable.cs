@@ -68,11 +68,14 @@ public struct DamageData
 [Serializable]
 public enum AttackType
 {
-    Normal,
-    NormalCounter,
-    Heavy1,
-    Heavy2,
-    Heavy3,
-    HeavyCounter,
+    Normal_0,
+    Normal_1,
+    Normal_2,
+    Normal_3,
+    Strong_1,
+    Strong_2,
+    Strong_3,
+    Normal_Counter,
+    Strong_Counter,
     Absoluteness,
 }

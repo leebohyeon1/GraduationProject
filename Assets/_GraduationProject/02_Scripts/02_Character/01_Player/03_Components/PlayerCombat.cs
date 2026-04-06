@@ -538,7 +538,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         SetCounterable(false);
     }
 
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         // 패링 스택 획득 및 타이머 초기화
         _counterStacks = Mathf.Min(_counterStacks + 1, (int)_data.MaxCounterStack.Value);
@@ -560,7 +560,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
 
         // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
-        bool validateAttackType = (damageData.AttackType >= AttackType.Heavy1 && _isCharge) || damageData.AttackType == AttackType.Normal;
+        bool validateAttackType = (damageData.AttackType >= AttackType.Strong_1 && _isCharge) || damageData.AttackType <= AttackType.Normal_3;
 
 
         // 카운터에 성공하면 데미지 데이터 전부 0으로 처리
@@ -574,9 +574,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             damageContext.HasSuperArmor = true;
 
+            AttackType counterType = AttackType.Normal_Counter;
+            if(_isCharge)
+            {
+                counterType = AttackType.Strong_Counter; 
+            }
 
             // 카운터 성공 이벤트 발행
-            _events.TriggerCounterSucceeded(damageData.AttackerTransform);
+            _events.TriggerCounterSucceeded(damageData.AttackerTransform, counterType);
         }
 
         damageContext.Data = damageData;

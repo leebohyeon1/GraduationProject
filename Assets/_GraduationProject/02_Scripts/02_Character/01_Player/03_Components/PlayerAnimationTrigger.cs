@@ -194,7 +194,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// 상쇄 성공 이벤트 
     /// </summary>
     /// <param name="transform"></param>
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         CounterSuccessFeedback?.Invoke();
     }

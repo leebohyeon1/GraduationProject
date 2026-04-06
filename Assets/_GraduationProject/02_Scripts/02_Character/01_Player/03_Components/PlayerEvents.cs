@@ -159,7 +159,7 @@ public class PlayerEvents
 
     #region Counter
     public event Action CounterWindowStarted, CounterWindowFinished; // 패링 수행 이벤트
-    public event Action<Transform>  CounterSucceeded; // 패링 성공 이벤트
+    public event Action<Transform, AttackType>  CounterSucceeded; // 패링 성공 이벤트
 
     /// <summary>
     /// 패링 검사 시작 이벤트 발행
@@ -180,9 +180,9 @@ public class PlayerEvents
     /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerCounterSucceeded(Transform transform)
+    public void TriggerCounterSucceeded(Transform transform, AttackType type)
     {
-        CounterSucceeded?.Invoke(transform);
+        CounterSucceeded?.Invoke(transform, type);
     }
 
     #endregion
