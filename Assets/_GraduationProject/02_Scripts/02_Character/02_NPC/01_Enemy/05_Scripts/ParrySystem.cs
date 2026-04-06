@@ -76,6 +76,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyStun()
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        Debug.Log($"[ParrySystem] ApplyStun {_owner.name} duration={_stunTime}");
         CurrentStun = StunType.Full;
         _stunExitTime = Time.time + _stunTime;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
@@ -87,6 +88,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyStun(float stunDuration)
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        Debug.Log($"[ParrySystem] ApplyStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Full;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
@@ -98,6 +100,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ApplyWeakStun(float stunDuration)
     {
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        Debug.Log($"[ParrySystem] ApplyWeakStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Weak;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
@@ -108,10 +111,12 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     }
     public void ClearStun()
     {
+        Debug.Log($"[ParrySystem] ClearStun {_owner.name}");
         _owner.animator.SetBool("Stun", false);
         _owner.animator.SetBool("WeakStun", false);
         CurrentStun = StunType.None;
         CurrentState = EnemyState.StunnedExit;
+        _owner.SetState(EnemyStateController.EnemyState.Idle);
     }
     public void StateNormal()
     {

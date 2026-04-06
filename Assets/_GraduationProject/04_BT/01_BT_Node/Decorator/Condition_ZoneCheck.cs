@@ -28,7 +28,7 @@ namespace BehaviorTree
 
             // 현재 구역이 타겟 구역 리스트에 포함되어 있는지 확인합니다.
             // 플레이어가 밟고 있는 구역들 중 타겟 ID가 하나라도 포함되어 있는지 확인합니다.
-            Debug.Log(" targetZoneIds.Any(id => tracker.CurrentZoneId == id) :"+  targetZoneIds.Any(id => tracker.CurrentZoneId == id));
+            // Debug.Log(" targetZoneIds.Any(id => tracker.CurrentZoneId == id) :"+  targetZoneIds.Any(id => tracker.CurrentZoneId == id));
             return targetZoneIds.Any(id => tracker.CurrentZoneId == id);
         }
 
