@@ -27,6 +27,9 @@ public class PlayerDamagedState : PlayerBaseState
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
         p_owner.Combat.SetCharge(false);                  // 차지 레벨 초기화
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
+        p_owner.Events.TriggerCounterWindowFinished();
+        p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ClearCounterDamagedEnemy();
 
         KnockbackMovement();
 

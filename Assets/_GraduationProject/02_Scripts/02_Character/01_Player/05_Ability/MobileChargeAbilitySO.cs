@@ -4,7 +4,7 @@ using UnityEngine;
 /// 플레이어의 기동차징 어빌리티입니다.
 /// 차징 중에 이동과 대시를 가능하게 합니다.
 /// </summary>
-[CreateAssetMenu(fileName = "MobileChargeAbilitySO", menuName = "Project/Player/Ability/MobileChargeAbility")]
+[CreateAssetMenu(fileName = "MobileChargeAbilitySO", menuName = "Project/Player/Ability/Ability/MobileChargeAbility")]
 public class MobileChargeAbilitySO : PlayerAbilitySO
 {
     [Header("Charge Dash Setting")]

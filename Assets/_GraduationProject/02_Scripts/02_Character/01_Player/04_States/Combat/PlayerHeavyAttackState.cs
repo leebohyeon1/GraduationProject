@@ -76,8 +76,8 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
     /// </summary>
     protected override void OnHeavyAttack()
     {
-        // 패리 스택이 남아있고 다음 콤보가 가능하면 강공격 지속
-        if (p_owner.Combat.CounterStacks > 0 && p_owner.Combat.CanHeavyAttack())
+        // 강공격 능력이 있고 패리 스택이 남아있고 다음 콤보가 가능하면 강공격 지속
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Combat.CanHeavyAttack())
         {
             if (p_nextState != null) return;
             if (!p_owner.Stamina.CheckStamina()) return;
@@ -93,7 +93,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
         }
         else
         {
-            // 스택이 없거나 콤보가 끝났으면 일반 공격으로 대체
+            // 능력이 없거나 패리 스택이 없으면 일반 공격 처리
             OnNormalAttack();
         }
     }

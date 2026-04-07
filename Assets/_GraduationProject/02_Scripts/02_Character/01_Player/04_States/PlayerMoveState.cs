@@ -99,14 +99,14 @@ public class PlayerMoveState : PlayerBaseState
     {
         base.OnHeavyAttack();
         
-        // 패리 스택이 1개 이상이면 강공격 상태로 전환
-        if (p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
+        // 강공격 능력이 있고 패리 스택이 1개 이상이면 강공격 상태로 전환
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
         {
             p_stateMachine.ChangeState<PlayerHeavyAttackState>();
         }
         else
         {
-            // 패리 스택이 없으면 일반 공격 처리
+            // 능력이 없거나 패리 스택이 없으면 일반 공격 처리
             OnNormalAttack();
         }
     }
