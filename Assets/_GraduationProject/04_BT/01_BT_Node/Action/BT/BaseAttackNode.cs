@@ -65,7 +65,8 @@ public abstract class BaseAttackNode : Node
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
     private bool _wasInTransition = false; 
-    private bool _hasHaltedMovement = false; 
+    private bool _hasHaltedMovement = false;
+    protected bool _wasParriedDuringAttack = false; 
 
     private static readonly Collider[] _hitBuffer = new Collider[16];
 
@@ -80,6 +81,7 @@ public abstract class BaseAttackNode : Node
         _didSetLock = false;
         _wasInTransition = false;
         _hasHaltedMovement = false;
+        _wasParriedDuringAttack = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
@@ -129,6 +131,14 @@ public abstract class BaseAttackNode : Node
         if (_isActionFinishedInternally) return NodeState.FAILURE;
         if (_data == null || runner.animator == null) return NodeState.FAILURE;
         if (runner.CurrentState != EnemyStateController.EnemyState.Attack) return NodeState.FAILURE;
+
+        // Track if enemy was parried/stunned during attack (only for Boss_Fake_Attack)
+        if (runner.ParrySystem != null && runner.ParrySystem._isStunned && !_wasParriedDuringAttack && 
+            _data != null && _data.AttackName == "Boss_Fake_Attack")
+        {
+            _wasParriedDuringAttack = true;
+            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} was PARRIED - tracking for completion");
+        }
 
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
@@ -314,7 +324,18 @@ public abstract class BaseAttackNode : Node
         if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
         {
             if (NextBT) return NodeState.SUCCESS;
-            return brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false) ? NodeState.SUCCESS : NodeState.FAILURE;
+            
+            bool didHit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
+            
+            // Only check parry status for Boss_Fake_Attack
+            if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")
+            {
+                UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed after being PARRIED. Hit: {didHit}, Returning: FAILURE");
+                return NodeState.FAILURE;
+            }
+            
+            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed normally. Hit: {didHit}, Returning: SUCCESS");
+            return NodeState.SUCCESS;
         }
         return NodeState.RUNNING;
     }

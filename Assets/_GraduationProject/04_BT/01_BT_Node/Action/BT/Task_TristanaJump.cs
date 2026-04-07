@@ -88,6 +88,7 @@ public class Task_TristanaJump : BaseAttackNode
             ai.canMove = false;
             ai.isStopped = true;
         }
+        Debug.Log("[Task_TristanaJump] 점프 시작 - 목표 위치: " + _targetPos);
     }
 
     protected override void UpdateMovement()
@@ -125,7 +126,14 @@ public class Task_TristanaJump : BaseAttackNode
         Vector3 landPos = _targetPos;
         Vector3 rayOrigin = landPos + Vector3.up * groundCheckHeight;
         float rayDistance = groundCheckHeight + groundCheckDistance;
-        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, groundLayer, QueryTriggerInteraction.Ignore))
+        LayerMask rayMask = groundLayer;
+        if (rayMask.value == 0)
+        {
+            rayMask = LayerMask.GetMask("Ground");
+        }
+        rayMask &= ~LayerMask.GetMask("Player");
+
+        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, rayMask, QueryTriggerInteraction.Ignore))
         {
             landPos.y = hit.point.y;
         }

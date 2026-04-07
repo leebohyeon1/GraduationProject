@@ -79,6 +79,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         if(phase <= _owner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase))
         {
             IsHitWindowOpen = true;
+            Debug.Log($"[HitWindow Open] {_owner.name} phase={phase}");
         }
     }
     /// <summary>
@@ -87,6 +88,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public void CloseHitWindow()
     {
         IsHitWindowOpen = false;
+        Debug.Log($"[HitWindow Close] {_owner.name}");
     }
     /// <summary>
     /// Marks action as finished.
@@ -94,6 +96,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     public void FinishAction()
     {
         IsActionFinished = true;
+        Debug.Log($"[Action Finished] {_owner.name}");
     }
     /// <summary>
     /// Marks ActionSO window as active.

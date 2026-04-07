@@ -613,7 +613,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public void ClearCounterEnemySet()
     {
-        Debug.Log(222);
         _counterEnemySet.Clear();   
     }
 
