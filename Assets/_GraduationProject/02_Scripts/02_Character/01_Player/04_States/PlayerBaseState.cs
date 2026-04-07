@@ -88,6 +88,16 @@ public abstract class PlayerBaseState : IState, IDisposable
         p_owner.InputReader.LockOnTargetChangeForKeyboard += OnLockOnTargetChangeForKeyboard;
         p_owner.InputReader.LockOnTargetChangeForGamepadEvent += OnLockOnTargetChangeForGamepadEvent;
 
+        p_owner.Events.TriggerCounterWindowFinished();
+        p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ClearCounterDamagedEnemy();
+
+        // 상쇄로 인한 수퍼아머 태그가 있으면
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        {
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
+        }
+
     }
     /// <summary>
     /// 능력치 설정 함수

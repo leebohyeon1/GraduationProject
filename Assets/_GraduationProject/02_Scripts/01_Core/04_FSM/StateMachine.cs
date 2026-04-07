@@ -19,6 +19,8 @@ public class StateMachine<T> : IDisposable
     public IState CurrentState => _currentState;
     public IState PreviousState => _previousState;
 
+    public event Action<IState> OnStateChanged; // 상태 변경 이벤트 추가
+
     public StateMachine(T context)
     {
         _context = context;
@@ -67,6 +69,8 @@ public class StateMachine<T> : IDisposable
         _currentState = _states[stateType];
 
         _currentState.OnEnter();
+
+        OnStateChanged?.Invoke(_currentState); // 상태 변경 알림
     }
 
     public T GetContext()

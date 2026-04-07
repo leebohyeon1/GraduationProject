@@ -130,9 +130,9 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             return;
         }
 
-        if (p_owner.Combat.CounterStacks <= 0)
+        if (p_owner.Combat.CounterStacks <= 0 || !p_owner.Ability.HasAbility("HeavyAttack"))
         {
-            // 패리 스택이 없으면 일반 공격으로 대체
+            // 패리 스택이 없거나 강공격 능력이 없으면 일반 공격으로 대체
             OnNormalAttack();
             return;
         }
