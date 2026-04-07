@@ -463,6 +463,16 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         }
     }
 
+    /// <summary>
+    /// 카운터 스택을 1개 회복하고 타이머를 갱신합니다.
+    /// </summary>
+    public void AddCounterStack()
+    {
+        _counterStacks = Mathf.Min(_counterStacks + 1, (int)_data.MaxCounterStack.Value);
+        _parryStackTimer = _data.CounterStackDuration.Value;
+        CounterStackChanged?.Invoke(_counterStacks);
+    }
+
     public void ResetCounterStack()
     {
         _counterStacks = 0;
@@ -540,10 +550,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
-        // 패링 스택 획득 및 타이머 초기화
-        _counterStacks = Mathf.Min(_counterStacks + 1, (int)_data.MaxCounterStack.Value);
-        _parryStackTimer = _data.CounterStackDuration.Value;
-        CounterStackChanged?.Invoke(_counterStacks);
+        AddCounterStack();
     }
 
     /// <summary>
