@@ -20,7 +20,7 @@ public class CounterImpactAbility : PlayerAbilitySO
         base.UnregisterAbility(ability);
     }
 
-    private void OnCounterSucceeded(Transform transform, AttackType type)
+    protected virtual void OnCounterSucceeded(Transform transform, AttackType type)
     {
         if (type == AttackType.Normal_Counter || type == AttackType.Strong_Counter)
         {

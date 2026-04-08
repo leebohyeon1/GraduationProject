@@ -239,7 +239,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public Collider[] ExecuteAttack(IRuntimeAttackConfig attackData)
     {
-        return ExecuteAttackInternal(attackData, (int)attackData.Damage.Value);
+        return ExecuteAttackInternal(attackData);
     }
 
     /// <summary>
@@ -247,13 +247,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     public Collider[] ExecuteAttackWithCustomDamage(IRuntimeAttackConfig attackData, Func<int, int> damageCalculator)
     {
-        return ExecuteAttackInternal(attackData, (int)attackData.Damage.Value, damageCalculator);
+        return ExecuteAttackInternal(attackData, damageCalculator);
     }
 
     /// <summary>
     /// 내부 공격 실행 로직
     /// </summary>
-    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, int runtimeDamage, Func<int, int> damageCalculator = null)
+    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, Func<int, int> damageCalculator = null)
     {
         Vector3 attackCenter = GetAttackCenter(data);
         Vector3 halfExtents = data.AttackRadius / 2f;
@@ -262,7 +262,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         if (hitEnemies.Length > 0)
         {
-            ProcessHitEnemiesInternal(data, runtimeDamage, hitEnemies, damageCalculator);
+            ProcessHitEnemiesInternal(data, hitEnemies, damageCalculator);
         }
         else
         {
@@ -275,7 +275,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <summary>
     /// 공격에 맞은 적들에게 데미지를 입힙니다. (내부용)
     /// </summary>
-    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, int runtimeDamage, Collider[] hitObjects, Func<int, int> damageCalculator = null)
+    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, Collider[] hitObjects, Func<int, int> damageCalculator = null)
     {
         foreach (Collider obj in hitObjects)
         {
@@ -287,6 +287,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
+                // 계산 전 이벤트 발생 (Stat 객체 포함하여 데미지 변조 가능하게 함)
+                _events.TriggerBeforeDamageCalculate(obj.transform, data.Damage);
+
+                int runtimeDamage = (int)data.Damage.Value;
                 int finalDamage = (damageCalculator != null) ? damageCalculator(runtimeDamage) : runtimeDamage;
 
                 DamageData damage = new DamageData
