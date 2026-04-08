@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 765a3b927a6f2234da1c9a48584df25f, type: 3}
-  m_Name: Attack03_d
+  m_Name: Attack03_f_2
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackData
-  AttackName: Attack03_d
+  AttackName: Attack03_f_2
   damageData:
     AttackerTransform: {fileID: 0}
-    AttackType: 1
+    AttackType: 0
     DamageAmount: 10
     StiffnessAmount: 10
     KnockbackCurve:
@@ -31,6 +31,15 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
+        time: 0.10039595
+        value: 0.63571304
+        inSlope: 1.1992079
+        outSlope: 1.1992079
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
         time: 1
         value: 1
         inSlope: 0
@@ -42,14 +51,14 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
+    KnockbackDuration: 0.2
+    KnockbackForce: 1
     IsMagic: 0
-  Cooltime: 2
-  shape: 2
-  damageRadius: 6
-  attackOffset: {x: 0, y: 1, z: 1}
+  Cooltime: 6
+  shape: 1
+  damageRadius: 1
+  attackOffset: {x: 0, y: 1.3, z: 3.5}
   Phase: 0
-  boxSize: {x: 1, y: 1, z: 2}
-  fanAngle: 100
-  sizeY: 10
+  boxSize: {x: 5, y: 2, z: 4}
+  fanAngle: 110
+  sizeY: 1
