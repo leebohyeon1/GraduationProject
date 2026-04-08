@@ -667,7 +667,7 @@ GameObject:
   - component: {fileID: 2909034448163878912}
   - component: {fileID: 4585195697700763887}
   m_Layer: 5
-  m_Name: Ancient_Power
+  m_Name: HeavyAttackKillRecover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -803,16 +803,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Ancient Power
-  _skillDescription: "\uCC28\uC9D5 \uCD5C\uACE0 \uB2E8\uACC4\uAC00 3\uB2E8\uACC4\uAE4C\uC9C0
-    \uAC1C\uBC29 \uB41C\uB2E4(75\uB370\uBBF8\uC9C0/100\uB370\uBBF8\uC9C0)."
+  _skillName: HeavyAttackKillRecover
+  _skillDescription: "\uAC15\uACF5\uACA9\uC73C\uB85C \uCC98\uCE58 \uC2DC 1\uC2A4\uD0DD
+    \uC989\uC2DC \uD68C\uBCF5"
   _skillToggleButton: {fileID: 8837090683282628801}
-  _price: 200
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: 52bddfbf981ddd1409f6e5469075eec8, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 2dc44c92d2f32f244a15edd1acc7fefb, type: 2}
+  - {fileID: 11400000, guid: d621cb0a1dba2c142b3093ecd79344cc, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &4585195697700763887
 MonoBehaviour:
@@ -1117,6 +1116,9 @@ RectTransform:
   - {fileID: 3730384112217456553}
   - {fileID: 106856083657548669}
   - {fileID: 3826605701793036767}
+  - {fileID: 9082261558910361445}
+  - {fileID: 6423525461430965131}
+  - {fileID: 7413924175334652635}
   m_Father: {fileID: 5972958923195225355}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
@@ -1605,6 +1607,196 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &509419331071176852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7413924175334652635}
+  - component: {fileID: 4001887554922245042}
+  - component: {fileID: 4957738826305917201}
+  - component: {fileID: 337221063042435097}
+  - component: {fileID: 497591550515265012}
+  - component: {fileID: 1120919545493529547}
+  m_Layer: 5
+  m_Name: StarveSword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7413924175334652635
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7630366194245961260}
+  m_Father: {fileID: 4269865601366188810}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 3.3, y: 211.7}
+  m_SizeDelta: {x: 106, y: 106}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4001887554922245042
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_CullTransparentMesh: 1
+--- !u!114 &4957738826305917201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 2100000, guid: 067b8257c50743c489399d90a0b47cb4, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e8ff3ce17c462cf4a96c16c61035a8fd, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &337221063042435097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 4957738826305917201}
+  toggleTransition: 1
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 497591550515265012}
+        m_TargetAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+        m_MethodName: AcquireSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
+--- !u!114 &497591550515265012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
+  _skillName: StarveSword
+  _skillDescription: "\uAE30\uBCF8 \uACF5\uACA9 \uC801\uC911 \uC2DC \uCCB4\uB825
+    5\uD68C\uBCF5"
+  _skillToggleButton: {fileID: 337221063042435097}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
+  _learnAbilities:
+  - {fileID: 11400000, guid: a5e1ff515c865994192d4b448c08711a, type: 2}
+  _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
+--- !u!114 &1120919545493529547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509419331071176852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 906802062477791206}
+          m_TargetAssemblyTypeName: SkillUI, Assembly-CSharp
+          m_MethodName: UpdateDescription
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 497591550515265012}
+            m_ObjectArgumentAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &554643914592513467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2093,6 +2285,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &931314087330489385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2079806071486217819}
+  - component: {fileID: 2715375444302601444}
+  - component: {fileID: 1043373816785516871}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2079806071486217819
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931314087330489385}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6423525461430965131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 49.6, y: 50.7}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2715375444302601444
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931314087330489385}
+  m_CullTransparentMesh: 1
+--- !u!114 &1043373816785516871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931314087330489385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 896822133, guid: ea86e4dbbf094fa4cb8f7c6b2312df4e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &958897695473504767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2467,9 +2734,9 @@ RectTransform:
   - {fileID: 600062763770515180}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -261.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8759864780059839832
@@ -2715,7 +2982,7 @@ GameObject:
   - component: {fileID: 7670661400090106180}
   - component: {fileID: 4585335678284239665}
   m_Layer: 5
-  m_Name: Inhence_Sword
+  m_Name: HeavyAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2851,15 +3118,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Inhence Sword
-  _skillDescription: "\uC0C1\uC1C4 \uC131\uACF5 \uD6C4 10\uCD08\uB3D9\uC548 \uAC00\uD558\uB294
-    \uB370\uBBF8\uC9C0\uC5D0 10%\uCD94\uAC00 \uB370\uBBF8\uC9C0\uB97C \uC785\uD78C\uB2E4."
+  _skillName: HeavyAttack
+  _skillDescription: "\uAC15\uACF5\uACA9 1\uD0C0 \uD574\uAE08"
   _skillToggleButton: {fileID: 1169862400296455962}
-  _price: 100
+  _price: 0
   _specialPrice: 0
   _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: c040dd81c18e26140901c22fd61ea4ba, type: 2}
+  - {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &4585335678284239665
 MonoBehaviour:
@@ -3126,9 +3392,9 @@ RectTransform:
   - {fileID: 643399436910816011}
   m_Father: {fileID: 6501426335569691641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66.5, y: -21.5}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1221780155023196270
@@ -3299,9 +3565,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50.000004, y: -50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1211435179873550974
@@ -6480,9 +6746,9 @@ RectTransform:
   - {fileID: 2244369788930723146}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -30.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6125731244450931507
@@ -6751,7 +7017,7 @@ GameObject:
   - component: {fileID: 4784219984843109772}
   - component: {fileID: 4910386376868906320}
   m_Layer: 5
-  m_Name: Smash
+  m_Name: Calmness
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6770,7 +7036,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9003082969821602352}
-  - {fileID: 8046117754812302877}
   m_Father: {fileID: 4269865601366188810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -6888,16 +7153,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Smash
-  _skillDescription: "\uCE74\uC6B4\uD130 \uD6C4 \uAC15\uB825\uD55C \uACF5\uACA9\uC744
-    \uC0AC\uC6A9\uD560 \uC218 \uC788\uB2E4.(\uD604\uC7AC \uC0AC\uC6A9 \uBD88\uAC00)"
+  _skillName: Calmness
+  _skillDescription: "\uD50C\uB808\uC774\uC5B4 \uD53C\uACA9 \uAE30\uC808 \uC2DC\uAC04
+    1\uCD08 \uAC10\uC18C"
   _skillToggleButton: {fileID: 2929792406828992545}
-  _price: 200
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: 3f9ae1615983e2d4183511e93a5f93a9, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 7c375396702d14649b21520ff14e201b, type: 2}
+  - {fileID: 11400000, guid: 4e7f9f7a6bf6bd644943d1e548d19d30, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &4910386376868906320
 MonoBehaviour:
@@ -7073,9 +7337,9 @@ RectTransform:
   - {fileID: 1052372738064148997}
   m_Father: {fileID: 6501426335569691641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200.23999, y: -21.5}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3066681346563640999
@@ -7318,6 +7582,81 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &3152949282507192433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8080827113530179576}
+  - component: {fileID: 4475626596302295919}
+  - component: {fileID: 9041561381541696516}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8080827113530179576
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3152949282507192433}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9082261558910361445}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 49.6, y: 50.7}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4475626596302295919
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3152949282507192433}
+  m_CullTransparentMesh: 1
+--- !u!114 &9041561381541696516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3152949282507192433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 896822133, guid: ea86e4dbbf094fa4cb8f7c6b2312df4e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3197666757806481323
 GameObject:
   m_ObjectHideFlags: 0
@@ -7333,7 +7672,7 @@ GameObject:
   - component: {fileID: 2518158696108616336}
   - component: {fileID: 8630954090975728412}
   m_Layer: 5
-  m_Name: Charging_Speed
+  m_Name: MobileCharge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7469,14 +7808,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Charging Speed
-  _skillDescription: "\uCC28\uC9D5 \uC911 \uAC10\uC18D\uC744 \uC644\uD654 \uD55C\uB2E4."
+  _skillName: MobileCharge
+  _skillDescription: "\uCC28\uC9D5 \uC911 \uC774\uB3D9 \uBC0F \uB300\uC2DC \uAC00\uB2A5"
   _skillToggleButton: {fileID: 2608881895638632568}
-  _price: 50
+  _price: 0
   _specialPrice: 0
   _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 980d0e192d86e3a4bb4b6700307e7935, type: 2}
+  - {fileID: 11400000, guid: 61583180547827c469f247c7b1c5e01b, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &8630954090975728412
 MonoBehaviour:
@@ -7597,7 +7936,7 @@ GameObject:
   - component: {fileID: 6309994549220529878}
   - component: {fileID: 9073451245928506857}
   m_Layer: 5
-  m_Name: Berserker
+  m_Name: Chain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7733,19 +8072,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Berserker
-  _skillDescription: "\uD53C\uACA9 \uBC1B\uC9C0 \uC54A\uACE0 \uCE74\uC6B4\uD130\uB97C
-    \uC5F0\uC18D\uC73C\uB85C 3\uD68C \uC131\uACF5\uD560 \uACBD\uC6B0 10\uCD08\uAC04
-    \uAC01\uC131\uC0C1\uD0DC\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uAC01\uC131 \uC0C1\uD0DC\uC5D0\uC11C\uB294
-    \uACF5\uC18D\uC774 \uCD5C\uB300\uCE58\uAC00 \uB418\uACE0 \uC801\uC5D0\uAC8C \uC785\uD78C
-    \uD53C\uD574\uC5D0 40%\uB9CC\uD07C \uCCB4\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4"
+  _skillName: Chain
+  _skillDescription: "\uBA85\uC911 \uC2DC \uACF5\uACA9 \uC18D\uB3C4 \uC911\uCCA9
+    \uC0C1\uC2B9 (\uCD5C\uB300 10\uD68C) \uC18D\uB3C4 \uC911\uCCA9\uC740 8\uCD08\uAC00
+    \uC9C0\uB098\uBA74 \uC804\uBD80 \uC0AC\uB77C\uC9D0"
   _skillToggleButton: {fileID: 4808892338231230756}
-  _price: 300
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: 7c375396702d14649b21520ff14e201b, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: cea11703482a77e4db30e02847f91a91, type: 2}
+  - {fileID: 11400000, guid: 39f469e4d60742a48a9826171285d152, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &9073451245928506857
 MonoBehaviour:
@@ -8863,7 +9199,7 @@ GameObject:
   - component: {fileID: 3439466703812881908}
   - component: {fileID: 5312463415902839707}
   m_Layer: 5
-  m_Name: Obsidan_Armor
+  m_Name: HeavyAttackSuperArmor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8999,16 +9335,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Obsidan Armor
-  _skillDescription: "\uC0C1\uC1C4 \uC2DC \uCD5C\uB300 \uCCB4\uB825\uC758 30% \uBCF4\uD638\uB9C9\uC744
-    \uC0DD\uC131\uD55C\uB2E4,"
+  _skillName: HeavyAttackSuperArmor
+  _skillDescription: "\uAC15\uACF5\uACA9 \uC911 \uACBD\uC9C1 \uBA74\uC5ED"
   _skillToggleButton: {fileID: 3345783644730851319}
-  _price: 200
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: 2dc44c92d2f32f244a15edd1acc7fefb, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 33c773049562ff0428ab3b3dd1c9aba7, type: 2}
+  - {fileID: 11400000, guid: ce0de9724476cdb46b1151f7f15e2973, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &5312463415902839707
 MonoBehaviour:
@@ -9826,7 +10160,7 @@ GameObject:
   - component: {fileID: 149265171121407930}
   - component: {fileID: 3260423143538328481}
   m_Layer: 5
-  m_Name: Clash
+  m_Name: CounterPrelude
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9962,16 +10296,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Clash
-  _skillDescription: "\uD68C\uD53C\uC5D0 \uBB34\uC801\uC774 \uC0AC\uC9C0\uB294 \uB300\uC2E0
-    \uD68C\uD53C\uC911 \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 \uAC10\uC18C \uD558\uACE0
-    \uCC28\uC9D5\uC911 \uD68C\uD53C\uAC00 \uAC00\uB2A5\uD574\uC9C4\uB2E4."
+  _skillName: CounterPrelude
+  _skillDescription: "\uD328\uB9C1 \uC131\uACF5 \uD6C4 10\uCD08\uAC04 \uACF5\uACA9
+    \uC18D\uB3C4 \uC0C1\uC2B9"
   _skillToggleButton: {fileID: 8234366180012227264}
-  _price: 100
+  _price: 0
   _specialPrice: 0
   _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 9319112cfefc11c4ca927acaeca79bc8, type: 2}
+  - {fileID: 11400000, guid: 9a64152f62bca3047ba24d1a8fe00a5d, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &3260423143538328481
 MonoBehaviour:
@@ -10540,6 +10873,196 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4836241934409421709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6423525461430965131}
+  - component: {fileID: 1996998654017025393}
+  - component: {fileID: 276574005057618989}
+  - component: {fileID: 3501539249485674939}
+  - component: {fileID: 827310583339483065}
+  - component: {fileID: 1260198484889427949}
+  m_Layer: 5
+  m_Name: SeamlessFlow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6423525461430965131
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2079806071486217819}
+  m_Father: {fileID: 4269865601366188810}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -123, y: 292}
+  m_SizeDelta: {x: 106, y: 106}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1996998654017025393
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_CullTransparentMesh: 1
+--- !u!114 &276574005057618989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 2100000, guid: 067b8257c50743c489399d90a0b47cb4, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e8ff3ce17c462cf4a96c16c61035a8fd, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3501539249485674939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 276574005057618989}
+  toggleTransition: 1
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 827310583339483065}
+        m_TargetAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+        m_MethodName: AcquireSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
+--- !u!114 &827310583339483065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
+  _skillName: SeamlessFlow
+  _skillDescription: "3\uC2A4\uD0DD \uC2DC \uD328\uB9C1 \uC131\uACF5 \uC2DC \uB2E4\uC74C
+    \uAC15\uACF5\uACA9\uC774 \uC2A4\uD0DD \uC18C\uBAA8\uD558\uC9C0 \uC54A\uB294\uB2E4"
+  _skillToggleButton: {fileID: 3501539249485674939}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
+  _learnAbilities:
+  - {fileID: 11400000, guid: 21040bf22dd65de48beb571c13233196, type: 2}
+  _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
+--- !u!114 &1260198484889427949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836241934409421709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 906802062477791206}
+          m_TargetAssemblyTypeName: SkillUI, Assembly-CSharp
+          m_MethodName: UpdateDescription
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 827310583339483065}
+            m_ObjectArgumentAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &4938067518847869383
 GameObject:
   m_ObjectHideFlags: 0
@@ -11976,81 +12499,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &5640401419453891759
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8046117754812302877}
-  - component: {fileID: 4569353322063297565}
-  - component: {fileID: 3257380736497736912}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8046117754812302877
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640401419453891759}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5246395403704471862}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4569353322063297565
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640401419453891759}
-  m_CullTransparentMesh: 1
---- !u!114 &3257380736497736912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5640401419453891759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: -2741756353435428437, guid: 72f7a32ac9c7676409eb438757bc6b4a, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5743535368168697535
 GameObject:
   m_ObjectHideFlags: 0
@@ -12066,7 +12514,7 @@ GameObject:
   - component: {fileID: 630601246394152927}
   - component: {fileID: 1092873197805321645}
   m_Layer: 5
-  m_Name: Charging_SuperArmor
+  m_Name: HeavyAttackCombo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12202,15 +12650,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Charging SuperArmor
-  _skillDescription: "\uCC28\uC9D5 \uC911 \uC288\uD37C\uC544\uBA38\uAC00 \uB418\uACE0
-    \uBC1B\uB294 \uD53C\uD574\uAC00 30% \uAC10\uC18C\uD55C\uB2E4."
+  _skillName: HeavyAttackCombo
+  _skillDescription: "\uAC15\uACF5\uACA9 2\uD0C0(Atk_Strong_02) \uD574\uAE08"
   _skillToggleButton: {fileID: 5961965108480998346}
-  _price: 100
-  _specialPrice: 1
+  _price: 0
+  _specialPrice: 0
   _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 52bddfbf981ddd1409f6e5469075eec8, type: 2}
+  - {fileID: 11400000, guid: e3d3fc0597a12ed43b161795b6856bae, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &1092873197805321645
 MonoBehaviour:
@@ -12394,7 +12841,7 @@ GameObject:
   - component: {fileID: 1804524090145896010}
   - component: {fileID: 3308243972426972620}
   m_Layer: 5
-  m_Name: Regain
+  m_Name: BerserkerPower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12530,16 +12977,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Regain
-  _skillDescription: "\uD53C\uACA9 \uD6C4 3\uCD08 \uC774\uB0B4\uC5D0 \uC801\uC744
-    \uACF5\uACA9\uD560 \uACBD\uC6B0 \uBC1B\uC740 \uB370\uBBF8\uC9C0\uB9CC\uD07C \uCCB4\uB825\uC744
-    \uD68C\uBCF5\uD55C\uB2E4. "
+  _skillName: BerserkerPower
+  _skillDescription: "\uC2A4\uD0DD \uC720\uC9C0\uC2DC\uAC04 50% \uAC10\uC18C / \uD53C\uD574
+    \uBC30\uC728 \uC0C1\uC2B9(1.2/1.4/1.6x)"
   _skillToggleButton: {fileID: 3573795938260798514}
-  _price: 100
-  _specialPrice: 1
+  _price: 0
+  _specialPrice: 0
   _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: d4df2e51674c32349b0170d649b90838, type: 2}
+  - {fileID: 11400000, guid: 5c4663a93fbe17b4f879484ddaf8f388, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &3308243972426972620
 MonoBehaviour:
@@ -12585,7 +13031,7 @@ GameObject:
   - component: {fileID: 2491296690511477185}
   - component: {fileID: 3687709933613136687}
   m_Layer: 5
-  m_Name: LeylineOverload
+  m_Name: LastDetermination
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12604,7 +13050,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2455453839787610241}
-  - {fileID: 6778908966509285767}
   m_Father: {fileID: 4269865601366188810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -12722,17 +13167,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Leyline Overload
-  _skillDescription: "\uBCF4\uD638\uB9C9\uC744 \uC18C\uBAA8\uD558\uC5EC \uC801\uC5D0\uAC8C
-    \uAC15\uB825\uD55C \uACF5\uACA9\uC744 \uC785\uD78C\uB2E4.(\uD604\uC7AC \uC0AC\uC6A9
-    \uBD88\uAC00)"
+  _skillName: LastDetermination
+  _skillDescription: "3\uC2A4\uD0DD \uC720\uC9C0\uC911 \uC0AC\uB9DD\uC5D0 \uC774\uB974\uB294
+    \uB370\uBBF8\uC9C0\uB97C \uBC1B\uC744 \uACBD\uC6B0 \uC2A4\uD0DD\uC774 \uC804\uBD80
+    \uC0AC\uB77C\uC9C0\uBA70 \uCCB4\uB825 1\uB85C \uBC84\uD2F4\uB2E4"
   _skillToggleButton: {fileID: 2419679075278446523}
-  _price: 300
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: 33c773049562ff0428ab3b3dd1c9aba7, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 7bd995c5f0441d144921100a69344f66, type: 2}
+  - {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &3687709933613136687
 MonoBehaviour:
@@ -14008,7 +14452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5972958923195225355
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14055,6 +14499,9 @@ MonoBehaviour:
   - {fileID: 2491296690511477185}
   - {fileID: 630601246394152927}
   - {fileID: 2518158696108616336}
+  - {fileID: 5401053080140643025}
+  - {fileID: 827310583339483065}
+  - {fileID: 497591550515265012}
   _skillDescription: {fileID: 8009104203200678227}
 --- !u!1 &6505395662121804525
 GameObject:
@@ -14227,9 +14674,9 @@ RectTransform:
   - {fileID: 339871313425061101}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -107.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5145717536352592372
@@ -14519,7 +14966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5446767451087726551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14605,9 +15052,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83.33334, y: -50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6559437281104370137
@@ -15174,7 +15621,7 @@ GameObject:
   - component: {fileID: 4434186173705265289}
   - component: {fileID: 4178898443152828310}
   m_Layer: 5
-  m_Name: Accelation
+  m_Name: BreathControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15310,17 +15757,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Accelation
-  _skillDescription: "\uCE74\uC6B4\uD130\uB97C \uC131\uACF5\uD560\uACBD\uC6B0 \uACF5\uC18D
-    \uC2A4\uD0DD\uC774 \uCD5C\uB300 3\uD68C\uAE4C\uC9C0 \uCD95\uC801\uB418\uACE0
-    \uC2A4\uD0DD\uB2F9 \uACF5\uC18D\uC774 \uC99D\uAC00\uD55C\uB2E4 "
+  _skillName: BreathControl
+  _skillDescription: "\uAE30\uBCF8 \uACF5\uACA9 \uC2A4\uD14C\uBBF8\uB098 \uC18C\uBAA8\uB7C9
+    50% \uAC10\uC18C"
   _skillToggleButton: {fileID: 3360323453758912730}
-  _price: 200
-  _specialPrice: 1
-  _needAbilities:
-  - {fileID: 11400000, guid: d4df2e51674c32349b0170d649b90838, type: 2}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
   _learnAbilities:
-  - {fileID: 11400000, guid: 3f9ae1615983e2d4183511e93a5f93a9, type: 2}
+  - {fileID: 11400000, guid: a58ee5a1550181945b5528e23e26edc9, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
 --- !u!114 &4178898443152828310
 MonoBehaviour:
@@ -15782,9 +16227,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16.666668, y: -50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3600263374027814956
@@ -16688,6 +17133,196 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &7795250966886101242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9082261558910361445}
+  - component: {fileID: 495979779134075197}
+  - component: {fileID: 2078366797818593759}
+  - component: {fileID: 6814570694001392838}
+  - component: {fileID: 5401053080140643025}
+  - component: {fileID: 4696516981610082016}
+  m_Layer: 5
+  m_Name: Realignment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &9082261558910361445
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8080827113530179576}
+  m_Father: {fileID: 4269865601366188810}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 127.3, y: 294.9}
+  m_SizeDelta: {x: 106, y: 106}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &495979779134075197
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_CullTransparentMesh: 1
+--- !u!114 &2078366797818593759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 2100000, guid: 067b8257c50743c489399d90a0b47cb4, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e8ff3ce17c462cf4a96c16c61035a8fd, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6814570694001392838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2078366797818593759}
+  toggleTransition: 1
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5401053080140643025}
+        m_TargetAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+        m_MethodName: AcquireSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
+--- !u!114 &5401053080140643025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
+  _skillName: Realignment
+  _skillDescription: "\uD328\uB9C1 \uC131\uACF5 \uC2DC \uC2A4\uD14C\uBBF8\uB098 20
+    \uC989\uC2DC \uD68C\uBCF5"
+  _skillToggleButton: {fileID: 6814570694001392838}
+  _price: 0
+  _specialPrice: 0
+  _needAbilities: []
+  _learnAbilities:
+  - {fileID: 11400000, guid: bb8e9d8eb51eb634583f6a013fb448f4, type: 2}
+  _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
+--- !u!114 &4696516981610082016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795250966886101242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 906802062477791206}
+          m_TargetAssemblyTypeName: SkillUI, Assembly-CSharp
+          m_MethodName: UpdateDescription
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 5401053080140643025}
+            m_ObjectArgumentAssemblyTypeName: SkillUpgradeButtonUI, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &7872039074210910823
 GameObject:
   m_ObjectHideFlags: 0
@@ -17085,9 +17720,9 @@ RectTransform:
   - {fileID: 1331809712322553991}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -184.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4345159989358230947
@@ -17346,81 +17981,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: ba7d9d5c18ee6f14fa4910e96d086a17, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!1 &8244669068120579345
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6778908966509285767}
-  - component: {fileID: 6099748733806802039}
-  - component: {fileID: 1391223354542016130}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6778908966509285767
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8244669068120579345}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 106856083657548669}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6099748733806802039
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8244669068120579345}
-  m_CullTransparentMesh: 1
---- !u!114 &1391223354542016130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8244669068120579345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: -2741756353435428437, guid: 72f7a32ac9c7676409eb438757bc6b4a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18135,6 +18695,81 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &8815628844504721433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7630366194245961260}
+  - component: {fileID: 1406760688844802029}
+  - component: {fileID: 7723808733092716338}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7630366194245961260
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8815628844504721433}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7413924175334652635}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 49.6, y: 50.7}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1406760688844802029
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8815628844504721433}
+  m_CullTransparentMesh: 1
+--- !u!114 &7723808733092716338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8815628844504721433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 896822133, guid: ea86e4dbbf094fa4cb8f7c6b2312df4e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8854402992593309747
 GameObject:
   m_ObjectHideFlags: 0
