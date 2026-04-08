@@ -114,7 +114,7 @@ public class PlayerDodgeState : PlayerBaseState
             p_owner.Combat.TriggerBattleStateChanged(true);
         }
 
-        if (p_owner.Movement.DodgeConfig.isInivicible)
+        if (p_owner.Movement.DodgeConfig.IsInvincible)
         {
             p_owner.Ability.AddTag(p_owner.Movement.InvincibleSO);
         }
@@ -158,7 +158,7 @@ public class PlayerDodgeState : PlayerBaseState
     {
         p_owner.Movement.SetLastDodgeEndTime(); // 쿨타임 타이머 시작
 
-        if (p_owner.Movement.DodgeConfig.isInivicible)
+        if (p_owner.Movement.DodgeConfig.IsInvincible)
         {
             p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
         }

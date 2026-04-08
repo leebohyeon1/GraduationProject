@@ -5,8 +5,10 @@ using UnityEngine;
 public class LockOnTarget : MonoBehaviour, ILockOnAble
 {
     [SerializeField] private Transform _lockOnIndicatorParent;
-
     public Transform LockOnIndicatorParent => _lockOnIndicatorParent;
+
+    private bool _canLockOn;
+    public bool CanLockOn => _canLockOn;
 
     public event Action OnLockReleased;
 
@@ -17,10 +19,18 @@ public class LockOnTarget : MonoBehaviour, ILockOnAble
         {
             _lockOnIndicatorParent = this.transform;
         }
+
+        _canLockOn = true;
+    }
+
+    public void SetCanLockOn(bool canLockOn)
+    {
+        _canLockOn = canLockOn;
     }
 
     public void TriggerLockReleased()
     {
+        SetCanLockOn(false);
         OnLockReleased?.Invoke();
     }
 

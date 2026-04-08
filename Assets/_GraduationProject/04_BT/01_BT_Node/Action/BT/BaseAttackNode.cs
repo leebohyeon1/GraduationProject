@@ -65,7 +65,9 @@ public abstract class BaseAttackNode : Node
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
     private bool _wasInTransition = false; 
-    private bool _hasHaltedMovement = false; 
+     private bool _hasHaltedMovement = false;
+    protected bool _wasParriedDuringAttack = false; 
+    protected bool _wasStunnedDuringAttack = false;
 
     private static readonly Collider[] _hitBuffer = new Collider[16];
 
@@ -78,7 +80,7 @@ public abstract class BaseAttackNode : Node
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
         _didSetLock = false;
-        _wasInTransition = false;
+         _wasInTransition = false;
         _hasHaltedMovement = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -178,7 +180,6 @@ public abstract class BaseAttackNode : Node
     public sealed override void OnExit()
     {
         CleanupAllStates();
-        if (!_isActionFinishedInternally) brain.StartSkillCooldown(attackKey);
     }
 
     public sealed override void Abort() { if (isEntered) { CleanupAllStates(); isEntered = false; } }
@@ -217,7 +218,15 @@ public abstract class BaseAttackNode : Node
     protected abstract void InitialMovementSetup();
     protected abstract void UpdateMovement();
     protected abstract bool IsMovementFinished { get; }
-    protected virtual void SpecificCleanup() { }
+    protected virtual void SpecificCleanup() 
+    {
+        // 정상적인 공격 완료 시 일반 쿨타임 적용
+        if (!_isActionFinishedInternally)
+        {
+            brain.StartSkillCooldown(attackKey);
+            UnityEngine.Debug.Log($"[BaseAttackNode] {attackKey} 정상 쿨타임 시작");
+        }
+    }
 
     private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
     {
@@ -314,7 +323,18 @@ public abstract class BaseAttackNode : Node
         if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
         {
             if (NextBT) return NodeState.SUCCESS;
-            return brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false) ? NodeState.SUCCESS : NodeState.FAILURE;
+            
+            bool didHit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
+            
+            // Only check parry status for Boss_Fake_Attack
+            if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")
+            {
+                UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed after being PARRIED. Hit: {didHit}, Returning: FAILURE");
+                return NodeState.FAILURE;
+            }
+            
+            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed normally. Hit: {didHit}, Returning: SUCCESS");
+            return NodeState.SUCCESS;
         }
         return NodeState.RUNNING;
     }

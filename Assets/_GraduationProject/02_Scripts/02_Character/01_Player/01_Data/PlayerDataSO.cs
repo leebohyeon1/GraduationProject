@@ -38,7 +38,6 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("NormalAttack Setting")]
     public List<PlayerAttackConfig> NormalAttackConfigList;         // 일반 공격 데이터 배열
-    public float MaxNormalAttackSpeedMultiplier = 1.0f;
 
     [Header("HeavyAttack Setting")]
     public List<PlayerAttackConfig> HeavyAttackConfigList;          // 강공격 데이터 배열 (스택 소모 시 사용)
@@ -51,13 +50,15 @@ public class PlayerDataSO : ScriptableObject
 
     [Header("Counter")]
     public float CounterAngle;
-    public List<float> ParryStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
+    public List<float> CounterStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
     public StepData CounterKnockbackConfig; // 카운터 성공 시 넉백 설정
     public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
     public PlayerChargeConfig HeavyCounterAttackConfig;   // 차징 카운터 공격 설정
     public List<float> CounterDamageMultiply;
     public List<float> ProjectileCounterAddedVelocity;  // 투사체 카운터 시 투사체에 적용하는 추가 이동속도
- 
+    public int MaxCounterStack = 3;             // 최대 카운터 스택 수 
+    public float CounterStackDuration = 30f;    // 카운터 스택 지속 시간
+
 
     [Header("KnockDown")]
     public float KnockDownDuration = 10;    // 기절 지속시간
@@ -82,7 +83,7 @@ public class DodgeData
 
     public DodgeType Type;      // 회피 타입
     public float StaminaAmount; // 스테미나 사용량
-    public bool isInivicible;   // 무적 여부
+    public bool IsInvincible;   // 무적 여부
     public float Cooldown;      // 회피 쿨타임
     public StepData MoveConfig; // 회피 움직임 설정
 }

@@ -18,16 +18,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     private PlayerEvents _events; // 플레이어 이벤트
     private PlayerData _data;     // 런타임 데이터 (직접 참조)
 
-    [Header("Health Settings")]
-    [SerializeField] private float _damageReductionMultiplyRate; // 데미지 감소량
-
     public event Action<int, int> OnHealthChanged; // 체력 변경 이벤트 (Previous, Current)
     public event Action OnDied; // 사망 이벤트
     public event Action<int> TakeDamged;
-
-    [Header("Shield")]
-    [SerializeField] private int _currentshieldAmount;   // 현재 보호막 양
-    public int CurrentShieldAmount => _currentshieldAmount;
 
     [Header("Stiffness")]
     [SerializeField] private int _currentStiffness; // 현재 경직도
@@ -37,14 +30,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
 
     [Header("Properties")]
     public int CurrentHealth => _data != null ? _data.CurrentHealth : 0;
-    public int MaxHealth => _data != null ? _data.MaxHealth : 100;
+    public int MaxHealth => _data != null ? (int)_data.Health.Value : 100;
     public bool IsDead => CurrentHealth <= 0; // 사망 여부
 
     public int CurrentStiffness => _currentStiffness; // 현재 경직도
     public int StiffnessThreshold => 100; // 경직 임계값
     public float StiffnessDuration => _stiffnessDuration; // 경직 지속 시간
     
-    public float KnockDownDuration => _data != null ? _data.KnockDownDuration : 3f;
+    public float KnockDownDuration => _data != null ? _data.KnockDownDuration.Value : 3f;
 
 
     /// <summary>
@@ -55,11 +48,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     {
         _data = player.RuntimeData;
         _events = player.Events;
-
-        if (_data != null && _data.KnockDownDuration == 0)
-        {
-            _data.KnockDownDuration = player.Data.KnockDownDuration;
-        }
 
         // 경직도 초기화
         _currentStiffness = 0;
@@ -101,24 +89,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         _events.TriggerBeforeDamaged(ref damageContext);
 
         damageData = damageContext.Data;
-
-        // 데미지 감소 적용
-        damageData.DamageAmount -= Mathf.RoundToInt(damageData.DamageAmount * _damageReductionMultiplyRate);
-
-        // 보호막 양만큼 데미지 감소
-        int shieldDamage = 0;
-        if(damageData.DamageAmount >= _currentshieldAmount)
-        {
-            shieldDamage = _currentshieldAmount;
-        }
-        else
-        {
-            shieldDamage = damageData.DamageAmount;    
-        }
-
-        // 실드 피해 만큼 데미지 양에서 제거
-        damageData.DamageAmount = Mathf.Max(damageData.DamageAmount - shieldDamage, 0); 
-        DecreaseShield(shieldDamage);               // 보호막 감소
 
         TakeDamged?.Invoke(damageData.DamageAmount);
         ChangeHealth(-damageData.DamageAmount);
@@ -164,50 +134,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         int previousHealth = _data.CurrentHealth;
         
         // 데이터 직접 수정
-        _data.CurrentHealth = Mathf.Clamp(_data.CurrentHealth + amount, 0, _data.MaxHealth);
+        _data.CurrentHealth = Mathf.Clamp(_data.CurrentHealth + amount, 0, (int)_data.Health.Value);
 
         if (previousHealth != _data.CurrentHealth)
         {
             OnHealthChanged?.Invoke(previousHealth, _data.CurrentHealth);
         }
     }
-
-    #region DamageReduction Management
-    /// <summary>
-    /// 데미지 감소량 설정
-    /// </summary>
-    /// <param name="value">설정할 값</param>
-    public void SetDamageReductionMultiplyRate(float value)
-    {
-        _damageReductionMultiplyRate = value;
-    }
-
-    /// <summary>
-    /// 데미지 감소량 초기화
-    /// </summary>
-    public void ResetDamageReductionMultiplyRate()
-    {
-        SetDamageReductionMultiplyRate(0);
-    }
-
-    /// <summary>
-    /// 데미지 감소량 증가
-    /// </summary>
-    /// <param name="value">증가량</param>
-    public void IncreaseDamageReductionMultiplyRate(float value)
-    {
-        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate + value);
-    }
-
-    /// <summary>
-    /// 데미지 감소량 감소
-    /// </summary>
-    /// <param name="value">감소량</param>
-    public void DecreaseDamageReductionMultiplyRate(float value)
-    {
-        SetDamageReductionMultiplyRate(_damageReductionMultiplyRate - value);
-    }
-    #endregion
 
     /// <summary>
     /// 사망 처리
@@ -217,34 +150,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         OnDied?.Invoke();
         gameObject.SetActive(false);
     }
-
-    //==========================================================================================================================
-    // Shiled ==================================================================================================================
-    //==========================================================================================================================
-
-    /// <summary>
-    /// 보호막 양 증가
-    /// </summary>
-    /// <param name="shieldAmount">보호막 양</param>
-    public void IncreaseShield(int  shieldAmount)
-    {
-        _currentshieldAmount += shieldAmount;
-    }
-
-    /// <summary>
-    /// 보호막 양 감소
-    /// </summary>
-    /// <param name="shieldAmount">보호막 양</param>
-    public void DecreaseShield(int shieldAmount)
-    {
-        _currentshieldAmount -= shieldAmount;
-
-        if(_currentshieldAmount <= 0)
-        {
-            _currentshieldAmount = 0;
-        }
-    }
-
 
     //==========================================================================================================================
     // Stiffness ===============================================================================================================

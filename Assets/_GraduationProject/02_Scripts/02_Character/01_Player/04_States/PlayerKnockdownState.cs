@@ -41,7 +41,7 @@ public class PlayerKnockdownState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
-        p_owner.Combat.ResetChargeLevel();                  // 차지 레벨 초기화
+        p_owner.Combat.SetCharge(false);                  // 차지 레벨 초기화
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
         
         _knockbackTimer = 0f;   // 타이머 초기화

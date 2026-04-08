@@ -22,7 +22,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if (p_owner.Events != null)
         {
             p_owner.Events.CounterSucceeded += OnCounterSucceeded;
-            p_owner.Events.ChargeLevelCompleted += OnChargeLevelCompleted;
+            p_owner.Events.ChargeCompleted += OnChargeCompleted;
             p_owner.Events.BeforeDamaged += OnBeforeDamaged;
             p_owner.Events.Heal += OnHeal;
         }
@@ -35,7 +35,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 
         if(p_owner.Combat != null)
         {
-            p_owner.Combat.ParryStackChanged += OnParryStackChanged;
+            p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
         }
 
         // 이벤트 해제 구독 등록
@@ -50,7 +50,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if (p_owner != null && p_owner.Events != null)
         {
             p_owner.Events.CounterSucceeded -= OnCounterSucceeded;
-            p_owner.Events.ChargeLevelCompleted -= OnChargeLevelCompleted;
+            p_owner.Events.ChargeCompleted -= OnChargeCompleted;
             p_owner.Events.BeforeDamaged -= OnBeforeDamaged;
             p_owner.Events.Heal -= OnHeal;
         }
@@ -59,6 +59,11 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         {
             p_owner.Health.TakeDamged -= OnTakeDamaged;
             p_owner.Health.OnHealthChanged -= OnHealthChanged;
+        }
+
+        if (p_owner.Combat != null)
+        {
+            p_owner.Combat.CounterStackChanged -= OnCounterStackChanged;
         }
 
         // 재생 중인 모든 피드백(DOTween) 중단
@@ -149,7 +154,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Counter
-    public List<UnityEvent> HeavyCounterFeedbacks;
     public UnityEvent CounterSuccessFeedback;
     public List<UnityEvent> ParryStackChangeFeedbacks;
 
@@ -170,14 +174,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     }
 
     /// <summary>
-    /// 강한 상쇄 시작
-    /// </summary>
-    public void HeavyCounterFeedbackPlay()
-    {
-        HeavyCounterFeedbacks[p_owner.Combat.ChargeLevel]?.Invoke();
-    }
-
-    /// <summary>
     /// 투사체 상쇄 체크
     /// </summary>
     public void CheckProjectileCounter()
@@ -189,7 +185,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// 패리 스택 변경 이벤트
     /// </summary>
     /// <param name="obj">스택</param>
-    private void OnParryStackChanged(int obj)
+    private void OnCounterStackChanged(int obj)
     {
         ParryStackChangeFeedbacks[obj]?.Invoke();
     }
@@ -198,7 +194,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// 상쇄 성공 이벤트 
     /// </summary>
     /// <param name="transform"></param>
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         CounterSuccessFeedback?.Invoke();
     }
@@ -210,10 +206,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Charge
-    public List<UnityEvent> ChargeLevelCompletedFeedbacks;
-    public UnityEvent ChargeCancelFeedback;
-
-
     /// <summary>
     /// 차지 시작 
     /// </summary>
@@ -222,20 +214,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         p_owner.Events.TriggerChargeStarted();  
     }
 
-    public void ChargeCanceled()
-    {
-        ChargeCancelFeedback?.Invoke();
-    }
-
     /// <summary>
     /// 차지 레벨 달성 이벤트
     /// </summary>
-    /// <param name="level">달성한 레벨</param>
-    private void OnChargeLevelCompleted(int level)
+    /// <param name="isCharge">차지 여부</param>
+    private void OnChargeCompleted(bool isCharge)
     {
-        if (ChargeLevelCompletedFeedbacks != null && level >= 0 && level < ChargeLevelCompletedFeedbacks.Count)
+        if (isCharge)
         {
-            ChargeLevelCompletedFeedbacks[level]?.Invoke();
+            PlayFeedback("ChargeLevel1_FB");
+        }
+        else
+        {
+            PlayFeedback("ChargeCancel_FB");
         }
     }
     #endregion
