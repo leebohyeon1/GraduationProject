@@ -66,6 +66,10 @@ public class PlayerEvents
 
     #region Attack
     public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
+    
+    public delegate void TargetDamageEventHandler(Transform target, Stat damageStat);
+    public event TargetDamageEventHandler BeforeDamageCalculate;          // 공격이 적중하기 전 이벤트 (데미지 수정 가능)
+
     public event Action OnlyChargeAttackSucceded;   // 오직 차지 공격 성공
     public event Action<int> AttackRegained;        // 공격 흡혈
     public Func<int, int> FilterAttackRegain; // 공격 흡혈량 필터링
@@ -94,6 +98,17 @@ public class PlayerEvents
     public void TriggerAttackFinished()
     {
         AttackFinished?.Invoke();
+    }
+
+    /// <summary>
+    /// 공격 적용 전 이벤트
+    /// </summary>
+    /// <param name="attackTransform">공격할 대상</param>
+    /// <param name="damageData">데미지 데이터 (수정 가능)</param>
+    /// <param name="damageStat">현재 공격의 데미지 Stat 객체</param>
+    public void TriggerBeforeDamageCalculate(Transform attackTransform, Stat damageStat)
+    {
+        BeforeDamageCalculate?.Invoke(attackTransform, damageStat);
     }
 
     /// <summary>
