@@ -10,6 +10,7 @@ public class AiBrain
     private Enemy _owner;
     private PlayerController _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
+    private Dictionary<string, float> _customCooldownDurations = new Dictionary<string, float>();
     public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
     private Coroutine _lateUpdateCoroutine;
 
@@ -26,6 +27,7 @@ public class AiBrain
         blackboard.SetValue(EnemyBlackboardKeys.HomePosition, _owner.StartPos);
         blackboard.SetValue(EnemyBlackboardKeys.Self, _owner.gameObject);
         _lastUsedSkillTimes.Clear();
+        _customCooldownDurations.Clear();
         if (_lateUpdateCoroutine != null) _owner.StopCoroutine(_lateUpdateCoroutine);
         _lateUpdateCoroutine = _owner.StartCoroutine(StaggeredStart());
     }
@@ -114,7 +116,18 @@ public class AiBrain
     public bool IsSkillReady(string skillName, float cooldownDuration)
     {
         if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
+        {
+            // 커스텀 쿨다운이 있는지 확인
+            if (_customCooldownDurations.TryGetValue(skillName, out float customDuration))
+            {
+                float elapsed = Time.time - lastUsedTime;
+                bool isReady = elapsed >= customDuration;
+                UnityEngine.Debug.Log($"[AiBrain] {skillName} 스킬 체크 - 경과시간: {elapsed:F2}초, 필요시간: {customDuration:F2}초, 준비됨: {isReady}");
+                if(!isReady)
+                    return isReady;
+            }
             return Time.time >= lastUsedTime + cooldownDuration;
+        }
         return true;
     }
     public bool IsActionable() {
@@ -122,6 +135,19 @@ public class AiBrain
     }
     public bool IsInAttackRange(float atkRange) => _player != null && (_player.transform.position - _owner.transform.position).sqrMagnitude <= atkRange * atkRange;
     public void StartSkillCooldown(string skillName) => _lastUsedSkillTimes[skillName] = Time.time;
+    public void StartSkillCooldown(string skillName, float customCooldownDuration) 
+    {
+        _lastUsedSkillTimes[skillName] = Time.time;
+        _customCooldownDurations[skillName] =  customCooldownDuration;
+        UnityEngine.Debug.Log($"[AiBrain] {skillName} 커스텀 쿨다운 시작 - {customCooldownDuration:F2}초");
+    }
+    
+    public void ClearSkillCooldown(string skillName)
+    {
+        _lastUsedSkillTimes.Remove(skillName);
+        _customCooldownDurations.Remove(skillName);
+        UnityEngine.Debug.Log($"[AiBrain] {skillName} 쿨다운 제거됨");
+    }
     public float GetLastSkillUseTime(string skillName) => _lastUsedSkillTimes.TryGetValue(skillName, out float time) ? time : -1f;
     public void AddEnemyAttackData(EnemyAttackData data) { blackboard.SetValue(data.AttackName, data); _lastUsedSkillTimes[data.AttackName] = -9999f; }
 

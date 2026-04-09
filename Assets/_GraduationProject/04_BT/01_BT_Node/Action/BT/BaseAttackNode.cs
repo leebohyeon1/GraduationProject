@@ -65,8 +65,9 @@ public abstract class BaseAttackNode : Node
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
     private bool _wasInTransition = false; 
-    private bool _hasHaltedMovement = false;
+     private bool _hasHaltedMovement = false;
     protected bool _wasParriedDuringAttack = false; 
+    protected bool _wasStunnedDuringAttack = false;
 
     private static readonly Collider[] _hitBuffer = new Collider[16];
 
@@ -79,9 +80,8 @@ public abstract class BaseAttackNode : Node
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
         _didSetLock = false;
-        _wasInTransition = false;
+         _wasInTransition = false;
         _hasHaltedMovement = false;
-        _wasParriedDuringAttack = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
         {
@@ -132,14 +132,6 @@ public abstract class BaseAttackNode : Node
         if (_data == null || runner.animator == null) return NodeState.FAILURE;
         if (runner.CurrentState != EnemyStateController.EnemyState.Attack) return NodeState.FAILURE;
 
-        // Track if enemy was parried/stunned during attack (only for Boss_Fake_Attack)
-        if (runner.ParrySystem != null && runner.ParrySystem._isStunned && !_wasParriedDuringAttack && 
-            _data != null && _data.AttackName == "Boss_Fake_Attack")
-        {
-            _wasParriedDuringAttack = true;
-            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} was PARRIED - tracking for completion");
-        }
-
         var stateInfo = runner.animator.GetCurrentAnimatorStateInfo(0);
         var nextStateInfo = runner.animator.GetNextAnimatorStateInfo(0);
         float elapsedTime = Time.time - _nodeEntryTime;
@@ -188,7 +180,6 @@ public abstract class BaseAttackNode : Node
     public sealed override void OnExit()
     {
         CleanupAllStates();
-        if (!_isActionFinishedInternally) brain.StartSkillCooldown(attackKey);
     }
 
     public sealed override void Abort() { if (isEntered) { CleanupAllStates(); isEntered = false; } }
@@ -227,7 +218,15 @@ public abstract class BaseAttackNode : Node
     protected abstract void InitialMovementSetup();
     protected abstract void UpdateMovement();
     protected abstract bool IsMovementFinished { get; }
-    protected virtual void SpecificCleanup() { }
+    protected virtual void SpecificCleanup() 
+    {
+        // 정상적인 공격 완료 시 일반 쿨타임 적용
+        if (!_isActionFinishedInternally)
+        {
+            brain.StartSkillCooldown(attackKey);
+            UnityEngine.Debug.Log($"[BaseAttackNode] {attackKey} 정상 쿨타임 시작");
+        }
+    }
 
     private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
     {
