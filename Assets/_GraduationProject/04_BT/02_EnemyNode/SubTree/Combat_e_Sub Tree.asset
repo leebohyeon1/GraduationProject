@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8249379415562615602
+--- !u!114 &-9108019031265427646
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,13 +9,71 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_Blackboard Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 720, y: 114}
-  key: IsWallBlocked
-  exceptCondition:
-    key: 
+  m_Script: {fileID: 11500000, guid: 0a7f18d2fc6a9b84789cd122e801e187, type: 3}
+  m_Name: Task_K Sante
+  m_EditorClassIdentifier: Assembly-CSharp::Task_KSante
+  position: {x: 718, y: -22}
+  attackKey: Attack02_e
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 10
+  maintainAtk: 0
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
+  LoopAttack: 1
+  NextBT: 0
+  debugMode: 1
+  escapeOnHitConfirm: 0
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
+  rushSpeed: 15
+  hitRadius: 3
+  overshootDist: 3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  rushDuration: 3
+  PushDistance: 10
+  AttackDataKnockback:
+    AttackerTransform: {fileID: 0}
+    AttackType: 2
+    DamageAmount: 10
+    StiffnessAmount: 10
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 1
+    KnockbackForce: 8
+    IsMagic: 0
+  maxTriggerRange: 10
 --- !u!114 &-8069466620819224126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29,12 +87,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 685, y: 1054}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &-8061363964458695047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,14 +108,23 @@ MonoBehaviour:
   position: {x: 1014, y: 906}
   attackKey: Attack03_e
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO: []
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 0
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &-7917068014566437409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,11 +137,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1031, y: -17}
+  position: {x: 1005, y: 55}
+  exceptCondition:
+    key: 
   skillName: totalAttack
-  cooldownDuration: 2
+  cooldownDuration: 5
   EnemyAttackData: 0
   attackData: {fileID: 0}
+--- !u!114 &-7336249835083518026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 203, y: -119}
+  exceptCondition:
+    key: 
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 6
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_SwipeAttack(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 711, y: 230}
+  position: {x: 688, y: 245}
   nodes:
   - {fileID: -7917068014566437409}
   - {fileID: 5831115302402182736}
@@ -95,7 +183,6 @@ MonoBehaviour:
   - {fileID: 8335210479689113784}
   - {fileID: 3325441546977679017}
   - {fileID: 4489605913624550641}
-  - {fileID: 6933929667489801121}
   services: []
 --- !u!114 &-6922160654897652693
 MonoBehaviour:
@@ -110,10 +197,28 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 718, y: -338}
+  exceptCondition:
+    key: 
   skillName: 
   cooldownDuration: 0
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: d9e840e7b25ee5444aeef78ee4d2ca4a, type: 2}
+--- !u!114 &-6677203315845237493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd338289a3119c246b1b17f53eee392e, type: 3}
+  m_Name: Weighted Random Selector
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
+  position: {x: 1320, y: 413}
+  nodes: []
+  services: []
+  weights: []
 --- !u!114 &-6261290527910063413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,9 +231,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 718, y: -396}
+  position: {x: 719, y: -420}
+  exceptCondition:
+    key: 
   skillName: totalAttack
-  cooldownDuration: 2
+  cooldownDuration: 5
   EnemyAttackData: 0
   attackData: {fileID: 0}
 --- !u!114 &-6030631403478375727
@@ -161,6 +268,8 @@ MonoBehaviour:
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 1014, y: 829}
+  exceptCondition:
+    key: 
   target: {fileID: 0}
   minRange: 6
   maxRange: 7
@@ -178,12 +287,12 @@ MonoBehaviour:
   m_Name: Dondition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 1013, y: 674}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &-4091383270736508263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,9 +306,9 @@ MonoBehaviour:
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 1013, y: 752}
-  key: HasAttackToken
   exceptCondition:
     key: 
+  key: HasAttackToken
 --- !u!114 &-1792391068340430454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,8 +322,10 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1005, y: 539}
+  exceptCondition:
+    key: 
   skillName: totalAttack
-  cooldownDuration: 2
+  cooldownDuration: 5
   EnemyAttackData: 0
   attackData: {fileID: 0}
 --- !u!114 &-700661456820620682
@@ -231,6 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: -48, y: -13}
   nodes:
+  - {fileID: -7336249835083518026}
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
   services:
@@ -283,9 +395,7 @@ MonoBehaviour:
   - {fileID: 5785559906818792379}
   - {fileID: 1998061911425268077}
   - {fileID: 4441881582081485876}
-  - {fileID: 2806539970974443842}
-  - {fileID: 2948891314232819811}
-  - {fileID: -8249379415562615602}
+  - {fileID: -9108019031265427646}
   services: []
 --- !u!114 &1811496777038547811
 MonoBehaviour:
@@ -299,13 +409,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1031, y: 127}
+  position: {x: 1005, y: 204}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &1998061911425268077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +429,8 @@ MonoBehaviour:
   m_Name: Condition_Distance Hysteresis
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
   position: {x: 718, y: -175}
+  exceptCondition:
+    key: 
   target: {fileID: 0}
   minRange: 7
   maxRange: 9
@@ -335,49 +447,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Task_Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 893, y: 1134}
+  position: {x: 903, y: 1132}
   Pos_Key: PressurePos
-  MoveSpeed: 2
+  MoveSpeed: 4
   StoppingDist: 0.5
   RotationSpeed: 5
---- !u!114 &2806539970974443842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_Normal Attack Node
-  m_EditorClassIdentifier: Assembly-CSharp::Task_NormalAttackNode
-  position: {x: 723, y: -22}
-  attackKey: Attack02_e
-  animationStateName: 
-  useActionTriggered: 0
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 4ce6e35790b1fa9489fac88cf02ce265, type: 2}
-  ExceptKey: IsAttacking
-  LoopAttack: 0
-  NextBT: 0
-  transitionBuffer: 1
-  debugMode: 0
---- !u!114 &2948891314232819811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 723, y: 50}
-  skillName: totalAttack
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,10 +464,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_HasAttackToken
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1028, y: 287}
-  key: HasAttackToken
+  position: {x: 1002, y: 364}
   exceptCondition:
     key: 
+  key: HasAttackToken
 --- !u!114 &3428122175870849780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,22 +488,7 @@ MonoBehaviour:
   - {fileID: -4091383270736508263}
   - {fileID: -5794056097246212893}
   - {fileID: -8061363964458695047}
-  - {fileID: 3993525684807199370}
   services: []
---- !u!114 &3993525684807199370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1014, y: 983}
-  skillName: totalAttack
 --- !u!114 &4027494429244999788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,12 +520,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Float Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
   position: {x: 720, y: -94}
+  exceptCondition:
+    key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 7
-  exceptCondition:
-    key: 
 --- !u!114 &4489605913624550641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,17 +538,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
   m_Name: Task_SwipeAttack
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1031, y: 366}
+  position: {x: 1005, y: 443}
   attackKey: Attack01_e
   animationStateName: 
-  useActionTriggered: 0
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO: []
-  ExceptKey: IsAttacking
   LoopAttack: 0
   NextBT: 0
-  transitionBuffer: 1
   debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 10
+  checkRangeOnEnter: 1
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &5603222145472695295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,6 +571,8 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
   position: {x: 203, y: -42}
+  exceptCondition:
+    key: 
 --- !u!114 &5785559906818792379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -516,12 +586,12 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
   position: {x: 718, y: -252}
+  exceptCondition:
+    key: 
   stateCondition:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
-  exceptCondition:
-    key: 
 --- !u!114 &5831115302402182736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,7 +604,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1031, y: 55}
+  position: {x: 1005, y: 132}
+  exceptCondition:
+    key: 
   skillName: 
   cooldownDuration: 0
   EnemyAttackData: 1
@@ -552,24 +624,12 @@ MonoBehaviour:
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
   position: {x: 1005, y: 598}
+  exceptCondition:
+    key: 
   skillName: 
   cooldownDuration: 0
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: 2ae9d8d6bbe4ab54b925211eeaa00a06, type: 2}
---- !u!114 &6933929667489801121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c3625abb1b99f4093baeae59f4f5d0, type: 3}
-  m_Name: Start Skill Cooldown
-  m_EditorClassIdentifier: Assembly-CSharp::StartSkillCooldown
-  position: {x: 1031, y: 431}
-  skillName: totalAttack
 --- !u!114 &8237416307744218084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,7 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: -48, y: 76}
+  position: {x: 1, y: 99}
   UpdateInterval: 0.1
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget
@@ -616,7 +676,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_DistanceHysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1031, y: 204}
+  position: {x: 1005, y: 281}
+  exceptCondition:
+    key: 
   target: {fileID: 0}
   minRange: 3.5
   maxRange: 4.5

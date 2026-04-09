@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// 플레이어의 기본 상태를 정의하는 클래스
 /// </summary>
-public abstract class PlayerBaseState : IState
+public abstract class PlayerBaseState : IState, IDisposable
 {
     /// <summary>
     /// 플레이어 애니메이터 상태 enum
@@ -16,11 +17,14 @@ public abstract class PlayerBaseState : IState
         NormalAttack = 3,
         NormalCounterAttack = 4,
         Charge = 5,
-        ChargeCounterCounterAttack = 6,
+        ChargeCounterAttack = 6,
         SpecialAttack = 7,
+        HeavyAttack = 8,    
 
-        NormalDamaged = -1,
-        HeavyDamaged = -2,
+        Falling = 9,
+        Landing = 10,
+
+        Damaged = -1,
         Knockdown = -3,
     }
 
@@ -75,6 +79,7 @@ public abstract class PlayerBaseState : IState
 
         p_owner.InputReader.DodgeEvent += OnDodge;
         p_owner.InputReader.NormalAttackEvent += OnNormalAttack;
+        p_owner.InputReader.HeavyAttackEvent += OnHeavyAttack;
         p_owner.InputReader.NormalCounterEvent += OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent += OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent += OnChargeCancel;
@@ -83,7 +88,16 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.LockOnTargetChangeForKeyboard += OnLockOnTargetChangeForKeyboard;
         p_owner.InputReader.LockOnTargetChangeForGamepadEvent += OnLockOnTargetChangeForGamepadEvent;
 
-        p_owner.InputReader.PotionEvent += OnPotionEvent;
+        p_owner.Events.TriggerCounterWindowFinished();
+        p_owner.Combat.ClearCounterEnemySet();
+        p_owner.Combat.ClearCounterDamagedEnemy();
+
+        // 상쇄로 인한 수퍼아머 태그가 있으면
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        {
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
+        }
+
     }
     /// <summary>
     /// 능력치 설정 함수
@@ -112,6 +126,7 @@ public abstract class PlayerBaseState : IState
 
         p_owner.InputReader.DodgeEvent -= OnDodge;
         p_owner.InputReader.NormalAttackEvent -= OnNormalAttack;
+        p_owner.InputReader.HeavyAttackEvent -= OnHeavyAttack;
         p_owner.InputReader.NormalCounterEvent -= OnNormalCounter;
         p_owner.InputReader.ChargeStartEvent -= OnChargeStart;
         p_owner.InputReader.ChargeCancelEvent -= OnChargeCancel;
@@ -119,8 +134,6 @@ public abstract class PlayerBaseState : IState
         p_owner.InputReader.ToggleLockOnEvent -= OnToggleLockOn;
         p_owner.InputReader.LockOnTargetChangeForKeyboard -= OnLockOnTargetChangeForKeyboard;
         p_owner.InputReader.LockOnTargetChangeForGamepadEvent -= OnLockOnTargetChangeForGamepadEvent;
-
-        p_owner.InputReader.PotionEvent -= OnPotionEvent;
     }
     /// <summary>
     /// 능력치 해제 함수
@@ -155,22 +168,67 @@ public abstract class PlayerBaseState : IState
     /// <summary>
     /// 회피 입력 처리
     /// </summary>
-    protected virtual void OnDodge() { }
+    protected virtual void OnDodge()
+    {
+        // "Dodge" 능력이 있고 스테미나가 충분하며 회피가 가능할 때만 전환
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
+    }
 
     /// <summary>
     /// 공격 입력 처리
     /// </summary>
-    protected virtual void OnNormalAttack() { }
+    protected virtual void OnNormalAttack()
+    {
+        // 일반 공격은 기본 기능으로 유지 (원할 경우 "NormalAttack" 능력 체크 추가 가능)
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalAttackState>();
+        }
+    }
+
+    /// <summary>
+    /// 강공격 입력 처리
+    /// </summary>
+    protected virtual void OnHeavyAttack()
+    {
+        // "HeavyAttack" 능력이 있고 패리 스택이 1개 이상일 때만 전환
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+        }
+        else
+        {
+            // 능력이 없거나 조건이 안 되면 일반 공격 실행
+            OnNormalAttack();
+        }
+    }
     
     /// <summary>
     /// 일반 상쇄 입력 처리
     /// </summary>
-    protected virtual void OnNormalCounter() { }
+    protected virtual void OnNormalCounter()
+    {
+        // "Counter" 능력이 있을 때만 상쇄 상태로 전환
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        }
+    }
 
     /// <summary>
     /// 차지 시작 입력 처리
     /// </summary>
-    protected virtual void OnChargeStart() { }
+    protected virtual void OnChargeStart()
+    {
+        // "Charge" 능력이 있고 스테미나가 충분할 때만 차지 상태로 전환
+        if (p_owner.Ability.HasAbility("Charge") && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerChargeState>();
+        }
+    }
 
     /// <summary>
     /// 차지 종료 입력 처리
@@ -229,14 +287,18 @@ public abstract class PlayerBaseState : IState
 
         p_owner.LockOn.ChangeLockOnTargetByGamePad(gamepadInput);
     }
-
-    /// <summary>
-    /// 포션 이벤트
-    /// </summary>
-    protected virtual void OnPotionEvent()
-    {
-        p_owner.Potion.UsePotion();
-    }
     #endregion
+
+    // 객체가 완전히 파괴되거나 명시적으로 자원을 해제해야 할 때 호출
+    public void Dispose()
+    {
+        ClearEvents();
+        ClearStats();
+        ClearAnimator();
+
+        // 메모리 누수를 방지하기 위해 가비지 컬렉터에게 
+        // "이 객체의 소멸(Finalize) 처리는 안 해도 돼" 라고 알려줌
+        GC.SuppressFinalize(this);
+    }
 }
 

@@ -2723,6 +2723,8 @@ GameObject:
   - component: {fileID: 8988324276808111283}
   - component: {fileID: 343879752324978677}
   - component: {fileID: 3453354711736433746}
+  - component: {fileID: 4427833354949509476}
+  - component: {fileID: 1852398537253699801}
   m_Layer: 8
   m_Name: Part3_Monster_d
   m_TagString: Enemy
@@ -2892,7 +2894,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0dc086cc9f1520744b9be2513bea42d0, type: 2}
   - {fileID: 11400000, guid: 7b811b2cceea080488d5da69b564c94f, type: 2}
   - {fileID: 11400000, guid: 9e20ad6ff726a754ab6416a053e340bf, type: 2}
-  <inGameenemyAttackDatas>k__BackingField: []
+  _lodDistance: 25
+  _hardCullDistance: 60
+  _tickInterval: 5
+  _viewMargin: 0.5
 --- !u!114 &793417534168409537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2909,48 +2914,102 @@ MonoBehaviour:
   - name: Monster_a_DoubleAttack_1_FB
     feedback: {fileID: 7873074395858535909}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 0
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Monster_a_DoubleAttack_2_FB
     feedback: {fileID: 7498429462561651916}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 0
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Monster_a_SpearAttack_1_FB
     feedback: {fileID: 3078218533408319417}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 3
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Damage_FB
     feedback: {fileID: 7617342137508028609}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 0
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Die
     feedback: {fileID: 4671645271472469603}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 2
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Damage_FB
     feedback: {fileID: 2600828161626196967}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 2
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Damage_FB
     feedback: {fileID: 4138283493062824288}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 3
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Damage_FB
     feedback: {fileID: 4542436796108121887}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 4
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
   - name: Monster_NormalAttack_Notification_FB
     feedback: {fileID: 5559825895044524846}
     offset: {x: 0, y: 0, z: 0}
-    id: 0
+    Phase: 0
     HitType: 0
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
 --- !u!114 &5524859501643995531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2982,7 +3041,6 @@ MonoBehaviour:
   ImmunityStart: 0
   MinorTime: 5
   KnockbackForce: 30
-  upwardForce: 5
 --- !u!114 &2487841793309008372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,7 +3081,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
-  AnimationBasedMovement: 0
 --- !u!114 &5123924331001142085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3147,7 +3204,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
   - {fileID: 2100000, guid: 6c77e3751602c234e8ee75da50e3fdee, type: 2}
-  - {fileID: 0}
   materialsInverted: []
 --- !u!114 &6730575990752702737
 MonoBehaviour:
@@ -3203,6 +3259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyInitializer
   _enableLogging: 0
+  _targetGroupAi: {fileID: 0}
 --- !u!114 &3453354711736433746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3216,6 +3273,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyGizmoDrawer
   _editorPreviewData: {fileID: 0}
+  showGizmos: 1
+--- !u!114 &4427833354949509476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59100c7745107ce4e87880af27c7b4c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  wallBuffer: 0.6
+  wallBufferMultiplier: 1.3
+  AnimationBasedMovement: 0
+--- !u!114 &1852398537253699801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442114732914935687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b403632075382f4c97ce869a7da01b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSavePersistence
+  _monsterId: 
 --- !u!1 &1766048112759876093
 GameObject:
   m_ObjectHideFlags: 0
@@ -5824,6 +5913,7 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
 --- !u!114 &2472448264274793664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14766,6 +14856,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -15873,6 +15964,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -16755,6 +16847,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0

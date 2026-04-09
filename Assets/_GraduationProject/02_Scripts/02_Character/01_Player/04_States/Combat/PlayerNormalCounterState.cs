@@ -1,4 +1,3 @@
-using GSPAWN;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerNormalCounterState : PlayerAttackBaseState
 {
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.NormalCounterAttackConfig;
+    protected override IRuntimeAttackConfig p_AttackConfig => p_owner.Combat.NormalCounterAttackConfig;
 
     public PlayerNormalCounterState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
@@ -33,6 +32,11 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         base.SetupAnimator();
 
         // 애니메이션 설정
+        if(p_stateMachine.PreviousState.GetType() != typeof(PlayerChargeState))
+        {
+            p_animator.SetTrigger("Counter");
+        }
+
         p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalCounterAttack);
     }
     #endregion
@@ -52,51 +56,18 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
 
         p_owner.Events.TriggerCounterWindowFinished();
         p_owner.Combat.ClearCounterEnemySet();
-
-        // Smahs 가능 상태면 취소
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            CanSpecialAttackSO smashAttackTag 
-                = p_owner.Ability.GetTag("Smash_Attack") as CanSpecialAttackSO;
-
-            p_owner.Ability.RemoveTag(smashAttackTag);
-        }
+        p_owner.Combat.ClearCounterDamagedEnemy();
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if(p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
         }
     }
 
     #endregion
 
     #region Input
-    /// <summary>
-    /// 공격 입력 처리
-    /// </summary>
-    protected override void OnNormalAttack()
-    {
-        // 일반 공격이 가능하지 않으면 리턴
-        if (!p_owner.Combat.CanNormalAttack())
-        {
-            return;
-        }
-
-        // Smash가 가능하면 Smahs
-        if (p_owner.Ability.HasTag("Smash_Attack"))
-        {
-            SmashSO smash = p_owner.Ability.GetAbility("Smash") as SmashSO;
-            smash.Smash();
-            return;
-        }
-
-        // 선입력 가능하면 공격 상태 변경
-        if (p_nextState == null && p_canBufferInput)
-        {
-            p_stateMachine.ChangeState<PlayerNormalAttackState>();
-        }
-    }
 
     /// <summary>
     /// 일반 상쇄 입력 처리
@@ -108,58 +79,81 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     #endregion
 
     #region EventHandle
+    protected override void OnAttackPerformed()
+    {
+        p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
+        Collider[] colldiers = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+
+        foreach (var collider in colldiers)
+        {
+            if (collider.TryGetComponent<IDamageable>(out var damageable) && !p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                p_owner.Combat.AddCounterDamagedEnemy(damageable);
+            }
+        }
+    }
+
     /// <summary>
     /// 상쇄 성공
     /// </summary>
     /// <param name="transform">상쇄한 적</param>
-    private void OnCounterSucceeded(Transform transform)
+    private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         // 상쇄 성공 시 슈퍼 아머
-        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuperArmorTagSO))
+        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
         {
-            p_owner.Ability.AddTag(p_owner.Combat.CounterSuperArmorTagSO);
+            p_owner.Ability.AddTag(p_owner.Combat.CounterSuccessTagSO);
         }
 
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
-            parryable.Parry(AttackType.NormalCounter);
+            parryable.Parry(AttackType.Normal_Counter);
             p_owner.Combat.AddCounterEnemy(parryable);
         }
 
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
+            float previousDamage = 0f;
+            StatModifier prevDamageModifier = null;
+
+            if (p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                previousDamage = p_AttackConfig.Damage.Value;
+                Debug.Log("삭제할 데미지: " + previousDamage);
+
+                prevDamageModifier = new StatModifier(-previousDamage, StatModifierType.Flat, "prevDamage");
+                p_AttackConfig.Damage.AddModifier(prevDamageModifier);
+            }
+
+            StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
+            p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
+            
+            int finalDamage = (int)p_AttackConfig.Damage.Value;
+            Debug.Log("상쇄 데미지: " + finalDamage);
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
-                AttackType = p_AttackConfig.AttackType,
-                DamageAmount = p_AttackConfig.AttackDamage,
+                AttackType = AttackType.Normal_Counter,
+                DamageAmount = finalDamage,
                 StiffnessAmount = 0,
-                KnockbackCurve = p_AttackConfig.KnockbackCofig.StepCurve,
-                KnockbackDuration = p_AttackConfig.KnockbackCofig.StepDuration,
-                KnockbackForce = p_AttackConfig.KnockbackCofig.StepDistance,
+                KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
+                KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
+                KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
             };
 
+            int regainAmount = Mathf.RoundToInt(finalDamage * p_AttackConfig.Regain.Value);
+            p_owner.Events.TriggerAttackRegained(regainAmount);
+
             p_owner.Combat.Attack(damageable, damage);
-        }
-    }
 
-    /// <summary>
-    /// 공격 판정이 발생하는 시점에 호출됩니다.
-    /// </summary>
-    protected override void OnAttackPerformed()
-    {
-        Collider[] colliders = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+            p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
 
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent<IParryable>(out var parryable))
+            if (prevDamageModifier != null)
             {
-                p_owner.Combat.AddCounterEnemy(parryable);
+                p_AttackConfig.Damage.RemoveModifier(prevDamageModifier);
             }
-
-          
         }
     }
 
@@ -181,15 +175,18 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     direction.Normalize();
 
                     DamageData damageData = projectile.Data;
-                    damageData.DamageAmount += p_AttackConfig.AttackDamage;
+                    damageData.DamageAmount += (int)p_AttackConfig.Damage.Value;
                     
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
 
                     projectile.Setup(direction, speed, p_owner.gameObject, damageData);
 
+                    // 카운터 성공 이벤트 발행
+                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, p_AttackConfig.AttackType);
                 }
             }
         }
     }
+
     #endregion
 }

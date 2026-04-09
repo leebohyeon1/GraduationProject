@@ -16,8 +16,8 @@ MonoBehaviour:
   damageData:
     AttackerTransform: {fileID: 0}
     AttackType: 0
-    DamageAmount: 10
-    StiffnessAmount: 10
+    DamageAmount: 5
+    StiffnessAmount: 5
     KnockbackCurve:
       serializedVersion: 2
       m_Curve:
@@ -31,6 +31,15 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
+        time: 0.06231916
+        value: 0.63057756
+        inSlope: 1.2503617
+        outSlope: 1.2503617
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
         time: 1
         value: 1
         inSlope: 0
@@ -42,11 +51,14 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
+    KnockbackDuration: 0.2
+    KnockbackForce: 2
+    IsMagic: 0
   Cooltime: 5
   shape: 0
   damageRadius: 2
   attackOffset: {x: 0, y: 0, z: 1}
+  Phase: 0
   boxSize: {x: 1, y: 1, z: 1}
   fanAngle: 90
+  sizeY: 1

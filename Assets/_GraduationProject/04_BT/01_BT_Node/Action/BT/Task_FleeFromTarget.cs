@@ -11,6 +11,9 @@ public class Task_FleeFromTarget : Node
     public override void OnEnter()
     {
         base.OnEnter();
+        if(runner._animationBridge.IsAttacking) {
+            return;
+        }
         if (runner.player == null) return;
 
         Vector3 myPos = runner.transform.position;
@@ -27,7 +30,7 @@ public class Task_FleeFromTarget : Node
         if (runner.Movement.IsPathBlocked(fleeDir, fleeDistance, out RaycastHit hit))
         {
             // [전술적 판단] 뒤가 막혔으니 좌/우(벽 타기) 방향을 계산하자
-            Debug.Log("<color=yellow>[Task] 뒤가 막혀서 옆길을 찾습니다.</color>");
+            // // Debug.Log("<color=yellow>[Task] 뒤가 막혀서 옆길을 찾습니다.</color>");
 
             // 벽의 법선(Normal)을 이용해 벽을 타고 흐르는 방향(Tangent) 계산
             Vector3 slideLeft = Vector3.Cross(hit.normal, Vector3.up).normalized;
@@ -64,13 +67,17 @@ public class Task_FleeFromTarget : Node
         Vector3 finalDestination = myPos + (finalDirection * finalDistance);
 
         // 5. 이동 명령 하달
-        runner.Movement.StartOrUpdateChase(finalDestination, EnemyStateController.EnemyState.Rush, fleeSpeed);
+        runner.Movement.StartOrUpdateChase(finalDestination, EnemyStateController.EnemyState.Chase, fleeSpeed);
     }
 
     protected override NodeState OnUpdate()
     {
         if (runner.player == null) return NodeState.FAILURE;
-    
+        // // Debug.Log(runner._animationBridge.IsAttacking);
+        if(runner._animationBridge.IsAttacking) {
+            // // Debug.Log("<color=red>[Task] 공격 애니메이션이 재생 중입니다. 도망 실패.</color>");
+            return NodeState.FAILURE;
+        }
         var ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return NodeState.FAILURE;
         if (runner._animationBridge.IsAttacking)
@@ -83,5 +90,15 @@ public class Task_FleeFromTarget : Node
         }
 
         return NodeState.RUNNING;
+    }
+    public override void OnExit()
+    {
+        // // Debug.Log("<color=cyan>[Task] 도망 완료 또는 실패, 이동 멈춤.</color>");
+        runner.Movement.StopMovement();
+        if (runner.player == null) return;
+        Vector3 playerDir = runner.player.transform.position - runner.transform.position;
+        playerDir.y = 0;
+        playerDir.Normalize();
+        if (playerDir != Vector3.zero) runner.transform.rotation = Quaternion.LookRotation(playerDir);
     }
 }

@@ -94,9 +94,18 @@ namespace INab.Dissolve
 
         public void Start()
         {
-            updateValues = true;
+            if (Application.isPlaying)
+            {
+                // 이미 리스트가 있더라도 인스턴스로 다시 찾아와야 합니다.
+                // 만약 특정 자식만 포함해야 한다면 별도 로직이 필요하지만, 
+                // 기본적으로는 전체를 다시 찾는 것이 가장 안전합니다.
+                FindMaterialsInChildren();
+            }
 
-            FindMaterialsInChildren();
+            materials.RemoveAll(mat => mat == null);
+            materialsInverted.RemoveAll(mat => mat == null);
+
+            updateValues = true;
 
             if (initialState == DissolveState.Dissolved)
             {
@@ -143,7 +152,14 @@ namespace INab.Dissolve
             materials.Clear();
             foreach(var item in GetComponentsInChildren<Renderer>())
             {
-                materials.AddRange(item.sharedMaterials);
+                if (Application.isPlaying)
+                {
+                    materials.AddRange(item.materials);
+                }
+                else
+                {
+                    materials.AddRange(item.sharedMaterials);
+                }
             }
         }
 
@@ -155,7 +171,14 @@ namespace INab.Dissolve
             materials.Clear();
             foreach (var item in GetComponents<Renderer>())
             {
-                materials.AddRange(item.sharedMaterials);
+                if (Application.isPlaying)
+                {
+                    materials.AddRange(item.materials);
+                }
+                else
+                {
+                    materials.AddRange(item.sharedMaterials);
+                }
 
             }
         }
@@ -237,6 +260,11 @@ namespace INab.Dissolve
         /// <param name="dissolveAmount"></param>
         private void ChangeDissolveAmount(Material material, float dissolveAmount)
         {
+            if (material == null)
+            {
+                return;
+            }
+
             // Change material value
             material.SetFloat("_DissolveAmount", dissolveAmount);
 

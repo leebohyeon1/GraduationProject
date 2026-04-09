@@ -13,6 +13,17 @@ public class PlayerDraggedState : PlayerBaseState
         p_owner.Movement.Dragged -= OnDragged;
     }
 
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        Debug.Log("드래그");
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        Debug.Log("드래그 종료");
+    }
 
     /// <summary>
     /// 드래그 이벤트 처리 함수

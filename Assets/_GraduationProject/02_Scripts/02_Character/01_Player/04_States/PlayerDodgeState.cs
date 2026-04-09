@@ -23,10 +23,15 @@ public class PlayerDodgeState : PlayerBaseState
 
         // 카메라 방향 기준 벡터 반환
         Vector3 moveInput = p_owner.InputHandler.MoveInput;
-        Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
 
-        // 회전은 따로 처리
-        p_owner.Movement.Rotate(dodgeDirection, p_owner.Movement.DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
+        // 입력이 있을 때만 회전 처리
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+            Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+
+            // 회전은 따로 처리
+            p_owner.Movement.Rotate(dodgeDirection, p_owner.Movement.DodgeConfig.MoveConfig.StepRotateSpeed, Time.fixedDeltaTime);
+        }
     }
 
     public override void OnExit()
@@ -41,7 +46,6 @@ public class PlayerDodgeState : PlayerBaseState
         base.SetupEvents();
 
         p_owner.Events.DodgeStarted += OnDodgeStarted;
-        p_owner.Events.DodgeFinished += OnDodgeFinished;
     }
 
     protected override void SetupStats()
@@ -68,7 +72,6 @@ public class PlayerDodgeState : PlayerBaseState
         base.ClearEvents();
 
         p_owner.Events.DodgeStarted -= OnDodgeStarted;
-        p_owner.Events.DodgeFinished -= OnDodgeFinished;
 
         DOTween.Kill(this);
     }
@@ -94,6 +97,14 @@ public class PlayerDodgeState : PlayerBaseState
     }
     #endregion
 
+    #region InputEventHandle
+    protected override void OnDodge()
+    {
+        // 회피 중에는 추가 회피 입력을 무시하여 애니메이션 꼬임 방지
+        return;
+    }
+    #endregion
+
     #region EventHandle
     public void OnDodgeStarted()
     {
@@ -103,22 +114,37 @@ public class PlayerDodgeState : PlayerBaseState
             p_owner.Combat.TriggerBattleStateChanged(true);
         }
 
+        if (p_owner.Movement.DodgeConfig.IsInvincible)
+        {
+            p_owner.Ability.AddTag(p_owner.Movement.InvincibleSO);
+        }
+
         switch(p_owner.Movement.DodgeConfig.Type)
         {
             case DodgeData.DodgeType.Roll:
                 p_owner.Movement.Roll(this, 
                     () => 
-                    { 
+                    {
+                        OnDodgeFinished();
                         p_stateMachine.ChangeState<PlayerIdleState>(); 
                     });
                 break;
             case DodgeData.DodgeType.Step:
                 Vector3 moveInput = p_owner.InputHandler.MoveInput;
-                Vector3 dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                Vector3 dodgeDirection;
+                if (moveInput == Vector3.zero)
+                {
+                    dodgeDirection = p_owner.transform.forward;
+                }
+                else
+                {
+                    dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                }
 
                 p_owner.Movement.Step(dodgeDirection, this, false, 
                     () =>
                     {
+                        OnDodgeFinished();
                         p_stateMachine.ChangeState<PlayerIdleState>();
                     });
                 break;
@@ -130,7 +156,12 @@ public class PlayerDodgeState : PlayerBaseState
     /// </summary>
     public void OnDodgeFinished()
     {
+        p_owner.Movement.SetLastDodgeEndTime(); // 쿨타임 타이머 시작
 
+        if (p_owner.Movement.DodgeConfig.IsInvincible)
+        {
+            p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
+        }
     }
     #endregion
 

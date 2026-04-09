@@ -47,6 +47,11 @@ public class PlayerLockOn : MonoBehaviour
         LockOff();
     }
 
+    private void OnDestroy()
+    {
+        LockOnEvent = null;
+    }
+
     /// <summary>
     /// 락온
     /// </summary>
@@ -89,17 +94,13 @@ public class PlayerLockOn : MonoBehaviour
 
         if (CurrentTarget.TryGetComponent<ILockOnAble>(out var lockOnAble))
         {
-            lockOnAble.OnLockReleased -= LockOff;
-        }
-
-        if (CurrentTarget.TryGetComponent<IDamageable>(out var damageable))
-        {
-            damageable.OnDied -= ChangeLockOnTarget;
+            lockOnAble.SetCanLockOn(true);
+            lockOnAble.OnLockReleased -= ChangeLockOnTarget;
         }
 
         // 타겟 해제 후 비활성화 
         LockOnIndicator.SetActive(false);
-        SetTarget(this.transform);
+        SetTarget(this.transform, null);
         IsLockOn = false;
         LockOnEvent?.Invoke(false);
     }
@@ -239,6 +240,13 @@ public class PlayerLockOn : MonoBehaviour
         {
             return false;
         }
+
+        // ILockOnAble 컴포넌트 여부
+        if (!collider.TryGetComponent<ILockOnAble>(out var lockOnAble) || !lockOnAble.CanLockOn)
+        {
+            return false;
+        }
+
         if (_currentTarget != null && collider.transform == _currentTarget)
         {
             return false;
@@ -251,11 +259,6 @@ public class PlayerLockOn : MonoBehaviour
             return false;
         }
 
-        // ILockOnAble 컴포넌트 여부
-        if (!collider.TryGetComponent<ILockOnAble>(out _))
-        {
-            return false;
-        }
 
         return true;
     }
@@ -269,37 +272,31 @@ public class PlayerLockOn : MonoBehaviour
         // 기존 타겟 정리
         LockOff();
 
-        // 새 타겟 설정
-        _currentTarget = newTarget;
-
         // 이벤트 구독
-        if (_currentTarget.TryGetComponent<ILockOnAble>(out var newlockOnAble))
+        if (newTarget.TryGetComponent<ILockOnAble>(out var newlockOnAble))
         {
-            newlockOnAble.OnLockReleased += LockOff;
+            newlockOnAble.SetCanLockOn(false);
+            newlockOnAble.OnLockReleased += ChangeLockOnTarget;
+
+            // 인디케이터 이동
+            SetTarget(newTarget, newlockOnAble.LockOnIndicatorParent);
+            _lockOnIndicator.SetActive(true);
+            IsLockOn = true;
+            LockOnEvent?.Invoke(true);
         }
 
-        if (_currentTarget.TryGetComponent<IDamageable>(out var damageable))
-        {
-            damageable.OnDied += ChangeLockOnTarget;
-        }
-
-        // 인디케이터 이동
-        SetTarget(_currentTarget.transform);
-        _lockOnIndicator.SetActive(true);
-        IsLockOn = true;
-        LockOnEvent?.Invoke(true);
     }
 
     /// <summary>
     /// 타겟 설정
     /// </summary>
     /// <param name="target">타겟</param>
-    public void SetTarget(Transform target)
+    public void SetTarget(Transform target, Transform indicatorTranform)
     {
         _currentTarget = target;
         if (_lockOnIndicator != null)
         {
-            LockOnIndicator.transform.parent = target;
+            LockOnIndicator.transform.parent = indicatorTranform;
             LockOnIndicator.transform.localPosition = Vector3.zero;
         }
     }

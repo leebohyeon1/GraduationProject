@@ -17,6 +17,13 @@ public class PlayerMoveState : PlayerBaseState
     {
         base.OnFixedUpdate();
 
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환 (후한 판정 사용)
+        if (!p_owner.Movement.IsGrounded())
+        {
+            p_stateMachine.ChangeState<PlayerFallingState>();
+            return;
+        }
+
         // 플레이어를 카메라 기준으로 이동
         p_owner.Movement.MoveByInput(p_owner.InputHandler.MoveInput, Time.fixedDeltaTime);
         p_owner.Movement.RotateToVelocity(Time.fixedDeltaTime);
@@ -52,7 +59,6 @@ public class PlayerMoveState : PlayerBaseState
     /// <summary>
     /// 이동 입력 이벤트 처리
     /// </summary>
-    /// <param name="moveInput">이동 입력</param>
     protected override void OnMove(Vector2 moveInput)
     {
         if (moveInput == Vector2.zero)
@@ -62,52 +68,6 @@ public class PlayerMoveState : PlayerBaseState
         }
     }
 
-    /// <summary>
-    /// 회피 입력 이벤트 처리
-    /// </summary>
-    protected override void OnDodge()
-    {
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerDodgeState>();
-        }
-    }
-
-    /// <summary>
-    /// 공격 입력 이벤트 처리
-    /// </summary>
-    protected override void OnNormalAttack()
-    {
-        base.OnNormalAttack();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalAttackState>();
-        }
-    }
-
-    /// <summary>
-    /// 일반 상쇄 이벤트 처리
-    /// </summary>
-    protected override void OnNormalCounter()
-    {
-        base.OnNormalCounter();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        }
-    }
-
-    /// <summary>
-    /// 차지 시작 이벤트 처리
-    /// </summary>
-    protected override void OnChargeStart()
-    {
-        base.OnChargeStart();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerChargeState>();
-        }
-    }
     #endregion
 
 }

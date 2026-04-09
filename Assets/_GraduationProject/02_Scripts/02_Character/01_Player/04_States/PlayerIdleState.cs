@@ -22,6 +22,13 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void OnFixedUpdate()
     {
+        // 지면 체크: 공중에 떠 있으면 낙하 상태로 전환 (후한 판정 사용)
+        if (!p_owner.Movement.IsGrounded())
+        {
+            p_stateMachine.ChangeState<PlayerFallingState>();
+            return;
+        }
+
         if (p_owner.LockOn.IsLockOn)
         {
             Vector3 targetPosition = new Vector3(p_owner.LockOn.CurrentTarget.position.x, 0, p_owner.LockOn.CurrentTarget.position.z);
@@ -49,7 +56,7 @@ public class PlayerIdleState : PlayerBaseState
         p_owner.Combat.ResetNormalAttackComboIndex();
 
         // 차지 레벨 초기화
-        p_owner.Combat.ResetChargeLevel();
+        p_owner.Combat.SetCharge(false);
     }
 
     protected override void SetupAnimator()
@@ -65,58 +72,9 @@ public class PlayerIdleState : PlayerBaseState
     /// <summary>
     /// 이동 입력 이벤트 처리
     /// </summary>
-    /// <param name="moveInput">이동 입력</param>
     protected override void OnMove(Vector2 moveInput)
     {
         p_stateMachine.ChangeState<PlayerMoveState>();
-    }
-
-    /// <summary>
-    /// 회피 입력 이벤트 처리
-    /// </summary>
-    protected override void OnDodge()
-    {
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerDodgeState>();
-        }
-
-    }
-
-    /// <summary>
-    /// 공격 입력 이벤트 처리
-    /// </summary>
-    protected override void OnNormalAttack()
-    {
-        base.OnNormalAttack();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalAttackState>();
-        }
-    }
-
-    /// <summary>
-    /// 일반 상쇄 이벤트 처리
-    /// </summary>
-    protected override void OnNormalCounter()
-    {
-        base.OnNormalCounter();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        }
-    }
-
-    /// <summary>
-    /// 차지 시작 이벤트 처리
-    /// </summary>
-    protected override void OnChargeStart()
-    {
-        base.OnChargeStart();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerChargeState>();
-        }
     }
 
     #endregion

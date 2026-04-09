@@ -11,19 +11,17 @@ public class EnemyMovement : MonoBehaviour
     public float _normalSpeed{get; private set;}
     private EnemyStateController.EnemyState CurrentState => _runner.CurrentState;
 
-    private RVOController _rvo; // RVO 컴포넌트 참조
+    private RVOController _rvo; 
 
     [Header("Safety Settings")]
-    // characterRadius 변수 삭제 -> RVOController.radius 사용
-    public LayerMask obstacleMask;         // 벽 레이어
-    public float wallBuffer = 0.5f;        // 벽 여유 거리
+    public LayerMask obstacleMask;         
+    public float wallBuffer = 0.5f;        
     public bool AnimationBasedMovement ;
 
     public float CharacterRadius
     {
         get
         {
-            // RVOController가 있으면 그 반지름을 사용, 없으면 기본값 0.5f
             return _rvo != null ? _rvo.radius : 0.5f;
         }
     }   
@@ -47,15 +45,15 @@ public class EnemyMovement : MonoBehaviour
 
         aIPath.enabled = true;
         aIPath.maxSpeed = rushSpeed;
-        aIPath.destination = targetPosition;
+        aIPath.destination = GetNearestSafePosition(targetPosition);
         aIPath.isStopped = false;
 
     }
-
-
     public void StartOrUpdateChase(Vector3 newTarget, EnemyStateController.EnemyState ChaseState = EnemyStateController.EnemyState.Chase, float chaseSpeed = 4)
     {
-        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die)
+        bool isRecovering = _runner._stateController != null && _runner._stateController.IsRecoveringFromStun;
+        
+        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || isRecovering)
         {
             StopMovement();
             return;
@@ -63,22 +61,23 @@ public class EnemyMovement : MonoBehaviour
         if (aIPath == null) return;
 
         aIPath.enabled = true;
-        aIPath.canMove = true;       // 이동 권한 부여
-        aIPath.isStopped = false;    // 정지 해제
+        aIPath.canMove = true;       
+        aIPath.isStopped = false;    
         aIPath.maxSpeed = chaseSpeed;
 
-        aIPath.destination = GetVolumeCorrectedPosition(newTarget);
+        Vector3 correctedPos = GetVolumeCorrectedPosition(newTarget);
+        aIPath.destination = correctedPos;
+        
         if (_runner.CurrentState != EnemyStateController.EnemyState.Hit && _runner.CurrentState != EnemyStateController.EnemyState.Attack)
         {
             _runner.SetState(ChaseState);
             _runner.AnimationBool("Walk", true);
         }
-        // Debug.Log($"[Action_Run] 목표: {newTarget} | 현재: {_runner.transform.position} | 남은거리: {Vector3.Distance(_runner.transform.position, newTarget)} aipathstopped: {aIPath.isStopped}");
         
         if (!aIPath.pathPending) 
-    {
-        aIPath.SearchPath(); // 경로 재계산 강제
-    }
+        {
+            aIPath.SearchPath(); 
+        }
     }
     private Vector3 GetVolumeCorrectedPosition(Vector3 targetPos)
     {
@@ -91,9 +90,10 @@ public class EnemyMovement : MonoBehaviour
         dir.Normalize();
         if (IsPathBlocked(dir, dist, out RaycastHit hit))
         {
-            // 벽 바로 앞까지만 이동하도록 보정
             float safeDist = Mathf.Max(0, hit.distance - wallBuffer);
-            return myPos + (dir * safeDist);
+            Vector3 result = myPos + (dir * safeDist);
+            // Debug.Log(string.Format("[EnemyMovement : {0}] 경로 막힘 감지. 보정됨: {1} -> {2}", _runner.name, targetPos, result));
+            return result;
         }
         return targetPos;
     }
@@ -101,14 +101,35 @@ public class EnemyMovement : MonoBehaviour
     {
         Vector3 castOrigin = _runner.transform.position + Vector3.up * 0.5f;
         
-        // SphereCast로 부피 체크
         if (Physics.SphereCast(castOrigin, CharacterRadius, direction, out hit, distance, obstacleMask))
         {
-            return true; // 막힘
+            return true; 
         }
         
-        hit = new RaycastHit(); // 빈 값
-        return false; // 뚫림
+        hit = new RaycastHit(); 
+        return false; 
+    }
+
+    public Vector3 GetNearestSafePosition(Vector3 target)
+    {
+        float checkRadius = CharacterRadius;
+        if (!Physics.CheckSphere(target + Vector3.up * 0.5f, checkRadius, obstacleMask)) return target;
+
+        float step = 0.5f;
+        for (float r = step; r <= 3.0f; r += step)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                float angle = i * 45f * Mathf.Deg2Rad;
+                Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * r;
+                NNInfo info = AstarPath.active.GetNearest(target + offset, NNConstraint.Walkable);
+                if (info.node != null && info.node.Walkable)
+                {
+                    if (!Physics.CheckSphere(info.position + Vector3.up * 0.5f, checkRadius, obstacleMask)) return info.position;
+                }
+            }
+        }
+        return target;
     }
     public void UpdateStrafeAnim()
     {
@@ -119,16 +140,18 @@ public class EnemyMovement : MonoBehaviour
         _runner.animator.SetFloat("InputZ", localVelocity.z / aIPath.maxSpeed , 0.1f, Time.deltaTime);
     }
 
-    // Transform을 받는 오버로딩 버전도 유지
     public void StartOrUpdateChase(Vector3 target)
     {
         StartOrUpdateChase(target, EnemyStateController.EnemyState.Chase);
     }
     public void StopMovement()
     {
-        aIPath.canMove = false;
-        aIPath.isStopped = true;
-        _runner.AnimationBool("Walk", false);
-
+        if (aIPath != null)
+        {
+            aIPath.canMove = false;
+            aIPath.isStopped = true;
+            aIPath.destination = _runner.transform.position;
+            _runner.AnimationBool("Walk", false);
+        }
     }
 }

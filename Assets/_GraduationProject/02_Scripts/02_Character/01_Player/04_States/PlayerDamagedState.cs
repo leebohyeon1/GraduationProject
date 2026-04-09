@@ -25,25 +25,19 @@ public class PlayerDamagedState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
-        p_owner.Combat.ResetChargeLevel();                  // 차지 레벨 초기화
+        p_owner.Combat.SetCharge(false);                  // 차지 레벨 초기화
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
 
         KnockbackMovement();
+
+        p_owner.AnimationTrigger.PlayFeedback("Player_Normal_Damage_FB");
     }
 
     protected override void SetupAnimator()
     {
         base.SetupAnimator();
 
-        if(_damageData.AttackType == AttackType.Normal)
-        {
-            p_animator.SetInteger(p_stateParamter, (int)AnimatorState.NormalDamaged);
-            p_animator.Play("NormalDamaged", 0, 0f);
-        }
-        else if(_damageData.AttackType >= AttackType.Heavy1)
-        {
-            p_animator.SetInteger(p_stateParamter, (int)AnimatorState.HeavyDamaged);
-        }
+        p_animator.SetInteger(p_stateParamter, (int)AnimatorState.Damaged);
     }
     #endregion
 
@@ -53,6 +47,7 @@ public class PlayerDamagedState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.TriggerBattleStateChanged(true);
+        _damageData = default;
     }
     #endregion
 
@@ -80,8 +75,8 @@ public class PlayerDamagedState : PlayerBaseState
     /// <param name="damageData">받은 데미지 데이터</param>
     private void OnDamaged(DamageData damageData)
     {
-        // Heavy 공격을 맞았을 때는 다시 상태 변화 X
-        if(_damageData.AttackType >= AttackType.Heavy1)
+        // Knockdown 상태이면 반환
+        if(p_stateMachine.CurrentState.GetType() == typeof(PlayerKnockdownState))
         {
             return;
         }

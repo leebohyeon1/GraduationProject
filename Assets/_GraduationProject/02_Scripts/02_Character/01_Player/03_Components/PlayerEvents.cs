@@ -66,8 +66,13 @@ public class PlayerEvents
 
     #region Attack
     public event Action AttackStarted, AttackPerformed, AttackFinished; // 공격 시작, 공격 수행, 공격 종료 이벤트
+    
+    public delegate void TargetDamageEventHandler(Transform target, Stat damageStat);
+    public event TargetDamageEventHandler BeforeDamageCalculate;          // 공격이 적중하기 전 이벤트 (데미지 수정 가능)
+
     public event Action OnlyChargeAttackSucceded;   // 오직 차지 공격 성공
     public event Action<int> AttackRegained;        // 공격 흡혈
+    public Func<int, int> FilterAttackRegain; // 공격 흡혈량 필터링
     public event Action ChangeNextCombatState;
 
     /// <summary>
@@ -96,6 +101,17 @@ public class PlayerEvents
     }
 
     /// <summary>
+    /// 공격 적용 전 이벤트
+    /// </summary>
+    /// <param name="attackTransform">공격할 대상</param>
+    /// <param name="damageData">데미지 데이터 (수정 가능)</param>
+    /// <param name="damageStat">현재 공격의 데미지 Stat 객체</param>
+    public void TriggerBeforeDamageCalculate(Transform attackTransform, Stat damageStat)
+    {
+        BeforeDamageCalculate?.Invoke(attackTransform, damageStat);
+    }
+
+    /// <summary>
     /// 상쇄 없이 차지 공격만 성공했을 때 이벤트
     /// </summary>
     public void TriggerOnlyChargeAttackSucceded()
@@ -109,7 +125,15 @@ public class PlayerEvents
     /// <param name="amount">회복 량</param>
     public void TriggerAttackRegained(int amount)
     {
-        AttackRegained?.Invoke(amount);
+        int finalAmount = amount;
+        if (FilterAttackRegain != null)
+        {
+            foreach (Delegate filter in FilterAttackRegain.GetInvocationList())
+            {
+                finalAmount = (int)filter.DynamicInvoke(finalAmount);
+            }
+        }
+        AttackRegained?.Invoke(finalAmount);
     }
 
     public void TriggerChangeNextCombatState()
@@ -124,8 +148,8 @@ public class PlayerEvents
     //==========================================================================================================================
 
     #region Charge
-    public event Action ChargeStarted, ChargeFinished;                 // 차지 시작 종료 이벤트
-    public event Action<int> ChargeLevelCompleted;                     // 차지 레벨 완료 이벤트
+    public event Action ChargeStarted;                 // 차지 시작 종료 이벤트
+    public event Action<bool> ChargeCompleted;                     // 차지 완료 이벤트
 
     /// <summary>
     /// 차지 시작 이벤트 발행
@@ -136,20 +160,11 @@ public class PlayerEvents
     }
 
     /// <summary>
-    /// 차지 종료 이벤트 발행
-    /// </summary>
-    public void TriggerChargeFinshed()
-    {
-        ChargeFinished?.Invoke();
-    }
-
-    /// <summary>
     /// 차지 레벨 완료 이벤트 발행
     /// </summary>
-    /// <param name="chargeLevel">차지 레벨</param>
-    public void TriggerChargeLevelCompleted(int chargeLevel)
+    public void TriggerChargeCompleted(bool isCharge)
     {
-        ChargeLevelCompleted?.Invoke(chargeLevel);
+        ChargeCompleted?.Invoke(isCharge);
     }
     #endregion
 
@@ -159,7 +174,7 @@ public class PlayerEvents
 
     #region Counter
     public event Action CounterWindowStarted, CounterWindowFinished; // 패링 수행 이벤트
-    public event Action<Transform>  CounterSucceeded; // 패링 성공 이벤트
+    public event Action<Transform, AttackType>  CounterSucceeded; // 패링 성공 이벤트
 
     /// <summary>
     /// 패링 검사 시작 이벤트 발행
@@ -180,9 +195,9 @@ public class PlayerEvents
     /// <summary>
     /// 패링 성공 이벤트를 발생시키고 피드백을 재생합니다.
     /// </summary>
-    public void TriggerCounterSucceeded(Transform transform)
+    public void TriggerCounterSucceeded(Transform transform, AttackType type)
     {
-        CounterSucceeded?.Invoke(transform);
+        CounterSucceeded?.Invoke(transform, type);
     }
 
     #endregion
@@ -255,5 +270,62 @@ public class PlayerEvents
     }
     #endregion
 
+
+    //==========================================================================================================================
+    // Land ====================================================================================================================
+    //==========================================================================================================================
+
+    public event Action Landed;
+
+    public void TriggerLanded()
+    {
+         Landed?.Invoke(); 
+    }
+
+
     #endregion
+
+    /// <summary>
+    /// 모든 이벤트를 초기화하여 구독을 해제합니다.
+    /// 플레이어 사망 시 메모리 누수 방지를 위해 호출합니다.
+    /// </summary>
+    public void ClearAllEvents()
+    {
+        // Dodge
+        DodgeStarted = null;
+        DodgeFinished = null;
+
+        // BufferInput
+        BufferInputStarted = null;
+        BufferInputEnded = null;
+
+        // Attack
+        AttackStarted = null;
+        AttackPerformed = null;
+        AttackFinished = null;
+        OnlyChargeAttackSucceded = null;
+        AttackRegained = null;
+        FilterAttackRegain = null;
+        ChangeNextCombatState = null;
+
+        // Charge
+        ChargeStarted = null;
+        ChargeCompleted = null;
+
+        // Counter
+        CounterWindowStarted = null;
+        CounterWindowFinished = null;
+        CounterSucceeded = null;
+
+        // Health & Damage
+        Heal = null;
+        BeforeDamaged = null;
+        Damaged = null;
+        Knockdown = null;
+
+        // Stamina
+        RegenStamina = null;
+
+        Debug.Log("PlayerEvents: 모든 플레이어 이벤트가 초기화되었습니다.");
+    }
 }

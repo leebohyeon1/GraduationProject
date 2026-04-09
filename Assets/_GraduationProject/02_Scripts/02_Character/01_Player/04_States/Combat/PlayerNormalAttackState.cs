@@ -10,7 +10,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
     public PlayerNormalAttackState(StateMachine<PlayerController> stateMachine) 
         : base(stateMachine) { }
 
-    protected override PlayerAttackConfig p_AttackConfig => p_owner.Combat.NormalAttackConfigList[p_owner.Combat.NormalAttackComboIndex];
+    protected override IRuntimeAttackConfig p_AttackConfig => p_owner.Combat.NormalAttackConfigList[p_owner.Combat.NormalAttackComboIndex];
 
 
     #region Setup Function
@@ -19,6 +19,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
         // 일반 공격 콤보 순서 증가
         p_owner.Combat.IncreaseNormalAttackComboIndex();
 
+        p_animator.speed = p_owner.RuntimeData.AttackSpeed.Value;
         base.SetupStats();
     }
 
@@ -41,7 +42,7 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
 
     protected override void ClearAnimator()
     {
-        base.SetupAnimator();
+        base.ClearAnimator();
 
         p_animator.speed = 1;
     }

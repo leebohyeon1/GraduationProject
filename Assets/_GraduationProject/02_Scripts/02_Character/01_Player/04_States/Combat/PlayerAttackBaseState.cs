@@ -10,12 +10,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 {
     protected Type p_nextState; // 다음 전환될 상태
 
-    protected abstract PlayerAttackConfig p_AttackConfig { get; } // 현재 공격의 데이터
+    protected abstract IRuntimeAttackConfig p_AttackConfig { get; } // 현재 공격의 런타임 데이터
 
     protected bool p_canBufferInput => p_owner.InputHandler.CanBufferInput;
     protected bool p_canChangeCombatState = false;
-  
-    protected float p_enterTime; // 상태에 진입한 시간
+    protected bool p_isAttackPerformed = false; // 현재 애니메이션의 공격 시작 이벤트 수신 여부
 
     public PlayerAttackBaseState(StateMachine<PlayerController> stateMachine)
         : base(stateMachine) { }
@@ -46,6 +45,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed += OnAttackPerformed;
         p_owner.Events.AttackFinished += OnAttackFinished;
         p_owner.Events.ChangeNextCombatState += OnChangeNextCombatState;
+        p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
     }
 
     protected override void SetupStats()
@@ -53,8 +53,8 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         base.SetupStats();
 
         p_nextState = null; // 다음 상태 초기화
-        p_enterTime = Time.time;    // 현재 시간 기록
-        p_owner.Stamina.UseStamina(p_AttackConfig.AttackStamina);       // 스테미나 사용
+        p_isAttackPerformed = false; // 상태 진입 시 플래그 초기화
+        p_owner.Stamina.UseStamina(p_AttackConfig.Stamina.Value);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
         p_owner.Combat.TriggerBattleStateChanged(true);                 // 전투 상태 On  
@@ -71,6 +71,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.AttackPerformed -= OnAttackPerformed;
         p_owner.Events.AttackFinished -= OnAttackFinished;
         p_owner.Events.ChangeNextCombatState -= OnChangeNextCombatState;
+        p_owner.Combat.CounterStackChanged -= OnCounterStackChanged;
         DOTween.Kill(this);
     }
 
@@ -82,6 +83,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Events.TriggerBufferInputEnded();           // 선입력 종료
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
         p_canChangeCombatState = false;
+        p_isAttackPerformed = false;                          // 플래그 초기화
         p_nextState = null;                                 // 다음 상태 null 처리
     }
     #endregion
@@ -119,6 +121,40 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     }
 
     /// <summary>
+    /// 강공격 입력 처리
+    /// </summary>
+    protected override void OnHeavyAttack()
+    {
+        if (p_nextState != null)
+        {
+            return;
+        }
+
+        // "HeavyAttack" 능력이 있고 패리 스택이 1개 이상일 때만 전환
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0)
+        {
+            if (!p_owner.Stamina.CheckStamina())
+            {
+                return;
+            }
+
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerHeavyAttackState);
+            }
+        }
+        else
+        {
+            // 능력이 없거나 패리 스택이 없으면 일반 공격 처리
+            OnNormalAttack();
+        }
+    }
+
+    /// <summary>
     /// 회피 입력 처리
     /// </summary>
     protected override void OnDodge()
@@ -127,17 +163,17 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-        if (!p_owner.Stamina.CheckStamina())
+
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
-            return;
-        }
-        if (p_canChangeCombatState)
-        {
-            p_stateMachine.ChangeState<PlayerDodgeState>();
-        }
-        else if (p_canBufferInput)
-        {
-            p_nextState = typeof(PlayerDodgeState);
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerDodgeState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerDodgeState);
+            }
         }
     }
 
@@ -151,17 +187,17 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-        if (!p_owner.Stamina.CheckStamina())
+
+        if (p_owner.Stamina.CheckStamina())
         {
-            return;
-        }
-        if (p_canChangeCombatState)
-        {
-            p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        }
-        else if (p_canBufferInput)
-        {
-            p_nextState = typeof(PlayerNormalCounterState);
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerNormalCounterState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerNormalCounterState);
+            }
         }
     }
 
@@ -170,7 +206,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected override void OnChargeStart()
     {
-        base.OnChargeStart();
+        // "Charge" 능력이 없으면 리턴
+        if (!p_owner.Ability.HasAbility("Charge"))
+        {
+            return;
+        }
 
         if (p_nextState != null)
         {
@@ -180,6 +220,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
+
         if (p_canChangeCombatState)
         {
             p_stateMachine.ChangeState<PlayerChargeState>();
@@ -207,6 +248,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     protected virtual void OnAttackPerformed()
     {
         p_owner.Combat.ExecuteAttack(p_AttackConfig);
+        p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
     }
 
     /// <summary>    
@@ -214,11 +256,32 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackFinished()
     {
-        // 상태 전환으로 인해 애니메이션 초반이면 리턴
-        if (Time.time - p_enterTime < 0.3f)
+        // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
+        if (!p_isAttackPerformed)
         {
             return;
         }
+
+        // 현재 재생 중인 애니메이션의 진행도(NormalizedTime) 체크
+        // 이전 애니메이션의 잔여 이벤트는 진행도가 매우 낮으므로 여기서 걸러짐
+        AnimatorStateInfo stateInfo;
+        if (p_animator.IsInTransition(0))
+        {
+            stateInfo = p_animator.GetNextAnimatorStateInfo(0);
+        }
+        else
+        {
+            stateInfo = p_animator.GetCurrentAnimatorStateInfo(0);
+        }
+
+        // 애니메이션이 최소 70% 이상 진행되지 않았다면 종료 이벤트로 인정하지 않음
+        if (stateInfo.normalizedTime < 0.7f)
+        {
+            Debug.Log("이전 공격 종료 이벤트 호출: " + stateInfo.normalizedTime);
+        }
+
+        p_canChangeCombatState = false;
+        p_isAttackPerformed = false;
 
         if (p_nextState != null)
         {
@@ -232,6 +295,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected virtual void OnChangeNextCombatState()
     {
+        if (!p_isAttackPerformed)
+        {
+            return;
+        }
+
         p_canChangeCombatState = true;
 
         if (p_nextState == null)
@@ -242,8 +310,9 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         bool isAttackState = typeof(PlayerAttackBaseState).IsAssignableFrom(p_nextState);
         bool isDodgeState = p_nextState == typeof(PlayerDodgeState);
         bool isChargeState = p_nextState == typeof(PlayerChargeState);
+        bool isHeavyAttackState = p_nextState == typeof(PlayerHeavyAttackState);
         
-        if (isAttackState || isDodgeState || isChargeState)
+        if (isAttackState || isDodgeState || isChargeState || isHeavyAttackState)
         {
             p_stateMachine.ChangeState(p_nextState);
         }
@@ -271,7 +340,15 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
         }
 
-        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this);
+        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this,true);
     }
 
+    private void OnCounterStackChanged(int currentStack)
+    {
+        p_AttackConfig.Damage.RemoveAllModifiersFromSource("CounterStack");
+
+        StatModifier NormalCounterModifier = new StatModifier(p_owner.RuntimeData.CounterStackDamageMultipliers[currentStack].Value,
+            StatModifierType.PercentAdd, "CounterStack");
+        p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
+    }
 }

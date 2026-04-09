@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 5157833126410000212}
   - component: {fileID: -1006595254234674639}
   - component: {fileID: -5343627370495495700}
-  m_Layer: 0
+  - component: {fileID: 2696782478806803073}
+  m_Layer: 9
   m_Name: Part3_Tree03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 256.97, y: 14.35, z: -825.24}
-  m_LocalScale: {x: 1.9015, y: 1.9015, z: 1.9015}
+  m_LocalScale: {x: 1.4141076, y: 1.4141076, z: 1.4141076}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5918898619084265544}
@@ -103,6 +104,27 @@ MonoBehaviour:
   _cutHeightProperty: _CutHeight
   _baseGlancingAngleCut: _BaseGlancingAngleCut
   _ditherProperty: _Dither
+--- !u!65 &2696782478806803073
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5815234473782550151}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 1, z: 7}
+  m_Center: {x: 0, y: 7.51, z: 0}
 --- !u!1 &6949901107610691219
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +136,7 @@ GameObject:
   - component: {fileID: 5918898619084265544}
   - component: {fileID: 5479717552041486136}
   - component: {fileID: 6703536945972805541}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: tree3_leaf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +225,8 @@ GameObject:
   - component: {fileID: 23054382383114030}
   - component: {fileID: 6786486433116771157}
   - component: {fileID: 5840852099499352657}
-  m_Layer: 0
+  - component: {fileID: 33135010674445903}
+  m_Layer: 9
   m_Name: tree3_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,3 +304,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &33135010674445903
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8179634933318025613}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7407113298724522713, guid: 30987f897002d7446892a8fe01809e3e, type: 3}

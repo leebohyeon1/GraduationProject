@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     [Header("Movement Setting")]
     // 최대 이동 속도
-    public float MaxMoveSpeed => _runtimeData != null ? _runtimeData.MoveSpeed : 5f;
+    public float MaxMoveSpeed => _runtimeData.MoveSpeed.Value;
 
     private float _moveAccelerationTime;    // 이동 가속 시간
     public float MoveAccelerationTime => _moveAccelerationTime;
@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public AnimationCurve MoveCurve => _moveCurve;
 
    // 최대 회전 속도
-    public float MaxRotateSpeed => _runtimeData != null ? _runtimeData.RotateSpeed : 5f;
+    public float MaxRotateSpeed => _runtimeData.RotateSpeed.Value;
 
     private float _rotateAccelerationTime;    // 회전 가속 시간
     public float RotateAccelerationTime => _rotateAccelerationTime;    
@@ -52,18 +52,30 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     private float _moveAccelTimer;              // 이동 가속 타이머
     private float _rotateAccelTimer;            // 회전 가속 타이머
 
+    private float _lastDodgeEndTime;            // 마지막 회피 종료 시간
+
     [Header("Dodge Setting")]
     // 회피 설정
-    public DodgeData DodgeConfig => _runtimeData != null ? _runtimeData.DodgeConfig : null;
+    public RuntimeDodgeConfig DodgeConfig => _runtimeData != null ? _runtimeData.RuntimeDodge : null;
+    
+    public bool CanDodge => DodgeConfig == null || Time.time >= _lastDodgeEndTime + DodgeConfig.Cooldown.Value;
+
+    [SerializeField] private PlayerAbilityTagSO _invincibleSO;
+    public PlayerAbilityTagSO InvincibleSO => _invincibleSO;
 
     [Header("ChargeMove Setting")]
     // 차지 이동 속도
-    public float ChargeMoveSpeed => _runtimeData != null ? _runtimeData.ChargeMoveSpeed : 0f;
+    public float ChargeMoveSpeed => _runtimeData.ChargeMoveSpeed.Value;
     // 차지 이동 속도
-    public float ChargeRoataeSpeed => _runtimeData != null ? _runtimeData.ChargeRotateSpeed : 0f;
+    public float ChargeRoataeSpeed => _runtimeData.ChargeRotateSpeed.Value;
 
     [Header("Obstacle Detection")]
     [SerializeField] private LayerMask _obstacleMask = -1;
+
+    [Header("Ground Detection")]
+    [SerializeField] private LayerMask _groundMask = -1;
+    [SerializeField] private float _groundCheckDistance = 0.3f; // 바닥 감지 여유 거리
+    [SerializeField] private float _groundCheckRadius = 0.25f;  // 바닥 감지 반경
 
     [Header("Drag Setting")]
     [SerializeField] private PlayerAbilityTagSO _dragSuperArmorSO; // 드래그 슈퍼 아머
@@ -87,6 +99,10 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
     public void Dispose()
     {
+        _characterController.enabled = false;   // 캐릭터 컨트롤러 비활성화
+        DOTween.Kill(this);
+
+        Dragged = null;
     }
 
     /// <summary>
@@ -95,24 +111,6 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     /// <param name="data">플레이어 데이터</param>
     private void InitializeData(PlayerDataSO data)
     {
-        if (_runtimeData != null)
-        {
-            if (_runtimeData.MoveSpeed == 0) _runtimeData.MoveSpeed = data.MoveSpeed;
-            if (_runtimeData.RotateSpeed == 0) _runtimeData.RotateSpeed = data.RotateSpeed;
-            if (_runtimeData.ChargeMoveSpeed == 0) _runtimeData.ChargeMoveSpeed = data.ChargeMoveSpeed;
-            if (_runtimeData.ChargeRotateSpeed == 0) _runtimeData.ChargeRotateSpeed = data.ChargeRotateSpeed;
-            
-            // DodgeConfig Deep Copy
-            if (_runtimeData.DodgeConfig != null && string.IsNullOrEmpty(_runtimeData.DodgeConfig.AnimationStateName))
-            {
-                _runtimeData.DodgeConfig.AnimationStateName = data.DodgeConfig.AnimationStateName;
-                _runtimeData.DodgeConfig.Type = data.DodgeConfig.Type;
-                _runtimeData.DodgeConfig.StaminaAmount = data.DodgeConfig.StaminaAmount;
-                _runtimeData.DodgeConfig.isInivicible = data.DodgeConfig.isInivicible;
-                _runtimeData.DodgeConfig.MoveConfig = data.DodgeConfig.MoveConfig;
-            }
-        }
-
         _moveAccelerationTime = data.MoveAccelerationTime;
         _moveDecelerationnTime = data.MoveDecelerationnTime;
         _moveCurve = data.MoveCurve;
@@ -215,6 +213,21 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     }
 
     /// <summary>
+    /// 캐릭터가 지면에 있는지 확인합니다. (후한 판정)
+    /// </summary>
+    public bool IsGrounded()
+    {
+        if (_characterController == null) return false;
+        if (_characterController.isGrounded) return true;
+
+        // 약간 위에서 아래로 SphereCast를 쏘아 바닥을 감지
+        Vector3 origin = transform.position + Vector3.up * _characterController.radius;
+        float castDistance = _groundCheckDistance + _characterController.radius;
+        
+        return Physics.SphereCast(origin, _groundCheckRadius, -transform.up, out _, castDistance, _groundMask, QueryTriggerInteraction.Ignore);
+    }
+
+    /// <summary>
     /// 중력을 적용합니다.
     /// </summary>
     protected void ApplyGravity()
@@ -225,7 +238,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
         }
         else
         {
-            _velocity.y += Physics.gravity.y;
+            _velocity.y += Physics.gravity.y * 20 * Time.fixedDeltaTime;
         }
 
         // 최대 낙하 속도 제한
@@ -333,13 +346,13 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     //==========================================================================================================================
 
     #region Dodge
+
     /// <summary>
-    /// 회피 데이터 설정
+    /// 회피 종료 시간을 기록합니다.
     /// </summary>
-    /// <param name="dodgeData">회피 데이터</param>
-    public void SetDodgeConfig(DodgeData dodgeData)
+    public void SetLastDodgeEndTime()
     {
-        _runtimeData.DodgeConfig = dodgeData;
+        _lastDodgeEndTime = Time.time;
     }
 
     /// <summary>
@@ -375,6 +388,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
@@ -412,7 +426,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
             () => currentDistance,
             x =>
             {
-                Vector3 moveDirection = direction;
+                Vector3 moveDirection = direction == Vector3.zero ? transform.forward : direction;
                 float deltaDistance = x - currentDistance;
                 Vector3 displacement = moveDirection * deltaDistance;
 
@@ -421,7 +435,9 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
                 if (useGravity)
                 {
                     ApplyGravity();
+                    displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 }
+
                 // 캐릭터 컨트롤러 이동
                 _characterController.Move(displacement);
 
@@ -455,6 +471,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -485,6 +502,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
 
                 // 캐릭터 컨트롤러 이동
                 Vector3 displacement = transform.forward * deltaDistance;
+                displacement = new Vector3(displacement.x, _velocity.y * Time.fixedDeltaTime, displacement.z);
                 CharacterControllerMove(displacement, 1);
 
                 currentDistance = x;
@@ -508,7 +526,7 @@ public class PlayerMovement : MonoBehaviour, IDisposable, IDragable
     public void SetChargeMoveSpeed(float speed)
     {
         // _chargeMoveSpeed = speed;
-        if (_runtimeData != null) _runtimeData.ChargeMoveSpeed = speed;
+        // if (_runtimeData != null) _runtimeData.ChargeMoveSpeed.BaseValue = speed;
     }
 
     //==========================================================================================================================

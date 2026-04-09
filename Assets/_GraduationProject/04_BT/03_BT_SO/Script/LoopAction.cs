@@ -1,33 +1,63 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 일정 시간 동안 루프 액션을 유지하는 전략입니다.
+/// </summary>
 [CreateAssetMenu(fileName = "LoopAction", menuName = "Enemy/Strategy/LoopAction")]
 public class LoopAction : EnemyUseAnything
 {
     [Header("Settings")]
+    /// <summary>
+    /// 루프 제어용 애니메이터 Bool 파라미터 이름입니다.
+    /// </summary>
     public string AnimationBool = "IsRushing";
-    public float ActionDuration = 5.0f; // 전체 지속 시간 (이동 시간)
-    public float StartDelay = 0.5f;     // 애니메이션 발동 전 딜레이
+    /// <summary>
+    /// 액션 지속 시간입니다.
+    /// </summary>
+    public float ActionDuration = 5.0f;
+    /// <summary>
+    /// 액션 시작 지연 시간입니다.
+    /// </summary>
+    public float StartDelay = 0.5f;
 
-    // [핵심] 두 스크립트가 공유할 시작 시간 키
+    /// <summary>
+    /// 블랙보드 시작 시간 키입니다.
+    /// </summary>
     public const string KEY_START_TIME = "Shared_StartTime";
+    /// <summary>
+    /// 블랙보드 지속 시간 키입니다.
+    /// </summary>
     public const string KEY_DURATION = "Shared_Duration";
+    /// <summary>
+    /// 루프 종료 키입니다.
+    /// </summary>
     public const string EndKey = "Shared_Ended";
 
+    /// <summary>
+    /// 루프 액션에 진입합니다.
+    /// </summary>
     public override T OnEnter<T>(T runner)
     {
         var blackboard = runner._aiController._aiBrain.blackboard;
 
-        // 1. 시작 시간 도장 찍기 (이 시간을 기준으로 모든 이동이 계산됨)
-        if (!blackboard.HasKey(KEY_START_TIME))
+        // OnEnter 시점에 즉시 타이머 시작
+        blackboard.SetValue(KEY_START_TIME, Time.time);
+        blackboard.SetValue(KEY_DURATION, ActionDuration);
+        blackboard.SetValue(EndKey, false);
+
+        // [추가] 시작 시에는 루프 탈출용 변수를 false로 초기화
+        if (runner is Enemy enemy)
         {
-            blackboard.SetValue(KEY_START_TIME, Time.time);
-            blackboard.SetValue(KEY_DURATION, ActionDuration);
+            enemy.AnimationBool(AnimationBool, false);
         }
 
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션을 갱신합니다.
+    /// </summary>
     public override T OnUpdate<T>(T runner)
     {
         var blackboard = runner._aiController._aiBrain.blackboard;
@@ -36,61 +66,90 @@ public class LoopAction : EnemyUseAnything
         float startTime = blackboard.GetValue<float>(KEY_START_TIME);
         float elapsedTime = Time.time - startTime;
 
-        // 2. 시간이 다 되면 종료 (이동도 같이 멈추게 됨)
-        if (elapsedTime >= ActionDuration)
-        {
-            runner.AnimationBool(AnimationBool, true);
-            blackboard.SetValue(EndKey, true);
-            // 종료 로직 (상위 노드로 종료 신호 보냄)
-            // 보통 BT에서는 여기서 return runner가 아니라 종료 상태를 반환하거나
-            // 블랙보드 키를 지워서 OnExit을 유도합니다.
-        }
+        // [수정] 지속 시간이 다 되면 루프 탈출을 위해 AnimationBool을 TRUE로 설정
+if (elapsedTime >= ActionDuration)
+{
+            if (runner is Enemy enemy)
+            {
+                enemy.AnimationBool(AnimationBool, true);
+                enemy.Movement?.StopMovement(); // [추가] 시간 만료 시 이동 즉시 정지
+            }
+blackboard.SetValue(EndKey, true);
+}
 
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션을 지연 실행합니다.
+    /// </summary>
     public override bool UseSomeThing<T>(T runner)
     {
         MonoBehaviour monoRunner = runner as MonoBehaviour;
         if (monoRunner != null)
         {
-            // 딜레이 후 애니메이션 실행 (이동 로직과는 별개로 돔)
-            monoRunner.StartCoroutine(DelayAnimation(runner, StartDelay));
+            var blackboard = (runner as Enemy)._aiController._aiBrain.blackboard;
+            float currentStartTime = blackboard.GetValueOrDefault<float>(KEY_START_TIME, -1f);
+            
+            monoRunner.StartCoroutine(DelayAnimation(runner, StartDelay, currentStartTime));
             return true;
         }
         return false;
     }
 
-    private IEnumerator DelayAnimation<T>(T runner, float delay)
+    private IEnumerator DelayAnimation<T>(T runner, float delay, float sessionStartTime)
     {
         yield return new WaitForSeconds(delay);
+        
         if (runner is Enemy enemy)
         {
-            enemy.AnimationBool(AnimationBool, true);
+            var blackboard = enemy._aiController._aiBrain.blackboard;
+            if (blackboard.HasKey(KEY_START_TIME) && 
+                Mathf.Approximately(blackboard.GetValue<float>(KEY_START_TIME), sessionStartTime))
+            {
+                // Action 발동 시점 (예: 돌진 시작 등)
+                // 만약 이 시점에 이미 종료되었다면 수행하지 않음
+                if (!blackboard.GetValueOrDefault<bool>(EndKey, false))
+                {
+                    // 루프 시작 시에는 false로 유지 (Animator가 시작 애니메이션을 틀도록)
+                    // 또는 시스템 구성에 따라 다를 수 있으나, 탈출이 true라면 여기서는 건드리지 않거나 명시적 false
+                    enemy.AnimationBool(AnimationBool, false);
+                }
+            }
         }
     }
 
+    /// <summary>
+    /// 루프 액션에서 이탈합니다.
+    /// </summary>
     public override T OnExit<T>(T runner)
     {
-        Enemy enemy = runner as Enemy;
-        if (enemy != null) enemy.AnimationBool(AnimationBool, false);
-
-        var blackboard = runner._aiController._aiBrain.blackboard;
-        blackboard.RemoveKey(KEY_START_TIME); // 키 삭제로 상태 초기화
-        blackboard.RemoveKey(KEY_DURATION);
-        blackboard.SetValue(EndKey, false);
- 
+        // OnExit 시에는 확실히 TRUE로 만들어 루프 탈출을 보장함
+if (runner is Enemy enemy)
+{
+            enemy.AnimationBool(AnimationBool, true);
+            enemy.Movement?.StopMovement(); // [추가] 종료 시 이동 정지
+var blackboard = enemy._aiController._aiBrain.blackboard;
+blackboard.RemoveKey(KEY_START_TIME);
+blackboard.RemoveKey(KEY_DURATION);
+blackboard.SetValue(EndKey, false);
+}
         return runner;
     }
 
+    /// <summary>
+    /// 루프 액션 상태를 초기화합니다.
+    /// </summary>
     public override void Reset<T>(T runner)
     {
-        Enemy enemy = runner as Enemy;
-        if (enemy != null) enemy.AnimationBool(AnimationBool, false);
-        var blackboard = runner._aiController._aiBrain.blackboard;
-        Debug.Log("LoopAction Reset called");
-        blackboard.RemoveKey(KEY_START_TIME); // 키 삭제로 상태 초기화
-        blackboard.RemoveKey(KEY_DURATION);
-        blackboard.SetValue(EndKey, false);
+        // Reset 시에도 동일하게 처리
+        if (runner is Enemy enemy)
+        {
+            enemy.AnimationBool(AnimationBool, true);
+            var blackboard = enemy._aiController._aiBrain.blackboard;
+            blackboard.RemoveKey(KEY_START_TIME);
+            blackboard.RemoveKey(KEY_DURATION);
+            blackboard.SetValue(EndKey, false);
+        }
     }
 }
