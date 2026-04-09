@@ -2300,10 +2300,6 @@ MonoBehaviour:
     Feedback: {fileID: 1437300124715269654}
   - type: ChargeLevel1_FB
     Feedback: {fileID: 7223464705553739883}
-  - type: ChargeLevel2_FB
-    Feedback: {fileID: 0}
-  - type: ChargeLevel3_FB
-    Feedback: {fileID: 0}
   - type: Atk_Strong_01_FB
     Feedback: {fileID: 4264550087278333901}
   - type: Atk_Strong_02_FB
@@ -2339,7 +2335,6 @@ MonoBehaviour:
           m_StringArgument: Clash_Dodge_FB
           m_BoolArgument: 0
         m_CallState: 2
-  HeavyCounterFeedbacks: []
   CounterSuccessFeedback:
     m_PersistentCalls:
       m_Calls:
@@ -2437,7 +2432,7 @@ MonoBehaviour:
   _counterSuccessTagSO: {fileID: 11400000, guid: 2f767799463b53a47a21173c11bb4e6b, type: 2}
   _lastBattleTime: 0
   _isBattleState: 0
-  _parryStacks: 0
+  _counterStacks: 0
   _parryStackTimer: 0
 --- !u!114 &4704667906256295335
 MonoBehaviour:
@@ -2451,8 +2446,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b45b375080cdc4a9f205fcc9ef087e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  _damageReductionMultiplyRate: 0
-  _currentshieldAmount: 0
   _currentStiffness: 0
 --- !u!114 &1186553582571618302
 MonoBehaviour:
@@ -8595,7 +8588,7 @@ Transform:
   m_GameObject: {fileID: 7541392884671969313}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12012,6 +12005,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 2762735562361087460, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
+      propertyPath: managedReferences[6735772383924978203].InstantiateParticlesPosition
+      value: 
+      objectReference: {fileID: 4753402834019582417}
     - target: {fileID: 4712875104975631509, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
       propertyPath: m_Name
       value: Swing_4_FB
@@ -12435,6 +12432,54 @@ PrefabInstance:
       propertyPath: m_Name
       value: Atk_Strong_02_FB
       objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[0]'
+      value: 6735772383924978112
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[1]'
+      value: 6735772383924978113
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[2]'
+      value: 6735772383924978114
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[3]'
+      value: 6735772383924978115
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[4]'
+      value: 6735772383924978116
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[5]'
+      value: 6735772383924978117
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[6]'
+      value: 6735772383924978118
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[7]'
+      value: 6735772383924978119
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[8]'
+      value: 6735772383924978120
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: managedReferences[6735772383924978117].PauseDuration
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
+      propertyPath: managedReferences[6735772383924978118].InstantiateParticlesPosition
+      value: 
+      objectReference: {fileID: 4753402834019582417}
     - target: {fileID: 8788898376424396920, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
