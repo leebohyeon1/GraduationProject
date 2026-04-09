@@ -25,6 +25,13 @@ public class PlayerChargeState : PlayerBaseState
     {
         base.OnUpdate();
 
+        // 실시간으로 'Charge' 능력을 보유하고 있는지 확인 (능력이 사라지면 차지 취소)
+        if (!p_owner.Ability.HasAbility("Charge"))
+        {
+            OnChargeCancel();
+            return;
+        }
+
         _chargeTimer += Time.deltaTime;
 
         // 차지가 안된 상태에서 차지 타이머가 차지 시간에 도달하면 차지 시작
@@ -176,6 +183,15 @@ public class PlayerChargeState : PlayerBaseState
     #endregion
 
     #region Input
+
+    /// <summary>
+    /// 공격 입력 처리
+    /// </summary>
+    protected override void OnNormalAttack() { }
+    protected override void OnHeavyAttack() { }
+    protected override void OnNormalCounter() { }
+    protected override void OnChargeStart() { }
+
     /// <summary>
     /// 차지 종료 입력
     /// </summary>
@@ -214,8 +230,6 @@ public class PlayerChargeState : PlayerBaseState
     /// </summary>
     protected override void OnDodge()
     {
-        base.OnDodge();
-
         // 기동차징 어빌리티가 있고, 대시 중이 아니며, 스테미나가 충분하고, 대시 쿨타임이 아닐 때
         if (p_owner.Ability.HasAbility("MobileCharge") && !_isStep && p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
