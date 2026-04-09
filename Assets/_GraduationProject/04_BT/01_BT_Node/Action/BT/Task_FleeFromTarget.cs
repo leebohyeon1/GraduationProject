@@ -80,7 +80,10 @@ public class Task_FleeFromTarget : Node
         }
         var ai = runner.GetComponent<IAstarAI>();
         if (ai == null) return NodeState.FAILURE;
-
+        if (runner._animationBridge.IsAttacking)
+        {
+            return NodeState.FAILURE;
+        }
         if (!ai.pathPending && (ai.reachedEndOfPath || ai.reachedDestination)) 
         {
             return NodeState.SUCCESS;
