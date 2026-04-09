@@ -32,7 +32,6 @@ public interface IDamageable
     /// 사망 이벤트
     /// </summary>
     public event Action OnDied;
-    public bool invincibility { get; set; }
 }
 
 /// <summary>

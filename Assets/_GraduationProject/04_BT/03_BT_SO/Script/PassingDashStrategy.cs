@@ -127,7 +127,16 @@ public class PassingDashStrategy : EnemyUseAnything
         enemy._aiController._aiBrain.blackboard.RemoveKey(KEY_DASH_TARGET_POS);
         enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
 
-        enemy.Movement.StopMovement();
+        // AI 복구
+        IAstarAI ai = enemy.GetComponent<IAstarAI>();
+        if (ai != null)
+        {
+            ai.Teleport(enemy.transform.position); // 현재 위치를 AI에게 알림
+            ai.canMove = true;
+            ai.isStopped = false;
+            ai.maxSpeed = enemy.Movement._normalSpeed;
+            if (ai is AIPath aiPath) aiPath.enableRotation = true;
+        }
     }
 
     public override void Reset<T>(T runner)

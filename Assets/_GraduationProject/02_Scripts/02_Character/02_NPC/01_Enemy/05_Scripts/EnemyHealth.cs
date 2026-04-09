@@ -112,7 +112,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     /// <summary>넉백 가능 여부 프로퍼티입니다.</summary>
     public bool Knockbackable { get; private set; } = true;
-    public bool invincibility { get; set; } = false;
 
     /// <summary>넉백 가능 여부를 설정합니다. (기존 API 복구)</summary>
     public void SetKnockbackable(bool value)
@@ -232,10 +231,5 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             yield return null;
         }
         _KnockbackCoroutine = null;
-    }
-
-    internal void SetInvulnerable(bool invisible)
-    {
-        invincibility = invisible;
     }
 }
