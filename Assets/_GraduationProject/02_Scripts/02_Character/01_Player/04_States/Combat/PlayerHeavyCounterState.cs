@@ -65,27 +65,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
     #endregion
 
-    #region Input
-    /// <summary>
-    /// 공격 입력 처리
-    /// </summary>
-    protected override void OnNormalAttack()
-    {
-        // 일반 공격이 가능하지 않으면 리턴
-        if (!p_owner.Combat.CanNormalAttack())
-        {
-            return;
-        }
-
-        // 선입력 가능하면 공격 상태 변경
-        if (p_nextState == null && p_canBufferInput)
-        {
-            p_stateMachine.ChangeState<PlayerNormalAttackState>();
-        }
-    }
-
-    #endregion
-
     #region EventHandle
     protected override void OnAttackPerformed()
     {

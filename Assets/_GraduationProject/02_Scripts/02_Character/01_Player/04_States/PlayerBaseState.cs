@@ -168,27 +168,67 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// <summary>
     /// 회피 입력 처리
     /// </summary>
-    protected virtual void OnDodge() { }
+    protected virtual void OnDodge()
+    {
+        // "Dodge" 능력이 있고 스테미나가 충분하며 회피가 가능할 때만 전환
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
+        {
+            p_stateMachine.ChangeState<PlayerDodgeState>();
+        }
+    }
 
     /// <summary>
     /// 공격 입력 처리
     /// </summary>
-    protected virtual void OnNormalAttack() { }
+    protected virtual void OnNormalAttack()
+    {
+        // 일반 공격은 기본 기능으로 유지 (원할 경우 "NormalAttack" 능력 체크 추가 가능)
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalAttackState>();
+        }
+    }
 
     /// <summary>
     /// 강공격 입력 처리
     /// </summary>
-    protected virtual void OnHeavyAttack() { }
+    protected virtual void OnHeavyAttack()
+    {
+        // "HeavyAttack" 능력이 있고 패리 스택이 1개 이상일 때만 전환
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+        }
+        else
+        {
+            // 능력이 없거나 조건이 안 되면 일반 공격 실행
+            OnNormalAttack();
+        }
+    }
     
     /// <summary>
     /// 일반 상쇄 입력 처리
     /// </summary>
-    protected virtual void OnNormalCounter() { }
+    protected virtual void OnNormalCounter()
+    {
+        // "Counter" 능력이 있을 때만 상쇄 상태로 전환
+        if (p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerNormalCounterState>();
+        }
+    }
 
     /// <summary>
     /// 차지 시작 입력 처리
     /// </summary>
-    protected virtual void OnChargeStart() { }
+    protected virtual void OnChargeStart()
+    {
+        // "Charge" 능력이 있고 스테미나가 충분할 때만 차지 상태로 전환
+        if (p_owner.Ability.HasAbility("Charge") && p_owner.Stamina.CheckStamina())
+        {
+            p_stateMachine.ChangeState<PlayerChargeState>();
+        }
+    }
 
     /// <summary>
     /// 차지 종료 입력 처리

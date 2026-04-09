@@ -59,7 +59,6 @@ public class PlayerMoveState : PlayerBaseState
     /// <summary>
     /// 이동 입력 이벤트 처리
     /// </summary>
-    /// <param name="moveInput">이동 입력</param>
     protected override void OnMove(Vector2 moveInput)
     {
         if (moveInput == Vector2.zero)
@@ -69,73 +68,6 @@ public class PlayerMoveState : PlayerBaseState
         }
     }
 
-    /// <summary>
-    /// 회피 입력 이벤트 처리
-    /// </summary>
-    protected override void OnDodge()
-    {
-        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
-        {
-            p_stateMachine.ChangeState<PlayerDodgeState>();
-        }
-    }
-
-    /// <summary>
-    /// 공격 입력 이벤트 처리
-    /// </summary>
-    protected override void OnNormalAttack()
-    {
-        base.OnNormalAttack();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalAttackState>();
-        }
-    }
-
-    /// <summary>
-    /// 강공격 입력 이벤트 처리
-    /// </summary>
-    protected override void OnHeavyAttack()
-    {
-        base.OnHeavyAttack();
-        
-        // 강공격 능력이 있고 패리 스택이 1개 이상이면 강공격 상태로 전환
-        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
-        }
-        else
-        {
-            // 능력이 없거나 패리 스택이 없으면 일반 공격 처리
-            OnNormalAttack();
-        }
-    }
-
-    /// <summary>
-    /// 일반 상쇄 이벤트 처리
-    /// </summary>
-    protected override void OnNormalCounter()
-    {
-        base.OnNormalCounter();
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        }
-    }
-
-    /// <summary>
-    /// 차지 시작 입력 처리
-    /// </summary>
-    protected override void OnChargeStart()
-    {
-        base.OnChargeStart();
-
-        if (p_owner.Stamina.CheckStamina())
-        {
-            p_stateMachine.ChangeState<PlayerChargeState>();
-            return;
-        }
-    }
     #endregion
 
 }

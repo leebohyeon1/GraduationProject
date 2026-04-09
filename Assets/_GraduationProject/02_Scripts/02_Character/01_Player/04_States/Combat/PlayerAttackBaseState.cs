@@ -130,25 +130,27 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             return;
         }
 
-        if (p_owner.Combat.CounterStacks <= 0 || !p_owner.Ability.HasAbility("HeavyAttack"))
+        // "HeavyAttack" 능력이 있고 패리 스택이 1개 이상일 때만 전환
+        if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0)
         {
-            // 패리 스택이 없거나 강공격 능력이 없으면 일반 공격으로 대체
+            if (!p_owner.Stamina.CheckStamina())
+            {
+                return;
+            }
+
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerHeavyAttackState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerHeavyAttackState);
+            }
+        }
+        else
+        {
+            // 능력이 없거나 패리 스택이 없으면 일반 공격 처리
             OnNormalAttack();
-            return;
-        }
-
-        if (!p_owner.Stamina.CheckStamina())
-        {
-            return;
-        }
-
-        if (p_canChangeCombatState)
-        {
-            p_stateMachine.ChangeState<PlayerHeavyAttackState>();
-        }
-        else if (p_canBufferInput)
-        {
-            p_nextState = typeof(PlayerHeavyAttackState);
         }
     }
 
@@ -161,17 +163,17 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-        if (!p_owner.Stamina.CheckStamina() || !p_owner.Movement.CanDodge)
+
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
-            return;
-        }
-        if (p_canChangeCombatState)
-        {
-            p_stateMachine.ChangeState<PlayerDodgeState>();
-        }
-        else if (p_canBufferInput)
-        {
-            p_nextState = typeof(PlayerDodgeState);
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerDodgeState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerDodgeState);
+            }
         }
     }
 
@@ -185,17 +187,17 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         {
             return;
         }
-        if (!p_owner.Stamina.CheckStamina())
+
+        if (p_owner.Stamina.CheckStamina())
         {
-            return;
-        }
-        if (p_canChangeCombatState)
-        {
-            p_stateMachine.ChangeState<PlayerNormalCounterState>();
-        }
-        else if (p_canBufferInput)
-        {
-            p_nextState = typeof(PlayerNormalCounterState);
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerNormalCounterState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerNormalCounterState);
+            }
         }
     }
 
@@ -204,7 +206,11 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected override void OnChargeStart()
     {
-        base.OnChargeStart();
+        // "Charge" 능력이 없으면 리턴
+        if (!p_owner.Ability.HasAbility("Charge"))
+        {
+            return;
+        }
 
         if (p_nextState != null)
         {
