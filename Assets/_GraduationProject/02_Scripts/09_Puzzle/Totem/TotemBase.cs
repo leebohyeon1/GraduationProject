@@ -25,6 +25,8 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     // 외부에서 설정 가능하도록 프로퍼티 제공
     public bool IsMovable { get => _isMovable; set => _isMovable = value; }
 
+    public int CurrentHealth => Health;
+
     protected virtual void Awake()
     {
     }
@@ -79,10 +81,9 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
     private bool IsChargedAttack(AttackType type)
     {
-        return type == AttackType.Charge1 || 
-               type == AttackType.Charge2 || 
-               type == AttackType.Charge3 || 
-               type == AttackType.Heavy;
+        return type == AttackType.Strong_1 || 
+               type == AttackType.Strong_2 || 
+               type == AttackType.Strong_3;
     }
 
     private System.Collections.IEnumerator SlideToPosition(Vector2Int targetGridPos)

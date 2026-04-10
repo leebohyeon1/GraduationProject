@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class PuzzleGridManager : MonoBehaviour
 {
@@ -19,20 +20,21 @@ public class PuzzleGridManager : MonoBehaviour
     // 전체 리스트 (리셋용)
     private List<TotemBase> _allTotems = new List<TotemBase>();
     private List<ObjectTotem> _objectTotems = new List<ObjectTotem>();
+    private UnityEngine.InputSystem.InputAction reloadAction;
 
     private void Awake()
     {
+        reloadAction = new UnityEngine.InputSystem.InputAction("Reload", binding: "<Keyboard>/r");
+        reloadAction.performed += ResetPuzzle;
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
-
-    private void Update()
-    {
-        // 디버그용 리셋 키 (R)
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            ResetPuzzle();
-        }
+    private void OnEnable() {
+        reloadAction.Enable();
+    }
+    
+    private void OnDisable() {
+        reloadAction.Disable();
     }
 
     public void RegisterTotem(TotemBase totem, Vector2Int pos)
@@ -122,7 +124,7 @@ public class PuzzleGridManager : MonoBehaviour
     /// <summary>
     /// 퍼즐 전체 초기화
     /// </summary>
-    public void ResetPuzzle()
+    public void ResetPuzzle(InputAction.CallbackContext context)
     {
         Debug.Log("[PuzzleGridManager] Resetting Puzzle...");
         
