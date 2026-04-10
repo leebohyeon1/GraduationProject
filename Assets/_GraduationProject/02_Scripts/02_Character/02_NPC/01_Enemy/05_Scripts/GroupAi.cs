@@ -10,7 +10,7 @@ public class GroupAi : MonoBehaviour
     [Header("Settings")]
     public string GroupName = "DefaultGroup";
     public int MaxAttackTokenCount = 2; 
-    public float updateInterval = 0.1f;
+    public float updateInterval = 1f;
     
     private List<Enemy> enemies = new List<Enemy>();
     
