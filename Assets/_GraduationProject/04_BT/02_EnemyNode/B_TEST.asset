@@ -114,9 +114,9 @@ MonoBehaviour:
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
   position: {x: 721, y: -55}
-  key: IsSurrounding
   exceptCondition:
     key: 
+  key: IsSurrounding
 --- !u!114 &-6477674856501047169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
   position: {x: 1716, y: 221}
+  exceptCondition:
+    key: 
   minDistance: 0
   maxDistance: 0
 --- !u!114 &-5610244398616160024
@@ -243,6 +245,8 @@ MonoBehaviour:
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
   position: {x: 1525, y: -148}
+  exceptCondition:
+    key: 
 --- !u!114 &-3662235796367844752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +278,8 @@ MonoBehaviour:
   Radius: 15
   Delay: 2
   MoveSpeed: 6
+  StuckThreshold: 0.2
+  StuckTimeout: 2
 --- !u!114 &-2870098089127236727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +307,8 @@ MonoBehaviour:
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: 
   position: {x: 356, y: -132}
+  exceptCondition:
+    key: 
 --- !u!114 &-1508998778064926519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,6 +441,8 @@ MonoBehaviour:
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
   position: {x: 1546, y: -1070}
+  exceptCondition:
+    key: 
   minDistance: 0.5
   maxDistance: 40
 --- !u!114 &2141469619500100927
@@ -462,11 +472,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1521, y: 144}
   attackKey: 
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
   maintainAtk: 0
   SO:
   - {fileID: 0}
-  ExceptKey: IsAttacking
   LoopAttack: 0
+  NextBT: 0
+  debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &2818389067996432150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,8 +521,12 @@ MonoBehaviour:
   m_Name: Condition_Is Skill Ready
   m_EditorClassIdentifier: 
   position: {x: 1524, y: -6}
+  exceptCondition:
+    key: 
   skillName: Attack
   cooldownDuration: 3
+  EnemyAttackData: 0
+  attackData: {fileID: 0}
 --- !u!114 &4362508772626884377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,6 +570,9 @@ MonoBehaviour:
   m_Name: Condition_Is Stunned
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
   position: {x: 357, y: -336}
+  exceptCondition:
+    key: 
+  targetStunType: 3
 --- !u!114 &5529467211719327576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,6 +614,8 @@ MonoBehaviour:
   m_Name: Condition_Is Between Distances
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsBetweenDistances
   position: {x: 1528, y: -401}
+  exceptCondition:
+    key: 
   minDistance: 0
   maxDistance: 5
 --- !u!114 &6037020714689537487
@@ -756,6 +789,8 @@ MonoBehaviour:
   m_Name: Condition_Is Actionable
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsActionable
   position: {x: 1546, y: -1136}
+  exceptCondition:
+    key: 
 --- !u!114 &8656888805184373649
 MonoBehaviour:
   m_ObjectHideFlags: 0
