@@ -9,7 +9,6 @@ public class Task_TeleportAttack : BaseAttackNode
     public float teleportOffset = 5.0f;
     public float detectionRadius = 1.0f;
     public LayerMask wallLayerMask;
-    public string animationEndEvent = "Teleport_End";
 
     private bool _teleportDone;
     private float _teleportStartTime;
@@ -38,10 +37,7 @@ public class Task_TeleportAttack : BaseAttackNode
         MoveToSafePositionAroundPlayer();
         SetEnemyInvisible(runner, false);
 
-        if (!string.IsNullOrWhiteSpace(animationEndEvent))
-        {
-            runner.AnimationEvent(animationEndEvent);
-        }
+
 
         _teleportDone = true;
     }
@@ -81,20 +77,52 @@ public class Task_TeleportAttack : BaseAttackNode
         Vector3 forward = playerTr.forward;
         Vector3 right = playerTr.right;
 
+        // 우선순위: 뒤 -> 왼쪽 -> 오른쪽 -> 정면
         Vector3[] checkDirs = { -forward, -right, right, forward };
 
         foreach (Vector3 dir in checkDirs)
         {
             Vector3 targetPos = playerPos + (dir * teleportOffset);
-            Vector3 checkPos = targetPos + Vector3.up;
-
-            if (!Physics.CheckSphere(checkPos, detectionRadius, wallLayerMask))
+            if (IsValidTeleportPosition(playerPos, targetPos))
             {
                 return targetPos;
             }
         }
 
-        return playerPos;
+        // 뒤/양옆이 모두 막힌 경우에는 정면을 최종 폴백으로 강제
+        return CalculateFrontFallbackPosition(playerPos, forward);
+    }
+
+    private bool IsValidTeleportPosition(Vector3 playerPos, Vector3 targetPos)
+    {
+        Vector3 checkPos = targetPos + Vector3.up;
+        if (Physics.CheckSphere(checkPos, detectionRadius, wallLayerMask))
+        {
+            return false;
+        }
+
+        Vector3 lineStart = playerPos + Vector3.up;
+        Vector3 lineEnd = targetPos + Vector3.up;
+        if (Physics.Linecast(lineStart, lineEnd, wallLayerMask))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Vector3 CalculateFrontFallbackPosition(Vector3 playerPos, Vector3 playerForward)
+    {
+        Vector3 frontTarget = playerPos + (playerForward * teleportOffset);
+        Vector3 rayOrigin = playerPos + Vector3.up;
+
+        if (!Physics.Raycast(rayOrigin, playerForward, out RaycastHit hit, teleportOffset, wallLayerMask))
+        {
+            return frontTarget;
+        }
+
+        float safeDistance = Mathf.Max(0.5f, hit.distance - detectionRadius);
+        return playerPos + (playerForward * safeDistance);
     }
 
     private void SetEnemyInvisible(Enemy enemy, bool invisible)
@@ -147,7 +175,6 @@ public class Task_TeleportAttack : BaseAttackNode
         node.teleportOffset = teleportOffset;
         node.detectionRadius = detectionRadius;
         node.wallLayerMask = wallLayerMask;
-        node.animationEndEvent = animationEndEvent;
         return node;
     }
 }
