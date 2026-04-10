@@ -6,7 +6,7 @@ public interface IDamageable
     /// <summary>
     /// 현재 체력
     /// </summary>
-    public int Health { get; }
+    public int CurrentHealth { get; }
 
     /// <summary>
     /// 최대 체력
@@ -17,12 +17,6 @@ public interface IDamageable
     /// 사망 여부
     /// </summary>
     public bool IsDead { get; }
-
-    /// <summary>
-    /// 무적 상태 여부
-    /// </summary>
-    public bool IsInvincible { get; }  
-
 
     /// <summary>
     /// 피해를 받는 함수
@@ -40,6 +34,9 @@ public interface IDamageable
     public event Action OnDied;
 }
 
+/// <summary>
+/// 데미지 데이터
+/// </summary>
 [Serializable]
 public struct DamageData
 {
@@ -52,8 +49,10 @@ public struct DamageData
     public float KnockbackDuration;
     public float KnockbackForce;
 
+    public bool IsMagic;
 
-    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f)
+    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, 
+        AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, bool isMagic = false)
     {
         AttackerTransform = attackerTransform;
         AttackType = attackType;
@@ -62,18 +61,21 @@ public struct DamageData
         KnockbackCurve = knockbackCurve;
         KnockbackDuration = knockbackDuration;
         KnockbackForce = knockbackForce;
+        IsMagic = isMagic;
     }
 }
 
 [Serializable]
 public enum AttackType
 {
-    Normal,
-    NormalCounter,
-    Heavy,
-    Range,
-    Charge1,
-    Charge2,
-    Charge3,
+    Normal_0,
+    Normal_1,
+    Normal_2,
+    Normal_3,
+    Strong_1,
+    Strong_2,
+    Strong_3,
+    Normal_Counter,
+    Strong_Counter,
+    Absoluteness,
 }
-

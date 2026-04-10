@@ -2,9 +2,9 @@ using UnityEngine;
 
 
 /// <summary>
-/// Åõ¸íÈ­ ÄÁÆ®·Ñ·¯¿¡ Å½Áö Å¸°ÙÀ» µî·ÏÇÏ´Â ½ºÅ©¸³ÅÍºí ¿ÀºêÁ§Æ® ÀÌº¥Æ®
+/// íˆ¬ëª…í™” ì»¨íŠ¸ë¡¤ëŸ¬ì— íƒì§€ íƒ€ê²Ÿì„ ë“±ë¡í•˜ëŠ” ìŠ¤í¬ë¦½í„°ë¸” ì˜¤ë¸Œì íŠ¸ ì´ë²¤íŠ¸
 /// </summary>
-[CreateAssetMenu(fileName = "OnRegisterSeeThroughTarget", menuName = "Scriptable Objects/Events/OnRegisterSeeThroughTarget")]
+[CreateAssetMenu(fileName = "OnRegisterSeeThroughTarget", menuName = "Project/Events/OnRegisterSeeThroughTarget")]
 public class OnRegisterSeeThroughTargetSO : EventSO<SeeThroughTargetTransform>
 {
     

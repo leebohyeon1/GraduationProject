@@ -5,7 +5,6 @@ public class Condition_BlackboardKeyCheck : ConditionNode
 {
     public string key = "";
 
-    public ExceptCondition exceptCondition; // 제외 조건
     protected override bool CheckCondition()
     {
         

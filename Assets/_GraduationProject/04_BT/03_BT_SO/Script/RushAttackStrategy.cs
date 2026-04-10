@@ -28,8 +28,8 @@ public class RushAttackStrategy : EnemyUseAnything
             endStrategy = false;
         }
         return runner;
-         // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
-        Debug.Log($"{runner.name}가 돌진 전략을 시작함");
+         // // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
+        // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
     }
 
 
@@ -43,7 +43,7 @@ public class RushAttackStrategy : EnemyUseAnything
         
         if (dist > stopDistance && !runner.animHandler.IsHitWindowOpen && !endStrategy)
         {
-             runner.Movement.StartRush(runner.player.transform.position, speed);
+             runner.Movement.StartRush(runner.player.transform.position, rushSpeed);
              // 회전 로직 등...
         }
         else
@@ -60,9 +60,14 @@ public class RushAttackStrategy : EnemyUseAnything
         var aiPath = runner.GetComponent<AIPath>();
         if (aiPath != null)
         {
-            aiPath.maxSpeed = 4.0f; // 원래 속도로 복구 (혹은 Enemy 스탯 참조)
+            aiPath.maxSpeed = runner.Movement._normalSpeed; // 원래 속도로 복구 (혹은 Enemy 스탯 참조)
             aiPath.enableRotation = true;
         }
         return runner;
+    }
+
+    public override void Reset<T>(T runner)
+    {
+        
     }
 }

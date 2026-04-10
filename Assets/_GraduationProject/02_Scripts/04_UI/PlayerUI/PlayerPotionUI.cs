@@ -1,39 +1,43 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPotionUI : MonoBehaviour
+/// <summary>
+/// 플레이어 포션 UI
+/// </summary>
+public class PlayerPotionUI : PlayerUIBase
 {
-    [SerializeField] private PlayerPotion _playerPotion;
-    [SerializeField] private GameObject[] potionUIObjects;
+    [Header("References")]
+    [SerializeField] private List<GameObject> _potionImages;
 
-    private void OnEnable()
+    public override void Initialize(PlayerController player)
     {
-        if(_playerPotion == null)
-        {
-            _playerPotion = GameObject.FindFirstObjectByType<PlayerPotion>();
-        }
+        base.Initialize(player);
 
-        _playerPotion.OnPotionChange += OnPotionChange;
+        p_player.Potion.OnPotionChange += OnPotionChange;
 
-        OnPotionChange(_playerPotion.CurrentPotion);
+        OnPotionChange(p_player.Potion.CurrentPotion);
     }
 
-    private void OnDisable()
+    public override void Dispose()
     {
-        _playerPotion.OnPotionChange -= OnPotionChange;
+        p_player.Potion.OnPotionChange -= OnPotionChange;
     }
 
-    private void OnPotionChange(int currentPotion)
+    // 포션 변경 이벤트 처리
+    private void OnPotionChange(int curentPotion)
     {
-        for (int i = 0; i < potionUIObjects.Length; i++)
+        for (int i = 0; i < _potionImages.Count; i++)
         {
-            if(i < currentPotion)
+            if (i < curentPotion)
             {
-                potionUIObjects[i].SetActive(true);
+                _potionImages[i].SetActive(true);
             }
             else
             {
-                potionUIObjects[i].SetActive(false);
+                _potionImages[i].SetActive(false);
             }
         }
     }
+
 }

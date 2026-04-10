@@ -8,6 +8,7 @@ namespace BehaviorTree
     public abstract class ConditionNode : Node
     {
 
+    public ExceptCondition exceptCondition; // 제외 조건
         protected override NodeState OnUpdate()
         {
             // 자식 클래스에서 구현한 조건을 확인하고,

@@ -14,14 +14,14 @@ public class Condition_OpportunityFinder : ConditionNode
 
     protected override bool CheckCondition()
     {
-        if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.CurrentPlayerState))
+        if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.FSM.CurrentState.GetType()))
         {
-            Debug.Log(runner.player.CurrentPlayerState);
+            // // Debug.Log(runner.player.FSM.CurrentState);
             return true;
         }
-        else if (runner.player.CurrentPlayerState == typeof(PlayerDodgeState))
+        else if (runner.player.FSM.CurrentState.GetType() == typeof(PlayerDodgeState))
         {
-            Debug.Log(runner.player.CurrentPlayerState);
+            // // Debug.Log(runner.player.FSM.CurrentState);
             return true;
         }
         else
