@@ -83,6 +83,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     {
         return type == AttackType.Strong_1 || 
                type == AttackType.Strong_2 || 
+               type == AttackType.Strong_Counter||
                type == AttackType.Strong_3;
     }
 

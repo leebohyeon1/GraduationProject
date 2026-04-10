@@ -7,27 +7,40 @@ public class ObjectTotem : TotemBase
     [SerializeField] private int _maxDurability = 3;
     [SerializeField] private Vector2Int _targetGridPos;
     [SerializeField] private MeshRenderer _renderer;
-    
+
+    [Header("Gizmo")]
+    [SerializeField] private bool _showTargetGizmo = true;
+    [SerializeField] private Color _targetGizmoColor = Color.green;
+    [SerializeField] private PuzzleGridManager _gizmoGridManager;
+
     private int _currentDurability;
+    private Color _originalColor;
+
     public bool IsAtTarget { get; private set; }
-    private Color _originalColor; // 원래 색상 저장용
+    public Vector2Int TargetGridPos => _targetGridPos;
 
     protected override void Start()
     {
         base.Start();
         _type = TotemType.Object;
         _currentDurability = _maxDurability;
-        
-        if (_renderer == null) _renderer = GetComponentInChildren<MeshRenderer>();
-        if (_renderer != null) _originalColor = _renderer.material.color;
+
+        if (_renderer == null)
+        {
+            _renderer = GetComponentInChildren<MeshRenderer>();
+        }
+
+        if (_renderer != null)
+        {
+            _originalColor = _renderer.material.color;
+        }
     }
 
     protected override void OnMoveComplete()
     {
         base.OnMoveComplete();
-        
+
         _currentDurability--;
-        // UI 연동 필요 (이벤트 발생 등)
         Debug.Log($"[ObjectTotem] Moved! Durability: {_currentDurability}/{_maxDurability}");
 
         if (_currentDurability <= 0)
@@ -42,25 +55,23 @@ public class ObjectTotem : TotemBase
     public override void ResetToStart()
     {
         base.ResetToStart();
-        
-        // 상태 복구
+
         _currentDurability = _maxDurability;
         IsAtTarget = false;
-        
-        // 시각적 복구
+
         if (_renderer != null)
         {
             _renderer.material.color = _originalColor;
-            _renderer.material.DOKill(); // 색상 트윈 중단
+            _renderer.material.DOKill();
         }
-        
+
         Debug.Log("[ObjectTotem] Reset Complete.");
     }
 
     private void CheckTargetReached()
     {
         bool wasAtTarget = IsAtTarget;
-        IsAtTarget = (_currentGridPos == _targetGridPos);
+        IsAtTarget = _currentGridPos == _targetGridPos;
 
         if (IsAtTarget && !wasAtTarget)
         {
@@ -72,11 +83,35 @@ public class ObjectTotem : TotemBase
     {
         _state = TotemState.Destroyed;
         Debug.Log("[ObjectTotem] Broken! (Remains on field)");
-        
+
         if (_renderer != null)
         {
             _renderer.material.DOColor(Color.gray, 0.5f);
         }
+
         transform.DOShakePosition(0.5f, 0.5f);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!_showTargetGizmo)
+        {
+            return;
+        }
+
+        PuzzleGridManager gridManager = _gizmoGridManager != null ? _gizmoGridManager : PuzzleGridManager.Instance;
+        if (gridManager == null)
+        {
+            return;
+        }
+
+        Vector3 targetWorldPos = gridManager.GridToWorld(_targetGridPos);
+
+        Gizmos.color = _targetGizmoColor;
+        Gizmos.DrawWireCube(targetWorldPos + Vector3.up * 0.05f, new Vector3(1.7f, 0.1f, 1.7f));
+        Gizmos.DrawSphere(targetWorldPos + Vector3.up * 0.2f, 0.15f);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position + Vector3.up * 0.2f, targetWorldPos + Vector3.up * 0.2f);
     }
 }
