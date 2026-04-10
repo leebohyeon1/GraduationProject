@@ -179,6 +179,7 @@ public abstract class BaseAttackNode : Node
 
     public sealed override void OnExit()
     {
+        runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         CleanupAllStates();
     }
 
