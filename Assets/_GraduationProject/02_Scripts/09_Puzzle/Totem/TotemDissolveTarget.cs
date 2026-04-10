@@ -142,7 +142,11 @@ public class TotemDissolveTarget : MonoBehaviour
             {
                 continue;
             }
-
+            if(_propertyBlock == null)
+            {
+                Debug.LogError($"[TotemDissolveTarget] MaterialPropertyBlock is null. This should not happen. object={name}");
+                continue;
+            }
             targetRenderer.GetPropertyBlock(_propertyBlock);
             _propertyBlock.SetFloat(_dissolvePropertyId, value);
             targetRenderer.SetPropertyBlock(_propertyBlock);
