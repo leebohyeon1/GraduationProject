@@ -77,6 +77,13 @@ public class DialogueManager : MonoBehaviour
             if (DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
 
             bool allConditionsMet = true;
+
+            if(dialogue.NeedConditionList.Count == 0)
+            {
+                Debug.LogWarning("대화 그룹 " + dialogue.DialogueGroupID + "의 필요 조건이 없습니다. 대화가 시작되지 않습니다.");
+                continue;
+            }
+
             foreach (var condition in dialogue.NeedConditionList)
             {
                 if (!GamePlayTagManager.Instance.HasTag(condition))
