@@ -73,7 +73,6 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var dialogue in database.DialogueDataList)
         {
-            if (dialogue.DialogueType != DialogueType.Narration) continue;
             if (DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
 
             bool allConditionsMet = true;
@@ -109,12 +108,6 @@ public class DialogueManager : MonoBehaviour
         }
 
         _currentDialogue = DataManager.Instance.GetDialogueGroupData(groupID);
-
-        if (_currentDialogue.NeedConditionList.Count == 0)
-        {
-            Debug.LogWarning("대화 그룹 " + groupID + "의 필요 조건이 없습니다. 대화가 시작되지 않습니다.");
-            return;
-        }
 
         if (_currentDialogue.DialogueType == DialogueType.Dialogue)
         {
