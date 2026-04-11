@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +27,6 @@ public class GamePlayTagManager : MonoBehaviour
 
     private void Start()
     {
-        DataManager.Instance.InitGamePlayTagEvent();
-
         // 데이터베이스에서 저장된 데이터 불러오기
         if (DataManager.Instance.GetGameData() != null)
         {
@@ -49,9 +48,17 @@ public class GamePlayTagManager : MonoBehaviour
     /// <param name="tag">추가할 태그</param>
     public void AddTag(GamePlayTagSO tag)
     {
-        if(!_activeTagList.Contains(tag))
+        Sequence addSequenece = DOTween.Sequence();
+
+        if (!_activeTagList.Contains(tag))
         {
             _activeTagList.Add(tag);
+
+            if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+            {
+                 DataManager.Instance.GetGameData().AddGamePlayTag(tag.ID);
+            }
+
             UpdateTag?.Invoke(tag);
             Debug.Log("태그 추가");
         }
