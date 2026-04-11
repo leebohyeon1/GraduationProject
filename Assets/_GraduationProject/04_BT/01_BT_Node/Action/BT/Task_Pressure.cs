@@ -17,9 +17,6 @@ public class Task_Pressure : Node
         base.OnEnter();
         ai = runner.aIPath;
         
-        Debug.Log(string.Format("[Task_Pressure : {0}] OnEnter 진입. 현재 상태: {1}, Lock: {2}, AnimAtk: {3}", 
-            runner.name, runner.CurrentState, runner._stateController.IsStateLocked, runner._animationBridge.IsAttacking));
-
         if (ai != null)
         {
             ai.canMove = true;
@@ -28,6 +25,8 @@ public class Task_Pressure : Node
             ai.enableRotation = false;
             ai.SetPath(null); // 진입 시 잔여 경로 제거
         }
+        runner._stateController.SetLock(false);
+
     }
     protected override NodeState OnUpdate()
     {
@@ -65,10 +64,13 @@ public class Task_Pressure : Node
     {
         base.Abort();
         Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨.", runner.name));
+        runner._stateController.SetLock(false);
     }
     public override void OnExit()
     {
         base.OnExit();
+        
+        runner._stateController.SetLock(false);
         Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
         if (ai != null) ai.enableRotation = true;
     }
