@@ -147,6 +147,7 @@ public class Task_TristanaJump : BaseAttackNode
                 impactDamage.AttackerTransform = runner.transform;
                 playerHealth.TakeDamage(impactDamage);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
 

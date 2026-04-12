@@ -77,7 +77,8 @@ public class Task_PlayerChase : BaseAttackNode
             {
                 Log("플레이어 도달 (Hit 판정 활성화)");
                 _hasHit = true;
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                        brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
     }

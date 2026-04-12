@@ -29,12 +29,12 @@ public class Task_ReturnHome : Node
         {
             return NodeState.FAILURE;
         }
+        runner.Movement.StartOrUpdateChase(HomePosition, EnemyStateController.EnemyState.Patrol, MoveSpeed);
         if (_aiPath != null && _aiPath.reachedDestination)
         {
             _hasDestination = true;
             return NodeState.SUCCESS;
         }
-        runner.Movement.StartOrUpdateChase(HomePosition, EnemyStateController.EnemyState.Patrol, MoveSpeed);
         return NodeState.RUNNING;
     }
     public override void OnExit()

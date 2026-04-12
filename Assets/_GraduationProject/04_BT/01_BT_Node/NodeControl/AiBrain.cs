@@ -98,6 +98,11 @@ public class AiBrain
 
         _isCombat = combat;
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
+        if (_isCombat)
+        {
+            blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+            blackboard.SetValue(EnemyBlackboardKeys.LastTakeHitTime, Time.time);
+        }
         
         if (_owner.animator != null)
         {

@@ -52,19 +52,18 @@ public class Task_Pressure : Node
         Vector3 targetPos = (Vector3)val;
         currentTargetDebug = targetPos; 
         
-        // A* 경로 업데이트 강제
-        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
+        // A* 경로 업데이트 강제
+        runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         return NodeState.RUNNING;
     }
     public override void Abort()
     {
         base.Abort();
-        Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨.", runner.name));
-        runner._stateController.SetLock(false);
+        //Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨. task_node : {1} ", runner.name, Node.CurrentNodeName));
     }
     public override void OnExit()
     {
@@ -72,12 +71,11 @@ public class Task_Pressure : Node
         
         runner._stateController.SetLock(false);
         Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
-        if (ai != null) ai.enableRotation = true;
     }
     private void RotateTowardsPlayer()
     {
         if (runner.player == null) return;
-
+        ai.enableRotation = false;
         Vector3 directionToPlayer = runner.player.transform.position - runner.transform.position;
         directionToPlayer.y = 0; 
 
