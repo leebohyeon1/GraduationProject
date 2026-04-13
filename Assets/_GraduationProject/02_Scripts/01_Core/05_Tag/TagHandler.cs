@@ -17,10 +17,6 @@ public class TagHandler : MonoBehaviour
     [Tooltip("감시할 태그 리스트")]
     [SerializeField] private List<GamePlayTagSO> _targetTags = new List<GamePlayTagSO>();
 
-    [Header("Response Settings")]
-    [Tooltip("조건 충족 시 이 게임 오브젝트를 자동으로 활성화/비활성화할지 여부")]
-    [SerializeField] private bool _autoToggleGameObject = false;
-
     [Header("Events")]
     public UnityEvent OnRequirementMet;    // 조건 충족 시 (처음 한 번)
     public UnityEvent OnRequirementFailed; // 조건 미충족 시 (처음 한 번)
@@ -95,11 +91,6 @@ public class TagHandler : MonoBehaviour
 
     private void ExecuteResponse(bool met)
     {
-        if (_autoToggleGameObject)
-        {
-            gameObject.SetActive(met);
-        }
-
         if (met) OnRequirementMet?.Invoke();
         else OnRequirementFailed?.Invoke();
 
