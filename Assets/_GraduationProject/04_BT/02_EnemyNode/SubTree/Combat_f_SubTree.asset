@@ -594,6 +594,56 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &1467670744796997601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65522a3d0428d3f41b34a40ca98c9fd5, type: 3}
+  m_Name: Task_Attack Range
+  m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
+  position: {x: 1174, y: 566}
+  attackKey: 
+  animationStateName: 
+  transitionBuffer: 1
+  maxNodeDuration: 6
+  maintainAtk: 0
+  SO: []
+  LoopAttack: 0
+  NextBT: 0
+  debugMode: 0
+  escapeOnHitConfirm: 1
+  hitEscapeDelay: 0.5
+  checkRangeOnEnter: 0
+  rangeThreshold: 1
+  ignoreYDistance: 1
+  allowOutOfCombat: 0
+  ExceptKey: IsAttacking
+  _hitMasks:
+    serializedVersion: 2
+    m_Bits: 128
+  projectilePrefab: {fileID: 7957734241402798331, guid: c0cce47f9d4b3444d9371347dc40eb26, type: 3}
+  projectileSpeed: 15
+  spawnOffset: {x: 0, y: 1, z: 0.5}
+  damageData:
+    AttackerTransform: {fileID: 0}
+    AttackType: 0
+    DamageAmount: 0
+    StiffnessAmount: 0
+    KnockbackCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    KnockbackDuration: 0
+    KnockbackForce: 0
+    IsMagic: 0
+  maxTriggerRange: 25
 --- !u!114 &1817828130452674458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -773,7 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e5a6fbb630cde946b2b5de0f2a668d2, type: 3}
   m_Name: Task_Tristana Jump
   m_EditorClassIdentifier: Assembly-CSharp::Task_TristanaJump
-  position: {x: 1175, y: 99}
+  position: {x: 1174, y: 94}
   attackKey: 
   animationStateName: 
   transitionBuffer: 1
@@ -883,7 +933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1178, y: 414}
+  position: {x: 1177, y: 412}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -1054,4 +1104,5 @@ MonoBehaviour:
   - {fileID: 3668510145703515392}
   - {fileID: 6434523766644697634}
   - {fileID: 6495900497246085100}
+  - {fileID: 1467670744796997601}
   services: []
