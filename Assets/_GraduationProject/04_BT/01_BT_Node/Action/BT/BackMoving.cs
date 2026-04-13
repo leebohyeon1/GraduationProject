@@ -1,16 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
 public class BackMoving : Node
 {
-    [Tooltip("유지하고 싶은 목표 거리입니다.")]
+    [Tooltip("?좎??섍퀬 ?띠? 紐⑺몴 嫄곕━?낅땲??")]
     public float targetDistance = 5.0f;
 
-    [Tooltip("이동을 멈출 목표 지점과의 허용 오차 거리입니다.")]
+    [Tooltip("?대룞??硫덉텧 紐⑺몴 吏?먭낵???덉슜 ?ㅼ감 嫄곕━?낅땲??")]
     public float acceptanceRadius = 0.5f;
 
-    // 내부 변수
+    // ?대? 蹂??
     private Transform playerTransform;
     private AIPath aiPath;
 
@@ -24,12 +24,12 @@ public class BackMoving : Node
 
         if (aiPath == null)
         {
-            Debug.LogError("AIPath 컴포넌트를 찾을 수 없습니다!", runner);
+            Debug.LogError("AIPath 而댄룷?뚰듃瑜?李얠쓣 ???놁뒿?덈떎!", runner);
             return;
         }
 
         runner.SetState(EnemyStateController.EnemyState.RunAway);
-        aiPath.enableRotation = false; // 회전은 수동으로 제어
+        aiPath.enableRotation = false; // ?뚯쟾? ?섎룞?쇰줈 ?쒖뼱
         
         startTime = Time.time;
     }
@@ -42,7 +42,7 @@ public class BackMoving : Node
         }
 
         Vector3 playerFacingDir = playerTransform.forward;
-        playerFacingDir.y = 0; // 높낮이 무시
+        playerFacingDir.y = 0; // ?믩궙??臾댁떆
         playerFacingDir.Normalize();
 
         Vector3 currentTargetPosition = runner.transform.position + (playerFacingDir * targetDistance);
@@ -69,14 +69,12 @@ public class BackMoving : Node
 
         if (isHit)
         {
-            // // Debug.Log("벽에 부딪혔습니다");
             return NodeState.SUCCESS;
         }
 
-        // --- 종료 조건 ---
+        // --- 醫낅즺 議곌굔 ---
         if (Time.time - startTime > timeout)
         {
-            // // Debug.Log("시간초과");
             return NodeState.SUCCESS;
         }
 

@@ -1,16 +1,16 @@
-// --- FILE: CompositeNode.cs ---
+﻿// --- FILE: CompositeNode.cs ---
 
 using UnityEngine;
 using BehaviorTree;
 using System.Collections.Generic;
 
-// 이 클래스는 직접 사용되지 않고 Selector, Sequence의 부모 역할을 합니다.
+// ???대옒?ㅻ뒗 吏곸젒 ?ъ슜?섏? ?딄퀬 Selector, Sequence??遺紐???븷???⑸땲??
 namespace BehaviorTree
 {
     public abstract class CompositeNode : Node
     {
         public Node[] nodes;
-        //이 노드에 부착된 서비스는 실행만 진행함
+        //???몃뱶??遺李⑸맂 ?쒕퉬?ㅻ뒗 ?ㅽ뻾留?吏꾪뻾??
         public List<ServiceNode> services = new List<ServiceNode>();
         protected void UpdateServices()
         {
@@ -18,12 +18,11 @@ namespace BehaviorTree
 
             for (int i = 0; i < services.Count; i++)
             {
-                // 서비스의 Evaluate를 호출하여 OnEnter -> OnUpdate 사이클을 돌립니다.
-                // 반환값(Success/Failure)은 무시합니다. (흐름에 영향 X)
+                // ?쒕퉬?ㅼ쓽 Evaluate瑜??몄텧?섏뿬 OnEnter -> OnUpdate ?ъ씠?댁쓣 ?뚮┰?덈떎.
+                // 諛섑솚媛?Success/Failure)? 臾댁떆?⑸땲?? (?먮쫫???곹뼢 X)
                 if(services[i] != null)
                 {
                 services[i].Evaluate();
-            // // // Debug.Log($"runner: {runner.name}, Node: {this.name}, State: <color=green>{services[i].name}</color>");
 
                 }
             }

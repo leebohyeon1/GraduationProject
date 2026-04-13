@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 namespace BehaviorTree
@@ -6,7 +6,7 @@ namespace BehaviorTree
     [CreateAssetMenu(fileName = "WeightedRandomSelector", menuName = "BehaviorTree/WeightedRandomSelector")]
     public class WeightedRandomSelector : CompositeNode
     {
-        [Tooltip("각 자식 노드에 대응하는 가중치 리스트입니다. (예: 20, 25, 30...)")]
+        [Tooltip("媛??먯떇 ?몃뱶????묓븯??媛以묒튂 由ъ뒪?몄엯?덈떎. (?? 20, 25, 30...)")]
         public List<float> weights = new List<float>();
 
         [System.NonSerialized]
@@ -16,23 +16,22 @@ namespace BehaviorTree
         {
             UpdateServices();
 
-            // 현재 실행 중인 자식이 없다면 확률에 따라 하나를 선택합니다.
+            // ?꾩옱 ?ㅽ뻾 以묒씤 ?먯떇???녿떎硫??뺣쪧???곕씪 ?섎굹瑜??좏깮?⑸땲??
             if (_runningChildIndex == -1)
             {
                 _runningChildIndex = PickChildIndex();
                 if (_runningChildIndex == -1) 
                 {
-                    // // Debug.LogWarning($"[WeightedRandomSelector : {this.name}] 실행 가능한 자식 노드가 없습니다.");
+                    // // Debug.LogWarning($"[WeightedRandomSelector : {this.name}] ?ㅽ뻾 媛?ν븳 ?먯떇 ?몃뱶媛 ?놁뒿?덈떎.");
                     return NodeState.FAILURE;
                 }
                 
-                // // Debug.Log($"[WeightedRandomSelector : {this.name}] {nodes[_runningChildIndex].name} 선택됨 (인덱스: {_runningChildIndex})");
             }
 
-            // 선택된 자식 노드 실행
+            // ?좏깮???먯떇 ?몃뱶 ?ㅽ뻾
             NodeState state = nodes[_runningChildIndex].Evaluate();
             
-            // 터미널 상태(SUCCESS/FAILURE)에 도달하면 인덱스를 초기화하여 다음 평가 때 새로 선택하도록 합니다.
+            // ?곕????곹깭(SUCCESS/FAILURE)???꾨떖?섎㈃ ?몃뜳?ㅻ? 珥덇린?뷀븯???ㅼ쓬 ?됯? ???덈줈 ?좏깮?섎룄濡??⑸땲??
             if (state != NodeState.RUNNING)
             {
                 _runningChildIndex = -1;
@@ -48,20 +47,20 @@ namespace BehaviorTree
             float totalWeight = 0;
             int nodeCount = nodes.Length;
 
-            // 1. 전체 가중치 합 계산 (가중치 리스트가 노드 수보다 적으면 나머지는 기본값 1.0 사용)
+            // 1. ?꾩껜 媛以묒튂 ??怨꾩궛 (媛以묒튂 由ъ뒪?멸? ?몃뱶 ?섎낫???곸쑝硫??섎㉧吏??湲곕낯媛?1.0 ?ъ슜)
             for (int i = 0; i < nodeCount; i++)
             {
                 float w = (weights != null && i < weights.Count) ? weights[i] : 1.0f;
-                totalWeight += Mathf.Max(0, w); // 음수 가중치는 0으로 처리
+                totalWeight += Mathf.Max(0, w); // ?뚯닔 媛以묒튂??0?쇰줈 泥섎━
             }
 
             if (totalWeight <= 0) 
             {
-                // 모든 가중치가 0인 경우 균등 확률로 선택
+                // 紐⑤뱺 媛以묒튂媛 0??寃쎌슦 洹좊벑 ?뺣쪧濡??좏깮
                 return Random.Range(0, nodeCount);
             }
 
-            // 2. 가중치에 따른 랜덤 선택 (Cumulative Sum Algorithm)
+            // 2. 媛以묒튂???곕Ⅸ ?쒕뜡 ?좏깮 (Cumulative Sum Algorithm)
             float randomValue = Random.Range(0f, totalWeight);
             float currentSum = 0;
 
@@ -76,7 +75,7 @@ namespace BehaviorTree
                 }
             }
 
-            return nodeCount - 1; // 부동소수점 오차 대비 마지막 인덱스 반환
+            return nodeCount - 1; // 遺?숈냼?섏젏 ?ㅼ감 ?鍮?留덉?留??몃뜳??諛섑솚
         }
 
         public override void initNode()
@@ -101,8 +100,8 @@ namespace BehaviorTree
         public override void OnExit()
         {
             base.OnExit();
-            // [핵심 수정] 노드가 종료(Success/Failure)되면 인덱스를 리셋하여 		
-            // 다음에 다시 들어올 때 새로운 확률 검사를 수행하도록 합니다.
+            // [?듭떖 ?섏젙] ?몃뱶媛 醫낅즺(Success/Failure)?섎㈃ ?몃뜳?ㅻ? 由ъ뀑?섏뿬 		
+            // ?ㅼ쓬???ㅼ떆 ?ㅼ뼱?????덈줈???뺣쪧 寃?щ? ?섑뻾?섎룄濡??⑸땲??
             _runningChildIndex = -1;
         }
 
@@ -115,7 +114,7 @@ namespace BehaviorTree
 
         private void OnValidate()
         {
-            // 인스펙터에서 노드 수와 가중치 수 동기화 (편의 기능)
+            // ?몄뒪?숉꽣?먯꽌 ?몃뱶 ?섏? 媛以묒튂 ???숆린??(?몄쓽 湲곕뒫)
             if (nodes != null && weights != null)
             {
                 while (weights.Count < nodes.Length) weights.Add(1.0f);

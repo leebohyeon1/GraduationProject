@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Pathfinding;
 using UnityEngine.XR;
 
@@ -6,20 +6,20 @@ using UnityEngine.XR;
 public class RushToFixedLocationStrategy : EnemyUseAnything
 {
     [Header("Rush Settings")]
-    public float rushSpeed = 20f;       // 기본 돌진 속도 (곡선의 Y값이 1일 때의 속도)
-    public float hitRadius = 1.5f;      // 플레이어 접촉 판정 범위
-    public float overshootDist = 3.0f;  // 목표 오버슈트 거리
-    public LayerMask obstacleMask;      // 벽 레이어
+    public float rushSpeed = 20f;       // 湲곕낯 ?뚯쭊 ?띾룄 (怨≪꽑??Y媛믪씠 1???뚯쓽 ?띾룄)
+    public float hitRadius = 1.5f;      // ?뚮젅?댁뼱 ?묒큺 ?먯젙 踰붿쐞
+    public float overshootDist = 3.0f;  // 紐⑺몴 ?ㅻ쾭?덊듃 嫄곕━
+    public LayerMask obstacleMask;      // 踰??덉씠??
 
     [Header("Speed Curve Settings")]
-    public float rushDuration = 1.0f;   // 돌진이 지속될 총 시간 (초)
-    // X축: 0~1 (시간 비율), Y축: 속도 배율 (예: 0에서 시작해서 1로 갔다가 0으로 떨어짐)
+    public float rushDuration = 1.0f;   // ?뚯쭊??吏?띾맆 珥??쒓컙 (珥?
+    // X異? 0~1 (?쒓컙 鍮꾩쑉), Y異? ?띾룄 諛곗쑉 (?? 0?먯꽌 ?쒖옉?댁꽌 1濡?媛붾떎媛 0?쇰줈 ?⑥뼱吏?
     public AnimationCurve rushCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1.5f), new Keyframe(1, 0)); 
-    public float turnSpeed = 10f;      // 회전 속도 (도/초)
-    // 블랙보드 키
+    public float turnSpeed = 10f;      // ?뚯쟾 ?띾룄 (??珥?
+    // 釉붾옓蹂대뱶 ??
     private const string KEY_RUSH_DEST = "RushDestination";
     private const string KEY_RUSHBOOL = "RushBool";
-    private const string KEY_RUSH_START_TIME = "RushStartTime"; // [추가] 시작 시간 저장용
+    private const string KEY_RUSH_START_TIME = "RushStartTime"; // [異붽?] ?쒖옉 ?쒓컙 ??μ슜
 
     public override T OnEnter<T>(T runner)
     {
@@ -33,14 +33,14 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
 
         IAstarAI ai = enemy.GetComponent<IAstarAI>();
 
-        // 1. A* 네비게이션 끄기
+        // 1. A* ?ㅻ퉬寃뚯씠???꾧린
         if (ai != null)
         {
             ai.canMove = false;
             ai.isStopped = true; 
         }
 
-        // 2. 목표 지점 계산
+        // 2. 紐⑺몴 吏??怨꾩궛
         Vector3 playerPos = enemy.player.transform.position;
         Vector3 myPos = enemy.transform.position;
 
@@ -52,11 +52,11 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
         Vector3 finalDestination = playerPos + (dir * overshootDist) + offset;
 
-        // 3. 블랙보드 데이터 설정
+        // 3. 釉붾옓蹂대뱶 ?곗씠???ㅼ젙
         blackboard.SetValue(KEY_RUSH_DEST, finalDestination);
         blackboard.SetValue(KEY_RUSHBOOL, false);
         
-        // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
+        // [異붽?] ?쒖옉 ?쒓컙 湲곕줉 (怨≪꽑 怨꾩궛???꾪빐 ?꾩슂)
         blackboard.SetValue(KEY_RUSH_START_TIME, Time.time);
         
         runner.aIPath.enableRotation = false;
@@ -77,43 +77,42 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
         {
             return runner; 
         }
-        // [추가] 시간 경과에 따른 속도 계산
+        // [異붽?] ?쒓컙 寃쎄낵???곕Ⅸ ?띾룄 怨꾩궛
         float startTime = enemy._aiController._aiBrain.blackboard.GetValue<float>(KEY_RUSH_START_TIME);
-        float elapsedTime = Time.time - startTime;      // 경과 시간
-        float normalizedTime = elapsedTime / rushDuration; // 0.0 ~ 1.0 사이 값으로 정규화
+        float elapsedTime = Time.time - startTime;      // 寃쎄낵 ?쒓컙
+        float normalizedTime = elapsedTime / rushDuration; // 0.0 ~ 1.0 ?ъ씠 媛믪쑝濡??뺢퇋??
 
-        // 시간이 다 되면 종료
+        // ?쒓컙?????섎㈃ 醫낅즺
         if (normalizedTime >= 1.0f)
         {
-            // // Debug.Log("[Rush] 지속 시간 종료");
             StopRush(enemy);
             return runner;
         }
 
-        // AnimationCurve에서 현재 시간의 속도 배율을 가져옴
+        // AnimationCurve?먯꽌 ?꾩옱 ?쒓컙???띾룄 諛곗쑉??媛?몄샂
         float speedMultiplier = rushCurve.Evaluate(normalizedTime);
-        float currentSpeed = rushSpeed * speedMultiplier; // 최종 속도 = 기본 속도 * 배율
+        float currentSpeed = rushSpeed * speedMultiplier; // 理쒖쥌 ?띾룄 = 湲곕낯 ?띾룄 * 諛곗쑉
 
-        // 1. [직접 이동] 가변 속도 적용
+        // 1. [吏곸젒 ?대룞] 媛蹂 ?띾룄 ?곸슜
         float step = currentSpeed * Time.deltaTime;
         Vector3 currentPos = enemy.transform.position;
         
-        // 목표 방향으로 이동
+        // 紐⑺몴 諛⑺뼢?쇰줈 ?대룞
         Vector3 nextPos = Vector3.MoveTowards(currentPos, targetPos, step);
         
-        // [벽 체크] (기존 로직 유지)
+        // [踰?泥댄겕] (湲곗〈 濡쒖쭅 ?좎?)
         Vector3 moveDir = (nextPos - currentPos).normalized;
-        moveDir.y = 0; // 높이 차이 무시 (평지 이동 시)
+        moveDir.y = 0; // ?믪씠 李⑥씠 臾댁떆 (?됱? ?대룞 ??
 
         // if (moveDir != Vector3.zero)
         // {
         //     Quaternion targetRot = Quaternion.LookRotation(moveDir);
-        //     // 돌진 중에는 조금 더 빠르게 회전해서 방향을 잡도록 보정 (turnSpeed * 2f 등 조절 가능)
+        //     // ?뚯쭊 以묒뿉??議곌툑 ??鍮좊Ⅴ寃??뚯쟾?댁꽌 諛⑺뼢???〓룄濡?蹂댁젙 (turnSpeed * 2f ??議곗젅 媛??
         //     enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRot, turnSpeed * Time.deltaTime * 5f);
         // }
         float moveDist = Vector3.Distance(currentPos, nextPos);
 
-        // 이동 거리가 아주 작으면(속도가 0인 구간 등) 레이캐스트 생략 가능
+        // ?대룞 嫄곕━媛 ?꾩＜ ?묒쑝硫??띾룄媛 0??援ш컙 ?? ?덉씠罹먯뒪???앸왂 媛??
         if (moveDist > 0.0001f)
         {
             if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist, obstacleMask))
@@ -122,25 +121,22 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
             }
             else
             {
-                // // // Debug.Log("[Rush] 벽에 부딪힘!");
                 StopRush(enemy);
                 return runner;
             }
         }
 
-        // 2. [접촉 체크]
+        // 2. [?묒큺 泥댄겕]
         float distToPlayer = Vector3.Distance(enemy.transform.position, enemy.player.transform.position);
         if (distToPlayer <= hitRadius)
         {
-            // // // Debug.Log("[Rush] 플레이어 명중!");
             StopRush(enemy);
             return runner;
         }
 
-        // 3. [도착 체크]
+        // 3. [?꾩갑 泥댄겕]
         if (Vector3.Distance(enemy.transform.position, targetPos) < 0.1f)
         {
-            // // // Debug.Log("[Rush] 목표 도착");
             StopRush(enemy);
         }
 
@@ -160,10 +156,10 @@ public class RushToFixedLocationStrategy : EnemyUseAnything
     private void StopRush(Enemy enemy)
     {
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSHBOOL, true);
-                // 3. 블랙보드 데이터 설정
+                // 3. 釉붾옓蹂대뱶 ?곗씠???ㅼ젙
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_DEST, enemy.transform.position);
         
-        // [추가] 시작 시간 기록 (곡선 계산을 위해 필요)
+        // [異붽?] ?쒖옉 ?쒓컙 湲곕줉 (怨≪꽑 怨꾩궛???꾪빐 ?꾩슂)
         enemy._aiController._aiBrain.blackboard.SetValue(KEY_RUSH_START_TIME, null);
         
     }

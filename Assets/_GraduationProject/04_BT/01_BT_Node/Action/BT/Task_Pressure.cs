@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 using Pathfinding.RVO;
@@ -23,19 +23,18 @@ public class Task_Pressure : Node
             ai.isStopped = false;
             ai.maxSpeed = MoveSpeed;
             ai.enableRotation = false;
-            ai.SetPath(null); // 진입 시 잔여 경로 제거
+            ai.SetPath(null); // 吏꾩엯 ???붿뿬 寃쎈줈 ?쒓굅
         }
         runner._stateController.SetLock(false);
 
     }
     protected override NodeState OnUpdate()
     {
-        // [수정] 애니메이션 브릿지의 IsAttacking이 true더라도, 현재 상태가 Attack이 아니면 이동 허용 고려
-        // 하지만 안전을 위해 로그를 남기고 실패 처리 유지 (BaseAttackNode에서 강제 해제하므로 이제 발생 안 함)
+        // [?섏젙] ?좊땲硫붿씠??釉뚮┸吏??IsAttacking??true?붾씪?? ?꾩옱 ?곹깭媛 Attack???꾨땲硫??대룞 ?덉슜 怨좊젮
+        // ?섏?留??덉쟾???꾪빐 濡쒓렇瑜??④린怨??ㅽ뙣 泥섎━ ?좎? (BaseAttackNode?먯꽌 媛뺤젣 ?댁젣?섎?濡??댁젣 諛쒖깮 ????
         if(runner._animationBridge.IsAttacking)
         {
-            // Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 대기: 애니메이션 브릿지가 아직 공격 중임.", runner.name));
-            return NodeState.RUNNING; // 실패 대신 대기하여 트리가 튀지 않게 함
+            return NodeState.RUNNING; // ?ㅽ뙣 ????湲고븯???몃━媛 ?吏 ?딄쾶 ??
         }   
 
         if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
@@ -55,7 +54,7 @@ public class Task_Pressure : Node
 
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
-        // A* 경로 업데이트 강제
+        // A* 寃쎈줈 ?낅뜲?댄듃 媛뺤젣
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         return NodeState.RUNNING;
@@ -63,14 +62,12 @@ public class Task_Pressure : Node
     public override void Abort()
     {
         base.Abort();
-        //Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨. task_node : {1} ", runner.name, Node.CurrentNodeName));
     }
     public override void OnExit()
     {
         base.OnExit();
         
         runner._stateController.SetLock(false);
-        Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
     }
     private void RotateTowardsPlayer()
     {
@@ -97,7 +94,7 @@ public class Task_Pressure : Node
     }
     public override Node Clone()
     {
-        var node = Instantiate(this); // [수정] CreateInstance 대신 Instantiate 사용 (SO 복제 표준)
+        var node = Instantiate(this); // [?섏젙] CreateInstance ???Instantiate ?ъ슜 (SO 蹂듭젣 ?쒖?)
         node.Pos_Key = this.Pos_Key;
         node.MoveSpeed = this.MoveSpeed;
         node.StoppingDist = this.StoppingDist;

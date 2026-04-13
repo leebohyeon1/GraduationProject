@@ -1,5 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.Collections.Generic;
 
 namespace VFX
@@ -35,7 +37,9 @@ namespace VFX
         {
             if (Application.isPlaying)
             {
-                UpdateShader((float)EditorApplication.timeSinceStartup);
+                // [수정] 빌드본에서는 Time.time을 사용하고, 에디터에서는 EditorApplication.timeSinceStartup을 사용하도록 분기
+                float currentTime = GetCurrentTime();
+                UpdateShader(currentTime);
             }
         }
 
@@ -49,6 +53,16 @@ namespace VFX
         }
 #endif
 
+        // 시간을 가져오는 헬퍼 함수
+        private float GetCurrentTime()
+        {
+#if UNITY_EDITOR
+            return (float)EditorApplication.timeSinceStartup;
+#else
+            return Time.time; // 빌드본(런타임)에서는 이 값을 사용합니다.
+#endif
+        }
+
         void UpdateShader(float currentTime)
         {
             if (target == null) return;
@@ -56,17 +70,15 @@ namespace VFX
             Vector3 currentPosition = target.position;
             positionHistory.Enqueue((currentTime, currentPosition));
 
-            Vector3 pastPosition = currentPosition; // fallback si aucune valeur trouvée
+            Vector3 pastPosition = currentPosition; 
 
             while (positionHistory.Count > 0)
             {
                 var (time, position) = positionHistory.Peek();
-
                 float age = currentTime - time;
 
                 if (age > 0.2f)
                 {
-                    // Trop vieux : on le retire de la queue
                     positionHistory.Dequeue();
                 }
                 else

@@ -1,4 +1,4 @@
-// RushToPlayer.cs 파일
+﻿// RushToPlayer.cs ?뚯씪
 using UnityEngine;
 using BehaviorTree;
 
@@ -13,7 +13,6 @@ public class RushToPlayer : Node
 
     public override void OnEnter()
     {
-        // // Debug.Log("<color=green>--RUSH--: OnEnter</color>");
         // _startTime = Time.time;
         
         _targetPosition = runner.player.transform.position;
@@ -25,8 +24,7 @@ public class RushToPlayer : Node
 
     protected override NodeState OnUpdate()
     {
-        // OnUpdate는 매 프레임 호출되므로 로그는 필요 시에만 활성화
-        // // // Debug.Log("--RUSH--: OnUpdate");
+        // OnUpdate??留??꾨젅???몄텧?섎?濡?濡쒓렇???꾩슂 ?쒖뿉留??쒖꽦??
 
         // if (Time.time - _startTime > _timeout)
         // {
@@ -37,7 +35,6 @@ public class RushToPlayer : Node
         float distanceToTarget = Vector3.Distance(runner.transform.position, _targetPosition);
         if (distanceToTarget <= _successDistance)
         {
-            // // Debug.Log("<color=green>--RUSH--: SUCCESS! Target reached.</color>");
             return NodeState.SUCCESS;
         }
         
@@ -46,15 +43,14 @@ public class RushToPlayer : Node
 
     public override void OnExit()
 {
-    // // Debug.Log("<color=green>--RUSH--: OnExit</color>");
 
-    // StopMovement()를 호출하기 전에, 자신의 상태를 먼저 변경하여 
-    // StopMovement()의 보호 로직을 정상적으로 통과할 수 있게 합니다.
+    // StopMovement()瑜??몄텧?섍린 ?꾩뿉, ?먯떊???곹깭瑜?癒쇱? 蹂寃쏀븯??
+    // StopMovement()??蹂댄샇 濡쒖쭅???뺤긽?곸쑝濡??듦낵?????덇쾶 ?⑸땲??
     if (runner.CurrentState == EnemyStateController.EnemyState.Rush)
     {
         runner.SetState(EnemyStateController.EnemyState.Idle);
     }
-    // ★★★ 여기까지 추가 ★★★
+    // ?끸쁾???ш린源뚯? 異붽? ?끸쁾??
 
     runner.Movement.StopMovement();
 }

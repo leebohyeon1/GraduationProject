@@ -3,9 +3,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>
-/// 플레이어 레이어 감지 시 escape를 활성화하고, 웨이브 단위로 몬스터를 소환/진행하는 트리거 스크립트입니다.
-/// </summary>
 [RequireComponent(typeof(BoxCollider))]
 public class MonsterWave : MonoBehaviour
 {
@@ -13,9 +10,11 @@ public class MonsterWave : MonoBehaviour
     private class WaveSettings
     {
         [SerializeField] private Enemy[] enemies;
-
         public Enemy[] Enemies => enemies;
     }
+
+    [Header("Debug")]
+    [SerializeField] private bool _enableLogging = false;
 
     [Header("Escape")]
     [SerializeField] private GameObject escape;
@@ -25,21 +24,31 @@ public class MonsterWave : MonoBehaviour
 
     [Header("Wave")]
     [SerializeField] private WaveSettings[] waves;
-
     [SerializeField] private string spawnFeedbackName;
     [SerializeField] private string spawnAnimationTrigger;
-
     [SerializeField] private float nextWaveDelay = 2f;
+
+    [Header("Spawn/Activation Budget")]
+    [SerializeField] private int maxActivationsPerFrame = 2;
+    [SerializeField] private float activationBatchDelay = 0f;
+    [SerializeField] private bool prewarmAllWaveEnemiesOnStart = true;
+    [SerializeField] private int prewarmPerFrame = 1;
+
+    [Header("Spawn Options")]
+    [SerializeField] private float feedbackDelay = 0.5f;
+    [SerializeField] private float minDistance = 5f;
 
     private BoxCollider _boxCollider;
     private int _currentWaveIndex;
     private int _aliveInCurrentWave;
     private bool _isRunning;
     private Coroutine _nextWaveCoroutine;
-    Action<Enemy> wave;
-    [SerializeField] private float feedbackDelay = 0.5f;
-    [SerializeField] private float minDistance = 5;
-    PlayerController player;
+    private Coroutine _waveActivationCoroutine;
+    private Coroutine _prewarmCoroutine;
+    private Action<Enemy> wave;
+    private PlayerController player;
+    private bool _prewarmCompleted;
+    private bool _pendingStartAfterPrewarm;
 
     public UnityEvent OnWaveClear;
 
@@ -52,67 +61,74 @@ public class MonsterWave : MonoBehaviour
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
-        if (!_boxCollider.isTrigger)
-        {
-            _boxCollider.isTrigger = true;
-            Debug.Log($"[EscapeWaveSpawner] {name}: BoxCollider.isTrigger를 true로 설정했습니다.");
-        }
+        if (!_boxCollider.isTrigger) _boxCollider.isTrigger = true;
 
         DeactivateWaveEnemies();
 
-        wave += waveAiController;
-        wave += waveTrigger;
+        wave += WaveAiController;
+        wave += WaveTrigger;
 
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        var playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null) player = playerObj.GetComponent<PlayerController>();
+    }
+
+    private void Start()
+    {
+        if (!prewarmAllWaveEnemiesOnStart)
+        {
+            _prewarmCompleted = true;
+            return;
+        }
+
+        _prewarmCoroutine = StartCoroutine(PrewarmEnemiesRoutine());
+    }
+
+    private void OnDestroy()
+    {
+        if (_prewarmCoroutine != null) StopCoroutine(_prewarmCoroutine);
+        if (_waveActivationCoroutine != null) StopCoroutine(_waveActivationCoroutine);
+        if (_nextWaveCoroutine != null) StopCoroutine(_nextWaveCoroutine);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_isRunning)
-        {
-            return;
-        }
-
-        if (!IsInLayerMask(other.gameObject.layer, playerLayer))
-        {
-            return;
-        }
+        if (_isRunning) return;
+        if (!IsInLayerMask(other.gameObject.layer, playerLayer)) return;
 
         _isRunning = true;
         _boxCollider.enabled = false;
         _currentWaveIndex = 0;
 
-        Debug.Log($"[EscapeWaveSpawner] {name}: Player 감지. 웨이브 진행을 시작합니다.");
+        if (escape != null) escape.SetActive(true);
 
-        if (escape != null)
+        if (_prewarmCompleted)
         {
-            escape.SetActive(true);
-            Debug.Log($"[EscapeWaveSpawner] {name}: escape 활성화.");
+            StartWave();
         }
         else
         {
-            Debug.LogWarning($"[EscapeWaveSpawner] {name}: escape가 비어있습니다.");
+            _pendingStartAfterPrewarm = true;
         }
+    }
 
-        StartWave();
-    }
-    void waveAiController(Enemy target)
+    private void WaveAiController(Enemy target)
     {
-        target.GetComponent<AiController>().enabled = true;
+        // AI는 ActivateEnemyForWave에서 즉시 활성화 처리.
     }
-    void waveTrigger(Enemy target)
+
+    private void WaveTrigger(Enemy target)
     {
         EnemyAnimationBridge animationBridge = target.GetComponent<EnemyAnimationBridge>();
-            if (animationBridge != null)
-            {
-                animationBridge.TriggerEvent(spawnAnimationTrigger, feedbackDelay);
-            }
+        if (animationBridge != null)
+        {
+            animationBridge.TriggerEvent(spawnAnimationTrigger, feedbackDelay);
+        }
     }
+
     private void StartWave()
     {
-        if (waves == null || waves.Length <= 0)
+        if (waves == null || waves.Length == 0)
         {
-            Debug.LogWarning($"[EscapeWaveSpawner] {name}: waves가 비어있습니다. 웨이브를 진행할 수 없습니다.");
             FinishAllWaves();
             return;
         }
@@ -126,98 +142,151 @@ public class MonsterWave : MonoBehaviour
         WaveSettings settings = waves[_currentWaveIndex];
         Enemy[] waveEnemies = settings != null ? settings.Enemies : null;
 
-        if (waveEnemies != null && waveEnemies.Length > 0)
+        if (waveEnemies == null || waveEnemies.Length == 0)
         {
-            _aliveInCurrentWave = 0;
-            Debug.Log($"[EscapeWaveSpawner] {name}: Wave {_currentWaveIndex + 1}/{waves.Length} 시작. 기존 몬스터 활성화");
-
-            for (int i = 0; i < waveEnemies.Length; i++)
-            {
-                Enemy target = waveEnemies[i];
-                if (target == null)
-                {
-                    continue;
-                }
-                target.gameObject.SetActive(true);
-                Vector3 playerPos = player.transform.position;
-                float dist = Vector3.Distance(target.transform.position, playerPos);
-                Debug.Log($"targetPos{target.transform.position}, playerPosition{player.transform.position}, dist{dist}");
-                if (dist < minDistance)
-                {
-                    Debug.Log(0);
-                    // 플레이어로부터 소환 지점까지의 방향
-                    Vector3 awayDir = (target.transform.position - playerPos).normalized;
-                    
-                    if (awayDir == Vector3.zero) awayDir = UnityEngine.Random.insideUnitSphere;
-                    awayDir.y = 0;
-
-                    // 최소 거리만큼 떨어진 위치로 재설정
-                    target.transform.position = playerPos + (awayDir * minDistance);
-                }
-                if (!string.IsNullOrEmpty(spawnFeedbackName) || !string.IsNullOrEmpty(spawnAnimationTrigger))
-                {
-                    {
-                        Enemy_AnimationEventHandler animationHandler = target.GetComponent<Enemy_AnimationEventHandler>();
-                        if (animationHandler != null)
-                        {
-                            animationHandler.PlayFeedback(spawnFeedbackName);
-                        }
-                    }
-                    
-                }
-                StartCoroutine(Timer(feedbackDelay, () => wave?.Invoke(target)));
-
-
-
-                EnemyHealth health = target.EnemyHealth;
-                if (health == null)
-                {
-                    health = target.GetComponent<EnemyHealth>();
-                }
-
-                if (health == null)
-                {
-                    Debug.LogWarning($"[EscapeWaveSpawner] {name}: 활성화 대상 Enemy({target.name})에 EnemyHealth가 없습니다.");
-                    continue;
-                }
-
-                _aliveInCurrentWave++;
-
-                Action handler = null;
-                handler = () =>
-                {
-                    health.OnDied -= handler;
-                    HandleEnemyDied();
-                };
-                health.OnDied += handler;
-            }
-
-            if (_aliveInCurrentWave <= 0)
-            {
-                Debug.LogWarning($"[EscapeWaveSpawner] {name}: Wave {_currentWaveIndex + 1}에 유효한 몬스터가 없어 즉시 다음 웨이브로 진행합니다.");
-                _currentWaveIndex++;
-                StartWave();
-            }
-
+            _currentWaveIndex++;
+            StartWave();
             return;
         }
 
-        Debug.LogWarning($"[EscapeWaveSpawner] {name}: wave {_currentWaveIndex + 1}에 활성화 대상이 없습니다. 다음 웨이브로 넘어갑니다.");
-        _currentWaveIndex++;
-        StartWave();
+        _aliveInCurrentWave = 0;
+        if (_waveActivationCoroutine != null) StopCoroutine(_waveActivationCoroutine);
+        _waveActivationCoroutine = StartCoroutine(ActivateWaveEnemiesRoutine(waveEnemies));
     }
-    IEnumerator Timer(float delay, Action onComplete)
+
+    private IEnumerator PrewarmEnemiesRoutine()
     {
-        Debug.Log($"[EscapeWaveSpawner] {name}: {delay}초 후에 행동을 실행합니다.");
-        yield return new WaitForSeconds(delay);
-        Debug.Log($"[EscapeWaveSpawner] {name}: 지연된 행동을 실행합니다.");
+        int budget = Mathf.Max(1, prewarmPerFrame);
+        int used = 0;
+
+        if (waves != null)
+        {
+            for (int wi = 0; wi < waves.Length; wi++)
+            {
+                Enemy[] arr = waves[wi] != null ? waves[wi].Enemies : null;
+                if (arr == null) continue;
+
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Enemy target = arr[i];
+                    if (target == null || target.gameObject.activeSelf) continue;
+
+                    target.gameObject.SetActive(true);
+                    yield return null; // Awake/Initialize 분산
+
+                    var ai = target.GetComponent<AiController>();
+                    if (ai != null) ai.enabled = false;
+                    target.gameObject.SetActive(false);
+
+                    used++;
+                    if (used >= budget)
+                    {
+                        used = 0;
+                        yield return null;
+                    }
+                }
+            }
+        }
+
+        _prewarmCompleted = true;
+        _prewarmCoroutine = null;
+
+        if (_pendingStartAfterPrewarm && _isRunning)
+        {
+            _pendingStartAfterPrewarm = false;
+            StartWave();
+        }
+    }
+
+    private IEnumerator ActivateWaveEnemiesRoutine(Enemy[] waveEnemies)
+    {
+        int budgetPerFrame = Mathf.Max(1, maxActivationsPerFrame);
+        int activatedThisFrame = 0;
+
+        for (int i = 0; i < waveEnemies.Length; i++)
+        {
+            Enemy target = waveEnemies[i];
+            if (target == null) continue;
+
+            ActivateEnemyForWave(target);
+            activatedThisFrame++;
+
+            if (activatedThisFrame >= budgetPerFrame)
+            {
+                activatedThisFrame = 0;
+                if (activationBatchDelay > 0f) yield return new WaitForSeconds(activationBatchDelay);
+                else yield return null;
+            }
+        }
+
+        _waveActivationCoroutine = null;
+
+        if (_aliveInCurrentWave <= 0)
+        {
+            _currentWaveIndex++;
+            StartWave();
+        }
+    }
+
+    private void ActivateEnemyForWave(Enemy target)
+    {
+        target.gameObject.SetActive(true);
+        var ai = target.GetComponent<AiController>();
+        if (ai != null && !ai.enabled) ai.enabled = true;
+        SetHealthBarVisible(target, true);
+        EnsureMinDistanceFromPlayer(target);
+        PlaySpawnFeedback(target);
+        StartCoroutine(Timer(feedbackDelay, () => wave?.Invoke(target)));
+
+        EnemyHealth health = target.EnemyHealth;
+        if (health == null) health = target.GetComponent<EnemyHealth>();
+        if (health == null) return;
+
+        _aliveInCurrentWave++;
+
+        Action handler = null;
+        handler = () =>
+        {
+            health.OnDied -= handler;
+            HandleEnemyDied();
+        };
+        health.OnDied += handler;
+    }
+
+    private void EnsureMinDistanceFromPlayer(Enemy target)
+    {
+        if (player == null) return;
+
+        Vector3 playerPos = player.transform.position;
+        float dist = Vector3.Distance(target.transform.position, playerPos);
+        if (dist >= minDistance) return;
+
+        Vector3 awayDir = (target.transform.position - playerPos).normalized;
+        if (awayDir == Vector3.zero) awayDir = UnityEngine.Random.insideUnitSphere;
+        awayDir.y = 0f;
+        target.transform.position = playerPos + awayDir * minDistance;
+    }
+
+    private void PlaySpawnFeedback(Enemy target)
+    {
+        if (string.IsNullOrEmpty(spawnFeedbackName) && string.IsNullOrEmpty(spawnAnimationTrigger)) return;
+
+        Enemy_AnimationEventHandler animationHandler = target.GetComponent<Enemy_AnimationEventHandler>();
+        if (animationHandler != null && !string.IsNullOrEmpty(spawnFeedbackName))
+        {
+            animationHandler.PlayFeedback(spawnFeedbackName);
+        }
+    }
+
+    private IEnumerator Timer(float delay, Action onComplete)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
         onComplete?.Invoke();
     }
+
     private void HandleEnemyDied()
     {
         _aliveInCurrentWave = Mathf.Max(0, _aliveInCurrentWave - 1);
-        Debug.Log($"[EscapeWaveSpawner] {name}: Enemy 사망. 현재 Wave {_currentWaveIndex + 1} 남은 수 {_aliveInCurrentWave}");
-
         if (_aliveInCurrentWave == 0)
         {
             _currentWaveIndex++;
@@ -227,14 +296,8 @@ public class MonsterWave : MonoBehaviour
 
     private void FinishAllWaves()
     {
-        Debug.Log($"[EscapeWaveSpawner] {name}: 다음 웨이브가 없어 웨이브 진행을 종료합니다.");
-
-        if (escape != null)
-        {
-            escape.SetActive(false);
-            Debug.Log($"[EscapeWaveSpawner] {name}: escape 비활성화.");
-        }
-
+        if (escape != null) escape.SetActive(false);
+        SetAllWaveEnemyHealthBars(false);
         OnWaveClear?.Invoke();
     }
 
@@ -245,10 +308,7 @@ public class MonsterWave : MonoBehaviour
 
     private void StartNextWaveWithDelay()
     {
-        if (_nextWaveCoroutine != null)
-        {
-            StopCoroutine(_nextWaveCoroutine);
-        }
+        if (_nextWaveCoroutine != null) StopCoroutine(_nextWaveCoroutine);
 
         float delay = Mathf.Max(0f, nextWaveDelay);
         _nextWaveCoroutine = StartCoroutine(NextWaveDelayRoutine(delay));
@@ -256,76 +316,58 @@ public class MonsterWave : MonoBehaviour
 
     private IEnumerator NextWaveDelayRoutine(float delay)
     {
-        Debug.Log($"[EscapeWaveSpawner] {name}: 다음 웨이브까지 {delay}초 대기합니다.");
-        if (delay > 0f)
-        {
-            yield return new WaitForSeconds(delay);
-        }
-
+        if (delay > 0f) yield return new WaitForSeconds(delay);
         _nextWaveCoroutine = null;
         StartWave();
     }
 
     private void DeactivateWaveEnemies()
     {
-        if (waves == null || waves.Length == 0)
-        {
-            return;
-        }
+        if (waves == null || waves.Length == 0) return;
 
         for (int i = 0; i < waves.Length; i++)
         {
             WaveSettings settings = waves[i];
             Enemy[] waveEnemies = settings != null ? settings.Enemies : null;
-            if (waveEnemies == null || waveEnemies.Length == 0)
-            {
-                continue;
-            }
+            if (waveEnemies == null || waveEnemies.Length == 0) continue;
 
             for (int j = 0; j < waveEnemies.Length; j++)
             {
                 Enemy target = waveEnemies[j];
-                if (target == null)
-                {
-                    continue;
-                }
+                if (target == null) continue;
 
                 AiController aiController = target.GetComponent<AiController>();
-                if (aiController != null)
-                {
-                    aiController.enabled = false;
-                }
-
+                if (aiController != null) aiController.enabled = false;
+                SetHealthBarVisible(target, false);
                 target.gameObject.SetActive(false);
             }
         }
     }
 
-    private IEnumerator PlaySpawnFeedbackAfterActivation(Enemy target, string feedbackName, string animationTrigger)
+    private void SetAllWaveEnemyHealthBars(bool visible)
     {
-        yield return null;
-        if (target == null || !target.gameObject.activeInHierarchy)
+        if (waves == null) return;
+        for (int i = 0; i < waves.Length; i++)
         {
-            yield break;
-        }
-
-        if (!string.IsNullOrEmpty(feedbackName))
-        {
-            Enemy_AnimationEventHandler animationHandler = target.GetComponent<Enemy_AnimationEventHandler>();
-            if (animationHandler != null)
+            Enemy[] waveEnemies = waves[i] != null ? waves[i].Enemies : null;
+            if (waveEnemies == null) continue;
+            for (int j = 0; j < waveEnemies.Length; j++)
             {
-                animationHandler.PlayFeedback(feedbackName);
+                if (waveEnemies[j] != null) SetHealthBarVisible(waveEnemies[j], visible);
             }
         }
+    }
 
-        if (!string.IsNullOrEmpty(animationTrigger))
+    private static void SetHealthBarVisible(Enemy enemy, bool visible)
+    {
+        if (enemy == null) return;
+        var billboards = enemy.GetComponentsInChildren<BillboardUI>(true);
+        if (billboards == null || billboards.Length == 0) return;
+
+        for (int i = 0; i < billboards.Length; i++)
         {
-            EnemyAnimationBridge animationBridge = target.GetComponent<EnemyAnimationBridge>();
-            if (animationBridge != null)
-            {
-                
-                animationBridge.TriggerEvent(spawnAnimationTrigger, feedbackDelay);
-            }
+            var go = billboards[i].gameObject;
+            if (go.activeSelf != visible) go.SetActive(visible);
         }
     }
 }

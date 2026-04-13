@@ -1,4 +1,4 @@
-// --- FILE: Node.cs ---
+﻿// --- FILE: Node.cs ---
 
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
@@ -26,7 +26,6 @@ namespace BehaviorTree
             }
             if (!isEntered)
             {
-                Debug.Log(string.Format("[BT] Node Enter: {0} ({1})", this.name, this.GetType().Name));
                 CurrentNodeName = this.name;
                 OnEnter();
                 isEntered = true;
@@ -36,7 +35,6 @@ namespace BehaviorTree
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();
-                 Debug.Log(string.Format("[BT] Node Exit: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
                 isEntered = false;
             }
             return currentState;

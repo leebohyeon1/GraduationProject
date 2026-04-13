@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
 /// <summary>
-/// ActionSO 트리거 시점의 위치로 돌진하는 공격 노드입니다.
+/// ActionSO ?몃━嫄??쒖젏???꾩튂濡??뚯쭊?섎뒗 怨듦꺽 ?몃뱶?낅땲??
 /// </summary>
 [CreateAssetMenu(fileName = "Task_RushAttack", menuName = "BehaviorTree/Action/Task_RushAttack")]
 public class Task_RushAttack : BaseAttackNode
@@ -12,30 +12,30 @@ public class Task_RushAttack : BaseAttackNode
 
     [Header("Rush Settings")]
     /// <summary>
-    /// 돌진 속도입니다.
+    /// ?뚯쭊 ?띾룄?낅땲??
     /// </summary>
     public float rushSpeed = 15f;
     /// <summary>
-    /// 플레이어 접촉 판정 거리입니다.
+    /// ?뚮젅?댁뼱 ?묒큺 ?먯젙 嫄곕━?낅땲??
     /// </summary>
-    public float lockDistance = 5.0f; // 이 거리 안에 오면 방향 고정 돌진
+    public float lockDistance = 5.0f; // ??嫄곕━ ?덉뿉 ?ㅻ㈃ 諛⑺뼢 怨좎젙 ?뚯쭊
     /// <summary>
-    /// 최대 돌진 시간입니다.
+    /// 理쒕? ?뚯쭊 ?쒓컙?낅땲??
     /// </summary>
-    public float maxChargeDuration = 3.0f; // 최대 돌진 시간
+    public float maxChargeDuration = 3.0f; // 理쒕? ?뚯쭊 ?쒓컙
     /// <summary>
-    /// 트리거 사거리입니다.
+    /// ?몃━嫄??ш굅由ъ엯?덈떎.
     /// </summary>
     public float maxTriggerRange = 15f;
     /// <summary>
-    /// 추적 방향 보정 속도입니다.
+    /// 異붿쟻 諛⑺뼢 蹂댁젙 ?띾룄?낅땲??
     /// </summary>
     public float trackingTurnSpeed = 2.0f;
 
     [Header("Phase 2 Trail Settings")]
     [SerializeField] private string trailFeedbackName = "RushTrail";
     /// <summary>
-    /// 트레일 생성 간격입니다.
+    /// ?몃젅???앹꽦 媛꾧꺽?낅땲??
     /// </summary>
     public float trailSpawnInterval = 1.5f;
 
@@ -58,8 +58,7 @@ public class Task_RushAttack : BaseAttackNode
         _rushState = RushState.Tracking;
         runner.AnimationBool("IsRushing", false);
         _currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 1);
-        Log("돌진 공격 준비 (Tracking 시작)");
-        Debug.Log("[Task_RushAttack] TrackingTurnSpeed: " + trackingTurnSpeed);
+        Log("?뚯쭊 怨듦꺽 以鍮?(Tracking ?쒖옉)");
     }
 
     protected override void OnActionSOTriggered()
@@ -98,7 +97,7 @@ public class Task_RushAttack : BaseAttackNode
 
         if (_rushState == RushState.Charging)
         {
-            // 직선 돌진 수행
+            // 吏곸꽑 ?뚯쭊 ?섑뻾
             float moveStep = rushSpeed * Time.deltaTime;
 
             Vector3 desiredDir = playerPos - myPos;
@@ -109,14 +108,14 @@ public class Task_RushAttack : BaseAttackNode
                 _chargeDirection = Vector3.Slerp(_chargeDirection, desiredDir.normalized, turnFactor);
             }
             
-            // 벽 충돌 체크
+            // 踰?異⑸룎 泥댄겕
             if (runner.Movement.IsPathBlocked(_chargeDirection, 0.5f, out RaycastHit hit))
             {
                 StopRush();
                 return;
             }
 
-            // 시간 초과 체크
+            // ?쒓컙 珥덇낵 泥댄겕
             if (Time.time - _chargeStartTime >= maxChargeDuration)
             {
                 StopRush();
@@ -129,11 +128,11 @@ public class Task_RushAttack : BaseAttackNode
                 return;
             }
 
-            // 이동 적용
+            // ?대룞 ?곸슜
             runner.transform.position += _chargeDirection * moveStep;
             runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
 
-            // Phase 2: 지나온 자리에 폭발 생성
+            // Phase 2: 吏?섏삩 ?먮━????컻 ?앹꽦
             if (_currentPhase >= 2)
             {
                 if (Vector3.Distance(_lastTrailPos, runner.transform.position) >= trailSpawnInterval)
@@ -179,7 +178,7 @@ public class Task_RushAttack : BaseAttackNode
     }
 
     /// <summary>
-    /// 노드 복제본을 생성합니다.
+    /// ?몃뱶 蹂듭젣蹂몄쓣 ?앹꽦?⑸땲??
     /// </summary>
     public override Node Clone()
     {
