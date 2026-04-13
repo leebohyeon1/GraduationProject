@@ -68,10 +68,11 @@ Transform:
   m_GameObject: {fileID: 290183617291862773}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.04, y: 0.37, z: 0.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9202816736109780620}
   - {fileID: 269682346600848416}
   m_Father: {fileID: 3488146373040467096}
   m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
@@ -105,13 +106,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GamePlayTagManager, Assembly-CSharp
+      - m_Target: {fileID: 4000357553985610744}
+        m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
         m_MethodName: AddTag
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 2574234933f227a41a8e6a2747ba09d3, type: 2}
-          m_ObjectArgumentAssemblyTypeName: GamePlayTagSO, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -561,8 +562,7 @@ MonoBehaviour:
         Owner: {fileID: 1591782333446627273}
         DebugActive: 0
         TargetGameObject: {fileID: 0}
-        ExtraTargetGameObjects:
-        - {fileID: 0}
+        ExtraTargetGameObjects: []
         IgnorePlayDirection: 0
         SetStateOnInit: 0
         StateOnInit: 1
@@ -1247,6 +1247,104 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1059534583558603137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9202816736109780620}
+  - component: {fileID: 4000357553985610744}
+  m_Layer: 0
+  m_Name: TagAdd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9202816736109780620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059534583558603137}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.707107, z: -0, w: 0.70710665}
+  m_LocalPosition: {x: 372.76895, y: 2.300006, z: 25.05632}
+  m_LocalScale: {x: 16.666998, y: 19.147999, z: 9.6916}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8128786753436269339}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4000357553985610744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059534583558603137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
+  _requiredTags: []
+  _forbiddenTags: []
+  _tagsToAdd:
+  - {fileID: 11400000, guid: 2574234933f227a41a8e6a2747ba09d3, type: 2}
+  _oneTimeOnly: 1
+--- !u!1 &1419512769997190144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8636038477298505394}
+  - component: {fileID: 4807998859594775838}
+  m_Layer: 0
+  m_Name: TagAdd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8636038477298505394
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419512769997190144}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.0000005066394, z: -0, w: 1}
+  m_LocalPosition: {x: -35.22128, y: 3.5874264, z: 411.18143}
+  m_LocalScale: {x: 12.137343, y: 15.253725, z: 8.195164}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8863152285215766062}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4807998859594775838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419512769997190144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
+  _requiredTags: []
+  _forbiddenTags: []
+  _tagsToAdd:
+  - {fileID: 11400000, guid: 17a2cb6a6484a124898844b16a250eb7, type: 2}
+  _oneTimeOnly: 1
 --- !u!1 &1490954658861130087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1447,55 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &1710435199850374531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 854661568753228675}
+  - component: {fileID: 6523098998351339220}
+  m_Layer: 0
+  m_Name: TagAdd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &854661568753228675
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710435199850374531}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.3826837, z: -0, w: 0.9238795}
+  m_LocalPosition: {x: 212.25995, y: -8.829994, z: 248.36993}
+  m_LocalScale: {x: 16.667, y: 19.147999, z: 9.691601}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2953215592323615948}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6523098998351339220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710435199850374531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
+  _requiredTags: []
+  _forbiddenTags: []
+  _tagsToAdd:
+  - {fileID: 11400000, guid: f475348d792530b418cfc6183abd3d9d, type: 2}
+  _oneTimeOnly: 1
 --- !u!1 &1943069651070598684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,6 +1628,18 @@ MonoBehaviour:
       - m_Target: {fileID: 5812766630152555331}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
         m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6523098998351339220}
+        m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
+        m_MethodName: AddTag
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1810,6 +1969,7 @@ Transform:
   m_LocalScale: {x: 16.667, y: 19.148, z: 9.691601}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6628679798778115724}
   - {fileID: 5499959275809255226}
   - {fileID: 8893415326331302878}
   - {fileID: 6338984831596577429}
@@ -1887,13 +2047,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: GamePlayTagManager, Assembly-CSharp
+        - m_Target: {fileID: 2534233743136644785}
+          m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
           m_MethodName: AddTag
-          m_Mode: 2
+          m_Mode: 1
           m_Arguments:
-            m_ObjectArgument: {fileID: 11400000, guid: ce9f27e49fb581c4d9644dbd675bccf1, type: 2}
-            m_ObjectArgumentAssemblyTypeName: GamePlayTagSO, Assembly-CSharp
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -1952,7 +2112,6 @@ MonoBehaviour:
   _queryType: 0
   _targetTags:
   - {fileID: 11400000, guid: 8bf7dd825d2597d41b6f654750820c39, type: 2}
-  _autoToggleGameObject: 0
   OnRequirementMet:
     m_PersistentCalls:
       m_Calls:
@@ -2496,7 +2655,6 @@ MonoBehaviour:
   _queryType: 2
   _targetTags:
   - {fileID: 11400000, guid: f4927f55fd488744191483607bb8c6f1, type: 2}
-  _autoToggleGameObject: 0
   OnRequirementMet:
     m_PersistentCalls:
       m_Calls:
@@ -2866,7 +3024,6 @@ MonoBehaviour:
   _targetTags:
   - {fileID: 11400000, guid: 2574234933f227a41a8e6a2747ba09d3, type: 2}
   - {fileID: 11400000, guid: cc7d688dac9334449bb0c1f2b166e201, type: 2}
-  _autoToggleGameObject: 1
   OnRequirementMet:
     m_PersistentCalls:
       m_Calls: []
@@ -2944,7 +3101,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2511391322479296339
@@ -3345,6 +3502,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2354698662795094307}
+  - {fileID: 8636038477298505394}
   m_Father: {fileID: 5585473778015514653}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!320 &8281328996219062650
@@ -3434,13 +3592,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: GamePlayTagManager, Assembly-CSharp
+        - m_Target: {fileID: 4807998859594775838}
+          m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
           m_MethodName: AddTag
-          m_Mode: 2
+          m_Mode: 1
           m_Arguments:
-            m_ObjectArgument: {fileID: 11400000, guid: 17a2cb6a6484a124898844b16a250eb7, type: 2}
-            m_ObjectArgumentAssemblyTypeName: GamePlayTagSO, Assembly-CSharp
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -3461,7 +3619,6 @@ MonoBehaviour:
   _queryType: 2
   _targetTags:
   - {fileID: 11400000, guid: 17a2cb6a6484a124898844b16a250eb7, type: 2}
-  _autoToggleGameObject: 1
   OnRequirementMet:
     m_PersistentCalls:
       m_Calls:
@@ -3551,7 +3708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &750261004943493640
@@ -3718,6 +3875,7 @@ Transform:
   m_Children:
   - {fileID: 3926056245940171573}
   - {fileID: 8815550174545921705}
+  - {fileID: 854661568753228675}
   m_Father: {fileID: 5585473778015514653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7089039413472460852
@@ -3995,6 +4153,55 @@ Transform:
   - {fileID: 8327869275641112532}
   m_Father: {fileID: 8815550174545921705}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7776275005682184357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6628679798778115724}
+  - component: {fileID: 2534233743136644785}
+  m_Layer: 0
+  m_Name: TagAdd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6628679798778115724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776275005682184357}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5742465089828112039}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2534233743136644785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776275005682184357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
+  _requiredTags: []
+  _forbiddenTags: []
+  _tagsToAdd:
+  - {fileID: 11400000, guid: ce9f27e49fb581c4d9644dbd675bccf1, type: 2}
+  _oneTimeOnly: 1
 --- !u!1 &7800795454822389566
 GameObject:
   m_ObjectHideFlags: 0
