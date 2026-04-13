@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// 플레이어 레이어 감지 시 escape를 활성화하고, 웨이브 단위로 몬스터를 소환/진행하는 트리거 스크립트입니다.
@@ -39,6 +40,8 @@ public class MonsterWave : MonoBehaviour
     [SerializeField] private float feedbackDelay = 0.5f;
     [SerializeField] private float minDistance = 5;
     PlayerController player;
+
+    public UnityEvent OnWaveClear;
 
     private void Reset()
     {
@@ -231,6 +234,8 @@ public class MonsterWave : MonoBehaviour
             escape.SetActive(false);
             Debug.Log($"[EscapeWaveSpawner] {name}: escape 비활성화.");
         }
+
+        OnWaveClear?.Invoke();
     }
 
     private static bool IsInLayerMask(int layer, LayerMask layerMask)

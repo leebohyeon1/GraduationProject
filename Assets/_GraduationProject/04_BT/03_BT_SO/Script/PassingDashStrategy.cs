@@ -125,7 +125,8 @@ public class PassingDashStrategy : EnemyUseAnything
         Rigidbody rb = enemy.GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = Vector3.zero;
         enemy._aiController._aiBrain.blackboard.RemoveKey(KEY_DASH_TARGET_POS);
-        enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                    enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                    enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
 
         // AI 복구
         IAstarAI ai = enemy.GetComponent<IAstarAI>();

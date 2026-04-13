@@ -180,6 +180,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         if (!isImmune && !isBlocked )
         {
+            _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastTakeHitTime, Time.time);
             if (!_owner._aiController.IsActionable())
             {
                 _owner.SetState(EnemyStateController.EnemyState.Hit);

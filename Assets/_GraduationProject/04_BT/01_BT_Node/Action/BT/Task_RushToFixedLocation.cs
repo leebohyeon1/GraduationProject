@@ -112,7 +112,8 @@ public class Task_RushToFixedLocation : BaseAttackNode
         {
             Log("플레이어 접촉으로 돌진 중단");
             _isRushing = false;
-            brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             return;
         }
 

@@ -116,7 +116,8 @@ public class Task_KSante : BaseAttackNode
     private void PlayerTORush()
     {
         _hasHitPlayer = true;
-        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
         
         if (runner.player.TryGetComponent<IDragable>(out var dragable))
         {

@@ -67,7 +67,8 @@ public class Task_PassingDash : BaseAttackNode
             runner.transform.position = _targetPos;
             _isDashing = false;
             runner.AnimationBool(Exittrigger, true);
-            brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                        brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             return;
         }
         // ---------------------------------------------------------

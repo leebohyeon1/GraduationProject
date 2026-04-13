@@ -300,6 +300,7 @@ public abstract class BaseAttackNode : Node
                 _data.damageData.AttackerTransform = runner.transform;
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
                 if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
                 if (!maintainAtk) Handler.CloseHitWindow();
             }

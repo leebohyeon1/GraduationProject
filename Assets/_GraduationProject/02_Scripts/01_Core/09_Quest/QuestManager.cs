@@ -81,11 +81,22 @@ public class QuestManager : MonoBehaviour
         bool canAccepted = true;
         foreach (QuestData quest in questDatabase.QuestList)
         {
-            canAccepted = true;
+            canAccepted = false;
+
+            foreach (var clearTag in quest.ClearConditionList)
+            {
+                if (!tagSet.Contains(clearTag.ID))
+                {
+                    canAccepted = true; 
+                    break;
+                }
+            }
+
             foreach (var needTag in quest.AcceptedConditionList)
             {
                 if (!tagSet.Contains(needTag.ID))
                 {
+                    Debug.Log("==================" + needTag.ID);
                     canAccepted = false; 
                     break;
                 }
