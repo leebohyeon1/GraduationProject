@@ -18,13 +18,13 @@ public class Condition_RandomChance : ConditionNode
     {
         if (!brain.IsSkillReady(checkName, cooldownDuration))
         {
-            Debug.Log($"[Condition_RandomChance] '{checkName}' 쿨다운 중 - 조건 실패");
+            BTDebug.Log($"[Condition_RandomChance] '{checkName}' 쿨다운 중 - 조건 실패");
             return false;
         }
 
         brain.StartSkillCooldown(checkName);
         bool cnt = Random.Range(0f, 100f) <= successChance;
-        Debug.Log($"[Condition_RandomChance] {(cnt ? "성공" : "실패")}");
+        BTDebug.Log($"[Condition_RandomChance] {(cnt ? "성공" : "실패")}");
         return cnt;
     }
 

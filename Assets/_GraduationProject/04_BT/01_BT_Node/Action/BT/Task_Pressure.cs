@@ -34,7 +34,7 @@ public class Task_Pressure : Node
         // 하지만 안전을 위해 로그를 남기고 실패 처리 유지 (BaseAttackNode에서 강제 해제하므로 이제 발생 안 함)
         if(runner._animationBridge.IsAttacking)
         {
-            // Debug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 대기: 애니메이션 브릿지가 아직 공격 중임.", runner.name));
+            // BTDebug.Log(string.Format("[Task_Pressure : {0}] OnUpdate 대기: 애니메이션 브릿지가 아직 공격 중임.", runner.name));
             return NodeState.RUNNING; // 실패 대신 대기하여 트리가 튀지 않게 함
         }   
 
@@ -63,14 +63,14 @@ public class Task_Pressure : Node
     public override void Abort()
     {
         base.Abort();
-        //Debug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨. task_node : {1} ", runner.name, Node.CurrentNodeName));
+        //BTDebug.Log(string.Format("[Task_Pressure : {0}] Abort 호출됨. task_node : {1} ", runner.name, Node.CurrentNodeName));
     }
     public override void OnExit()
     {
         base.OnExit();
         
         runner._stateController.SetLock(false);
-        Debug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
+        BTDebug.Log(string.Format("[Task_Pressure : {0}] OnExit 호출됨.", runner.name));
     }
     private void RotateTowardsPlayer()
     {

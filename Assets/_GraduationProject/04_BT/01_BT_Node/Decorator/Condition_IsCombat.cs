@@ -51,7 +51,7 @@ public class Condition_IsCombat : ConditionNode
         bool isIdleEnough = (Time.time - latestInteractionTime) >= noCombatDuration;
         if (isIdleEnough && !_wasIdleEnough)
         {
-            Debug.Log($"[Condition_IsCombat] {runner.name} 전투이탈 판정: 최근 상호작용 후 {noCombatDuration:F2}초 경과");
+            BTDebug.Log($"[Condition_IsCombat] {runner.name} 전투이탈 판정: 최근 상호작용 후 {noCombatDuration:F2}초 경과");
         }
 
         _wasIdleEnough = isIdleEnough;

@@ -8,6 +8,7 @@ namespace BehaviorTree
 {
     public abstract class Node : ScriptableObject
     {
+        private const bool ENABLE_BT_TRACE_LOG = false;
         public Vector2 position;
         public enum NodeState { SUCCESS, FAILURE, RUNNING }
 
@@ -20,13 +21,9 @@ namespace BehaviorTree
 
         public NodeState Evaluate()
         {
-            if (!runner._initializer.IsInitialized("Final"))
-            {
-                return NodeState.FAILURE;
-            }
             if (!isEntered)
             {
-                Debug.Log(string.Format("[BT] Node Enter: {0} ({1})", this.name, this.GetType().Name));
+                if (ENABLE_BT_TRACE_LOG) BTDebug.Log(string.Format("[BT] Node Enter: {0} ({1})", this.name, this.GetType().Name));
                 CurrentNodeName = this.name;
                 OnEnter();
                 isEntered = true;
@@ -36,7 +33,7 @@ namespace BehaviorTree
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();
-                 Debug.Log(string.Format("[BT] Node Exit: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
+                if (ENABLE_BT_TRACE_LOG) BTDebug.Log(string.Format("[BT] Node Exit: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
                 isEntered = false;
             }
             return currentState;

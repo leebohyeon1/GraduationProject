@@ -22,7 +22,7 @@ public class Task_BossFakeAttackNode : BaseAttackNode
     private void LogParryDebugInfo()
     {
         bool isStunned = runner.ParrySystem != null && runner.ParrySystem._isStunned;
-        Debug.Log($"[Task_BossFakeAttackNode] SpecificCleanup - _wasStunnedDuringAttack: {_wasStunnedDuringAttack}, ParrySystem._isStunned: {isStunned}");
+        BTDebug.Log($"[Task_BossFakeAttackNode] SpecificCleanup - _wasStunnedDuringAttack: {_wasStunnedDuringAttack}, ParrySystem._isStunned: {isStunned}");
     }
 
     public override Node Clone()

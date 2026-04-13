@@ -20,7 +20,7 @@ public class Condition_CheckCoolTime : ConditionNode
         {
             skillName = attackData.AttackName;
             cooldownDuration = attackData.Cooltime;
-            // // // Debug.Log($"[Condition_CheckCoolTime] Checking cooldown for skill: {skillName} with duration: {cooldownDuration}");
+            // // // BTDebug.Log($"[Condition_CheckCoolTime] Checking cooldown for skill: {skillName} with duration: {cooldownDuration}");
             return brain.IsSkillReady(skillName, cooldownDuration);
         }
         if (string.IsNullOrEmpty(skillName))
@@ -28,7 +28,7 @@ public class Condition_CheckCoolTime : ConditionNode
             // // Debug.LogWarning("비어있음: skillName이 설정되지 않았습니다.");
             return false;
         }
-        // // // Debug.Log($"success : {this.name} {brain.IsSkillReady(skillName, cooldownDuration)}");
+        // // // BTDebug.Log($"success : {this.name} {brain.IsSkillReady(skillName, cooldownDuration)}");
     
         return brain.IsSkillReady(skillName, cooldownDuration);
     }

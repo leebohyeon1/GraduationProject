@@ -34,7 +34,7 @@ public class AttackRange : EnemyUseAnything
 
         // 2. [저장] 계산된 방향을 블랙보드에 저장 (쏘지 않음)
         blackboard.SetValue(KEY_ATTACK_DIR, dir);
-        // // Debug.Log("저장된 발사 방향: " + dir);
+        // // BTDebug.Log("저장된 발사 방향: " + dir);
         // (선택) 조준하는 순간 적이 플레이어를 바라보게 하고 싶다면:
         enemy.transform.rotation = Quaternion.LookRotation(dir);
 

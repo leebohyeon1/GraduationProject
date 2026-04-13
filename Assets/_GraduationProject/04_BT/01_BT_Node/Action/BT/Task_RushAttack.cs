@@ -59,7 +59,7 @@ public class Task_RushAttack : BaseAttackNode
         runner.AnimationBool("IsRushing", false);
         _currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 1);
         Log("돌진 공격 준비 (Tracking 시작)");
-        Debug.Log("[Task_RushAttack] TrackingTurnSpeed: " + trackingTurnSpeed);
+        BTDebug.Log("[Task_RushAttack] TrackingTurnSpeed: " + trackingTurnSpeed);
     }
 
     protected override void OnActionSOTriggered()

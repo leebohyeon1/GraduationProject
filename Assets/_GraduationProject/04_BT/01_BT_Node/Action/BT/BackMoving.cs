@@ -69,14 +69,14 @@ public class BackMoving : Node
 
         if (isHit)
         {
-            // // Debug.Log("벽에 부딪혔습니다");
+            // // BTDebug.Log("벽에 부딪혔습니다");
             return NodeState.SUCCESS;
         }
 
         // --- 종료 조건 ---
         if (Time.time - startTime > timeout)
         {
-            // // Debug.Log("시간초과");
+            // // BTDebug.Log("시간초과");
             return NodeState.SUCCESS;
         }
 

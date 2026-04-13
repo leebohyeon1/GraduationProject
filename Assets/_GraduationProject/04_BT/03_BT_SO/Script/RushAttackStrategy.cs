@@ -28,8 +28,8 @@ public class RushAttackStrategy : EnemyUseAnything
             endStrategy = false;
         }
         return runner;
-         // // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
-        // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
+         // // // BTDebug.Log($"{runner.name}가 돌진 전략을 시작함");
+        // // BTDebug.Log($"{runner.name}가 돌진 전략을 시작함");
     }
 
 

@@ -60,7 +60,7 @@ public class Task_TristanaJump : BaseAttackNode
     {
         _isJumping = false;
         Log("점프 준비 (ActionSO 대기 중)");
-        Debug.Log("[Task_TristanaJump] 점프 준비");
+        BTDebug.Log("[Task_TristanaJump] 점프 준비");
     }
 
     protected override void OnActionSOTriggered()
@@ -88,7 +88,7 @@ public class Task_TristanaJump : BaseAttackNode
             ai.canMove = false;
             ai.isStopped = true;
         }
-        Debug.Log("[Task_TristanaJump] 점프 시작 - 목표 위치: " + _targetPos);
+        BTDebug.Log("[Task_TristanaJump] 점프 시작 - 목표 위치: " + _targetPos);
     }
 
     protected override void UpdateMovement()

@@ -225,7 +225,7 @@ public abstract class BaseAttackNode : Node
         if (!_isActionFinishedInternally)
         {
             brain.StartSkillCooldown(attackKey);
-            UnityEngine.Debug.Log($"[BaseAttackNode] {attackKey} 정상 쿨타임 시작");
+            BTDebug.Log($"[BaseAttackNode] {attackKey} 정상 쿨타임 시작");
         }
     }
 
@@ -296,7 +296,7 @@ public abstract class BaseAttackNode : Node
             if (col.gameObject == runner.gameObject) continue;
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
-                UnityEngine.Debug.Log($"Hit detected on {Character.name} with attack {_data.AttackName}");
+                BTDebug.Log($"Hit detected on {Character.name} with attack {_data.AttackName}");
                 _data.damageData.AttackerTransform = runner.transform;
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
@@ -331,11 +331,11 @@ public abstract class BaseAttackNode : Node
             // Only check parry status for Boss_Fake_Attack
             if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")
             {
-                UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed after being PARRIED. Hit: {didHit}, Returning: FAILURE");
+                BTDebug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed after being PARRIED. Hit: {didHit}, Returning: FAILURE");
                 return NodeState.FAILURE;
             }
             
-            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed normally. Hit: {didHit}, Returning: SUCCESS");
+            BTDebug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed normally. Hit: {didHit}, Returning: SUCCESS");
             return NodeState.SUCCESS;
         }
         return NodeState.RUNNING;
@@ -366,7 +366,7 @@ public abstract class BaseAttackNode : Node
         } 
         else 
         {
-            // UnityEngine.Debug.Log(msg);
+            // BTDebug.Log(msg);
         }
     }
 

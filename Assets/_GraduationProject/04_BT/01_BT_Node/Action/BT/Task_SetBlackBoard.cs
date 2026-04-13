@@ -14,7 +14,7 @@ public class Task_SetBlackBoard : Node
     public override void OnEnter()
     {
         Utils.SetValue(runner._aiController._aiBrain.blackboard, Utils);
-        // // Debug.Log(runner._aiController._aiBrain.blackboard.GetValue<float>(Utils.enumKey.ToString()));
+        // // BTDebug.Log(runner._aiController._aiBrain.blackboard.GetValue<float>(Utils.enumKey.ToString()));
     }
     
     

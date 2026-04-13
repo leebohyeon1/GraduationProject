@@ -23,7 +23,7 @@ public class Stunned : Node
 
     public override void OnEnter()
     {
-        Debug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
+        BTDebug.Log("<color=red>--STUNNED--: OnEnter Triggered</color>");
         base.OnEnter();
         _enterFrame = Time.frameCount;
                 // 스턴 시작 시점부터 모든 공격 차단 (사용자 요청)
@@ -56,7 +56,7 @@ public class Stunned : Node
             runner.Shield.IsActive = false;
             
 
-        // // Debug.Log("<color=red>--STUNNED--: OnEnter (Initial Cleanup Done)</color>");
+        // // BTDebug.Log("<color=red>--STUNNED--: OnEnter (Initial Cleanup Done)</color>");
     }
 
     protected override NodeState OnUpdate()
@@ -69,7 +69,7 @@ public class Stunned : Node
         {
             // 조기 파라미터 정리
             runner.ParrySystem.ClearStun();
-            // // Debug.Log("<color=red>--STUNNED--: OnUpdate Finished (Signal Received)</color>");
+            // // BTDebug.Log("<color=red>--STUNNED--: OnUpdate Finished (Signal Received)</color>");
             return NodeState.SUCCESS;
         }
 
@@ -91,14 +91,14 @@ public class Stunned : Node
     {
         // WeakCounter Random Chance 노드 차단
         brain.StartSkillCooldown("WeakCounter", attackBlockDuration);
-        UnityEngine.Debug.Log($"[Stunned] WeakCounter 차단 시작 ({attackBlockDuration}초)");
+        BTDebug.Log($"[Stunned] WeakCounter 차단 시작 ({attackBlockDuration}초)");
         
         // 모든 Boss 공격 스킬 차단
         for(int i = 0; i < attackSkills.Length; i++)
         {
             string attackSkill = attackSkills[i];
             brain.StartSkillCooldown(attackSkill, attackBlockDuration);
-            UnityEngine.Debug.Log($"[Stunned] {attackSkill} 차단 시작 ({attackBlockDuration}초)");
+            BTDebug.Log($"[Stunned] {attackSkill} 차단 시작 ({attackBlockDuration}초)");
         }
     }
 
@@ -164,7 +164,7 @@ public class Stunned : Node
             BlockAllAttacks();
         }
         
-        // // Debug.Log("<color=red>--STUNNED EXIT--: Total State Cleanup Performed</color>");
+        // // BTDebug.Log("<color=red>--STUNNED EXIT--: Total State Cleanup Performed</color>");
         
         runner.SetState(EnemyStateController.EnemyState.Idle);
         if (Handler != null) Handler.ResetAllFlags();

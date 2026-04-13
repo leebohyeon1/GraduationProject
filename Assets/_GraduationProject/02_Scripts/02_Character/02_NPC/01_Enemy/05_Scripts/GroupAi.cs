@@ -11,6 +11,14 @@ public class GroupAi : MonoBehaviour
     public string GroupName = "DefaultGroup";
     public int MaxAttackTokenCount = 2; 
     public float updateInterval = 1.0f;
+
+    [Header("AI Activation Culling")]
+    [SerializeField] private bool _useAiActivationCulling = true;
+    [SerializeField] private float _activationCheckInterval = 0.2f;
+    [SerializeField] private float _enableDistance = 42f;
+    [SerializeField] private float _disableDistance = 68f;
+    [SerializeField] private float _prewarmViewMargin = 0.25f;
+    [SerializeField] private int _maxEnablePerCheck = 4;
     
     private List<Enemy> enemies = new List<Enemy>();
     
@@ -21,7 +29,14 @@ public class GroupAi : MonoBehaviour
 
     private class EnemyCandidate { public Enemy enemy; public bool isThreatened; public float distance; }
     private float _updateTimer;
+    private float _activationTimer;
     private bool CombatGroup = false;
+    private Camera _mainCam;
+
+    private void Awake()
+    {
+        _mainCam = Camera.main;
+    }
 
     public void GroupAdd(Enemy enemy)
     {
@@ -85,9 +100,89 @@ public class GroupAi : MonoBehaviour
 
     private void Update()
     {
-        if (enemies.Count == 0 || !CombatGroup) return;
+        if (enemies.Count == 0) return;
+
+        if (_useAiActivationCulling)
+        {
+            _activationTimer += Time.deltaTime;
+            if (_activationTimer >= Mathf.Max(0.05f, _activationCheckInterval))
+            {
+                _activationTimer = 0f;
+                UpdateAiControllerActivation();
+            }
+        }
+
+        if (!CombatGroup) return;
         _updateTimer += Time.deltaTime;
         if (_updateTimer >= updateInterval) { UpdateAttackToken(); _updateTimer = 0f; }
+    }
+
+    private void UpdateAiControllerActivation()
+    {
+        float enableDistSq = _enableDistance * _enableDistance;
+        float disableDistSq = Mathf.Max(_enableDistance + 1f, _disableDistance) * Mathf.Max(_enableDistance + 1f, _disableDistance);
+        int enableBudget = Mathf.Max(1, _maxEnablePerCheck);
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Enemy enemy = enemies[i];
+            if (enemy == null || !enemy.gameObject.activeInHierarchy || enemy.EnemyHealth == null || enemy.EnemyHealth.IsDead) continue;
+
+            AiController ai = enemy._aiController;
+            if (ai == null) continue;
+
+            if (ShouldForceEnable(enemy))
+            {
+                if (!ai.enabled) ai.enabled = true;
+                continue;
+            }
+
+            var player = enemy.player;
+            if (player == null)
+            {
+                if (!ai.enabled) ai.enabled = true;
+                continue;
+            }
+
+            float distSq = (enemy.transform.position - player.transform.position).sqrMagnitude;
+            bool prewarmVisible = IsInsidePrewarmView(enemy.transform.position);
+
+            bool shouldEnable = distSq <= enableDistSq || prewarmVisible;
+            bool shouldDisable = distSq >= disableDistSq && !prewarmVisible;
+
+            if (ai.enabled)
+            {
+                if (shouldDisable) ai.enabled = false;
+            }
+            else
+            {
+                if (shouldEnable && enableBudget > 0)
+                {
+                    ai.enabled = true;
+                    enableBudget--;
+                }
+            }
+        }
+    }
+
+    private bool ShouldForceEnable(Enemy enemy)
+    {
+        if (enemy.CurrentState == EnemyStateController.EnemyState.Stunned ||
+            enemy.CurrentState == EnemyStateController.EnemyState.Hit ||
+            enemy.CurrentState == EnemyStateController.EnemyState.Attack)
+            return true;
+        return enemy.CurrentState == EnemyStateController.EnemyState.Rush;
+    }
+
+    private bool IsInsidePrewarmView(Vector3 worldPos)
+    {
+        if (_mainCam == null) _mainCam = Camera.main;
+        if (_mainCam == null) return true;
+
+        Vector3 viewPos = _mainCam.WorldToViewportPoint(worldPos);
+        return viewPos.z > 0f &&
+               viewPos.x > -_prewarmViewMargin && viewPos.x < 1f + _prewarmViewMargin &&
+               viewPos.y > -_prewarmViewMargin && viewPos.y < 1f + _prewarmViewMargin;
     }
 
     private void UpdateAttackToken()
