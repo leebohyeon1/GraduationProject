@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 public class Task_Discover_Player : Node
@@ -12,18 +12,17 @@ public class Task_Discover_Player : Node
     {
         _entryTime = Time.time;
         _didSetLock = false;
-        // // Debug.Log("[Task_Discover_Player : " + runner.name + "] 전투 돌입.");
         
         if (!brain._isCombat)
         {
             // runner._aiController._aiBrain.blackboard.SetValue("Engage", true);
             runner.AnimationEvent(animationTagName);
             if (Handler != null) Handler.ResetAllFlags();
-            // 상태 잠금: 발견 연출 도중 다른 공격이 끼어들지 못하게 함
+            // ?곹깭 ?좉툑: 諛쒓껄 ?곗텧 ?꾩쨷 ?ㅻⅨ 怨듦꺽???쇱뼱?ㅼ? 紐삵븯寃???
             runner._stateController.SetLock(true);
             _didSetLock = true;
             
-            // 전역 전투 상태로 전환
+            // ?꾩뿭 ?꾪닾 ?곹깭濡??꾪솚
 
             
         }
@@ -31,10 +30,9 @@ public class Task_Discover_Player : Node
 
     protected override NodeState OnUpdate()
     {
-        // 상태 중단 체크: 스턴이나 사망 시 즉시 종료
+        // ?곹깭 以묐떒 泥댄겕: ?ㅽ꽩?대굹 ?щ쭩 ??利됱떆 醫낅즺
         if (runner.CurrentState == EnemyStateController.EnemyState.Stunned || runner.CurrentState == EnemyStateController.EnemyState.Die)
         {
-            // // Debug.Log("[Task_EngageCombat : " + runner.name + "] 상태 이상으로 인한 중단.");
             return NodeState.FAILURE;
         }
 
@@ -46,7 +44,6 @@ public class Task_Discover_Player : Node
 
         if (Handler != null && Handler.IsActionFinished)
         {
-            Debug.Log("[Task_EngageCombat : " + runner.name + "] 행동 종료 감지.");
             return NodeState.SUCCESS;
         }
 
@@ -57,7 +54,6 @@ public class Task_Discover_Player : Node
 
         if (elapsedTime > transitionBuffer + 2.0f)
         {
-             Debug.Log("[Task_EngageCombat : " + runner.name + "] 타임아웃 종료.");
              return NodeState.SUCCESS;
         }
 

@@ -24,7 +24,14 @@ public class AiController : MonoBehaviour, IEventListener<string>
     [SerializeField] private float _hardCullDistance = 60f; 
     [SerializeField] private int _tickInterval = 5;         
     [SerializeField] private float _viewMargin = 0.5f;      
+    [SerializeField] private int _onScreenTickInterval = 1;
     private int _staggerOffset;
+
+    private void OnEnable()
+    {
+        if (_onSwingMissEvent != null) _onSwingMissEvent.Subscribe(this);
+        if (_onHealingEvent != null) _onHealingEvent.Subscribe(this);
+    }
 
     public void Initialize(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
@@ -84,7 +91,7 @@ public class AiController : MonoBehaviour, IEventListener<string>
 
             // 2. 가변 업데이트 주기 (Soft LOD)
             // 화면 안이면 정상 속도, 화면 밖이면 4배 느리게 (0.3초 주기)
-            int effectiveInterval = isVisible ? _tickInterval : _tickInterval * 4;
+            int effectiveInterval = isVisible ? Mathf.Max(1, _onScreenTickInterval) : _tickInterval * 4;
             if ((Time.frameCount + _staggerOffset) % effectiveInterval != 0) return;
 
             // 3. AIPath 컴포넌트는 항상 켜두고 isStopped로만 제어하여 즉각 반응 유도

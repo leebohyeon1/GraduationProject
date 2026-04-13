@@ -182,6 +182,11 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// </summary>
     protected virtual void OnNormalAttack()
     {
+        if(!GamePlayTagManager.Instance.HasTag("SwordTouch"))
+        {
+            return;
+        }
+
         // 일반 공격은 기본 기능으로 유지 (원할 경우 "NormalAttack" 능력 체크 추가 가능)
         if (p_owner.Stamina.CheckStamina())
         {
@@ -194,6 +199,10 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// </summary>
     protected virtual void OnHeavyAttack()
     {
+        if (!GamePlayTagManager.Instance.HasTag("SwordTouch"))
+        {
+            return;
+        }
         // "HeavyAttack" 능력이 있고 패리 스택이 1개 이상일 때만 전환
         if (p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Stamina.CheckStamina())
         {
@@ -211,6 +220,10 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// </summary>
     protected virtual void OnNormalCounter()
     {
+        if (!GamePlayTagManager.Instance.HasTag("SwordTouch"))
+        {
+            return;
+        }
         // "Counter" 능력이 있을 때만 상쇄 상태로 전환
         if (p_owner.Stamina.CheckStamina())
         {
@@ -223,6 +236,10 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// </summary>
     protected virtual void OnChargeStart()
     {
+        if (!GamePlayTagManager.Instance.HasTag("SwordTouch"))
+        {
+            return;
+        }
         // "Charge" 능력이 있고 스테미나가 충분할 때만 차지 상태로 전환
         if (p_owner.Ability.HasAbility("Charge") && p_owner.Stamina.CheckStamina())
         {

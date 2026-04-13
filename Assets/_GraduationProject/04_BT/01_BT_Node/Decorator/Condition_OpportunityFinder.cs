@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using System;
 
@@ -16,12 +16,10 @@ public class Condition_OpportunityFinder : ConditionNode
     {
         if (typeof(PlayerAttackBaseState).IsAssignableFrom(runner.player.FSM.CurrentState.GetType()))
         {
-            // // Debug.Log(runner.player.FSM.CurrentState);
             return true;
         }
         else if (runner.player.FSM.CurrentState.GetType() == typeof(PlayerDodgeState))
         {
-            // // Debug.Log(runner.player.FSM.CurrentState);
             return true;
         }
         else

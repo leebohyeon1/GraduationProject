@@ -26,14 +26,13 @@ public class GamePlayTagManager : MonoBehaviour
 
     private void Start()
     {
-        DataManager.Instance.InitGamePlayTagEvent();
-
         // 데이터베이스에서 저장된 데이터 불러오기
-        if (DataManager.Instance.GetGameData() != null)
+        if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
         {
             foreach (var id in DataManager.Instance.GetGameData().GamePlayTagIdSet)
             {
-                AddTag(DataManager.Instance.GetGamePlayTag(id));
+                var tag = DataManager.Instance.GetGamePlayTag(id);
+                if (tag != null) _activeTagList.Add(tag);
             }
         }
     }
@@ -49,11 +48,23 @@ public class GamePlayTagManager : MonoBehaviour
     /// <param name="tag">추가할 태그</param>
     public void AddTag(GamePlayTagSO tag)
     {
-        if(!_activeTagList.Contains(tag))
+        if (tag == null) return;
+
+        if (!_activeTagList.Contains(tag))
         {
+            // 1. 내부 리스트 업데이트
             _activeTagList.Add(tag);
+
+            // 2. 데이터 매니저를 통해 즉시 데이터 저장 (동기성 보장)
+            if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+            {
+                DataManager.Instance.GetGameData().AddGamePlayTag(tag.ID);
+            }
+
+            Debug.Log($"<color=cyan>[TagManager]</color> 태그 추가됨: {tag.ID}");
+
+            // 3. 이벤트 발생
             UpdateTag?.Invoke(tag);
-            Debug.Log("태그 추가");
         }
     }
 
@@ -69,14 +80,7 @@ public class GamePlayTagManager : MonoBehaviour
 
     public bool HasTag(string id)
     {
-        if (GetTag(id) != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return _activeTagList.Any(tag => tag.ID == id);
     }
 
     /// <summary>
@@ -86,18 +90,11 @@ public class GamePlayTagManager : MonoBehaviour
     /// <returns></returns>
     public GamePlayTagSO GetTag(GamePlayTagSO tag)
     {
-        if(HasTag(tag))
-        {
-            return tag;
-        }
-        else
-        {
-            return null;
-        }
+        return HasTag(tag) ? tag : null;
     }
 
     public GamePlayTagSO GetTag(string id)
     {
-        return _activeTagList.FirstOrDefault((tag)=>tag.ID == id);
+        return _activeTagList.FirstOrDefault((tag) => tag.ID == id);
     }
 }

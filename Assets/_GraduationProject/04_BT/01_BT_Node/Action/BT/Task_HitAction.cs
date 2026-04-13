@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 /// <summary>
-/// 피격(Hit) 애니메이션이 재생되는 동안 BT의 다른 노드 실행을 차단하고, 
-/// 애니메이션이 끝나면 플래그를 정리하는 노드입니다.
+/// ?쇨꺽(Hit) ?좊땲硫붿씠?섏씠 ?ъ깮?섎뒗 ?숈븞 BT???ㅻⅨ ?몃뱶 ?ㅽ뻾??李⑤떒?섍퀬, 
+/// ?좊땲硫붿씠?섏씠 ?앸굹硫??뚮옒洹몃? ?뺣━?섎뒗 ?몃뱶?낅땲??
 /// </summary>
 [CreateAssetMenu(fileName = "Task_HitAction", menuName = "BehaviorTree/Action/HitAction")]
 public class Task_HitAction : Node
@@ -17,36 +17,33 @@ public class Task_HitAction : Node
         _entryTime = Time.time;
         _entryFrame = Time.frameCount;
 
-        // 1. 애니메이션 신호 초기화 (이전 행동의 잔상 제거)
+        // 1. ?좊땲硫붿씠???좏샇 珥덇린??(?댁쟾 ?됰룞???붿긽 ?쒓굅)
         if (Handler != null) Handler.ResetAllFlags();
         
-        // 2. 상태를 Hit으로 확실히 설정
+        // 2. ?곹깭瑜?Hit?쇰줈 ?뺤떎???ㅼ젙
         runner.SetState(EnemyStateController.EnemyState.Hit);
         
-        // 3. 이동 정지
+        // 3. ?대룞 ?뺤?
         if (runner.Movement != null) runner.Movement.StopMovement();
         
-        // // Debug.Log($"<color=orange>[Task_HitAction]</color> 히트 대기 시작 (ID: {runner.name})");
     }
 
     protected override NodeState OnUpdate()
     {
         if (runner == null) return NodeState.FAILURE;
 
-        // 애니메이터 상태 갱신을 위한 최소 프레임 대기
+        // ?좊땲硫붿씠???곹깭 媛깆떊???꾪븳 理쒖냼 ?꾨젅???湲?
         if (Time.frameCount <= _entryFrame + 1) return NodeState.RUNNING;
 
-        // 1. 애니메이션 종료 이벤트(FinishAction) 감지
+        // 1. ?좊땲硫붿씠??醫낅즺 ?대깽??FinishAction) 媛먯?
         if (Handler != null && Handler.IsActionFinished)
         {
-            // // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 애니메이션 종료 감지.");
             return NodeState.SUCCESS;
         }
 
-        // 2. 안전 타임아웃 (애니메이션 이벤트 누락 대비, 보통 1초면 충분)
+        // 2. ?덉쟾 ??꾩븘??(?좊땲硫붿씠???대깽???꾨씫 ?鍮? 蹂댄넻 1珥덈㈃ 異⑸텇)
         if (Time.time - _entryTime > 1.2f)
         {
-            // // Debug.LogWarning("<color=orange>[Task_HitAction]</color> 히트 대기 타임아웃.");
             return NodeState.SUCCESS;
         }
 
@@ -57,10 +54,10 @@ public class Task_HitAction : Node
     {
         base.OnExit();
         
-        // 1. 피격 플래그 해제 (매우 중요: 다음 선택 로직이 작동할 수 있게 함)
+        // 1. ?쇨꺽 ?뚮옒洹??댁젣 (留ㅼ슦 以묒슂: ?ㅼ쓬 ?좏깮 濡쒖쭅???묐룞?????덇쾶 ??
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
         
-        // 2. 상태를 Idle로 복구
+        // 2. ?곹깭瑜?Idle濡?蹂듦뎄
         if (runner.CurrentState == EnemyStateController.EnemyState.Hit)
         {
             runner.SetState(EnemyStateController.EnemyState.Idle);
@@ -68,7 +65,6 @@ public class Task_HitAction : Node
 
         if (Handler != null) Handler.ResetAllFlags();
         
-        // // Debug.Log("<color=orange>[Task_HitAction]</color> 히트 상태 해제 및 플래그 초기화.");
     }
 
     public override Node Clone()

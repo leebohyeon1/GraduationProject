@@ -1,4 +1,4 @@
-// --- FILE: Node.cs ---
+﻿// --- FILE: Node.cs ---
 
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
@@ -16,6 +16,8 @@ namespace BehaviorTree
         protected AiBrain brain;
         protected Enemy_AnimationEventHandler Handler => runner.animHandler;
 
+        public static object CurrentNodeName { get; protected set; }
+
         public NodeState Evaluate()
         {
             if (!runner._initializer.IsInitialized("Final"))
@@ -24,21 +26,15 @@ namespace BehaviorTree
             }
             if (!isEntered)
             {
-                // // // Debug.Log(string.Format("[BT] Node Enter: {0} ({1})", this.name, this.GetType().Name));
+                CurrentNodeName = this.name;
                 OnEnter();
                 isEntered = true;
             }
             NodeState currentState = OnUpdate();
-            if (currentState == NodeState.RUNNING)
-            {
-                // // // Debug.Log(string.Format("[BT] Node Running: {0} ({1})", this.name, this.GetType().Name));
-            }
-            // // // Debug.Log(string.Format("[BT] Node Update: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
 
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();
-                // // // Debug.Log(string.Format("[BT] Node Exit: {0} ({1}) -> {2}", this.name, this.GetType().Name, currentState));
                 isEntered = false;
             }
             return currentState;

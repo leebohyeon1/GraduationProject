@@ -1,18 +1,18 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 /// <summary>
-/// 특정 애니메이션 트리거를 발생시켜 행동을 시작(혹은 루프 탈출)하고, 
-/// 해당 애니메이션이 완전히 종료(FinishAction 신호)된 후 추가적인 postDelayTime만큼 대기한 뒤 SUCCESS를 반환하는 노드입니다.
+/// ?뱀젙 ?좊땲硫붿씠???몃━嫄곕? 諛쒖깮?쒖폒 ?됰룞???쒖옉(?뱀? 猷⑦봽 ?덉텧)?섍퀬, 
+/// ?대떦 ?좊땲硫붿씠?섏씠 ?꾩쟾??醫낅즺(FinishAction ?좏샇)????異붽??곸씤 postDelayTime留뚰겮 ?湲고븳 ??SUCCESS瑜?諛섑솚?섎뒗 ?몃뱶?낅땲??
 /// </summary>
 [CreateAssetMenu(fileName = "Task_AnimationNode", menuName = "BehaviorTree/Action/Task_AnimationNode")]
 public class Task_AnimationNode : Node
 {
     [Header("Settings")]
-    [Tooltip("실행할 애니메이션 트리거 이름 (Animator Trigger 혹은 이벤트 이름)")]
+    [Tooltip("?ㅽ뻾???좊땲硫붿씠???몃━嫄??대쫫 (Animator Trigger ?뱀? ?대깽???대쫫)")]
     public string triggerName;
     
-    [Tooltip("애니메이션 종료(FinishAction) 후 추가로 대기할 시간 (초)")]
+    [Tooltip("?좊땲硫붿씠??醫낅즺(FinishAction) ??異붽?濡??湲고븷 ?쒓컙 (珥?")]
     public float postDelayTime;
 
     private bool _isAnimFinished;
@@ -24,32 +24,31 @@ public class Task_AnimationNode : Node
         base.OnEnter();
         _isAnimFinished = false;
 
-        // 1. 애니메이션 신호 초기화 (이전 행동 잔상 제거)
+        // 1. ?좊땲硫붿씠???좏샇 珥덇린??(?댁쟾 ?됰룞 ?붿긽 ?쒓굅)
         if (Handler != null) Handler.ResetAllFlags();
 
-        // 2. 이동 정지 (애니메이션 연출 집중)
+        // 2. ?대룞 ?뺤? (?좊땲硫붿씠???곗텧 吏묒쨷)
         if (runner != null && runner.Movement != null)
         {
             runner.Movement.StopMovement();
         }
 
-        // 3. 트리거 발생
-        // 보스전의 경우 특정 상태에서 전이하거나 루프를 탈출할 때 트리거가 더 관리하기 쉽습니다.
+        // 3. ?몃━嫄?諛쒖깮
+        // 蹂댁뒪?꾩쓽 寃쎌슦 ?뱀젙 ?곹깭?먯꽌 ?꾩씠?섍굅??猷⑦봽瑜??덉텧?????몃━嫄곌? ??愿由ы븯湲??쎌뒿?덈떎.
         if (runner != null && !string.IsNullOrEmpty(triggerName))
         {
             runner.AnimationEvent(triggerName);
-            runner._stateController.SetLock(true); // 행동 도중 다른 행동이 끼어들지 못하도록 잠금
+            runner._stateController.SetLock(true); // ?됰룞 ?꾩쨷 ?ㅻⅨ ?됰룞???쇱뼱?ㅼ? 紐삵븯?꾨줉 ?좉툑
             _didSetLock = true;
         }
         
-        // // Debug.Log($"<color=white>[Task_AnimationNode]</color> '{triggerName}' 트리거 발송. 애니메이션 완료 및 {postDelayTime}초 대기 시작.");
     }
 
     protected override NodeState OnUpdate()
     {
         if (runner == null) return NodeState.FAILURE;
 
-        // 상태 1: 애니메이션 종료(FinishAction 이벤트) 대기
+        // ?곹깭 1: ?좊땲硫붿씠??醫낅즺(FinishAction ?대깽?? ?湲?
         if (!_isAnimFinished)
         {
             if (Handler != null && Handler.IsActionFinished)
@@ -57,15 +56,13 @@ public class Task_AnimationNode : Node
                 _isAnimFinished = true;
                 _endTime = Time.time;
                 
-                // // Debug.Log($"<color=white>[Task_AnimationNode]</color> 애니메이션 종료 신호 감지. 포스트 딜레이({postDelayTime}s) 대기 시작.");
             }
             return NodeState.RUNNING;
         }
 
-        // 상태 2: 애니메이션 종료 후 추가 지연 시간 대기
+        // ?곹깭 2: ?좊땲硫붿씠??醫낅즺 ??異붽? 吏???쒓컙 ?湲?
         if (Time.time - _endTime >= postDelayTime)
         {
-            // // Debug.Log($"<color=white>[Task_AnimationNode]</color> 모든 대기 완료. SUCCESS 반환.");
             return NodeState.SUCCESS;
         }
 
@@ -75,7 +72,7 @@ public class Task_AnimationNode : Node
     public override void OnExit()
     {
         base.OnExit();
-        // 트리거는 Bool과 달리 별도의 false 처리가 필요 없으므로 구조가 더 깔끔합니다.
+        // ?몃━嫄곕뒗 Bool怨??щ━ 蹂꾨룄??false 泥섎━媛 ?꾩슂 ?놁쑝誘濡?援ъ“媛 ??源붾걫?⑸땲??
         if (runner != null && runner._stateController != null && _didSetLock)
         {
             runner._stateController.SetLock(false);

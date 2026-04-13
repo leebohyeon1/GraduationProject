@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
@@ -23,7 +23,6 @@ public class Task_BackStep : Node
         _startTime = Time.time;
         _verticalVelocity = Vector3.zero;
 
-        // // Debug.Log(string.Format("[Task_BackStep : {0}] OnEnter 진입. 현재 상태: {1}", runner.name, runner.CurrentState));
 
         if (_aiPath != null) 
         {
@@ -33,11 +32,11 @@ public class Task_BackStep : Node
 
         _dashDirection = -runner.transform.forward;
 
-        // [중요] 순서 변경: 상태와 애니메이션을 먼저 설정한 후 Lock을 걸어야 함
+        // [以묒슂] ?쒖꽌 蹂寃? ?곹깭? ?좊땲硫붿씠?섏쓣 癒쇱? ?ㅼ젙????Lock??嫄몄뼱????
         runner.SetState(EnemyStateController.EnemyState.Rush); 
         runner.AnimationEvent(animationTrigger);
         
-        // 이제부터 외부 간섭 차단
+        // ?댁젣遺???몃? 媛꾩꽠 李⑤떒
         runner._stateController.SetLock(true);
     }
 

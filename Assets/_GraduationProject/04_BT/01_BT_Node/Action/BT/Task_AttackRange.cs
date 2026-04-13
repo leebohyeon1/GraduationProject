@@ -56,7 +56,8 @@ public class Task_AttackRange : BaseAttackNode
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
                 projectileScript.Setup(_attackDir, projectileSpeed, runner.gameObject, damageData);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                    brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                    brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
         Handler.CloseHitWindow();

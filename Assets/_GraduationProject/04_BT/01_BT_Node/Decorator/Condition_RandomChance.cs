@@ -1,16 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "RandomChance_Condition", menuName = "BehaviorTree/Condition/RandomChance")]
 public class Condition_RandomChance : ConditionNode
 {
-   [Tooltip("이 확률 체크를 식별할 고유 이름입니다.")]
+   [Tooltip("???뺣쪧 泥댄겕瑜??앸퀎??怨좎쑀 ?대쫫?낅땲??")]
     public string checkName;
 
-    [Tooltip("확률 체크를 다시 시도하기까지의 대기 시간(쿨타임)입니다.")]
+    [Tooltip("?뺣쪧 泥댄겕瑜??ㅼ떆 ?쒕룄?섍린源뚯????湲??쒓컙(荑⑦????낅땲??")]
     public float cooldownDuration;
 
-    [Tooltip("이 조건이 성공(SUCCESS)할 확률입니다 (0~100).")]
+    [Tooltip("??議곌굔???깃났(SUCCESS)???뺣쪧?낅땲??(0~100).")]
     [Range(0, 100)]
     public float successChance = 50f;
 
@@ -18,13 +18,11 @@ public class Condition_RandomChance : ConditionNode
     {
         if (!brain.IsSkillReady(checkName, cooldownDuration))
         {
-            Debug.Log($"[Condition_RandomChance] '{checkName}' 쿨다운 중 - 조건 실패");
             return false;
         }
 
         brain.StartSkillCooldown(checkName);
         bool cnt = Random.Range(0f, 100f) <= successChance;
-        Debug.Log($"[Condition_RandomChance] {(cnt ? "성공" : "실패")}");
         return cnt;
     }
 

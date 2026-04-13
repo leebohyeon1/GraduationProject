@@ -775,13 +775,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.88
+  m_Height: 1.67
   m_Radius: 0.5
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.93, z: 0}
+  m_Center: {x: 0, y: 0.79, z: 0}
 --- !u!114 &1383074150334306881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13e05e0d59d70746bf262516365b588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AiController
-  _behaviorTree: {fileID: 11400000, guid: da2ca4032d046a24aa794c55092f71e9, type: 2}
+  _behaviorTree: {fileID: 11400000, guid: d0a6dd40f8a93de47923325196b2bc81, type: 2}
   _onSwingMissEvent: {fileID: 11400000, guid: 02c8d327e4c408d4fbad8f7b755f1298, type: 2}
   _onHealingEvent: {fileID: 11400000, guid: 9acfedbe409228b4da69bbcfbdee6653, type: 2}
   <enemyAttackDatas>k__BackingField:
@@ -1590,7 +1590,7 @@ MonoBehaviour:
     ProjectionMode: 0
     PreProcessing: 0
     RagdollBlend: 1
-    animatingMode: 1
+    animatingMode: 0
     UseReconstruction: 0
     UnitySolverIterations: 12
     Calibrate: 1
@@ -4685,6 +4685,14 @@ PrefabInstance:
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1323417312160136225}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TriggerBlurPulse
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14085,7 +14093,7 @@ PrefabInstance:
     - target: {fileID: 1771117327106706437, guid: b94263f91ffd4b84187692dc95c844b9, type: 3}
       propertyPath: managedReferences[6735772444859564032].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
     - target: {fileID: 1771117327106706437, guid: b94263f91ffd4b84187692dc95c844b9, type: 3}
       propertyPath: managedReferences[6735772383198059485].m_ImpulseDefinition.TimeEnvelope.AttackShape.m_RotationOrder
       value: 4

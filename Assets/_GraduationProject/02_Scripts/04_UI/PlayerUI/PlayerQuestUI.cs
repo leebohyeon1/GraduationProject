@@ -55,10 +55,10 @@ public class PlayerQuestUI : PlayerUIBase
 
         _questSequence
             // 1. 0.5초 동안 불투명하게 (Alpha 1)
-            .Append(_questCanvas.DOFade(1f, 0.5f))
+            .Append(_questCanvas.DOFade(1f, 1f))
             // 2. 2.0초 동안 불투명 상태 유지
             .AppendInterval(2f)
             // 3. 0.5초 동안 다시 투명하게 (Alpha 0)
-            .Append(_questCanvas.DOFade(0f, 0.5f));
+            .Append(_questCanvas.DOFade(0f, 1f));
     }
 }

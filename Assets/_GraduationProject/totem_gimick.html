@@ -1,0 +1,795 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Interactive Object_Puzzle</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="337aeaeb-0edb-80c3-918c-ded39b2e6e65" class="page sans"><header><h1 class="page-title" dir="auto">Interactive Object_Puzzle</h1><p class="page-description" dir="auto"></p><table class="properties"><tbody><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>생성일</th><td><time>2026년 4월 3일 오후 4:16</time></td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/list_gray.svg" style="width:14px;height:14px;display:block"/></span>태그</th><td></td></tr></tbody></table></header><div class="page-body"><div style="display:contents" dir="auto"><h3 id="337aeaeb-0edb-802e-8718-ccabc62f4d4a" class=""><mark class="highlight-gray_background"><strong>이 페이지는 오브젝트와 상호작용에 필요한 시스템을 정리한 페이지입니다.</strong></mark></h3></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">시스템 정의서</summary><div class="indented"><div style="display:contents" dir="ltr"><table id="337aeaeb-0edb-80d5-bbd6-e1f4b996f01b" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-80ae-a7be-ec3a9cf1afbe"><th id="eQ{Q" class="simple-table-header-color simple-table-header" style="width:134.328125px"><strong>기능명</strong></th><th id="`nD_" class="simple-table-header-color simple-table-header" style="width:509.328125px"><strong>오브젝트 시스템</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-8047-9732-cde48f360ad4"><td id="eQ{Q" class="" style="width:134.328125px"><strong>시스템 목적 및 역할</strong></td><td id="`nD_" class="" style="width:509.328125px">  • 플레이어의 <strong>액션(공격 및 상호작용)을 통해</strong> 게임 내 환경 요소와 <strong>상호작용</strong> 함. <br/>  • 진행 경로를 확보하는 <strong>어드벤처 게임의 핵심 메카니즘을 구축</strong>하는 데 목적이 있음.</td></tr></div><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-8097-8a60-dd27d812472d"><td id="eQ{Q" class="" style="width:134.328125px"><strong>오브젝트 분류</strong></td><td id="`nD_" class="" style="width:509.328125px">  • <strong>Destructive Object:</strong> <code>Player</code>의 공격으로 장애물이 파괴됨.<br/>  • <strong>Interactive Object:</strong> <code>Player</code>가 특정 오브젝트와의 상호작용으로 장애물이 사라짐</td></tr></div></tbody></table></div></div></details></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Destructible Object System</summary><div class="indented"><div style="display:contents" dir="auto"><h3 id="337aeaeb-0edb-805e-9227-e62b84ffbc73" class="">Object Type</h3></div><div style="display:contents" dir="ltr"><table id="337aeaeb-0edb-8069-a0b1-dff188d674b7" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-807d-8e87-d3c8229323f3"><th id="u{]X" class="simple-table-header-color simple-table-header" style="width:119.328125px">구분</th><th id="pGiH" class="simple-table-header-color simple-table-header" style="width:143.328125px">타입</th><th id="RUK&lt;" class="simple-table-header-color simple-table-header" style="width:243.328125px">파괴 조건 (Trigger)</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-8068-8df4-ed39745bca70"><td id="u{]X" class="" style="width:119.328125px">일반 장애물</td><td id="pGiH" class="" style="width:143.328125px">Fragile Object</td><td id="RUK&lt;" class="" style="width:243.328125px">모든 판정의 공격 (약, 강 공격(상쇄))</td></tr></div><div style="display:contents" dir="ltr"><tr id="337aeaeb-0edb-80ac-9dd7-ccc2f45308dc"><td id="u{]X" class="" style="width:119.328125px">강화 장애물</td><td id="pGiH" class="" style="width:143.328125px">Hardened Object</td><td id="RUK&lt;" class="" style="width:243.328125px"><strong>강상쇄</strong> 공격만 허용</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Destructible Process</summary><div class="indented"><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-80f6-a9cd-cf0b6ab88cdc" class="numbered-list" start="1"><li><strong>충돌 판정:</strong> 오브젝트의 <code>Collider</code>에 플레이어의 <code>Attack</code>이 들어올 때 발생.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-80ba-9d78-f36e7256233d" class="numbered-list" start="2"><li><strong>타입 체크: </strong><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-80c0-82f2-eea73eb97722" class="numbered-list" start="1"><li>오브젝트가 <strong>[강화 파괴]</strong> 타입일 경우, 입력된 공격의 <code>Attack Type</code>이 <code>Heavy(강상쇄)</code>인지 확인.</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-80f9-ac56-fc2382d768fd" class="numbered-list" start="2"><li><strong>예외 (조건 미충족 시)</strong>: 파편 이펙트(작게) 및 팅겨나가는 효과음(SFX) 출력, 파괴되지 않음.</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-80b0-84f5-c01d40e4e097" class="numbered-list" start="3"><li><strong>상태 전이:</strong> 오브젝트 <code>HP == 0</code>파괴 확정 시 <code>Alive</code> 상태에서 <code>Destroyed</code> 상태로 전환.<div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-8069-903a-d8dfec0a4d31" class="numbered-list" start="1"><li><strong>예외 처리: 플레이어</strong>가 파괴 <strong>오브젝트 안으로 겹쳐서 파괴 시</strong> 캐릭터가 에셋의 영향으로 <strong>튕겨나가지 않도록</strong> 해야 함</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-80c6-86fe-d5751ab888f5" class="numbered-list" start="4"><li><strong>연출 실행:</strong><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-80c4-9734-e878b2b1057c" class="numbered-list" start="1"><li>이거 에셋으로 할 거 같아서 잠시 패스</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-8010-954d-c6ba6c208082" class="numbered-list" start="2"><li><strong>VFX / SFX: </strong><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-8006-b8c4-c6bb79d3cc48" class="numbered-list" start="1"><li><code>Hp</code>가 줄어들 때.</li></ol></div><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-804b-b943-c56fabd52141" class="numbered-list" start="2"><li><strong>파괴</strong> 되었을 때.</li></ol></div><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-804d-b7a2-d83f042a2a68" class="numbered-list" start="3"><li><strong>강화 장애물</strong>에 <strong>강상쇄</strong>가 아닌 다른 공격이 들어왔을 때.</li></ol></div></li></ol></div></li></ol></div></div></details></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Flow Chart</summary><div class="indented"><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="339aeaeb-0edb-80f0-b7ca-f7c5191e32c4" class="code code-wrap"><code class="language-Mermaid" style="white-space:pre-wrap;word-break:break-all">graph TD
+    %% 1. 시작 및 충돌 판정
+    START([공격 충돌 발생]) --&gt; COLLISION{공격 판정 체크}
+    COLLISION -- &quot;Player Attack Volume ∩ Object Collider&quot; --&gt; TYPE_CHECK{오브젝트 타입 체크}
+
+    %% 2. 타입 및 공격 속성 체크
+    TYPE_CHECK -- &quot;강화 파괴 (Hardened)&quot; --&gt; ATK_TYPE{공격 타입 == Heavy?}
+    TYPE_CHECK -- &quot;일반 파괴 (Fragile)&quot; --&gt; HP_REDUCTION[오브젝트 HP 감소]
+
+    %% 3. 강화 장애물 예외 처리 (조건 미충족)
+    ATK_TYPE -- &quot;No (약공격 등)&quot; --&gt; FAIL_FX[반응 연출: 소량 파편 VFX + 튕김 SFX]
+    FAIL_FX --&gt; END([종료])
+
+    %% 4. 데미지 적용 및 상태 변화
+    ATK_TYPE -- &quot;Yes (강상쇄)&quot; --&gt; HP_REDUCTION
+    HP_REDUCTION --&gt; DMG_FX[피격 연출: HP 감소 VFX/SFX 출력]
+    DMG_FX --&gt; HP_CHECK{HP == 0?}
+
+    %% 5. 파괴 확정 및 상태 전이
+    HP_CHECK -- &quot;No&quot; --&gt; END
+    HP_CHECK -- &quot;Yes&quot; --&gt; STATE_TRANS[상태 전이: Alive -&gt; Destroyed]
+
+    %% 6. 예외 처리 및 최종 연출
+    STATE_TRANS --&gt; EXC_HANDLE[예외 처리: 캐릭터 끼임 방지를 위한 Collider 즉시 비활성화]
+    EXC_HANDLE --&gt; FINAL_FX[파괴 연출: 파괴 VFX/SFX 출력 및 메쉬 교체/제거]
+    FINAL_FX --&gt; END</code></pre></div></div></details></div></div></details></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Interaction Object System</summary><div class="indented"><div style="display:contents" dir="auto"><h3 id="339aeaeb-0edb-8018-adf3-c533f523c68a" class="">Object Type</h3></div><div style="display:contents" dir="auto"><ul id="339aeaeb-0edb-8045-b1e1-ce4446f3be98" class="bulleted-list"><li style="list-style-type:disc">각 <strong>Trigger Actor, Target Obstacle </strong>마다 <code>ID</code> 존재</li></ul></div><div style="display:contents" dir="ltr"><table id="cfff58b2-2e72-4477-9d6c-be957199256e" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="f5d91920-6984-431e-8de5-ba52447158eb"><th id="GEaI" class="simple-table-header-color simple-table-header"><strong>구성 요소</strong></th><th id="gqqt" class="simple-table-header-color simple-table-header" style="width:384px"><strong>역할</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="af2f3cc8-c65f-4719-acd6-bff67916b587"><td id="GEaI" class=""><strong>Trigger Actor</strong></td><td id="gqqt" class="" style="width:384px">레버, 토템, 버튼 등 플레이어가 상호작용 가능한 물체</td></tr></div><div style="display:contents" dir="ltr"><tr id="c6e14c6d-8cf9-46ea-b22e-fb281f0058ef"><td id="GEaI" class=""><strong>Target Obstacle</strong></td><td id="gqqt" class="" style="width:384px">길을 막고 있는 잔해, 나무 덩쿨 등의 장애물</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Dissolve Process</summary><div class="indented"><div style="display:contents" dir="auto"><ul id="339aeaeb-0edb-806c-b589-c151f0ca60b5" class="bulleted-list"><li style="list-style-type:disc"><strong>디졸브(Dissolve) 연출</strong></li></ul></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-8051-a268-e1076823170d" class="numbered-list" start="1"><li><strong>상호작용 발생:</strong> 플레이어가 <code>상호작용 키(F)</code> 입력.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-8064-9c3c-e5e52aa4eae9" class="numbered-list" start="2"><li><strong>이벤트 호출:</strong> <code>Trigger Actor</code>가 연결된 <code>Target_ID</code>를 가진 오브젝트에 <code>OnDissolve</code> 신호 송신.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-80fc-874f-cd908e851bd3" class="numbered-list" start="3"><li><strong>연출 실행:</strong><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-805b-9adc-fbdc3b267378" class="numbered-list" start="1"><li>이거 동주가 만들어줄거임</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="339aeaeb-0edb-80c5-8e43-e243008e1e82" class="numbered-list" start="2"><li><strong>VFX / SFX:</strong><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-8092-8061-f32534e779bf" class="numbered-list" start="1"><li><code>Trigger Actor</code>와<strong> 상호작용 시.</strong></li></ol></div><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-804e-a408-f0a4252a4140" class="numbered-list" start="2"><li><code>Collision</code><strong>비활성화 중</strong>.</li></ol></div><div style="display:contents" dir="auto"><ol type="i" id="339aeaeb-0edb-8072-930b-e9597174f9df" class="numbered-list" start="3"><li><code>Collision</code><strong>비활성화 시.</strong></li></ol></div></li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="339aeaeb-0edb-8026-9c50-d1a700b06b4a" class="numbered-list" start="4"><li><strong>콜리전 비활성화:</strong> 디졸브가 시작됨과 동시에 혹은 일정 수치(예: 0.5) 도달 시 <code>Collision</code>을 제거하여 플레이어 이동 허용.</li></ol></div></div></details></div><div style="display:contents" dir="auto"><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Flow Chart</summary><div class="indented"><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="339aeaeb-0edb-8010-bf3f-f2e8a5a424d5" class="code code-wrap"><code class="language-Mermaid" style="white-space:pre-wrap;word-break:break-all">graph TD
+    %% 1. 상호작용 시작
+    START([플레이어 상호작용 시도]) --&gt; INPUT{Key Input: &#x27;F&#x27;}
+    INPUT -- &quot;Trigger Actor 범위 내&quot; --&gt; ACTIVATE[Trigger Actor 활성화]
+    
+    %% 2. 이벤트 전파 및 피드백
+    ACTIVATE --&gt; TRIGGER_FEEDBACK[SFX/VFX: 장치 작동 피드백 발생]
+    TRIGGER_FEEDBACK --&gt; SIGNAL[이벤트 송신: Target_ID 매칭 오브젝트 탐색]
+    
+    %% 3. 타겟 오브젝트 반응 (Dissolve)
+    SIGNAL --&gt; TARGET_READY[Target Actor: OnDissolve 신호 수신]
+    TARGET_READY --&gt; DISSOLVE_START[연출 실행: Dissolve 셰이더 Timeline 재생]
+    
+    %% 4. 실시간 상태 체크 (Loop/Timeline)
+    DISSOLVE_START --&gt; DISSOLVE_PROCESS{Dissolve Value &gt;= Threshold 0.5?}
+    
+    %% 5. 콜리전 및 사운드 제어
+    DISSOLVE_PROCESS -- &quot;Processing&quot; --&gt; PROC_FEEDBACK[SFX/VFX: 소멸 중 효과]
+    PROC_FEEDBACK --&gt; DISSOLVE_PROCESS
+    
+    DISSOLVE_PROCESS -- &quot;Yes (임계치 도달)&quot; --&gt; COLLISION_OFF[콜리전 비활성화: 길 확보 및 튕김 방지]
+    
+    %% 6. 완료
+    COLLISION_OFF --&gt; COMPLETE_FEEDBACK[SFX: 소멸 완료 효과음]
+    COMPLETE_FEEDBACK --&gt; END([오브젝트 제거 및 완료])
+
+    style DISSOLVE_PROCESS fill:#f9f,stroke:#333,stroke-width:2px
+    style COLLISION_OFF fill:#bbf,stroke:#333,stroke-width:2px</code></pre></div></div></details></div></div></details></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

@@ -63,6 +63,8 @@ public enum EnemyBlackboardKeys
     
     #region Combat
     DidLastAttackHit,
+    LastAttackSuccessTime,
+    LastTakeHitTime,
     /// <summary>전투 시작 여부 (bool)</summary>
     IsPlayerDetected,
     /// <summary>현재 공격 페이즈 (int)</summary>

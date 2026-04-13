@@ -71,10 +71,6 @@ public class DataManager : MonoBehaviour
         {
             QuestManager.Instance.QuestCompleted -= OnQuestCompleted;
         }
-        if (GamePlayTagManager.Instance)
-        {
-            GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;
-        }
     }
 
     /// <summary>
@@ -314,22 +310,9 @@ public class DataManager : MonoBehaviour
     // GamePlaytag Data ========================================================================================================
     //==========================================================================================================================
 
-    public void InitGamePlayTagEvent()
-    {
-        if (GamePlayTagManager.Instance)
-        {
-            GamePlayTagManager.Instance.UpdateTag += OnUpdateTag;
-        }
-    }
-
     public GamePlayTagSO GetGamePlayTag(string id)
     {
         return _gamePlayTagDatabase.GamePlayTagList.Find((data) => data.ID == id);
-    }
-
-    private void OnUpdateTag(GamePlayTagSO tag)
-    {
-        _currentGameData.AddGamePlayTag(tag.ID);
     }
 
     //==========================================================================================================================
