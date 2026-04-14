@@ -1,23 +1,23 @@
-using BehaviorTree;
+﻿using BehaviorTree;
 using UnityEngine;
 
 /// <summary>
-/// 마지막 공격 성공 시각과 마지막 피격 시각을 기준으로 전투 이탈 여부를 판정합니다.
+/// 留덉?留?怨듦꺽 ?깃났 ?쒓컖怨?留덉?留??쇨꺽 ?쒓컖??湲곗??쇰줈 ?꾪닾 ?댄깉 ?щ?瑜??먯젙?⑸땲??
 /// </summary>
 public class Condition_IsCombat : ConditionNode
 {
     /// <summary>
-    /// 마지막 상호작용 이후 이 시간(초)이 지나면 true를 반환합니다.
+    /// 留덉?留??곹샇?묒슜 ?댄썑 ???쒓컙(珥???吏?섎㈃ true瑜?諛섑솚?⑸땲??
     /// </summary>
-    [Header("전투 이탈 판정")]
-    [Tooltip("마지막 공격/피격 시간 이후 true로 전환되기까지의 시간(초)")]
+    [Header("?꾪닾 ?댄깉 ?먯젙")]
+    [Tooltip("留덉?留?怨듦꺽/?쇨꺽 ?쒓컙 ?댄썑 true濡??꾪솚?섍린源뚯????쒓컙(珥?")]
     [Min(0f)]
     public float noCombatDuration = 3f;
 
     private bool _wasIdleEnough;
 
     /// <summary>
-    /// 노드 진입 시 상태를 초기화합니다.
+    /// ?몃뱶 吏꾩엯 ???곹깭瑜?珥덇린?뷀빀?덈떎.
     /// </summary>
     public override void OnEnter()
     {
@@ -51,7 +51,6 @@ public class Condition_IsCombat : ConditionNode
         bool isIdleEnough = (Time.time - latestInteractionTime) >= noCombatDuration;
         if (isIdleEnough && !_wasIdleEnough)
         {
-            Debug.Log($"[Condition_IsCombat] {runner.name} 전투이탈 판정: 최근 상호작용 후 {noCombatDuration:F2}초 경과");
         }
 
         _wasIdleEnough = isIdleEnough;
@@ -59,7 +58,7 @@ public class Condition_IsCombat : ConditionNode
     }
 
     /// <summary>
-    /// 런타임 복제본을 생성합니다.
+    /// ?고???蹂듭젣蹂몄쓣 ?앹꽦?⑸땲??
     /// </summary>
     public override Node Clone()
     {

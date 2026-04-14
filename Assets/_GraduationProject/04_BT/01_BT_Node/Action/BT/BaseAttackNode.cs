@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using System.Collections.Generic;
 using Pathfinding;
@@ -6,52 +6,52 @@ using System.Diagnostics;
 using System;
 
 /// <summary>
-/// 공격 노드의 베이스 클래스. Physics.NonAlloc을 사용하여 GC 할당을 방지합니다.
+/// 怨듦꺽 ?몃뱶??踰좎씠???대옒?? Physics.NonAlloc???ъ슜?섏뿬 GC ?좊떦??諛⑹??⑸땲??
 /// </summary>
 public abstract class BaseAttackNode : Node
 {
     [Header("Base Attack Properties")]
     [Tooltip("이 노드가 사용할 블랙보드 공격 데이터 키")]
     public string attackKey;
-    [Tooltip("이 공격에서 재생할 애니메이터 상태 태그 또는 트리거 이름")]
+    [Tooltip("공격에 사용할 애니메이션 상태 태그/트리거 이름")]
     public string animationStateName = "";
-    [Tooltip("태그가 안 잡혔을 때 실패로 처리하기 전 유예 시간")]
+    [Tooltip("태그 진입 대기 유예 시간")]
     public float transitionBuffer = 1f;
-    [Tooltip("이 노드가 유지될 수 있는 최대 시간(초)")]
+    [Tooltip("노드 최대 실행 시간(초)")]
     public float maxNodeDuration = 6.0f;
-    [Tooltip("피격 확인 후에도 공격 상태를 유지")]
+    [Tooltip("히트 확인 전까지 공격 상태 유지")]
     public bool maintainAtk = false;
-    [Tooltip("공격 중 실행되는 액션 ScriptableObject들")]
+    [Tooltip("공격 중 실행할 Action ScriptableObject 목록")]
     public EnemyUseAnything[] SO = null;
-    [Tooltip("연속(루프) 공격 동작 사용")]
+    [Tooltip("루프 공격 사용")]
     public bool LoopAttack = false;
-    [Tooltip("즉시 성공 처리하여 다음 BT 분기로 이동")]
+    [Tooltip("즉시 성공 처리 후 다음 BT 분기 이동")]
     public bool NextBT = false;
-    [Tooltip("이 노드의 에디터 전용 디버그 로그 활성화")]
+    [Tooltip("노드 내부 디버그 로그 사용 여부")]
     public bool debugMode = false;
 
     [Header("Escape Settings")]
-    [Tooltip("피격 확인 시 조기 종료(회피) 허용")]
+    [Tooltip("히트 확인 시 조기 종료 허용")]
     public bool escapeOnHitConfirm = true;
-    [Tooltip("피격 확인 후 종료까지의 지연 시간(초)")]
+    [Tooltip("히트 확인 후 종료까지 지연 시간(초)")]
     public float hitEscapeDelay = 0.5f;
 
     [Header("Execution Gate")]
-    [Tooltip("공격 진입 전에 거리 체크")]
+    [Tooltip("공격 진입 전 거리 체크")]
     public bool checkRangeOnEnter = false;
-    [Tooltip("필요 사거리 대비 허용 여유 거리")]
+    [Tooltip("거리 체크 여유값")]
     public float rangeThreshold = 1.0f;
-    [Tooltip("거리 체크 시 Y축 높이 무시")]
+    [Tooltip("거리 체크 시 Y축 무시")]
     public bool ignoreYDistance = true;
-    [Tooltip("전투 중이 아니어도 실행 허용")]
+    [Tooltip("비전투 상태에서도 실행 허용")]
     public bool allowOutOfCombat = false;
 
     [Header("State Control")]
-    [Tooltip("공격 상태 잠금에 사용하는 블랙보드 키")]
+    [Tooltip("공격 상태 잠금 블랙보드 키")]
     public string ExceptKey = "IsAttacking";
 
     [Header("Hit Detection")]
-    [Tooltip("히트 판정에 사용하는 레이어 마스크")]
+    [Tooltip("히트 판정 레이어 마스크")]
     [SerializeField] private LayerMask _hitMasks = 1<<7;
 
     protected EnemyAttackData _data;
@@ -221,11 +221,10 @@ public abstract class BaseAttackNode : Node
     protected abstract bool IsMovementFinished { get; }
     protected virtual void SpecificCleanup() 
     {
-        // 정상적인 공격 완료 시 일반 쿨타임 적용
+        // ?뺤긽?곸씤 怨듦꺽 ?꾨즺 ???쇰컲 荑⑦????곸슜
         if (!_isActionFinishedInternally)
         {
             brain.StartSkillCooldown(attackKey);
-            UnityEngine.Debug.Log($"[BaseAttackNode] {attackKey} 정상 쿨타임 시작");
         }
     }
 
@@ -296,7 +295,6 @@ public abstract class BaseAttackNode : Node
             if (col.gameObject == runner.gameObject) continue;
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
-                UnityEngine.Debug.Log($"Hit detected on {Character.name} with attack {_data.AttackName}");
                 _data.damageData.AttackerTransform = runner.transform;
                 Character.TakeDamage(_data.damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
@@ -331,11 +329,9 @@ public abstract class BaseAttackNode : Node
             // Only check parry status for Boss_Fake_Attack
             if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")
             {
-                UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed after being PARRIED. Hit: {didHit}, Returning: FAILURE");
                 return NodeState.FAILURE;
             }
             
-            UnityEngine.Debug.Log($"[BaseAttackNode] Attack {_data.AttackName} completed normally. Hit: {didHit}, Returning: SUCCESS");
             return NodeState.SUCCESS;
         }
         return NodeState.RUNNING;
@@ -366,7 +362,6 @@ public abstract class BaseAttackNode : Node
         } 
         else 
         {
-            // UnityEngine.Debug.Log(msg);
         }
     }
 

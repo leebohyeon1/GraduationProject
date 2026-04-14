@@ -1,25 +1,25 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Pathfinding;
 
 [CreateAssetMenu(fileName = "RushAttackStrategy", menuName = "Enemy/Strategy/Rush Attack")]
 public class RushAttackStrategy : EnemyUseAnything
 {
-    // [설정값] 이런 건 SO에 저장해도 됩니다. (모든 몬스터 공통)
+    // [?ㅼ젙媛? ?대윴 嫄?SO????ν빐???⑸땲?? (紐⑤뱺 紐ъ뒪??怨듯넻)
     public float rushSpeed = 15f;    
     public float stopDistance = 1.0f;
     bool endStrategy = false;
     public float speed = 6;
 
-    // [상태값] 돌진이 멈췄는지 여부 등은 '인스턴스'가 필요하지만, 
-    // 간단하게 하기 위해 여기서는 runner를 통해 제어하거나, 
-    // 복잡하면 Node에서 관리해야 합니다.
-    // 일단 여기서는 로직만 처리합니다.
+    // [?곹깭媛? ?뚯쭊??硫덉톬?붿? ?щ? ?깆? '?몄뒪?댁뒪'媛 ?꾩슂?섏?留? 
+    // 媛꾨떒?섍쾶 ?섍린 ?꾪빐 ?ш린?쒕뒗 runner瑜??듯빐 ?쒖뼱?섍굅?? 
+    // 蹂듭옟?섎㈃ Node?먯꽌 愿由ы빐???⑸땲??
+    // ?쇰떒 ?ш린?쒕뒗 濡쒖쭅留?泥섎━?⑸땲??
 
 
 
     public override T OnEnter<T>(T runner)
     {
-         // runner를 통해 씬에 있는 컴포넌트에 접근합니다.
+         // runner瑜??듯빐 ?ъ뿉 ?덈뒗 而댄룷?뚰듃???묎렐?⑸땲??
         var aiPath = runner.GetComponent<AIPath>(); 
         if (aiPath != null)
         {
@@ -28,23 +28,21 @@ public class RushAttackStrategy : EnemyUseAnything
             endStrategy = false;
         }
         return runner;
-         // // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
-        // // Debug.Log($"{runner.name}가 돌진 전략을 시작함");
     }
 
 
     public override T OnUpdate<T>(T runner)
     {
-        // 씬에 있는 플레이어 찾기: runner.player
+        // ?ъ뿉 ?덈뒗 ?뚮젅?댁뼱 李얘린: runner.player
         if (runner.player == null) return null;
 
-        // 로직 수행
+        // 濡쒖쭅 ?섑뻾
         float dist = Vector3.Distance(runner.transform.position, runner.player.transform.position);
         
         if (dist > stopDistance && !runner.animHandler.IsHitWindowOpen && !endStrategy)
         {
              runner.Movement.StartRush(runner.player.transform.position, rushSpeed);
-             // 회전 로직 등...
+             // ?뚯쟾 濡쒖쭅 ??..
         }
         else
         {
@@ -54,13 +52,13 @@ public class RushAttackStrategy : EnemyUseAnything
         return runner;
     }
 
-    public override T OnExit<T>(T runner) // <--- 종료 시 정리
+    public override T OnExit<T>(T runner) // <--- 醫낅즺 ???뺣━
     {
-        // runner를 원래대로 돌려놓기
+        // runner瑜??먮옒?濡??뚮젮?볤린
         var aiPath = runner.GetComponent<AIPath>();
         if (aiPath != null)
         {
-            aiPath.maxSpeed = runner.Movement._normalSpeed; // 원래 속도로 복구 (혹은 Enemy 스탯 참조)
+            aiPath.maxSpeed = runner.Movement._normalSpeed; // ?먮옒 ?띾룄濡?蹂듦뎄 (?뱀? Enemy ?ㅽ꺈 李몄“)
             aiPath.enableRotation = true;
         }
         return runner;

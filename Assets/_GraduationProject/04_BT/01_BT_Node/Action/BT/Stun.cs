@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Stun", menuName = "BehaviorTree/Stun")]
@@ -20,14 +20,13 @@ public class Stun : Node
             runner.GetComponent<Rigidbody>().linearVelocity = Vector3.zero; 
         }
         // runner.player.GetComponent<IDamageable>().TakeDamage(Damage, runner.heatSystem.GetTier(), damageData);
-        // // Debug.Log("플레이어 기절함");
         return NodeState.SUCCESS;
     }
 
     public override void Abort()
     {
         base.Abort();
-        // 상태를 먼저 변경하여 StopMovement의 보호 로직을 통과하게 함
+        // ?곹깭瑜?癒쇱? 蹂寃쏀븯??StopMovement??蹂댄샇 濡쒖쭅???듦낵?섍쾶 ??
         if (runner.CurrentState == EnemyStateController.EnemyState.Rush)
         {
             runner.GetComponent<Animator>().SetBool("Rush_Running", false);

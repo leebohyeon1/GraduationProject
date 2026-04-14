@@ -1,17 +1,17 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "AttackRange", menuName = "Enemy/Strategy/Attack Range")]
 public class AttackRange : EnemyUseAnything
 {
     [Header("Projectile Settings")]
-    public GameObject projectilePrefab; // 발사할 총알 프리팹
-    public float projectileSpeed = 15f; // 총알 속도
+    public GameObject projectilePrefab; // 諛쒖궗??珥앹븣 ?꾨━??
+    public float projectileSpeed = 15f; // 珥앹븣 ?띾룄
 
     [Header("Spawn Settings")]
-    public Vector3 spawnOffset = new Vector3(0, 1.0f, 0.5f); // 적의 중심에서 총알이 생성될 위치 오프셋
+    public Vector3 spawnOffset = new Vector3(0, 1.0f, 0.5f); // ?곸쓽 以묒떖?먯꽌 珥앹븣???앹꽦???꾩튂 ?ㅽ봽??
     public DamageData damageData; 
 
-    // 블랙보드 키: 조준 방향을 저장하기 위함
+    // 釉붾옓蹂대뱶 ?? 議곗? 諛⑺뼢????ν븯湲??꾪븿
     private const string KEY_ATTACK_DIR = "AttackRange_Direction";
 
     public override T OnEnter<T>(T runner)
@@ -21,21 +21,20 @@ public class AttackRange : EnemyUseAnything
 
         var blackboard = runner._aiController._aiBrain.blackboard;
 
-        // 1. [조준 단계] 플레이어 위치 확인 및 발사 방향 계산
+        // 1. [議곗? ?④퀎] ?뚮젅?댁뼱 ?꾩튂 ?뺤씤 諛?諛쒖궗 諛⑺뼢 怨꾩궛
         Vector3 playerPos = enemy.player.transform.position;
         Vector3 targetPos = playerPos + Vector3.up * 0.5f; 
         
-        // 발사 시작 위치 (현재 기준)
+        // 諛쒖궗 ?쒖옉 ?꾩튂 (?꾩옱 湲곗?)
         Vector3 spawnPos = enemy.transform.position + (enemy.transform.rotation * spawnOffset);
         
-        // 방향 계산 (목표지점 - 시작지점)
+        // 諛⑺뼢 怨꾩궛 (紐⑺몴吏??- ?쒖옉吏??
         Vector3 dir = (targetPos - spawnPos).normalized;
-        dir.y = 0; // 수평 발사 가정 (필요 시 제거)
+        dir.y = 0; // ?섑룊 諛쒖궗 媛??(?꾩슂 ???쒓굅)
 
-        // 2. [저장] 계산된 방향을 블랙보드에 저장 (쏘지 않음)
+        // 2. [??? 怨꾩궛??諛⑺뼢??釉붾옓蹂대뱶?????(?섏? ?딆쓬)
         blackboard.SetValue(KEY_ATTACK_DIR, dir);
-        // // Debug.Log("저장된 발사 방향: " + dir);
-        // (선택) 조준하는 순간 적이 플레이어를 바라보게 하고 싶다면:
+        // (?좏깮) 議곗??섎뒗 ?쒓컙 ?곸씠 ?뚮젅?댁뼱瑜?諛붾씪蹂닿쾶 ?섍퀬 ?띕떎硫?
         enemy.transform.rotation = Quaternion.LookRotation(dir);
 
         return runner;
@@ -46,16 +45,16 @@ public class AttackRange : EnemyUseAnything
 
         var blackboard = runner._aiController._aiBrain.blackboard;
 
-        // 저장된 조준 방향이 없으면 발사 불가
+        // ??λ맂 議곗? 諛⑺뼢???놁쑝硫?諛쒖궗 遺덇?
         if (!blackboard.HasKey(KEY_ATTACK_DIR)) return false;
 
-        // 저장된 방향 가져오기
+        // ??λ맂 諛⑺뼢 媛?몄삤湲?
         Vector3 dir = blackboard.GetValue<Vector3>(KEY_ATTACK_DIR);
 
-        // 현재 위치 기준으로 생성 위치 재계산 (애니메이션 중 적이 밀려났을 수 있으므로)
+        // ?꾩옱 ?꾩튂 湲곗??쇰줈 ?앹꽦 ?꾩튂 ?ш퀎??(?좊땲硫붿씠??以??곸씠 諛?ㅻ궗?????덉쑝誘濡?
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
 
-        // 총알 생성
+        // 珥앹븣 ?앹꽦
         if (projectilePrefab != null)
         {
             GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
@@ -81,7 +80,7 @@ public class AttackRange : EnemyUseAnything
 
     public override T OnExit<T>(T runner)
     {
-        // 상태 종료 시 데이터 정리
+        // ?곹깭 醫낅즺 ???곗씠???뺣━
         var blackboard = runner._aiController._aiBrain.blackboard;
         blackboard.RemoveKey(KEY_ATTACK_DIR);
         

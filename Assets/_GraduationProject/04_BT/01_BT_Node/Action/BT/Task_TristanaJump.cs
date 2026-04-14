@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
@@ -7,45 +7,45 @@ public class Task_TristanaJump : BaseAttackNode
 {
     [Header("Jump Settings")]
     /// <summary>
-    /// 최대 점프 사거리입니다.
+    /// 理쒕? ?먰봽 ?ш굅由ъ엯?덈떎.
     /// </summary>
     public float jumpRange = 8.0f;
     /// <summary>
-    /// 점프 지속 시간입니다.
+    /// ?먰봽 吏???쒓컙?낅땲??
     /// </summary>
     public float jumpDuration = 0.8f;
     /// <summary>
-    /// 점프 높이입니다.
+    /// ?먰봽 ?믪씠?낅땲??
     /// </summary>
     public float jumpHeight = 5.0f;
     /// <summary>
-    /// 점프 높이 커브입니다.
+    /// ?먰봽 ?믪씠 而ㅻ툕?낅땲??
     /// </summary>
     public AnimationCurve heightCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0));
     /// <summary>
-    /// 트리거 사거리입니다.
+    /// ?몃━嫄??ш굅由ъ엯?덈떎.
     /// </summary>
     public float maxTriggerRange = 10f;
 
     [Header("Landing Settings")]
     /// <summary>
-    /// 착지 충격 반경입니다.
+    /// 李⑹? 異⑷꺽 諛섍꼍?낅땲??
     /// </summary>
     public float impactRadius = 2.5f;
     /// <summary>
-    /// 착지 충격 피해 데이터입니다.
+    /// 李⑹? 異⑷꺽 ?쇳빐 ?곗씠?곗엯?덈떎.
     /// </summary>
     public DamageData impactDamage;
     /// <summary>
-    /// 착지 지면 레이어입니다.
+    /// 李⑹? 吏硫??덉씠?댁엯?덈떎.
     /// </summary>
     public LayerMask groundLayer;
     /// <summary>
-    /// 지면 체크 시작 높이입니다.
+    /// 吏硫?泥댄겕 ?쒖옉 ?믪씠?낅땲??
     /// </summary>
     public float groundCheckHeight = 2.0f;
     /// <summary>
-    /// 지면 체크 거리입니다.
+    /// 吏硫?泥댄겕 嫄곕━?낅땲??
     /// </summary>
     public float groundCheckDistance = 6.0f;
 
@@ -59,13 +59,12 @@ public class Task_TristanaJump : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _isJumping = false;
-        Log("점프 준비 (ActionSO 대기 중)");
-        Debug.Log("[Task_TristanaJump] 점프 준비");
+        Log("?먰봽 以鍮?(ActionSO ?湲?以?");
     }
 
     protected override void OnActionSOTriggered()
     {
-        // [수정] 애니메이션 이벤트 시점에 실시간 플레이어 위치를 기반으로 목표 지점 계산
+        // [?섏젙] ?좊땲硫붿씠???대깽???쒖젏???ㅼ떆媛??뚮젅?댁뼱 ?꾩튂瑜?湲곕컲?쇰줈 紐⑺몴 吏??怨꾩궛
         _startPos = runner.transform.position;
         Vector3 playerPos = runner.player.transform.position;
         Vector3 direction = (playerPos - _startPos);
@@ -78,9 +77,9 @@ public class Task_TristanaJump : BaseAttackNode
 
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
         _targetPos = info.node != null ? info.position : rawTarget;
-        Log("점프 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
+        Log("?먰봽 ?쒖옉 (OnActionSOTriggered) - 紐⑺몴 ?ㅼ젙: " + _targetPos);
         _isJumping = true;
-        _nodeEntryTime = Time.time; // 점프 시작 시점 리셋
+        _nodeEntryTime = Time.time; // ?먰봽 ?쒖옉 ?쒖젏 由ъ뀑
         
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
@@ -88,7 +87,6 @@ public class Task_TristanaJump : BaseAttackNode
             ai.canMove = false;
             ai.isStopped = true;
         }
-        Debug.Log("[Task_TristanaJump] 점프 시작 - 목표 위치: " + _targetPos);
     }
 
     protected override void UpdateMovement()
@@ -120,7 +118,7 @@ public class Task_TristanaJump : BaseAttackNode
 
     private void Landing()
     {
-        Log("점프 착지 수행");
+        Log("?먰봽 李⑹? ?섑뻾");
         _isJumping = false;
 
         Vector3 landPos = _targetPos;

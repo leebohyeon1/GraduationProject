@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 public class Task_SetBlackBoard : Node
@@ -14,7 +14,6 @@ public class Task_SetBlackBoard : Node
     public override void OnEnter()
     {
         Utils.SetValue(runner._aiController._aiBrain.blackboard, Utils);
-        // // Debug.Log(runner._aiController._aiBrain.blackboard.GetValue<float>(Utils.enumKey.ToString()));
     }
     
     

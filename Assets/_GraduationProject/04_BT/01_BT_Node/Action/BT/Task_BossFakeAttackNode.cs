@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_BossFakeAttackNode", menuName = "BehaviorTree/Action/Task_BossFakeAttackNode")]
@@ -12,7 +12,7 @@ public class Task_BossFakeAttackNode : BaseAttackNode
 
     protected override void SpecificCleanup()
     {
-        base.SpecificCleanup(); // BaseAttackNode의 공통 패리 차단 로직 실행
+        base.SpecificCleanup(); // BaseAttackNode??怨듯넻 ?⑤━ 李⑤떒 濡쒖쭅 ?ㅽ뻾
 
         _isActionFinishedInternally = true;
 
@@ -22,7 +22,6 @@ public class Task_BossFakeAttackNode : BaseAttackNode
     private void LogParryDebugInfo()
     {
         bool isStunned = runner.ParrySystem != null && runner.ParrySystem._isStunned;
-        Debug.Log($"[Task_BossFakeAttackNode] SpecificCleanup - _wasStunnedDuringAttack: {_wasStunnedDuringAttack}, ParrySystem._isStunned: {isStunned}");
     }
 
     public override Node Clone()
