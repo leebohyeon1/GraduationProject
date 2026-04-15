@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerDatasSO
   m_EditorClassIdentifier: Assembly-CSharp::BasePlayerDatasSO
   MaxHealth: 120
-  MaxPotion: 3
+  MaxPotion: 100
   PotionHealAmount: 100
   MaxStamina: 100
   StaminaRegenPerSecond: 50
@@ -477,8 +477,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   RotateSpeed: 750
-  RotateAccelerationTime: 0
-  RotateDecelerationTime: 1.2
+  RotateAccelerationTime: 0.2
+  RotateDecelerationTime: 0.5
   RotateCurve:
     serializedVersion: 2
     m_Curve:
@@ -1407,7 +1407,7 @@ MonoBehaviour:
   NormalAttackConfigList:
   - AttackType: 0
     AttackStamina: 10
-    AttackRadius: {x: 5, y: 3, z: 5}
+    AttackRadius: {x: 4, y: 3, z: 4}
     AttackDamage: 10
     RegainRate: 0
     AttackMoveConfig:
@@ -1871,43 +1871,6 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 560
     KnockbackConfig:
-      StepDistance: 15
-      StepDuration: 0.1
-      StepCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 0.094186455
-          value: 0.61843276
-          inSlope: 1.3282938
-          outSlope: 1.3282938
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 10
-    DeathKnockbackConfig:
       StepDistance: 0
       StepDuration: 0
       StepCurve:
@@ -1919,7 +1882,7 @@ MonoBehaviour:
       StepRotateSpeed: 0
   - AttackType: 0
     AttackStamina: 10
-    AttackRadius: {x: 5, y: 3, z: 5}
+    AttackRadius: {x: 4, y: 3, z: 4}
     AttackDamage: 10
     RegainRate: 0
     AttackMoveConfig:
@@ -2383,43 +2346,6 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 560
     KnockbackConfig:
-      StepDistance: 15
-      StepDuration: 0.1
-      StepCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 0.029862672
-          value: 0.6063442
-          inSlope: 1.3569413
-          outSlope: 1.3569413
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 10
-    DeathKnockbackConfig:
       StepDistance: 0
       StepDuration: 0
       StepCurve:
@@ -2431,7 +2357,7 @@ MonoBehaviour:
       StepRotateSpeed: 0
   - AttackType: 0
     AttackStamina: 12
-    AttackRadius: {x: 5, y: 3, z: 5}
+    AttackRadius: {x: 4, y: 3, z: 4}
     AttackDamage: 15
     RegainRate: 0
     AttackMoveConfig:
@@ -2904,19 +2830,9 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       StepRotateSpeed: 0
-    DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
-      StepCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 0
   - AttackType: 0
     AttackStamina: 15
-    AttackRadius: {x: 5, y: 3, z: 5}
+    AttackRadius: {x: 4, y: 3, z: 4}
     AttackDamage: 20
     RegainRate: 0
     AttackMoveConfig:
@@ -3380,16 +3296,6 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 560
     KnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
-      StepCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 0
-    DeathKnockbackConfig:
       StepDistance: 0
       StepDuration: 0
       StepCurve:
@@ -3875,16 +3781,6 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       StepRotateSpeed: 0
-    DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
-      StepCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 0
   - AttackType: 2
     AttackStamina: 30
     AttackRadius: {x: 4.2, y: 3, z: 4.2}
@@ -4360,16 +4256,6 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       StepRotateSpeed: 0
-    DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
-      StepCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 0
   ChargeMoveSpeed: 4.5
   ChargeRotateSpeed: 360
   ChargeStamina: 7
@@ -4418,9 +4304,9 @@ MonoBehaviour:
       m_RotationOrder: 4
     StepRotateSpeed: 0
   NormalCounterAttackConfig:
-    AttackType: 7
+    AttackType: 0
     AttackStamina: 5
-    AttackRadius: {x: 6, y: 3, z: 6}
+    AttackRadius: {x: 4, y: 1.4, z: 4}
     AttackDamage: 15
     RegainRate: 0
     AttackMoveConfig:
@@ -4893,22 +4779,12 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       StepRotateSpeed: 0
-    DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
-      StepCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      StepRotateSpeed: 0
   HeavyCounterAttackConfig:
     ChargeTime: 0.7
     AttackConfig:
       AttackType: 4
       AttackStamina: 10
-      AttackRadius: {x: 6, y: 3, z: 6}
+      AttackRadius: {x: 4, y: 1.4, z: 4}
       AttackDamage: 25
       RegainRate: 0
       AttackMoveConfig:
@@ -5381,20 +5257,9 @@ MonoBehaviour:
           m_PostInfinity: 2
           m_RotationOrder: 4
         StepRotateSpeed: 0
-      DeathKnockbackConfig:
-        StepDistance: 0
-        StepDuration: 0
-        StepCurve:
-          serializedVersion: 2
-          m_Curve: []
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        StepRotateSpeed: 0
   CounterDamageMultiply:
-  - 2
+  - 1.2
   - 3
-  - 4
   ProjectileCounterAddedVelocity:
   - 30
   - 50

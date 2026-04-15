@@ -74,74 +74,39 @@ public class QuestManager : MonoBehaviour
 
     private void OnUpdateTag(GamePlayTagSO sO)
     {
-        if (DataManager.Instance == null || DataManager.Instance.GetGameData() == null) return;
-
         HashSet<string> tagSet = DataManager.Instance.GetGameData().GamePlayTagIdSet;
         QuestDatabaseSO questDatabase = DataManager.Instance.QuestDatabase;
 
-        if (questDatabase == null || questDatabase.QuestList == null)
-        {
-            Debug.LogWarning("QuestManager: QuestDatabase or QuestList is not assigned in DataManager.");
-            return;
-        }
 
-        // 1. 현재 진행 중인 퀘스트가 있다면 완료 조건 체크
-        if (CurrentQuestData != null)
+        bool canAccepted = true;
+        foreach (QuestData quest in questDatabase.QuestList)
         {
-            bool isAllClearTagsCollected = true;
-            foreach (var clearTag in CurrentQuestData.ClearConditionList)
+            canAccepted = false;
+
+            foreach (var clearTag in quest.ClearConditionList)
             {
                 if (!tagSet.Contains(clearTag.ID))
                 {
-                    isAllClearTagsCollected = false;
+                    canAccepted = true; 
                     break;
                 }
             }
 
-            // 모든 클리어 태그를 모았다면 퀘스트 완료 처리
-            if (isAllClearTagsCollected)
+            foreach (var needTag in quest.AcceptedConditionList)
             {
-                Debug.Log($"<color=green>[QuestManager]</color> 현재 퀘스트 완료: {CurrentQuestData.ID}");
-                CompleteQuest();
-                return; // 완료 처리 후 다음 퀘스트는 CompleteQuest 내부에서 처리되므로 종료
-            }
-        }
-
-        // 2. 현재 퀘스트가 없거나 아직 완료되지 않았다면, 새로 수락 가능한 퀘스트가 있는지 확인
-        // (이미 완료한 퀘스트나 현재 진행 중인 퀘스트는 제외)
-        HashSet<int> completedQuests = DataManager.Instance.GetGameData().QuestIdSet;
-
-        foreach (QuestData quest in questDatabase.QuestList)
-        {
-            // 이미 완료했거나 현재 진행 중인 퀘스트는 스킵
-            if (completedQuests.Contains(quest.ID) || (CurrentQuestData != null && CurrentQuestData.ID == quest.ID))
-                continue;
-
-            bool canAccept = true;
-
-            if(quest.AcceptedConditionList == null || quest.AcceptedConditionList.Count == 0)
-            {
-                canAccept = false;
-            }
-            else
-            {
-                // 수락 조건 태그 확인
-                foreach (var needTag in quest.AcceptedConditionList)
+                if (!tagSet.Contains(needTag.ID))
                 {
-                    if (needTag != null && !tagSet.Contains(needTag.ID))
-                    {
-                        canAccept = false;
-                        break;
-                    }
+                    Debug.Log("==================" + needTag.ID);
+                    canAccepted = false; 
+                    break;
                 }
             }
-  
-
-            if (canAccept)
+            
+            // 수락 가능한 상태면 수락
+            if(canAccepted)
             {
-                Debug.Log($"<color=yellow>[QuestManager]</color> 새 퀘스트 자동 수락: {quest.ID}");
                 AccpetedQuest(quest);
-                break; // 한 번에 하나의 퀘스트만 수락
+                break;
             }
         }
     }

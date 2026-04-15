@@ -24,6 +24,12 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         base.OnEnter();
     }
 
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+    }
+
     public override void OnExit()
     {
         base.OnExit();
@@ -250,12 +256,31 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackFinished()
     {
-        // 이벤트 수신 여부와 상관없이 다음 상태가 예약되어 있다면 전이 허용 (Failsafe 대응)
+        // 공격이 실제로 시작되지 않았으면(이전 상태의 잔여 이벤트 등) 리턴
         if (!p_isAttackPerformed)
         {
             return;
         }
-        
+
+        // 현재 재생 중인 애니메이션의 진행도(NormalizedTime) 체크
+        // 이전 애니메이션의 잔여 이벤트는 진행도가 매우 낮으므로 여기서 걸러짐
+        AnimatorStateInfo stateInfo;
+        if (p_animator.IsInTransition(0))
+        {
+            stateInfo = p_animator.GetNextAnimatorStateInfo(0);
+        }
+        else
+        {
+            stateInfo = p_animator.GetCurrentAnimatorStateInfo(0);
+        }
+
+        // 애니메이션이 최소 70% 이상 진행되지 않았다면 종료 이벤트로 인정하지 않음
+        if (stateInfo.normalizedTime < 0.7f)
+        {
+            Debug.Log("이전 공격 종료 이벤트 호출: " + stateInfo.normalizedTime);
+        }
+
+        p_canChangeCombatState = false;
         p_isAttackPerformed = false;
 
         if (p_nextState != null)

@@ -11,7 +11,6 @@ public class Task_AttackRange : BaseAttackNode
     public Vector3 spawnOffset = new Vector3(0, 1.0f, 0.5f);
     public DamageData damageData;
     public float maxTriggerRange = 25f;
-    public float minTriggerRange = 15f;
 
     private Vector3 _attackDir;
     private bool _hasFired;
@@ -85,7 +84,6 @@ public class Task_AttackRange : BaseAttackNode
         node.spawnOffset = this.spawnOffset;
         node.damageData = this.damageData;
         node.maxTriggerRange = this.maxTriggerRange;
-        node.minTriggerRange = this.minTriggerRange;
         node.ExceptKey = this.ExceptKey;
         node.escapeOnHitConfirm = this.escapeOnHitConfirm;
         node.hitEscapeDelay = this.hitEscapeDelay;

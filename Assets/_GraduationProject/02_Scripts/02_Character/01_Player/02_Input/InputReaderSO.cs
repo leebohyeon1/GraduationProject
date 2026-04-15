@@ -45,6 +45,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action<Vector2> LockOnTargetChangeForGamepadEvent;
 
     public event Action InteractEvent;
+    public event Action InteractHoldEvent;
+    public event Action InteractCancelEvent;
 
     public event Action PotionEvent;
 
@@ -226,9 +228,21 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        switch (context.phase)
         {
-            InteractEvent?.Invoke();
+            case InputActionPhase.Performed:
+                if (context.interaction is HoldInteraction)
+                {
+                    InteractHoldEvent?.Invoke();
+                }
+                else
+                {
+                    InteractEvent?.Invoke();
+                }
+                break;
+            case InputActionPhase.Canceled:
+                InteractCancelEvent?.Invoke();
+                break;
         }
     }
 
@@ -416,6 +430,8 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         LockOnTargetChangeForGamepadEvent = null;
 
         InteractEvent = null;
+        InteractHoldEvent = null;
+        InteractCancelEvent = null;
 
         PotionEvent = null;
 

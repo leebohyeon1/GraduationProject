@@ -34,6 +34,7 @@ public partial class PlayerController
         _stateMachine.AddState(new PlayerChargeState(_stateMachine));
         _stateMachine.AddState(new PlayerDamagedState(_stateMachine));
         _stateMachine.AddState(new PlayerKnockdownState(_stateMachine));
+        _stateMachine.AddState(new PlayerDraggedState(_stateMachine));
         _stateMachine.AddState(new PlayerFallingState(_stateMachine));
         _stateMachine.AddState(new PlayerLandingState(_stateMachine));
     }

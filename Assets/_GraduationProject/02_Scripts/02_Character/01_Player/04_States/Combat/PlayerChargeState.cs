@@ -138,7 +138,6 @@ public class PlayerChargeState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
-        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         
         if (p_owner.Combat.IsCharge)

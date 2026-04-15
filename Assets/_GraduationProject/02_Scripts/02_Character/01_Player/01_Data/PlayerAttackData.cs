@@ -25,5 +25,4 @@ public struct PlayerAttackConfig
 
     [Header("Knockback")]
     public StepData KnockbackConfig;        // 넉백 설정
-    public StepData DeathKnockbackConfig;   // 사망 넉백 설정
 }

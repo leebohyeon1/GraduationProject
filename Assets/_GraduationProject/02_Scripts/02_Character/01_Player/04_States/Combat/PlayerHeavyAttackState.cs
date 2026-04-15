@@ -52,6 +52,12 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
 
     public override void OnExit()
     {
+        // 다음 상태가 강공격 상태가 아닐 때만 콤보 인덱스 리셋
+        if (p_nextState != typeof(PlayerHeavyAttackState))
+        {
+            p_owner.Combat.ResetHeavyAttackComboIndex();
+        }
+
         base.OnExit();
     }
     #endregion

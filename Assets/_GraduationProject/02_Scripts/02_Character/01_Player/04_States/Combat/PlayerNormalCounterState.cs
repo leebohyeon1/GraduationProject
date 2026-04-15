@@ -24,8 +24,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     protected override void SetupStats()
     {
         base.SetupStats();
-        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
-        p_owner.Combat.SetCharge(false);
+
     }
 
     protected override void SetupAnimator()

@@ -33,8 +33,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
             {
                 _playerController.Interact.SetInteractable(null);
             }
-
-            _playerController = null;
         }
     }
 

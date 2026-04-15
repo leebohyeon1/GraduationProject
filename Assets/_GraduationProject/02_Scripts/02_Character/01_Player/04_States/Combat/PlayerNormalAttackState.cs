@@ -16,7 +16,6 @@ public class PlayerNormalAttackState : PlayerAttackBaseState
     #region Setup Function
     protected override void SetupStats()
     {
-        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
         // 일반 공격 콤보 순서 증가
         p_owner.Combat.IncreaseNormalAttackComboIndex();
 
