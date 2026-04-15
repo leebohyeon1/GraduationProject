@@ -115,7 +115,8 @@ public class HomingProjectile : MonoBehaviour
         if (((1 << other.gameObject.layer) & _obstacleMask) != 0)
         {
             // 벽에 부딪힘 -> 소멸
-            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
+            Vector3 hitPoint = other.ClosestPoint(transform.position);
+            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, hitPoint);
             Destroy(gameObject);
             return;
         }
@@ -133,7 +134,8 @@ public class HomingProjectile : MonoBehaviour
             _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
                 Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
             }
-            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
+            Vector3 hitPoint = other.ClosestPoint(transform.position);
+            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, hitPoint);
 
             Destroy(gameObject);
         }
