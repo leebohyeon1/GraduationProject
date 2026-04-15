@@ -49,18 +49,23 @@ public struct DamageData
     public float KnockbackDuration;
     public float KnockbackForce;
 
+    public float DeathKnockbackDuration;
+    public float DeathKnockbackForce;
+
     public bool IsMagic;
 
-    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount, 
-        AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, bool isMagic = false)
+    public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount,
+        AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, float deathKnockbackDuration = 0f, float deathKnockbackForce = 0f, bool isMagic = false)
     {
         AttackerTransform = attackerTransform;
         AttackType = attackType;
-        DamageAmount = damageAmount;    
+        DamageAmount = damageAmount;
         StiffnessAmount = stiffnessAmount;
         KnockbackCurve = knockbackCurve;
         KnockbackDuration = knockbackDuration;
         KnockbackForce = knockbackForce;
+        DeathKnockbackDuration = deathKnockbackDuration;
+        DeathKnockbackForce = deathKnockbackForce;
         IsMagic = isMagic;
     }
 }

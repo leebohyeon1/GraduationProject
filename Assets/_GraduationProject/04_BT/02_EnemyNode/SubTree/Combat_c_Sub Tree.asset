@@ -1,38 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8061363964458695047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_HomingAttack
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 1141, y: 123}
-  attackKey: Attack01_c
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 7855d458914724941a281bce55d36715, type: 2}
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 1
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  _hitMasks:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &-7994454844275576254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab654d0018170804a8cd251512972e08, type: 3}
   m_Name: Task_Homing Missile
   m_EditorClassIdentifier: Assembly-CSharp::Task_HomingMissile
-  position: {x: 1157, y: 200}
+  position: {x: 1139, y: 123}
   attackKey: Attack01_c
   animationStateName: 
   transitionBuffer: 1
@@ -272,12 +239,12 @@ MonoBehaviour:
   maxTriggerRange: 30
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 520
   damageData:
-    AttackerTransform: {fileID: 0}
-    AttackType: 6
-    DamageAmount: 10
-    StiffnessAmount: 0
+    AttackerTransform: {fileID: 2837106794986217463, guid: f7e2bffddabbfa445b99719bf0de2fd1, type: 3}
+    AttackType: 9
+    DamageAmount: 20
+    StiffnessAmount: 20
     KnockbackCurve:
       serializedVersion: 2
       m_Curve: []

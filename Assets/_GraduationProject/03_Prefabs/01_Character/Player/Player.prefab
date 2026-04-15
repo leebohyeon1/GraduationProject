@@ -1615,6 +1615,37 @@ Transform:
   - {fileID: 2533726833164373872}
   m_Father: {fileID: 7833232136248742474}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2065575390998295749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6123921622290884375}
+  m_Layer: 7
+  m_Name: Attack_Ground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6123921622290884375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065575390998295749}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5571388687056563757}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2096839884706978047
 GameObject:
   m_ObjectHideFlags: 0
@@ -2321,6 +2352,8 @@ MonoBehaviour:
     Feedback: {fileID: 4442965246782187031}
   - type: CameraZoom_FB
     Feedback: {fileID: 1348542084331462725}
+  - type: Charging_Counter_Sucess_FB
+    Feedback: {fileID: 6303694436148750962}
   ClashDodgeFeedback:
     m_PersistentCalls:
       m_Calls:
@@ -2349,6 +2382,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Counter_Sucess_FB
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4019221314009144522}
+        m_TargetAssemblyTypeName: PlayerAnimationTrigger, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Charging_Counter_Sucess_FB
           m_BoolArgument: 0
         m_CallState: 2
   ParryStackChangeFeedbacks:
@@ -2494,6 +2539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d73799b95c812042b864ab6bec79130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
+  _regenDelay: 0.5
 --- !u!114 &6935393499802469647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3742,8 +3788,8 @@ MonoBehaviour:
         Owner: {fileID: 4442965246782187031}
         DebugActive: 0
         Duration: 0.3
-        ResetShakerValuesAfterShake: 0
-        ResetTargetValuesAfterShake: 0
+        ResetShakerValuesAfterShake: 1
+        ResetTargetValuesAfterShake: 1
         Intensity:
           serializedVersion: 2
           m_Curve:
@@ -4345,6 +4391,7 @@ Transform:
   - {fileID: 3856167816751569843}
   - {fileID: 1446795409434471241}
   - {fileID: 1071515855208257980}
+  - {fileID: 6123921622290884375}
   m_Father: {fileID: 3311785964103832997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4697386292202483405
@@ -10296,7 +10343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].RangeFalloff.m_Curve.Array.data[0].weightedMode
@@ -10320,7 +10367,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -10329,7 +10376,7 @@ PrefabInstance:
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1078113204831335092}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -10344,7 +10391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetInnerGlowEffect
+      value: StopFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -10352,7 +10399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: InnerGlowController, Assembly-CSharp
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -11377,7 +11424,7 @@ PrefabInstance:
     - target: {fileID: 2762735562361087460, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
       propertyPath: managedReferences[6735772383924978203].InstantiateParticlesPosition
       value: 
-      objectReference: {fileID: 4753402834019582417}
+      objectReference: {fileID: 6123921622290884375}
     - target: {fileID: 4712875104975631509, guid: 613eb507a5a44f34c8dba7df6a6ba528, type: 3}
       propertyPath: m_Name
       value: Swing_4_FB
@@ -11449,6 +11496,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2089183985750604433, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132852983680430123, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
+      propertyPath: managedReferences[1882149088984040190].Active
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5295963075503541650, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
@@ -11848,7 +11899,7 @@ PrefabInstance:
     - target: {fileID: 2531318684227638404, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
       propertyPath: managedReferences[6735772383924978118].InstantiateParticlesPosition
       value: 
-      objectReference: {fileID: 4753402834019582417}
+      objectReference: {fileID: 6123921622290884375}
     - target: {fileID: 8788898376424396920, guid: 3d45d4b05c585d34b8c8eb742e5f5a37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -16536,6 +16587,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3216003557215463360, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
   m_PrefabInstance: {fileID: 8018542497898710742}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6303694436148750962 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+  m_PrefabInstance: {fileID: 8018542497898710742}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
 --- !u!1001 &8255860313001130975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18271,7 +18333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
       propertyPath: managedReferences[6735772471570471869].TimeScaleDuration
-      value: 0.15
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
       propertyPath: managedReferences[6735772471570471869].TimescaleLerpMode

@@ -16,6 +16,7 @@ public interface IRuntimeAttackConfig
     Vector3 AttackRadius { get; }
     StepData AttackMoveConfig { get; }
     StepData KnockbackConfig { get; }
+    StepData DeathKnockbackConfig { get; }
     PlayerAttackConfig BaseAttackConfig { get; }
 }
 
@@ -46,7 +47,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
     public Vector3 AttackRadius => _source.AttackRadius;
     public StepData AttackMoveConfig => _source.AttackMoveConfig;
     public StepData KnockbackConfig => _source.KnockbackConfig;
-
+    public StepData DeathKnockbackConfig => _source.DeathKnockbackConfig;
 }
 
 /// <summary>
@@ -77,6 +78,7 @@ public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
     public Vector3 AttackRadius => _source.AttackConfig.AttackRadius;
     public StepData AttackMoveConfig => _source.AttackConfig.AttackMoveConfig;
     public StepData KnockbackConfig => _source.AttackConfig.KnockbackConfig;
+    public StepData DeathKnockbackConfig => _source.AttackConfig.DeathKnockbackConfig;
 }
 
 /// <summary>

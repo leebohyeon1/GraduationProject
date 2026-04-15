@@ -302,6 +302,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                     KnockbackCurve = data.KnockbackConfig.StepCurve,
                     KnockbackDuration = data.KnockbackConfig.StepDuration,
                     KnockbackForce = data.KnockbackConfig.StepDistance,
+                    DeathKnockbackDuration = data.DeathKnockbackConfig.StepDuration,
+                    DeathKnockbackForce = data.DeathKnockbackConfig.StepDistance,
+                    IsMagic = false
                 };
 
                 int regainAmount = Mathf.RoundToInt(finalDamage * data.Regain.Value);
