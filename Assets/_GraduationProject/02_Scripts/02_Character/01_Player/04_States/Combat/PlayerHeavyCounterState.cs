@@ -26,6 +26,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         base.SetupStats();
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
+        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
     }
 
     protected override void SetupAnimator()

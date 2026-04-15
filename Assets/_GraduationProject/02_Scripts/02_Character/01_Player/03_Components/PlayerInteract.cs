@@ -34,6 +34,8 @@ public class PlayerInteract : MonoBehaviour, IDisposable
 
     public void Interact()
     {
+        if (_interactable == null) { return; }
+
         if (Interactable != null)
         {
             Debug.Log("상호작용");
