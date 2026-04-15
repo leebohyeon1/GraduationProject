@@ -2539,6 +2539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d73799b95c812042b864ab6bec79130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
+  _regenDelay: 0.5
 --- !u!114 &6935393499802469647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3787,8 +3788,8 @@ MonoBehaviour:
         Owner: {fileID: 4442965246782187031}
         DebugActive: 0
         Duration: 0.3
-        ResetShakerValuesAfterShake: 0
-        ResetTargetValuesAfterShake: 0
+        ResetShakerValuesAfterShake: 1
+        ResetTargetValuesAfterShake: 1
         Intensity:
           serializedVersion: 2
           m_Curve:
@@ -10342,7 +10343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].RangeFalloff.m_Curve.Array.data[0].weightedMode
@@ -10366,7 +10367,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -10375,7 +10376,7 @@ PrefabInstance:
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1078113204831335092}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -10390,7 +10391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetInnerGlowEffect
+      value: StopFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -10398,7 +10399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: InnerGlowController, Assembly-CSharp
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
       objectReference: {fileID: 0}
     - target: {fileID: 2241205853933774591, guid: f482a12669c667349b92521803c374d8, type: 3}
       propertyPath: managedReferences[975093121267007917].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -11495,6 +11496,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2089183985750604433, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132852983680430123, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
+      propertyPath: managedReferences[1882149088984040190].Active
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5295963075503541650, guid: 0367fd19195fd7c41b62cd08a4d7bc09, type: 3}
@@ -18328,7 +18333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
       propertyPath: managedReferences[6735772471570471869].TimeScaleDuration
-      value: 0.15
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
       propertyPath: managedReferences[6735772471570471869].TimescaleLerpMode

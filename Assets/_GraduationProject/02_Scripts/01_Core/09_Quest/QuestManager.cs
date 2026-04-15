@@ -119,15 +119,23 @@ public class QuestManager : MonoBehaviour
 
             bool canAccept = true;
 
-            // 수락 조건 태그 확인
-            foreach (var needTag in quest.AcceptedConditionList)
+            if(quest.AcceptedConditionList == null || quest.AcceptedConditionList.Count == 0)
             {
-                if (!tagSet.Contains(needTag.ID))
+                canAccept = false;
+            }
+            else
+            {
+                // 수락 조건 태그 확인
+                foreach (var needTag in quest.AcceptedConditionList)
                 {
-                    canAccept = false;
-                    break;
+                    if (needTag != null && !tagSet.Contains(needTag.ID))
+                    {
+                        canAccept = false;
+                        break;
+                    }
                 }
             }
+  
 
             if (canAccept)
             {
