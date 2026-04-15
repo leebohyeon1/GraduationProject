@@ -55,6 +55,8 @@ public class PlayerDodgeState : PlayerBaseState
         // 스테미나 소모 (필요 시 데이터에서 가져오도록 수정 가능)
         p_owner.Stamina.UseStamina(p_owner.Movement.DodgeConfig.StaminaConsumption.Value);
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
+        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
+        p_owner.Combat.SetCharge(false);
     }
 
     protected override void SetupAnimator()
