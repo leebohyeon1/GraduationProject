@@ -358,7 +358,7 @@ public abstract class BaseAttackNode : Node
         string msg = string.Format("[{0} : {1}] {2}", this.GetType().Name, runner.name, message);
         if (isError) 
         {
-            // UnityEngine.Debug.LogError(msg);
+            UnityEngine.Debug.LogError(msg);
         } 
         else 
         {

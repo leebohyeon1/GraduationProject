@@ -17,8 +17,9 @@ public class Task_AttackRange : BaseAttackNode
 
     protected override float GetRequiredRange() => maxTriggerRange;
 
-    protected override void InitialMovementSetup()
+    protected override void SpecificCleanup()
     {
+        base.SpecificCleanup();
         _hasFired = false;
         Log("원거리 공격 준비 (ActionSO 대기 중)");
     }
@@ -56,8 +57,8 @@ public class Task_AttackRange : BaseAttackNode
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
                 projectileScript.Setup(_attackDir, projectileSpeed, runner.gameObject, damageData);
-                    brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                    brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
         Handler.CloseHitWindow();
