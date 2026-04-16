@@ -56,7 +56,7 @@ public class Task_AttackRange : BaseAttackNode
             GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
-                projectileScript.Setup(_attackDir, projectileSpeed, runner.gameObject, damageData);
+                projectileScript.Setup(runner, _attackDir, projectileSpeed, runner.gameObject, damageData);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
