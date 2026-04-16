@@ -19,7 +19,6 @@ public class Task_AttackRange : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
-        _hasFired = false;
         Log("원거리 공격 준비 (ActionSO 대기 중)");
     }
 
@@ -29,6 +28,7 @@ public class Task_AttackRange : BaseAttackNode
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
         Vector3 targetPos = runner.player.transform.position + Vector3.up * 0.5f;
         _attackDir = (targetPos - spawnPos).normalized;
+        _hasFired = false;
 
         runner.transform.rotation = Quaternion.LookRotation(_attackDir);
         Log("원거리 공격 시작 (OnActionSOTriggered) - 방향 설정: " + _attackDir);
@@ -47,6 +47,7 @@ public class Task_AttackRange : BaseAttackNode
     private void Fire()
     {
         Log("원거리 투사체 발사");
+        Debug.Log(0);
         _hasFired = true;
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
 
@@ -55,14 +56,20 @@ public class Task_AttackRange : BaseAttackNode
             GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
-                projectileScript.Setup(_attackDir, projectileSpeed, runner.gameObject, damageData);
-                    brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                    brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+                projectileScript.Setup(runner, _attackDir, projectileSpeed, runner.gameObject, damageData);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
         Handler.CloseHitWindow();
+        Debug.Log(1);
     }
-
+    protected override void SpecificCleanup()
+    {
+        base.SpecificCleanup();
+        _hasFired = false;
+        Log("원거리 공격 종료 - 상태 초기화");
+    }
     public override Node Clone()
     {
         var node = Instantiate(this);

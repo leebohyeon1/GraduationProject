@@ -2,6 +2,11 @@ using UnityEngine;
 using BehaviorTree;
 public class Service_Phase : ServiceNode
 {
+    public override Node Clone()
+    {
+        return Instantiate(this);
+    }
+
     protected override void OnServiceLogic()
     {
         if (!runner._aiController._aiBrain._isCombat)

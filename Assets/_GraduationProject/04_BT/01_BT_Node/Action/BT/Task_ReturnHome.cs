@@ -19,7 +19,7 @@ public class Task_ReturnHome : Node
         brain.CombatEnter(false);
         _aiPath = runner.GetComponent<AIPath>();
         runner.EnemyHealth.OnRecoveryHealth?.Invoke(true);
-
+        
         HomePosition = brain.blackboard.GetValue<Vector3>("HomePosition");
         _aiPath.enableRotation = true;
         

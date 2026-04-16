@@ -91,6 +91,16 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
 
         if (node is CompositeNode composite)
         {
+            if (composite.services != null)
+            {
+                foreach (var service in composite.services)
+                {
+                    CollectAllNodes(service, nodes);
+                }
+            }
+
+            if (composite.nodes == null) return;
+
             foreach (var child in composite.nodes)
             {
                 CollectAllNodes(child, nodes);

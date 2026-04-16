@@ -64,7 +64,7 @@ public class Task_FleeFromTarget : Node
 
         // 4. 理쒖쥌 寃곗젙??醫뚰몴 怨꾩궛
         Vector3 finalDestination = myPos + (finalDirection * finalDistance);
-
+        runner.aIPath.enableRotation = true;
         // 5. ?대룞 紐낅졊 ?섎떖
         runner.Movement.StartOrUpdateChase(finalDestination, EnemyStateController.EnemyState.Chase, fleeSpeed);
     }
@@ -82,6 +82,7 @@ public class Task_FleeFromTarget : Node
         {
             return NodeState.SUCCESS;
         }
+        runner.aIPath.enableRotation = true;
 
         return NodeState.RUNNING;
     }

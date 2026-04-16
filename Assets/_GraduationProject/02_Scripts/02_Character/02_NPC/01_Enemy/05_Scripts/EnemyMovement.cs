@@ -64,7 +64,7 @@ public class EnemyMovement : MonoBehaviour
         aIPath.canMove = true;       
         aIPath.isStopped = false;    
         aIPath.maxSpeed = chaseSpeed;
-
+        Debug.Log($"enemy destiniation{newTarget}");
         Vector3 correctedPos = GetVolumeCorrectedPosition(newTarget);
         aIPath.destination = correctedPos;
         

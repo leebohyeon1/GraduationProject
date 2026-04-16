@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Packages.Rider.Editor.UnitTesting;
 using UnityEngine;
 
 /// <summary>
@@ -115,23 +116,26 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))
         {
-            float previousDamage = 0f;
-            StatModifier prevDamageModifier = null;
+            // 1. 현재 데미지(기본)를 미리 저장
+            int baseDamage = (int)p_AttackConfig.Damage.Value;
 
-            if (p_owner.Combat.IsEnemyCounterDamaged(damageable))
-            {
-                previousDamage = p_AttackConfig.Damage.Value;
-                Debug.Log("삭제할 데미지: " + previousDamage);
-
-                prevDamageModifier = new StatModifier(-previousDamage, StatModifierType.Flat, "prevDamage");
-                p_AttackConfig.Damage.AddModifier(prevDamageModifier);
-            }
-
+            // 2. 카운터 배율 적용
             StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
             
-            int finalDamage = (int)p_AttackConfig.Damage.Value;
+            // 3. 전체 카운터 데미지 계산
+            int totalCounterDamage = (int)p_AttackConfig.Damage.Value;
+            int finalDamage = totalCounterDamage;
+
+            // 4. 이미 데미지를 입었다면 전체에서 기본값만큼을 뺌 (추가 데미지만 남김)
+            if (p_owner.Combat.IsEnemyCounterDamaged(damageable))
+            {
+                finalDamage -= baseDamage;
+            }
+
+            finalDamage = Mathf.Max(0, finalDamage);
             Debug.Log("상쇄 데미지: " + finalDamage);
+            
             DamageData damage = new DamageData
             { 
                 AttackerTransform = transform,
@@ -149,11 +153,6 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             p_owner.Combat.Attack(damageable, damage);
 
             p_AttackConfig.Damage.RemoveModifier(NormalCounterModifier);
-
-            if (prevDamageModifier != null)
-            {
-                p_AttackConfig.Damage.RemoveModifier(prevDamageModifier);
-            }
         }
     }
 
@@ -179,7 +178,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
 
-                    projectile.Setup(direction, speed, p_owner.gameObject, damageData);
+                    projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
                     // 카운터 성공 이벤트 발행
                     p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, p_AttackConfig.AttackType);
