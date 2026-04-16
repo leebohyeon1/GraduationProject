@@ -7,11 +7,16 @@ public class LockOnTarget : MonoBehaviour, ILockOnAble
     [SerializeField] private Transform _lockOnIndicatorParent;
     public Transform LockOnIndicatorParent => _lockOnIndicatorParent;
 
-    private bool _canLockOn;
+    private bool _canLockOn = true;
     public bool CanLockOn => _canLockOn;
 
     public event Action OnLockReleased;
 
+    private void OnEnable()
+    {
+        SetCanLockOn(true);
+
+    }
 
     private void Start()
     {
@@ -19,12 +24,10 @@ public class LockOnTarget : MonoBehaviour, ILockOnAble
         {
             _lockOnIndicatorParent = this.transform;
         }
-
-        _canLockOn = true;
     }
 
     public void SetCanLockOn(bool canLockOn)
-    {
+    {        
         _canLockOn = canLockOn;
     }
 

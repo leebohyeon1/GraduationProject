@@ -198,7 +198,12 @@ public class PlayerLockOn : MonoBehaviour
         {
             Collider hitCollider = _scanResults[i];
 
-            if(!IsTargetValid(hitCollider))
+            if (hitCollider == null)
+            {
+                continue;
+            }
+
+            if (!IsTargetValid(hitCollider))
             {
                 continue;
             }
