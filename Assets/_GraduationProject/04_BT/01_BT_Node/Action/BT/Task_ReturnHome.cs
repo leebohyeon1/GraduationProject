@@ -21,6 +21,8 @@ public class Task_ReturnHome : Node
         runner.EnemyHealth.OnRecoveryHealth?.Invoke(true);
 
         HomePosition = brain.blackboard.GetValue<Vector3>("HomePosition");
+        _aiPath.enableRotation = true;
+        
         brain.blackboard.SetValue("GoHome", true);
     }
     protected override NodeState OnUpdate()
@@ -29,6 +31,8 @@ public class Task_ReturnHome : Node
         {
             return NodeState.FAILURE;
         }
+        _aiPath.enableRotation = true;
+
         runner.Movement.StartOrUpdateChase(HomePosition, EnemyStateController.EnemyState.Patrol, MoveSpeed);
         if (_aiPath != null && _aiPath.reachedDestination)
         {

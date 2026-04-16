@@ -123,23 +123,10 @@ public class Task_KSante : BaseAttackNode
         {
             dragable.Drag();
         }
-        runner.animHandler.KsanteAtk += KsanteKnockback;
+        KsanteKnockback();
 
         runner.player.transform.parent = runner.transform;
 
-        Vector3 currentPos = runner.transform.position;
-        Vector3 pushDir = runner.transform.forward;
-        Vector3 newDestination = currentPos + (pushDir * PushDistance);
-
-        RaycastHit hit;
-        if (Physics.Raycast(currentPos + Vector3.up * 0.5f, pushDir, out hit, PushDistance, obstacleMask))
-        {
-            float targetDist = Mathf.Max(0, hit.distance - 2f);
-            newDestination = currentPos + (pushDir * targetDist);
-        }
-
-        _targetPos = newDestination;
-        _rushStartTime = Time.time;
     }
     private void StopRush()
     {
@@ -152,6 +139,7 @@ public class Task_KSante : BaseAttackNode
 
     private void KsanteKnockback()
     {
+        StopRush();
         runner.player.transform.parent = null;
 
         AttackDataKnockback.AttackerTransform = runner.transform;
@@ -173,7 +161,7 @@ public class Task_KSante : BaseAttackNode
             StepCurve = AttackDataKnockback.KnockbackCurve,
             StepRotateSpeed = 0f
         }, this, false, null);
-        runner.animHandler.KsanteAtk -= KsanteKnockback;
+        
 
     }
 
@@ -181,11 +169,7 @@ public class Task_KSante : BaseAttackNode
     {
         StopRush();
 
-        if (runner.animHandler != null)
-        {
-            runner.animHandler.KsanteAtk -= KsanteKnockback;
-        }
-
+        runner.player.transform.parent = null;
 
     }
 

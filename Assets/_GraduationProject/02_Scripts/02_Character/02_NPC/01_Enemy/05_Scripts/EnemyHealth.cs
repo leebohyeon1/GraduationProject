@@ -71,7 +71,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (_currentImmunityLevel == ImmunityLevel.Minor)
         {
-            if (incomingAttackType <= AttackType.Normal_3) return true;
+            if (incomingAttackType <= AttackType.Normal_3)
+                return true;
+            
         }
         if (_currentImmunityLevel == ImmunityLevel.Major)
         {
@@ -162,6 +164,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (CurrentHealth <= 0) return;
         bool isBlocked = false;
         int finalDamage = damageData.DamageAmount;
+        _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastTakeHitTime, Time.time);  
         if(_owner.Shield != null && damageData.AttackerTransform != null)
         {
             if (_owner.Shield.CheckBlock(damageData.AttackerTransform.position))
@@ -177,16 +180,18 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         bool isImmune = IsImmune(damageData.AttackType);
         if(!isImmune) OnDamageReceived?.Invoke(damageData.AttackType);
+            Debug.Log($"Damage Taken: {finalDamage} (Blocked: {isBlocked}, Immune: {isImmune})");
         
         if (!isImmune && !isBlocked )
         {
-            _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastTakeHitTime, Time.time);
             if (!_owner._aiController.IsActionable())
             {
                 _owner.SetState(EnemyStateController.EnemyState.Hit);
                 _owner.AnimationEvent("Hit");
                 _owner.Movement.StopMovement();
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
+                _owner.Movement.StopMovement();
+                Debug.Log("Hit reaction triggered.");
             }
         }
 

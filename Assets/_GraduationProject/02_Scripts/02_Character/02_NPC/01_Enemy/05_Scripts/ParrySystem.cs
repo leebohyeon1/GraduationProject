@@ -83,7 +83,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         CurrentStun = StunType.Full;
         _stunExitTime = Time.time + _stunTime;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
-        _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
+        _owner.AnimationBool("Stun", true); // 스턴 애니메이션 트리거
         CurrentState = EnemyState.Stunned;
         
         _owner.SetState(EnemyStateController.EnemyState.Stunned);
@@ -95,7 +95,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         CurrentStun = StunType.Full;
         _stunExitTime = Time.time + stunDuration;
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
-        _owner.animator.SetBool("Stun", true); // 스턴 애니메이션 트리거
+        _owner.AnimationBool("Stun", true); // 스턴 애니메이션 트리거
         CurrentState = EnemyState.Stunned;
 
         _owner.SetState(EnemyStateController.EnemyState.Stunned);
@@ -108,7 +108,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _stunExitTime = Time.time + stunDuration;
         WasParriedThisFrame = true; // 패리 발생 플래그 설정
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
-        _owner.animator.SetBool("WeakStun", true); // 스턴 애니메이션 트리거
+        _owner.AnimationBool("WeakStun", true); // 스턴 애니메이션 트리거
         CurrentState = EnemyState.Stunned;
 
         _owner.SetState(EnemyStateController.EnemyState.Stunned);
@@ -116,8 +116,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     public void ClearStun()
     {
         Debug.Log($"[ParrySystem] ClearStun {_owner.name}");
-        _owner.animator.SetBool("Stun", false);
-        _owner.animator.SetBool("WeakStun", false);
+        _owner.AnimationBool("Stun", false);
+        _owner.AnimationBool("WeakStun", false);
         CurrentStun = StunType.None;
         CurrentState = EnemyState.StunnedExit;
         _owner.SetState(EnemyStateController.EnemyState.Idle);

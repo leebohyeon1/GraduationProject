@@ -64,6 +64,7 @@ public class EnemyAnimationBridge : MonoBehaviour
         
         foreach (var parameter in _animator.parameters)
         {
+            if(parameter.name == "IsCombat" || parameter.name == "Stun" || parameter.name == "WeakStun" || parameter.name == "Walk") continue; // IsCombat 파라미터는 초기화에서 제외
             Debug.Log($"[EnemyAnimationBridge] Resetting parameter '{parameter.name}' of type '{parameter.type}'");
             switch (parameter.type)
             {
