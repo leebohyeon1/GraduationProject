@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Packages.Rider.Editor.UnitTesting;
 using UnityEngine;
 
 /// <summary>
@@ -179,7 +180,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
 
-                    projectile.Setup(direction, speed, p_owner.gameObject, damageData);
+                    projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
                     // 카운터 성공 이벤트 발행
                     p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, p_AttackConfig.AttackType);

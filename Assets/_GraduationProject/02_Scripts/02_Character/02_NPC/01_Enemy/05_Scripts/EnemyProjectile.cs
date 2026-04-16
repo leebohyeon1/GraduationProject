@@ -10,8 +10,7 @@ public class EnemyProjectile : MonoBehaviour
     public float MoveSpeed => _moveSpeed;
     public DamageData Data => _data;
     
-    private LayerMask _obstacleMask;
-    Enemy _enemy;
+    public Enemy _enemy{get; private set;}
 
     [SerializeField] private string feedbackname = "null"; // 피격 효과 프리팹
     public void Setup(Enemy enemy, Vector3 dir, float speed, GameObject owner, DamageData data = default)

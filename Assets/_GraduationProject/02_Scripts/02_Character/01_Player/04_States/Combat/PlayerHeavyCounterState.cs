@@ -168,7 +168,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
                     float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.IsCharge ? 1 : 0];
 
-                    projectile.Setup(direction, speed, p_owner.gameObject, damageData);
+                    projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
                     // 투사체를 튕겨낼 시 
                     // 상쇄 이벤트 발생
