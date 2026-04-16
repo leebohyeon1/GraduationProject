@@ -74,6 +74,7 @@ public class BehaviorTreeView : GraphView
     {
         if (_targetTree == null) return;
         var nodeViews = nodes.OfType<NodeView>().ToList();
+        EnsureServicesAreLocalizedAndUnique(nodeViews);
 
         // 모든 노드의 위치와 자식 관계를 저장합니다.
         nodeViews.ForEach(n => n.node.position = n.GetPosition().position);
@@ -112,6 +113,41 @@ public class BehaviorTreeView : GraphView
         // 변경 사항을 에셋에 저장합니다.
         EditorUtility.SetDirty(_targetTree);
         nodeViews.ForEach(n => EditorUtility.SetDirty(n.node));
+    }
+
+    private void EnsureServicesAreLocalizedAndUnique(List<NodeView> nodeViews)
+    {
+        if (_targetTree == null) return;
+
+        string treePath = AssetDatabase.GetAssetPath(_targetTree);
+        if (string.IsNullOrEmpty(treePath)) return;
+
+        var usedServiceIds = new HashSet<int>();
+
+        foreach (var nodeView in nodeViews)
+        {
+            if (nodeView?.node is not CompositeNode composite || composite.services == null) continue;
+
+            for (int i = 0; i < composite.services.Count; i++)
+            {
+                ServiceNode service = composite.services[i];
+                if (service == null) continue;
+
+                bool usedElsewhere = !usedServiceIds.Add(service.GetInstanceID());
+                bool isExternalReference = AssetDatabase.GetAssetPath(service) != treePath;
+
+                if (!usedElsewhere && !isExternalReference) continue;
+
+                ServiceNode duplicatedService = UnityEngine.Object.Instantiate(service);
+                duplicatedService.name = service.name;
+                AssetDatabase.AddObjectToAsset(duplicatedService, _targetTree);
+                composite.services[i] = duplicatedService;
+                usedServiceIds.Add(duplicatedService.GetInstanceID());
+
+                EditorUtility.SetDirty(duplicatedService);
+                EditorUtility.SetDirty(composite);
+            }
+        }
     }
     
     public void CreateNode(Type type, Vector2 screenMousePosition)

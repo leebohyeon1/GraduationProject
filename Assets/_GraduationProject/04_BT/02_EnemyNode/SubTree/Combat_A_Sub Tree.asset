@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 704, y: 1105}
+  position: {x: 687, y: 876}
   exceptCondition:
     key: 
   stateCondition:
@@ -372,8 +372,7 @@ MonoBehaviour:
   - {fileID: 7058319991308299217}
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
-  services:
-  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  services: []
 --- !u!114 &-335546641203014191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,11 +385,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Pressure(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 704, y: 1181}
+  position: {x: 687, y: 953}
   nodes:
   - {fileID: 2554010000721168745}
-  services:
-  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  services: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 935, y: 1182}
+  position: {x: 918, y: 954}
   Pos_Key: PressurePos
   MoveSpeed: 5
   StoppingDist: 1
@@ -513,6 +511,28 @@ MonoBehaviour:
     key: DistanceToTarget
     Operator: 4
     value: 7
+--- !u!114 &3020179324878941350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
+  m_Name: Service_Pressure Move
+  m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
+  position: {x: 530, y: 811}
+  UpdateInterval: 0.3
+  MinDistance: 5
+  MaxDistance: 6
+  Change_Dir_MinTime: 2
+  Change_Dir_MaxTime: 3
+  BlockedWaitTime: 0.5
+  FrontAngle: 80
+  Pos_Key: PressurePos
+  Dir_Key: StrafeDir
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -739,7 +759,8 @@ MonoBehaviour:
   nodes:
   - {fileID: -8069466620819224126}
   - {fileID: -335546641203014191}
-  services: []
+  services:
+  - {fileID: 3020179324878941350}
 --- !u!114 &8279960542052063534
 MonoBehaviour:
   m_ObjectHideFlags: 0
