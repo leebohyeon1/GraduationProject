@@ -37,7 +37,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     private Enemy _owner;
     private const int DefaultPlayerLayerMask = 1 << 9;
 
-    public event Action KsanteAtk;
+    // public event Action KsanteAtk;
 
 
     /// <summary>
@@ -53,10 +53,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         }
     }
 
-    public void KsanteKnockback()
-    {
-        KsanteAtk?.Invoke();
-    }
+    // public void KsanteKnockback()
+    // {
+    //     KsanteAtk?.Invoke();
+    // }
     /// <summary>
     /// Marks action as active.
     /// </summary>
