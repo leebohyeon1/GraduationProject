@@ -153,6 +153,29 @@ public class Service_PressureMove : ServiceNode
     
     public override Node Clone()
     {
-        return Instantiate(this);
+        // 1. 현재 이 노드(this)를 기반으로 새로운 인스턴스 생성
+        Service_PressureMove newNode = Instantiate(this);
+        
+        // 2. 부모(Node/ServiceNode)로부터 상속받은 필수 데이터 명시적 복사
+        newNode.UpdateInterval = this.UpdateInterval;
+        
+        // 3. 자식 클래스 전용 데이터 복사
+        Debug.Log($"Cloning Service_PressureMove: MinDistance={this.MinDistance}, MaxDistance={this.MaxDistance}");
+        newNode.MinDistance = this.MinDistance;
+        newNode.MaxDistance = this.MaxDistance;
+        newNode.Change_Dir_MinTime = this.Change_Dir_MinTime;
+        newNode.Change_Dir_MaxTime = this.Change_Dir_MaxTime;
+        newNode.BlockedWaitTime = this.BlockedWaitTime;
+        newNode.FrontAngle = this.FrontAngle;
+        newNode.Pos_Key = this.Pos_Key;
+        newNode.Dir_Key = this.Dir_Key;
+
+        // 4. 중요: 런타임에 계산되는 내부 상태 변수는 초기화
+        newNode._timer = 0f;
+        newNode._currentDir = 1;
+        newNode._waitTimer = 0f;
+        newNode.lastExecutionTime = 0f;
+
+        return newNode;
     }
 }

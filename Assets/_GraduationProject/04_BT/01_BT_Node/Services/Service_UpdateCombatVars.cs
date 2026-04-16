@@ -5,6 +5,16 @@ public class Service_UpdateCombatVars : ServiceNode
     public GameObject CurrentTarget;
     public string DistanceToTarget = "DistanceToTarget";
     public string LocationKey = "TargetLocation";
+
+    public override Node Clone()
+    {
+        Service_UpdateCombatVars newNode = Instantiate(this);
+        newNode.CurrentTarget = this.CurrentTarget;
+        newNode.DistanceToTarget = this.DistanceToTarget;
+        newNode.LocationKey = this.LocationKey;
+        return newNode;
+    }
+
     public override void OnEnter()
     {
         base.OnEnter();
