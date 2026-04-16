@@ -19,6 +19,23 @@ MonoBehaviour:
     key: DistanceToTarget
     Operator: 1
     value: 5
+--- !u!114 &-7517114845720072350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
+  m_Name: Task_Pressure
+  m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
+  position: {x: 670, y: 1160}
+  Pos_Key: PressurePos
+  MoveSpeed: 4
+  StoppingDist: 0.5
+  RotationSpeed: 5
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,6 +58,28 @@ MonoBehaviour:
   - {fileID: -4428412024098050606}
   - {fileID: 4526992843496790656}
   services: []
+--- !u!114 &-5145967113826313097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
+  m_Name: Service_Pressure Move
+  m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
+  position: {x: 245, y: 1083}
+  UpdateInterval: 0.3
+  MinDistance: 14
+  MaxDistance: 15
+  Change_Dir_MinTime: 0
+  Change_Dir_MaxTime: 0
+  BlockedWaitTime: 0.5
+  FrontAngle: 45
+  Pos_Key: PressurePos
+  Dir_Key: StrafeDir
 --- !u!114 &-5007510015949382687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 798, y: 425}
+  position: {x: 797, y: 427}
   IsSee: 1
   rotationSpeed: 5
 --- !u!114 &-2263067533295341874
@@ -127,7 +166,7 @@ MonoBehaviour:
   cooldownDuration: 0
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: f27ad1ee8fb577844ba063db2f5c6a23, type: 2}
---- !u!114 &-1718746313817319046
+--- !u!114 &-2157305233759225604
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -136,12 +175,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
-  m_Name: Task_Look At Player
-  m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 804, y: 930}
-  IsSee: 1
-  rotationSpeed: 5
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 478, y: 1027}
+  nodes:
+  - {fileID: -2087282951909923723}
+  - {fileID: -7517114845720072350}
+  services: []
+--- !u!114 &-2087282951909923723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 670, y: 1065}
+  exceptCondition:
+    key: 
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
 --- !u!114 &-1599208639559542778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,7 +526,6 @@ MonoBehaviour:
   nodes:
   - {fileID: 6245012853462913271}
   - {fileID: -4693679520517520094}
-  - {fileID: -1718746313817319046}
   services: []
 --- !u!114 &4027494429244999788
 MonoBehaviour:
@@ -485,7 +544,9 @@ MonoBehaviour:
   - {fileID: 1681072726047148729}
   - {fileID: -7154228387633228831}
   - {fileID: 3919280333966606404}
-  services: []
+  - {fileID: -2157305233759225604}
+  services:
+  - {fileID: -5145967113826313097}
 --- !u!114 &4441881582081485876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,39 +566,6 @@ MonoBehaviour:
     key: DistanceToTarget
     Operator: 1
     value: 3
---- !u!114 &4489605913624550641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7cf900f8dc2d6643af45014b090e086, type: 3}
-  m_Name: Task_SwipeAttack
-  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
-  position: {x: 798, y: 502}
-  attackKey: Attack01_b
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
-  SO:
-  - {fileID: 11400000, guid: 8b1d9d704029b1e408febe1be52bb28a, type: 2}
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 0
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 1
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  _hitMasks:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &4526992843496790656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,7 +578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65522a3d0428d3f41b34a40ca98c9fd5, type: 3}
   m_Name: Task_Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
-  position: {x: 644, y: 502}
+  position: {x: 796, y: 504}
   attackKey: Attack01_b
   animationStateName: 
   transitionBuffer: 1
