@@ -65,13 +65,13 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         if(attackType == AttackType.Normal_Counter)
         {
             Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
-            _owner.StiffnessSystem.AddStiffness(0,true);
+            // _owner.StiffnessSystem.AddStiffness(_owner.player.Data.stiffnessAmount, true);
             DeactivateImmunity();
         }
         else
         {
             Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
-            _owner.StiffnessSystem.AddStiffness(100,true);
+            // _owner.StiffnessSystem.AddStiffness(_owner.player.Data.stiffnessAmount,true);
             DeactivateImmunity();
         }
         return true;
