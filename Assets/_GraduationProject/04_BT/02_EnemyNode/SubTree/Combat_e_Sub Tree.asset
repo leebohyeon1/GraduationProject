@@ -144,6 +144,23 @@ MonoBehaviour:
   cooldownDuration: 5
   EnemyAttackData: 0
   attackData: {fileID: 0}
+--- !u!114 &-7606236757819535674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
+  m_Name: Service_Update Combat Vars
+  m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
+  position: {x: -63, y: 167}
+  UpdateInterval: 0.3
+  CurrentTarget: {fileID: 0}
+  DistanceToTarget: DistanceToTarget
+  LocationKey: TargetLocation
 --- !u!114 &-7336249835083518026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,7 +363,7 @@ MonoBehaviour:
   - {fileID: 5603222145472695295}
   - {fileID: 4027494429244999788}
   services:
-  - {fileID: 8279960542052063534, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
+  - {fileID: -7606236757819535674}
 --- !u!114 &-335546641203014191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -697,7 +714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: 1, y: 99}
+  position: {x: 22, y: 140}
   UpdateInterval: 0.1
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget
