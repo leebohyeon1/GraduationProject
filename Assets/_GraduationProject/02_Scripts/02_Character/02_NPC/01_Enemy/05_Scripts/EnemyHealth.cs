@@ -203,10 +203,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
         OnRecoveryHealth?.Invoke(false);
 
-        if (Knockbackable && !isBlocked)
+        if (Knockbackable && !isBlocked || curHealth <= 0)
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             knockbackDir.y = 0;
+            Debug.Log($"Applying knockback in direction: {knockbackDir}");
             if (_KnockbackCoroutine != null) StopCoroutine(_KnockbackCoroutine);
             _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }
@@ -216,19 +217,19 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void OnEnable() { OnRecoveryHealth += SetRecovery; }
     private bool IsImmune(AttackType attackType) => CheckStunImmunity?.Invoke(attackType) ?? false;
 
-    public float KnockbackForce = 30f;
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
     {
+        bool isDead = curHealth <= 0;
         float elapsedTime = 0;
         Vector3 horizontalDirection = direction;
         horizontalDirection.y = 0;
         horizontalDirection.Normalize();
         if (horizontalDirection.sqrMagnitude < 0.01f) { _KnockbackCoroutine = null; yield break; }
 
-        while (elapsedTime < damageData.KnockbackDuration)
+        while (elapsedTime < (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration))
         {
-            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / damageData.KnockbackDuration);
-            Vector3 move = horizontalDirection * damageData.KnockbackForce * curveValue * Time.deltaTime;
+            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration));
+            Vector3 move = horizontalDirection * (isDead ? damageData.DeathKnockbackForce : damageData.KnockbackForce) * curveValue * Time.deltaTime;
             if (_characterController != null)
             {
                 if (!_characterController.isGrounded) move.y += Physics.gravity.y * Time.deltaTime;
