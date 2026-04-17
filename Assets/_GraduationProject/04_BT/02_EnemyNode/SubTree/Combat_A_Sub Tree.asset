@@ -209,12 +209,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510b2b5a232092d42a49c8c2d80a7bb6, type: 3}
   m_Name: Condition_Distance Hysteresis(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_DistanceHysteresis
-  position: {x: 1181, y: -123}
+  position: {x: 1181, y: -113}
   exceptCondition:
     key: 
   target: {fileID: 0}
-  minRange: 7
-  maxRange: 9
+  minRange: 9
+  maxRange: 11
   checkType: 0
 --- !u!114 &-5169928796796515572
 MonoBehaviour:
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
   m_Name: Condition_Blackboard Enum Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 1179, y: 578}
+  position: {x: 1177, y: 578}
   exceptCondition:
     key: 
   stateCondition:
@@ -510,29 +510,7 @@ MonoBehaviour:
   floatCondition:
     key: DistanceToTarget
     Operator: 4
-    value: 7
---- !u!114 &3020179324878941350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
-  m_Name: Service_Pressure Move
-  m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
-  position: {x: 530, y: 811}
-  UpdateInterval: 0.3
-  MinDistance: 5
-  MaxDistance: 6
-  Change_Dir_MinTime: 2
-  Change_Dir_MaxTime: 3
-  BlockedWaitTime: 0.5
-  FrontAngle: 80
-  Pos_Key: PressurePos
-  Dir_Key: StrafeDir
+    value: 9
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,7 +738,7 @@ MonoBehaviour:
   - {fileID: -8069466620819224126}
   - {fileID: -335546641203014191}
   services:
-  - {fileID: 3020179324878941350}
+  - {fileID: 8842995685979404260}
 --- !u!114 &8279960542052063534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -814,3 +792,25 @@ MonoBehaviour:
   - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
   services: []
+--- !u!114 &8842995685979404260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
+  m_Name: Service_Pressure Move
+  m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
+  position: {x: 472, y: 817}
+  UpdateInterval: 0.3
+  MinDistance: 5
+  MaxDistance: 6
+  Change_Dir_MinTime: 2
+  Change_Dir_MaxTime: 3
+  BlockedWaitTime: 0.5
+  FrontAngle: 80
+  Pos_Key: PressurePos
+  Dir_Key: StrafeDir
