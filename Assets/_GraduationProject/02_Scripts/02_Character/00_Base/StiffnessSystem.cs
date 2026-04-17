@@ -25,7 +25,8 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     /// 경직도를 게이지에 누적시킵니다.
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
-    public virtual void AddStiffness(int amount)
+    /// <param name="isCounterAttack">카운터 공격 여부</param>
+    public virtual void AddStiffness(int amount, bool isCounterAttack = false)
     {
         int previousStiffness = _currentStiffness;  
         _currentStiffness += amount;
@@ -44,6 +45,8 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
         }
         else
         {
+            if(!isCounterAttack)
+                return;
             // 경직 게이지가 가득 차지 않았을 때의 피드백 처리
             OnLightStagger();
         }
@@ -52,10 +55,13 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     /// <summary>
     /// 가벼운 경직 함수
     /// </summary>
+    /// <param name="isCounterAttack">카운터 공격 여부</param>
     protected virtual void OnLightStagger() { }
 
     /// <summary>
     /// 무거운 경직 함수
     /// </summary>
     protected virtual void OnHeavyStagger() { }
+
+
 }

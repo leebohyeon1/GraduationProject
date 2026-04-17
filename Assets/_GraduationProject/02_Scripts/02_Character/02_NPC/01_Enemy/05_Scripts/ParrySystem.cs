@@ -50,9 +50,10 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         // _owner.AnimationEvent("CounterAttack"); 
         // _owner.TakeDamage(30); // 카운터 공격 시 데미지 적용 
     }
-
+    
     public bool Parry(AttackType attackType)
     {
+
         if(_owner.EnemyHealth.CheckStunImmunity!= null)
         {
             if(_owner.EnemyHealth.CheckStunImmunity(attackType))
@@ -64,13 +65,13 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         if(attackType == AttackType.Normal_Counter)
         {
             Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
-            _owner.StiffnessSystem.AddStiffness(0);
+            // _owner.StiffnessSystem.AddStiffness(_owner.player.Data.stiffnessAmount, true);
             DeactivateImmunity();
         }
         else
         {
             Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
-            _owner.StiffnessSystem.AddStiffness(100);
+            // _owner.StiffnessSystem.AddStiffness(_owner.player.Data.stiffnessAmount,true);
             DeactivateImmunity();
         }
         return true;
@@ -100,8 +101,10 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 
         _owner.SetState(EnemyStateController.EnemyState.Stunned);
     }
-    public void ApplyWeakStun(float stunDuration)
+    public void ApplyWeakStun(float stunDuration, bool isCounterAttack = false)
     {
+        if(!isCounterAttack) 
+            return;
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
         Debug.Log($"[ParrySystem] ApplyWeakStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Weak;

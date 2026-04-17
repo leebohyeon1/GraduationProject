@@ -25,7 +25,7 @@ public interface IStiffness
     /// 경직도 게이지 누적
     /// </summary>
     /// <param name="amount"></param>
-    void AddStiffness(int amount);
+    void AddStiffness(int amount, bool isCounterAttack = false);
     
     event Action<int, int> OnStiffnessChanged;   
 } 

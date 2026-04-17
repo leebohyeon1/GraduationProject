@@ -25,8 +25,12 @@ public class PlayerDamagedState : PlayerBaseState
         base.SetupStats();
 
         p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
+        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
         p_owner.Combat.SetCharge(false);                  // 차지 레벨 초기화
         p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 유지
+
+        // 피격 중 스테미나 회복 중지
+        p_owner.Events.TriggerRegenStamina(false);
 
         KnockbackMovement();
 
@@ -44,7 +48,10 @@ public class PlayerDamagedState : PlayerBaseState
     #region Clear Function
     protected override void ClearStats()
     {
-        base.SetupStats();
+        base.ClearStats();
+
+        // 피격 상태 종료 시 스테미나 회복 재개
+        p_owner.Events.TriggerRegenStamina(true);
 
         p_owner.Combat.TriggerBattleStateChanged(true);
         _damageData = default;
