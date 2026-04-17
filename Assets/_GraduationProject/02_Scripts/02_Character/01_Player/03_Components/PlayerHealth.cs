@@ -160,7 +160,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
     /// <param name="data">데미지 데이터</param>
-    public void AddStiffness(int amount)
+    public void AddStiffness(int amount, bool isCounterAttack = false)
     {
         ChangeStiffness(amount);
     }
