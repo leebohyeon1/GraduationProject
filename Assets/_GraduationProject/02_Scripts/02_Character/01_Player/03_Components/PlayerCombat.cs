@@ -136,6 +136,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _events.CounterWindowStarted -= OnCounterWindowStarted;
         _events.CounterWindowFinished -= OnCounterWindowFinished;
+        _events.CounterSucceeded -= OnCounterSucceeded;
 
         _events.BeforeDamaged -= OnBeforeDamaged;
 
