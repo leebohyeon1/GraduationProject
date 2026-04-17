@@ -10,9 +10,9 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     // private float _staminaRegenPerSecond;
 
     private Coroutine _regenStaminaCoroutine;
+    [SerializeField] private float _regenDelay = 0.5f; // 회복 시작 전 지연 시간
 
     public event Action<float, float> OnStaminaChanged;
-
 
     #region Properties
     public float CurrentStamina => _runtimeData != null ? _runtimeData.CurrentStamina : 0;
@@ -86,6 +86,9 @@ public class PlayerStamina : MonoBehaviour, IDisposable
     /// <returns></returns>
     private IEnumerator RegenStamina()
     {
+        // 회복 시작 전 잠시 대기
+        yield return new WaitForSeconds(_regenDelay);
+
         while (true)
         {
             yield return null;

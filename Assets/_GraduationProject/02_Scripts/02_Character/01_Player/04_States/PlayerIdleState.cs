@@ -54,6 +54,8 @@ public class PlayerIdleState : PlayerBaseState
 
         // 일반 공격 콤보 순서 초기화
         p_owner.Combat.ResetNormalAttackComboIndex();
+        p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
+        p_owner.Combat.SetCharge(false);                  // 차지 레벨 초기화
 
         // 차지 레벨 초기화
         p_owner.Combat.SetCharge(false);
