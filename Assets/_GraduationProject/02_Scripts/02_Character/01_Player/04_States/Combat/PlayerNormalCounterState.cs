@@ -113,6 +113,11 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             parryable.Parry(AttackType.Normal_Counter);
             p_owner.Combat.AddCounterEnemy(parryable);
         }
+        
+        if (transform.TryGetComponent<IStiffness>(out var stiffness))
+        {
+            stiffness.AddStiffness((int)p_AttackConfig.Stiffness.Value, true);
+        }
 
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))

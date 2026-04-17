@@ -285,6 +285,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 continue;
             }
 
+            if(obj.TryGetComponent<IStiffness>(out  var stiffness))
+            {
+                stiffness.AddStiffness((int)data.Stiffness.Value, false);
+            }
+
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
                 // 계산 전 이벤트 발생 (Stat 객체 포함하여 데미지 변조 가능하게 함)

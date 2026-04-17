@@ -11,6 +11,7 @@ public interface IRuntimeAttackConfig
 {
     Stat Damage { get; }
     Stat Stamina { get; }
+    Stat Stiffness { get; }
     Stat Regain { get; }
     AttackType AttackType { get; }
     Vector3 AttackRadius { get; }
@@ -32,6 +33,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
     public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
     public Stat Stamina { get; }
     public Stat Regain { get; }
+    public Stat Stiffness { get; }
 
     public RuntimeAttackConfig(PlayerAttackConfig source)
     {
@@ -40,6 +42,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
         Damage = new Stat(() => _source.AttackDamage);
         Stamina = new Stat(() => _source.AttackStamina);
         Regain = new Stat(() => _source.RegainRate);
+        Stiffness = new Stat(() => _source.Stiffness);
     }
 
     // 변하지 않는 데이터는 원본에서 직접 참조 (프록시 패턴)
@@ -48,6 +51,7 @@ public class RuntimeAttackConfig : IRuntimeAttackConfig
     public StepData AttackMoveConfig => _source.AttackMoveConfig;
     public StepData KnockbackConfig => _source.KnockbackConfig;
     public StepData DeathKnockbackConfig => _source.DeathKnockbackConfig;
+
 }
 
 /// <summary>
@@ -62,6 +66,7 @@ public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
     public Stat Damage { get; } // 버프 적용이 가능한 데미지 스탯
     public Stat Stamina { get; }
     public Stat Regain { get; }
+    public Stat Stiffness { get; }
 
     public RuntimeChargeAttackConfig(PlayerChargeConfig source)
     {
@@ -70,6 +75,7 @@ public class RuntimeChargeAttackConfig : IRuntimeAttackConfig
         Damage = new Stat(() => _source.AttackConfig.AttackDamage);
         Stamina = new Stat(() => _source.AttackConfig.AttackStamina);
         Regain = new Stat(() => _source.AttackConfig.RegainRate);
+        Stiffness = new Stat(() => _source.AttackConfig.Stiffness);
     }
 
     // 변하지 않는 데이터는 원본에서 직접 참조 (프록시 패턴)
