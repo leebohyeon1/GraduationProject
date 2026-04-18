@@ -44,6 +44,7 @@ public class Stunned : Node
             rb.angularVelocity = Vector3.zero;
         }
 
+        
         runner.Movement.StopMovement();
         
         runner.SetState(EnemyStateController.EnemyState.Stunned);
@@ -62,6 +63,7 @@ public class Stunned : Node
             runner.ParrySystem.ClearStun();
             return NodeState.SUCCESS;
         }
+        runner.Movement.StopMovement();
 
         if(!runner.ParrySystem._isStunned)
         {
