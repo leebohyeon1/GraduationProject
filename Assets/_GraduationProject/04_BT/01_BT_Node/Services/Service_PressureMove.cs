@@ -160,7 +160,7 @@ public class Service_PressureMove : ServiceNode
         newNode.UpdateInterval = this.UpdateInterval;
         
         // 3. 자식 클래스 전용 데이터 복사
-        Debug.Log($"Cloning Service_PressureMove: MinDistance={this.MinDistance}, MaxDistance={this.MaxDistance}");
+        // Debug.Log($"Cloning Service_PressureMove: MinDistance={this.MinDistance}, MaxDistance={this.MaxDistance}");
         newNode.MinDistance = this.MinDistance;
         newNode.MaxDistance = this.MaxDistance;
         newNode.Change_Dir_MinTime = this.Change_Dir_MinTime;

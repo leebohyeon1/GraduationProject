@@ -78,8 +78,12 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     }
 
 
-    public void ApplyStun(float stunDuration)
+    public void ApplyStun(float stunDuration, bool isCounterAttack = false)
     {
+        if(!isCounterAttack)
+        {
+            return;
+        }
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
         Debug.Log($"[ParrySystem] ApplyStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Full;
@@ -90,10 +94,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
 
         _owner.SetState(EnemyStateController.EnemyState.Stunned);
     }
-    public void ApplyWeakStun(float stunDuration, bool isCounterAttack = false)
+    public void ApplyWeakStun(float stunDuration)
     {
-        if(!isCounterAttack) 
-            return;
         if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
         Debug.Log($"[ParrySystem] ApplyWeakStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Weak;

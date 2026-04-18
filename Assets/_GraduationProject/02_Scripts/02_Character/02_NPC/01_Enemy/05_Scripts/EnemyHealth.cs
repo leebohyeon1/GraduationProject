@@ -152,6 +152,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(delay);
         if (!_owner.EnemyHealth.IsDead) _owner.ParrySystem.ActivateMinorImmunity();
+        Debug.Log($"[EnemyHealth] Activated minor immunity for {_owner.name} after taking damage.");
     }
 
     public float MinorTime = 5;
@@ -178,7 +179,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         bool isImmune = IsImmune(damageData.AttackType);
         if(!isImmune) OnDamageReceived?.Invoke(damageData.AttackType);
-            Debug.Log($"Damage Taken: {finalDamage} (Blocked: {isBlocked}, Immune: {isImmune})");
+            // Debug.Log($"Damage Taken: {finalDamage} (Blocked: {isBlocked}, Immune: {isImmune})");
         
         if (!isImmune && !isBlocked )
         {
@@ -203,7 +204,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             knockbackDir.y = 0;
-            Debug.Log($"Applying knockback in direction: {knockbackDir}");
             if (_KnockbackCoroutine != null) StopCoroutine(_KnockbackCoroutine);
             _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
         }

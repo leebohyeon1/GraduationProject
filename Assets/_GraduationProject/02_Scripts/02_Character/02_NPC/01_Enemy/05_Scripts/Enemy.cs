@@ -201,14 +201,27 @@ public class Enemy : MonoBehaviour
     /// 애니메이션 이벤트를 처리합니다.
     /// </summary>
     /// <param name="eventName">발생한 이벤트 이름</param>
-     public void AnimationEvent(string eventName)
+    public void AnimationEvent(string eventName)
     {
-        if (_stateController != null && _stateController.IsStateLocked && eventName != "Die")
+        if (_stateController != null && _stateController.IsStateLocked)
         {
-            return;
+            // 예외 조건: Die 이벤트이거나, (Discover 상태이면서 Hit 이벤트인 경우)
+            bool isDiscoverHit = (_stateController.CurrentState == EnemyStateController.EnemyState.Discover && eventName == "Hit");
+
+            if (eventName == "Die" || isDiscoverHit)
+            {
+                // 이 조건들에 해당하면 return 하지 않고 아래의 TriggerEvent 로직을 수행합니다.
+                // Debug.Log($"[Enemy] Special case allowed during lock: {eventName}");
+            }
+            else
+            {
+                // 그 외에 Locked 상태인 경우는 여기서 차단합니다.
+                return;
+            }
         }
 
-        Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
+        // 최종 실행부
+        // Debug.Log($"[Enemy Animation Event] {gameObject.name}에서 이벤트 '{eventName}' 발생.");
         _animationBridge?.TriggerEvent(eventName);
     }
 

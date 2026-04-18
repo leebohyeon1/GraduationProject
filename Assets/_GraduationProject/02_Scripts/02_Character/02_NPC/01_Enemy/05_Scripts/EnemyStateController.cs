@@ -16,7 +16,7 @@ public class EnemyStateController : MonoBehaviour
         Stunned,
         Rush,
         Hit,
-        RunAway
+        Discover,
     }
     public EnemyState CurrentState { get; private set; }
     public BlackBoard Blackboard => _owner._aiController._aiBrain.blackboard;

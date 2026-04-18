@@ -19,9 +19,9 @@ public class Mon_Stiffness : StiffnessSystem
         _owner.ParrySystem.ApplyWeakStun(_weakStiffnessDuration);
         _owner.ParrySystem.SetCounterAttack(true);
     }
-    protected override void OnHeavyStagger()
+    protected override void OnHeavyStagger(bool isCounterAttack = false)
     {
-        _owner.ParrySystem.ApplyStun(_stiffnessDuration);
+        _owner.ParrySystem.ApplyStun(_stiffnessDuration, isCounterAttack);
         _owner.ParrySystem.SetCounterAttack(true);
     }
 }
