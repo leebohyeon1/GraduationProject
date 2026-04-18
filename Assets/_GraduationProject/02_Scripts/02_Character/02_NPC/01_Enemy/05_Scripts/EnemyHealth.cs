@@ -30,13 +30,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public Func<AttackType, bool> CheckStunImmunity;
   
     private Enemy _owner;
-    private float _knockbackResistance = 1f;
     public bool ImmunityStart = false;
 
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _owner = owner;
-        _knockbackResistance = statMultiplier?.KnockbackMultiply ?? 1f;
         _maxHealth = enemyStat.Maxhealth;
         _maxHealth = (int)(_maxHealth * (statMultiplier?.HealthMultiply ?? 1f));
         curHealth = _maxHealth;
@@ -190,8 +188,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 _owner.AnimationEvent("Hit");
                 _owner.Movement.StopMovement();
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
-                _owner.Movement.StopMovement();
-                Debug.Log("Hit reaction triggered.");
             }
         }
 

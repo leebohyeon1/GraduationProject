@@ -53,7 +53,7 @@ public class EnemyMovement : MonoBehaviour
     {
         bool isRecovering = _runner._stateController != null && _runner._stateController.IsRecoveringFromStun;
         
-        if (CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || isRecovering)
+        if (CurrentState == EnemyStateController.EnemyState.Hit || CurrentState == EnemyStateController.EnemyState.Stunned || CurrentState == EnemyStateController.EnemyState.Die || isRecovering)
         {
             StopMovement();
             return;

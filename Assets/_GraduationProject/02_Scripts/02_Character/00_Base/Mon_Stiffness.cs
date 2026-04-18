@@ -3,6 +3,12 @@ using UnityEngine;
 public class Mon_Stiffness : StiffnessSystem
 {
     private Enemy _owner;
+    public override void AddStiffness(int amount, bool isCounterAttack = false)
+    {
+        if(_owner._stateController.CurrentState == EnemyStateController.EnemyState.Die|| _owner._stateController.CurrentState == EnemyStateController.EnemyState.Stunned)
+            return;
+        base.AddStiffness(amount, isCounterAttack);
+    }
     public void Initialize(Enemy owner)
     {
         _owner = owner;
