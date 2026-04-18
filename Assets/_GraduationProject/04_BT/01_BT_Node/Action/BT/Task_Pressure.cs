@@ -23,21 +23,19 @@ public class Task_Pressure : Node
             ai.isStopped = false;
             ai.maxSpeed = MoveSpeed;
             ai.enableRotation = false;
-            ai.SetPath(null); // 吏꾩엯 ???붿뿬 寃쎈줈 ?쒓굅
+            ai.SetPath(null); 
         }
         runner._stateController.SetLock(false);
 
     }
     protected override NodeState OnUpdate()
     {
-        // [?섏젙] ?좊땲硫붿씠??釉뚮┸吏??IsAttacking??true?붾씪?? ?꾩옱 ?곹깭媛 Attack???꾨땲硫??대룞 ?덉슜 怨좊젮
-        // ?섏?留??덉쟾???꾪빐 濡쒓렇瑜??④린怨??ㅽ뙣 泥섎━ ?좎? (BaseAttackNode?먯꽌 媛뺤젣 ?댁젣?섎?濡??댁젣 諛쒖깮 ????
         if(runner._animationBridge.IsAttacking)
         {
-            return NodeState.RUNNING; // ?ㅽ뙣 ????湲고븯???몃━媛 ?吏 ?딄쾶 ??
+            return NodeState.RUNNING; 
         }   
 
-        if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        if(runner.CurrentState == EnemyStateController.EnemyState.Attack || runner.CurrentState == EnemyStateController.EnemyState.Hit)
         {
             return NodeState.FAILURE;
         }
@@ -54,7 +52,6 @@ public class Task_Pressure : Node
 
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
-        // A* 寃쎈줈 ?낅뜲?댄듃 媛뺤젣
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);
 
         return NodeState.RUNNING;
@@ -94,7 +91,7 @@ public class Task_Pressure : Node
     }
     public override Node Clone()
     {
-        var node = Instantiate(this); // [?섏젙] CreateInstance ???Instantiate ?ъ슜 (SO 蹂듭젣 ?쒖?)
+        var node = Instantiate(this);
         node.Pos_Key = this.Pos_Key;
         node.MoveSpeed = this.MoveSpeed;
         node.StoppingDist = this.StoppingDist;
