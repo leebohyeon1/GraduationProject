@@ -35,7 +35,7 @@ public class Task_Pressure : Node
             return NodeState.RUNNING; 
         }   
 
-        if(runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        if(runner.CurrentState == EnemyStateController.EnemyState.Attack || runner.CurrentState == EnemyStateController.EnemyState.Hit)
         {
             return NodeState.FAILURE;
         }
