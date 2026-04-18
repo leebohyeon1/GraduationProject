@@ -37,11 +37,14 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
         if (_currentStiffness >= _stiffnessThreshold)
         {
             previousStiffness = _currentStiffness;
-            _currentStiffness = 0; // 게이지 초기화
 
             OnStiffnessChanged?.Invoke(previousStiffness, _currentStiffness);
             // 주인의 ApplyStun 함수를 호출하여 기절시킵니다.
+            if(!isCounterAttack)
+                return;
             OnHeavyStagger();
+            _currentStiffness = 0; // 게이지 초기화
+
         }
         else
         {

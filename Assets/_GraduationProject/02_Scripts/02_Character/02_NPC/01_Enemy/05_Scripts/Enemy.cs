@@ -5,7 +5,7 @@ using Pathfinding;
 /// 몬스터의 기본 베이스 클래스입니다. 모든 몬스터는 이 클래스를 상속받거나 포함합니다.
 /// </summary>
 [RequireComponent(typeof(AIPath), typeof(AiController), typeof(Enemy_AnimationEventHandler))]
-[RequireComponent(typeof(ParrySystem), typeof(EnemyHealth), typeof(EnemySpecialAbility))]
+[RequireComponent(typeof(ParrySystem), typeof(EnemyHealth))]
 [RequireComponent(typeof(Mon_Stiffness), typeof(EnemyStateController), typeof(EnemyAnimationBridge))]
 [RequireComponent(typeof(EnemyInitializer), typeof(EnemyMovement))]
 #if UNITY_EDITOR
@@ -63,10 +63,6 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public EnemyHealth EnemyHealth => _initializer?.GetCachedComponent<EnemyHealth>();
 
-    /// <summary>
-    /// 몬스터 특수 능력 컴포넌트입니다.
-    /// </summary>
-    public EnemySpecialAbility specialAbility => _initializer?.GetCachedComponent<EnemySpecialAbility>();
 
     /// <summary>
     /// AI 제어 컴포넌트(Behavior Tree 등)입니다.

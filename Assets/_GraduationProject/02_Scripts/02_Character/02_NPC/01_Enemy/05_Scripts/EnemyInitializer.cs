@@ -102,7 +102,6 @@ public class EnemyInitializer : MonoBehaviour
         InitializeParrySystem(skipCache);
         InitializeHealthSystem(skipCache);
         InitializeStiffnessSystem(skipCache);
-        InitializeSpecialAbility(skipCache);
         MarkInitialized("Components");
     }
 
@@ -136,11 +135,6 @@ public class EnemyInitializer : MonoBehaviour
         if (health != null) health.InitializeHealth(_enemy);
     }
 
-    private void InitializeSpecialAbility(bool skipCache)
-    {
-        var sa = GetOrGetComponent<EnemySpecialAbility>(skipCache);
-        if (sa != null) sa.Initialize(_enemy);
-    }
 
     private void InitializeParrySystem(bool skipCache)
     {
