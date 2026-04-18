@@ -42,7 +42,7 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
             // 주인의 ApplyStun 함수를 호출하여 기절시킵니다.
             if(!isCounterAttack)
                 return;
-            OnHeavyStagger();
+            OnHeavyStagger(isCounterAttack);
             _currentStiffness = 0; // 게이지 초기화
 
         }
@@ -51,6 +51,7 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
             if(!isCounterAttack)
                 return;
             // 경직 게이지가 가득 차지 않았을 때의 피드백 처리
+            Debug.Log($"[StiffnessSystem] 경직 게이지 증가: {previousStiffness} -> {_currentStiffness}");
             OnLightStagger();
         }
     }
@@ -64,7 +65,8 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     /// <summary>
     /// 무거운 경직 함수
     /// </summary>
-    protected virtual void OnHeavyStagger() { }
+    /// <param name="isCounterAttack">카운터 공격 여부</param>
+    protected virtual void OnHeavyStagger(bool isCounterAttack = false) { }
 
 
 }

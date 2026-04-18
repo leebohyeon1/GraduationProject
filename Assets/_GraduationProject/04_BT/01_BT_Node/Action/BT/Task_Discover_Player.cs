@@ -18,19 +18,14 @@ public class Task_Discover_Player : Node
             // runner._aiController._aiBrain.blackboard.SetValue("Engage", true);
             runner.AnimationEvent(animationTagName);
             if (Handler != null) Handler.ResetAllFlags();
-            // ?곹깭 ?좉툑: 諛쒓껄 ?곗텧 ?꾩쨷 ?ㅻⅨ 怨듦꺽???쇱뼱?ㅼ? 紐삵븯寃???
+            runner._stateController.SetState(EnemyStateController.EnemyState.Discover);
             runner._stateController.SetLock(true);
             _didSetLock = true;
-            
-            // ?꾩뿭 ?꾪닾 ?곹깭濡??꾪솚
-
-            
         }
     }
 
     protected override NodeState OnUpdate()
     {
-        // ?곹깭 以묐떒 泥댄겕: ?ㅽ꽩?대굹 ?щ쭩 ??利됱떆 醫낅즺
         if (runner.CurrentState == EnemyStateController.EnemyState.Stunned || runner.CurrentState == EnemyStateController.EnemyState.Die)
         {
             return NodeState.FAILURE;
