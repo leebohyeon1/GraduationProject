@@ -234,7 +234,11 @@ public class PlayerChargeState : PlayerBaseState
         if (p_owner.Ability.HasAbility("MobileCharge") && !_isStep && p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {
             MobileChargeAbilitySO mobileCharge = p_owner.Ability.GetAbility("MobileCharge") as MobileChargeAbilitySO;
-            if (mobileCharge == null) return;
+            if (mobileCharge == null) 
+            {
+                base.OnDodge();
+                return;
+            }
 
             // 대시 방향 결정 (입력이 없으면 캐릭터 전방)
             Vector3 moveInput = p_owner.InputHandler.MoveInput;
@@ -261,6 +265,11 @@ public class PlayerChargeState : PlayerBaseState
             
             // 스테미나 소모 (필요 시 데이터에서 가져오도록 수정 가능)
             p_owner.Stamina.UseStamina(p_owner.Movement.DodgeConfig.StaminaConsumption.Value);
+        }
+        else if (!_isStep)
+        {
+            // 기동차징이 없거나 조건이 안 되면 기본 대시(상태 전환) 실행
+            base.OnDodge();
         }
     }
 

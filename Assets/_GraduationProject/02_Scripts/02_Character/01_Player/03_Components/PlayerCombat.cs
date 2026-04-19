@@ -136,6 +136,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     {
         _events.CounterWindowStarted -= OnCounterWindowStarted;
         _events.CounterWindowFinished -= OnCounterWindowFinished;
+        _events.CounterSucceeded -= OnCounterSucceeded;
 
         _events.BeforeDamaged -= OnBeforeDamaged;
 
@@ -285,6 +286,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                 continue;
             }
 
+            if(obj.TryGetComponent<IStiffness>(out  var stiffness))
+            {
+                stiffness.AddStiffness((int)data.Stiffness.Value, data.AttackType);
+            }
+
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
                 // 계산 전 이벤트 발생 (Stat 객체 포함하여 데미지 변조 가능하게 함)
@@ -302,6 +308,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
                     KnockbackCurve = data.KnockbackConfig.StepCurve,
                     KnockbackDuration = data.KnockbackConfig.StepDuration,
                     KnockbackForce = data.KnockbackConfig.StepDistance,
+                    DeathKnockbackDuration = data.DeathKnockbackConfig.StepDuration,
+                    DeathKnockbackForce = data.DeathKnockbackConfig.StepDistance,
+                    IsMagic = false
                 };
 
                 int regainAmount = Mathf.RoundToInt(finalDamage * data.Regain.Value);
@@ -333,6 +342,23 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     //==========================================================================================================================
 
     #region NormalAttack
+    /// <summary>
+    /// 모든 공격 상태를 강제로 취소하고 초기화합니다.
+    /// </summary>
+    public void CancelAttack()
+    {
+        ResetNormalAttackComboIndex();
+        ResetHeavyAttackComboIndex();
+        SetCharge(false);
+        ClearCounterEnemySet();
+        ClearCounterDamagedEnemy();
+        
+        if (_battleStateStopCoroutine != null)
+        {
+            // 전투 종료 타이머는 유지하되, 즉시 비전투로 가지는 않음
+        }
+    }
+
     /// <summary>
     /// 일반 공격 콤보 번호 증가
     /// </summary>

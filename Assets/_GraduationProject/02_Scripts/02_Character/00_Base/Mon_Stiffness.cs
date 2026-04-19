@@ -3,6 +3,12 @@ using UnityEngine;
 public class Mon_Stiffness : StiffnessSystem
 {
     private Enemy _owner;
+    public override void AddStiffness(int amount, AttackType attackType)
+    {
+        if(_owner._stateController.CurrentState == EnemyStateController.EnemyState.Die|| _owner._stateController.CurrentState == EnemyStateController.EnemyState.Stunned)
+            return;
+        base.AddStiffness(amount, attackType);
+    }
     public void Initialize(Enemy owner)
     {
         _owner = owner;
@@ -13,9 +19,9 @@ public class Mon_Stiffness : StiffnessSystem
         _owner.ParrySystem.ApplyWeakStun(_weakStiffnessDuration);
         _owner.ParrySystem.SetCounterAttack(true);
     }
-    protected override void OnHeavyStagger()
+    protected override void OnHeavyStagger(bool isCounterAttack = false)
     {
-        _owner.ParrySystem.ApplyStun(_stiffnessDuration);
+        _owner.ParrySystem.ApplyStun(_stiffnessDuration, isCounterAttack);
         _owner.ParrySystem.SetCounterAttack(true);
     }
 }
