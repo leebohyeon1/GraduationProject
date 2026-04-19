@@ -99,7 +99,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
             return;
         }
 
-        AddStiffness(damageData.StiffnessAmount);
+        AddStiffness(damageData.StiffnessAmount, damageData.AttackType);
 
         // 경직도 임계값을 넘으면
         if (CurrentStiffness >= StiffnessThreshold)
@@ -160,7 +160,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
     /// <param name="data">데미지 데이터</param>
-    public void AddStiffness(int amount, bool isCounterAttack = false)
+    public void AddStiffness(int amount, AttackType attackType)
     {
         ChangeStiffness(amount);
     }

@@ -26,7 +26,7 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     /// </summary>
     /// <param name="amount">추가할 경직도</param>
     /// <param name="isCounterAttack">카운터 공격 여부</param>
-    public virtual void AddStiffness(int amount, bool isCounterAttack = false)
+    public virtual void AddStiffness(int amount, AttackType attackType)
     {
         int previousStiffness = _currentStiffness;  
         _currentStiffness += amount;
@@ -40,15 +40,15 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
 
             OnStiffnessChanged?.Invoke(previousStiffness, _currentStiffness);
             // 주인의 ApplyStun 함수를 호출하여 기절시킵니다.
-            if(!isCounterAttack)
+            if(attackType < AttackType.Strong_1)
                 return;
-            OnHeavyStagger(isCounterAttack);
+            // OnHeavyStagger(isCounterAttack);
             _currentStiffness = 0; // 게이지 초기화
 
         }
         else
         {
-            if(!isCounterAttack)
+            if(attackType < AttackType.Normal_Counter)
                 return;
             // 경직 게이지가 가득 차지 않았을 때의 피드백 처리
             Debug.Log($"[StiffnessSystem] 경직 게이지 증가: {previousStiffness} -> {_currentStiffness}");

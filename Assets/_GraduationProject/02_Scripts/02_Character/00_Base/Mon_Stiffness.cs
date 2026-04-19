@@ -3,11 +3,11 @@ using UnityEngine;
 public class Mon_Stiffness : StiffnessSystem
 {
     private Enemy _owner;
-    public override void AddStiffness(int amount, bool isCounterAttack = false)
+    public override void AddStiffness(int amount, AttackType attackType)
     {
         if(_owner._stateController.CurrentState == EnemyStateController.EnemyState.Die|| _owner._stateController.CurrentState == EnemyStateController.EnemyState.Stunned)
             return;
-        base.AddStiffness(amount, isCounterAttack);
+        base.AddStiffness(amount, attackType);
     }
     public void Initialize(Enemy owner)
     {

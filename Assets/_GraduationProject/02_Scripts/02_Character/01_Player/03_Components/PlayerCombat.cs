@@ -288,7 +288,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if(obj.TryGetComponent<IStiffness>(out  var stiffness))
             {
-                stiffness.AddStiffness((int)data.Stiffness.Value, false);
+                stiffness.AddStiffness((int)data.Stiffness.Value, data.AttackType);
             }
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
