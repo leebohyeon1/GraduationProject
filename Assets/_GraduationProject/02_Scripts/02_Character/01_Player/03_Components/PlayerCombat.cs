@@ -343,6 +343,23 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
     #region NormalAttack
     /// <summary>
+    /// 모든 공격 상태를 강제로 취소하고 초기화합니다.
+    /// </summary>
+    public void CancelAttack()
+    {
+        ResetNormalAttackComboIndex();
+        ResetHeavyAttackComboIndex();
+        SetCharge(false);
+        ClearCounterEnemySet();
+        ClearCounterDamagedEnemy();
+        
+        if (_battleStateStopCoroutine != null)
+        {
+            // 전투 종료 타이머는 유지하되, 즉시 비전투로 가지는 않음
+        }
+    }
+
+    /// <summary>
     /// 일반 공격 콤보 번호 증가
     /// </summary>
     public void IncreaseNormalAttackComboIndex()
