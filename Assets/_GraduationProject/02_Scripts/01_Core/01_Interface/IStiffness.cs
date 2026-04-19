@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 /// <summary>
@@ -25,7 +25,7 @@ public interface IStiffness
     /// 경직도 게이지 누적
     /// </summary>
     /// <param name="amount"></param>
-    void AddStiffness(int amount, AttackType attackType);
+    void AddStiffness(int amount);
     
     event Action<int, int> OnStiffnessChanged;   
 } 

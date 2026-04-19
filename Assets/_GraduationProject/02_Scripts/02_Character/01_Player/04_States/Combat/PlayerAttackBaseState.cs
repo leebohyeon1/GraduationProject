@@ -155,6 +155,29 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     }
 
     /// <summary>
+    /// 회피 입력 처리
+    /// </summary>
+    protected override void OnDodge()
+    {
+        if (p_nextState != null)
+        {
+            return;
+        }
+
+        if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
+        {
+            if (p_canChangeCombatState)
+            {
+                p_stateMachine.ChangeState<PlayerDodgeState>();
+            }
+            else if (p_canBufferInput)
+            {
+                p_nextState = typeof(PlayerDodgeState);
+            }
+        }
+    }
+
+    /// <summary>
     /// 일반 상쇄 입력 처리
     /// </summary>
     protected override void OnNormalCounter()

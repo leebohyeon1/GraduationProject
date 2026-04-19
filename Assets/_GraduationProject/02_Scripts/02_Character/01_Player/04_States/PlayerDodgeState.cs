@@ -8,18 +8,13 @@ using UnityEngine;
 /// </summary>
 public class PlayerDodgeState : PlayerBaseState
 {
-    public PlayerDodgeState(StateMachine<PlayerController> stateMachine) : base(stateMachine) { }
+    public PlayerDodgeState(StateMachine<PlayerController> stateMachine)
+    : base(stateMachine) { }
 
     public override void OnEnter()
     {
-        // 1. 물리 및 전투 로직 강제 중단
-        p_owner.Combat.CancelAttack();    // 공격 히트박스 비활성화 및 관련 로직 중단
-
-        // 2. 애니메이션 파라미터 청소
-        p_animator.ResetTrigger("Attack"); // 공격 예약 트리거 제거
-        p_animator.ResetTrigger("Counter"); 
-
         base.OnEnter();
+
     }
 
     public override void OnUpdate()
@@ -57,15 +52,9 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.SetupStats();
 
-        // 스테미나 소모 (필요 시 데이터에서 가져오도록 수정 가능)
-        p_owner.Stamina.UseStamina(p_owner.Movement.DodgeConfig.StaminaConsumption.Value);
-
-        // [강화] 모든 전투 상태 리셋
-        p_owner.Combat.CancelAttack();
-
-        // [추가] 선입력 시스템 초기화 (대시 이후 이전 입력 실행 방지)
-        p_owner.Events.TriggerBufferInputEnded(); 
+        p_owner.Combat.ResetNormalAttackComboIndex();       // 일반 공격 콤보 순서 초기화
     }
+
     protected override void SetupAnimator()
     {
         base.SetupAnimator();

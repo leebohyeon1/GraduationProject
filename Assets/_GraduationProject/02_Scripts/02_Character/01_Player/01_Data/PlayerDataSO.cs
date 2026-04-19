@@ -55,7 +55,6 @@ public class PlayerDataSO : ScriptableObject
     public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
     public PlayerChargeConfig HeavyCounterAttackConfig;   // 차징 카운터 공격 설정
     public List<float> CounterDamageMultiply;
-    public List<float> CounterStiffnessMultiply;
     public List<float> ProjectileCounterAddedVelocity;  // 투사체 카운터 시 투사체에 적용하는 추가 이동속도
     public int MaxCounterStack = 3;             // 최대 카운터 스택 수 
     public float CounterStackDuration = 30f;    // 카운터 스택 지속 시간
