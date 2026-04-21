@@ -93,17 +93,23 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             p_owner.Ability.AddTag(p_owner.Combat.CounterSuccessTagSO);
         }
 
+        int baseStiffness = 0;    
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
             parryable.Parry(AttackType.Strong_Counter);
             p_owner.Combat.AddCounterEnemy(parryable);
             p_owner.Events.TriggerOnlyChargeAttackSucceded();
+
+            baseStiffness = Mathf.RoundToInt(p_AttackConfig.Stiffness.Value);
+            p_AttackConfig.Stiffness.AddModifier(new StatModifier(p_owner.Data.CounterStiffnessMultiply[1], StatModifierType.PercentAdd, "HeavyCounterStiffness"));
         }
 
         if (transform.TryGetComponent<IStiffness>(out var stiffness))
         {
-            stiffness.AddStiffness((int)p_AttackConfig.Stiffness.Value, true);
+            int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
+            stiffness.AddStiffness(counterStiffness, p_AttackConfig.AttackType);
+            p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("HeavyCounterStiffness");
         }
 
         // 적이 아직 죽지 않았다면 타격
