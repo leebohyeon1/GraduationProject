@@ -24,9 +24,20 @@ namespace BehaviorTree
             {
                 return NodeState.FAILURE;
             }
+
+            if (!isEntered &&
+                runner != null &&
+                runner._stateController != null &&
+                runner._stateController.IsStateLocked &&
+                !CanEnterWhenLocked())
+            {
+                return NodeState.FAILURE;
+            }
+
             if (!isEntered)
             {
                 CurrentNodeName = this.name;
+                // Debug.Log($"Entering Node: {CurrentNodeName}");
                 OnEnter();
                 isEntered = true;
             }
@@ -52,6 +63,7 @@ namespace BehaviorTree
         public virtual void OnEnter(){}
 
         public virtual void OnExit(){}
+        protected virtual bool CanEnterWhenLocked() => false;
         protected abstract NodeState OnUpdate();
 
         public virtual Node Clone()

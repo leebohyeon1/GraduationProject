@@ -46,7 +46,10 @@ public class Task_Discover_Player : Node
         {
             return NodeState.RUNNING;
         }
-
+        if( runner._aiController._aiBrain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit))
+        {
+            return NodeState.SUCCESS;
+        }
         if (elapsedTime > transitionBuffer + 2.0f)
         {
              return NodeState.SUCCESS;

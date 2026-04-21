@@ -90,7 +90,9 @@ public abstract class BaseAttackNode : Node
         }
 
         bool isAlreadyInAttackState = runner.CurrentState == EnemyStateController.EnemyState.Attack || runner._animationBridge.IsAttacking;
-        if (runner._stateController.IsStateLocked || isAlreadyInAttackState || runner.CurrentState == EnemyStateController.EnemyState.Stunned)
+        if (!runner._stateController.CanTransitionTo(EnemyStateController.EnemyState.Attack) ||
+            isAlreadyInAttackState ||
+            runner.CurrentState == EnemyStateController.EnemyState.Stunned)
         {
             _isActionFinishedInternally = true;
             return;
@@ -243,6 +245,7 @@ public abstract class BaseAttackNode : Node
     }
 
     protected virtual void OnActionSOTriggered() { }
+    protected override bool CanEnterWhenLocked() => true;
 
     private void HandleRotation()
     {

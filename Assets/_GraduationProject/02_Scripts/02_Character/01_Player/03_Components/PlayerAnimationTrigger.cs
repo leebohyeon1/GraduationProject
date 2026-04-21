@@ -187,7 +187,25 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="obj">스택</param>
     private void OnCounterStackChanged(int obj)
     {
-        ParryStackChangeFeedbacks[obj]?.Invoke();
+        if (ParryStackChangeFeedbacks == null || ParryStackChangeFeedbacks.Count == 0)
+        {
+            return;
+        }
+
+        if (obj < 0 || obj >= ParryStackChangeFeedbacks.Count)
+        {
+            Debug.LogWarning($"[PlayerAnimationTrigger] ParryStackChangeFeedbacks index out of range. index={obj}, count={ParryStackChangeFeedbacks.Count}");
+            return;
+        }
+
+        try
+        {
+            ParryStackChangeFeedbacks[obj]?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[PlayerAnimationTrigger] ParryStackChangeFeedback invoke failed at index {obj}. {ex}");
+        }
     }
 
     /// <summary>
@@ -196,7 +214,14 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="transform"></param>
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
-        CounterSuccessFeedback?.Invoke();
+        try
+        {
+            CounterSuccessFeedback?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[PlayerAnimationTrigger] CounterSuccessFeedback invoke failed. {ex}");
+        }
     }
 
     #endregion

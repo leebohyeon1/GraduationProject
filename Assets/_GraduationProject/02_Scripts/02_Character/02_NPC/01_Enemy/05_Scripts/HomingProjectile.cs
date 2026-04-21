@@ -128,14 +128,15 @@ public class HomingProjectile : MonoBehaviour
             if (health != null)
             {
                 // 간단한 데미지 처리 (구조체 필요시 수정)
-                health.TakeDamage(_damage); 
-            _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-            _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
-                Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
-            }
-            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
+                Destroy(gameObject);
 
-            Destroy(gameObject);
+                _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+                _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+                Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
+                _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
+                health.TakeDamage(_damage); 
+            }
+
         }
     }
 }

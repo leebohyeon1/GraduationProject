@@ -32,10 +32,7 @@ public class Stunned : Node
             
         if (Handler != null) Handler.ResetAllFlags();
         
-        if (runner._animationBridge != null)
-        {
-            runner._animationBridge.ResetAllAnimationStates(); 
-        }
+
 
         Rigidbody rb = runner.GetComponent<Rigidbody>();
         if (rb != null)
@@ -51,7 +48,7 @@ public class Stunned : Node
         if(runner.Shield != null)
             runner.Shield.IsActive = false;
             
-
+        Debug.Log($"Entered Stunned Node: {CurrentNodeName}");
     }
 
     protected override NodeState OnUpdate()
@@ -64,7 +61,7 @@ public class Stunned : Node
             return NodeState.SUCCESS;
         }
         runner.Movement.StopMovement();
-
+        Debug.Log($"Updating Stunned Node: {CurrentNodeName}, IsStunned: {runner.ParrySystem._isStunned}");
         if(!runner.ParrySystem._isStunned)
         {
             return NodeState.FAILURE;
@@ -89,7 +86,7 @@ public class Stunned : Node
 
     public override void OnExit()
     {
-        
+        Debug.Log($"Exiting Stunned Node: {CurrentNodeName}");
         runner.ParrySystem.ClearStun();
         if (Handler != null) Handler.ResetAllFlags();
         
@@ -147,4 +144,6 @@ public class Stunned : Node
     {
         return Instantiate(this);
     }
+
+    protected override bool CanEnterWhenLocked() => true;
 }

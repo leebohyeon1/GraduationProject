@@ -39,8 +39,9 @@ public class EnemyProjectile : MonoBehaviour
             _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
 
             Debug.Log("투사체 명중!");
-            health?.TakeDamage(_data);
+            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
             Destroy(gameObject); 
+            health?.TakeDamage(_data);
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Wall") )
         {

@@ -14,6 +14,9 @@ public class Task_AnimationNode : Node
     
     [Tooltip("?좊땲硫붿씠??醫낅즺(FinishAction) ??異붽?濡??湲고븷 ?쒓컙 (珥?")]
     public float postDelayTime;
+    
+    [Tooltip("Lock 중에도 Attack 상태 전환을 허용할지 여부 (특정 연출 -> 공격 전환용)")]
+    public bool allowAttackTransitionWhileLocked = false;
 
     private bool _isAnimFinished;
     private float _endTime;
@@ -39,6 +42,7 @@ public class Task_AnimationNode : Node
         {
             runner.AnimationEvent(triggerName);
             runner._stateController.SetLock(true); // ?됰룞 ?꾩쨷 ?ㅻⅨ ?됰룞???쇱뼱?ㅼ? 紐삵븯?꾨줉 ?좉툑
+            runner._stateController.SetLockedTransitionAllowance(EnemyStateController.EnemyState.Attack, allowAttackTransitionWhileLocked);
             _didSetLock = true;
         }
         
@@ -75,6 +79,7 @@ public class Task_AnimationNode : Node
         // ?몃━嫄곕뒗 Bool怨??щ━ 蹂꾨룄??false 泥섎━媛 ?꾩슂 ?놁쑝誘濡?援ъ“媛 ??源붾걫?⑸땲??
         if (runner != null && runner._stateController != null && _didSetLock)
         {
+            runner._stateController.SetLockedTransitionAllowance(EnemyStateController.EnemyState.Attack, false);
             runner._stateController.SetLock(false);
         }
     }
@@ -82,7 +87,8 @@ public class Task_AnimationNode : Node
     {
         base.Abort();
         if (runner != null && runner._stateController != null && _didSetLock)
-        {   
+        {
+            runner._stateController.SetLockedTransitionAllowance(EnemyStateController.EnemyState.Attack, false);
             runner._stateController.SetLock(false);
         }
     }

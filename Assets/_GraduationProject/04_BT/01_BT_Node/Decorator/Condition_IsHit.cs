@@ -12,7 +12,7 @@ namespace BehaviorTree
         protected override bool CheckCondition()
         {
             if (brain == null || brain.blackboard == null) return false;
-            return brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.OnTakeHit, false);
+            return brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.OnTakeHit, true);
         }
 
         public override Node Clone()

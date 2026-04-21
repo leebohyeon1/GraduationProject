@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyStateController : MonoBehaviour
@@ -26,6 +27,7 @@ public class EnemyStateController : MonoBehaviour
     public bool IsStateLocked { get; private set; }
     public float LastStunEndTime { get; private set; } = -10f;
     public bool IsRecoveringFromStun => Time.time < LastStunEndTime + 0.5f;
+    private readonly HashSet<EnemyState> _allowedWhileLocked = new HashSet<EnemyState>();
 
     public void Initialize(Enemy owner)
     {
@@ -63,8 +65,18 @@ public class EnemyStateController : MonoBehaviour
 
     public void SetLock(bool locked)
     {
+        if (!locked)
+        {
+            _allowedWhileLocked.Clear();
+        }
         IsStateLocked = locked;
         // Debug.Log(string.Format("[StateController : {0}] State Lock: {1}", _owner.name, locked));
+    }
+
+    public void SetLockedTransitionAllowance(EnemyState targetState, bool allow)
+    {
+        if (allow) _allowedWhileLocked.Add(targetState);
+        else _allowedWhileLocked.Remove(targetState);
     }
 
     public void RecordStunEnd()
@@ -75,7 +87,13 @@ public class EnemyStateController : MonoBehaviour
     
     public bool CanTransitionTo(EnemyState targetState)
     {
-        if (IsStateLocked && targetState != EnemyState.Die && targetState != EnemyState.Stunned) return false;
+        if (IsStateLocked &&
+            targetState != EnemyState.Die &&
+            targetState != EnemyState.Stunned &&
+            !_allowedWhileLocked.Contains(targetState))
+        {
+            return false;
+        }
         return !(CurrentState == EnemyState.Die && targetState != EnemyState.Die);
     }
 }
