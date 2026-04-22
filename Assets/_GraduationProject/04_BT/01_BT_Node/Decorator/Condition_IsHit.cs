@@ -12,7 +12,7 @@ namespace BehaviorTree
         protected override bool CheckCondition()
         {
             if (brain == null || brain.blackboard == null) return false;
-            bool onTakeHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit) &&  brain.blackboard.GetValue<float>("OnTaskHit") != Time.time;
+            bool onTakeHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit);
             return onTakeHit;
         }
 
