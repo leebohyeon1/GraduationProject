@@ -33,6 +33,7 @@ Transform:
   - {fileID: 5036593509186472214}
   - {fileID: 2953215592323615948}
   - {fileID: 3488146373040467096}
+  - {fileID: 1487161557373782585}
   - {fileID: 3880315400174715194}
   - {fileID: 1976335832405783134}
   - {fileID: 6740056457754300493}
@@ -43,6 +44,40 @@ Transform:
   - {fileID: 4575395663767895192}
   - {fileID: 4084335761810093724}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &193798829916301631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1487161557373782585}
+  m_Layer: 0
+  m_Name: SwordTouch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1487161557373782585
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193798829916301631}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 594.61, y: 69.84, z: -453.405}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 171829154015100463}
+  - {fileID: 7437255836560298133}
+  - {fileID: 8128786753436269339}
+  m_Father: {fileID: 5585473778015514653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &290183617291862773
 GameObject:
@@ -70,15 +105,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290183617291862773}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -0.04, y: 0.37, z: 0.04}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.06569869, y: -0.3817146, z: -0.0272133, w: 0.9215406}
+  m_LocalPosition: {x: -0.22, y: 0.04, z: 0.09}
+  m_LocalScale: {x: 0.75252, y: 0.75252, z: 0.75252}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9202816736109780620}
   - {fileID: 269682346600848416}
-  m_Father: {fileID: 3488146373040467096}
-  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+  m_Father: {fileID: 1487161557373782585}
+  m_LocalEulerAnglesHint: {x: -8.156, y: -45, z: 0}
 --- !u!114 &6831647833131766980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,7 +196,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5671557121770983279}
-  m_Father: {fileID: 3488146373040467096}
+  m_Father: {fileID: 1487161557373782585}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!114 &1591782333446627273
 MonoBehaviour:
@@ -5082,10 +5117,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 171829154015100463}
-  - {fileID: 7437255836560298133}
   - {fileID: 963368858963968235}
-  - {fileID: 8128786753436269339}
   m_Father: {fileID: 5585473778015514653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5967215145576097903
@@ -5639,7 +5671,7 @@ Transform:
   m_Children:
   - {fileID: 6227132007723588936}
   - {fileID: 7241828218069481938}
-  m_Father: {fileID: 3488146373040467096}
+  m_Father: {fileID: 1487161557373782585}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!320 &218352481623895
 PlayableDirector:
@@ -5662,6 +5694,10 @@ PlayableDirector:
     value: {fileID: 2992465151743628088}
   - key: {fileID: -3831620420605665530, guid: 0081cf4772c69404f8ede63a93748aaf, type: 2}
     value: {fileID: 1490954658861130087}
+  - key: {fileID: -90129199524718920, guid: 0081cf4772c69404f8ede63a93748aaf, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -206041251230617779, guid: 0081cf4772c69404f8ede63a93748aaf, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - e790f48c4fd658f4ca23d74c918c0093: {fileID: 0}
@@ -5684,6 +5720,7 @@ MonoBehaviour:
     m_Signals:
     - {fileID: 11400000, guid: fdca163a2edfc6948bbcd3834635a3a8, type: 2}
     - {fileID: 11400000, guid: bae645b2cd588c44c96cd23bfde69ffd, type: 2}
+    - {fileID: 11400000, guid: d1977e45f469eaa4796e500ffe1b0fb7, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -5713,9 +5750,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 1591782333446627273}
-          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
-          m_MethodName: PlayFeedbacks
+        - m_Target: {fileID: 4000357553985610744}
+          m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
+          m_MethodName: AddTag
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5725,9 +5762,11 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 4000357553985610744}
-          m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
-          m_MethodName: AddTag
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1591782333446627273}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+          m_MethodName: PlayFeedbacks
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
