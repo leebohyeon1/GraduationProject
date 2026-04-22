@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4a1b3701220224ca30655ca70e7f7e, type: 3}
   m_Name: Task_Hit Action
   m_EditorClassIdentifier: Assembly-CSharp::Task_HitAction
-  position: {x: 463, y: 104}
+  position: {x: 459, y: 27}
 --- !u!114 &-8025809362345536030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Idle
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 260, y: 294}
+  position: {x: 256, y: 217}
   subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f87976d46fb30743a042f1116875632, type: 3}
   m_Name: Condition_Is Hit
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_IsHit
-  position: {x: 464, y: 26}
+  position: {x: 460, y: -51}
   exceptCondition:
     key: 
 --- !u!114 &-7610850223706687289
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Reset
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 260, y: 142}
+  position: {x: 256, y: 65}
   subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 264, y: 26}
+  position: {x: 260, y: -51}
   nodes:
   - {fileID: -7642928928764994662}
   - {fileID: -8964494727330034381}
@@ -179,22 +179,6 @@ MonoBehaviour:
   m_Name: Monster_f_Test
   m_EditorClassIdentifier: 
   rootNode: {fileID: 1254360389698641468}
---- !u!114 &193999242879699279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: KeyCh
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 261, y: -77}
-  nodes:
-  - {fileID: 2225612242746855301}
-  services: []
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 261, y: 217}
+  position: {x: 257, y: 140}
   subTreeToRun: {fileID: 11400000, guid: 622a2ff77b860504c87f464b8e616837, type: 2}
 --- !u!114 &1070229426899460596
 MonoBehaviour:
@@ -221,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6355361d175b4e4fa3628d1d194d171, type: 3}
   m_Name: Service_Battle Awareness
   m_EditorClassIdentifier: Assembly-CSharp::Service_BattleAwareness
-  position: {x: 176, y: 396}
+  position: {x: 106, y: 432}
   UpdateInterval: 0.3
   Threat_Angle: 25
   Vuln_Key: IsPlayerVulnerable
@@ -241,7 +225,6 @@ MonoBehaviour:
   position: {x: 48, y: -13}
   nodes:
   - {fileID: -7610850223706687289}
-  - {fileID: 193999242879699279}
   - {fileID: -4268550628531964939}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
@@ -277,7 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: -63, y: 167}
+  position: {x: 106, y: 319}
   UpdateInterval: 0.3
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget
@@ -294,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
   m_Name: Service_Pressure Move
   m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
-  position: {x: 176, y: 487}
+  position: {x: 106, y: 523}
   UpdateInterval: 0.3
   MinDistance: 5
   MaxDistance: 6
@@ -304,25 +287,6 @@ MonoBehaviour:
   FrontAngle: 45
   Pos_Key: PressurePos
   Dir_Key: StrafeDir
---- !u!114 &2225612242746855301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: KeyCheck
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 464, y: -76}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 0
-    TargetState: 9
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
