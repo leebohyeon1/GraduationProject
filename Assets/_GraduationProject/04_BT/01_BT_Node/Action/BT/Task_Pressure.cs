@@ -63,7 +63,7 @@ public class Task_Pressure : Node
     public override void OnExit()
     {
         base.OnExit();
-        
+        runner.Movement.StopMovement();
         runner._stateController.SetLock(false);
     }
     private void RotateTowardsPlayer()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
+using System.Diagnostics.Contracts;
 
 [CreateAssetMenu(fileName = "Task_HitAction", menuName = "BehaviorTree/Action/HitAction")]
 public class Task_HitAction : Node
@@ -10,7 +11,7 @@ public class Task_HitAction : Node
     {
         base.OnEnter();
         if (Handler != null) Handler.ResetAllFlags();
-        
+        runner.AnimationEvent("Hit");
         runner.SetState(EnemyStateController.EnemyState.Hit);
         runner._stateController.SetLock(true);
         if (runner.Movement != null) runner.Movement.StopMovement();
@@ -28,7 +29,6 @@ public class Task_HitAction : Node
             return NodeState.SUCCESS;
         }
         runner.Movement.StopMovement();
-
         return NodeState.RUNNING;
     }
 
@@ -38,15 +38,18 @@ public class Task_HitAction : Node
         
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
         
+        runner._stateController.SetLock(false);
         if (runner.CurrentState == EnemyStateController.EnemyState.Hit)
         {
             runner.SetState(EnemyStateController.EnemyState.Idle);
         }
 
         if (Handler != null) Handler.ResetAllFlags();
-        runner._stateController.SetLock(false);
-
-        
+    }
+    public override void Abort()
+    {
+        base.Abort();
+        OnExit();
     }
 
     public override Node Clone()
