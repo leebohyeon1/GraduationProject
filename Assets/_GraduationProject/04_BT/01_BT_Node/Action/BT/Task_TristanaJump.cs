@@ -59,7 +59,6 @@ public class Task_TristanaJump : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _isJumping = false;
-        Log("?먰봽 以鍮?(ActionSO ?湲?以?");
     }
 
     protected override void OnActionSOTriggered()
@@ -77,7 +76,6 @@ public class Task_TristanaJump : BaseAttackNode
 
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
         _targetPos = info.node != null ? info.position : rawTarget;
-        Log("?먰봽 ?쒖옉 (OnActionSOTriggered) - 紐⑺몴 ?ㅼ젙: " + _targetPos);
         _isJumping = true;
         _nodeEntryTime = Time.time; // ?먰봽 ?쒖옉 ?쒖젏 由ъ뀑
         
@@ -118,7 +116,6 @@ public class Task_TristanaJump : BaseAttackNode
 
     private void Landing()
     {
-        Log("?먰봽 李⑹? ?섑뻾");
         _isJumping = false;
 
         Vector3 landPos = _targetPos;
@@ -164,7 +161,6 @@ public class Task_TristanaJump : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

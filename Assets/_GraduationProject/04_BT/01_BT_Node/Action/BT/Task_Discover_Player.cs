@@ -41,7 +41,10 @@ public class Task_Discover_Player : Node
         {
             return NodeState.SUCCESS;
         }
-
+        if(brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit))
+        {
+            return NodeState.FAILURE;
+        }
         if (isTagActive || elapsedTime < transitionBuffer)
         {
             return NodeState.RUNNING;

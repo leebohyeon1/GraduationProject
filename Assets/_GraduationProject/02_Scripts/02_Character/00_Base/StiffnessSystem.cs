@@ -42,7 +42,7 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
             // 주인의 ApplyStun 함수를 호출하여 기절시킵니다.
             if(attackType < AttackType.Strong_1)
                 return;
-            // OnHeavyStagger(isCounterAttack);
+            OnHeavyStagger(true);
             _currentStiffness = 0; // 게이지 초기화
 
         }

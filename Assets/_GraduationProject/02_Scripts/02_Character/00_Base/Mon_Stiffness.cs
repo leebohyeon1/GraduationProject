@@ -16,12 +16,12 @@ public class Mon_Stiffness : StiffnessSystem
     }
     protected override void OnLightStagger()
     {
+        // _owner.ParrySystem.SetCounterAttack(true);
         _owner.ParrySystem.ApplyWeakStun(_weakStiffnessDuration);
-        _owner.ParrySystem.SetCounterAttack(true);
     }
     protected override void OnHeavyStagger(bool isCounterAttack = false)
     {
+        // _owner.ParrySystem.SetCounterAttack(true);
         _owner.ParrySystem.ApplyStun(_stiffnessDuration, isCounterAttack);
-        _owner.ParrySystem.SetCounterAttack(true);
     }
 }

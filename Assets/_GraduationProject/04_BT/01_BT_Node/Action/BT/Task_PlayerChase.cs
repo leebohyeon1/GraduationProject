@@ -31,12 +31,10 @@ public class Task_PlayerChase : BaseAttackNode
             _originalRotationSpeed = aiPath.rotationSpeed;
         }
 
-        Log("추격 준비 완료 (IsActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
     {
-        Log("추격 시작 (OnActionSOTriggered)");
         _isChasing = true;
         
         IAstarAI ai = runner.GetComponent<IAstarAI>();
@@ -75,7 +73,6 @@ public class Task_PlayerChase : BaseAttackNode
         {
             if (!_hasHit)
             {
-                Log("플레이어 도달 (Hit 판정 활성화)");
                 _hasHit = true;
                         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                         brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
@@ -122,7 +119,6 @@ public class Task_PlayerChase : BaseAttackNode
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
         
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

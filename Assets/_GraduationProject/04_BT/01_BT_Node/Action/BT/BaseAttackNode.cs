@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using BehaviorTree;
-using System.Collections.Generic;
 using Pathfinding;
-using System.Diagnostics;
-using System;
 
 /// <summary>
 /// 怨듦꺽 ?몃뱶??踰좎씠???대옒?? Physics.NonAlloc???ъ슜?섏뿬 GC ?좊떦??諛⑹??⑸땲??
@@ -20,8 +17,6 @@ public abstract class BaseAttackNode : Node
     [Tooltip("노드 최대 실행 시간(초)")]
     public float maxNodeDuration = 6.0f;
     [Tooltip("히트 확인 전까지 공격 상태 유지")]
-    public bool maintainAtk = false;
-    [Tooltip("공격 중 실행할 Action ScriptableObject 목록")]
     public EnemyUseAnything[] SO = null;
     [Tooltip("루프 공격 사용")]
     public bool LoopAttack = false;
@@ -253,7 +248,7 @@ public abstract class BaseAttackNode : Node
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
         }
     }
-
+    int i = 0;
     private void HandleHitDetection()
     {
         if (Handler == null || !Handler.IsHitWindowOpen) return;
@@ -295,12 +290,16 @@ public abstract class BaseAttackNode : Node
             if (col.gameObject == runner.gameObject) continue;
             if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
             {
+                Handler.CloseHitWindow();
+
+                i++;
                 _data.damageData.AttackerTransform = runner.transform;
+                Debug.Log("Hit Confirmed on Player: i" + i );
                 Character.TakeDamage(_data.damageData);
+
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
                 if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
-                if (!maintainAtk) Handler.CloseHitWindow();
             }
         }
     }
@@ -351,26 +350,5 @@ public abstract class BaseAttackNode : Node
         if (runner.aIPath != null) runner.aIPath.enableRotation = true;
     }
 
-    [Conditional("UNITY_EDITOR")]
-    protected void Log(string message, bool isError = false)
-    {
-        if (!debugMode) return;
-        string msg = string.Format("[{0} : {1}] {2}", this.GetType().Name, runner.name, message);
-        if (isError) 
-        {
-            UnityEngine.Debug.LogError(msg);
-        } 
-        else 
-        {
-        }
-    }
 
-    [Conditional("UNITY_EDITOR")]
-    protected void LogStatus(string context)
-    {
-        if (!debugMode) return;
-        IAstarAI ai = runner.GetComponent<IAstarAI>();
-        string status = string.Format("[{0}] State: {1}, Speed: {2}", context, runner.CurrentState, ai != null ? ai.maxSpeed.ToString() : "N/A");
-        Log(status);
-    }
 }
