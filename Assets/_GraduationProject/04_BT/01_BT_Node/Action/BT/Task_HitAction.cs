@@ -6,6 +6,8 @@ using System.Diagnostics.Contracts;
 public class Task_HitAction : Node
 {
     private int _entryFrame;
+    private float _hitStartTime;
+
 
     public override void OnEnter()
     {
@@ -13,7 +15,7 @@ public class Task_HitAction : Node
         if (Handler != null) Handler.ResetAllFlags();
         runner.AnimationEvent("Hit");
         runner.SetState(EnemyStateController.EnemyState.Hit);
-        brain.blackboard.SetValue("OnTaskHit", Time.time);
+        _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
         runner._stateController.SetLock(true);
         if (runner.Movement != null) runner.Movement.StopMovement();
         
@@ -22,7 +24,12 @@ public class Task_HitAction : Node
     protected override NodeState OnUpdate()
     {
         if (runner == null) return NodeState.FAILURE;
-
+        if(_hitStartTime != brain.blackboard.GetValue<float>("OnTaskHit"))
+        {
+        Debug.Log($"[Task_HitAction] OnUpdate called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
+            runner.AnimationEvent("Hit");
+            _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
+        }
         if (Time.frameCount <= _entryFrame + 1) return NodeState.RUNNING;
 
         if (Handler != null && Handler.IsActionFinished)
