@@ -221,23 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
   m_Name: Monster_a_Test
   m_EditorClassIdentifier: 
-  rootNode: {fileID: 1254360389698641468}
---- !u!114 &193999242879699279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: KeyCh
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 256, y: -67}
-  nodes:
-  - {fileID: 2225612242746855301}
-  services: []
+  rootNode: {fileID: 7471224271903653066}
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,7 +266,7 @@ MonoBehaviour:
   position: {x: 48, y: -15}
   nodes:
   - {fileID: -7610850223706687289}
-  - {fileID: 193999242879699279}
+  - {fileID: 0}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
   - {fileID: -8025809362345536030}
@@ -305,25 +289,6 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &2225612242746855301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: KeyCheck
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 458, y: -67}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 0
-    TargetState: 9
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
