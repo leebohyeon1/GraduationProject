@@ -187,11 +187,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             {
                 _owner.SetState(EnemyStateController.EnemyState.Hit);
                 _owner._aiController._aiBrain.blackboard.SetValue("OnTaskHit", Time.time);
-                
-
-                // _owner.AnimationEvent("Hit");
-                // _owner.Movement.StopMovement();
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
+                Debug.Log($"[EnemyHealth] Enemy hit! Current Health: {CurrentHealth}, Damage Taken: {finalDamage}");
             }
         }
 

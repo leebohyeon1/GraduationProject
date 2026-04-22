@@ -14,6 +14,7 @@ public class Stunned : Node
     
     private int _enterFrame;
     string[] attackSkills;
+    bool stunExit = false;
     public override void initNode()
     {
         base.initNode();
@@ -29,9 +30,13 @@ public class Stunned : Node
         {
             BlockAllAttacks();
         }
-            
+            stunExit = false;
         if (Handler != null) Handler.ResetAllFlags();
-        
+        if(runner.ParrySystem.CurrentStun == StunType.Weak)
+        {
+            brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit);
+            
+        }
         if (runner._animationBridge != null)
         {
             runner._animationBridge.ResetAllAnimationStates(); 
@@ -45,8 +50,11 @@ public class Stunned : Node
         }
 
         runner.Movement.StopMovement();
-        
+        runner._stateController.SetLock(false);
+        Debug.Log($"[Stunned] OnEnter called, Current Stun: {runner.ParrySystem.CurrentStun}");
+        brain.blackboard.SetValue("StunnedHit", true);
         runner.SetState(EnemyStateController.EnemyState.Stunned);
+        runner._stateController.SetLock(true);
         if(runner.Shield != null)
             runner.Shield.IsActive = false;
             
@@ -57,6 +65,10 @@ public class Stunned : Node
     {
         if (Time.frameCount <= _enterFrame + 1) return NodeState.RUNNING;
         runner.Movement.StopMovement();
+        if(stunExit)
+        {
+            return NodeState.FAILURE;
+        }
         if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
             runner.ParrySystem.ClearStun();
@@ -127,6 +139,7 @@ public class Stunned : Node
 
         brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
+        brain.blackboard.SetValue("StunnedHit", false);
         
         if(runner.Shield != null)
             runner.Shield.IsActive = true;
