@@ -13,6 +13,7 @@ public class Task_HitAction : Node
         if (Handler != null) Handler.ResetAllFlags();
         runner.AnimationEvent("Hit");
         runner.SetState(EnemyStateController.EnemyState.Hit);
+        brain.blackboard.SetValue("OnTaskHit", Time.time);
         runner._stateController.SetLock(true);
         if (runner.Movement != null) runner.Movement.StopMovement();
         
@@ -37,6 +38,7 @@ public class Task_HitAction : Node
         base.OnExit();
         
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
+        brain.blackboard.SetValue("OnTaskHit", 0f);
         
         runner._stateController.SetLock(false);
         if (runner.CurrentState == EnemyStateController.EnemyState.Hit)

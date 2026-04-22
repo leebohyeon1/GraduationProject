@@ -19,7 +19,6 @@ public class Task_AttackRange : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
-        Log("원거리 공격 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
@@ -31,7 +30,6 @@ public class Task_AttackRange : BaseAttackNode
         _hasFired = false;
 
         runner.transform.rotation = Quaternion.LookRotation(_attackDir);
-        Log("원거리 공격 시작 (OnActionSOTriggered) - 방향 설정: " + _attackDir);
     }
 
     protected override void UpdateMovement()
@@ -46,7 +44,6 @@ public class Task_AttackRange : BaseAttackNode
 
     private void Fire()
     {
-        Log("원거리 투사체 발사");
         Debug.Log(0);
         _hasFired = true;
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
@@ -68,7 +65,6 @@ public class Task_AttackRange : BaseAttackNode
     {
         base.SpecificCleanup();
         _hasFired = false;
-        Log("원거리 공격 종료 - 상태 초기화");
     }
     public override Node Clone()
     {
@@ -77,7 +73,6 @@ public class Task_AttackRange : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

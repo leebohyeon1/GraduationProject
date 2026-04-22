@@ -22,7 +22,6 @@ public class Task_PassingDash : BaseAttackNode
         _isDashing = false;
         runner.aIPath.enableRotation = false;
         runner.AnimationBool(Exittrigger, false);
-        Log("관통 대시 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
@@ -41,7 +40,6 @@ public class Task_PassingDash : BaseAttackNode
 
         runner.transform.rotation = Quaternion.LookRotation(direction);
         
-        Log("관통 대시 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isDashing = true;
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
@@ -63,7 +61,6 @@ public class Task_PassingDash : BaseAttackNode
 
         if (distToTarget <= arrivalThreshold)
         {
-            Log("관통 대시 목표 도달");
             runner.transform.position = _targetPos;
             _isDashing = false;
             runner.AnimationBool(Exittrigger, true);
@@ -83,7 +80,6 @@ public class Task_PassingDash : BaseAttackNode
 
         if (Physics.Raycast(currentPos + Vector3.up * 1.0f, moveDir, moveDistance + 1f, obstacleMask))
         {
-            Log("관통 대시 중 벽 충돌");
             _isDashing = false;
             runner.AnimationBool(Exittrigger, true);
             return;
@@ -101,7 +97,6 @@ public class Task_PassingDash : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;
