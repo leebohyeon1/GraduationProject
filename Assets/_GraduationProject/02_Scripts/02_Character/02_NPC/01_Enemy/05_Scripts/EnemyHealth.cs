@@ -186,8 +186,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             if (!_owner._aiController.IsActionable())
             {
                 _owner.SetState(EnemyStateController.EnemyState.Hit);
-                _owner.AnimationEvent("Hit");
-                _owner.Movement.StopMovement();
+                // _owner.AnimationEvent("Hit");
+                // _owner.Movement.StopMovement();
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
             }
         }
