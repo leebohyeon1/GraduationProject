@@ -29,7 +29,6 @@ public class Task_HitAction : Node
             return NodeState.SUCCESS;
         }
         runner.Movement.StopMovement();
-
         return NodeState.RUNNING;
     }
 

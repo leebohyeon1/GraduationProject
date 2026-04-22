@@ -56,7 +56,7 @@ public class Stunned : Node
     protected override NodeState OnUpdate()
     {
         if (Time.frameCount <= _enterFrame + 1) return NodeState.RUNNING;
-
+        runner.Movement.StopMovement();
         if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
         {
             runner.ParrySystem.ClearStun();
