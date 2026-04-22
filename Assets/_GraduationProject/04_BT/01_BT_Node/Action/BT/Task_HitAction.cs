@@ -18,7 +18,7 @@ public class Task_HitAction : Node
         _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
         runner._stateController.SetLock(true);
         if (runner.Movement != null) runner.Movement.StopMovement();
-        
+        Debug.Log($"[Task_HitAction] OnEnter called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
     }
 
     protected override NodeState OnUpdate()
