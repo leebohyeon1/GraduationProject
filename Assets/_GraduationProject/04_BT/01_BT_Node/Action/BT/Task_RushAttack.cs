@@ -58,7 +58,6 @@ public class Task_RushAttack : BaseAttackNode
         _rushState = RushState.Tracking;
         runner.AnimationBool("IsRushing", false);
         _currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 1);
-        Log("?뚯쭊 怨듦꺽 以鍮?(Tracking ?쒖옉)");
     }
 
     protected override void OnActionSOTriggered()
@@ -187,7 +186,6 @@ public class Task_RushAttack : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

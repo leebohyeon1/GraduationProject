@@ -12,7 +12,8 @@ namespace BehaviorTree
         protected override bool CheckCondition()
         {
             if (brain == null || brain.blackboard == null) return false;
-            return brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.OnTakeHit, false);
+            bool onTakeHit = brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit) &&  brain.blackboard.GetValue<float>("OnTaskHit") != Time.time;
+            return onTakeHit;
         }
 
         public override Node Clone()

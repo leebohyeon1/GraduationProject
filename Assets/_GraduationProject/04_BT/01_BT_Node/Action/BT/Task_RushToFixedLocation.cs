@@ -26,7 +26,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
         _rushStartTime = 0;
         _isRushing = false;
         runner.aIPath.enableRotation = false;
-        Log("돌진 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
@@ -44,7 +43,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
         _targetPos = info.node != null ? info.position : rawTarget;
 
-        Log("돌진 시작 (OnActionSOTriggered) - 실시간 목표 설정: " + _targetPos);
         
         _isRushing = true;
         _rushStartTime = Time.time;
@@ -67,7 +65,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (normalizedTime >= 1.0f)
         {
-            Log("돌진 시간 종료");
             _isRushing = false;
             return;
         }
@@ -102,7 +99,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
             }
             else
             {
-                Log("벽 충돌로 돌진 중단");
                 _isRushing = false;
                 return;
             }
@@ -110,7 +106,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (Vector3.Distance(runner.transform.position, runner.player.transform.position) <= hitRadius)
         {
-            Log("플레이어 접촉으로 돌진 중단");
             _isRushing = false;
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
@@ -119,7 +114,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (Vector3.Distance(runner.transform.position, _targetPos) < 0.1f)
         {
-            Log("목표 지점 도달");
             _isRushing = false;
         }
     }
@@ -134,7 +128,6 @@ public class Task_RushToFixedLocation : BaseAttackNode
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
         
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

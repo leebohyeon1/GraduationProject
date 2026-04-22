@@ -31,7 +31,6 @@ public class Task_BossFakeAttackNode : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.ExceptKey = this.ExceptKey;
         node.LoopAttack = this.LoopAttack;

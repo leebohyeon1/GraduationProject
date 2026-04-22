@@ -30,12 +30,10 @@ public class Task_HomingMissile : BaseAttackNode
     protected override void InitialMovementSetup()
     {
         _projectileInstance = null;
-        Log("유도 미사일 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
     {
-        Log("유도 미사일 발사 (OnActionSOTriggered)");
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null)
         {
@@ -90,7 +88,6 @@ public class Task_HomingMissile : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;
