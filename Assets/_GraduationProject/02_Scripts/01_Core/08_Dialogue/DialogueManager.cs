@@ -66,14 +66,15 @@ public class DialogueManager : MonoBehaviour
 
     private void CheckNarrationDialogue()
     {
-        if (_currentDialogue != null) return;
-
         var database = DataManager.Instance.DialogueDatabase;
         if (database == null) return;
 
         foreach (var dialogue in database.DialogueDataList)
         {
             if (DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
+            
+            // 현재 재생 중인 대화와 동일한 그룹이면 중복 실행 방지
+            if (_currentDialogue != null && _currentDialogue.DialogueGroupID == dialogue.DialogueGroupID) continue;
 
             bool allConditionsMet = true;
 
@@ -144,6 +145,9 @@ public class DialogueManager : MonoBehaviour
 
         _currentDialogue = null;
         DialogueCompleted?.Invoke();
+
+        // 대화가 끝난 직후, 이미 태그 조건이 충족된 다른 대화가 있는지 바로 확인
+        CheckNarrationDialogue();
     }
 
     private void NextDialogue()
