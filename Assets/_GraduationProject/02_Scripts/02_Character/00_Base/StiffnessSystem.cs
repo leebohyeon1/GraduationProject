@@ -43,8 +43,9 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
             if(attackType < AttackType.Strong_1)
                 return;
             OnHeavyStagger(true);
+            int finalStiffness = _currentStiffness;
             _currentStiffness = 0; // 게이지 초기화
-
+            OnStiffnessChanged?.Invoke(finalStiffness, _currentStiffness);
         }
         else
         {
