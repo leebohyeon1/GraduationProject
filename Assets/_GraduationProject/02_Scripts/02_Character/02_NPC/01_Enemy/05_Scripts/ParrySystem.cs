@@ -89,6 +89,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _stunExitTime = Time.time + stunDuration; // 스턴 지속 시간 설정  
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.AnimationBool("Stun", true); // 스턴 애니메이션 트리거
+        _owner.animHandler.PlayFeedback("Stun_FB"); // 스턴 피드백 재생
         CurrentState = EnemyState.Stunned;
 
         // _owner.SetState(EnemyStateController.EnemyState.Stunned);
