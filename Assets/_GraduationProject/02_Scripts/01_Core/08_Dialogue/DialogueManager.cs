@@ -130,6 +130,10 @@ public class DialogueManager : MonoBehaviour
         StopAutoNext();
 
         DataManager.Instance.GetGameData().CompleteDialogueSet.Add(_currentDialogue.DialogueGroupID);
+        foreach(var tag in _currentDialogue.ClearAddTagList)
+        {
+            GamePlayTagManager.Instance.AddTag(tag);
+        }
 
         _inputReader.SubmitEvent -= OnSubmit;
 
