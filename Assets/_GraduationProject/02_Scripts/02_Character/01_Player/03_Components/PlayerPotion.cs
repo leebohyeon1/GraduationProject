@@ -8,6 +8,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
     private InputReaderSO _inputReader;
 
     public event Action<int> OnPotionChange;
+    public event Action<int> OnMaxPotionChange;
 
     public int MaxPotion => _data != null ? (int)_data.Potion.Value : 3;
     public int CurrentPotion => _data != null ? _data.CurrentPotion : 0;
@@ -25,6 +26,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
         if (_data != null)
         {
             OnPotionChange?.Invoke(_data.CurrentPotion);
+            OnMaxPotionChange?.Invoke(MaxPotion);
         }
 
         // 리소스 해제 등록
@@ -36,6 +38,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
         _inputReader.PotionEvent -= OnPotionEvent;
 
         OnPotionChange = null;
+        OnMaxPotionChange = null;
     }
 
     /// <summary>
@@ -81,6 +84,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
         }
 
         _data.Potion.AddModifier(new StatModifier(amount, StatModifierType.Flat, this));
+        OnMaxPotionChange?.Invoke(MaxPotion);
     }
 
     private void OnPotionEvent()
