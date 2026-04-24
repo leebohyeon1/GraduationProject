@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9103972859717525140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
+  m_Name: Stunned(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Stunned
+  position: {x: 609, y: -59}
+  enableAttackBlock: 1
+  attackBlockDuration: 1
+--- !u!114 &-8813712887646084962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 608, y: -557}
+  exceptCondition:
+    key: 
+  key: 
+--- !u!114 &-8157817943079032596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4a1b3701220224ca30655ca70e7f7e, type: 3}
+  m_Name: Task_Hit Action(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Task_HitAction
+  position: {x: 608, y: 138}
+--- !u!114 &-7864576010380514528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4a1b3701220224ca30655ca70e7f7e, type: 3}
+  m_Name: Task_Hit Action(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Task_HitAction
+  position: {x: 610, y: -320}
+--- !u!114 &-6519674020135450153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Stun(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 426, y: -59}
+  nodes:
+  - {fileID: 4026387723518099330}
+  - {fileID: -9103972859717525140}
+  services: []
+--- !u!114 &-5745075312331053006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 426, y: 80}
+  nodes:
+  - {fileID: -2957594486774758430}
+  - {fileID: -8157817943079032596}
+  services: []
+--- !u!114 &-3982206498254555874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f1078cf888891459a9e448fec64e1f, type: 3}
+  m_Name: Action_Clear Stun(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Action_ClearStun
+  position: {x: 608, y: -243}
+  invertDelay: 0
+--- !u!114 &-2957594486774758430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f87976d46fb30743a042f1116875632, type: 3}
+  m_Name: Condition_Is Hit(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_IsHit
+  position: {x: 608, y: 58}
+  exceptCondition:
+    key: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
+  m_Name: Damage_SubTree
+  m_EditorClassIdentifier: Assembly-CSharp::SubTree
+  rootNode: {fileID: 5044749467504456421}
+--- !u!114 &1331982596687671171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
+  m_Name: Condition_Is Stunned(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
+  position: {x: 609, y: -464}
+  exceptCondition:
+    key: 
+  targetStunType: 1
+--- !u!114 &3105808730276394279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 406, y: -371}
+  nodes:
+  - {fileID: -8813712887646084962}
+  - {fileID: 1331982596687671171}
+  - {fileID: 6070978155942079284}
+  - {fileID: -7864576010380514528}
+  - {fileID: -3982206498254555874}
+  services: []
+--- !u!114 &4026387723518099330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
+  m_Name: Condition_Is Stunned(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
+  position: {x: 608, y: -136}
+  exceptCondition:
+    key: 
+  targetStunType: 3
+--- !u!114 &5044749467504456421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: Damage(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 253, y: 18}
+  nodes:
+  - {fileID: 3105808730276394279}
+  - {fileID: -6519674020135450153}
+  - {fileID: -5745075312331053006}
+  services: []
+--- !u!114 &6070978155942079284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f87976d46fb30743a042f1116875632, type: 3}
+  m_Name: Condition_Is Hit(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_IsHit
+  position: {x: 609, y: -387}
+  exceptCondition:
+    key: 
