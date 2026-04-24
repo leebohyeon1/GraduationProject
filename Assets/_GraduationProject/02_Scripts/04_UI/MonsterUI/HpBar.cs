@@ -7,7 +7,6 @@ public class HpBar : MonoBehaviour
     [Header("3D Components")]
     [SerializeField] private Renderer _hpRenderer; // 체력바 Quad의 MeshRenderer
     [SerializeField] private Renderer _stiffnessRenderer; // 경직도바 Quad의 MeshRenderer
-    [SerializeField] private Animator _animator;
 
     [Header("Target Object")]
     [SerializeField] private GameObject _object;
@@ -28,9 +27,7 @@ public class HpBar : MonoBehaviour
     private void Start()
     {
         if (_hpRenderer == null) _hpRenderer = GetComponent<Renderer>();
-        // 인스펙터에서 할당되지 않았다면 현재 오브젝트에서 Animator를 찾습니다.
-        if (_animator == null) _animator = GetComponent<Animator>();
-        
+
         _propBlock = new MaterialPropertyBlock();
 
         if (_object != null)
@@ -134,23 +131,6 @@ public class HpBar : MonoBehaviour
     private void ChangeStiffnessBar(int previousStiffness, int currentStiffness)
     {
         if (_stiffnessRenderer == null) return;
-
-        // 애니메이션 처리
-        if (_animator != null)
-        {
-            // Stiffness가 Threshold(보통 100)에 도달하면 CanStun을 true로 설정
-            if (currentStiffness >= _monStiffness.StiffnessThreshold)
-            {
-                _animator.SetBool("CanStun", true);
-            }
-
-            // 스턴이 발생하여 Stiffness가 초기화된 경우 (Threshold -> 0)
-            if (previousStiffness >= _monStiffness.StiffnessThreshold && currentStiffness == 0)
-            {
-                _animator.SetTrigger("Stun");
-                _animator.SetBool("CanStun", false);
-            }
-        }
 
         float targetFill = (float)currentStiffness / _monStiffness.StiffnessThreshold;
 

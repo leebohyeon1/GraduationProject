@@ -440,7 +440,8 @@ AnimatorState:
   m_Transitions:
   - {fileID: -2507773471831742706}
   - {fileID: -1391038449443358490}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: -5713306289934997525}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -531,6 +532,21 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-5713306289934997525
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d7638735448df4e8c0cfba3d1ed134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SetBoolOnState
+  boolParameterName: Counter
+  targetValueOnEnter: 0
+  resetOnExit: 0
 --- !u!1101 &-5425518545372511191
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2744,7 +2760,7 @@ AnimatorStateMachine:
     m_Position: {x: 120, y: -10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5878570911676427357}
-    m_Position: {x: 120, y: -150, z: 0}
+    m_Position: {x: 120, y: -170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5168611221923216316}
     m_Position: {x: -50, y: 320, z: 0}
