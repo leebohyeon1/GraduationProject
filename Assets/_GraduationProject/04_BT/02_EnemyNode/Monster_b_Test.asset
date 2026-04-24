@@ -54,38 +54,6 @@ MonoBehaviour:
   FrontAngle: 45
   Pos_Key: PressurePos
   Dir_Key: StrafeDir
---- !u!114 &-7778356412862204304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
-  m_Name: Stunned
-  m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 440, y: -92}
-  enableAttackBlock: 1
-  attackBlockDuration: 1
---- !u!114 &-7610850223706687289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Stun
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 262, y: -92}
-  nodes:
-  - {fileID: 8701554609853382117}
-  - {fileID: -7778356412862204304}
-  services: []
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,19 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
   position: {x: 1026, y: 428}
   angleThreshold: 360
---- !u!114 &-5122132994139582943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b4a1b3701220224ca30655ca70e7f7e, type: 3}
-  m_Name: Task_Hit Action
-  m_EditorClassIdentifier: Assembly-CSharp::Task_HitAction
-  position: {x: 440, y: -274}
 --- !u!114 &-2169847181082004984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,8 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 28, y: 5}
   nodes:
-  - {fileID: 5814425322028200221}
-  - {fileID: -7610850223706687289}
+  - {fileID: 2796073142034442830}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
   - {fileID: -8025809362345536030}
@@ -287,6 +241,20 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &2796073142034442830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Damage
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 273, y: 5}
+  subTreeToRun: {fileID: 11400000, guid: 6c305fddeac7edd4eba6d0c75d914b7e, type: 2}
 --- !u!114 &3615609726988489827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,23 +286,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 1023, y: -249}
   viewAngle: 90
---- !u!114 &5814425322028200221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 262, y: -356}
-  nodes:
-  - {fileID: 8455057256082979587}
-  - {fileID: -5122132994139582943}
-  services: []
 --- !u!114 &5851155588711365391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,37 +374,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
   position: {x: 436, y: -535}
   animationName: Hit
---- !u!114 &8455057256082979587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f87976d46fb30743a042f1116875632, type: 3}
-  m_Name: Condition_Is Hit
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_IsHit
-  position: {x: 440, y: -356}
-  exceptCondition:
-    key: 
---- !u!114 &8701554609853382117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
-  m_Name: Condition_Is Stunned
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 440, y: -181}
-  exceptCondition:
-    key: 
-  targetStunType: 3
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0
