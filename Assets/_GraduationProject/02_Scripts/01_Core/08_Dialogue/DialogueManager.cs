@@ -66,14 +66,16 @@ public class DialogueManager : MonoBehaviour
 
     private void CheckNarrationDialogue()
     {
-        if (_currentDialogue != null) return;
-
+        // 현재 대화가 있더라도 무시하고 새로운 조건을 체크하여 즉시 교체 가능하게 함
         var database = DataManager.Instance.DialogueDatabase;
         if (database == null) return;
 
         foreach (var dialogue in database.DialogueDataList)
         {
             if (DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
+            
+            // 현재 재생 중인 대화와 동일한 그룹이면 중복 실행 방지
+            if (_currentDialogue != null && _currentDialogue.DialogueGroupID == dialogue.DialogueGroupID) continue;
 
             bool allConditionsMet = true;
 
@@ -138,12 +140,23 @@ public class DialogueManager : MonoBehaviour
             _inputReader.SetInputMode(InputReaderSO.InputMode.Gameplay);
         }
 
-        _currentDialogue = null;
         DialogueCompleted?.Invoke();
+
+        DialogueDataSO dialogue = _currentDialogue;
+        _currentDialogue = null;
+
+        foreach (var tag in dialogue.ClearAddTagList)
+        {
+            GamePlayTagManager.Instance.AddTag(tag);
+        }
+
+  
     }
 
     private void NextDialogue()
     {
+        if (_currentDialogue == null) return;
+
         StopAutoNext();
         _currentDialogueIndex++;
 

@@ -174,7 +174,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             }
         }
         _owner.groupAi.CombatAll();
-        if (_delayCoroutine == null && !IsImmune(damageData.AttackType) && !_owner.ParrySystem._isStunned )
+        if (_delayCoroutine == null && !IsImmune(damageData.AttackType) && _owner.ParrySystem.CurrentStun != StunType.Full)
             _delayCoroutine = StartCoroutine(ActivateImmunityAfterDelay(MinorTime));
         
         bool isImmune = IsImmune(damageData.AttackType);
@@ -183,12 +183,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         if (!isImmune && !isBlocked )
         {
-            if (!_owner._aiController.IsActionable())
+            // 강스턴(Full)이 아닐 때만 Hit 상태 전환 허용
+            if (!_owner._aiController.IsActionable() || _owner.ParrySystem.CurrentStun == StunType.Weak)
             {
                 _owner.SetState(EnemyStateController.EnemyState.Hit);
-                _owner.AnimationEvent("Hit");
-                _owner.Movement.StopMovement();
+                _owner._aiController._aiBrain.blackboard.SetValue("OnTaskHit", Time.time);
                 _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, true);
+                
+                // 약스턴 중이라면 애니메이터 트리거를 명시적으로 호출하여 WeakStun 애니메이션을 끊어줌
+                if (_owner.ParrySystem.CurrentStun == StunType.Weak)
+                {
+                    _owner.animator.SetTrigger("Hit");
+                }
+                
+                Debug.Log($"[EnemyHealth] Enemy hit during {_owner.ParrySystem.CurrentStun} stun! Current Health: {CurrentHealth}");
             }
         }
 

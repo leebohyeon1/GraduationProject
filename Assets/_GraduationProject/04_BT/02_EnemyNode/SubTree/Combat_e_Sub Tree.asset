@@ -17,7 +17,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 10
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
@@ -76,23 +75,6 @@ MonoBehaviour:
     DeathKnockbackForce: 0
     IsMagic: 0
   maxTriggerRange: 15
---- !u!114 &-8141081078350006534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
-  m_Name: Service_Update Combat Vars
-  m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: 111, y: 171}
-  UpdateInterval: 0.3
-  CurrentTarget: {fileID: 0}
-  DistanceToTarget: DistanceToTarget
-  LocationKey: TargetLocation
 --- !u!114 &-8069466620819224126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +111,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
@@ -509,7 +490,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
@@ -593,24 +573,6 @@ MonoBehaviour:
   cooldownDuration: 0
   EnemyAttackData: 1
   attackData: {fileID: 11400000, guid: 990c0b2a45cbd534b94b20aebd4cc292, type: 2}
---- !u!114 &5931716973587244987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd338289a3119c246b1b17f53eee392e, type: 3}
-  m_Name: Weighted Random Selector
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.WeightedRandomSelector
-  position: {x: 853, y: 74}
-  nodes: []
-  services: []
-  weights:
-  - 50
-  - 50
 --- !u!114 &6335551191117435902
 MonoBehaviour:
   m_ObjectHideFlags: 0

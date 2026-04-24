@@ -25,14 +25,16 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _TRIPLANAR_SPACE_WORLD
+  - _USE_DISSOLVE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Opaque
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -64,7 +66,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GuideTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 37d2a481801d36848a2a9abd0932cd49, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -102,8 +104,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _AlphaClip: 0
-    - _AlphaToMask: 0
+    - _AlphaClip: 1
+    - _AlphaToMask: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -114,10 +116,10 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DissolveAmount: 0.5
+    - _DissolveAmount: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EdgeWidth: 0
+    - _EdgeWidth: 0.00259
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -139,7 +141,7 @@ Material:
     - _Surface: 0
     - _TRIPLANAR_SPACE: 0
     - _USE_BACK_COLOR: 0
-    - _USE_DISSOLVE: 0
+    - _USE_DISSOLVE: 1
     - _USE_TRIPLANAR_UVS: 0
     - _USE_VERTEX_DISPLACEMENT: 0
     - _Use_Metallic_Texture: 0
@@ -150,10 +152,10 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _Back_Color: {r: 4, g: 1.239216, b: 0, a: 0}
+    - _Back_Color: {r: 4, g: 1.239216, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveColor: {r: 8, g: 1.537255, b: 0, a: 0}
+    - _DissolveColor: {r: 29.508846, g: 0, b: 1.2359726, a: 1}
     - _EmissionColor: {r: 0.7490196, g: 0, b: 0, a: 1}
     - _Emission_Back_Color: {r: 4, g: 1.239216, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

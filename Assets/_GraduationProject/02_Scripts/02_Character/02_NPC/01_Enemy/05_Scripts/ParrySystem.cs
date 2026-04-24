@@ -1,3 +1,4 @@
+using Packages.Rider.Editor.UnitTesting;
 using UnityEngine;
 public enum StunType { None, Weak, Full, Any }
 
@@ -88,9 +89,10 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _stunExitTime = Time.time + stunDuration; // 스턴 지속 시간 설정  
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.AnimationBool("Stun", true); // 스턴 애니메이션 트리거
+        _owner.animHandler.PlayFeedback("Stun_FB"); // 스턴 피드백 재생
         CurrentState = EnemyState.Stunned;
 
-        _owner.SetState(EnemyStateController.EnemyState.Stunned);
+        // _owner.SetState(EnemyStateController.EnemyState.Stunned);
     }
     public void ApplyWeakStun(float stunDuration)
     {
@@ -101,9 +103,10 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         WasParriedThisFrame = true; // 패리 발생 플래그 설정
         _owner.Movement.StopMovement(); // 스턴 상태에서는 이동을 멈춥니다.
         _owner.AnimationBool("WeakStun", true); // 스턴 애니메이션 트리거
+        _owner.ParrySystem.DeactivateImmunity();
         CurrentState = EnemyState.Stunned;
 
-        _owner.SetState(EnemyStateController.EnemyState.Stunned);
+        // _owner.SetState(EnemyStateController.EnemyState.Stunned);
     }
     public void ClearStun()
     {
@@ -112,6 +115,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         _owner.AnimationBool("WeakStun", false);
         CurrentStun = StunType.None;
         CurrentState = EnemyState.StunnedExit;
+        _owner._stateController.SetLock(false);
         _owner.SetState(EnemyStateController.EnemyState.Idle);
     }
     public void StateNormal()

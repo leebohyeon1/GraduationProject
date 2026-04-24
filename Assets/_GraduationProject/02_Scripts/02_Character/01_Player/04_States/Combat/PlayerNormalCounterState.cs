@@ -115,13 +115,16 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             p_owner.Combat.AddCounterEnemy(parryable);
 
             baseStiffness = Mathf.RoundToInt(p_AttackConfig.Stiffness.Value);
-            p_AttackConfig.Stiffness.AddModifier(new StatModifier(p_owner.Data.CounterStiffnessMultiply[0], StatModifierType.PercentAdd, "NormalCounterStiffness"));
+            float stiffnessMultiplier = (p_owner.Data.CounterStiffnessMultiply != null && p_owner.Data.CounterStiffnessMultiply.Count > 0) 
+                ? p_owner.Data.CounterStiffnessMultiply[0] 
+                : 0f;
+            p_AttackConfig.Stiffness.AddModifier(new StatModifier(stiffnessMultiplier, StatModifierType.PercentAdd, "NormalCounterStiffness"));
         }
         
         if (transform.TryGetComponent<IStiffness>(out var stiffness))
         {
             int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
-            stiffness.AddStiffness(counterStiffness, p_AttackConfig.AttackType);
+            stiffness.AddStiffness(counterStiffness, AttackType.Normal_Counter);
             p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("NormalCounterStiffness");
         }
 
@@ -132,7 +135,10 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
             int baseDamage = (int)p_AttackConfig.Damage.Value;
 
             // 2. 카운터 배율 적용
-            StatModifier NormalCounterModifier = new StatModifier(p_owner.Data.CounterDamageMultiply[0], StatModifierType.PercentAdd, "NormalCounter");
+            float damageMultiplier = (p_owner.Data.CounterDamageMultiply != null && p_owner.Data.CounterDamageMultiply.Count > 0) 
+                ? p_owner.Data.CounterDamageMultiply[0] 
+                : 0f;
+            StatModifier NormalCounterModifier = new StatModifier(damageMultiplier, StatModifierType.PercentAdd, "NormalCounter");
             p_AttackConfig.Damage.AddModifier(NormalCounterModifier);
             
             // 3. 전체 카운터 데미지 계산
@@ -188,7 +194,10 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     DamageData damageData = projectile.Data;
                     damageData.DamageAmount += (int)p_AttackConfig.Damage.Value;
                     
-                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[0];
+                    float addedVelocity = (p_owner.Combat.ProjectileCounterAddedVelocity != null && p_owner.Combat.ProjectileCounterAddedVelocity.Count > 0) 
+                        ? p_owner.Combat.ProjectileCounterAddedVelocity[0] 
+                        : 0f;
+                    float speed = projectile.MoveSpeed + addedVelocity;
 
                     projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
