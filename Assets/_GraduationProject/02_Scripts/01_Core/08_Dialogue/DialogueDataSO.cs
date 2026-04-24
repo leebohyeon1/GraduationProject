@@ -23,6 +23,7 @@ public class DialogueDataSO : ScriptableObject
     public DialogueType DialogueType;
     public List<GamePlayTagSO> NeedConditionList;
     public List<DialogueData> DialogueList;
+    public List<GamePlayTagSO> ClearAddTagList;
 }
 
 
