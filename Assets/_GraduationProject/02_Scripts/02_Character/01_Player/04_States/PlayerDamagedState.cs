@@ -63,7 +63,19 @@ public class PlayerDamagedState : PlayerBaseState
     /// </summary>
     private void KnockbackMovement()
     {
-        Vector3 moveDirection = (p_owner.transform.position - _damageData.AttackerTransform.position).normalized;
+        Vector3 moveDirection;
+        
+        // 공격자 정보가 없는 경우 플레이어의 뒤쪽으로 넉백
+        if (_damageData.AttackerTransform != null)
+        {
+            moveDirection = (p_owner.transform.position - _damageData.AttackerTransform.position).normalized;
+        }
+        else
+        {
+            moveDirection = -p_owner.transform.forward;
+        }
+        
+        moveDirection.y = 0;
 
         StepData knockbackData = new StepData
         {

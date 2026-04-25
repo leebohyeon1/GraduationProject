@@ -157,7 +157,6 @@ public class Task_TeleportAttack : BaseAttackNode
         node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
         node.maxNodeDuration = maxNodeDuration;
-        node.maintainAtk = maintainAtk;
         node.SO = SO;
         node.LoopAttack = LoopAttack;
         node.NextBT = NextBT;

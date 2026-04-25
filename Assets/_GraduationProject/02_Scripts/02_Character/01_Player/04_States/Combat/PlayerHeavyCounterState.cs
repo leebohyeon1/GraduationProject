@@ -108,7 +108,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         if (transform.TryGetComponent<IStiffness>(out var stiffness))
         {
             int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
-            stiffness.AddStiffness(counterStiffness, p_AttackConfig.AttackType);
+            stiffness.AddStiffness(counterStiffness, AttackType.Strong_Counter);
             p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("HeavyCounterStiffness");
         }
 

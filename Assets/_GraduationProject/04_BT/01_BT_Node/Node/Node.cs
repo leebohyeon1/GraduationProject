@@ -29,9 +29,10 @@ namespace BehaviorTree
                 CurrentNodeName = this.name;
                 OnEnter();
                 isEntered = true;
+                // Debug.Log($"Entering Node: {this.name}");
             }
             NodeState currentState = OnUpdate();
-
+            
             if (currentState != NodeState.RUNNING)
             {
                 OnExit();

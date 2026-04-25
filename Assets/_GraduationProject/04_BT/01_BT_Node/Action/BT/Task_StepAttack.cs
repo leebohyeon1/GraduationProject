@@ -51,13 +51,11 @@ public class Task_StepAttack : BaseAttackNode
             runner.aIPath.enableRotation = false;
         }
 
-        Log("<color=cyan>[StepAttack]</color> 초기화 완료.");
     }
 
     protected override void OnActionSOTriggered()
     {
         _currentStep++;
-        Log($"<color=cyan>[StepAttack]</color> ActionSO 트리거 - Step {_currentStep}");
 
         if (phaseAttackDataKeys != null && _currentStep < phaseAttackDataKeys.Count)
         {
@@ -74,11 +72,11 @@ public class Task_StepAttack : BaseAttackNode
                     d.AttackerTransform = runner.transform;
                     _data.damageData = d;
                     runner.SetCurrentAttackData(_data);
-                    Log($"Step {_currentStep}: 데이터 교체 완료 -> <color=orange>{_data.AttackName}</color> (Phase {newData.Phase} <= {currentPhase})");
+                    // Log($"Step {_currentStep}: 데이터 교체 완료 -> <color=orange>{_data.AttackName}</color> (Phase {newData.Phase} <= {currentPhase})");
                 }
                 else
                 {
-                    Log($"Step {_currentStep}: 데이터 교체 건너뜀. 요구 Phase: {newData.Phase}, 현재: {currentPhase}");
+                    // Log($"Step {_currentStep}: 데이터 교체 건너뜀. 요구 Phase: {newData.Phase}, 현재: {currentPhase}");
                 }
             }
         }
@@ -98,7 +96,7 @@ public class Task_StepAttack : BaseAttackNode
                     runner.aIPath.isStopped = true;
                     runner.aIPath.canMove = false;
                 }
-                Log($"Step {_currentStep}: {_currentStepData.distance}m 이동 시작");
+                // Log($"Step {_currentStep}: {_currentStepData.distance}m 이동 시작");
             }
         }
     }
@@ -120,7 +118,7 @@ public class Task_StepAttack : BaseAttackNode
         if (currentDist <= stopDistance)
         {
             _isMoving = false;
-            Log($"<color=orange>[StepAttack]</color> 거리 유지 브레이크 작동 (거리: {currentDist:F2}m <= {stopDistance}m)");
+            // Log($"<color=orange>[StepAttack]</color> 거리 유지 브레이크 작동 (거리: {currentDist:F2}m <= {stopDistance}m)");
             return;
         }
 
@@ -154,7 +152,7 @@ public class Task_StepAttack : BaseAttackNode
             if (Physics.SphereCast(castOrigin, castRadius, finalMoveDir, out RaycastHit hit, castDistance, combinedMask))
             {
                 _isMoving = false;
-                Log($"<color=orange>[StepAttack]</color> 물리 충돌 예측 정지: {hit.collider.name}");
+                // Log($"<color=orange>[StepAttack]</color> 물리 충돌 예측 정지: {hit.collider.name}");
                 return;
             }
 

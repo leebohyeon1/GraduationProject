@@ -609,8 +609,6 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             damageData.KnockbackDuration = 0;
             damageData.KnockbackForce = 0;
 
-            damageContext.HasSuperArmor = true;
-
             AttackType counterType = AttackType.Normal_Counter;
             if(_isCharge)
             {

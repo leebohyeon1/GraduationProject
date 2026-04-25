@@ -28,7 +28,6 @@ public class Task_KSante : BaseAttackNode
         _isRushing = false;
         _rushStartTime = 0;
         runner.aIPath.enableRotation = false;
-        Log("KSante 준비 (ActionSO 대기 중)");
     }
 
     protected override void OnActionSOTriggered()
@@ -44,7 +43,6 @@ public class Task_KSante : BaseAttackNode
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
         _targetPos = playerPos + (dir * overshootDist) + offset;
 
-        Log("KSante 돌진 시작 (OnActionSOTriggered) - 목표 설정: " + _targetPos);
         _isRushing = false;
         _rushStartTime = Time.time;
         runner.AnimationBool("IsRushing", _isRushing);
@@ -66,7 +64,6 @@ public class Task_KSante : BaseAttackNode
 
         if (normalizedTime >= 1.0f)
         {
-            Log("KSante 돌진 시간 만료");
             StopRush();
             return;
         }
@@ -87,7 +84,6 @@ public class Task_KSante : BaseAttackNode
             }
             else
             {
-                Log("KSante 장애물 충돌");
                 StopRush();
                 return;
             }
@@ -98,14 +94,12 @@ public class Task_KSante : BaseAttackNode
             float distToPlayer = Vector3.Distance(runner.transform.position, runner.player.transform.position);
             if (distToPlayer <= hitRadius)
             {
-                Log("KSante 플레이어 포착 - 드래그 시작");
                 PlayerTORush();
             }
         }
 
         if (Vector3.Distance(runner.transform.position, _targetPos) < 0.1f)
         {
-            Log("KSante 목표 지점 도달");
             StopRush();
             return;
         }
@@ -180,7 +174,6 @@ public class Task_KSante : BaseAttackNode
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.maxNodeDuration = this.maxNodeDuration;
-        node.maintainAtk = this.maintainAtk;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

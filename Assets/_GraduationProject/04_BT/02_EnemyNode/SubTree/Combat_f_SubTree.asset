@@ -17,7 +17,6 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
@@ -33,9 +32,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   stepMovements:
-  - distance: 1.5
-    duration: 0.2
-    speed: 5
+  - distance: 4
+    duration: 2.2
+    speed: 30
     curve:
       serializedVersion: 2
       m_Curve:
@@ -48,15 +47,6 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0
         outWeight: 0
-      - serializedVersion: 3
-        time: 0.12673321
-        value: 0.62340707
-        inSlope: 1.1798668
-        outSlope: 1.1798668
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
@@ -69,9 +59,9 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
-  - distance: 1.5
-    duration: 0.2
-    speed: 5
+  - distance: 4
+    duration: 2.2
+    speed: 30
     curve:
       serializedVersion: 2
       m_Curve:
@@ -84,15 +74,6 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0
         outWeight: 0
-      - serializedVersion: 3
-        time: 0.069250256
-        value: 0.60344225
-        inSlope: 1.3364995
-        outSlope: 1.3364995
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
@@ -105,9 +86,9 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
-  - distance: 2
-    duration: 0.2
-    speed: 5
+  - distance: 6
+    duration: 3
+    speed: 30
     curve:
       serializedVersion: 2
       m_Curve:
@@ -120,15 +101,6 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0
         outWeight: 0
-      - serializedVersion: 3
-        time: 0.07332122
-        value: 0.58343166
-        inSlope: 1.3200243
-        outSlope: 1.3200243
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
@@ -290,13 +262,12 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
+  hitEscapeDelay: 3
   checkRangeOnEnter: 0
   rangeThreshold: 1
   ignoreYDistance: 1
@@ -306,36 +277,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   stepMovements:
-  - distance: 8
-    duration: 0.5
-    speed: 5
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  - distance: 0.1
-    duration: 0.1
-    speed: 5
+  - distance: 5
+    duration: 0.3
+    speed: 50
     curve:
       serializedVersion: 2
       m_Curve:
@@ -360,13 +304,49 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  - distance: 5
+    duration: 1.5
+    speed: 30
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2.2650602
+        outSlope: 2.2650602
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.20750001
+        value: 0.47
+        inSlope: 1.4669149
+        outSlope: 1.4669149
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0.23076932
+        outSlope: 0.23076932
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.27339637
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   phaseAttackDataKeys:
   - Attack04_f
   - Attack04_f_2
   obstacleMask:
     serializedVersion: 2
     m_Bits: 128
-  stopDistance: 1.5
+  stopDistance: 3
 --- !u!114 &-5296560851871955600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,7 +431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
   m_Name: Task_Pressure
   m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 1650, y: 1878}
+  position: {x: 1658, y: 1878}
   Pos_Key: PressurePos
   MoveSpeed: 4
   StoppingDist: 0.5
@@ -511,7 +491,6 @@ MonoBehaviour:
   nodes:
   - {fileID: 3908333448518032213}
   - {fileID: -6913182248499383878}
-  - {fileID: 871009755682865674}
   services: []
 --- !u!114 &-37486007609576150
 MonoBehaviour:
@@ -633,21 +612,6 @@ MonoBehaviour:
   - {fileID: 5944547210478650130}
   - {fileID: -656389063637527820}
   services: []
---- !u!114 &871009755682865674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
-  m_Name: Task_LookAtPlayer(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: 1263, y: 1998}
-  IsSee: 1
-  rotationSpeed: 5
 --- !u!114 &1372299091174696956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,12 +643,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65522a3d0428d3f41b34a40ca98c9fd5, type: 3}
   m_Name: Task_Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
-  position: {x: 1173, y: 566}
+  position: {x: 1179, y: 566}
   attackKey: 
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
@@ -900,9 +863,9 @@ MonoBehaviour:
   animationStateName: 
   transitionBuffer: 1
   maxNodeDuration: 30
-  maintainAtk: 0
-  SO: []
-  LoopAttack: 0
+  SO:
+  - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
+  LoopAttack: 1
   NextBT: 0
   debugMode: 1
   escapeOnHitConfirm: 1
@@ -916,8 +879,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   jumpRange: 22
-  jumpDuration: 2
-  jumpHeight: 10
+  jumpDuration: 1
+  jumpHeight: 8
   heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -931,6 +894,15 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.09524148
+      value: 0.6181601
+      inSlope: 2.7257295
+      outSlope: 2.7257295
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 0.5
       value: 1
       inSlope: 0
@@ -940,13 +912,40 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      time: 0.8688737
+      value: 0.98667866
+      inSlope: -0.062317125
+      outSlope: -0.062317125
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.92488545
+      value: 0.8738419
+      inSlope: -0.91983974
+      outSlope: -0.91983974
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.8419941
+    - serializedVersion: 3
+      time: 0.9552481
+      value: 0.53632545
+      inSlope: -3.7480562
+      outSlope: -3.7480562
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10691208
+      outWeight: 0.7206824
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -14.3256445
+      outSlope: -14.3256445
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10950523
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -974,7 +973,7 @@ MonoBehaviour:
     m_Bits: 8
   groundCheckHeight: 2
   groundCheckDistance: 6
-  TargetOffset: 6
+  TargetOffset: 0
 --- !u!114 &5944547210478650130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1084,7 +1083,7 @@ MonoBehaviour:
   exceptCondition:
     key: 
   target: {fileID: 0}
-  minRange: 6
+  minRange: 7
   maxRange: 8
   checkType: 0
 --- !u!114 &8581046059359873119
