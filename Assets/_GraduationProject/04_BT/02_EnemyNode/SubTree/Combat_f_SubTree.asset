@@ -606,7 +606,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 586, y: 16}
   nodes:
+  - {fileID: -2476203198282511686}
   - {fileID: 9071973449403005938}
+  - {fileID: 5944547210478650130}
+  - {fileID: -656389063637527820}
   services: []
 --- !u!114 &1372299091174696956
 MonoBehaviour:
@@ -639,7 +642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65522a3d0428d3f41b34a40ca98c9fd5, type: 3}
   m_Name: Task_Attack Range
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
-  position: {x: 959, y: 543}
+  position: {x: 1179, y: 566}
   attackKey: 
   animationStateName: 
   transitionBuffer: 1
@@ -731,73 +734,6 @@ MonoBehaviour:
   - {fileID: 3686387739548344111}
   services:
   - {fileID: 0}
---- !u!114 &3424819145581045327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f09f63e36174254b65d0bca56e63bdb, type: 3}
-  m_Name: Task_Parabolic Mine
-  m_EditorClassIdentifier: Assembly-CSharp::Task_ParabolicMine
-  position: {x: 1179, y: 543}
-  attackKey: Attack02_f
-  animationStateName: 
-  transitionBuffer: 1
-  maxNodeDuration: 6
-  SO: []
-  LoopAttack: 0
-  NextBT: 0
-  debugMode: 0
-  escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
-  checkRangeOnEnter: 0
-  rangeThreshold: 1
-  ignoreYDistance: 1
-  allowOutOfCombat: 0
-  ExceptKey: IsAttacking
-  _hitMasks:
-    serializedVersion: 2
-    m_Bits: 128
-  projectilePrefab: {fileID: 7957734241402798331, guid: c0cce47f9d4b3444d9371347dc40eb26, type: 3}
-  spawnOffset: {x: 0, y: 1, z: 0.5}
-  projectileDuration: 1.2
-  jumpHeight: 2.5
-  damageData:
-    AttackerTransform: {fileID: 0}
-    AttackType: 0
-    DamageAmount: 100
-    StiffnessAmount: 0
-    KnockbackCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
-    DeathKnockbackDuration: 0
-    DeathKnockbackForce: 0
-    IsMagic: 0
-  mineDuration: 4
-  detectRadius: 2.5
-  explodeDelay: 0.35
-  explosionDamage: 10
-  explosionRadius: 2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  maxTriggerRange: 25
-  feedbackName: 
 --- !u!114 &3436366860465734077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,7 +879,7 @@ MonoBehaviour:
     m_Bits: 128
   jumpRange: 22
   jumpDuration: 1
-  jumpHeight: 4
+  jumpHeight: 8
   heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -1069,7 +1005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 1179, y: 404}
+  position: {x: 1177, y: 412}
   exceptCondition:
     key: 
   key: HasAttackToken
@@ -1085,7 +1021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1179, y: 466}
+  position: {x: 1179, y: 489}
   exceptCondition:
     key: 
   skillName: Attack02_f
@@ -1206,5 +1142,5 @@ MonoBehaviour:
   - {fileID: 3668510145703515392}
   - {fileID: 6434523766644697634}
   - {fileID: 6495900497246085100}
-  - {fileID: 3424819145581045327}
+  - {fileID: 1467670744796997601}
   services: []
