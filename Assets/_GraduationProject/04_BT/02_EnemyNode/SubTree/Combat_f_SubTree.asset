@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f09f63e36174254b65d0bca56e63bdb, type: 3}
   m_Name: Task_Parabolic Mine
   m_EditorClassIdentifier: Assembly-CSharp::Task_ParabolicMine
-  position: {x: 1136, y: -72}
+  position: {x: 1134, y: -72}
   attackKey: Attack02_f
   animationStateName: 
   transitionBuffer: 1
@@ -504,30 +504,57 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   projectilePrefab: {fileID: 7957734241402798331, guid: c0cce47f9d4b3444d9371347dc40eb26, type: 3}
-  spawnOffset: {x: 0, y: 1, z: 0.5}
-  projectileDuration: 1.2
-  jumpHeight: 2.5
+  spawnOffset: {x: -1.23, y: 3.165, z: 1.794}
+  projectileDuration: 1
+  jumpHeight: 3.5
   damageData:
     AttackerTransform: {fileID: 0}
-    AttackType: 0
-    DamageAmount: 0
-    StiffnessAmount: 0
+    AttackType: 9
+    DamageAmount: 20
+    StiffnessAmount: 20
     KnockbackCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.09555459
+        value: 0.69442725
+        inSlope: 1.2005575
+        outSlope: 1.2005575
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    KnockbackDuration: 0
-    KnockbackForce: 0
+    KnockbackDuration: 10
+    KnockbackForce: 10
     DeathKnockbackDuration: 0
     DeathKnockbackForce: 0
-    IsMagic: 0
+    IsMagic: 1
   mineDuration: 6
-  detectRadius: 2.5
+  detectRadius: 3.5
   explodeDelay: 0.5
   explosionDamage: 20
-  explosionRadius: 2
+  explosionRadius: 3.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
