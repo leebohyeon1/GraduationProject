@@ -16,9 +16,9 @@ public class Task_ParabolicMine : BaseAttackNode
     /// </summary>
     public GameObject projectilePrefab;
     /// <summary>
-    /// 몬스터 프리팹에서 사용할 발사 위치 오브젝트 이름입니다.
+    /// 발사 위치 오프셋입니다.
     /// </summary>
-    public string spawnPointName = "LaunchPoint";
+    public Vector3 spawnOffset = new Vector3(0f, 1.0f, 0.5f);
     /// <summary>
     /// 포물선 비행 총 시간입니다.
     /// </summary>
@@ -103,7 +103,7 @@ public class Task_ParabolicMine : BaseAttackNode
             return;
         }
 
-        Vector3 spawnPosition = GetSpawnPosition();
+        Vector3 spawnPosition = runner.transform.position + (runner.transform.rotation * spawnOffset);
         Vector3 capturedTargetPosition = runner.player.transform.position;
         Vector3 lookDirection = capturedTargetPosition - spawnPosition;
         lookDirection.y = 0f;
@@ -171,7 +171,7 @@ public class Task_ParabolicMine : BaseAttackNode
         }
 
         Quaternion lockedRotation = Quaternion.LookRotation(aimForward);
-        Vector3 spawnPosition = GetSpawnPosition();
+        Vector3 spawnPosition = runner.transform.position + (lockedRotation * spawnOffset);
         brain.blackboard.SetValue(_hasFiredKey, true);
 
         if (projectilePrefab != null)
@@ -232,48 +232,6 @@ public class Task_ParabolicMine : BaseAttackNode
         _hasFiredKey = resolvedAttackKey + HasFiredKeySuffix;
     }
 
-    private Vector3 GetSpawnPosition()
-    {
-        Transform spawnPoint = ResolveSpawnPoint();
-        return spawnPoint != null ? spawnPoint.position : runner.transform.position;
-    }
-
-    private Transform ResolveSpawnPoint()
-    {
-        if (runner == null)
-        {
-            return null;
-        }
-
-        if (runner.Data != null && runner.Data.LaunchPoint != null)
-        {
-            return runner.Data.LaunchPoint;
-        }
-
-        Transform launchPoint = null;
-        if (!string.IsNullOrEmpty(spawnPointName))
-        {
-            launchPoint = runner.transform.Find(spawnPointName);
-        }
-
-        if (launchPoint == null)
-        {
-            launchPoint = runner.transform.Find("LaunchPoint");
-        }
-
-        if (runner.Data != null && launchPoint != null)
-        {
-            runner.Data.LaunchPoint = launchPoint;
-        }
-
-        if (launchPoint == null)
-        {
-            Debug.LogWarning($"[Task_ParabolicMine] Spawn point '{spawnPointName}' not found on {runner.name}. Fallback to runner position.");
-        }
-
-        return launchPoint;
-    }
-
     public override Node Clone()
     {
         var node = Instantiate(this);
@@ -290,7 +248,7 @@ public class Task_ParabolicMine : BaseAttackNode
         node.ignoreYDistance = ignoreYDistance;
         node.allowOutOfCombat = allowOutOfCombat;
         node.projectilePrefab = projectilePrefab;
-        node.spawnPointName = spawnPointName;
+        node.spawnOffset = spawnOffset;
         node.projectileDuration = projectileDuration;
         node.jumpHeight = jumpHeight;
         node.damageData = damageData;
