@@ -10,7 +10,7 @@ public class Condition_IsStunned : ConditionNode
     protected override bool CheckCondition()
     {
         if (targetStunType == StunType.Any) return runner != null && runner.ParrySystem._isStunned;
-            Debug.Log($"[Condition_IsStunned] Checking stun condition: Target Stun Type: {targetStunType}, Current Stun: {runner?.ParrySystem.CurrentStun}");
+            // Debug.Log($"[Condition_IsStunned] Checking stun condition: Target Stun Type: {targetStunType}, Current Stun: {runner?.ParrySystem.CurrentStun}");
         return runner != null && runner.ParrySystem.CurrentStun == targetStunType;
     }
 

@@ -41,6 +41,7 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
 
     public void TakeDamage(DamageData damageData)
     {
+        Debug.Log($"[TotemDestructibleObject] Received damage. amount={damageData.DamageAmount}, type={damageData.AttackType}, object={name}");
         if (IsDead)
         {
             return;
@@ -70,6 +71,7 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
 
     private bool CanApplyDamage(AttackType attackType)
     {
+        Debug.Log($"[TotemDestructibleObject] Checking if can apply damage. attackType={attackType}, destructibleType={_destructibleType}, object={name}");
         if (_destructibleType == TotemDestructibleType.Fragile)
         {
             return true;
