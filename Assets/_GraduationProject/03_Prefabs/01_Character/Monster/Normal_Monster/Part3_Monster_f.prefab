@@ -2622,7 +2622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_AnimationEventHandler
   _feedbacks:
-  - name: Monster_f_Shot_FB
+  - name: Monster_f_Shoot_FB
     feedback: {fileID: 870125267446648264}
     offset: {x: 0, y: 0, z: 0}
     Phase: 0
@@ -5746,7 +5746,7 @@ GameObject:
   - component: {fileID: 2807121852101520972}
   - component: {fileID: 870125267446648264}
   m_Layer: 8
-  m_Name: Monster_f_Shot_FB
+  m_Name: Monster_f_Shoot_FB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6186,8 +6186,8 @@ MonoBehaviour:
         DeclaredDuration: 0
         ForceStopAction: 0
         StopAction: 0
-        PositionMode: 0
-        InstantiateParticlesPosition: {fileID: 0}
+        PositionMode: 1
+        InstantiateParticlesPosition: {fileID: 1220995541340910205}
         TargetWorldPosition: {x: 0, y: 0, z: 0}
         Offset: {x: 0, y: 0, z: 0}
         NestParticles: 1
@@ -15957,7 +15957,8 @@ Transform:
   m_LocalPosition: {x: -0.44723967, y: 0, z: -0.000000114440915}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1220995541340910205}
   m_Father: {fileID: 8087650493149817996}
   m_LocalEulerAnglesHint: {x: 0.0000030934002, y: 0.000027773076, z: -5.934667}
 --- !u!1 &7241543095981851972
@@ -16569,6 +16570,37 @@ MonoBehaviour:
           ButtonText: Debug Stop Sound
         ResetSequentialIndexButton:
           ButtonText: Reset Sequential Index
+--- !u!1 &7354945550110060476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1220995541340910205}
+  m_Layer: 0
+  m_Name: LaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1220995541340910205
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354945550110060476}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5145693802583210093}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7421429471805875561
 GameObject:
   m_ObjectHideFlags: 0
