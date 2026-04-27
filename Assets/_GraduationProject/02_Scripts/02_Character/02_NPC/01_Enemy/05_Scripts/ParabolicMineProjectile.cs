@@ -6,6 +6,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class ParabolicMineProjectile : MonoBehaviour
 {
+    private static readonly Collider[] ExplosionHitBuffer = new Collider[8];
+
     private enum MineState
     {
         None,
@@ -55,6 +57,8 @@ public class ParabolicMineProjectile : MonoBehaviour
     private LayerMask _playerLayerMask;
 
     private string _feedbackName;
+    private Collider[] _selfColliders;
+    private int _enemyLayer;
 
     private bool _hasArmedTrigger;
     private bool _hasAppliedDamage;
@@ -108,6 +112,7 @@ public class ParabolicMineProjectile : MonoBehaviour
         _explodeTriggerTime = -1f;
 
         CachePlayerReferences();
+        IgnoreOwnerAndEnemyCollisions();
 
         _cachedTransform.position = _startPosition;
         Vector3 initialDirection = _targetPosition - _startPosition;
@@ -120,6 +125,8 @@ public class ParabolicMineProjectile : MonoBehaviour
     private void Awake()
     {
         _cachedTransform = transform;
+        _selfColliders = GetComponentsInChildren<Collider>(true);
+        _enemyLayer = LayerMask.NameToLayer("Enemy");
 
         Collider ownCollider = GetComponent<Collider>();
         if (ownCollider != null)
@@ -220,7 +227,8 @@ public class ParabolicMineProjectile : MonoBehaviour
     {
         if (_mineDuration > 0f && Time.time - _armedStartTime >= _mineDuration)
         {
-            FinishWithoutExplosion();
+            Debug.Log("[ParabolicMineProjectile] Mine duration expired -> force explode");
+            ExplodeNow(null);
             return;
         }
 
@@ -283,6 +291,25 @@ public class ParabolicMineProjectile : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        HandleContact(other, other != null ? other.ClosestPoint(_cachedTransform.position) : _cachedTransform.position);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision == null)
+        {
+            return;
+        }
+
+        Vector3 contactPoint = collision.contactCount > 0
+            ? collision.GetContact(0).point
+            : _cachedTransform.position;
+
+        HandleContact(collision.collider, contactPoint);
+    }
+
     private bool IsPlayerCollider(Collider hitCollider)
     {
         if (_playerTransform == null || hitCollider == null)
@@ -311,6 +338,101 @@ public class ParabolicMineProjectile : MonoBehaviour
         _currentPosition = dropStartPosition;
         _cachedTransform.position = _currentPosition;
         _dropSpeed = Mathf.Max(4f, Mathf.Abs(_currentPosition.y - _dropTargetPosition.y) / DefaultDropDuration);
+    }
+
+    private void HandleContact(Collider other, Vector3 contactPoint)
+    {
+        if (_state == MineState.Exploding || _state == MineState.Finished)
+        {
+            return;
+        }
+
+        if (other == null || (_owner != null && other.gameObject == _owner))
+        {
+            return;
+        }
+
+        if (_enemyLayer >= 0 && other.gameObject.layer == _enemyLayer)
+        {
+            IgnoreCollider(other);
+            return;
+        }
+
+        int otherLayerMask = 1 << other.gameObject.layer;
+
+        if (_state != MineState.Flying)
+        {
+            return;
+        }
+
+        if ((_wallLayerMask.value & otherLayerMask) != 0)
+        {
+            BeginWallDrop(contactPoint);
+            return;
+        }
+
+        if ((_groundLayerMask.value & otherLayerMask) != 0)
+        {
+            ArmMine(contactPoint);
+        }
+    }
+
+    private void IgnoreOwnerAndEnemyCollisions()
+    {
+        if (_owner != null)
+        {
+            IgnoreCollisionsWithGameObject(_owner);
+        }
+
+        if (_enemyLayer < 0)
+        {
+            return;
+        }
+
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            Enemy foundEnemy = enemies[i];
+            if (foundEnemy == null)
+            {
+                continue;
+            }
+
+            IgnoreCollisionsWithGameObject(foundEnemy.gameObject);
+        }
+    }
+
+    private void IgnoreCollisionsWithGameObject(GameObject targetObject)
+    {
+        if (targetObject == null || _selfColliders == null)
+        {
+            return;
+        }
+
+        Collider[] targetColliders = targetObject.GetComponentsInChildren<Collider>(true);
+        for (int i = 0; i < targetColliders.Length; i++)
+        {
+            IgnoreCollider(targetColliders[i]);
+        }
+    }
+
+    private void IgnoreCollider(Collider targetCollider)
+    {
+        if (targetCollider == null || _selfColliders == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _selfColliders.Length; i++)
+        {
+            Collider selfCollider = _selfColliders[i];
+            if (selfCollider == null || selfCollider == targetCollider)
+            {
+                continue;
+            }
+
+            Physics.IgnoreCollision(selfCollider, targetCollider, true);
+        }
     }
 
     private Vector3 ResolveGroundPoint(Vector3 preferredPosition, Vector3 fallbackPosition)
@@ -394,10 +516,31 @@ public class ParabolicMineProjectile : MonoBehaviour
             return;
         }
 
-        if (IsPlayerWithinRadius(_cachedTransform.position, _explosionRadius))
+        if (IsPlayerInsideExplosionRange())
         {
             ApplyDamage(_playerHealth);
         }
+    }
+
+    private bool IsPlayerInsideExplosionRange()
+    {
+        int hitCount = Physics.OverlapSphereNonAlloc(
+            _cachedTransform.position,
+            _explosionRadius,
+            ExplosionHitBuffer,
+            _playerLayerMask,
+            QueryTriggerInteraction.Collide);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider hitCollider = ExplosionHitBuffer[i];
+            if (IsPlayerCollider(hitCollider))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool ApplyDamage(PlayerHealth target)
@@ -453,10 +596,4 @@ public class ParabolicMineProjectile : MonoBehaviour
         _cachedTransform.rotation = Quaternion.LookRotation(direction.normalized);
     }
 
-    private void FinishWithoutExplosion()
-    {
-        Debug.Log("[ParabolicMineProjectile] Mine expired without exploding");
-        _state = MineState.Finished;
-        Destroy(gameObject);
-    }
 }
