@@ -49,6 +49,19 @@ public abstract class BaseAttackNode : Node
     [Tooltip("히트 판정 레이어 마스크")]
     [SerializeField] private LayerMask _hitMasks = 1<<7;
 
+
+    [Header("Speed Scaling Settings")]
+    [SerializeField] private bool ChangeSpeed = false;
+    [Tooltip("애니메이션 속도가 증가하기 시작하는 체력 비율 (0.5 = 50%)")]
+    [SerializeField] private float _startHealthThreshold = 0.5f;
+    
+    [Tooltip("최대 애니메이션 속도에 도달하는 체력 비율 (0.1 = 10%)")]
+    [SerializeField] private float _maxSpeedThreshold = 0.1f;
+    
+    [Tooltip("도달할 수 있는 최대 애니메이션 속도")]
+    [SerializeField] private float _maxAnimationSpeed = 2.0f;
+
+
     protected EnemyAttackData _data;
     protected float _nodeEntryTime;
     protected int _entryFrame; 
@@ -119,8 +132,48 @@ public abstract class BaseAttackNode : Node
         if (cc != null) { _originalStepOffset = cc.stepOffset; cc.stepOffset = 0f; }
 
         InitialMovementSetup();
+        SpeedUp();
     }
+    private void SpeedRecovery()
+    {
+        if (!ChangeSpeed) return;
 
+        runner.animator.speed = 1.0f;
+        if (Handler != null)
+        {
+            Handler.SpeedMultiplier = 1.0f;
+        }
+    }
+    private void SpeedUp()
+    {
+        if (!ChangeSpeed) return;
+
+        float targetSpeed = 1.0f;
+
+        // 현재 체력 비율 계산
+        float healthRatio = (float)runner.EnemyHealth.CurrentHealth / runner.EnemyHealth.MaxHealth;
+
+        // 공격 관련 상태인지 확인
+        if (runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        {
+            
+            // 체력이 임계치 이하일 때 속도 계산
+            if (healthRatio <= _startHealthThreshold)
+            {
+                float t = Mathf.InverseLerp(_startHealthThreshold, _maxSpeedThreshold, healthRatio);
+                targetSpeed = Mathf.Lerp(1.0f, _maxAnimationSpeed, t);
+            }
+        }
+
+        // 애니메이터 속도 적용
+        runner.animator.speed = targetSpeed;
+
+        // 이펙트(피드백) 핸들러 속도 적용
+        if (Handler != null)
+        {
+            Handler.SpeedMultiplier = targetSpeed;
+        }
+    }
     protected sealed override NodeState OnUpdate()
     {
         if (_isActionFinishedInternally) return NodeState.FAILURE;
@@ -176,6 +229,7 @@ public abstract class BaseAttackNode : Node
     {
         runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         CleanupAllStates();
+        SpeedRecovery();
     }
 
     public sealed override void Abort() { if (isEntered) { CleanupAllStates(); isEntered = false; } }
