@@ -55,27 +55,14 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         }
     }
 
-    // public void KsanteKnockback()
-    // {
-    //     KsanteAtk?.Invoke();
-    // }
-    /// <summary>
-    /// Marks action as active.
-    /// </summary>
     public void ActivateAction()
     {
         IsActive = true;
     }
-    /// <summary>
-    /// Marks action as inactive.
-    /// </summary>
     public void DeactivateAction()
     {
         IsActive = false;
     }
-    /// <summary>
-    /// Opens hit window if current phase allows it.
-    /// </summary>
     public void OpenHitWindow(int phase = 0)
     {
         if(phase <= _owner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase))
@@ -84,17 +71,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             Debug.Log($"[HitWindow Open] {_owner.name} phase={phase}");
         }
     }
-    /// <summary>
-    /// Closes hit window.
-    /// </summary>
     public void CloseHitWindow()
     {
         IsHitWindowOpen = false;
         Debug.Log($"[HitWindow Close] {_owner.name}");
     }
-    /// <summary>
-    /// Marks action as finished.
-    /// </summary>
     public void FinishAction()
     {
         IsActionFinished = true;

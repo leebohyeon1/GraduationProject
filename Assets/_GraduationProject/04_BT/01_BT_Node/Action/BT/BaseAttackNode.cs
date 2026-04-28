@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
+using System;
 
 /// <summary>
 /// 怨듦꺽 ?몃뱶??踰좎씠???대옒?? Physics.NonAlloc???ъ슜?섏뿬 GC ?좊떦??諛⑹??⑸땲??
@@ -22,6 +23,7 @@ public abstract class BaseAttackNode : Node
     public bool LoopAttack = false;
     [Tooltip("즉시 성공 처리 후 다음 BT 분기 이동")]
     public bool NextBT = false;
+    public float ExitDelay = 0f;
     [Tooltip("노드 내부 디버그 로그 사용 여부")]
     public bool debugMode = false;
 
@@ -205,7 +207,7 @@ public abstract class BaseAttackNode : Node
         if (!isTagActive) return elapsedTime > transitionBuffer ? NodeState.FAILURE : NodeState.RUNNING;
 
         bool isInTransition = runner.animator.IsInTransition(0);
-        if (isInTransition && !_wasInTransition) if (Handler != null) Handler.ResetAllFlags();
+        if (isInTransition && !_wasInTransition) 
         _wasInTransition = isInTransition;
 
         HandleCommonSystems(stateInfo, nextStateInfo);
@@ -227,6 +229,25 @@ public abstract class BaseAttackNode : Node
 
     public sealed override void OnExit()
     {
+        if(ExitDelay > 0f)
+        {
+            runner.StartCoroutine(WaitAndExit(ExitDelay));
+        }
+        else
+        {
+            PerformExit();
+        }
+    }
+
+    private System.Collections.IEnumerator WaitAndExit(float exitDelay)
+    {
+        yield return new UnityEngine.WaitForSeconds(exitDelay);
+        PerformExit();
+    }
+
+    private void PerformExit()
+    {
+        // Debug.Log($"[Attack Node Exit] {runner.name} exited attack node for {_data.AttackName}");
         runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         CleanupAllStates();
         SpeedRecovery();
@@ -297,6 +318,7 @@ public abstract class BaseAttackNode : Node
     {
         if (!Handler.IsActive && runner.player != null)
         {
+            Debug.Log("Rotating towards player at attack moment.");
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
