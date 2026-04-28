@@ -47,7 +47,7 @@ public class Task_HomingMissile : BaseAttackNode
         if (dirToPlayer != Vector3.zero) runner.transform.rotation = Quaternion.LookRotation(dirToPlayer);
 
         Vector3 spawnPos = runner.transform.position + runner.transform.TransformDirection(spawnOffset);
-        _projectileInstance = Instantiate(projectilePrefab, spawnPos, runner.transform.rotation);
+        _projectileInstance = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPos, runner.transform.rotation);
 
         if (_projectileInstance.TryGetComponent<HomingProjectile>(out var projectileScript))
         {
@@ -64,6 +64,11 @@ public class Task_HomingMissile : BaseAttackNode
                 StraightSpeed
             );
         }
+        else
+        {
+            ProjectilePoolManager.ReleaseProjectile(_projectileInstance);
+            _projectileInstance = null;
+        }
     }
 
     protected override void UpdateMovement()
@@ -79,7 +84,7 @@ public class Task_HomingMissile : BaseAttackNode
         }
     }
 
-    protected override bool IsMovementFinished => _projectileInstance == null && (Time.time - _nodeEntryTime > transitionBuffer + 0.5f);
+    protected override bool IsMovementFinished => (_projectileInstance == null || !_projectileInstance.activeInHierarchy) && (Time.time - _nodeEntryTime > transitionBuffer + 0.5f);
 
     public override Node Clone()
     {
@@ -87,7 +92,6 @@ public class Task_HomingMissile : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

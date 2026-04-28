@@ -49,10 +49,14 @@ public class Task_AttackRange : BaseAttackNode
 
         if (projectilePrefab != null)
         {
-            GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
+            GameObject bulletObj = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
                 projectileScript.Setup(runner, _attackDir, projectileSpeed, runner.gameObject, damageData);
+            }
+            else
+            {
+                ProjectilePoolManager.ReleaseProjectile(bulletObj);
             }
         }
         Handler.CloseHitWindow();
@@ -68,7 +72,6 @@ public class Task_AttackRange : BaseAttackNode
         node.attackKey = this.attackKey;
         node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

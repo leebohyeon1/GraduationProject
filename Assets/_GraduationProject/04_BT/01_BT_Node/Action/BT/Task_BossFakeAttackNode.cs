@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_BossFakeAttackNode", menuName = "BehaviorTree/Action/Task_BossFakeAttackNode")]

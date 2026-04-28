@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_TeleportAttack", menuName = "BehaviorTree/Action/Task_TeleportAttack")]
@@ -156,7 +156,6 @@ public class Task_TeleportAttack : BaseAttackNode
         node.attackKey = attackKey;
         node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
-        node.maxNodeDuration = maxNodeDuration;
         node.SO = SO;
         node.LoopAttack = LoopAttack;
         node.NextBT = NextBT;

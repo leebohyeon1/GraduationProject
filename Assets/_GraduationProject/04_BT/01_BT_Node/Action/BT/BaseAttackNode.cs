@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 using System;
@@ -15,8 +15,6 @@ public abstract class BaseAttackNode : Node
     public string animationStateName = "";
     [Tooltip("태그 진입 대기 유예 시간")]
     public float transitionBuffer = 1f;
-    [Tooltip("노드 최대 실행 시간(초)")]
-    public float maxNodeDuration = 6.0f;
     [Tooltip("히트 확인 전까지 공격 상태 유지")]
     public EnemyUseAnything[] SO = null;
     [Tooltip("루프 공격 사용")]
@@ -272,6 +270,7 @@ public abstract class BaseAttackNode : Node
         foreach (var s in SO) if (s != null) s.OnExit(runner);
     }
 
+    
     private bool CanExecuteInternal()
     {
         if (!allowOutOfCombat && !brain._isCombat) return false;
@@ -354,14 +353,11 @@ public abstract class BaseAttackNode : Node
     private NodeState CheckActionFinished(float elapsedTime)
     {
         if (!_hasSeenTag && elapsedTime < transitionBuffer + 0.3f) return NodeState.RUNNING;
-        bool isTimedOut = elapsedTime >= maxNodeDuration; 
-        if (LoopAttack && _hasTriggeredLoop && !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false) && !isTimedOut) return NodeState.RUNNING;
+        if (LoopAttack && _hasTriggeredLoop && !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false)) return NodeState.RUNNING;
 
-        if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
+        if (Handler != null && Handler.IsActionFinished)
         {
             if (NextBT) return NodeState.SUCCESS;
-            
-            bool didHit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
             
             // Only check parry status for Boss_Fake_Attack
             if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")

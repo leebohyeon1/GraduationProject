@@ -177,7 +177,7 @@ public class Task_ParabolicMine : BaseAttackNode
         if (projectilePrefab != null)
         {
             Debug.Log($"[Task_ParabolicMine] Fire with cached target: {capturedTargetPosition}");
-            GameObject projectileObject = Instantiate(projectilePrefab, spawnPosition, lockedRotation);
+            GameObject projectileObject = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPosition, lockedRotation);
             if (projectileObject.TryGetComponent<ParabolicMineProjectile>(out var projectile))
             {
                 projectile.Setup(
@@ -201,7 +201,7 @@ public class Task_ParabolicMine : BaseAttackNode
             else
             {
                 Debug.LogWarning($"[Task_ParabolicMine] {projectilePrefab.name} 에 ParabolicMineProjectile 컴포넌트가 없습니다.");
-                Destroy(projectileObject);
+                ProjectilePoolManager.ReleaseProjectile(projectileObject);
             }
         }
 
@@ -238,7 +238,6 @@ public class Task_ParabolicMine : BaseAttackNode
         node.attackKey = attackKey;
         node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
-        node.maxNodeDuration = maxNodeDuration;
         node.SO = SO;
         node.LoopAttack = LoopAttack;
         node.NextBT = NextBT;

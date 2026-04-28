@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_TripleRushEffect", menuName = "BehaviorTree/Action/Task_TripleRushEffect")]
@@ -126,7 +126,6 @@ public class Task_TripleRushEffect : BaseAttackNode
         node.attackKey = attackKey;
         node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
-        node.maxNodeDuration = maxNodeDuration;
         node.SO = SO;
         node.LoopAttack = LoopAttack;
         node.NextBT = NextBT;
