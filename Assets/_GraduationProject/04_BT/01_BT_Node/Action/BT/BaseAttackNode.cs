@@ -102,7 +102,7 @@ public abstract class BaseAttackNode : Node
         _validationTag = _data.AttackName; 
         if (Handler != null) Handler.ResetAllFlags();
         
-        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
+        AttackOutcomeRecorder.ResetAttackHit(brain.blackboard);
         brain.blackboard.SetValue(ExceptKey, true);
         runner.AnimationBool("IsRushing", false);
         _data.damageData.AttackerTransform = runner.transform;
@@ -204,6 +204,8 @@ public abstract class BaseAttackNode : Node
     private void CleanupAllStates()
     {
         SpecificCleanup();
+        SpeedRecovery();
+
         if (_didSetLock && runner._stateController != null) { runner._stateController.SetLock(false); _didSetLock = false; }
         if (runner._animationBridge != null) runner._animationBridge.ClearIsAttacking();
         runner.ParrySystem.StateNormal();
@@ -270,60 +272,20 @@ public abstract class BaseAttackNode : Node
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
         }
     }
-    int i = 0;
     private void HandleHitDetection()
     {
         if (Handler == null || !Handler.IsHitWindowOpen) return;
-        Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
-        LayerMask hitMask = _hitMasks.value != 0 ? _hitMasks : LayerMask.GetMask("Player");
-        
-        int hitCount = 0;
-        if (_data.shape == AttackShape.Sphere)
+        var hitResult = AttackHitResolver.ResolveFirstPlayerHit(runner, _data, _hitMasks, _hitBuffer);
+        if (!hitResult.DidHit || hitResult.Target == null)
         {
-            hitCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
-        }
-        else if (_data.shape == AttackShape.Box)
-        {
-            hitCount = Physics.OverlapBoxNonAlloc(origin, _data.boxSize * 0.5f, _hitBuffer, runner.transform.rotation, hitMask, QueryTriggerInteraction.Collide);
-        }
-        else if (_data.shape == AttackShape.Fan)
-        {
-            int rawCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
-            float halfAngle = _data.fanAngle * 0.5f;
-            for (int i = 0; i < rawCount; i++)
-            {
-                Collider col = _hitBuffer[i];
-                if (col == null) continue;
-                Vector3 toTarget = col.transform.position - origin;
-                toTarget.y = 0f;
-                if (toTarget.sqrMagnitude <= 0.0001f) continue;
-                float angleToTarget = Vector3.Angle(runner.transform.forward, toTarget.normalized);
-                if (angleToTarget <= halfAngle)
-                {
-                    _hitBuffer[hitCount] = col;
-                    hitCount++;
-                }
-            }
+            return;
         }
 
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider col = _hitBuffer[i];
-            if (col.gameObject == runner.gameObject) continue;
-            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
-            {
-                Handler.CloseHitWindow();
-
-                i++;
-                _data.damageData.AttackerTransform = runner.transform;
-                Debug.Log("Hit Confirmed on Player: i" + i );
-                Character.TakeDamage(_data.damageData);
-
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
-                if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
-            }
-        }
+        Handler.CloseHitWindow();
+        _data.damageData.AttackerTransform = runner.transform;
+        hitResult.Target.TakeDamage(_data.damageData);
+        AttackOutcomeRecorder.RecordSuccessfulHit(brain.blackboard);
+        if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
     }
 
     private void HandleLoopAttackLogic()
@@ -373,4 +335,124 @@ public abstract class BaseAttackNode : Node
     }
 
 
+}
+
+/// <summary>
+/// 공격 결과를 블랙보드 규약에 맞게 기록하는 단일 진입점입니다.
+/// </summary>
+public static class AttackOutcomeRecorder
+{
+    public static void ResetAttackHit(BlackBoard blackboard)
+    {
+        if (blackboard == null)
+        {
+            return;
+        }
+
+        blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
+    }
+
+    public static void RecordSuccessfulHit(BlackBoard blackboard)
+    {
+        if (blackboard == null)
+        {
+            return;
+        }
+
+        blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+        blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+    }
+}
+
+/// <summary>
+/// 공격 히트 판정 책임을 BaseAttackNode 밖으로 분리한 해석기입니다.
+/// </summary>
+public static class AttackHitResolver
+{
+    public readonly struct AttackHitResult
+    {
+        public bool DidHit { get; }
+        public PlayerHealth Target { get; }
+
+        public AttackHitResult(PlayerHealth target)
+        {
+            Target = target;
+            DidHit = target != null;
+        }
+    }
+
+    public static AttackHitResult ResolveFirstPlayerHit(Enemy runner, EnemyAttackData attackData, LayerMask hitMasks, Collider[] hitBuffer)
+    {
+        if (runner == null || attackData == null || hitBuffer == null || hitBuffer.Length == 0)
+        {
+            return default;
+        }
+
+        Vector3 origin = runner.transform.position + runner.transform.TransformDirection(attackData.attackOffset);
+        LayerMask hitMask = hitMasks.value != 0 ? hitMasks : LayerMask.GetMask("Player");
+        int hitCount = CollectHits(runner, attackData, origin, hitMask, hitBuffer);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider col = hitBuffer[i];
+            if (col == null || col.gameObject == runner.gameObject)
+            {
+                continue;
+            }
+
+            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth character))
+            {
+                return new AttackHitResult(character);
+            }
+        }
+
+        return default;
+    }
+
+    private static int CollectHits(Enemy runner, EnemyAttackData attackData, Vector3 origin, LayerMask hitMask, Collider[] hitBuffer)
+    {
+        if (attackData.shape == AttackShape.Sphere)
+        {
+            return Physics.OverlapSphereNonAlloc(origin, attackData.damageRadius, hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+        }
+
+        if (attackData.shape == AttackShape.Box)
+        {
+            return Physics.OverlapBoxNonAlloc(origin, attackData.boxSize * 0.5f, hitBuffer, runner.transform.rotation, hitMask, QueryTriggerInteraction.Collide);
+        }
+
+        if (attackData.shape != AttackShape.Fan)
+        {
+            return 0;
+        }
+
+        int rawCount = Physics.OverlapSphereNonAlloc(origin, attackData.damageRadius, hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+        int filteredCount = 0;
+        float halfAngle = attackData.fanAngle * 0.5f;
+
+        for (int i = 0; i < rawCount; i++)
+        {
+            Collider col = hitBuffer[i];
+            if (col == null)
+            {
+                continue;
+            }
+
+            Vector3 toTarget = col.transform.position - origin;
+            toTarget.y = 0f;
+            if (toTarget.sqrMagnitude <= 0.0001f)
+            {
+                continue;
+            }
+
+            float angleToTarget = Vector3.Angle(runner.transform.forward, toTarget.normalized);
+            if (angleToTarget <= halfAngle)
+            {
+                hitBuffer[filteredCount] = col;
+                filteredCount++;
+            }
+        }
+
+        return filteredCount;
+    }
 }

@@ -44,7 +44,6 @@ public class Task_AttackRange : BaseAttackNode
 
     private void Fire()
     {
-        Debug.Log(0);
         _hasFired = true;
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
 
@@ -54,12 +53,9 @@ public class Task_AttackRange : BaseAttackNode
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
                 projectileScript.Setup(runner, _attackDir, projectileSpeed, runner.gameObject, damageData);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             }
         }
         Handler.CloseHitWindow();
-        Debug.Log(1);
     }
     protected override void SpecificCleanup()
     {
