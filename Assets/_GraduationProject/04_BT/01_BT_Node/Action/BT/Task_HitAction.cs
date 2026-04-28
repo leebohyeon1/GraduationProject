@@ -24,9 +24,10 @@ public class Task_HitAction : Node
     protected override NodeState OnUpdate()
     {
         if (runner == null) return NodeState.FAILURE;
+        runner._animationBridge.ResetAllAnimationStates();
         if(_hitStartTime != brain.blackboard.GetValue<float>("OnTaskHit"))
         {
-        Debug.Log($"[Task_HitAction] OnUpdate called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
+            Debug.Log($"[Task_HitAction] OnUpdate called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
             runner.AnimationEvent("Hit");
             _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
         }

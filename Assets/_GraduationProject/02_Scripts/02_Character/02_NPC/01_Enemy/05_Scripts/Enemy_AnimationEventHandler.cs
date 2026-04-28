@@ -37,8 +37,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     private Enemy _owner;
     private const int DefaultPlayerLayerMask = 1 << 9;
 
-    // public event Action KsanteAtk;
-
+    /// <summary>
+    /// 현재 피드백 재생 속도 배율입니다.
+    /// </summary>
+    public float SpeedMultiplier { get; set; } = 1.0f;
 
     /// <summary>
     /// Initializes owner reference and feedback dictionary.
@@ -171,6 +173,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         {
             if (f.name == feedbackName && f.Phase <= currentPhase && f.feedback != null)
             {
+                // MMFeedbacks(부모)의 필드를 사용하여 속도 조절
+                f.feedback.TimescaleMultiplier = SpeedMultiplier;
+                // 속도가 빨라지면 지속 시간은 그만큼 짧아져야 하므로 역수를 취합니다.
+                f.feedback.DurationMultiplier = 1f / SpeedMultiplier;
+                
                 f.feedback.PlayFeedbacks(transform.position + f.offset);
             }
         }
@@ -191,6 +198,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             if (f.name == feedbackName && f.Phase <= currentPhase && f.feedback != null)
             {
                 Vector3 spawnPos = position + f.offset;
+                
+                // MMFeedbacks(부모)의 필드를 사용하여 속도 조절
+                f.feedback.TimescaleMultiplier = SpeedMultiplier;
+                f.feedback.DurationMultiplier = 1f / SpeedMultiplier;
+                
                 f.feedback.PlayFeedbacks(spawnPos);
 
                 if (f.attackData != null && f.damageDelay >= 0f)
