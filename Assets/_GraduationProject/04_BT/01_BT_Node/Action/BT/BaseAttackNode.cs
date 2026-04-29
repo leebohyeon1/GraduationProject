@@ -11,7 +11,6 @@ public abstract class BaseAttackNode : Node
     [Header("Base Attack Properties")]
     [Tooltip("이 노드가 사용할 블랙보드 공격 데이터 키")]
     public string attackKey;
-    [Tooltip("공격에 사용할 애니메이션 상태 태그/트리거 이름")]
     [Tooltip("태그 진입 대기 유예 시간")]
     public float transitionBuffer = 1f;
     [Tooltip("히트 확인 전까지 공격 상태 유지")]

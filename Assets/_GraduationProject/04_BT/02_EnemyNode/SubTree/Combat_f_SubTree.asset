@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1436, y: 1133}
   attackKey: Attack03_f
-  animationStateName: 
   transitionBuffer: 1
   SO: []
   LoopAttack: 0
@@ -31,7 +30,7 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  ChangeSpeed: 1
+  ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
@@ -263,7 +262,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1426, y: 1604}
   attackKey: Attack04_f
-  animationStateName: 
   transitionBuffer: 1
   SO: []
   LoopAttack: 0
@@ -280,7 +278,7 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  ChangeSpeed: 1
+  ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
@@ -494,7 +492,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_ParabolicMine
   position: {x: 1134, y: -72}
   attackKey: Attack02_f
-  animationStateName: 
   transitionBuffer: 1
   SO: []
   LoopAttack: 0
@@ -511,7 +508,7 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  ChangeSpeed: 1
+  ChangeSpeed: 0
   _startHealthThreshold: 0.8
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
@@ -642,21 +639,6 @@ MonoBehaviour:
   position: {x: 586, y: -61}
   exceptCondition:
     key: 
---- !u!114 &603096239416188130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aac1dc3b4e9d8141bf0ca11217cf1d5, type: 3}
-  m_Name: Task_Chase Player Node(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Task_ChasePlayerNode
-  position: {x: 1410, y: 1831}
-  Distance: 6
-  speed: 2
 --- !u!114 &712781357180545605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,8 +750,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -5296560851871955600}
   - {fileID: 3686387739548344111}
-  services:
-  - {fileID: 0}
+  services: []
 --- !u!114 &3436366860465734077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -843,23 +824,6 @@ MonoBehaviour:
   nodes:
   - {fileID: -37486007609576150}
   services: []
---- !u!114 &3908333448518032213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_Chasing(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1192, y: 1754}
-  nodes:
-  - {fileID: 7702490247979983412}
-  - {fileID: 603096239416188130}
-  services: []
 --- !u!114 &3923787419768528744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -895,7 +859,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_TristanaJump
   position: {x: 1135, y: 435}
   attackKey: Attack01_f
-  animationStateName: 
   transitionBuffer: 1
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
@@ -913,7 +876,7 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  ChangeSpeed: 1
+  ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
@@ -1087,25 +1050,6 @@ MonoBehaviour:
   cooldownDuration: 3
   EnemyAttackData: 0
   attackData: {fileID: 0}
---- !u!114 &7702490247979983412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
-  m_Name: Condition_BlackboardFloatKeyCheck
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 1410, y: 1754}
-  exceptCondition:
-    key: 
-  floatCondition:
-    key: DistanceToTarget
-    Operator: 5
-    value: 10.5
 --- !u!114 &7735291244773573661
 MonoBehaviour:
   m_ObjectHideFlags: 0
