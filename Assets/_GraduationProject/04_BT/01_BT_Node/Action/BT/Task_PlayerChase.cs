@@ -115,7 +115,6 @@ public class Task_PlayerChase : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;

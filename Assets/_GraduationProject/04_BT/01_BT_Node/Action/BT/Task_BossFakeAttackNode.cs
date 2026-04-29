@@ -28,7 +28,6 @@ public class Task_BossFakeAttackNode : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         
         node.SO = this.SO;

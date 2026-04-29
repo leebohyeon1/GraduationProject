@@ -124,7 +124,6 @@ public class Task_TripleRushEffect : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = attackKey;
-        node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
         node.SO = SO;
         node.LoopAttack = LoopAttack;

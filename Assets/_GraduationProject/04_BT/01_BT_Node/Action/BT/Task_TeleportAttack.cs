@@ -154,7 +154,6 @@ public class Task_TeleportAttack : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = attackKey;
-        node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
         node.SO = SO;
         node.LoopAttack = LoopAttack;

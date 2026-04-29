@@ -12,7 +12,6 @@ public abstract class BaseAttackNode : Node
     [Tooltip("이 노드가 사용할 블랙보드 공격 데이터 키")]
     public string attackKey;
     [Tooltip("공격에 사용할 애니메이션 상태 태그/트리거 이름")]
-    public string animationStateName = "";
     [Tooltip("태그 진입 대기 유예 시간")]
     public float transitionBuffer = 1f;
     [Tooltip("히트 확인 전까지 공격 상태 유지")]
@@ -72,7 +71,6 @@ public abstract class BaseAttackNode : Node
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
-    private bool _wasInTransition = false; 
      private bool _hasHaltedMovement = false;
     protected bool _wasParriedDuringAttack = false; 
     protected bool _wasStunnedDuringAttack = false;
@@ -88,7 +86,6 @@ public abstract class BaseAttackNode : Node
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
         _didSetLock = false;
-         _wasInTransition = false;
         _hasHaltedMovement = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -204,10 +201,6 @@ public abstract class BaseAttackNode : Node
 
         if (!isTagActive) return elapsedTime > transitionBuffer ? NodeState.FAILURE : NodeState.RUNNING;
 
-        bool isInTransition = runner.animator.IsInTransition(0);
-        if (isInTransition && !_wasInTransition) 
-        _wasInTransition = isInTransition;
-
         HandleCommonSystems(stateInfo, nextStateInfo);
 
         bool isLoopEnded = (LoopAttack && _hasTriggeredLoop && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
@@ -246,9 +239,7 @@ public abstract class BaseAttackNode : Node
     private void PerformExit()
     {
         // Debug.Log($"[Attack Node Exit] {runner.name} exited attack node for {_data.AttackName}");
-        runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         CleanupAllStates();
-        SpeedRecovery();
     }
 
     public sealed override void Abort() { if (isEntered) { CleanupAllStates(); isEntered = false; } }
@@ -256,6 +247,7 @@ public abstract class BaseAttackNode : Node
     private void CleanupAllStates()
     {
         SpecificCleanup();
+        runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         SpeedRecovery();
 
         if (_didSetLock && runner._stateController != null) { runner._stateController.SetLock(false); _didSetLock = false; }
@@ -292,11 +284,6 @@ public abstract class BaseAttackNode : Node
     protected abstract bool IsMovementFinished { get; }
     protected virtual void SpecificCleanup() 
     {
-        // ?뺤긽?곸씤 怨듦꺽 ?꾨즺 ???쇰컲 荑⑦????곸슜
-        if (!_isActionFinishedInternally)
-        {
-            brain.StartSkillCooldown(attackKey);
-        }
     }
 
     private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
@@ -319,7 +306,6 @@ public abstract class BaseAttackNode : Node
     {
         if (!Handler.IsActive && runner.player != null)
         {
-            Debug.Log("Rotating towards player at attack moment.");
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
