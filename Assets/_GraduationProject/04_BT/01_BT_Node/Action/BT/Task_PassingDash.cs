@@ -94,9 +94,7 @@ public class Task_PassingDash : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;
