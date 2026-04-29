@@ -102,9 +102,6 @@ public class Task_TristanaJump : BaseAttackNode
 
             runner.transform.position = currentPos;
 
-            Vector3 lookDir = (_targetPos - _startPos).normalized;
-            if (lookDir != Vector3.zero)
-                runner.transform.rotation = Quaternion.LookRotation(lookDir);
         }
         else
         {
@@ -116,6 +113,7 @@ public class Task_TristanaJump : BaseAttackNode
 
     private void Landing()
     {
+        Debug.Log("Landing from jump attack.");
         _isJumping = false;
 
         Vector3 landPos = _targetPos;
