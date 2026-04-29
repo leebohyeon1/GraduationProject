@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Pathfinding;
 using UnityEngine;
 
 /// <summary>
@@ -232,6 +233,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         while (elapsedTime < (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration))
         {
+            if (isDead)
+            {
+                _owner.aIPath.enabled = false; // 죽음 넉백 동안 경로 탐색 비활성화
+            }
             float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration));
             Vector3 move = horizontalDirection * (isDead ? damageData.DeathKnockbackForce : damageData.KnockbackForce) * curveValue * Time.deltaTime;
             if (_characterController != null)
