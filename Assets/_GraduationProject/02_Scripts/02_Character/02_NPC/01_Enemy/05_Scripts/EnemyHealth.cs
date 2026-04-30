@@ -157,15 +157,18 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             _ragdollAnimator.User_SwitchFallState();
             if (damageData != null && damageData.Value.AttackerTransform != null)
             {
+                // 기존 넉백 코루틴과 동일하게 수평 방향을 기본으로 하되, 
+                // 렉돌이 바닥에 걸리지 않도록 아주 살짝만 위(0.15)로 띄웁니다.
                 Vector3 impactDir = (transform.position - damageData.Value.AttackerTransform.position).normalized;
-                impactDir.y = 0.75f; // 조금 더 위로 튀게 설정
+                impactDir.y = 0.15f; 
+                impactDir.Normalize();
                 
-                float force = damageData.Value.DeathKnockbackForce; // 증폭 없이 원본 힘 사용
+                float force = damageData.Value.DeathKnockbackForce;
                 Vector3 velocity = impactDir * force;
 
-                // 즉시 속도 부여 및 짧은 시간 동안 지속적인 힘 적용
+                // 즉시 속도를 부여하고, 기존 넉백 지속시간(Duration)만큼 힘을 유지하여 동일한 느낌을 줍니다.
                 _ragdollAnimator.User_SetAllBonesVelocity(velocity);
-                _ragdollAnimator.User_AddAllBonesImpact(velocity, 0.1f);
+                _ragdollAnimator.User_AddAllBonesImpact(velocity, damageData.Value.DeathKnockbackDuration);
             }
         }
 
