@@ -46,7 +46,7 @@ public class SpawnHomingStrategy : EnemyUseAnything
 
         // 2. 발사체 소환
         Vector3 spawnPos = enemy.transform.position + enemy.transform.TransformDirection(spawnOffset);
-        GameObject projObj = Instantiate(projectilePrefab, spawnPos, enemy.transform.rotation);
+        GameObject projObj = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPos, enemy.transform.rotation);
         
         // 3. 발사체 데이터 주입
         HomingProjectile projectileScript = projObj.GetComponent<HomingProjectile>();
@@ -64,6 +64,11 @@ public class SpawnHomingStrategy : EnemyUseAnything
                 TurningForce,
                 StraightSpeed
             );
+        }
+        else
+        {
+            ProjectilePoolManager.ReleaseProjectile(projObj);
+            projObj = null;
         }
 
         // 4. 블랙보드에 발사체 저장 (이게 null이 될 때까지 대기하기 위함)
@@ -83,7 +88,7 @@ public class SpawnHomingStrategy : EnemyUseAnything
         GameObject projectile = enemy._aiController._aiBrain.blackboard.GetValue<GameObject>(KEY_PROJECTILE_INSTANCE);
 
         // 2. 발사체가 파괴(null)되었다면 행동 종료
-        if (projectile == null)
+        if (projectile == null || !projectile.activeInHierarchy)
         {
             // 투사체가 벽에 박거나 플레이어를 맞춰서 사라짐 -> AI 행동 끝
             StopChanneling(enemy);

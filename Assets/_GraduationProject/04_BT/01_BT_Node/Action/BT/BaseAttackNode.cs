@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 using System;
@@ -11,12 +11,8 @@ public abstract class BaseAttackNode : Node
     [Header("Base Attack Properties")]
     [Tooltip("이 노드가 사용할 블랙보드 공격 데이터 키")]
     public string attackKey;
-    [Tooltip("공격에 사용할 애니메이션 상태 태그/트리거 이름")]
-    public string animationStateName = "";
     [Tooltip("태그 진입 대기 유예 시간")]
     public float transitionBuffer = 1f;
-    [Tooltip("노드 최대 실행 시간(초)")]
-    public float maxNodeDuration = 6.0f;
     [Tooltip("히트 확인 전까지 공격 상태 유지")]
     public EnemyUseAnything[] SO = null;
     [Tooltip("루프 공격 사용")]
@@ -51,6 +47,19 @@ public abstract class BaseAttackNode : Node
     [Tooltip("히트 판정 레이어 마스크")]
     [SerializeField] private LayerMask _hitMasks = 1<<7;
 
+
+    [Header("Speed Scaling Settings")]
+    [SerializeField] private bool ChangeSpeed = false;
+    [Tooltip("애니메이션 속도가 증가하기 시작하는 체력 비율 (0.5 = 50%)")]
+    [SerializeField] private float _startHealthThreshold = 0.5f;
+    
+    [Tooltip("최대 애니메이션 속도에 도달하는 체력 비율 (0.1 = 10%)")]
+    [SerializeField] private float _maxSpeedThreshold = 0.1f;
+    
+    [Tooltip("도달할 수 있는 최대 애니메이션 속도")]
+    [SerializeField] private float _maxAnimationSpeed = 2.0f;
+
+
     protected EnemyAttackData _data;
     protected float _nodeEntryTime;
     protected int _entryFrame; 
@@ -61,7 +70,6 @@ public abstract class BaseAttackNode : Node
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
-    private bool _wasInTransition = false; 
      private bool _hasHaltedMovement = false;
     protected bool _wasParriedDuringAttack = false; 
     protected bool _wasStunnedDuringAttack = false;
@@ -77,7 +85,6 @@ public abstract class BaseAttackNode : Node
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
         _didSetLock = false;
-         _wasInTransition = false;
         _hasHaltedMovement = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -102,7 +109,7 @@ public abstract class BaseAttackNode : Node
         _validationTag = _data.AttackName; 
         if (Handler != null) Handler.ResetAllFlags();
         
-        brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
+        AttackOutcomeRecorder.ResetAttackHit(brain.blackboard);
         brain.blackboard.SetValue(ExceptKey, true);
         runner.AnimationBool("IsRushing", false);
         _data.damageData.AttackerTransform = runner.transform;
@@ -121,8 +128,48 @@ public abstract class BaseAttackNode : Node
         if (cc != null) { _originalStepOffset = cc.stepOffset; cc.stepOffset = 0f; }
 
         InitialMovementSetup();
+        SpeedUp();
     }
+    private void SpeedRecovery()
+    {
+        if (!ChangeSpeed) return;
 
+        runner.animator.speed = 1.0f;
+        if (Handler != null)
+        {
+            Handler.SpeedMultiplier = 1.0f;
+        }
+    }
+    private void SpeedUp()
+    {
+        if (!ChangeSpeed) return;
+
+        float targetSpeed = 1.0f;
+
+        // 현재 체력 비율 계산
+        float healthRatio = (float)runner.EnemyHealth.CurrentHealth / runner.EnemyHealth.MaxHealth;
+
+        // 공격 관련 상태인지 확인
+        if (runner.CurrentState == EnemyStateController.EnemyState.Attack)
+        {
+            
+            // 체력이 임계치 이하일 때 속도 계산
+            if (healthRatio <= _startHealthThreshold)
+            {
+                float t = Mathf.InverseLerp(_startHealthThreshold, _maxSpeedThreshold, healthRatio);
+                targetSpeed = Mathf.Lerp(1.0f, _maxAnimationSpeed, t);
+            }
+        }
+
+        // 애니메이터 속도 적용
+        runner.animator.speed = targetSpeed;
+
+        // 이펙트(피드백) 핸들러 속도 적용
+        if (Handler != null)
+        {
+            Handler.SpeedMultiplier = targetSpeed;
+        }
+    }
     protected sealed override NodeState OnUpdate()
     {
         if (_isActionFinishedInternally) return NodeState.FAILURE;
@@ -152,10 +199,6 @@ public abstract class BaseAttackNode : Node
         }
 
         if (!isTagActive) return elapsedTime > transitionBuffer ? NodeState.FAILURE : NodeState.RUNNING;
-
-        bool isInTransition = runner.animator.IsInTransition(0);
-        if (isInTransition && !_wasInTransition) 
-        _wasInTransition = isInTransition;
 
         HandleCommonSystems(stateInfo, nextStateInfo);
 
@@ -195,7 +238,6 @@ public abstract class BaseAttackNode : Node
     private void PerformExit()
     {
         // Debug.Log($"[Attack Node Exit] {runner.name} exited attack node for {_data.AttackName}");
-        runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         CleanupAllStates();
     }
 
@@ -204,6 +246,9 @@ public abstract class BaseAttackNode : Node
     private void CleanupAllStates()
     {
         SpecificCleanup();
+        runner._aiController._aiBrain.StartSkillCooldown(attackKey);
+        SpeedRecovery();
+
         if (_didSetLock && runner._stateController != null) { runner._stateController.SetLock(false); _didSetLock = false; }
         if (runner._animationBridge != null) runner._animationBridge.ClearIsAttacking();
         runner.ParrySystem.StateNormal();
@@ -216,6 +261,7 @@ public abstract class BaseAttackNode : Node
         foreach (var s in SO) if (s != null) s.OnExit(runner);
     }
 
+    
     private bool CanExecuteInternal()
     {
         if (!allowOutOfCombat && !brain._isCombat) return false;
@@ -237,11 +283,6 @@ public abstract class BaseAttackNode : Node
     protected abstract bool IsMovementFinished { get; }
     protected virtual void SpecificCleanup() 
     {
-        // ?뺤긽?곸씤 怨듦꺽 ?꾨즺 ???쇰컲 荑⑦????곸슜
-        if (!_isActionFinishedInternally)
-        {
-            brain.StartSkillCooldown(attackKey);
-        }
     }
 
     private void HandleCommonSystems(AnimatorStateInfo stateInfo, AnimatorStateInfo nextStateInfo)
@@ -264,66 +305,25 @@ public abstract class BaseAttackNode : Node
     {
         if (!Handler.IsActive && runner.player != null)
         {
-            Debug.Log("Rotating towards player at attack moment.");
             Vector3 dir = runner.player.transform.position - runner.transform.position;
             dir.y = 0;
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
         }
     }
-    int i = 0;
     private void HandleHitDetection()
     {
         if (Handler == null || !Handler.IsHitWindowOpen) return;
-        Vector3 origin = runner.transform.position + runner.transform.TransformDirection(_data.attackOffset);
-        LayerMask hitMask = _hitMasks.value != 0 ? _hitMasks : LayerMask.GetMask("Player");
-        
-        int hitCount = 0;
-        if (_data.shape == AttackShape.Sphere)
+        var hitResult = AttackHitResolver.ResolveFirstPlayerHit(runner, _data, _hitMasks, _hitBuffer);
+        if (!hitResult.DidHit || hitResult.Target == null)
         {
-            hitCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
-        }
-        else if (_data.shape == AttackShape.Box)
-        {
-            hitCount = Physics.OverlapBoxNonAlloc(origin, _data.boxSize * 0.5f, _hitBuffer, runner.transform.rotation, hitMask, QueryTriggerInteraction.Collide);
-        }
-        else if (_data.shape == AttackShape.Fan)
-        {
-            int rawCount = Physics.OverlapSphereNonAlloc(origin, _data.damageRadius, _hitBuffer, hitMask, QueryTriggerInteraction.Collide);
-            float halfAngle = _data.fanAngle * 0.5f;
-            for (int i = 0; i < rawCount; i++)
-            {
-                Collider col = _hitBuffer[i];
-                if (col == null) continue;
-                Vector3 toTarget = col.transform.position - origin;
-                toTarget.y = 0f;
-                if (toTarget.sqrMagnitude <= 0.0001f) continue;
-                float angleToTarget = Vector3.Angle(runner.transform.forward, toTarget.normalized);
-                if (angleToTarget <= halfAngle)
-                {
-                    _hitBuffer[hitCount] = col;
-                    hitCount++;
-                }
-            }
+            return;
         }
 
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider col = _hitBuffer[i];
-            if (col.gameObject == runner.gameObject) continue;
-            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth Character))
-            {
-                Handler.CloseHitWindow();
-
-                i++;
-                _data.damageData.AttackerTransform = runner.transform;
-                Debug.Log("Hit Confirmed on Player: i" + i );
-                Character.TakeDamage(_data.damageData);
-
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
-                if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
-            }
-        }
+        Handler.CloseHitWindow();
+        _data.damageData.AttackerTransform = runner.transform;
+        hitResult.Target.TakeDamage(_data.damageData);
+        AttackOutcomeRecorder.RecordSuccessfulHit(brain.blackboard);
+        if (LoopAttack && _hitConfirmTime < 0) _hitConfirmTime = Time.time;
     }
 
     private void HandleLoopAttackLogic()
@@ -338,14 +338,11 @@ public abstract class BaseAttackNode : Node
     private NodeState CheckActionFinished(float elapsedTime)
     {
         if (!_hasSeenTag && elapsedTime < transitionBuffer + 0.3f) return NodeState.RUNNING;
-        bool isTimedOut = elapsedTime >= maxNodeDuration; 
-        if (LoopAttack && _hasTriggeredLoop && !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false) && !isTimedOut) return NodeState.RUNNING;
+        if (LoopAttack && _hasTriggeredLoop && !brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false)) return NodeState.RUNNING;
 
-        if ((Handler != null && Handler.IsActionFinished) || isTimedOut)
+        if (Handler != null && Handler.IsActionFinished)
         {
             if (NextBT) return NodeState.SUCCESS;
-            
-            bool didHit = brain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.DidLastAttackHit, false);
             
             // Only check parry status for Boss_Fake_Attack
             if (_wasParriedDuringAttack && _data != null && _data.AttackName == "Boss_Fake_Attack")
@@ -373,4 +370,124 @@ public abstract class BaseAttackNode : Node
     }
 
 
+}
+
+/// <summary>
+/// 공격 결과를 블랙보드 규약에 맞게 기록하는 단일 진입점입니다.
+/// </summary>
+public static class AttackOutcomeRecorder
+{
+    public static void ResetAttackHit(BlackBoard blackboard)
+    {
+        if (blackboard == null)
+        {
+            return;
+        }
+
+        blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, false);
+    }
+
+    public static void RecordSuccessfulHit(BlackBoard blackboard)
+    {
+        if (blackboard == null)
+        {
+            return;
+        }
+
+        blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
+        blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+    }
+}
+
+/// <summary>
+/// 공격 히트 판정 책임을 BaseAttackNode 밖으로 분리한 해석기입니다.
+/// </summary>
+public static class AttackHitResolver
+{
+    public readonly struct AttackHitResult
+    {
+        public bool DidHit { get; }
+        public PlayerHealth Target { get; }
+
+        public AttackHitResult(PlayerHealth target)
+        {
+            Target = target;
+            DidHit = target != null;
+        }
+    }
+
+    public static AttackHitResult ResolveFirstPlayerHit(Enemy runner, EnemyAttackData attackData, LayerMask hitMasks, Collider[] hitBuffer)
+    {
+        if (runner == null || attackData == null || hitBuffer == null || hitBuffer.Length == 0)
+        {
+            return default;
+        }
+
+        Vector3 origin = runner.transform.position + runner.transform.TransformDirection(attackData.attackOffset);
+        LayerMask hitMask = hitMasks.value != 0 ? hitMasks : LayerMask.GetMask("Player");
+        int hitCount = CollectHits(runner, attackData, origin, hitMask, hitBuffer);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider col = hitBuffer[i];
+            if (col == null || col.gameObject == runner.gameObject)
+            {
+                continue;
+            }
+
+            if (col.TryGetComponent<PlayerHealth>(out PlayerHealth character))
+            {
+                return new AttackHitResult(character);
+            }
+        }
+
+        return default;
+    }
+
+    private static int CollectHits(Enemy runner, EnemyAttackData attackData, Vector3 origin, LayerMask hitMask, Collider[] hitBuffer)
+    {
+        if (attackData.shape == AttackShape.Sphere)
+        {
+            return Physics.OverlapSphereNonAlloc(origin, attackData.damageRadius, hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+        }
+
+        if (attackData.shape == AttackShape.Box)
+        {
+            return Physics.OverlapBoxNonAlloc(origin, attackData.boxSize * 0.5f, hitBuffer, runner.transform.rotation, hitMask, QueryTriggerInteraction.Collide);
+        }
+
+        if (attackData.shape != AttackShape.Fan)
+        {
+            return 0;
+        }
+
+        int rawCount = Physics.OverlapSphereNonAlloc(origin, attackData.damageRadius, hitBuffer, hitMask, QueryTriggerInteraction.Collide);
+        int filteredCount = 0;
+        float halfAngle = attackData.fanAngle * 0.5f;
+
+        for (int i = 0; i < rawCount; i++)
+        {
+            Collider col = hitBuffer[i];
+            if (col == null)
+            {
+                continue;
+            }
+
+            Vector3 toTarget = col.transform.position - origin;
+            toTarget.y = 0f;
+            if (toTarget.sqrMagnitude <= 0.0001f)
+            {
+                continue;
+            }
+
+            float angleToTarget = Vector3.Angle(runner.transform.forward, toTarget.normalized);
+            if (angleToTarget <= halfAngle)
+            {
+                hitBuffer[filteredCount] = col;
+                filteredCount++;
+            }
+        }
+
+        return filteredCount;
+    }
 }
