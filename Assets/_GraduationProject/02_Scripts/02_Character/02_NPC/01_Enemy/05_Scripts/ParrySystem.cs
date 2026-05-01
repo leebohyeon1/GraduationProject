@@ -1,4 +1,3 @@
-using Packages.Rider.Editor.UnitTesting;
 using UnityEngine;
 public enum StunType { None, Weak, Full, Any }
 
