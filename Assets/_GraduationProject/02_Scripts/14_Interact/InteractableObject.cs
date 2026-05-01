@@ -17,6 +17,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public UnityEvent OnInteract;
     private PlayerController _playerController;
 
+    private void Start()
+    {
+        if (_interactableUITransform == null)
+        {
+            _interactableUITransform = this.transform;
+        }
+    }
+
     public void Interact()
     {
         // 1. 이미 상호작용했다면 리턴

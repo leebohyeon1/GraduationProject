@@ -1562,7 +1562,7 @@ MonoBehaviour:
   handler:
     _Editor_SelectedChain: 0
     _Editor_ChainCategory: 0
-    _EditorCategory: 3
+    _EditorCategory: 2
     _EditorMainCategory: 0
     _EditorMotionCategory: 0
     m_hemi: {fileID: -2508796484986968503, guid: 44d994eaad14fdf49a2dd378b4d62094, type: 3}
@@ -1700,11 +1700,11 @@ MonoBehaviour:
     SpringsOnFall: 0
     DampingValue: 40
     DampingValueOnFall: 0
-    HardMatching: 0
+    HardMatching: 1
     HardMatchPositions: 0
     HardMatchPositionsOnFall: 0
     PositionHardMatchingMultiplier: 1
-    HardMatchingOnFalling: 0
+    HardMatchingOnFalling: 1
     MotionInfluence: 1
     AnchorBoneSpring: 1
     MakeAnchorKinematicOnMaxSpring: 0
@@ -1713,7 +1713,7 @@ MonoBehaviour:
     LockAnchorRotation: 1
     AnchorJointLimits: 0
     FallOnZeroAnchor: 1
-    BaseTransform: {fileID: 0}
+    BaseTransform: {fileID: 629783981564199794}
     Mecanim: {fileID: 8888308733668497756}
     RagdollLogic: 0
     RagdollSizeMultiplier: 1
@@ -6768,7 +6768,7 @@ MonoBehaviour:
             - m_Target: {fileID: 3834154181976864597}
               m_TargetAssemblyTypeName: FIMSpace.FProceduralAnimation.RagdollAnimator2,
                 Assembly-CSharp
-              m_MethodName: RA2Event_SwitchToSleep
+              m_MethodName: RA2Event_SwitchToFall
               m_Mode: 1
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
@@ -6790,9 +6790,21 @@ MonoBehaviour:
                 m_StringArgument: Damage_b
                 m_BoolArgument: 0
               m_CallState: 2
-            - m_Target: {fileID: 1695563610096901519}
-              m_TargetAssemblyTypeName: UnityEngine.CharacterController, UnityEngine
-              m_MethodName: set_enabled
+            - m_Target: {fileID: 1307295378721129737}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: set_layer
+              m_Mode: 3
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 11
+                m_FloatArgument: 0
+                m_StringArgument: Damage_b
+                m_BoolArgument: 1
+              m_CallState: 2
+            - m_Target: {fileID: 1508674585689717974}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
               m_Mode: 6
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
@@ -27086,6 +27098,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+--- !u!1 &1508674585689717974 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727386660387336624, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+  m_PrefabInstance: {fileID: 222658290701782374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1717437915483391885 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1495927516114684651, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "AttackRange", menuName = "Enemy/Strategy/Attack Range")]
 public class AttackRange : EnemyUseAnything
@@ -47,12 +47,16 @@ public class AttackRange : EnemyUseAnything
 
         if (projectilePrefab != null)
         {
-            GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
+            GameObject bulletObj = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
             EnemyProjectile projectileScript = bulletObj.GetComponent<EnemyProjectile>();
             
             if (projectileScript != null)
             {
                 projectileScript.Setup(runner,dir, projectileSpeed, runner.gameObject, damageData);
+            }
+            else
+            {
+                ProjectilePoolManager.ReleaseProjectile(bulletObj);
             }
         }
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Pathfinding;
 using UnityEngine;
+using FIMSpace.FProceduralAnimation;
 
 /// <summary>
 /// 몬스터의 체력 관리 및 피해 처리를 담당하는 컴포넌트입니다.
@@ -32,6 +34,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private Enemy _owner;
     public bool ImmunityStart = false;
 
+    private RagdollAnimator2 _ragdollAnimator;
+
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _owner = owner;
@@ -47,6 +51,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
         
         _characterController = _owner.GetComponent<CharacterController>();
+        _ragdollAnimator = GetComponentInChildren<RagdollAnimator2>();
+        if (_ragdollAnimator == null)
+            Debug.LogWarning($"[EnemyHealth] RagdollAnimator2 is missing on {_owner.name} or its children!");
+
         SetKnockbackable(true);
         _owner.tag = "Enemy";
         _currentImmunityLevel = ImmunityLevel.None;
@@ -121,6 +129,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        Die(null);
+    }
+
+    public void Die(DamageData? damageData)
+    {
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
@@ -135,6 +148,29 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         if(TryGetComponent<LockOnTarget>(out var lockOnTarget))
             lockOnTarget.TriggerLockReleased();
+
+        if (_characterController != null)
+            _characterController.enabled = false;
+
+        if (_ragdollAnimator != null)
+        {
+            _ragdollAnimator.User_SwitchFallState();
+            if (damageData != null && damageData.Value.AttackerTransform != null)
+            {
+                // 기존 넉백 코루틴과 동일하게 수평 방향을 기본으로 하되, 
+                // 렉돌이 바닥에 걸리지 않도록 아주 살짝만 위(0.15)로 띄웁니다.
+                Vector3 impactDir = (transform.position - damageData.Value.AttackerTransform.position).normalized;
+                impactDir.y = 0.15f; 
+                impactDir.Normalize();
+                
+                float force = damageData.Value.DeathKnockbackForce;
+                Vector3 velocity = impactDir * force;
+
+                // 즉시 속도를 부여하고, 기존 넉백 지속시간(Duration)만큼 힘을 유지하여 동일한 느낌을 줍니다.
+                _ragdollAnimator.User_SetAllBonesVelocity(velocity);
+                _ragdollAnimator.User_AddAllBonesImpact(velocity, damageData.Value.DeathKnockbackDuration);
+            }
+        }
 
         StartCoroutine(ReturnToPoolRoutine(3f));
     }
@@ -213,9 +249,17 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
             knockbackDir.y = 0;
             if (_KnockbackCoroutine != null) StopCoroutine(_KnockbackCoroutine);
-            _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
+            
+            if (curHealth <= 0 && _ragdollAnimator != null)
+            {
+                // Ragdoll will handle the physics impact
+            }
+            else
+            {
+                _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
+            }
         }
-        if (CurrentHealth <= 0) Die();
+        if (CurrentHealth <= 0) Die(damageData);
     }
 
     private void OnEnable() { OnRecoveryHealth += SetRecovery; }
@@ -232,6 +276,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         while (elapsedTime < (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration))
         {
+            if (isDead)
+            {
+                _owner.aIPath.enabled = false; // 죽음 넉백 동안 경로 탐색 비활성화
+            }
             float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration));
             Vector3 move = horizontalDirection * (isDead ? damageData.DeathKnockbackForce : damageData.KnockbackForce) * curveValue * Time.deltaTime;
             if (_characterController != null)

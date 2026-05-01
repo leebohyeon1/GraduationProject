@@ -48,14 +48,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 540, y: 58}
   attackKey: Boss_R_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -67,6 +65,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3
@@ -88,14 +90,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 657, y: 252}
   attackKey: Boss_R_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 50
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -107,6 +107,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3

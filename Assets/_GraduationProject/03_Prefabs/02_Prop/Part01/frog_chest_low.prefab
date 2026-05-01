@@ -190,6 +190,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7813153568834831233}
   - component: {fileID: 5478228383000691616}
+  - component: {fileID: 5703805965011667241}
+  - component: {fileID: 2088062410494637349}
   m_Layer: 0
   m_Name: frog_chest_low
   m_TagString: Untagged
@@ -205,9 +207,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6684492844652034039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 440.8891, y: 68.00672, z: -443.81158}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.5850248, y: 2.5850253, z: 2.5850248}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6948286301173147604}
@@ -235,3 +237,43 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.39, z: 0.11}
+--- !u!114 &5703805965011667241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6684492844652034039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 318b9debebe562346b7cff35a77aeef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chest
+  _rewardSO: {fileID: 11400000, guid: b7c6f3fa115d60b4092b79a7c1a8e4e2, type: 2}
+  OnInteracted:
+    m_PersistentCalls:
+      m_Calls: []
+  _chestID: 6addf55e-c56d-49fa-b608-d5a6fb6d1431
+  _interactableUITransform: {fileID: 7813153568834831233}
+  _interactableType: 2
+--- !u!65 &2088062410494637349
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6684492844652034039}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.91, y: 1.74, z: 3.35}
+  m_Center: {x: 0, y: 0.5, z: 0}
