@@ -506,7 +506,7 @@ public class ParabolicMineProjectile : MonoBehaviour
         }
 
         _state = MineState.Finished;
-        Destroy(gameObject);
+        ProjectilePoolManager.ReleaseProjectile(gameObject);
     }
 
     private void ApplyExplosionDamage()
@@ -570,8 +570,7 @@ public class ParabolicMineProjectile : MonoBehaviour
             return;
         }
 
-        _blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-        _blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+        AttackOutcomeRecorder.RecordSuccessfulHit(_blackboard);
         _hasRegisteredHit = true;
     }
 
@@ -583,6 +582,20 @@ public class ParabolicMineProjectile : MonoBehaviour
         }
 
         _enemy.animHandler.PlayFeedbackAtPosition(_feedbackName, position);
+    }
+
+    private void OnDisable()
+    {
+        _state = MineState.None;
+        _hasArmedTrigger = false;
+        _hasAppliedDamage = false;
+        _hasRegisteredHit = false;
+        _enemy = null;
+        _playerTransform = null;
+        _playerCollider = null;
+        _playerHealth = null;
+        _blackboard = null;
+        _owner = null;
     }
 
     private void UpdateRotation(Vector3 previousPosition, Vector3 nextPosition)

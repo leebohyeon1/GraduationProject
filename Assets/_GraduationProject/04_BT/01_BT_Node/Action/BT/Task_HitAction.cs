@@ -1,6 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 using System.Diagnostics.Contracts;
+using System;
 
 [CreateAssetMenu(fileName = "Task_HitAction", menuName = "BehaviorTree/Action/HitAction")]
 public class Task_HitAction : Node
@@ -8,15 +9,18 @@ public class Task_HitAction : Node
     private int _entryFrame;
     private float _hitStartTime;
 
-
     public override void OnEnter()
     {
         base.OnEnter();
         if (Handler != null) Handler.ResetAllFlags();
+        runner._animationBridge.ResetAllAnimationStates();
+
         runner.AnimationEvent("Hit");
         runner.SetState(EnemyStateController.EnemyState.Hit);
         _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
         runner._stateController.SetLock(true);
+        runner.animator.speed = 1f;
+        runner.animHandler.SpeedMultiplier = 1f;
         if (runner.Movement != null) runner.Movement.StopMovement();
         Debug.Log($"[Task_HitAction] OnEnter called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
     }
@@ -24,9 +28,11 @@ public class Task_HitAction : Node
     protected override NodeState OnUpdate()
     {
         if (runner == null) return NodeState.FAILURE;
+        runner._animationBridge.ResetAllAnimationStates("Hit");
+        
         if(_hitStartTime != brain.blackboard.GetValue<float>("OnTaskHit"))
         {
-        Debug.Log($"[Task_HitAction] OnUpdate called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
+            Debug.Log($"[Task_HitAction] OnUpdate called, OnTakeHit: {_hitStartTime}, OnTaskHit: {brain.blackboard.GetValue<float>("OnTaskHit")}");
             runner.AnimationEvent("Hit");
             _hitStartTime = brain.blackboard.GetValue<float>("OnTaskHit");
         }
@@ -43,7 +49,7 @@ public class Task_HitAction : Node
     public override void OnExit()
     {
         base.OnExit();
-        
+        Debug.Log($"[Task_HitAction] OnExit called, resetting hit flags.");
         brain.blackboard.SetValue(EnemyBlackboardKeys.OnTakeHit, false);
         brain.blackboard.SetValue("OnTaskHit", 0f);
         

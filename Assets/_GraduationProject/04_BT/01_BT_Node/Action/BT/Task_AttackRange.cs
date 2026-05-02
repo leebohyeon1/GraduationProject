@@ -44,22 +44,22 @@ public class Task_AttackRange : BaseAttackNode
 
     private void Fire()
     {
-        Debug.Log(0);
         _hasFired = true;
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
 
         if (projectilePrefab != null)
         {
-            GameObject bulletObj = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
+            GameObject bulletObj = ProjectilePoolManager.GetProjectile(projectilePrefab, spawnPos, Quaternion.LookRotation(_attackDir));
             if (bulletObj.TryGetComponent<EnemyProjectile>(out var projectileScript))
             {
                 projectileScript.Setup(runner, _attackDir, projectileSpeed, runner.gameObject, damageData);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-                brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+            }
+            else
+            {
+                ProjectilePoolManager.ReleaseProjectile(bulletObj);
             }
         }
         Handler.CloseHitWindow();
-        Debug.Log(1);
     }
     protected override void SpecificCleanup()
     {
@@ -70,9 +70,7 @@ public class Task_AttackRange : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;
