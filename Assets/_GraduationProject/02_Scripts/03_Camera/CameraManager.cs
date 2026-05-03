@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
-
 /// <summary>
 /// 카메라 채널
 /// </summary>
@@ -15,105 +14,135 @@ public class CameraChannel
 }
 
 /// <summary>
-/// 카메라를 관리하는 매니저
+/// 카메라를 관리하는 매니저.
+/// 평상시에는 CameraController를 통해 자동 전환을 수행하며,
+/// 이벤트 발생 시 특정 채널로 강제 전환할 수 있습니다.
+/// 런타임에 동적으로 카메라 채널을 등록/해제할 수 있는 기능을 제공합니다.
 /// </summary>
-public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListener<PlayerController>, IDisposable
+public class CameraManager : MonoBehaviour, 
+    IEventListener<string>, 
+    IEventListener<PlayerController>, 
+    IEventListener<CameraRegistrationData>,
+    IDisposable
 {
-    [SerializeField] private CinemachineBrain _cinemachineBrain; // 시네머신 브레인    
+    [SerializeField] private CinemachineBrain _cinemachineBrain;
+    [SerializeField] private CameraController _autoCameraController;
     [SerializeField] private List<CameraChannel> _channelList = new List<CameraChannel>();
 
-    private CameraChannel _currentChannel;          // 현재 카메라
+    // 등록된 모든 채널을 관리하는 맵 (런타임 동적 등록 포함)
+    private Dictionary<string, CinemachineCamera> _channelMap = new Dictionary<string, CinemachineCamera>();
+
+    private CinemachineCamera _activeManualCamera;
+    private string _currentChannelName;
     private PlayerController _player;
 
+    [Header("Event Channels")]
     [SerializeField] private OnCameraChangeSO _onCameraChangeSO;
     [SerializeField] private OnPlayerSpawnedSO _onPlayerSpawnedSO;
+    [SerializeField] private CameraRegistrationEventSO _onCameraRegistrationSO;
+
+    private void Awake()
+    {
+        InitializeStaticChannels();
+    }
 
     private void OnEnable()
     {
         _onCameraChangeSO.Subscribe(this);
         _onPlayerSpawnedSO.Subscribe(this);
+        _onCameraRegistrationSO.Subscribe(this);
 
-        // 모든 카메라 Off
-        foreach (var channel in _channelList)
-        {
-            channel.Camera.gameObject.SetActive(false);
-        }
-
-        // 기본 카메라를 현재 카메라로 설정
-        ChangeChannel(GetCameraChannel("DefaultCamera"));
+        // 기본적으로 자동 컨트롤러 활성화
+        EnableAutoCamera(true);
     }
 
     private void OnDisable()
     {
         _onCameraChangeSO.Unsubscribe(this);
         _onPlayerSpawnedSO.Unsubscribe(this);
+        _onCameraRegistrationSO.Unsubscribe(this);
     }
 
-    /// <summary>
-    /// 객체 해제
-    /// </summary>
     public void Dispose()
     {
-        if (_player != null)
-        {
-            _player.LockOn.LockOnEvent -= OnLockOnEvent;
+        _player = null;
+        _channelMap.Clear();
+    }
 
-            _player = null;
+    /// <summary>
+    /// 인스펙터에 등록된 정적 채널들을 맵에 초기화합니다.
+    /// </summary>
+    private void InitializeStaticChannels()
+    {
+        _channelMap.Clear();
+        foreach (var channel in _channelList)
+        {
+            if (channel != null && !string.IsNullOrEmpty(channel.ChannelName) && channel.Camera != null)
+            {
+                _channelMap[channel.ChannelName] = channel.Camera;
+                channel.Camera.Priority = 0;
+            }
         }
     }
 
-    #region CameraChannel
     /// <summary>
-    /// 카메라 채널 바꾸기
+    /// 자동 카메라 모드 활성화/비활성화
     /// </summary>
-    /// <param name="cameraChannelName">바꾸려는 카메라 채널 이름</param>
+    private void EnableAutoCamera(bool enable)
+    {
+        if (_autoCameraController != null)
+        {
+            _autoCameraController.enabled = enable;
+            if (enable)
+            {
+                // 수동 채널 해제 시 우선순위 초기화
+                if (_activeManualCamera != null)
+                {
+                    _activeManualCamera.Priority = 0;
+                }
+                _activeManualCamera = null;
+                _currentChannelName = null;
+                _autoCameraController.UpdateCameraPriorities();
+            }
+        }
+    }
+
+    #region CameraChannel Control
+    
     public void ChangeChannel(string cameraChannelName)
     {
-        foreach (var channel in _channelList)
+        // "Default" 또는 "Auto" 요청 시 자동 모드로 복귀
+        if (cameraChannelName == "Default" || cameraChannelName == "Auto")
         {
-            // 채널 명이 같으면
-            if(channel.ChannelName == cameraChannelName)
-            {
-                ChangeChannel(channel); // 채널 변경
-                break;
-            }
+            EnableAutoCamera(true);
+            return;
+        }
+
+        if (_channelMap.TryGetValue(cameraChannelName, out var targetCamera))
+        {
+            ExecuteChannelChange(cameraChannelName, targetCamera);
+        }
+        else
+        {
+            Debug.LogWarning($"[CameraManager] Channel '{cameraChannelName}' is not registered.");
         }
     }
 
-    /// <summary>
-    /// 카메라 채널 바꾸기
-    /// </summary>
-    /// <param name="cameraChannel">바꿀 카메라 채널</param>
-    public void ChangeChannel(CameraChannel cameraChannel)
+    private void ExecuteChannelChange(string channelName, CinemachineCamera camera)
     {
-        // 카메라 우선순위 변경
-        cameraChannel.Camera.gameObject.SetActive(true);
-        if(_currentChannel != null)
+        // 수동 채널 변경 시 자동 모드 비활성화
+        EnableAutoCamera(false);
+
+        // 기존 수동 채널 우선순위 낮춤
+        if (_activeManualCamera != null)
         {
-            _currentChannel.Camera.gameObject.SetActive(false);
+            _activeManualCamera.Priority = 0;
         }
 
-        // 현재 카메라 교체
-        _currentChannel = cameraChannel;
-    }
-
-    /// <summary>
-    /// 카메라 반환 함수
-    /// </summary>
-    /// <param name="cameraChannelName">카메라 채널 이름</param>
-    /// <returns>찾은 카메라 채널</returns>
-    public CameraChannel GetCameraChannel(string cameraChannelName)
-    {
-        foreach (var channel in _channelList)
-        {
-            // 채널 명이 같으면
-            if (channel.ChannelName == cameraChannelName)
-            {
-                return channel;
-            }
-        }
-
-        return null;
+        // 새 채널 우선순위 높임 (CameraController보다 높은 값)
+        camera.Priority = 50; 
+        _activeManualCamera = camera;
+        _currentChannelName = channelName;
     }
 
     #endregion
@@ -123,35 +152,25 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
     //==========================================================================================================================
 
     /// <summary>
-    /// string 이벤트 처리
+    /// 채널 변경 이벤트 처리
     /// </summary>
-    /// <param name="cameraChannel">카메라 채널 명</param>
     public void OnEventTrigger(string cameraChannel)
     {
         ChangeChannel(cameraChannel);
     }
 
     /// <summary>
-    /// 플레이어 스폰 이벤트 처리
+    /// 플레이어 스폰 이벤트 처리 및 컨트롤러 초기화
     /// </summary>
-    /// <param name="player">플레이어</param>
     public void OnEventTrigger(PlayerController player)
     {
-        if(_player == null)
+        if (_player == null)
         {
             _player = player;
 
-            _player.LockOn.LockOnEvent += OnLockOnEvent;
-
-            // 기본 카메라 타겟 설정
-            GetCameraChannel("DefaultCamera").Camera.Target.TrackingTarget = _player.transform;
-
-            // 락온 카메라 타겟 설정
-            Transform targetGroup = GetCameraChannel("LockOnCamera").Camera.Target.TrackingTarget;
-            if(targetGroup.TryGetComponent<CinemachineTargetGroup>(out CinemachineTargetGroup var))
+            if (_autoCameraController != null)
             {
-                var.AddMember(_player.transform, 0.5f, 1f);
-                var.AddMember(_player.LockOn.LockOnIndicator.transform, 0.5f, 1f);
+                _autoCameraController.Setup(_player);
             }
 
             player.RegisterDisposable(this);
@@ -159,19 +178,31 @@ public class CameraManager : MonoBehaviour, IEventListener<string>, IEventListen
     }
 
     /// <summary>
-    /// 락온 이벤트 처리
+    /// 카메라 채널 동적 등록/해제 이벤트 처리
     /// </summary>
-    /// <param name="islockOn">락온 여부</param>
-    private void OnLockOnEvent(bool islockOn)
+    public void OnEventTrigger(CameraRegistrationData data)
     {
-        if(islockOn)
+        if (data.isRegister)
         {
-            ChangeChannel("LockOnCamera");
+            if (data.camera != null && !string.IsNullOrEmpty(data.channelName))
+            {
+                _channelMap[data.channelName] = data.camera;
+                data.camera.Priority = 0;
+                // Debug.Log($"[CameraManager] Registered channel: {data.channelName}");
+            }
         }
         else
         {
-            ChangeChannel("DefaultCamera");
+            if (_channelMap.ContainsKey(data.channelName))
+            {
+                // 현재 사용 중인 채널이 해제되면 자동 모드로 복구
+                if (_currentChannelName == data.channelName)
+                {
+                    EnableAutoCamera(true);
+                }
+                _channelMap.Remove(data.channelName);
+                // Debug.Log($"[CameraManager] Unregistered channel: {data.channelName}");
+            }
         }
     }
-
 }
