@@ -20,21 +20,11 @@ public class PuzzleGridManager : MonoBehaviour
     // 전체 리스트 (리셋용)
     private List<TotemBase> _allTotems = new List<TotemBase>();
     private List<ObjectTotem> _objectTotems = new List<ObjectTotem>();
-    private UnityEngine.InputSystem.InputAction reloadAction;
 
     private void Awake()
     {
-        reloadAction = new UnityEngine.InputSystem.InputAction("Reload", binding: "<Keyboard>/r");
-        reloadAction.performed += ResetPuzzle;
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-    }
-    private void OnEnable() {
-        reloadAction.Enable();
-    }
-    
-    private void OnDisable() {
-        reloadAction.Disable();
     }
 
     public void RegisterTotem(TotemBase totem, Vector2Int pos)
@@ -120,11 +110,18 @@ public class PuzzleGridManager : MonoBehaviour
             // 나중에 애니메이션으로 교체 가능
         }
     }
-
+    public void BreakAllTotems()
+    {
+        Debug.Log("[PuzzleGridManager] Breaking all totems...");
+        foreach (var totem in _allTotems)
+        {
+            totem.DestroyTotem();
+        }
+    }
     /// <summary>
     /// 퍼즐 전체 초기화
     /// </summary>
-    public void ResetPuzzle(InputAction.CallbackContext context)
+    public void ResetPuzzle()
     {
         Debug.Log("[PuzzleGridManager] Resetting Puzzle...");
         
