@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5585473778015514653}
+  - component: {fileID: 7052264900759211786}
   m_Layer: 0
   m_Name: StoryPart1
   m_TagString: Untagged
@@ -29,6 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7102230959639327045}
   - {fileID: 8863152285215766062}
   - {fileID: 5036593509186472214}
   - {fileID: 2953215592323615948}
@@ -43,6 +45,18 @@ Transform:
   - {fileID: 4575395663767895192}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7052264900759211786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63419238901731142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a2bcc688a0c124186490ff6a6f2f0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CusSceneController
 --- !u!1 &193798829916301631
 GameObject:
   m_ObjectHideFlags: 0
@@ -1933,9 +1947,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1945,9 +1959,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-          m_MethodName: ChangeChannel
+        - m_Target: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+          m_TargetAssemblyTypeName: OnCameraChangeSO, Assembly-CSharp
+          m_MethodName: Publish
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1959,9 +1973,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2698,9 +2712,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2724,9 +2738,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2855,9 +2869,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2869,9 +2883,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5807,9 +5821,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5821,9 +5835,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6309,9 +6323,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6323,9 +6337,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6606,9 +6620,9 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneStart
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneStart
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6632,9 +6646,9 @@ MonoBehaviour:
           m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CutSceneManager, Assembly-CSharp
-          m_MethodName: OnCutSceneEnd
+        - m_Target: {fileID: 7052264900759211786}
+          m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+          m_MethodName: CutSceneEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -8246,16 +8260,16 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-          m_MethodName: ChangeChannel
+        - m_Target: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+          m_TargetAssemblyTypeName: OnCameraChangeSO, Assembly-CSharp
+          m_MethodName: Publish
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: DefaultCamera
+            m_StringArgument: Default
             m_BoolArgument: 1
           m_CallState: 2
 --- !u!114 &8978514525644992103
@@ -11147,6 +11161,132 @@ Animator:
 Transform:
   m_CorrespondingSourceObject: {fileID: 727577477467751720, guid: bc079ace02f1d4f4a8fb0b7d445594f6, type: 3}
   m_PrefabInstance: {fileID: 2388140674828766404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5128869466567212576
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5585473778015514653}
+    m_Modifications:
+    - target: {fileID: 1034092860592166282, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369237373990881513, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435047107027691636, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1616.885
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 134.36066
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 33.43388
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4408942732219870753, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722135798301796003, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Name
+      value: Opening
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722135798301796003, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4854720081493240282, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5356377073797808604, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7052264900759211786}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7052264900759211786}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CutSceneStart
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CutSceneEnd
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CusSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373280231786703990, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CusSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117260160277857222, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514895257258208737, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8627144375884555540, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+--- !u!4 &7102230959639327045 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2719425367382200165, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
+  m_PrefabInstance: {fileID: 5128869466567212576}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5553810705284571324
 PrefabInstance:
