@@ -24,7 +24,7 @@ public struct EnemyStateData
 /// <summary>
 /// EnemyStateData를 전달하는 스크립터블 오브젝트 이벤트 채널입니다.
 /// </summary>
-[CreateAssetMenu(fileName = "EnemyStateEventChannel", menuName = "Events/Enemy State Event Channel")]
+[CreateAssetMenu(fileName = "EnemyStateEventChannel", menuName = "Project/Events/Enemy State Event Channel")]
 public class EnemyStateEventSO : EventSO<EnemyStateData>
 {
 }
