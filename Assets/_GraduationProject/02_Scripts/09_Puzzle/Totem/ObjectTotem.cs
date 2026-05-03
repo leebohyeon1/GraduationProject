@@ -1,5 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
+using System;
 
 public class ObjectTotem : TotemBase
 {
@@ -55,7 +58,6 @@ public class ObjectTotem : TotemBase
     public override void ResetToStart()
     {
         base.ResetToStart();
-
         _currentDurability = _maxDurability;
         IsAtTarget = false;
 
@@ -88,10 +90,24 @@ public class ObjectTotem : TotemBase
         {
             _renderer.material.DOColor(Color.gray, 0.5f);
         }
-
+        _feedbackQueue.Enqueue(() => 
+        {
+            PuzzleGridManager.Instance.BreakAllTotems();
+        });
+        _feedbackQueue.Enqueue(() => 
+        {
+            PuzzleGridManager.Instance.ResetPuzzle();
+        });
         transform.DOShakePosition(0.5f, 0.5f);
     }
-
+    private void Update() {
+        if (_feedbackQueue.Count > 0 && !feedback.IsPlaying)
+        {
+            Action feedbackAction = _feedbackQueue.Dequeue();
+            feedbackAction.Invoke();
+        }
+    }
+    Queue<Action> _feedbackQueue = new Queue<Action>();
     private void OnDrawGizmosSelected()
     {
         if (!_showTargetGizmo)

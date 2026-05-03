@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 
 public abstract class TotemBase : MonoBehaviour, IDamageable
 {
@@ -8,6 +9,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     [SerializeField] protected float _moveSpeed = 10f;
     [SerializeField] protected TotemType _type;
     [SerializeField] protected bool _isMovable = true; // 이동 가능 여부 (기본값 true)
+    [SerializeField] protected TotemReceiveType _receiveType;
     
     protected Vector2Int _startGridPos;
     protected Vector2Int _currentGridPos;
@@ -26,9 +28,27 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     public bool IsMovable { get => _isMovable; set => _isMovable = value; }
 
     public int CurrentHealth => Health;
+    
+    [SerializeField]protected FeedbackPlayManager feedback;
+    public string respawn {get; private set;} = "_respawnFeedbackName";
+    public string blocked {get; private set;} = "_blockedFeedbackName";
+    public string hit {get; private set;} = "_hitFeedbackName";
+    public string arrival {get; private set;} = "_arrivalFeedbackName";
+    public string broken {get; private set;} = "_brokenFeedbackName";
 
-    protected virtual void Awake()
+    private void Reset()
     {
+        string[] names = new string[] 
+        { 
+            respawn,
+            blocked,
+            hit,
+            arrival,
+            broken
+        };
+
+        // 여기서 초기화하면 gameObject 접근이 가능합니다.
+        feedback = new FeedbackPlayManager(gameObject, names);
     }
 
     protected virtual void Start()
@@ -42,8 +62,16 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             
             PuzzleGridManager.Instance.RegisterTotem(this, _currentGridPos);
         }
+        gameObject.layer = LayerMask.NameToLayer("HitObject");
     }
+    public void DestroyTotem()
+    {
+        if (IsDead) return;
 
+        _state = TotemState.Destroyed;
+        
+        feedback.PlayFeedback(broken);
+    }
     public void TakeDamage(DamageData damageData)
     {
         // 이동 불가능한 토템이면 반응 안 함 (흔들림도 X 혹은 흔들림 O?)
@@ -51,6 +79,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         if (!_isMovable) 
         {
             // OnHitBlocked(); // 필요하면 흔들림 추가
+            feedback.PlayFeedback(blocked);
             return;
         }
 
@@ -60,11 +89,16 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         if (!IsChargedAttack(damageData.AttackType))
         {
             OnHitBlocked();
+            Debug.Log($"[TotemBase] Attack {damageData.AttackType} not effective. Blocked!");
+            feedback.PlayFeedback(blocked);
             return;
         }
-
+        Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
+        feedback.PlayFeedback(hit);
+        
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
-        Vector2Int moveDir = GetCardinalDirection(incomingDir);
+        Vector3 localDir = PuzzleGridManager.Instance.transform.InverseTransformDirection(incomingDir);
+        Vector2Int moveDir = GetCardinalDirection(localDir);
 
         if (moveDir == Vector2Int.zero) return;
 
@@ -79,14 +113,26 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         StartCoroutine(SlideToPosition(targetGridPos));
     }
 
+
     private bool IsChargedAttack(AttackType type)
     {
-        return type == AttackType.Strong_1 || 
-               type == AttackType.Strong_2 || 
-               type == AttackType.Strong_Counter||
-               type == AttackType.Strong_3;
+        if(_receiveType == TotemReceiveType.All) return true;
+        if(_receiveType == TotemReceiveType.Strong)
+        {
+            if(type.ToString().StartsWith("Strong"))
+                return true;
+        }
+        if(_receiveType == TotemReceiveType.Normal)
+        {
+            if (type.ToString().StartsWith("Normal"))
+                return true;
+            
+        }
+        return false;
     }
+    
 
+    
     private System.Collections.IEnumerator SlideToPosition(Vector2Int targetGridPos)
     {
         _state = TotemState.Sliding;
@@ -107,6 +153,8 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
     public virtual void ResetToStart()
     {
+        feedback.PlayFeedback(respawn);
+
         StopAllCoroutines();
         transform.DOKill();
 
@@ -117,7 +165,11 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         transform.localScale = Vector3.one; 
     }
 
-    protected virtual void OnMoveComplete() { }
+    protected virtual void OnMoveComplete()
+    {
+        feedback.PlayFeedback(arrival);
+        
+    }
 
     protected virtual void OnHitBlocked()
     {
@@ -136,3 +188,4 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         }
     }
 }
+
