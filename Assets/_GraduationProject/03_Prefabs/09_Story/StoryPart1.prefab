@@ -6618,16 +6618,16 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-          m_MethodName: ChangeChannel
+        - m_Target: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+          m_TargetAssemblyTypeName: OnCameraChangeSO, Assembly-CSharp
+          m_MethodName: Publish
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: Bird_Dialogue
+            m_StringArgument: Bird_Dialogue_Camera
             m_BoolArgument: 0
           m_CallState: 2
     - m_PersistentCalls:
@@ -6666,6 +6666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1377340060923358036}
   - component: {fileID: 6095614603174216945}
+  - component: {fileID: 5150485125334821542}
   m_Layer: 0
   m_Name: Bird_Dialogue_Camera
   m_TagString: Untagged
@@ -6731,6 +6732,21 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &5150485125334821542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6961384515998104463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b658012a019bd4caf417f07edbce16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraChannelRegisterer
+  _channelName: Bird_Dialogue_Camera
+  _camera: {fileID: 6095614603174216945}
+  _onCameraRegistrationSO: {fileID: 11400000, guid: 97bf7701797e9544fb92e44e5148048c, type: 2}
 --- !u!1 &7036077272571505553
 GameObject:
   m_ObjectHideFlags: 0
@@ -8085,16 +8101,16 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-          m_MethodName: ChangeChannel
+        - m_Target: {fileID: 11400000, guid: 2119041d4f705764eb9c87ffea29e817, type: 2}
+          m_TargetAssemblyTypeName: OnCameraChangeSO, Assembly-CSharp
+          m_MethodName: Publish
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: DefaultCamera
+            m_StringArgument: Default
             m_BoolArgument: 1
           m_CallState: 2
 --- !u!114 &8016263135674082793
