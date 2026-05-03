@@ -68,13 +68,16 @@ public class PuzzleGridManager : MonoBehaviour
         if (_originPoint == null) return Vector3.zero;
         float x = gridPos.x * _cellSize;
         float z = gridPos.y * _cellSize;
-        return _originPoint.position + new Vector3(x, 0, z);
+        Vector3 localPos = new Vector3(x, 0, z);
+
+        return _originPoint.TransformPoint(localPos);
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
     {
         if (_originPoint == null) return Vector2Int.zero;
-        Vector3 localPos = worldPos - _originPoint.position;
+        Vector3 localPos = _originPoint.InverseTransformPoint(worldPos)
+        ;
         int x = Mathf.RoundToInt(localPos.x / _cellSize);
         int z = Mathf.RoundToInt(localPos.z / _cellSize);
         return new Vector2Int(x, z);
@@ -142,14 +145,24 @@ public class PuzzleGridManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (!_showGridGizmos || _originPoint == null) return;
+
+        Matrix4x4 oldMatrix = Gizmos.matrix;
+        Gizmos.matrix = transform.localToWorldMatrix;
+
+        
         Gizmos.color = Color.cyan;
         for (int x = 0; x < _gridSize; x++)
         {
             for (int y = 0; y < _gridSize; y++)
             {
-                Vector3 pos = GridToWorld(new Vector2Int(x, y));
+                Vector3 pos = new Vector3 (x * _cellSize, 0, y * _cellSize);
+            
+                // DrawWireCube의 위치와 크기도 이제 로컬 기준입니다.
                 Gizmos.DrawWireCube(pos, new Vector3(_cellSize * 0.9f, 0.1f, _cellSize * 0.9f));
-            }
         }
+    }
+
+    // 4. 매트릭스 복구 (다른 기즈모에 영향을 주지 않기 위해 필수!)
+    Gizmos.matrix = oldMatrix;
     }
 }

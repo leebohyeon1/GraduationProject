@@ -62,7 +62,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             
             PuzzleGridManager.Instance.RegisterTotem(this, _currentGridPos);
         }
-        gameObject.layer = LayerMask.NameToLayer("Totem");
+        gameObject.layer = LayerMask.NameToLayer("HitObject");
     }
     public void DestroyTotem()
     {
@@ -95,9 +95,10 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         }
         Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
         feedback.PlayFeedback(hit);
-
+        
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
-        Vector2Int moveDir = GetCardinalDirection(incomingDir);
+        Vector3 localDir = PuzzleGridManager.Instance.transform.InverseTransformDirection(incomingDir);
+        Vector2Int moveDir = GetCardinalDirection(localDir);
 
         if (moveDir == Vector2Int.zero) return;
 
