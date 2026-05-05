@@ -16,6 +16,12 @@ public class TotemData
     public Vector2Int targetPos; // 목표 좌표
 }
 
+public enum TotemReceiveType
+{
+    Normal,
+    Strong,
+    All
+}
 [System.Serializable]
 public class PuzzleLevelData
 {
