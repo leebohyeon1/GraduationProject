@@ -50,7 +50,6 @@ MonoBehaviour:
   m_Name: Action_Clear Stun
   m_EditorClassIdentifier: Assembly-CSharp::Action_ClearStun
   position: {x: 553, y: -325}
-  invertDelay: 0
 --- !u!114 &-8083445270588989208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,12 +261,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_BossFakeAttackNode
   position: {x: 551, y: -248}
   attackKey: Boss_Fake_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -279,6 +277,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &-571219295577504573
 MonoBehaviour:
   m_ObjectHideFlags: 0

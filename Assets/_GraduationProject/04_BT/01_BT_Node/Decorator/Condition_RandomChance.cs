@@ -20,7 +20,7 @@ public class Condition_RandomChance : ConditionNode
         {
             return false;
         }
-
+Debug.Log($"[Condition_RandomChance] Checking random chance condition: Check Name: {checkName}, Cooldown Duration: {cooldownDuration}, Success Chance: {successChance}");   
         brain.StartSkillCooldown(checkName);
         bool cnt = Random.Range(0f, 100f) <= successChance;
         return cnt;
