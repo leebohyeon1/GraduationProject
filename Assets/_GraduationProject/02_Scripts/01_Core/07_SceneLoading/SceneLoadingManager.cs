@@ -324,7 +324,7 @@ public class SceneLoadingManager : MonoBehaviour
         string chunkName = chunkData.SceneName;
 
         // 이미 거기가 활성 씬이면 무시
-        if (DataManager.Instance.GetGameData().LastMainScene == chunkName)
+        if (DataManager.Instance.GetGameData().LastMainScene == chunkName || chunkName == "Title")
         {
             return;
         }

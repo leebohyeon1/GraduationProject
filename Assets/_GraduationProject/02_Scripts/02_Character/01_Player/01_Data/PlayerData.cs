@@ -39,6 +39,8 @@ public class PlayerData
     public Stat MoveSpeed;
     public Stat RotateSpeed;
 
+    public float FallThresholdY; // 추락 사망 Y축 임계값
+
     public Stat ChargeMoveSpeed;
     public Stat ChargeRotateSpeed;
 
@@ -87,6 +89,7 @@ public class PlayerData
 
         MoveSpeed = new Stat(() => _baseData.MoveSpeed);
         RotateSpeed = new Stat(() => _baseData.RotateSpeed);
+        FallThresholdY = _baseData.FallThresholdY;
         ChargeMoveSpeed = new Stat(() => _baseData.ChargeMoveSpeed);
         ChargeRotateSpeed = new Stat(() => _baseData.ChargeRotateSpeed);
 

@@ -54,7 +54,7 @@ public class DataManager : MonoBehaviour
         if (_useDevelopment)
         {
             CreateNewGame(_developementDataSlotIndex);
-
+            GamePlayTagManager.Instance.Initialize();
             PlayerController player = FindFirstObjectByType<PlayerController>();
             if (player != null)
             {
@@ -182,6 +182,7 @@ public class DataManager : MonoBehaviour
         {
             _currentGameData = DataList[index];
             _currentSlotIndex = index; // 선택한 슬롯 번호 기억!
+            GamePlayTagManager.Instance.Initialize();
             Debug.Log($"{index}번 세이브 데이터를 불러왔습니다.");
         }
     }
@@ -199,7 +200,7 @@ public class DataManager : MonoBehaviour
 
         DataList.Add(_currentGameData);
         _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
-
+        GamePlayTagManager.Instance.Initialize();
         Debug.Log("새로운 게임 데이터를 생성했습니다.");
     }
 
@@ -217,7 +218,7 @@ public class DataManager : MonoBehaviour
 
         DataList[index] = _currentGameData;
         _currentSlotIndex = index;
-
+        GamePlayTagManager.Instance.Initialize();
         Debug.Log("새로운 게임 데이터를 생성했습니다.");
     }
 
