@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -15,19 +16,23 @@ public class PlayerMoney : MonoBehaviour, IDisposable
 
     public event Action<int> MoneyChanged;   
     public event Action<int> SpecialMoneyChanged;   
-
+    PlayerController _player;
     public void Initialize(PlayerController player)
     {
         _events = player.Events;
         _data = player.RuntimeData;
+        _player = player;
 
         player.RegisterDisposable(this);
+        player.Health.OnDied += ClosetEnemyToCoin;
+
     }
 
     public void Dispose()
     {
         MoneyChanged = null;
         SpecialMoneyChanged = null;
+        _player.Health.OnDied -= ClosetEnemyToCoin;
     }
 
     /// <summary>
@@ -99,6 +104,34 @@ public class PlayerMoney : MonoBehaviour, IDisposable
     {
         _data.SpecialMoney += amount;
         SpecialMoneyChanged?.Invoke(_data.SpecialMoney);
+    }
+
+    public Enemy FindClosestEnemy()
+    {
+        float closestDistance = float.MaxValue;
+        Enemy[] enemies = FindObjectsOfType<Enemy>(true);
+        Enemy closestEnemy = null;
+        for(int i = 0; i < enemies.Count(); i++)
+        {
+            float sqrDist = (enemies[i].transform.position - transform.position).sqrMagnitude;
+            if(sqrDist < closestDistance)            {
+                closestDistance = sqrDist;
+                closestEnemy = enemies[i];  
+                // 가장 가까운 적 저장
+            }
+        }
+        // 가장 가까운 적을 찾는 로직 구현
+        return closestEnemy;
+    }
+    public void ClosetEnemyToCoin()
+    {
+        Enemy enemy = FindClosestEnemy();
+        if(enemy != null)
+        {
+            enemy.enemyStat.AddMoneyReward(_data.Money);
+            _data.Money = 0; // 플레이어의 돈을 0으로 초기화
+            MoneyChanged?.Invoke(_data.Money);
+        }
     }
 
 }

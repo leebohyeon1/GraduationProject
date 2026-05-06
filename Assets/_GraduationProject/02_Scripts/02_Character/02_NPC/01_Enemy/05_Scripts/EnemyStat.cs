@@ -9,4 +9,9 @@ public class EnemyStat : ScriptableObject
     public float DetectRange;
     public float CircleSeeRange;
     public int MoneyReward = 10;
+    
+    public void AddMoneyReward(int amount)
+    {
+        MoneyReward += amount;
+    }
 }
