@@ -70,10 +70,30 @@ public class PlayerData
     }
 
     /// <summary>
-    /// PlayerDataSO의 데이터로 초기화합니다.
-    /// 값 복사 대신 실시간 참조와 래퍼 클래스를 사용합니다.
+    /// PlayerDataSO의 데이터로 초기화합니다. (새 게임 시작 시 호출)
     /// </summary>
     public void InitializeFromSO(PlayerDataSO so)
+    {
+        if (so == null) return;
+        
+        // 1. Stat 시스템 및 베이스 데이터 참조 복구
+        ReloadBaseData(so);
+
+        // 2. 초기 수치 설정 (새 게임이므로 SO의 기본값으로 설정)
+        CurrentHealth = (int)Health.Value;
+        CurrentStamina = Stamina.Value;
+        CurrentPotion = (int)Potion.Value;
+        
+        Money = 0;
+        SpecialMoney = 0;
+        AcquiredAbilityIds.Clear();
+    }
+
+    /// <summary>
+    /// 세이브된 수치데이터는 유지한 채, Stat 시스템과 원본 데이터 참조만 다시 연결합니다.
+    /// (JSON 로드 후 또는 씬 이동 시 런타임 로직 복구를 위해 호출)
+    /// </summary>
+    public void ReloadBaseData(PlayerDataSO so)
     {
         if (so == null) return;
         _baseData = so;
@@ -95,7 +115,7 @@ public class PlayerData
 
         KnockDownDuration = new Stat(() => _baseData.KnockDownDuration);
 
-        // 2. 콤보 공격 데이터 래퍼 초기화 (개별 데미지 버프 가능)
+        // 2. 콤보 공격 데이터 래퍼 초기화
         AttackSpeed = new Stat(() => 1);
 
         NormalAttacks.Clear();
@@ -112,9 +132,9 @@ public class PlayerData
 
         NormalCounterAttack = new RuntimeAttackConfig(_baseData.NormalCounterAttackConfig);
         ChargeStamina = new Stat(() => _baseData.ChargeStamina);
-        MaxChargeTime = new Stat(() => _baseData.MaxChargeTime); 
+        MaxChargeTime = new Stat(() => _baseData.MaxChargeTime);
         HeavyCounterAttack = new RuntimeChargeAttackConfig(_baseData.HeavyCounterAttackConfig);
-        
+
         MaxCounterStack = new Stat(() => _baseData.MaxCounterStack);
         CounterStackDamageMultipliers.Clear();
         foreach (var config in _baseData.CounterStackDamageMultipliers)
@@ -123,13 +143,6 @@ public class PlayerData
         }
         CounterStackDuration = new Stat(() => _baseData.CounterStackDuration);
 
-
         RuntimeDodge = new RuntimeDodgeConfig(_baseData.DodgeConfig);
-
-        // 3. 단순 수치 및 설정값 (원본 SO 보호를 위해 값 복사)
-        CurrentHealth = (int)Health.Value;
-        CurrentStamina = Stamina.Value;
-
-        CurrentPotion = (int)Potion.Value;
     }
 }
