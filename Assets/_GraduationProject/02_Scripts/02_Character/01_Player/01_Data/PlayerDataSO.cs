@@ -13,6 +13,7 @@ public class PlayerDataSO : ScriptableObject
     public int MaxHealth = 100; // 최대 체력
     public int MaxPotion = 3;
     public int PotionHealAmount = 40;
+    public float FallThresholdY = -10.0f; // 추락 사망 Y축 임계값
 
     [Header("Stamina")]
     public float MaxStamina = 100;

@@ -156,11 +156,17 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-
+    bool _getPlayerCoin = false;
     protected void Awake()
     {
         _initializer = GetComponent<EnemyInitializer>();
         _initializer.Initialize();
+        _getPlayerCoin = false;
+        if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
+        {
+            _getPlayerCoin = true;
+            //이펙트 
+        }
     }
 
     /// <summary>
