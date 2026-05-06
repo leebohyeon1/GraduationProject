@@ -137,8 +137,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
-            _owner.player.Money.GiveMoney(_owner.enemyStat.MoneyReward);
-        
+            _owner.player.Money.GiveMoney(_owner.GetMyCurrentReward());
+        _owner.enemyStat.RewardSO.RemoveMoneyFromEnemies(_owner.MonsterId);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
