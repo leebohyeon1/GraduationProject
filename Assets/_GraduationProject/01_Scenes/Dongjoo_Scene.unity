@@ -1628,40 +1628,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!1 &78485260 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-  m_PrefabInstance: {fileID: 307884882}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &78485261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
   m_PrefabInstance: {fileID: 307884882}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &78485262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 78485260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d744b7bb0d5d19408c753bc602ee261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectTotem
-  _moveSpeed: 10
-  _type: 1
-  _isMovable: 1
-  _receiveType: 0
-  feedback:
-    _feedbacks: []
-  _maxDurability: 3
-  _targetGridPos: {x: 0, y: 0}
-  _renderer: {fileID: 0}
-  _showTargetGizmo: 1
-  _targetGizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  _gizmoGridManager: {fileID: 0}
 --- !u!1 &83263907
 GameObject:
   m_ObjectHideFlags: 0
@@ -3912,7 +3883,7 @@ Transform:
   m_GameObject: {fileID: 258679777}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.11, y: 0, z: 14.43}
+  m_LocalPosition: {x: 10.11, y: 0.57, z: 14.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4494,7 +4465,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8346352134774950696, guid: 53780e88f22582f428d34e8552662073, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.97
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8346352134774950696, guid: 53780e88f22582f428d34e8552662073, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4502,7 +4473,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8346352134774950696, guid: 53780e88f22582f428d34e8552662073, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.95
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8346352134774950696, guid: 53780e88f22582f428d34e8552662073, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4848,17 +4819,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle_Totem
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.4800005
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.4800005
+    - target: {fileID: 1185740162047254564, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
+      propertyPath: _maxDurability
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4900,17 +4863,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 78485262}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
 --- !u!1 &313226621
 GameObject:
@@ -6976,17 +6932,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle_Totem (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.4800005
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.4800005
+    - target: {fileID: 1185740162047254564, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
+      propertyPath: _maxDurability
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7028,17 +6976,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1291312701}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
 --- !u!1 &410087039
 GameObject:
@@ -64050,40 +63991,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958702873}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &985329804 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-  m_PrefabInstance: {fileID: 1868372295}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &985329805 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
   m_PrefabInstance: {fileID: 1868372295}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &985329806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985329804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d744b7bb0d5d19408c753bc602ee261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectTotem
-  _moveSpeed: 10
-  _type: 1
-  _isMovable: 1
-  _receiveType: 0
-  feedback:
-    _feedbacks: []
-  _maxDurability: 3
-  _targetGridPos: {x: 0, y: 0}
-  _renderer: {fileID: 0}
-  _showTargetGizmo: 1
-  _targetGizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  _gizmoGridManager: {fileID: 0}
 --- !u!43 &1040560998
 Mesh:
   m_ObjectHideFlags: 0
@@ -68318,40 +68230,11 @@ Transform:
   - {fileID: 669928897}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
---- !u!1 &1291312699 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-  m_PrefabInstance: {fileID: 392505742}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1291312700 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
   m_PrefabInstance: {fileID: 392505742}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1291312701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1291312699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d744b7bb0d5d19408c753bc602ee261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectTotem
-  _moveSpeed: 10
-  _type: 1
-  _isMovable: 1
-  _receiveType: 0
-  feedback:
-    _feedbacks: []
-  _maxDurability: 3
-  _targetGridPos: {x: 0, y: 0}
-  _renderer: {fileID: 0}
-  _showTargetGizmo: 1
-  _targetGizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  _gizmoGridManager: {fileID: 0}
 --- !u!1 &1293232338
 GameObject:
   m_ObjectHideFlags: 0
@@ -70053,18 +69936,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1889392721}
     m_Modifications:
-    - target: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.4800005
-      objectReference: {fileID: 0}
-    - target: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.4800005
-      objectReference: {fileID: 0}
+    - target: {fileID: 2418428846329783091, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
+      propertyPath: _gizmoGridManager
+      value: 
+      objectReference: {fileID: 1889392720}
     - target: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20
@@ -70105,10 +69980,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4351156319468834075, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
       propertyPath: m_Name
       value: Target_Totem
@@ -70116,40 +69987,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4351156319468834075, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1419981808}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
---- !u!1 &1419981807 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4351156319468834075, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
-  m_PrefabInstance: {fileID: 1419981806}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1419981808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1419981807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d744b7bb0d5d19408c753bc602ee261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectTotem
-  _moveSpeed: 10
-  _type: 0
-  _isMovable: 1
-  _receiveType: 0
-  feedback:
-    _feedbacks: []
-  _maxDurability: 5
-  _targetGridPos: {x: 2, y: 2}
-  _renderer: {fileID: 0}
-  _showTargetGizmo: 1
-  _targetGizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  _gizmoGridManager: {fileID: 1889392720}
 --- !u!4 &1419981809 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2503707648865615367, guid: 1fdab368904f11b43b7142c1c98fc776, type: 3}
@@ -75054,17 +74893,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle_Totem (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.4800005
-      objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.4800005
+    - target: {fileID: 1185740162047254564, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
+      propertyPath: _maxDurability
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -75106,17 +74937,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6296388931569960139, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 389675112624965903, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 985329806}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b250a35ef5eabfa4090667aa4ba26afe, type: 3}
 --- !u!1 &1874357282
 GameObject:
@@ -75464,7 +75288,7 @@ Transform:
   m_GameObject: {fileID: 1889392719}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.57, y: 0.16, z: -17.67}
+  m_LocalPosition: {x: -2.32, y: 0.16, z: -15.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
