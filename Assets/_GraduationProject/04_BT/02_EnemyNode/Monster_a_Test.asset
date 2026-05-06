@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Idle
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 259, y: 293}
+  position: {x: 275, y: 473}
   subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
 --- !u!114 &-7657887085207697899
 MonoBehaviour:
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
   m_Name: Service_Pressure Move
   m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
-  position: {x: 83, y: 610}
+  position: {x: -39, y: 589}
   UpdateInterval: 0.3
   MinDistance: 4
   MaxDistance: 5
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Reset
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 259, y: 84}
+  position: {x: -20, y: 85}
   subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
@@ -97,6 +97,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
   position: {x: 1026, y: 428}
   angleThreshold: 360
+--- !u!114 &-4101678284530015850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Interact_idle
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: -20, y: 270}
+  subTreeToRun: {fileID: 11400000, guid: eb968b776ca6de6419a0b6517bffeb23, type: 2}
 --- !u!114 &-1014270589281429754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6355361d175b4e4fa3628d1d194d171, type: 3}
   m_Name: Service_Battle Awareness
   m_EditorClassIdentifier: Assembly-CSharp::Service_BattleAwareness
-  position: {x: 83, y: 514}
+  position: {x: -39, y: 493}
   UpdateInterval: 0.3
   Threat_Angle: 25
   Vuln_Key: IsPlayerVulnerable
@@ -153,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 259, y: 191}
+  position: {x: -20, y: 193}
   subTreeToRun: {fileID: 11400000, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
 --- !u!114 &1254360389698641468
 MonoBehaviour:
@@ -167,12 +181,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 48, y: -15}
+  position: {x: -216, y: 24}
   nodes:
   - {fileID: 5658168150574415809}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
-  - {fileID: -8025809362345536030}
+  - {fileID: -4101678284530015850}
   services:
   - {fileID: 5225714355117329231}
   - {fileID: -7657887085207697899}
@@ -218,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
   m_Name: Service_Update Combat Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
-  position: {x: 83, y: 417}
+  position: {x: -39, y: 396}
   UpdateInterval: 0.3
   CurrentTarget: {fileID: 0}
   DistanceToTarget: DistanceToTarget
@@ -235,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Damage
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 257, y: -15}
+  position: {x: -22, y: -14}
   subTreeToRun: {fileID: 11400000, guid: 6c305fddeac7edd4eba6d0c75d914b7e, type: 2}
 --- !u!114 &5851155588711365391
 MonoBehaviour:

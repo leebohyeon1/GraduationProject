@@ -1,7 +1,7 @@
 using UnityEngine;
 using BehaviorTree;
 
-public class Task_EngageCombat : Node
+public class Task_EngageCombatAll : Node
 {
 
     public override void OnEnter()
@@ -9,6 +9,8 @@ public class Task_EngageCombat : Node
         
         if (!brain._isCombat)
         {
+            runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
+            runner.groupAi.EngageCombatAll();
             runner._aiController.CombatEnter();
         }
     }
@@ -22,7 +24,7 @@ public class Task_EngageCombat : Node
 
     public override Node Clone()
     {
-        Task_EngageCombat node = Instantiate(this);
+        Task_EngageCombatAll node = Instantiate(this);
         return node;
     }
 }

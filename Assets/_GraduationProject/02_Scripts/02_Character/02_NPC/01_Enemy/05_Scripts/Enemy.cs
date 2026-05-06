@@ -74,6 +74,7 @@ public class Enemy : MonoBehaviour
     /// 방어/방패 시스템입니다.
     /// </summary>
     public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
+    public EnemyInteract Interact => _initializer?.GetCachedComponent<EnemyInteract>();
 
     /// <summary>
     /// 몬스터 머리 위에 표시되는 빌보드 UI입니다.

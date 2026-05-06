@@ -73,7 +73,7 @@ public class GroupAi : MonoBehaviour
             if (enemy != null)
             {
                 enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
-                enemy._aiController.CombatEnter(true); 
+                // enemy._aiController.CombatEnter(true); 
             }
         }
     }
