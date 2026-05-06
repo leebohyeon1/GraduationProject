@@ -358,30 +358,51 @@ public class SceneLoadingManager : MonoBehaviour
 
         string sceneName = loadedSceneData.SceneName;
 
+        // 1. 플레이어 찾기 (비활성화된 오브젝트도 포함해서 찾기 위해 FindObjectOfType 사용)
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            // FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include)는 최신 유니티에서 권장되지만,
+            // 호환성을 위해 FindObjectsOfType<PlayerController>(true)로 비활성 오브젝트까지 검색
+            PlayerController pc = FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include);
+            if (pc != null) player = pc.gameObject;
+        }
+
+        if (player == null)
+        {
+            Debug.LogWarning("[Spawn] 플레이어 오브젝트를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 2. 플레이어 활성화 (사망 시 비활성화되었을 수 있음)
+        if (!player.activeSelf)
+        {
+            player.SetActive(true);
+            Debug.Log("[Spawn] 비활성화된 플레이어를 다시 활성화했습니다.");
+        }
+
+        // 3. 위치 이동 및 컨트롤러 처리
+        CharacterController cc = player.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+
         if (gameData.IsFirstVisit(sceneName))
         {
-            // 1. 처음 방문 시: SO에 설정된 좌표로 이동
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                // 캐릭터 컨트롤러가 있다면 잠시 꺼줘야 위치 이동이 정확함
-                CharacterController cc = player.GetComponent<CharacterController>();
-                if (cc != null) cc.enabled = false;
+            // 처음 방문 시: SO에 설정된 좌표로 이동
+            player.transform.position = loadedSceneData.DefaultSpawnPosition;
+            player.transform.rotation = Quaternion.Euler(loadedSceneData.DefaultSpawnRotation);
 
-                player.transform.position = loadedSceneData.DefaultSpawnPosition;
-                player.transform.rotation = Quaternion.Euler(loadedSceneData.DefaultSpawnRotation);
-
-                if (cc != null) cc.enabled = true;
-
-                // 방문 기록 남기기
-                gameData.MarkSceneAsVisited(sceneName);
-                Debug.Log($"[Spawn] {sceneName} 첫 방문: 기본 위치({loadedSceneData.DefaultSpawnPosition})로 스폰합니다.");
-            }
+            // 방문 기록 남기기
+            gameData.MarkSceneAsVisited(sceneName);
+            Debug.Log($"[Spawn] {sceneName} 첫 방문: 기본 위치({loadedSceneData.DefaultSpawnPosition})로 스폰합니다.");
         }
         else
         {
-            // 2. 재방문 시: 기존 세이브 데이터의 위치를 유지 (DataManager에서 처리됨)
-            Debug.Log($"[Spawn] {sceneName} 재방문: 기존 위치를 유지합니다.");
+            // 재방문 시: 기존 세이브 데이터의 위치로 이동 (사망 후 리스폰 등을 위해 필요)
+            player.transform.position = gameData.PlayerData.LastPosition;
+            Debug.Log($"[Spawn] {sceneName} 재방문: 기존 위치({gameData.PlayerData.LastPosition})를 유지 및 적용합니다.");
         }
+
+        // 4. 컨트롤러 다시 활성화 (이동이 끝난 후)
+        if (cc != null) cc.enabled = true;
     }
 }

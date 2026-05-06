@@ -182,6 +182,10 @@ public class DataManager : MonoBehaviour
         {
             _currentGameData = DataList[index];
             _currentSlotIndex = index; // 선택한 슬롯 번호 기억!
+
+            // JSON 로드 시 끊겼던 ScriptableObject 참조 및 Stat 람다 식 복구
+            _currentGameData.PlayerData.ReloadBaseData(_defaultPlayerData);
+
             GamePlayTagManager.Instance.Initialize();
             Debug.Log($"{index}번 세이브 데이터를 불러왔습니다.");
         }
