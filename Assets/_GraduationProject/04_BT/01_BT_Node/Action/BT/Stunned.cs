@@ -35,6 +35,7 @@ public class Stunned : Node
         if(runner.ParrySystem.CurrentStun == StunType.Weak)
         {
             brain.blackboard.GetValue<bool>(EnemyBlackboardKeys.OnTakeHit);
+            runner.AnimationBool("WeakStun", true); // 스턴 애니메이션 트리거
             
         }
         if (runner._animationBridge != null)
