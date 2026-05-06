@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6296388931569960139}
   - component: {fileID: 7491874844577483707}
   - component: {fileID: 7036649909870880940}
+  - component: {fileID: 1185740162047254564}
+  - component: {fileID: 5118303053751574447}
   m_Layer: 0
   m_Name: puzzle_totem2_low
   m_TagString: Untagged
@@ -26,13 +28,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389675112624965903}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.48, y: 2.4800005, z: 2.4800005}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &7491874844577483707
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -90,3 +92,48 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1185740162047254564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389675112624965903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d744b7bb0d5d19408c753bc602ee261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectTotem
+  _moveSpeed: 10
+  _type: 1
+  _isMovable: 1
+  _receiveType: 0
+  feedback:
+    _feedbacks: []
+  _maxDurability: 3
+  _targetGridPos: {x: 0, y: 0}
+  _renderer: {fileID: 0}
+  _showTargetGizmo: 1
+  _targetGizmoColor: {r: 0, g: 1, b: 0, a: 1}
+  _gizmoGridManager: {fileID: 0}
+--- !u!65 &5118303053751574447
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389675112624965903}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2497941, y: 1.1320459, z: 1.8162225}
+  m_Center: {x: 0.0022999647, y: 0.062347077, z: 0.9067251}
