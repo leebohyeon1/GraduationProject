@@ -15,7 +15,7 @@ public class Task_BossFakeAttackNode : BaseAttackNode
         base.SpecificCleanup(); // BaseAttackNode??怨듯넻 ?⑤━ 李⑤떒 濡쒖쭅 ?ㅽ뻾
 
         _isActionFinishedInternally = true;
-
+        Debug.Log($"[Task_BossFakeAttackNode] Action finished internally. Setting _isActionFinishedInternally to true.");
         LogParryDebugInfo();
     }
 
