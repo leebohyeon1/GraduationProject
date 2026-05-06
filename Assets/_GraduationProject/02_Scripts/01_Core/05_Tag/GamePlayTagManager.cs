@@ -24,7 +24,7 @@ public class GamePlayTagManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
         // 데이터베이스에서 저장된 데이터 불러오기
         if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
