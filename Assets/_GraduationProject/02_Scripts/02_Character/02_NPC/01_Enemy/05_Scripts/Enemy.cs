@@ -1,5 +1,6 @@
 using UnityEngine;
 using Pathfinding;
+using System;
 
 /// <summary>
 /// 몬스터의 기본 베이스 클래스입니다. 모든 몬스터는 이 클래스를 상속받거나 포함합니다.
@@ -131,6 +132,8 @@ public class Enemy : MonoBehaviour
     public Vector3 StartPos => Data?.StartPosition ?? transform.position;
 
     BlackBoard blackboard => _aiController._aiBrain.blackboard;
+    private string monsterId => GetComponent<MonsterSavePersistence>().MonsterId;
+    public string MonsterId => monsterId;
 
     /// <summary>
     /// 몬스터 행동 성향 정의
@@ -276,5 +279,14 @@ public class Enemy : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public int GetMyCurrentReward()
+    {
+        if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
+        {
+            return enemyStat.MoneyReward + value;
+        }
+        return enemyStat.MoneyReward;
     }
 }

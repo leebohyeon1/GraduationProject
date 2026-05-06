@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyStat", menuName = "Character/EnemyStat")]
@@ -10,8 +11,6 @@ public class EnemyStat : ScriptableObject
     public float CircleSeeRange;
     public int MoneyReward = 10;
     
-    public void AddMoneyReward(int amount)
-    {
-        MoneyReward += amount;
-    }
+    public EnemyRewardSO RewardSO;
+
 }

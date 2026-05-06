@@ -128,9 +128,9 @@ public class PlayerMoney : MonoBehaviour, IDisposable
         Enemy enemy = FindClosestEnemy();
         if(enemy != null)
         {
-            enemy.enemyStat.AddMoneyReward(_data.Money);
+            enemy.enemyStat.RewardSO.AddMoneyToEnemies(enemy.MonsterId, _data.Money);
+            Debug.Log($"가장 가까운 적 {enemy.name}에게 {_data.Money} 만큼의 돈이 추가되었습니다.");
             _data.Money = 0; // 플레이어의 돈을 0으로 초기화
-            MoneyChanged?.Invoke(_data.Money);
         }
     }
 
