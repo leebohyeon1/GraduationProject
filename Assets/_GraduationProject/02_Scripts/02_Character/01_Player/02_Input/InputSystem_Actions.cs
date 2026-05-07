@@ -1189,6 +1189,45 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""CutScene"",
+            ""id"": ""e9f9c452-5734-46d4-a9e4-c51bf1650bce"",
+            ""actions"": [
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""f55e33d8-faf9-4fdd-b59b-1830c136465c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""b5e41ea2-9364-4327-aeb3-1f26c77458b3"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7490d6b0-53c2-4fdc-afec-a019f16bc871"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1288,6 +1327,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // Share
         m_Share = asset.FindActionMap("Share", throwIfNotFound: true);
         m_Share_Escape = m_Share.FindAction("Escape", throwIfNotFound: true);
+        // CutScene
+        m_CutScene = asset.FindActionMap("CutScene", throwIfNotFound: true);
+        m_CutScene_Skip = m_CutScene.FindAction("Skip", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1296,6 +1338,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Developer.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Developer.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Share.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Share.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CutScene.enabled, "This will cause a leak and performance issues, InputSystem_Actions.CutScene.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1993,6 +2036,102 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="ShareActions" /> instance referencing this action map.
     /// </summary>
     public ShareActions @Share => new ShareActions(this);
+
+    // CutScene
+    private readonly InputActionMap m_CutScene;
+    private List<ICutSceneActions> m_CutSceneActionsCallbackInterfaces = new List<ICutSceneActions>();
+    private readonly InputAction m_CutScene_Skip;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "CutScene".
+    /// </summary>
+    public struct CutSceneActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public CutSceneActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "CutScene/Skip".
+        /// </summary>
+        public InputAction @Skip => m_Wrapper.m_CutScene_Skip;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_CutScene; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="CutSceneActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(CutSceneActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="CutSceneActions" />
+        public void AddCallbacks(ICutSceneActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CutSceneActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CutSceneActionsCallbackInterfaces.Add(instance);
+            @Skip.started += instance.OnSkip;
+            @Skip.performed += instance.OnSkip;
+            @Skip.canceled += instance.OnSkip;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="CutSceneActions" />
+        private void UnregisterCallbacks(ICutSceneActions instance)
+        {
+            @Skip.started -= instance.OnSkip;
+            @Skip.performed -= instance.OnSkip;
+            @Skip.canceled -= instance.OnSkip;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="CutSceneActions.UnregisterCallbacks(ICutSceneActions)" />.
+        /// </summary>
+        /// <seealso cref="CutSceneActions.UnregisterCallbacks(ICutSceneActions)" />
+        public void RemoveCallbacks(ICutSceneActions instance)
+        {
+            if (m_Wrapper.m_CutSceneActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="CutSceneActions.AddCallbacks(ICutSceneActions)" />
+        /// <seealso cref="CutSceneActions.RemoveCallbacks(ICutSceneActions)" />
+        /// <seealso cref="CutSceneActions.UnregisterCallbacks(ICutSceneActions)" />
+        public void SetCallbacks(ICutSceneActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CutSceneActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CutSceneActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="CutSceneActions" /> instance referencing this action map.
+    /// </summary>
+    public CutSceneActions @CutScene => new CutSceneActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2271,5 +2410,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEscape(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "CutScene" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="CutSceneActions.AddCallbacks(ICutSceneActions)" />
+    /// <seealso cref="CutSceneActions.RemoveCallbacks(ICutSceneActions)" />
+    public interface ICutSceneActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Skip" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkip(InputAction.CallbackContext context);
     }
 }
