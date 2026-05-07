@@ -9,8 +9,7 @@ public class Task_EngageCombat : Node
         
         if (!brain._isCombat)
         {
-            runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
-            runner.groupAi.EngageCombatAll();
+            runner._aiController.CombatEnter();
         }
     }
 
