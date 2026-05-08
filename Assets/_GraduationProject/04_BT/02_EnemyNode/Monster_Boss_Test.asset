@@ -66,7 +66,7 @@ MonoBehaviour:
   exceptCondition:
     key: 
   checkName: WeakCounter
-  cooldownDuration: 2
+  cooldownDuration: 5
   successChance: 100
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
   position: {x: 554, y: -8}
   enableAttackBlock: 1
-  attackBlockDuration: 0.5
+  attackBlockDuration: 0.2
 --- !u!114 &-7610850223706687289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,7 +268,7 @@ MonoBehaviour:
   ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
+  hitEscapeDelay: 0.2
   checkRangeOnEnter: 0
   rangeThreshold: 1
   ignoreYDistance: 1
@@ -320,7 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 179, y: 0}
+  position: {x: 179, y: -2}
   subTreeToRun: {fileID: 11400000, guid: 358d509f88ef3be4a88f1c7338090168, type: 2}
 --- !u!114 &1254360389698641468
 MonoBehaviour:
@@ -388,6 +388,58 @@ MonoBehaviour:
   position: {x: 356, y: 169}
   transitionBuffer: 2
   animationTagName: Discover_Player
+  upduration: 1
+  downduration: 1
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &3601247275774254937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33e49b166bd8d6418eb7f82b099154f, type: 3}
   m_Name: Service_Update Boss Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateBossVars
-  position: {x: 724, y: 46}
+  position: {x: 104, y: 444}
   UpdateInterval: 0.3
   BoundaryZoneID: 11
   ResetZoneIDs: 010000000200000003000000040000000500000006000000070000000800000009000000
