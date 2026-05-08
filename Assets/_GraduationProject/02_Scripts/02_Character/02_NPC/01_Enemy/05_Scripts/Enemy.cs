@@ -1,5 +1,6 @@
 using UnityEngine;
 using Pathfinding;
+using System;
 
 /// <summary>
 /// 몬스터의 기본 베이스 클래스입니다. 모든 몬스터는 이 클래스를 상속받거나 포함합니다.
@@ -73,6 +74,7 @@ public class Enemy : MonoBehaviour
     /// 방어/방패 시스템입니다.
     /// </summary>
     public EnemyShield Shield => _initializer?.GetCachedComponent<EnemyShield>();
+    public EnemyInteract Interact => _initializer?.GetCachedComponent<EnemyInteract>();
 
     /// <summary>
     /// 몬스터 머리 위에 표시되는 빌보드 UI입니다.
@@ -131,6 +133,8 @@ public class Enemy : MonoBehaviour
     public Vector3 StartPos => Data?.StartPosition ?? transform.position;
 
     BlackBoard blackboard => _aiController._aiBrain.blackboard;
+    private string monsterId => GetComponent<MonsterSavePersistence>().MonsterId;
+    public string MonsterId => monsterId;
 
     /// <summary>
     /// 몬스터 행동 성향 정의
@@ -152,11 +156,17 @@ public class Enemy : MonoBehaviour
         Cunning,
         Fire
     }
-
+    bool _getPlayerCoin = false;
     protected void Awake()
     {
         _initializer = GetComponent<EnemyInitializer>();
         _initializer.Initialize();
+        _getPlayerCoin = false;
+        if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
+        {
+            _getPlayerCoin = true;
+            //이펙트 
+        }
     }
 
     /// <summary>
@@ -276,5 +286,14 @@ public class Enemy : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public int GetMyCurrentReward()
+    {
+        if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
+        {
+            return enemyStat.MoneyReward + value;
+        }
+        return enemyStat.MoneyReward;
     }
 }

@@ -1,3 +1,4 @@
+
 using BehaviorTree;
 using Pathfinding;
 using UnityEngine;
@@ -80,29 +81,34 @@ public class AiController : MonoBehaviour, IEventListener<string>
         bool isImportantState = isCombat || isReturningHome || isEngaged || isDetecting ||
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Stunned || 
                                 _enemy.CurrentState == EnemyStateController.EnemyState.Hit;
+        bool isVisible = IsInExtendedView();
+        float distSq = (_enemy.player != null) ? (transform.position - _enemy.player.transform.position).sqrMagnitude : float.MaxValue;
+        if (distSq > _hardCullDistance * _hardCullDistance) return;
 
-        if (!isImportantState)
+        // 3. 상황별 Tick Interval 결정 (숫자가 작을수록 자주 업데이트)
+        int effectiveInterval;
+
+        if (isImportantState || isVisible)
         {
-            bool isVisible = IsInExtendedView();
-            float distSq = (_enemy.player != null) ? (transform.position - _enemy.player.transform.position).sqrMagnitude : float.MaxValue;
-            
-            // 1. 아주 먼 거리 하드 컬링 (최소화)
-            if (distSq > _hardCullDistance * _hardCullDistance) return;
-
-            // 2. 가변 업데이트 주기 (Soft LOD)
-            // 화면 안이면 정상 속도, 화면 밖이면 4배 느리게 (0.3초 주기)
-            int effectiveInterval = isVisible ? Mathf.Max(1, _onScreenTickInterval) : _tickInterval * 4;
-            if ((Time.frameCount + _staggerOffset) % effectiveInterval != 0) return;
-
-            // 3. AIPath 컴포넌트는 항상 켜두고 isStopped로만 제어하여 즉각 반응 유도
-            if (_aiPath != null && !_aiPath.enabled) _aiPath.enabled = true;
+            // 화면 안에 있거나 전투 중이면 아주 빠르게 업데이트 (1프레임 혹은 설정값)
+            effectiveInterval = _onScreenTickInterval; 
+        }
+        else if (distSq < _lodDistance * _lodDistance)
+        {
+            // 화면 밖이지만 플레이어와 가까운 경우 (중간 속도)
+            effectiveInterval = _tickInterval;
         }
         else
         {
-            if (_aiPath != null && !_aiPath.enabled) _aiPath.enabled = true;
+            // 화면 밖이고 멀리 있는 경우 (매우 느리게)
+            effectiveInterval = _tickInterval * 4;
         }
 
-        _aiBrain?.Tick(Time.deltaTime);
+        // 4. Tick 실행 여부 결정
+        if ((Time.frameCount + _staggerOffset) % Mathf.Max(1, effectiveInterval) != 0) return;
+        // Debug.Log($"{name} - Effective Tick Interval: {effectiveInterval}");
+        // 5. 실제 AI 실행
+        _aiBrain?.Tick(Time.deltaTime * effectiveInterval); // 델타 타임에 간격을 곱해줘야 물리/이동이 자연스럽습니다.
         _behaviorTree?.rootNode?.Evaluate();
     }
 
@@ -111,10 +117,15 @@ public class AiController : MonoBehaviour, IEventListener<string>
         if (_mainCam == null) _mainCam = Camera.main;
         if (_mainCam == null) return true;
 
-        Vector3 viewPos = _mainCam.WorldToViewportPoint(transform.position);
-        return viewPos.z > 0 && 
-               viewPos.x > -_viewMargin && viewPos.x < 1f + _viewMargin && 
-               viewPos.y > -_viewMargin && viewPos.y < 1f + _viewMargin;
+        // 1. 오브젝트의 렌더러에서 '전체 크기(Bounds)'를 가져옵니다.
+        // Renderer가 없다면 Collider의 bounds를 써도 됩니다.
+        Bounds bounds = GetComponent<Collider>().bounds;
+        bounds.Expand(_viewMargin); // 마진만큼 판정 영역 확장
+
+        // 2. 카메라의 절두체(Frustum) 평면들을 가져옵니다.
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(_mainCam);
+        // 3. 이 평면들 안에 오브젝트의 Bounds가 일부라도 포함되는지 검사합니다.
+        return GeometryUtility.TestPlanesAABB(planes, bounds);
     }
 
     public bool IsActionable() => _aiBrain?.IsActionable() ?? false;

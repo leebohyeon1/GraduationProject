@@ -3,6 +3,7 @@ using System.Collections;
 using Pathfinding;
 using UnityEngine;
 using FIMSpace.FProceduralAnimation;
+using Packages.Rider.Editor.UnitTesting;
 
 /// <summary>
 /// 몬스터의 체력 관리 및 피해 처리를 담당하는 컴포넌트입니다.
@@ -137,8 +138,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         OnDied?.Invoke();
         _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
-            _owner.player.Money.GiveMoney(_owner.enemyStat.MoneyReward);
-        
+            _owner.player.Money.GiveMoney(_owner.GetMyCurrentReward());
+        _owner.enemyStat.RewardSO.RemoveMoneyFromEnemies(_owner.MonsterId);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
@@ -196,6 +197,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(DamageData damageData)
     {
+        if (_owner.Interact != null && !_owner.Interact._isInteracted)
+        {
+            return;
+        }
         if (CurrentHealth <= 0) return;
         bool isBlocked = false;
         int finalDamage = damageData.DamageAmount;

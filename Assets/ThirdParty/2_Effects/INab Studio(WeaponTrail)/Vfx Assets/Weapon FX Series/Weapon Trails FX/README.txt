@@ -1,4 +1,4 @@
-Hi!
+﻿Hi!
 Thanks for purchasing Procedural Weapon Trails! Here are some useful links to help you get started:
 
 Discord Support Server

@@ -7,7 +7,7 @@ public class RadialBlurFeedback : MonoBehaviour
 {
     public Volume postProcessVolume;
 
-    [Header("DOTween ¼³Á¤")]
+    [Header("DOTween ì„¤ì •")]
     public int Intensity = 20;
     public float ActiveDuration = 0.5f;
 
@@ -18,89 +18,123 @@ public class RadialBlurFeedback : MonoBehaviour
     public float DurationOut = 1.0f;
 
     private BlurSettings blurSettings;
-    private Sequence blurSequence; // DOTween ½ÃÄö½º °ü¸®¸¦ À§ÇÔ
+    private Sequence blurSequence; // DOTween ì‹œí€€ìŠ¤ ê´€ë¦¬ë¥¼ ìœ„í•œ ë³€ìˆ˜
 
     void Start()
     {
         if (postProcessVolume == null)
         {
-            Debug.LogError("Post Process VolumeÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("Post Process Volumeì´ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
-        // º¼·ı ÇÁ·ÎÇÊ¿¡¼­ BlurSettings¸¦ Ã£¾Æ¿É´Ï´Ù.
+        // ë³¼ë¥¨ í”„ë¡œí•„ì—ì„œ BlurSettingsë¥¼ ì°¾ì•„ì˜µë‹ˆë‹¤.
         if (!postProcessVolume.profile.TryGet<BlurSettings>(out blurSettings))
         {
-            Debug.LogError("ÇÒ´çµÈ Volume Profile¿¡¼­ BlurSettings¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("í• ë‹¹ëœ Volume Profileì—ì„œ BlurSettingsë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
 
-        // --- ÃÊ±â ¼³Á¤ ---
-        // ÄÚµå·Î Á¦¾îÇÒ °ÍÀÓÀ» ¾Ë¸®±â À§ÇØ overrideState¸¦ true·Î ¼³Á¤
+        // --- ì´ˆê¸° ì„¤ì • ---
+        // ê°•ì œë¡œ ê°’ì„ ì œì–´í•˜ê¸° ìœ„í•´ overrideStateë¥¼ trueë¡œ ì„¤ì •
         blurSettings.blurMode.overrideState = true;
         blurSettings.strength.overrideState = true;
 
-        // ºí·¯ ¸ğµå¸¦ Radial·Î °­Á¦ ¼³Á¤
-        //blurSettings.blurMode.value = BlurMode.Radial;
-
-        // ½ÃÀÛÇÒ ¶§´Â È¿°ú¸¦ ²¨µÒ
+        // ì´ˆê¸°ì—ëŠ” íš¨ê³¼ ë¹„í™œì„±í™”
         blurSettings.active = false;
         blurSettings.strength.value = 0;
     }
 
     /// <summary>
-    /// ºí·¯¸¦ Ä×´Ù°¡ ²ô´Â È¿°ú¸¦ DOTweenÀ¸·Î ½ÇÇàÇÕ´Ï´Ù.
-    /// ÀÌ ÇÔ¼ö¸¦ UnityEvent (¿¹: ¹öÆ° Å¬¸¯)¿¡ ¿¬°áÇÏ¼¼¿ä.
+    /// í™”ë©´ì´ íë ¤ì¡Œë‹¤ê°€ ëŒì•„ì˜¤ëŠ” íš¨ê³¼ë¥¼ DOTweenìœ¼ë¡œ êµ¬í˜„í•©ë‹ˆë‹¤.
+    /// ì´ í•¨ìˆ˜ë¥¼ UnityEvent (ì˜ˆ: ë²„íŠ¼ í´ë¦­)ì— ì—°ê²°í•˜ì„¸ìš”.
     /// </summary>
     public void TriggerBlurPulse()
     {
+        TriggerBlurPulse(Intensity, DurationIn, DurationOut);
+    }
+
+    /// <summary>
+    /// Unity Eventì—ì„œ intensityì™€ durationì„ ì§€ì •í•˜ì—¬ í˜¸ì¶œí•  ìˆ˜ ìˆëŠ” í•¨ìˆ˜ì…ë‹ˆë‹¤.
+    /// </summary>
+    public void TriggerBlurPulse(int intensity, float durationIn, float durationOut)
+    {
         if (blurSettings == null) return;
 
-        // ÀÌÀü¿¡ ½ÇÇà ÁßÀÎ Æ®À©ÀÌ ÀÖ´Ù¸é Áßº¹ ½ÇÇàÀ» ¸·±â À§ÇØ Á¾·á
+        // ì‹¤í–‰ ì¤‘ì¸ ì‹œí€€ìŠ¤ê°€ ìˆë‹¤ë©´ ì¤‘ë³µ ì‹¤í–‰ì„ ë§‰ê¸° ìœ„í•´ ì¢…ë£Œ
         if (blurSequence != null && blurSequence.IsActive())
         {
             blurSequence.Kill();
         }
 
-        // 1. Áï½Ã È¿°ú¸¦ È°¼ºÈ­ÇÕ´Ï´Ù.
+        // 1. ë¸”ëŸ¬ íš¨ê³¼ë¥¼ í™œì„±í™”í•©ë‹ˆë‹¤.
         blurSettings.active = true;
 
-        // 2. DOTween ½ÃÄö½º¸¦ »ı¼ºÇÕ´Ï´Ù.
-        // (VolumeParameter.value´Â Á÷Á¢ Æ®À©ÇÒ ¼ö ¾øÀ¸¹Ç·Î DOTween.To »ç¿ë)
+        // 2. DOTween ì‹œí€€ìŠ¤ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
         blurSequence = DOTween.Sequence();
 
-        // 3. "ºí·¯ In" (°­µµ°¡ 0¿¡¼­ maxBlurStrength±îÁö Áõ°¡)
+        // 3. "í˜ì´ë“œ In" (ê°•ë„ë¥¼ 0ì—ì„œ intensityê¹Œì§€ ì¦ê°€)
         blurSequence.Append(
             DOTween.To(
-                () => blurSettings.strength.value,      // getter: ÇöÀç °ª
-                x => blurSettings.strength.value = x, // setter: °ª ¼³Á¤
-                Intensity,                        // targetValue: ¸ñÇ¥ °ª
-                DurationIn // duration: Áö¼Ó ½Ã°£
-            ).SetEase(Ease.OutQuad) // ºÎµå·´°Ô ½ÃÀÛ
+                () => blurSettings.strength.value,      // getter: í˜„ì¬ ê°’
+                x => blurSettings.strength.value = x, // setter: ê°’ ì„¤ì •
+                intensity,                        // targetValue: ëª©í‘œ ê°’
+                durationIn // duration: ì†Œìš” ì‹œê°„
+            ).SetEase(Ease.OutQuad) // ë¶€ë“œëŸ½ê²Œ ì„¤ì •
         );
 
-        blurSequence.AppendInterval(ActiveDuration); // ÃÖ´ë °­µµ¿¡¼­ Àá½Ã À¯Áö   
+        blurSequence.AppendInterval(ActiveDuration); // ìµœëŒ€ ê°•ë„ì—ì„œ ì ì‹œ ìœ ì§€   
 
-        // 4. "ºí·¯ Out" (°­µµ°¡ maxBlurStrength¿¡¼­ 0À¸·Î °¨¼Ò)
+        // 4. "í˜ì´ë“œ Out" (ê°•ë„ë¥¼ intensityì—ì„œ 0ìœ¼ë¡œ ê°ì†Œ)
         blurSequence.Append(
             DOTween.To(
                 () => blurSettings.strength.value,
                 x => blurSettings.strength.value = x,
-                0,                                      // 0À¸·Î µÇµ¹¸²
-                DurationOut
-            ).SetEase(Ease.InQuad) // ºÎµå·´°Ô °¨¼Ó
+                0,                                      // 0ìœ¼ë¡œ ë˜ëŒë¦¼
+                durationOut
+            ).SetEase(Ease.InQuad) // ë¶€ë“œëŸ½ê²Œ ì„¤ì •
         );
 
-        // 5. ½ÃÄö½º°¡ ¸ğµÎ ¿Ï·áµÇ¸é È¿°ú¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù.
+        // 5. ì‹œí€€ìŠ¤ê°€ ì™„ë£Œë˜ë©´ íš¨ê³¼ë¥¼ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.
         blurSequence.OnComplete(() =>
         {
             blurSettings.active = false;
         });
     }
 
+    /// <summary>
+    /// Unity Eventì˜ í•œê³„ë¥¼ ê·¹ë³µí•˜ê¸° ìœ„í•´ Vector3ë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ëŠ” í•¨ìˆ˜ì…ë‹ˆë‹¤.
+    /// ì¸ìŠ¤í™í„°ì˜ Unity Eventì—ì„œ X: Intensity, Y: DurationIn, Z: DurationOutìœ¼ë¡œ ì…ë ¥í•˜ì„¸ìš”.
+    /// </summary>
+    public void TriggerBlurPulse(Vector3 settings)
+    {
+        TriggerBlurPulse((int)settings.x, settings.y, settings.z);
+    }
+
+    // --- MMF Player ë° ì™¸ë¶€ ì œì–´ë¥¼ ìœ„í•œ ê°œë³„ ì„¤ì • ë©”ì„œë“œ ---
+
+    public void SetIntensity(int intensity) => Intensity = intensity;
+    public void SetDurationIn(float duration) => DurationIn = duration;
+    public void SetDurationOut(float duration) => DurationOut = duration;
+
+    /// <summary>
+    /// ë¬¸ìì—´ í˜•ì‹ì„ í†µí•´ í•œ ë²ˆì— í˜¸ì¶œí•˜ëŠ” ë°©ì‹ì…ë‹ˆë‹¤ (ì˜ˆ: "30, 0.5, 1.0")
+    /// </summary>
+    public void TriggerBlurPulseString(string settings)
+    {
+        string[] split = settings.Split(',');
+        if (split.Length >= 3)
+        {
+            int intensity = int.Parse(split[0]);
+            float inTime = float.Parse(split[1]);
+            float outTime = float.Parse(split[2]);
+            TriggerBlurPulse(intensity, inTime, outTime);
+        }
+    }
+
     void OnDestroy()
     {
-        // ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÉ ¶§ ½ÇÇà ÁßÀÎ Æ®À©À» ¾ÈÀüÇÏ°Ô Á¾·á
+        // ì˜¤ë¸Œì íŠ¸ê°€ íŒŒê´´ë  ë•Œ ì‹¤í–‰ ì¤‘ì¸ íŠ¸ìœˆì„ ì¤‘ë‹¨
         if (blurSequence != null)
         {
             blurSequence.Kill();
