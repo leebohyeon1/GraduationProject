@@ -128,10 +128,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         Knockbackable = value;
     }
 
-    public void Die()
-    {
-        Die(null);
-    }
 
     public void Die(DamageData? damageData)
     {
@@ -139,10 +135,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
             _owner.player.Money.GiveMoney(_owner.GetMyCurrentReward());
-        _owner.enemyStat.RewardSO.RemoveMoneyFromEnemies(_owner.MonsterId);
+        _owner.enemyStat.RewardSO?.RemoveMoneyFromEnemies(_owner.MonsterId);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
+        _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
+            enemy = _owner, stateType = EnemyStateType.Dead});
         _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
         _owner.tag = "DeadEnemy";
@@ -214,7 +212,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 finalDamage = Mathf.RoundToInt(damageData.DamageAmount * damageMultiplier);
             }
         }
-        _owner.groupAi.CombatAll();
+        if (!_owner._aiController._aiBrain._isCombat)
+        {
+            _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
+            _owner.groupAi.EngageCombatAll();
+            _owner._aiController.CombatEnter();
+        }
         if (_delayCoroutine == null && !IsImmune(damageData.AttackType) && _owner.ParrySystem.CurrentStun != StunType.Full)
             _delayCoroutine = StartCoroutine(ActivateImmunityAfterDelay(MinorTime));
         
