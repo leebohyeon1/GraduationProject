@@ -105,6 +105,7 @@ public class AiBrain
         {
             _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
             enemy = _owner, stateType = EnemyStateType.Lost});
+            blackboard.SetValue(EnemyBlackboardKeys.Engage, false);
         }
 
         _isCombat = combat;
