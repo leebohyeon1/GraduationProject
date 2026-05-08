@@ -1,5 +1,6 @@
 using UnityEngine;
 using BehaviorTree;
+using DG.Tweening;
 
 public class Task_Discover_Player : Node
 {
@@ -7,6 +8,13 @@ public class Task_Discover_Player : Node
     public float transitionBuffer = 0.5f;
     public string animationTagName = "Discover_Player";
     private bool _didSetLock = false;
+    public float upduration = 1.0f;
+    public float downduration = 1.0f;
+    public float moveUpDistance;
+    public float moveDownDistance;
+    public Ease upEase = Ease.OutQuad;
+    public Ease downEase = Ease.OutQuad;
+    private Tween _moveTween;
 
     public override void OnEnter()
     {
@@ -21,6 +29,17 @@ public class Task_Discover_Player : Node
             runner._stateController.SetState(EnemyStateController.EnemyState.Discover);
             runner._stateController.SetLock(true);
             _didSetLock = true;
+        }
+        if(moveUpDistance > 0)
+        {
+            _moveTween = runner.transform.DOMoveY(runner.transform.position.y + moveUpDistance, upduration).SetEase(upEase).OnComplete(() => {
+                Debug.Log("Completed move up.");    
+                _moveTween = runner.transform.DOMoveY(runner.transform.position.y - moveDownDistance, downduration).SetEase(downEase).OnComplete(() => {
+                    // Optional: Do something after the move down is complete
+                    Debug.Log("Completed move up and down sequence.");  
+                });
+                
+            });
         }
     }
 
@@ -64,6 +83,8 @@ public class Task_Discover_Player : Node
         {
             runner._stateController.SetLock(false);
             _didSetLock = false;
+            
+            _moveTween?.Kill();
             // brain.CombatEnter(true);
             // if (runner.groupAi != null) runner.groupAi.CombatAll();
         }
@@ -86,6 +107,14 @@ public class Task_Discover_Player : Node
         Task_Discover_Player node = Instantiate(this);
         node.transitionBuffer = this.transitionBuffer;
         node.animationTagName = this.animationTagName;
+        node.upduration = this.upduration;
+        node.downduration = this.downduration;
+        node.moveUpDistance = this.moveUpDistance;
+        node.moveDownDistance = this.moveDownDistance;
+        node.upEase = this.upEase;
+        node.downEase = this.downEase;
+        node._moveTween = this._moveTween;
+        
         return node;
     }
 }
