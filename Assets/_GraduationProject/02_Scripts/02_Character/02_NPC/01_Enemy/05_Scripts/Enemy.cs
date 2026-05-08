@@ -8,7 +8,7 @@ using System;
 [RequireComponent(typeof(AIPath), typeof(AiController), typeof(Enemy_AnimationEventHandler))]
 [RequireComponent(typeof(ParrySystem), typeof(EnemyHealth))]
 [RequireComponent(typeof(Mon_Stiffness), typeof(EnemyStateController), typeof(EnemyAnimationBridge))]
-[RequireComponent(typeof(EnemyInitializer), typeof(EnemyMovement))]
+[RequireComponent(typeof(EnemyInitializer), typeof(EnemyMovement),typeof(MonsterSavePersistence))]
 #if UNITY_EDITOR
 [RequireComponent(typeof(EnemyGizmoDrawer))]
 #endif
