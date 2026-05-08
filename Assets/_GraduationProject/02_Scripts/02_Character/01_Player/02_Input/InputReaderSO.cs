@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 // 클래스 이름은 에셋 이름과 동일한 InputSystem_Actions 라고 가정합니다.
 [CreateAssetMenu(fileName = "InputReader", menuName = "Project/Input/Input Reader")]
 public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerActions, 
-    InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions, InputSystem_Actions.IShareActions
+    InputSystem_Actions.IUIActions, InputSystem_Actions.IDeveloperActions, 
+    InputSystem_Actions.ICutSceneActions, InputSystem_Actions.IShareActions
 {
     public enum InputMode
     {
@@ -25,7 +26,6 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     // Share Actions
     public event Action EscapeEvent;
-    public event Action SkipStartEvent, SkipEndEvent;
 
     // Player Actions
     public event Action<Vector2> MoveEvent;
@@ -65,6 +65,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     // Developer Actions;
     public event Action ReloadEvent;
 
+    // CutScene Actions
+    public event Action SkipStartEvent, SkipEndEvent;
+
     private InputSystem_Actions _inputActions;
 
     private void OnEnable()
@@ -76,6 +79,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
             _inputActions.Player.SetCallbacks(this);
             _inputActions.UI.SetCallbacks(this);
             _inputActions.Developer.SetCallbacks(this);
+            _inputActions.CutScene.SetCallbacks(this);
             _inputActions.Share.SetCallbacks(this);
         }
 
@@ -94,6 +98,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         _inputActions.Player.RemoveCallbacks(this);
         _inputActions.UI.RemoveCallbacks(this);
         _inputActions.Developer.RemoveCallbacks(this);
+        _inputActions.CutScene.RemoveCallbacks(this);
         _inputActions.Share.RemoveCallbacks(this);
 
         _inputActions = null;
@@ -126,7 +131,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
                 Cursor.visible = true;
                 break;
             case InputMode.CutScene:
-
+                _inputActions.CutScene.Enable();
                 break;
 
             case InputMode.None:
