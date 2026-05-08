@@ -25,6 +25,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     // Share Actions
     public event Action EscapeEvent;
+    public event Action SkipStartEvent, SkipEndEvent;
 
     // Player Actions
     public event Action<Vector2> MoveEvent;
@@ -157,6 +158,18 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         if (context.phase == InputActionPhase.Performed)
         {
             EscapeEvent?.Invoke();
+        }
+    }
+
+    public void OnSkip(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Performed)
+        {
+            SkipStartEvent?.Invoke();
+        }
+        else if (context.phase == InputActionPhase.Canceled)
+        {
+            SkipEndEvent?.Invoke();
         }
     }
 
