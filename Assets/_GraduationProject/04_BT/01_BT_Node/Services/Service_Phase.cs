@@ -14,10 +14,12 @@ public class Service_Phase : ServiceNode
             runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Phase, 0);
             return;
         }
-        float healthPercent = runner.EnemyHealth.CurrentHealth / runner.EnemyHealth.MaxHealth;
+        float healthPercent = (float)runner.EnemyHealth.CurrentHealth / (float)runner.EnemyHealth.MaxHealth;
         int phase = 1;
+
         if (healthPercent <= 0.5f)
         {
+            Debug.Log($"healthPercent: {healthPercent} runner.EnemyHealth.CurrentHealth: {runner.EnemyHealth.CurrentHealth} runner.EnemyHealth.MaxHealth: {runner.EnemyHealth.MaxHealth}    ");   
             phase = 2;
         }
         // if (healthPercent <= 0.25f)
