@@ -12,5 +12,6 @@ public class EnemyStat : ScriptableObject
     public int MoneyReward = 10;
     
     public EnemyRewardSO RewardSO;
+    public EnemyStateEventSO EStateEventSO;
 
 }

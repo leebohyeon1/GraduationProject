@@ -8,7 +8,8 @@ public enum EnemyStateType
 {
     Detected, // 발견됨
     Lost,     // 놓침
-    Dead      // 사망함
+    Dead,      // 사망함
+    SummonBoss, // 보스 소환
 }
 
 /// <summary>

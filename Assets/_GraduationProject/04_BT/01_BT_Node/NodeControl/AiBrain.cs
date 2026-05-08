@@ -96,14 +96,25 @@ public class AiBrain
         // [Optimization] ?대? ?대떦 ?곹깭?쇰㈃ 以묐났 泥섎━瑜?諛⑹??섏뿬 'StopMovement'媛 諛섎났 ?몄텧?섎뒗 寃껋쓣 留됱쓬
         if (_isCombat == combat) return;
 
+        if (combat)
+        {
+            _owner.enemyStat.EStateEventSO.Publish(new EnemyStateData{
+            enemy = _owner, stateType = EnemyStateType.Detected});
+        }
+        else
+        {
+            _owner.enemyStat.EStateEventSO.Publish(new EnemyStateData{
+            enemy = _owner, stateType = EnemyStateType.Lost});
+        }
+
         _isCombat = combat;
         blackboard.SetValue(EnemyBlackboardKeys.IsPlayerDetected, _isCombat);
         if (_isCombat)
         {
             blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
             blackboard.SetValue(EnemyBlackboardKeys.LastTakeHitTime, Time.time);
+
         }
-        
         if (_owner.animator != null)
         {
             foreach (var param in _owner.animator.parameters)
