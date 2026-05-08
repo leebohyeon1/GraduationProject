@@ -11,14 +11,17 @@ public class EnemyInteract : MonoBehaviour,IInteractable
     [SerializeField] private InteractableType _interactableType;
 
     public Transform InteractableUITransform => _interactableUITransform;
-
     public InteractableType InteractableType => _interactableType;
-
+    [SerializeField] private GameObject spear;
+    HpBar _hpBar;
     void Start()
     {
         _isInteracted = false;
         _interactableType = InteractableType.NPC;
-
+        _hpBar = GetComponentInChildren<HpBar>(true);
+        _hpBar?.gameObject.SetActive(false); // 체력바 비활성화
+        if(spear == null) spear = GameObject.Find("a_Spear");
+        if (spear != null) spear.SetActive(false);
     }
     public void Interact()
     {
@@ -29,7 +32,8 @@ public class EnemyInteract : MonoBehaviour,IInteractable
         Debug.Log($"[EnemyInteract] Interacted with {name}");
         _isInteracted = true;
         GetComponent<BoxCollider>().enabled = false; // 상호작용 후 트리거 비활성화
-
+        _hpBar?.gameObject.SetActive(true); // 체력바 활성화
+        if(spear != null) spear.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
