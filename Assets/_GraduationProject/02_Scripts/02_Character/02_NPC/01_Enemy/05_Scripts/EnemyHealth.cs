@@ -135,11 +135,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
             _owner.player.Money.GiveMoney(_owner.GetMyCurrentReward());
-        _owner.enemyStat.RewardSO.RemoveMoneyFromEnemies(_owner.MonsterId);
+        _owner.enemyStat.RewardSO?.RemoveMoneyFromEnemies(_owner.MonsterId);
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
-        _owner.enemyStat.EStateEventSO.Publish(new EnemyStateData{
+        _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
             enemy = _owner, stateType = EnemyStateType.Dead});
         _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);

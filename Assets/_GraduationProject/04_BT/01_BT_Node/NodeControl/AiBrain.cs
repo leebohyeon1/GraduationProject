@@ -98,12 +98,12 @@ public class AiBrain
 
         if (combat)
         {
-            _owner.enemyStat.EStateEventSO.Publish(new EnemyStateData{
+            _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
             enemy = _owner, stateType = EnemyStateType.Detected});
         }
         else
         {
-            _owner.enemyStat.EStateEventSO.Publish(new EnemyStateData{
+            _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
             enemy = _owner, stateType = EnemyStateType.Lost});
         }
 
