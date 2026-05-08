@@ -14,11 +14,15 @@ public class EnemyInteract : MonoBehaviour,IInteractable
     public InteractableType InteractableType => _interactableType;
     [SerializeField] private GameObject spear;
     HpBar _hpBar;
+
+    private void Awake() {
+        
+        _hpBar = GetComponentInChildren<HpBar>(true);
+    }
     void Start()
     {
         _isInteracted = false;
         _interactableType = InteractableType.NPC;
-        _hpBar = GetComponentInChildren<HpBar>(true);
         _hpBar?.gameObject.SetActive(false); // 체력바 비활성화
         if(spear == null) spear = GameObject.Find("a_Spear");
         if (spear != null) spear.SetActive(false);
