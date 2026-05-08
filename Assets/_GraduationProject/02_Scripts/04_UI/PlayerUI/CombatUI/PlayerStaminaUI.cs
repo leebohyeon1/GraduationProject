@@ -121,12 +121,25 @@ public class PlayerStaminaUI : PlayerUIBase
         }
     }
 
+    private float _lastBattleStateTriggerTime; // 마지막으로 전투 상태를 트리거한 시간
+
     /// <summary>
     /// Stamina 변경 이벤트 처리
     /// </summary>
     private void OnStaminaChanged(float previousStamina, float currentStamina)
     {
         UpdateStaminaUI(currentStamina);
+
+        // 스테미나가 최대치가 아닐 때 UI를 노출하도록 합니다.
+        if (currentStamina < p_player.Stamina.MaxStamina)
+        {
+            // 스테미나가 감소했거나(사용), 마지막 트리거 후 1초가 지났을 때(재생 중 유지)만 전투 상태를 갱신합니다.
+            if (currentStamina < previousStamina || Time.time - _lastBattleStateTriggerTime > 1f)
+            {
+                p_player.Combat.TriggerBattleStateChanged(true);
+                _lastBattleStateTriggerTime = Time.time;
+            }
+        }
     }
 
     /// <summary>
