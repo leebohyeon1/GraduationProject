@@ -20,6 +20,8 @@ public class Task_KSante : BaseAttackNode
     private float _rushStartTime;
     private bool _isRushing;
 
+    
+
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()
@@ -113,13 +115,9 @@ public class Task_KSante : BaseAttackNode
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
         
-        if (runner.player.TryGetComponent<IDragable>(out var dragable))
-        {
-            dragable.Drag();
-        }
+
         KsanteKnockback();
 
-        runner.player.transform.parent = runner.transform;
 
     }
     private void StopRush()
@@ -134,27 +132,20 @@ public class Task_KSante : BaseAttackNode
     private void KsanteKnockback()
     {
         StopRush();
-        runner.player.transform.parent = null;
-
-        AttackDataKnockback.AttackerTransform = runner.transform;
-            
         if (runner.player.TryGetComponent<IDamageable>(out var damageable))
         {
+            AttackDataKnockback.AttackerTransform = runner.transform;
             damageable.TakeDamage(AttackDataKnockback);
         }
 
-        if (runner.player.TryGetComponent<IDragable>(out var dragable))
-        {
-            dragable.Drop();
-        }
 
-        runner.player.Movement.Step(runner.transform.forward, new StepData()
-        {
-            StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
-            StepDuration = AttackDataKnockback.KnockbackDuration,
-            StepCurve = AttackDataKnockback.KnockbackCurve,
-            StepRotateSpeed = 0f
-        }, this, false, null);
+        // runner.player.Movement.Step(runner.transform.forward, new StepData()
+        // {
+        //     StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
+        //     StepDuration = AttackDataKnockback.KnockbackDuration,
+        //     StepCurve = AttackDataKnockback.KnockbackCurve,
+        //     StepRotateSpeed = 0f
+        // }, this, false, null);
         
 
     }
@@ -162,9 +153,6 @@ public class Task_KSante : BaseAttackNode
     protected override void SpecificCleanup()
     {
         StopRush();
-
-        runner.player.transform.parent = null;
-
     }
 
     public override Node Clone()
