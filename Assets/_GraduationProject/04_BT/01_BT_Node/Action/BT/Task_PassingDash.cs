@@ -35,8 +35,9 @@ public class Task_PassingDash : BaseAttackNode
         if (direction.sqrMagnitude < 0.1f) direction = runner.transform.forward;
         else direction.Normalize();
 
-        _targetPos = playerPos + (direction * extraDist);
-        _targetPos.y = startPos.y;
+        Vector3 rawTarget = playerPos + (direction * extraDist);
+        rawTarget.y = startPos.y;
+        _targetPos = GetStraightSafeDestination(startPos, rawTarget, out _);
 
         runner.transform.rotation = Quaternion.LookRotation(direction);
         
@@ -78,14 +79,23 @@ public class Task_PassingDash : BaseAttackNode
         moveDir.Normalize();
         float moveDistance = dashSpeed * Time.deltaTime;
 
-        if (Physics.Raycast(currentPos + Vector3.up * 1.0f, moveDir, moveDistance + 1f, obstacleMask))
+        Vector3 safeNextPos = GetSafeStepDestination(currentPos, moveDir, moveDistance, out bool blockedByWall);
+        float actualMoveDistance = GetHorizontalDistance(currentPos, safeNextPos);
+
+        if (actualMoveDistance <= minimumMovementDistance)
         {
             _isDashing = false;
             runner.AnimationBool(Exittrigger, true);
             return;
         }
 
-        runner.transform.position += moveDir * moveDistance;
+        runner.transform.position = safeNextPos;
+
+        if (blockedByWall)
+        {
+            _isDashing = false;
+            runner.AnimationBool(Exittrigger, true);
+        }
     }
 
     protected override bool IsMovementFinished => !_isDashing;

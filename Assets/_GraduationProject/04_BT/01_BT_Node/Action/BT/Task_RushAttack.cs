@@ -107,14 +107,6 @@ public class Task_RushAttack : BaseAttackNode
                 _chargeDirection = Vector3.Slerp(_chargeDirection, desiredDir.normalized, turnFactor);
             }
             
-            // 踰?異⑸룎 泥댄겕
-            if (runner.Movement.IsPathBlocked(_chargeDirection, 0.5f, out RaycastHit hit))
-            {
-                StopRush();
-                return;
-            }
-
-            // ?쒓컙 珥덇낵 泥댄겕
             if (Time.time - _chargeStartTime >= maxChargeDuration)
             {
                 StopRush();
@@ -127,9 +119,33 @@ public class Task_RushAttack : BaseAttackNode
                 return;
             }
 
-            // ?대룞 ?곸슜
-            runner.transform.position += _chargeDirection * moveStep;
-            runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
+            Vector3 safeNextPos = GetSafeStepDestination(myPos, _chargeDirection, moveStep, out bool blockedByWall);
+            Vector3 actualMove = safeNextPos - myPos;
+
+            if (GetHorizontalDistance(myPos, safeNextPos) <= minimumMovementDistance)
+            {
+                StopRush();
+                return;
+            }
+
+            runner.transform.position = safeNextPos;
+
+            if (actualMove.sqrMagnitude > 0.0001f)
+            {
+                Vector3 moveDir = actualMove.normalized;
+                moveDir.y = 0f;
+                if (moveDir.sqrMagnitude > 0.0001f)
+                {
+                    runner.transform.rotation = Quaternion.LookRotation(moveDir);
+                    _chargeDirection = moveDir;
+                }
+            }
+
+            if (blockedByWall)
+            {
+                StopRush();
+                return;
+            }
 
             // Phase 2: 吏?섏삩 ?먮━????컻 ?앹꽦
             if (_currentPhase >= 2)
