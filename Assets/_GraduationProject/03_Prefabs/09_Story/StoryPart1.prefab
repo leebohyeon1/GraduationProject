@@ -2075,7 +2075,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278201855
+    rgba: 11775
   m_fontColor: {r: 1, g: 0.1764706, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2940,7 +2940,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &3602389563443173074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7779,6 +7779,18 @@ MonoBehaviour:
   OnRequirementMet:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 6337275372732235327}
         m_TargetAssemblyTypeName: UnityEngine.Playables.PlayableDirector, UnityEngine
         m_MethodName: Play
@@ -11773,6 +11785,8 @@ MonoBehaviour:
   _spareTime: 2
   _uiCanvasGroup: {fileID: 8693608231048688998}
   _progressBar: {fileID: 5551241000017628155}
+  _hintDuration: 2
+  _fadeTime: 0.5
 --- !u!224 &3795782984973542254 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8322708291998457166, guid: 228970e0a87f38f4e8266c782afe74a8, type: 3}
