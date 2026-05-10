@@ -60,7 +60,7 @@ public class EnemyMovement : MonoBehaviour
         }
         if (aIPath == null) return;
 
-        aIPath.enabled = true;
+        // aIPath.enabled = true;
         aIPath.canMove = true;       
         aIPath.isStopped = false;    
         aIPath.maxSpeed = chaseSpeed;

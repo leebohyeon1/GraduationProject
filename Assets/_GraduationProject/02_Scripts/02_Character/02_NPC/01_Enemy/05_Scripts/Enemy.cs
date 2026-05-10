@@ -14,6 +14,10 @@ using System;
 #endif
 public class Enemy : MonoBehaviour
 {
+    [Header("Jump Guard")]
+    [SerializeField] private bool _enableJumpGuard = true;
+    [SerializeField] private float _suspiciousJumpDistance = 100f;
+    [SerializeField] private bool _logJumpGuard = false;
     /// <summary>
     /// 몬스터의 기본 스탯 데이터입니다.
     /// </summary>
@@ -157,11 +161,15 @@ public class Enemy : MonoBehaviour
         Fire
     }
     bool _getPlayerCoin = false;
+    private Vector3 _lastObservedPosition;
+    private bool _hasObservedPosition;
+    private int _lastJumpGuardFrame = -1;
     protected void Awake()
     {
         _initializer = GetComponent<EnemyInitializer>();
         _initializer.Initialize();
         _getPlayerCoin = false;
+        ResetObservedPosition();
         if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
         {
             _getPlayerCoin = true;
@@ -172,9 +180,20 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 오브젝트 풀에서 꺼낼 때 상태를 재설정합니다.
     /// </summary>
+    private void OnEnable()
+    {
+        ResetObservedPosition();
+    }
+
+    private void LateUpdate()
+    {
+        GuardSuspiciousJump();
+    }
+
     public void Init()
     {
         _initializer?.Reinitialize();
+        ResetObservedPosition();
     }
 
     /// <summary>
@@ -295,5 +314,97 @@ public class Enemy : MonoBehaviour
             return enemyStat.MoneyReward + value;
         }
         return enemyStat.MoneyReward;
+    }
+
+    private void ResetObservedPosition()
+    {
+        _lastObservedPosition = transform.position;
+        _hasObservedPosition = true;
+    }
+
+    private void GuardSuspiciousJump()
+    {
+        if (!_enableJumpGuard || _suspiciousJumpDistance <= 0f)
+        {
+            return;
+        }
+
+        Vector3 currentPosition = transform.position;
+        if (!_hasObservedPosition)
+        {
+            _lastObservedPosition = currentPosition;
+            _hasObservedPosition = true;
+            return;
+        }
+
+        Vector3 delta = currentPosition - _lastObservedPosition;
+        if (delta.sqrMagnitude < _suspiciousJumpDistance * _suspiciousJumpDistance)
+        {
+            _lastObservedPosition = currentPosition;
+            return;
+        }
+
+        if (!ShouldRollbackSuspiciousJump())
+        {
+            _lastObservedPosition = currentPosition;
+            return;
+        }
+
+        if (_lastJumpGuardFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        _lastJumpGuardFrame = Time.frameCount;
+        RollbackSuspiciousJump(_lastObservedPosition, currentPosition, delta);
+        _lastObservedPosition = transform.position;
+    }
+
+    private bool ShouldRollbackSuspiciousJump()
+    {
+        switch (CurrentState)
+        {
+            case EnemyStateController.EnemyState.Idle:
+            case EnemyStateController.EnemyState.Patrol:
+            case EnemyStateController.EnemyState.Chase:
+            case EnemyStateController.EnemyState.Discover:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void RollbackSuspiciousJump(Vector3 previousPosition, Vector3 currentPosition, Vector3 delta)
+    {
+        Vector3 preservedDestination = aIPath != null ? aIPath.destination : previousPosition;
+        bool shouldGoHome = blackboard != null && blackboard.HasKey("GoHome") && blackboard.GetValue<bool>("GoHome");
+        Vector3 homePosition = blackboard != null && blackboard.HasKey("HomePosition")
+            ? blackboard.GetValue<Vector3>("HomePosition")
+            : StartPos;
+
+        transform.position = previousPosition;
+
+        if (aIPath != null)
+        {
+            aIPath.Teleport(previousPosition, true);
+            aIPath.canMove = true;
+            aIPath.isStopped = false;
+            aIPath.destination = shouldGoHome ? homePosition : preservedDestination;
+            aIPath.SearchPath();
+        }
+
+        if (_logJumpGuard)
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"[EnemyJumpGuard] Rolled back suspicious jump on {name} ({MonsterId})");
+            sb.AppendLine($"- State: {CurrentState}");
+            sb.AppendLine($"- Prev: {previousPosition}");
+            sb.AppendLine($"- Curr: {currentPosition}");
+            sb.AppendLine($"- Delta: {delta} | distance={delta.magnitude:F2}");
+            sb.AppendLine($"- Parent: {(transform.parent != null ? transform.parent.name : "null")}");
+            sb.AppendLine($"- GoHome: {shouldGoHome}");
+            sb.AppendLine($"- RestoredDestination: {(shouldGoHome ? homePosition : preservedDestination)}");
+            Debug.LogWarning(sb.ToString(), this);
+        }
     }
 }

@@ -14,6 +14,10 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     [Header("References")]
     [SerializeField] private Toggle _skillToggleButton;
+    [SerializeField] private Image _skillIcon;
+    [SerializeField] private Image _skillLockImage;
+    [SerializeField] private Color _lockColor;
+
     private PlayerController _playerController;
 
     [Header("Conditions")]
@@ -22,6 +26,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [SerializeField] private int _specialPrice; // 특수 가격
     public int SpecialPrice => _specialPrice;                                            
     [SerializeField] private List<PlayerAbilitySO> _needAbilities;
+    [SerializeField] private List<GamePlayTagSO> _needTags;
     private bool _isLearned = false;
 
     [Header("Ability")]
@@ -70,23 +75,41 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             return;
         }
 
-        // 이미 배웠는지 확인
+        // 1. 이미 배웠는지 확인
         bool alreadyHasSkill = HasSkill();
+        
+        // 2. 배울 수 있는 조건인지 확인
+        bool canPurchase = CheckPurchaseCondition();
 
-        // 배웠다면 토글을 켜진 상태로 변경 (이벤트 트리거 방지를 위해 SetIsOnWithoutNotify 사용 권장)
-        _skillToggleButton.SetIsOnWithoutNotify(alreadyHasSkill);
-        _skillToggleButton.image.color = Color.yellow;
-
+        // UI 상태 업데이트
         if (alreadyHasSkill)
         {
             _isLearned = true;
-            _skillToggleButton.interactable = false; // 이미 배웠으므로 클릭 불가
+            _skillToggleButton.interactable = false;
+            _skillToggleButton.SetIsOnWithoutNotify(true);
+            _skillToggleButton.image.color = Color.yellow; // 배운 상태 색상
+
+            if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
+        }
+        else if (canPurchase)
+        {
+            _isLearned = false;
+            _skillToggleButton.interactable = true;
+            _skillToggleButton.SetIsOnWithoutNotify(false);
+            _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
+            _skillIcon.color = Color.white; // 아이콘도 밝게
+
+            if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
         }
         else
         {
             _isLearned = false;
-            // 배우지 않았다면 구매 조건(돈, 선행 스킬) 체크하여 활성화 여부 결정
-            _skillToggleButton.interactable = CheckPurchaseCondition();
+            _skillToggleButton.interactable = false;
+            _skillToggleButton.SetIsOnWithoutNotify(false);
+            _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
+            _skillIcon.color = _lockColor; // 아이콘도 어둡게
+
+            if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(true);
         }
     }
 
@@ -122,6 +145,16 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
                     return false;
                 }
             }
+
+            // 선행 태그 체크
+            for (int i = 0; i < _needTags.Count; i++)
+            {
+                if (!GamePlayTagManager.Instance.HasTag(_needTags[i]))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 

@@ -49,12 +49,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
   position: {x: 1652, y: 1044}
   attackKey: Attack01_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 0
   hitEscapeDelay: 0.5
@@ -66,6 +65,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 15
   hitRadius: 2.5
   overshootDist: 3
@@ -132,14 +135,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1371, y: 572}
   attackKey: Attack03_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO:
   - {fileID: 0}
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -151,6 +153,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,12 +194,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
   position: {x: 1155, y: 184}
   attackKey: Attack02_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 0
   hitEscapeDelay: 0.5
@@ -205,6 +210,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 30
   hitRadius: 3
   overshootDist: -3
@@ -351,13 +360,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_PlayerChase
   position: {x: 1365, y: 649}
   attackKey: Attack03_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 10
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -369,6 +377,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   maxRushSpeed: 7
   turnSpeed: 1
   expectedDuration: 5
@@ -596,12 +608,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1636, y: 948}
   attackKey: Attack01_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -613,6 +624,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   stepMovements:
   - distance: 5
     duration: 0.2
@@ -914,13 +929,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1636, y: 1031}
   attackKey: Attack01_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO:
   - {fileID: 0}
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -932,6 +946,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &4640970959790474602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1067,13 +1085,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1471, y: 107}
   attackKey: Attack02_a
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO:
   - {fileID: 0}
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -1085,6 +1102,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &8335210479689113784
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,28 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -284, y: -180}
+  position: {x: -284, y: -274}
   nodes:
   - {fileID: 4796794527779880483}
   - {fileID: 8253775282637424038}
   - {fileID: -7068279958552863174}
   services: []
---- !u!114 &-7876035546921331707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_Blackboard Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: -98, y: -299}
-  exceptCondition:
-    key: 
-  key: Engage
 --- !u!114 &-7068279958552863174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0b6abecaa2e8f46b47c359ffad619a, type: 3}
   m_Name: Task_Engage Combat
   m_EditorClassIdentifier: Assembly-CSharp::Task_EngageCombat
-  position: {x: -60, y: 12}
+  position: {x: -54, y: -54}
 --- !u!114 &-6212856105988776067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,26 +88,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -81, y: 325}
+  position: {x: -85, y: 325}
   transitionBuffer: 0.5
   animationTagName: Discover_Player
---- !u!114 &-2364569869062935594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -284, y: -300}
-  nodes:
-  - {fileID: -7876035546921331707}
-  - {fileID: 8160394492237284882}
-  services: []
+  upduration: 0
+  downduration: 0
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.07936546
+      value: 0.6096896
+      inSlope: 1.1829357
+      outSlope: 1.1829357
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &-2358090069988742879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
   m_Name: Condition_Blackboard Key Check
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: -54, y: -142}
+  position: {x: -54, y: -236}
   exceptCondition:
     key: 
   key: Engage
@@ -319,21 +347,6 @@ MonoBehaviour:
   - {fileID: 349469003420780475}
   - {fileID: 5427365917279850068}
   services: []
---- !u!114 &8160394492237284882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
-  m_Name: Task_Discover_Player
-  m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -97, y: -219}
-  transitionBuffer: 0.5
-  animationTagName: Discover_Player
 --- !u!114 &8253775282637424038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,6 +359,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -59, y: -65}
+  position: {x: -59, y: -159}
   transitionBuffer: 0.5
   animationTagName: Discover_Player
+  upduration: 1
+  downduration: 1
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

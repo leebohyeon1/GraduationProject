@@ -2,83 +2,203 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BossHpBar : MonoBehaviour
+public class BossHpBar : MonoBehaviour, IEventListener<EnemyStateData>
 {
     [Header("UI Components")]
+    [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private Image _hpBarFront;
     [SerializeField] private Image _hpBarBack;
+    [SerializeField] private Image _stiffnessBar;
+
+    [Header("UI Settings")]
+    [SerializeField] private float _fadeDuration = 0.5f;  // UI í˜ì´ë“œ ì¸/ì•„ì›ƒ ì‹œê°„
+    [SerializeField] private float _stiffnessTime = 0.5f; // ì”ìƒì´ ë¨¸ë¬´ëŠ” ì‹œê°„
+    [SerializeField] private float _lerpSpeed = 0.5f;    // ì”ìƒì´ ì¤„ì–´ë“œëŠ” ì†ë„
+
+    [SerializeField] private EnemyStateEventSO _playerStateEvent;
 
     [Header("Target Object")]
     [SerializeField] private GameObject _object;
-    // _followOffset º¯¼ö »èÁ¦µÊ
+    // _followOffset ë³€ìˆ˜ ì‚­ì œë¨
 
     private Camera _mainCamera;
     private RectTransform _transform;
     private IDamageable _damageable;
+    private IStiffness _stiffness;
+
+    private void Awake()
+    {
+        _transform = GetComponent<RectTransform>();
+        _mainCamera = Camera.main;
+        
+        if (_canvasGroup != null)
+        {
+            _canvasGroup.alpha = 0f;
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (_playerStateEvent != null)
+        {
+            _playerStateEvent.Subscribe(this);
+        }
+    }
 
     private void Start()
     {
-        _mainCamera = Camera.main;
-        _transform = GetComponent<RectTransform>();
-
         if (_object != null)
         {
-            _damageable = _object.GetComponent<IDamageable>();
-            if (_damageable != null)
-            {
-                _damageable.OnHealthChanged += ChangeHpBar;
-
-                // ÃÊ±âÈ­
-                float initialRatio = (float)_damageable.CurrentHealth / _damageable.MaxHealth;
-                _hpBarFront.fillAmount = initialRatio;
-                _hpBarBack.fillAmount = initialRatio;
-            }
+            Initialize(_object);
         }
     }
 
     private void LateUpdate()
     {
-        // ¾ÈÀüÀåÄ¡: ¸ó½ºÅÍ(_object)°¡ ÀÌ¹Ì ÆÄ±«µÇ¾î »ç¶óÁ³´Ù¸é, HP¹Ùµµ Áï½Ã ÆÄ±«
-        if (_object == null)
+        // ë³´ìŠ¤ê°€ í• ë‹¹ë˜ì–´ ìˆì—ˆëŠ”ë° ì‚¬ë¼ì§„ ê²½ìš° UI ì œê±°
+        if (_damageable != null && _object == null)
         {
             Destroy(gameObject);
-            return;
         }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
+    {
+        CleanupDamageable();
+        CleanupStiffness();
+
+        if (_playerStateEvent != null)
+        {
+            _playerStateEvent.Unsubscribe(this);
+        }
+
+        // DOTween ì•ˆì „í•˜ê²Œ ì¢…ë£Œ
+        DOTween.Kill(_hpBarFront);
+        DOTween.Kill(_hpBarBack);
+        if (_stiffnessBar != null) DOTween.Kill(_stiffnessBar);
+        if (_canvasGroup != null) DOTween.Kill(_canvasGroup);
+    }
+
+    public void OnEventTrigger(EnemyStateData data)
+    {
+        if (data.stateType == EnemyStateType.SummonBoss)
+        {
+            Initialize(data.enemy.gameObject);
+        }
+    }
+
+    private void Initialize(GameObject boss)
+    {
+        if (boss == null) return;
+
+        // ê¸°ì¡´ ì´ë²¤íŠ¸ í•´ì œ
+        CleanupDamageable();
+        CleanupStiffness();
+
+        _object = boss;
+        
+        // 1. ì²´ë ¥ ê´€ë ¨ ì´ˆê¸°í™”
+        _damageable = boss.GetComponent<IDamageable>();
+        if (_damageable != null)
+        {
+            _damageable.OnHealthChanged += ChangeHpBar;
+            _damageable.OnDied += HandleBossDied;
+
+            float initialRatio = (float)_damageable.CurrentHealth / _damageable.MaxHealth;
+            _hpBarFront.fillAmount = initialRatio;
+            _hpBarBack.fillAmount = initialRatio;
+        }
+
+        // 2. ê°•ì¸í•¨(Stiffness) ê´€ë ¨ ì´ˆê¸°í™”
+        _stiffness = boss.GetComponent<IStiffness>();
+        if (_stiffness == null)
+        {
+            _stiffness = boss.GetComponentInChildren<IStiffness>();
+        }
+
+        if (_stiffness != null)
+        {
+            _stiffness.OnStiffnessChanged += ChangeStiffnessBar;
+            
+            float initialStiffRatio = (float)_stiffness.CurrentStiffness / _stiffness.StiffnessThreshold;
+            if (_stiffnessBar != null) _stiffnessBar.fillAmount = initialStiffRatio;
+        }
+
+        // 3. ë“±ì¥ ì‹œ í˜ì´ë“œ ì¸
+        if (_canvasGroup != null)
+        {
+            DOTween.Kill(_canvasGroup);
+            _canvasGroup.DOFade(1f, _fadeDuration).SetEase(Ease.OutQuad);
+        }
+    }
+
+    private void HandleBossDied()
+    {
+        // ì‚¬ë§ ì‹œ í˜ì´ë“œ ì•„ì›ƒ í›„ íŒŒê´´
+        if (_canvasGroup != null)
+        {
+            DOTween.Kill(_canvasGroup);
+            _canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.InQuad);
+        }
+    }
+
+    private void CleanupDamageable()
     {
         if (_damageable != null)
         {
             _damageable.OnHealthChanged -= ChangeHpBar;
+            _damageable.OnDied -= HandleBossDied;
+            _damageable = null;
         }
+    }
 
-        // DOTween ¾ÈÀüÇÏ°Ô Á¾·á
-        DOTween.Kill(_hpBarFront);
-        DOTween.Kill(_hpBarBack);
+    private void CleanupStiffness()
+    {
+        if (_stiffness != null)
+        {
+            _stiffness.OnStiffnessChanged -= ChangeStiffnessBar;
+            _stiffness = null;
+        }
+    }
+
+    private void ChangeStiffnessBar(int previousStiff, int currentStiff)
+    {
+        if (_stiffness == null || _stiffnessBar == null) return;
+
+        float targetFill = (float)currentStiff / _stiffness.StiffnessThreshold;
+        
+        // ê°•ì¸í•¨ ê²Œì´ì§€ëŠ” ì¦‰ì‹œ í˜¹ì€ ë¶€ë“œëŸ½ê²Œ ë°˜ì˜ (ì—¬ê¸°ì„  ë¶€ë“œëŸ½ê²Œ ì—°ì¶œ)
+        DOTween.Kill(_stiffnessBar);
+        _stiffnessBar.DOFillAmount(targetFill, 0.2f).SetEase(Ease.OutQuad);
     }
 
     private void ChangeHpBar(int previousHp, int currentHp)
     {
+        if (_damageable == null) return;
+
         float targetFill = (float)currentHp / _damageable.MaxHealth;
 
-        // 1. ¾ÕÂÊ °ÔÀÌÁö (Áï½Ã ¹İ¿µ)
+        // 1. ì•ìª½ ê²Œì´ì§€ (ì¦‰ì‹œ ë°˜ì˜)
         _hpBarFront.fillAmount = targetFill;
 
-        // 2. µÚÂÊ °ÔÀÌÁö (ÀÜ»ó È¿°ú)
+        // 2. ë’¤ìª½ ê²Œì´ì§€ (Stiffness ë° ì”ìƒ íš¨ê³¼)
         DOTween.Kill(_hpBarBack);
-        DOTween.To(() => _hpBarBack.fillAmount,
-                    x => _hpBarBack.fillAmount = x,
-                    targetFill,
-                    0.5f)
-                    .SetDelay(0.1f)
-                    .SetEase(Ease.OutCubic);
 
-        // 3. »ç¸Á Ã³¸®: HP°¡ 0 ÀÌÇÏ¶ó¸é UI ÆÄ±«
-        if (currentHp <= 0)
+        if (currentHp < previousHp)
         {
-            // ÀÜ»ó ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£(0.6s)¸¸Å­ ±â´Ù·È´Ù°¡ ÆÄ±«
-            Destroy(gameObject, 0.6f);
+            // ë°ë¯¸ì§€ë¥¼ ì…ì—ˆì„ ë•Œ: Stiffness (ëŒ€ê¸° í›„ ì„œì„œíˆ ê°ì†Œ)
+            DOTween.To(() => _hpBarBack.fillAmount,
+                        x => _hpBarBack.fillAmount = x,
+                        targetFill,
+                        _lerpSpeed)
+                        .SetDelay(_stiffnessTime)
+                        .SetEase(Ease.OutCubic);
+        }
+        else
+        {
+            // íì„ ë°›ì•˜ì„ ë•Œ: ì¦‰ì‹œ ë°˜ì˜
+            _hpBarBack.fillAmount = targetFill;
         }
     }
+
 }

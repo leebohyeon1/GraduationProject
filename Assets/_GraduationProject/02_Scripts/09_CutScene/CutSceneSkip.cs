@@ -17,8 +17,14 @@ public class CutSceneSkip : MonoBehaviour
     [SerializeField] private CanvasGroup _uiCanvasGroup;
     [SerializeField] private Image _progressBar;
     
+    [Header("UI Settings")]
+    [SerializeField] private float _hintDuration = 2.0f; // UI가 떠있는 시간
+    [SerializeField] private float _fadeTime = 0.5f; // 페이드 인/아웃에 걸리는 시간
+
     private Coroutine _skipCoroutine;
     private Coroutine _fadeOutCoroutine;
+    private Coroutine _fadeInCoroutine;
+    private Coroutine _hintCoroutine;
     private float _currentProgress = 0f; // 0 ~ 1 사이의 진행도
 
     private void Awake()
@@ -35,13 +41,41 @@ public class CutSceneSkip : MonoBehaviour
     {
         _inputReaderSO.SkipStartEvent += OnSkipStart;
         _inputReaderSO.SkipEndEvent += OnSkipEnd;
+        _inputReaderSO.CutSceneAnyKeyEvent += OnAnyKey;
     }
 
     private void OnDisable()
     {
         _inputReaderSO.SkipStartEvent -= OnSkipStart;
         _inputReaderSO.SkipEndEvent -= OnSkipEnd;
+        _inputReaderSO.CutSceneAnyKeyEvent -= OnAnyKey;
         StopAllCoroutines();
+    }
+
+    private void OnAnyKey()
+    {
+        if (_playableDirector != null && _playableDirector.state == PlayState.Playing)
+        {
+            // UI가 완전히 꺼져있을 때(알파가 0)이며, 실행 중인 루틴이 없을 때만 힌트 시작
+            if (_uiCanvasGroup != null && _uiCanvasGroup.alpha <= 0f &&
+                _skipCoroutine == null && _hintCoroutine == null && _fadeOutCoroutine == null && _fadeInCoroutine == null)
+            {
+                _hintCoroutine = StartCoroutine(HintRoutine());
+            }
+        }
+    }
+
+    private IEnumerator HintRoutine()
+    {
+        yield return StartCoroutine(FadeInRoutine());
+        yield return new WaitForSecondsRealtime(_hintDuration);
+        
+        // 스킵 게이지가 차오르는 중이 아니라면 서서히 숨김
+        if (_skipCoroutine == null)
+        {
+            _fadeOutCoroutine = StartCoroutine(FadeOutRoutine());
+        }
+        _hintCoroutine = null;
     }
 
     private void OnSkipStart()
@@ -49,7 +83,15 @@ public class CutSceneSkip : MonoBehaviour
         if (_playableDirector != null && _playableDirector.state == PlayState.Playing)
         {
             StopFadeOutCoroutine();
+            StopFadeInCoroutine();
+            if (_hintCoroutine != null)
+            {
+                StopCoroutine(_hintCoroutine);
+                _hintCoroutine = null;
+            }
             StopSkipCoroutine();
+            
+            _fadeInCoroutine = StartCoroutine(FadeInRoutine());
             _skipCoroutine = StartCoroutine(SkipRoutine());
         }
     }
@@ -57,16 +99,14 @@ public class CutSceneSkip : MonoBehaviour
     private void OnSkipEnd()
     {
         StopSkipCoroutine();
-        if (_currentProgress > 0)
-        {
-            _fadeOutCoroutine = StartCoroutine(FadeOutRoutine());
-        }
+        StopFadeInCoroutine();
+        // 게이지가 있든 없든(힌트만 떠있든) 부드럽게 페이드 아웃 시작
+        _fadeOutCoroutine = StartCoroutine(FadeOutRoutine());
     }
 
     private IEnumerator SkipRoutine()
     {
-        SetUIVisibility(true);
-        float elapsedTime = _currentProgress * _holdTime; // 현재 게이지 위치에서 시작
+        float elapsedTime = _currentProgress * _holdTime; 
 
         while (elapsedTime < _holdTime)
         {
@@ -82,21 +122,47 @@ public class CutSceneSkip : MonoBehaviour
         _skipCoroutine = null;
     }
 
-    private IEnumerator FadeOutRoutine()
+    private IEnumerator FadeInRoutine()
     {
-        while (_currentProgress > 0)
+        if (_uiCanvasGroup == null) yield break;
+
+        float startAlpha = _uiCanvasGroup.alpha;
+        float elapsed = 0f;
+
+        while (elapsed < _fadeTime)
         {
-            _currentProgress -= Time.unscaledDeltaTime * _fadeOutSpeed;
-            _currentProgress = Mathf.Max(0, _currentProgress);
-            
-            UpdateUI();
-            
-            // UI 투명도도 게이지와 함께 서서히 줄어들게 함
+            elapsed += Time.unscaledDeltaTime;
+            _uiCanvasGroup.alpha = Mathf.Lerp(startAlpha, 1f, elapsed / _fadeTime);
+            yield return null;
+        }
+        _uiCanvasGroup.alpha = 1f;
+        _fadeInCoroutine = null;
+    }
+
+    private IEnumerator FadeOutRoutine()
+    { 
+        float startAlpha = (_uiCanvasGroup != null) ? _uiCanvasGroup.alpha : 0f;
+        float elapsed = 0f;
+
+        while (_currentProgress > 0 || (_uiCanvasGroup != null && _uiCanvasGroup.alpha > 0))
+        {
+            float dt = Time.unscaledDeltaTime;
+            elapsed += dt;
+
+            // 1. 게이지 감소
+            if (_currentProgress > 0)
+            {
+                _currentProgress -= dt * _fadeOutSpeed;
+                _currentProgress = Mathf.Max(0, _currentProgress);
+                UpdateUI();
+            }
+
+            // 2. 투명도 감소
             if (_uiCanvasGroup != null)
             {
-                _uiCanvasGroup.alpha = Mathf.Min(1, _currentProgress * 2f); 
+                _uiCanvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsed / _fadeTime);
             }
-            
+
             yield return null;
         }
 
@@ -136,6 +202,15 @@ public class CutSceneSkip : MonoBehaviour
         {
             StopCoroutine(_fadeOutCoroutine);
             _fadeOutCoroutine = null;
+        }
+    }
+
+    private void StopFadeInCoroutine()
+    {
+        if (_fadeInCoroutine != null)
+        {
+            StopCoroutine(_fadeInCoroutine);
+            _fadeInCoroutine = null;
         }
     }
 

@@ -177,13 +177,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 1461, y: 617}
   attackKey: Attack02_d
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -195,6 +193,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 15
   lockDistance: 5
   maxChargeDuration: 3
@@ -355,13 +357,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1479, y: 1131}
   attackKey: Attack03_d
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -373,6 +373,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   stepMovements:
   - distance: 3
     duration: 0.3
@@ -738,14 +742,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1198, y: 149}
   attackKey: Attack01_d
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: c4e9a73c25f91ae44b33eff95357dac9, type: 2}
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -757,6 +759,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &7570425074222747312
 MonoBehaviour:
   m_ObjectHideFlags: 0
