@@ -48,7 +48,7 @@ public class PlayerStaminaUI : PlayerUIBase
         // 초기 위치 설정
         UpdatePosition(true);
         // UI 초기화 (현재 값 반영)
-        UpdateStaminaUI(p_player.Health.CurrentStiffness);
+        UpdateStaminaUI(p_player.Stamina.CurrentStamina);
     }
 
     /// <summary>
@@ -64,6 +64,9 @@ public class PlayerStaminaUI : PlayerUIBase
             if (p_player.Combat != null)
                 p_player.Combat.BattleStateChaged -= OnBattleStateChanged;
         }
+
+        _positiveImage?.DOKill();
+        _negativeImage?.DOKill();
     }
 
     private void LateUpdate()
@@ -150,29 +153,38 @@ public class PlayerStaminaUI : PlayerUIBase
         float threshold = p_player.Stamina.MaxStamina;
         if (threshold <= 0) threshold = 100f;
 
+        float positiveTarget = 0f;
+        float negativeTarget = 0f;
+
         if (currentStamina >= 0)
         {
-            float fillAmount = (float)currentStamina / threshold;
-            AnimateFillAmount(_positiveImage, fillAmount);
-            AnimateFillAmount(_negativeImage, 0f);
+            positiveTarget = currentStamina / threshold;
         }
         else
         {
-            float fillAmount = Mathf.Abs((float)currentStamina) / threshold;
-            AnimateFillAmount(_negativeImage, fillAmount);
-            AnimateFillAmount(_positiveImage, 0f);
+            negativeTarget = Mathf.Abs(currentStamina) / threshold;
         }
+
+        // 두 이미지의 애니메이션을 동시에 실행하여 타이밍을 맞춤
+        AnimateImage(_positiveImage, positiveTarget);
+        AnimateImage(_negativeImage, negativeTarget);
     }
 
-    /// <summary>
-    /// DOTween을 사용하여 FillAmount 애니메이션을 수행합니다.
-    /// </summary>
-    private void AnimateFillAmount(Image image, float targetFill)
+    private void AnimateImage(Image image, float targetFill)
     {
         if (image == null) return;
 
         image.DOKill();
-        image.DOFillAmount(targetFill, _animationSpeed)
-             .SetEase(_animationCurve);
+        
+        // 타겟값이 현재와 다를 때만 트윈 실행 (최적화 및 떨림 방지)
+        if (Mathf.Abs(image.fillAmount - targetFill) > 0.001f)
+        {
+            image.DOFillAmount(targetFill, _animationSpeed)
+                 .SetEase(_animationCurve);
+        }
+        else
+        {
+            image.fillAmount = targetFill;
+        }
     }
 }

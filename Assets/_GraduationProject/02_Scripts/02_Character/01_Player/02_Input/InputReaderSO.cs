@@ -67,6 +67,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     // CutScene Actions
     public event Action SkipStartEvent, SkipEndEvent;
+    public event Action CutSceneAnyKeyEvent;
 
     private InputSystem_Actions _inputActions;
 
@@ -175,6 +176,14 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         else if (context.phase == InputActionPhase.Canceled)
         {
             SkipEndEvent?.Invoke();
+        }
+    }
+
+    public void OnCutSceneAnyKey(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            CutSceneAnyKeyEvent?.Invoke();
         }
     }
 
