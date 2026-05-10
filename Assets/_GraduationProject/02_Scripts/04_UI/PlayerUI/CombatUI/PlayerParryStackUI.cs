@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// 플레이어의 패리 스택 및 타이머를 시각화하는 UI 클래스
@@ -14,6 +15,13 @@ public class PlayerParryStackUI : PlayerUIBase
     [Header("Settings")]
     [SerializeField] private Color _activeColor = Color.white;
     [SerializeField] private Color _inactiveColor = new Color(1f, 1f, 1f, 0.2f);
+    
+    [Header("Animation Settings")]
+    [SerializeField] private float _animationDuration = 0.2f; // 애니메이션 지속 시간
+    [SerializeField] private Vector3 _punchVector = new Vector3(0.2f, 0.2f, 0.2f); // 펀치 강도
+    [SerializeField] private int _vibrato = 5;               // 진동 횟수
+    
+    private int _lastStackCount = 0;
 
     public override void Initialize(PlayerController player)
     {
@@ -23,7 +31,8 @@ public class PlayerParryStackUI : PlayerUIBase
         p_player.Combat.CounterStackChanged += UpdateStackDisplay;
 
         // 초기 상태 설정
-        UpdateStackDisplay(p_player.Combat.CounterStacks);
+        _lastStackCount = p_player.Combat.CounterStacks;
+        UpdateStackDisplay(_lastStackCount);
     }
 
     public override void Dispose()
@@ -32,6 +41,13 @@ public class PlayerParryStackUI : PlayerUIBase
         {
             p_player.Combat.CounterStackChanged -= UpdateStackDisplay;
         }
+
+        // 해당 오브젝트의 모든 트윈 정지
+        foreach (var icon in _stackIcons)
+        {
+            icon.transform.DOKill();
+        }
+
         base.Dispose();
     }
 
@@ -41,22 +57,29 @@ public class PlayerParryStackUI : PlayerUIBase
     /// <param name="currentStacks">현재 스택 수</param>
     private void UpdateStackDisplay(int currentStacks)
     {
-        Debug.Log(currentStacks);   
         for (int i = 0; i < _stackIcons.Count; i++)
         {
-            // i + 1번째 스택이 활성화되었는지 확인
             bool isActive = i < currentStacks;
-            _stackIcons[i].color = isActive ? _activeColor : _inactiveColor;
             
-            // 시각적 피드백 (간단한 스케일 애니메이션 등 추가 가능)
-            if (isActive)
+            // 이전에 비활성화였다가 새로 활성화된 스택인지 확인
+            bool isNewlyActivated = isActive && (i >= _lastStackCount);
+            
+            _stackIcons[i].gameObject.SetActive(isActive);
+            
+            if (isNewlyActivated)
             {
-                _stackIcons[i].transform.localScale = Vector3.one * 1.1f;
+                // DOTween Punch Scale 애니메이션
+                _stackIcons[i].transform.DOKill();
+                _stackIcons[i].transform.localScale = Vector3.one;
+                _stackIcons[i].transform.DOPunchScale(_punchVector, _animationDuration, _vibrato);
             }
-            else
+            else if (!isActive)
             {
+                _stackIcons[i].transform.DOKill();
                 _stackIcons[i].transform.localScale = Vector3.one;
             }
         }
+
+        _lastStackCount = currentStacks;
     }
 }
