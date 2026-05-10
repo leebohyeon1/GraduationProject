@@ -152,7 +152,7 @@ public class PlayerDodgeState : PlayerBaseState
                     dodgeDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
                 }
 
-                p_owner.Movement.Step(dodgeDirection, this, false, 
+                p_owner.Movement.Step(dodgeDirection, this, true, 
                     () =>
                     {
                         OnDodgeFinished();

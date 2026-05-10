@@ -154,7 +154,6 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     //==========================================================================================================================
 
     #region Counter
-    public UnityEvent CounterSuccessFeedback;
     public List<UnityEvent> ParryStackChangeFeedbacks;
 
     /// <summary>
@@ -196,7 +195,14 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="transform"></param>
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
-        CounterSuccessFeedback?.Invoke();
+        if(type == AttackType.Normal_Counter)
+        {
+            PlayFeedback("Counter_Sucess_FB");
+        }
+        else if(type == AttackType.Strong_Counter)
+        {
+            PlayFeedback("Charging_Counter_Sucess_FB");
+        }
     }
 
     #endregion
