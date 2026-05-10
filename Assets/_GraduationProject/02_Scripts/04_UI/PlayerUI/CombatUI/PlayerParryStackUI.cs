@@ -11,10 +11,6 @@ public class PlayerParryStackUI : PlayerUIBase
 {
     [Header("UI Elements")]
     [SerializeField] private List<Image> _stackIcons;       // 스택 아이콘 (최대 3개)
-
-    [Header("Settings")]
-    [SerializeField] private Color _activeColor = Color.white;
-    [SerializeField] private Color _inactiveColor = new Color(1f, 1f, 1f, 0.2f);
     
     [Header("Animation Settings")]
     [SerializeField] private float _animationDuration = 0.2f; // 애니메이션 지속 시간
