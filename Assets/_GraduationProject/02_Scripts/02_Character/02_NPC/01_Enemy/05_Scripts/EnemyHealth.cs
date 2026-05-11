@@ -311,6 +311,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 aiPath.canMove = false;
                 aiPath.isStopped = true;
                 aiPath.destination = _owner.transform.position;
+                aiPath.Teleport(_owner.transform.position, false);
             }
         }
 
@@ -326,12 +327,26 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 ? damageData.KnockbackCurve.Evaluate(normalizedTime)
                 : 1f;
             float horizontalMoveDistance = force * curveValue * Time.deltaTime;
+            if (horizontalMoveDistance <= 0.0001f)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+                continue;
+            }
+
             Vector3 currentPosition = _owner.transform.position;
             Vector3 safeHorizontalTarget = _owner.Movement.GetSafeKnockbackPosition(currentPosition, horizontalDirection, horizontalMoveDistance, out bool wasClamped);
 
             if (!_owner.Movement.IsMeaningfulSafeMove(currentPosition, safeHorizontalTarget))
             {
-                break;
+                if (wasClamped)
+                {
+                    break;
+                }
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+                continue;
             }
 
             Vector3 move = safeHorizontalTarget - currentPosition;
