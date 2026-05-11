@@ -1,4 +1,8 @@
 using UnityEngine;
+using Unity.Jobs;
+using Unity.Collections;
+using Unity.Burst;
+using Unity.Mathematics;
 
 public class MapUI : MenuUIComponent
 {
@@ -23,70 +27,133 @@ public class MapUI : MenuUIComponent
 
     private PlayerController _player;
 
+    // Job 관련 변수
+    private NativeArray<float3> _playerData; // [0]: Position, [1]: Rotation (Euler)
+    private NativeArray<float3> _mapAreaData; // [0]: Position, [1]: Rotation (Euler), [2]: Scale
+    private NativeArray<float2> _resultData; // [0]: AnchoredPosition, [1]: IconRotation, [2]: MapRotation
+    private JobHandle _jobHandle;
+
+    [BurstCompile]
+    struct MapUIJob : IJob
+    {
+        [ReadOnly] public float3 PlayerPos;
+        [ReadOnly] public float3 PlayerRot;
+        [ReadOnly] public float3 MapAreaPos;
+        [ReadOnly] public float3 MapAreaRot;
+        [ReadOnly] public float3 MapAreaScale;
+        [ReadOnly] public float2 MapSize;
+        [ReadOnly] public float2 MapPivot;
+        [ReadOnly] public float2 WorldMin;
+        [ReadOnly] public float2 WorldMax;
+        [ReadOnly] public bool UseMapArea;
+        [ReadOnly] public bool RotateMap;
+        [ReadOnly] public bool RotateIcon;
+
+        public NativeArray<float2> Results;
+
+        public void Execute()
+        {
+            float normalizedX, normalizedY;
+
+            if (UseMapArea)
+            {
+                // InverseTransformPoint 수동 계산
+                float3 relativePos = PlayerPos - MapAreaPos;
+                quaternion rotation = quaternion.Euler(math.radians(MapAreaRot));
+                float3 localPos = math.mul(math.inverse(rotation), relativePos);
+                localPos /= MapAreaScale;
+
+                normalizedX = localPos.x + 0.5f;
+                normalizedY = localPos.z + 0.5f;
+            }
+            else
+            {
+                normalizedX = (PlayerPos.x - WorldMin.x) / (WorldMax.x - WorldMin.x);
+                normalizedY = (PlayerPos.z - WorldMin.y) / (WorldMax.y - WorldMin.y);
+            }
+
+            float anchoredX = (normalizedX - MapPivot.x) * MapSize.x;
+            float anchoredY = (normalizedY - MapPivot.y) * MapSize.y;
+
+            float areaRotationY = MapAreaRot.y;
+            float playerRotationY = PlayerRot.y;
+
+            if (RotateMap)
+            {
+                Results[0] = new float2(anchoredX, anchoredY);
+                Results[1] = 0;
+                Results[2] = playerRotationY - areaRotationY;
+            }
+            else
+            {
+                Results[0] = new float2(anchoredX, anchoredY);
+                if (RotateIcon)
+                {
+                    Results[1] = -(playerRotationY - areaRotationY);
+                }
+                else
+                {
+                    Results[1] = 0;
+                }
+                Results[2] = 0;
+            }
+        }
+    }
+
     public override void Initialize(MenuUI menu)
     {
         base.Initialize(menu);
         _player = menu.Player;
+
+        _resultData = new NativeArray<float2>(3, Allocator.Persistent);
+    }
+
+    private void OnDestroy()
+    {
+        if (_resultData.IsCreated) _resultData.Dispose();
     }
 
     private void LateUpdate()
     {
         if (_player == null || _mapRect == null || _playerIcon == null) return;
 
-        UpdateMinimap();
+        // Job 데이터 준비 및 스케줄링
+        MapUIJob job = new MapUIJob
+        {
+            PlayerPos = _player.transform.position,
+            PlayerRot = _player.transform.eulerAngles,
+            MapAreaPos = _mapAreaTransform != null ? (float3)_mapAreaTransform.position : float3.zero,
+            MapAreaRot = _mapAreaTransform != null ? (float3)_mapAreaTransform.eulerAngles : float3.zero,
+            MapAreaScale = _mapAreaTransform != null ? (float3)_mapAreaTransform.localScale : new float3(1, 1, 1),
+            MapSize = _mapRect.rect.size,
+            MapPivot = _mapRect.pivot,
+            WorldMin = _worldMin,
+            WorldMax = _worldMax,
+            UseMapArea = _mapAreaTransform != null,
+            RotateMap = _rotateMap,
+            RotateIcon = _rotateIcon,
+            Results = _resultData
+        };
+
+        _jobHandle = job.Schedule();
     }
 
-    private void UpdateMinimap()
+    private void Update()
     {
-        Vector3 playerPos = _player.transform.position;
-        float normalizedX, normalizedY;
-
-        if (_mapAreaTransform != null)
-        {
-            // 1. Map Area 오브젝트의 로컬 좌표로 플레이어 위치 변환 (회전 대응 가능!)
-            Vector3 localPos = _mapAreaTransform.InverseTransformPoint(playerPos);
-
-            // 2. 오브젝트의 Scale이 1일 때, 로컬 좌표는 -0.5 ~ 0.5 범위를 가집니다.
-            // 이를 0~1 사이의 정규화된 값으로 변환합니다.
-            normalizedX = localPos.x + 0.5f;
-            normalizedY = localPos.z + 0.5f;
-        }
-        else
-        {
-            // 수동 좌표 방식 (회전 대응 불가)
-            normalizedX = Mathf.InverseLerp(_worldMin.x, _worldMax.x, playerPos.x);
-            normalizedY = Mathf.InverseLerp(_worldMin.y, _worldMax.y, playerPos.z);
-        }
-
-        // 3. 지도 UI의 실제 크기 가져오기
-        Vector2 mapSize = _mapRect.rect.size;
-
-        // 4. RectTransform의 Pivot을 고려하여 아이콘의 AnchoredPosition 계산
-        float anchoredX = (normalizedX - _mapRect.pivot.x) * mapSize.x;
-        float anchoredY = (normalizedY - _mapRect.pivot.y) * mapSize.y;
-
-        float areaRotationY = _mapAreaTransform != null ? _mapAreaTransform.eulerAngles.y : 0f;
+        // 이전 프레임의 LateUpdate에서 예약된 Job이 완료되었는지 확인하고 결과 적용
+        _jobHandle.Complete();
 
         if (_rotateMap)
         {
-            // 지도가 회전하는 방식 (플레이어는 중앙 고정)
             _playerIcon.anchoredPosition = Vector2.zero;
-            _mapRect.anchoredPosition = new Vector2(-anchoredX, -anchoredY);
-
-            float relativeRotation = _player.transform.eulerAngles.y - areaRotationY;
-            _mapRect.localEulerAngles = new Vector3(0, 0, relativeRotation);
+            _mapRect.anchoredPosition = new Vector2(-_resultData[0].x, -_resultData[0].y);
+            _mapRect.localEulerAngles = new Vector3(0, 0, _resultData[2].x);
             _playerIcon.localEulerAngles = Vector3.zero;
         }
         else
         {
-            // 아이콘이 움직이는 방식
-            _playerIcon.anchoredPosition = new Vector2(anchoredX, anchoredY);
-
-            if (_rotateIcon)
-            {
-                float relativeRotation = _player.transform.eulerAngles.y - areaRotationY;
-                _playerIcon.localEulerAngles = new Vector3(0, 0, -relativeRotation);
-            }
+            _playerIcon.anchoredPosition = _resultData[0];
+            _playerIcon.localEulerAngles = new Vector3(0, 0, _resultData[1].x);
         }
     }
 
