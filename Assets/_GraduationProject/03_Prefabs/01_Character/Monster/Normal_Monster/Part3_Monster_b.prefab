@@ -1005,7 +1005,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2.78
-  m_Radius: 0.93
+  m_Radius: 0.7
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -1052,7 +1052,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.AIPath
   version: 1073741824
-  radius: 0.68
+  radius: 0.7
   height: 3.07
   canMove: 1
   maxSpeed: 1
@@ -1300,6 +1300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  _enableJumpGuard: 1
+  _suspiciousJumpDistance: 100
+  _logJumpGuard: 0
   <enemyStat>k__BackingField: {fileID: 11400000, guid: a547cf6fe13d12c4587298f1855fbb9b, type: 2}
 --- !u!114 &5060830232353991742
 MonoBehaviour:
@@ -1546,7 +1549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b403632075382f4c97ce869a7da01b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSavePersistence
-  _monsterId: 
+  _monsterId: Part3_Monster_b_b7951e3b
 --- !u!114 &3834154181976864597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27179,22 +27182,22 @@ PrefabInstance:
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7623909969689089502}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TriggerBlurPulse
+      value: HitFX
       objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: 
+      value: TriggerBlurPulse
       objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: RadialBlurFeedback, Assembly-CSharp
+      value: HighlightPlus.HighlightEffect, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
