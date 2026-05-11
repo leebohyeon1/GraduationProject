@@ -17,7 +17,6 @@ public class Enemy : MonoBehaviour
     [Header("Jump Guard")]
     [SerializeField] private bool _enableJumpGuard = true;
     [SerializeField] private float _suspiciousJumpDistance = 100f;
-    [SerializeField] private bool _logJumpGuard = false;
     /// <summary>
     /// 몬스터의 기본 스탯 데이터입니다.
     /// </summary>
@@ -393,18 +392,5 @@ public class Enemy : MonoBehaviour
             aIPath.SearchPath();
         }
 
-        if (_logJumpGuard)
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"[EnemyJumpGuard] Rolled back suspicious jump on {name} ({MonsterId})");
-            sb.AppendLine($"- State: {CurrentState}");
-            sb.AppendLine($"- Prev: {previousPosition}");
-            sb.AppendLine($"- Curr: {currentPosition}");
-            sb.AppendLine($"- Delta: {delta} | distance={delta.magnitude:F2}");
-            sb.AppendLine($"- Parent: {(transform.parent != null ? transform.parent.name : "null")}");
-            sb.AppendLine($"- GoHome: {shouldGoHome}");
-            sb.AppendLine($"- RestoredDestination: {(shouldGoHome ? homePosition : preservedDestination)}");
-            Debug.LogWarning(sb.ToString(), this);
-        }
     }
 }

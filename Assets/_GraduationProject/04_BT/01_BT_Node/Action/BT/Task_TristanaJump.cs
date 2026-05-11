@@ -75,7 +75,8 @@ public class Task_TristanaJump : BaseAttackNode
         Vector3 rawTarget = _startPos + (direction * jumpDist);
 
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
-        _targetPos = info.node != null ? info.position : rawTarget;
+        Vector3 candidateTarget = info.node != null ? info.position : rawTarget;
+        _targetPos = GetBufferedDestination(candidateTarget);
         _isJumping = true;
         _nodeEntryTime = Time.time; // ?먰봽 ?쒖옉 ?쒖젏 由ъ뀑
         
@@ -130,7 +131,8 @@ public class Task_TristanaJump : BaseAttackNode
         {
             landPos.y = hit.point.y;
         }
-        runner.transform.position = landPos;
+        runner.transform.position = GetBufferedDestination(landPos);
+        landPos = runner.transform.position;
 
         Collider[] hitColliders = Physics.OverlapSphere(landPos, impactRadius, LayerMask.GetMask("Player"));
         foreach (var hitCollider in hitColliders)

@@ -43,7 +43,8 @@ public class Task_KSante : BaseAttackNode
         dir.Normalize();
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
-        _targetPos = playerPos + (dir * overshootDist) + offset;
+        Vector3 rawTarget = playerPos + (dir * overshootDist) + offset;
+        _targetPos = GetStraightSafeDestination(myPos, rawTarget, out _);
 
         _isRushing = false;
         _rushStartTime = Time.time;
@@ -80,11 +81,18 @@ public class Task_KSante : BaseAttackNode
 
         if (moveDist > 0.0001f)
         {
-            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
+            Vector3 safeNextPos = GetSafeStepDestination(currentPos, moveDir, moveDist, out bool blockedByWall);
+            float actualMoveDistance = GetHorizontalDistance(currentPos, safeNextPos);
+
+            if (actualMoveDistance <= minimumMovementDistance)
             {
-                runner.transform.position = nextPos;
+                StopRush();
+                return;
             }
-            else
+
+            runner.transform.position = safeNextPos;
+
+            if (blockedByWall)
             {
                 StopRush();
                 return;

@@ -87,7 +87,8 @@ public class Task_StepAttack : BaseAttackNode
             _currentStepData = stepMovements[_currentStep];
             if (_currentStepData.distance > 0)
             {
-                _targetPosition = runner.transform.position + runner.transform.forward * _currentStepData.distance;
+                Vector3 desiredTarget = runner.transform.position + runner.transform.forward * _currentStepData.distance;
+                _targetPosition = GetStraightSafeDestination(runner.transform.position, desiredTarget, out _);
                 _isMoving = true;
                 _stepStartTime = Time.time;
 
@@ -141,34 +142,32 @@ public class Task_StepAttack : BaseAttackNode
 
         if (finalMoveDir != Vector3.zero)
         {
-            // 벽 및 플레이어 충돌 체크
-            int playerLayer = 1 << LayerMask.NameToLayer("Player");
-            int combinedMask = obstacleMask | playerLayer;
-            
-            float castDistance = stepSize + 0.3f;
-            Vector3 castOrigin = myPos + Vector3.up * 0.5f;
-            float castRadius = (runner.Movement != null ? runner.Movement.CharacterRadius : 0.5f);
-
-            if (Physics.SphereCast(castOrigin, castRadius, finalMoveDir, out RaycastHit hit, castDistance, combinedMask))
+            Vector3 safeNextPos = GetSafeStepDestination(myPos, finalMoveDir, stepSize, out bool blockedByWall);
+            if (GetHorizontalDistance(myPos, safeNextPos) <= minimumMovementDistance)
             {
                 _isMoving = false;
-                // Log($"<color=orange>[StepAttack]</color> 물리 충돌 예측 정지: {hit.collider.name}");
                 return;
             }
 
             CharacterController cc = runner.GetComponent<CharacterController>();
             if (cc != null)
             {
-                Vector3 moveVector = nextPos - myPos;
-                moveVector.y = -1.5f; // 등반 방지 하향 압력
+                Vector3 moveVector = safeNextPos - myPos;
+                moveVector.y = -1.5f; // small downward force to avoid climbing surfaces
                 cc.Move(moveVector);
             }
             else
             {
-                runner.transform.position = nextPos;
+                runner.transform.position = safeNextPos;
             }
 
             if (runner.aIPath != null) runner.aIPath.Teleport(runner.transform.position);
+
+            if (blockedByWall)
+            {
+                _isMoving = false;
+                return;
+            }
         }
 
         if (Vector3.Distance(runner.transform.position, _targetPosition) < 0.1f)
