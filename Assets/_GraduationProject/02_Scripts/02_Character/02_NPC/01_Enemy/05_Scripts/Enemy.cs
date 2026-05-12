@@ -197,7 +197,7 @@ public class Enemy : MonoBehaviour
         Vector3 offset = transform.position - Data.StartPosition;
         float sqrDistance = offset.sqrMagnitude; // 실제 거리의 제곱
 
-        float limit = enemyStat.DetectRange * 3f;
+        float limit = 100f; // 허용할 최대 거리
         float sqrLimit = limit * limit; // 비교 대상도 제곱
         if(sqrDistance > sqrLimit)
         {
