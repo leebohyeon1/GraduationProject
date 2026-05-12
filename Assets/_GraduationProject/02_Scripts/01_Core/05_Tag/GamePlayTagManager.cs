@@ -50,7 +50,7 @@ public class GamePlayTagManager : MonoBehaviour
     {
         if (tag == null) return;
 
-        if (!_activeTagList.Contains(tag))
+        if (!HasTag(tag.ID))
         {
             // 1. 내부 리스트 업데이트
             _activeTagList.Add(tag);
