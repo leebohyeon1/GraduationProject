@@ -51,7 +51,7 @@ public class TagHandler : MonoBehaviour
     {
         // 최적화: 변경된 태그가 내가 감시하는 리스트에 없으면 계산하지 않음
         // (None 타입은 어떤 태그든 영향을 줄 수 있으므로 항상 체크)
-        if (_queryType != QueryType.None && !_targetTags.Contains(changedTag))
+        if (_queryType != QueryType.None && !_targetTags.Any(t => t.ID == changedTag.ID))
             return;
 
         RefreshStatus();
@@ -69,13 +69,13 @@ public class TagHandler : MonoBehaviour
         switch (_queryType)
         {
             case QueryType.All:
-                currentStatus = _targetTags.Count > 0 && _targetTags.All(t => GamePlayTagManager.Instance.HasTag(t));
+                currentStatus = _targetTags.Count > 0 && _targetTags.All(t => GamePlayTagManager.Instance.HasTag(t.ID));
                 break;
             case QueryType.Any:
-                currentStatus = _targetTags.Any(t => GamePlayTagManager.Instance.HasTag(t));
+                currentStatus = _targetTags.Any(t => GamePlayTagManager.Instance.HasTag(t.ID));
                 break;
             case QueryType.None:
-                currentStatus = ! _targetTags.Any(t => GamePlayTagManager.Instance.HasTag(t));
+                currentStatus = ! _targetTags.Any(t => GamePlayTagManager.Instance.HasTag(t.ID));
                 break;
         }
 

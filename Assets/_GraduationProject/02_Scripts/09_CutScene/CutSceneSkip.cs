@@ -178,7 +178,7 @@ public class CutSceneSkip : MonoBehaviour
         }
     }
 
-    private void PerformSkip()
+    public void PerformSkip()
     {
         if (_playableDirector != null)
         {

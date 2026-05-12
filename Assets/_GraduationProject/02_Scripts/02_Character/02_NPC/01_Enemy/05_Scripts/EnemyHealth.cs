@@ -3,7 +3,6 @@ using System.Collections;
 using Pathfinding;
 using UnityEngine;
 using FIMSpace.FProceduralAnimation;
-using Packages.Rider.Editor.UnitTesting;
 
 /// <summary>
 /// 몬스터의 체력 관리 및 피해 처리를 담당하는 컴포넌트입니다.
@@ -254,7 +253,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         if (Knockbackable && !isBlocked || curHealth <= 0)
         {
-            Vector3 knockbackDir = (transform.position - damageData.AttackerTransform.position).normalized;
+            Vector3 knockbackDir = damageData.AttackerTransform != null
+                ? (transform.position - damageData.AttackerTransform.position).normalized
+                : -transform.forward;
             knockbackDir.y = 0;
             if (_KnockbackCoroutine != null) StopCoroutine(_KnockbackCoroutine);
             
@@ -276,28 +277,107 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
     {
         bool isDead = curHealth <= 0;
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
+        float duration = isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration;
+        float force = isDead ? damageData.DeathKnockbackForce : damageData.KnockbackForce;
         Vector3 horizontalDirection = direction;
-        horizontalDirection.y = 0;
+        horizontalDirection.y = 0f;
         horizontalDirection.Normalize();
-        if (horizontalDirection.sqrMagnitude < 0.01f) { _KnockbackCoroutine = null; yield break; }
 
-        while (elapsedTime < (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration))
+        if (_owner == null || _owner.Movement == null || _characterController == null || !_characterController.enabled)
+        {
+            _KnockbackCoroutine = null;
+            yield break;
+        }
+
+        if (horizontalDirection.sqrMagnitude < 0.01f || duration <= 0f || force <= 0f)
+        {
+            _KnockbackCoroutine = null;
+            yield break;
+        }
+
+        AIPath aiPath = _owner.aIPath;
+        _owner.Movement.StopMovement();
+
+        if (aiPath != null)
         {
             if (isDead)
             {
-                _owner.aIPath.enabled = false; // 죽음 넉백 동안 경로 탐색 비활성화
+                aiPath.enabled = false;
             }
-            float curveValue = damageData.KnockbackCurve.Evaluate(elapsedTime / (isDead ? damageData.DeathKnockbackDuration : damageData.KnockbackDuration));
-            Vector3 move = horizontalDirection * (isDead ? damageData.DeathKnockbackForce : damageData.KnockbackForce) * curveValue * Time.deltaTime;
-            if (_characterController != null)
+            else
             {
-                if (!_characterController.isGrounded) move.y += Physics.gravity.y * Time.deltaTime;
-                _characterController.Move(move);
+                aiPath.canMove = false;
+                aiPath.isStopped = true;
+                aiPath.destination = _owner.transform.position;
+                aiPath.Teleport(_owner.transform.position, false);
             }
+        }
+
+        while (elapsedTime < duration)
+        {
+            if (_characterController == null || !_characterController.enabled)
+            {
+                break;
+            }
+
+            float normalizedTime = Mathf.Clamp01(elapsedTime / duration);
+            float curveValue = damageData.KnockbackCurve != null
+                ? damageData.KnockbackCurve.Evaluate(normalizedTime)
+                : 1f;
+            float horizontalMoveDistance = force * curveValue * Time.deltaTime;
+            if (horizontalMoveDistance <= 0.0001f)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+                continue;
+            }
+
+            Vector3 currentPosition = _owner.transform.position;
+            Vector3 safeHorizontalTarget = _owner.Movement.GetSafeKnockbackPosition(currentPosition, horizontalDirection, horizontalMoveDistance, out bool wasClamped);
+
+            if (!_owner.Movement.IsMeaningfulSafeMove(currentPosition, safeHorizontalTarget))
+            {
+                if (wasClamped)
+                {
+                    break;
+                }
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+                continue;
+            }
+
+            Vector3 move = safeHorizontalTarget - currentPosition;
+            if (!_characterController.isGrounded)
+            {
+                move.y += Physics.gravity.y * Time.deltaTime;
+            }
+
+            _characterController.Move(move);
+
+            if (aiPath != null && aiPath.enabled)
+            {
+                aiPath.Teleport(_owner.transform.position, false);
+            }
+
+            if (wasClamped)
+            {
+                break;
+            }
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        if (aiPath != null && aiPath.enabled)
+        {
+            aiPath.Teleport(_owner.transform.position, false);
+            aiPath.canMove = false;
+            aiPath.isStopped = true;
+            aiPath.destination = _owner.transform.position;
+        }
+
         _KnockbackCoroutine = null;
     }
 }

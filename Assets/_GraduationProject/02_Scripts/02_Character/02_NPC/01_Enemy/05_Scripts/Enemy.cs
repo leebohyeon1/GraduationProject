@@ -17,7 +17,6 @@ public class Enemy : MonoBehaviour
     [Header("Jump Guard")]
     [SerializeField] private bool _enableJumpGuard = true;
     [SerializeField] private float _suspiciousJumpDistance = 100f;
-    [SerializeField] private bool _logJumpGuard = false;
     /// <summary>
     /// 몬스터의 기본 스탯 데이터입니다.
     /// </summary>
@@ -176,7 +175,10 @@ public class Enemy : MonoBehaviour
             //이펙트 
         }
     }
-
+    private void Update()
+    {
+        ForceDie();
+    }
     /// <summary>
     /// 오브젝트 풀에서 꺼낼 때 상태를 재설정합니다.
     /// </summary>
@@ -188,6 +190,19 @@ public class Enemy : MonoBehaviour
     private void LateUpdate()
     {
         GuardSuspiciousJump();
+    }
+    
+    void ForceDie()
+    {
+        Vector3 offset = transform.position - Data.StartPosition;
+        float sqrDistance = offset.sqrMagnitude; // 실제 거리의 제곱
+
+        float limit = 100f; // 허용할 최대 거리
+        float sqrLimit = limit * limit; // 비교 대상도 제곱
+        if(sqrDistance > sqrLimit)
+        {
+            EnemyHealth.Die(null);
+        }
     }
 
     public void Init()
@@ -393,18 +408,5 @@ public class Enemy : MonoBehaviour
             aIPath.SearchPath();
         }
 
-        if (_logJumpGuard)
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"[EnemyJumpGuard] Rolled back suspicious jump on {name} ({MonsterId})");
-            sb.AppendLine($"- State: {CurrentState}");
-            sb.AppendLine($"- Prev: {previousPosition}");
-            sb.AppendLine($"- Curr: {currentPosition}");
-            sb.AppendLine($"- Delta: {delta} | distance={delta.magnitude:F2}");
-            sb.AppendLine($"- Parent: {(transform.parent != null ? transform.parent.name : "null")}");
-            sb.AppendLine($"- GoHome: {shouldGoHome}");
-            sb.AppendLine($"- RestoredDestination: {(shouldGoHome ? homePosition : preservedDestination)}");
-            Debug.LogWarning(sb.ToString(), this);
-        }
     }
 }

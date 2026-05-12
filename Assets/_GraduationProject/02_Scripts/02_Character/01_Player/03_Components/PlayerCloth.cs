@@ -13,7 +13,7 @@ public class PlayerCloth : MonoBehaviour
 
     private void UpdateCloth()
     {
-        bool hasWeapon = GamePlayTagManager.Instance.HasTag(_wearWeapon);
+        bool hasWeapon = GamePlayTagManager.Instance.HasTag(_wearWeapon.ID);
 
         foreach (var weapon in _weaponList)
         {
