@@ -175,7 +175,10 @@ public class Enemy : MonoBehaviour
             //이펙트 
         }
     }
-
+    private void Update()
+    {
+        ForceDie();
+    }
     /// <summary>
     /// 오브젝트 풀에서 꺼낼 때 상태를 재설정합니다.
     /// </summary>
@@ -187,6 +190,19 @@ public class Enemy : MonoBehaviour
     private void LateUpdate()
     {
         GuardSuspiciousJump();
+    }
+    
+    void ForceDie()
+    {
+        Vector3 offset = transform.position - Data.StartPosition;
+        float sqrDistance = offset.sqrMagnitude; // 실제 거리의 제곱
+
+        float limit = enemyStat.DetectRange * 3f;
+        float sqrLimit = limit * limit; // 비교 대상도 제곱
+        if(sqrDistance > sqrLimit)
+        {
+            EnemyHealth.Die(null);
+        }
     }
 
     public void Init()
