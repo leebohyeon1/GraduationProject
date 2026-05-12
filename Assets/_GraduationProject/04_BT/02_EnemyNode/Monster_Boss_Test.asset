@@ -277,6 +277,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -293,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
-  position: {x: 354, y: 92}
+  position: {x: 366, y: 197}
   child: {fileID: 2304345980655835924}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -370,7 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 524, y: 92}
+  position: {x: 536, y: 197}
   exceptCondition:
     key: 
 --- !u!114 &3598595731350612588
@@ -385,7 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: 356, y: 169}
+  position: {x: 368, y: 274}
   transitionBuffer: 2
   animationTagName: Discover_Player
   upduration: 1
@@ -458,6 +460,19 @@ MonoBehaviour:
   ResetZoneIDs: 010000000200000003000000040000000500000006000000070000000800000009000000
   ThresholdTime: 5
   ResultKey: WalkingTime
+--- !u!114 &4324804164685838116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90e8b0eff70424bbd1de84c81c71dc, type: 3}
+  m_Name: Condition_cutscene
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
+  position: {x: 366, y: 92}
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518,6 +533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 179, y: 92}
   nodes:
+  - {fileID: 4324804164685838116}
   - {fileID: -571219295577504573}
   - {fileID: 3598595731350612588}
   - {fileID: 6801911828257767253}
@@ -563,7 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_Engage Combat
   m_EditorClassIdentifier: Assembly-CSharp::Task_EngageCombat
-  position: {x: 355, y: 256}
+  position: {x: 367, y: 361}
 --- !u!114 &7383990784071887038
 MonoBehaviour:
   m_ObjectHideFlags: 0
