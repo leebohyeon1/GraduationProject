@@ -203,7 +203,7 @@ public class CameraController : MonoBehaviour, IEventListener<EnemyStateData>
     /// </summary>
     public void UpdateCameraPriorities()
     {
-        if (!enabled || _defaultCamera == null || _combatCamera == null || _lockOnCamera == null) return;
+        if (!enabled || _defaultCamera == null || _lockOnCamera == null) return;
 
         SetAllPriorities(_inactivePriority);
 
@@ -218,7 +218,7 @@ public class CameraController : MonoBehaviour, IEventListener<EnemyStateData>
             _lockOnCamera.Priority = _activePriority;
         }
         // 3순위: 주변 적 감지 상태
-        else if (_detectedEnemies.Count > 0)
+        else if (_combatCamera != null && _detectedEnemies.Count > 0)
         {
             _combatCamera.Priority = _activePriority;
         }
