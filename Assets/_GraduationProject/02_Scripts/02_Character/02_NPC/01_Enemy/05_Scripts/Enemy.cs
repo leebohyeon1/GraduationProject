@@ -201,7 +201,9 @@ public class Enemy : MonoBehaviour
         float sqrLimit = limit * limit; // 비교 대상도 제곱
         if(sqrDistance > sqrLimit)
         {
-            EnemyHealth.Die(null);
+            Debug.LogWarning($"[Enemy] {gameObject.name}이(가) 시작 위치에서 너무 멀리 떨어졌습니다. 강제 사망 처리합니다. (거리: {Math.Sqrt(sqrDistance):F2})");
+            // EnemyHealth.Die(null);
+            Debug.Log($"enemy {blackboard.GetValue<Vector3>("HomePosition")}에서 너무 멀리 떨어짐. 강제 사망 처리.");
         }
     }
 
@@ -371,7 +373,7 @@ public class Enemy : MonoBehaviour
         }
 
         _lastJumpGuardFrame = Time.frameCount;
-        RollbackSuspiciousJump(_lastObservedPosition, currentPosition, delta);
+        // RollbackSuspiciousJump(_lastObservedPosition, currentPosition, delta);
         _lastObservedPosition = transform.position;
     }
 
@@ -389,24 +391,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void RollbackSuspiciousJump(Vector3 previousPosition, Vector3 currentPosition, Vector3 delta)
-    {
-        Vector3 preservedDestination = aIPath != null ? aIPath.destination : previousPosition;
-        bool shouldGoHome = blackboard != null && blackboard.HasKey("GoHome") && blackboard.GetValue<bool>("GoHome");
-        Vector3 homePosition = blackboard != null && blackboard.HasKey("HomePosition")
-            ? blackboard.GetValue<Vector3>("HomePosition")
-            : StartPos;
+    
 
-        transform.position = previousPosition;
-
-        if (aIPath != null)
-        {
-            aIPath.Teleport(previousPosition, true);
-            aIPath.canMove = true;
-            aIPath.isStopped = false;
-            aIPath.destination = shouldGoHome ? homePosition : preservedDestination;
-            aIPath.SearchPath();
-        }
-
-    }
+    
 }

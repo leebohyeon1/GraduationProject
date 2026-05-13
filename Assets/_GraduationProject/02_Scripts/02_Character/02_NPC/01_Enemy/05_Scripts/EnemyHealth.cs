@@ -35,6 +35,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public bool ImmunityStart = false;
 
     private RagdollAnimator2 _ragdollAnimator;
+    private static readonly RaycastHit[] KnockbackSweepHits = new RaycastHit[32];
+    private static readonly Collider[] KnockbackOverlapHits = new Collider[32];
 
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
@@ -257,15 +259,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 ? (transform.position - damageData.AttackerTransform.position).normalized
                 : -transform.forward;
             knockbackDir.y = 0;
-            if (_KnockbackCoroutine != null) StopCoroutine(_KnockbackCoroutine);
+            if (_KnockbackCoroutine != null)
+            {
+                StopCoroutine(_KnockbackCoroutine);
+                _KnockbackCoroutine = null;
+            }
             
             if (curHealth <= 0 && _ragdollAnimator != null)
             {
                 // Ragdoll will handle the physics impact
             }
-            else
+            else if (CanStartKnockback(knockbackDir, damageData.KnockbackForce, damageData.KnockbackDuration, damageData.KnockbackCurve))
             {
                 _KnockbackCoroutine = StartCoroutine(KnockbackCoroutine(knockbackDir, damageData));
+            }
+            else
+            {
+                _KnockbackCoroutine = null;
             }
         }
         if (CurrentHealth <= 0) Die(damageData);
@@ -273,6 +283,157 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void OnEnable() { OnRecoveryHealth += SetRecovery; }
     private bool IsImmune(AttackType attackType) => CheckStunImmunity?.Invoke(attackType) ?? false;
+
+    private void GetCharacterControllerCapsule(out Vector3 top, out Vector3 bottom, out float radius)
+    {
+        Vector3 scale = transform.lossyScale;
+        float horizontalScale = Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+        float verticalScale = Mathf.Abs(scale.y);
+
+        radius = Mathf.Max(0.01f, _characterController.radius * horizontalScale);
+        float height = Mathf.Max(_characterController.height * verticalScale, radius * 2f);
+        Vector3 worldCenter = transform.TransformPoint(_characterController.center);
+        float halfSegment = Mathf.Max(0f, (height * 0.5f) - radius);
+
+        top = worldCenter + transform.up * halfSegment;
+        bottom = worldCenter - transform.up * halfSegment;
+    }
+
+    private LayerMask GetKnockbackBlockingMask()
+    {
+        LayerMask fallbackMask = LayerMask.GetMask("Ground", "Wall", "Enemy", "HitObject");
+        if (_owner?.Movement == null)
+        {
+            return fallbackMask;
+        }
+
+        LayerMask movementMask = _owner.Movement.obstacleMask;
+        return movementMask.value != 0
+            ? movementMask | LayerMask.GetMask("Ground", "Enemy", "HitObject")
+            : fallbackMask;
+    }
+
+    private bool IsBlockingKnockbackCollider(Collider otherCollider, LayerMask blockingMask)
+    {
+        if (otherCollider == null || otherCollider.isTrigger)
+        {
+            return false;
+        }
+
+        Transform otherTransform = otherCollider.transform;
+        if (otherTransform == transform || otherTransform.IsChildOf(transform))
+        {
+            return false;
+        }
+
+        return ((1 << otherCollider.gameObject.layer) & blockingMask.value) != 0;
+    }
+
+    private float CalculateKnockbackTravelDistance(float force, float duration, AnimationCurve curve)
+    {
+        if (force <= 0f || duration <= 0f)
+        {
+            return 0f;
+        }
+
+        if (curve == null || curve.length == 0)
+        {
+            return force * duration;
+        }
+
+        const int Samples = 12;
+        float area = 0f;
+        float previousValue = curve.Evaluate(0f);
+
+        for (int i = 1; i <= Samples; i++)
+        {
+            float time = i / (float)Samples;
+            float currentValue = curve.Evaluate(time);
+            area += (previousValue + currentValue) * 0.5f * (1f / Samples);
+            previousValue = currentValue;
+        }
+
+        return Mathf.Max(0f, force * duration * area);
+    }
+
+    private bool CanStartKnockback(Vector3 horizontalDirection, float force, float duration, AnimationCurve curve)
+    {
+        if (_characterController == null || !_characterController.enabled)
+        {
+            return false;
+        }
+
+        Vector3 direction = horizontalDirection;
+        direction.y = 0f;
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        float totalDistance = CalculateKnockbackTravelDistance(force, duration, curve);
+        if (totalDistance <= 0.0001f)
+        {
+            return false;
+        }
+
+        direction.Normalize();
+        LayerMask blockingMask = GetKnockbackBlockingMask();
+
+        Vector3 currentPosition = _owner.transform.position;
+        Vector3 expectedTarget = currentPosition + direction * totalDistance;
+        Vector3 safeTarget = _owner.Movement.GetSafeKnockbackPosition(currentPosition, direction, totalDistance, out bool wasClamped);
+        if (wasClamped || !_owner.Movement.IsMeaningfulSafeMove(currentPosition, safeTarget))
+        {
+            return false;
+        }
+
+        GetCharacterControllerCapsule(out Vector3 top, out Vector3 bottom, out float radius);
+        float castPadding = Mathf.Max(_characterController.skinWidth, 0.01f);
+        int hitCount = Physics.CapsuleCastNonAlloc(
+            top,
+            bottom,
+            radius,
+            direction,
+            KnockbackSweepHits,
+            totalDistance + castPadding,
+            blockingMask,
+            QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit hit = KnockbackSweepHits[i];
+            if (!IsBlockingKnockbackCollider(hit.collider, blockingMask))
+            {
+                continue;
+            }
+
+            if (hit.distance > castPadding)
+            {
+                return false;
+            }
+        }
+
+        Vector3 targetOffset = expectedTarget - currentPosition;
+        Vector3 targetTop = top + targetOffset;
+        Vector3 targetBottom = bottom + targetOffset;
+        int overlapCount = Physics.OverlapCapsuleNonAlloc(
+            targetTop,
+            targetBottom,
+            radius,
+            KnockbackOverlapHits,
+            blockingMask,
+            QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < overlapCount; i++)
+        {
+            if (IsBlockingKnockbackCollider(KnockbackOverlapHits[i], blockingMask))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private IEnumerator KnockbackCoroutine(Vector3 direction, DamageData damageData)
     {

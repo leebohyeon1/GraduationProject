@@ -151,7 +151,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (totalDistance <= MinimumSafeMoveDistance)
         {
-            return ResolveBufferedDestination(target, startPosition.y);
+            return ResolveBufferedDestination(target, start, startPosition.y);
         }
 
         Vector3 direction = delta / totalDistance;
@@ -164,7 +164,7 @@ public class EnemyMovement : MonoBehaviour
             float safeDistance = Mathf.Max(0f, hit.distance - wallPadding);
             Vector3 clamped = start + direction * safeDistance;
             wasClamped = true;
-            return ResolveBufferedDestination(clamped, startPosition.y);
+            return ResolveBufferedDestination(clamped, start, startPosition.y);
         }
 
         if (!HasWallClearance(target))
@@ -197,10 +197,10 @@ public class EnemyMovement : MonoBehaviour
             }
         }
 
-        return ResolveBufferedDestination(best, yLevel);
+        return ResolveBufferedDestination(best, start, yLevel);
     }
 
-    private Vector3 ResolveBufferedDestination(Vector3 desiredTarget, float yLevel)
+    private Vector3 ResolveBufferedDestination(Vector3 desiredTarget, Vector3 fallbackPosition, float yLevel)
     {
         Vector3 candidate = FlattenToGroundPlane(desiredTarget, yLevel);
         if (HasWallClearance(candidate))
@@ -208,28 +208,26 @@ public class EnemyMovement : MonoBehaviour
             return candidate;
         }
 
-        if (AstarPath.active != null)
-        {
-            float step = Mathf.Max(0.25f, CharacterRadius * 0.5f);
-            float maxRadius = Mathf.Max(3f, CharacterRadius + GetWallPadding() + 2f);
+        float step = Mathf.Max(0.1f, CharacterRadius * 0.25f);
+        float maxRadius = Mathf.Max(step, CharacterRadius + GetWallPadding() + 0.35f);
 
-            for (float radius = step; radius <= maxRadius; radius += step)
+        for (float radius = step; radius <= maxRadius; radius += step)
+        {
+            for (int i = 0; i < 24; i++)
             {
-                for (int i = 0; i < 16; i++)
+                float angle = i * 15f * Mathf.Deg2Rad;
+                Vector3 sample = candidate + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+                if (HasWallClearance(sample))
                 {
-                    float angle = i * 22.5f * Mathf.Deg2Rad;
-                    Vector3 sample = candidate + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
-                    NNInfo info = AstarPath.active.GetNearest(sample, NNConstraint.Walkable);
-                    if (info.node != null && info.node.Walkable)
-                    {
-                        Vector3 safePos = FlattenToGroundPlane(info.position, yLevel);
-                        if (HasWallClearance(safePos))
-                        {
-                            return safePos;
-                        }
-                    }
+                    return sample;
                 }
             }
+        }
+
+        Vector3 fallback = FlattenToGroundPlane(fallbackPosition, yLevel);
+        if (HasWallClearance(fallback))
+        {
+            return fallback;
         }
 
         return candidate;
