@@ -64,10 +64,10 @@ public class RandomPatrol : Node
 
             Vector3 targetPos = FindValidRandomPoint(); 
                 if (targetPos == Vector3.zero) targetPos = runner.Movement.GetNearestSafePosition(runner.transform.position);
-            Debug.Log("RandomPatrol: Found target position " + targetPos);
+            // Debug.Log("RandomPatrol: Found target position " + targetPos);
             if (targetPos != Vector3.zero)
             {
-                runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
+                // runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
                 _hasTarget = true;
                 _stuckTimer = 0f;
                 _lastPosition = runner.transform.position;
@@ -108,13 +108,13 @@ public class RandomPatrol : Node
 
                 if (PathUtilities.IsPathPossible(currentNode, targetNode))
                 {
-                    Debug.Log($"RandomPatrol: Valid node found at {info.position}");
+                    // Debug.Log($"RandomPatrol: Valid node found at {info.position}");
                     Vector3 nodePos = (Vector3)targetNode.position;
                     Vector3 rayStart = nodePos + Vector3.up * 5f;
                     Debug.DrawRay(rayStart, Vector3.down * 10f, Color.red, 2.0f); // 씬 뷰에서 빨간 선이 보임
                     if (Physics.Raycast(nodePos + Vector3.up * 5f, Vector3.down, out RaycastHit hitInfo, 10f, LayerMask.GetMask("Ground")))
                     {
-                        Debug.Log($"RandomPatrol: Valid point found at {hitInfo.point}");
+                        // Debug.Log($"RandomPatrol: Valid point found at {hitInfo.point}");
                         return hitInfo.point;
                     }
                     return nodePos;
