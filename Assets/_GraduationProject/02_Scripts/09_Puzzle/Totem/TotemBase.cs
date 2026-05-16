@@ -36,6 +36,10 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     public string arrival {get; private set;} = "_arrivalFeedbackName";
     public string broken {get; private set;} = "_brokenFeedbackName";
 
+    InnerGlowController glowController;
+    protected int _currentDurability;
+
+
     private void Reset()
     {
         string[] names = new string[] 
@@ -63,6 +67,8 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             PuzzleGridManager.Instance.RegisterTotem(this, _currentGridPos);
         }
         gameObject.layer = LayerMask.NameToLayer("HitObject");
+        glowController = GetComponent<InnerGlowController>();
+
     }
     public void DestroyTotem()
     {
@@ -95,7 +101,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         }
         Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
         feedback.PlayFeedback(hit);
-        
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
         Vector3 localDir = PuzzleGridManager.Instance.transform.InverseTransformDirection(incomingDir);
         Vector2Int moveDir = GetCardinalDirection(localDir);
@@ -109,6 +114,8 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             OnHitBlocked();
             return;
         }
+
+        glowController?.SetInnerGlowEffect(_currentDurability - 1); 
 
         StartCoroutine(SlideToPosition(targetGridPos));
     }
@@ -162,7 +169,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         transform.position = PuzzleGridManager.Instance.GridToWorld(_startGridPos);
         _state = TotemState.Idle;
         
-        transform.localScale = Vector3.one; 
     }
 
     protected virtual void OnMoveComplete()
