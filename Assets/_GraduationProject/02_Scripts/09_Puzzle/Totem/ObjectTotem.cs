@@ -16,7 +16,6 @@ public class ObjectTotem : TotemBase
     [SerializeField] private Color _targetGizmoColor = Color.green;
     [SerializeField] private PuzzleGridManager _gizmoGridManager;
 
-    private int _currentDurability;
     private Color _originalColor;
 
     public bool IsAtTarget { get; private set; }
@@ -46,13 +45,12 @@ public class ObjectTotem : TotemBase
         _currentDurability--;
         Debug.Log($"[ObjectTotem] Moved! Durability: {_currentDurability}/{_maxDurability}");
 
-        if (_currentDurability <= 0)
-        {
-            DeactivateTotem();
-            return;
-        }
 
         CheckTargetReached();
+        if (_currentDurability <= 0 && !IsAtTarget )
+        {
+            DeactivateTotem();
+        }
     }
 
     public override void ResetToStart()
