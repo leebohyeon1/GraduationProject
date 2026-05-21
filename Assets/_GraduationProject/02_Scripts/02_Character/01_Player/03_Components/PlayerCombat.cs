@@ -278,6 +278,24 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// </summary>
     private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, Collider[] hitObjects, Func<int, int> damageCalculator = null)
     {
+        // 범위 내의 ObjectTotem 중 가장 가까운 것 하나만 선택하기 위한 변수
+        ObjectTotem closestTotem = null;
+        float minDistance = float.MaxValue;
+
+        // 먼저 토템들을 전수 조사하여 가장 가까운 녀석을 찾습니다.
+        foreach (Collider obj in hitObjects)
+        {
+            if (obj.TryGetComponent<ObjectTotem>(out var totem))
+            {
+                float dist = Vector3.Distance(transform.position, obj.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closestTotem = totem;
+                }
+            }
+        }
+
         foreach (Collider obj in hitObjects)
         {
             // 패링된 적일 경우 넘긴다.
@@ -293,6 +311,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
             {
+                // ObjectTotem인 경우, 가장 가까운 하나가 아니면 공격 대상에서 제외합니다.
+                if (obj.TryGetComponent<ObjectTotem>(out var currentTotem))
+                {
+                    if (currentTotem != closestTotem)
+                        continue;
+                }
+
                 // 계산 전 이벤트 발생 (Stat 객체 포함하여 데미지 변조 가능하게 함)
                 _events.TriggerBeforeDamageCalculate(obj.transform, data.Damage);
 
