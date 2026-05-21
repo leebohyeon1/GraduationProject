@@ -6,6 +6,8 @@ using static Enemy;
 
 public class EnemyMovement : MonoBehaviour
 {
+    private const float MinimumSafeMoveDistance = 0.05f;
+
     private Enemy _runner;
     AIPath aIPath;
     public float _normalSpeed{get; private set;}
@@ -60,7 +62,7 @@ public class EnemyMovement : MonoBehaviour
         }
         if (aIPath == null) return;
 
-        aIPath.enabled = true;
+        // aIPath.enabled = true;
         aIPath.canMove = true;       
         aIPath.isStopped = false;    
         aIPath.maxSpeed = chaseSpeed;
@@ -108,6 +110,145 @@ public class EnemyMovement : MonoBehaviour
         
         hit = new RaycastHit(); 
         return false; 
+    }
+
+    public Vector3 GetSafeKnockbackPosition(Vector3 startPosition, Vector3 moveDirection, float moveDistance, out bool wasClamped)
+    {
+        wasClamped = false;
+
+        Vector3 flatDirection = moveDirection;
+        flatDirection.y = 0f;
+        if (flatDirection.sqrMagnitude <= 0.0001f || moveDistance <= 0f)
+        {
+            return startPosition;
+        }
+
+        flatDirection.Normalize();
+        Vector3 desiredTarget = startPosition + flatDirection * moveDistance;
+        return GetStraightSafeDestination(startPosition, desiredTarget, out wasClamped);
+    }
+
+    public float GetHorizontalDistance(Vector3 from, Vector3 to)
+    {
+        from.y = 0f;
+        to.y = 0f;
+        return Vector3.Distance(from, to);
+    }
+
+    public bool IsMeaningfulSafeMove(Vector3 from, Vector3 to)
+    {
+        return GetHorizontalDistance(from, to) > MinimumSafeMoveDistance;
+    }
+
+    private Vector3 GetStraightSafeDestination(Vector3 startPosition, Vector3 desiredTarget, out bool wasClamped)
+    {
+        wasClamped = false;
+
+        Vector3 start = FlattenToGroundPlane(startPosition, startPosition.y);
+        Vector3 target = FlattenToGroundPlane(desiredTarget, startPosition.y);
+        Vector3 delta = target - start;
+        float totalDistance = delta.magnitude;
+
+        if (totalDistance <= MinimumSafeMoveDistance)
+        {
+            return ResolveBufferedDestination(target, start, startPosition.y);
+        }
+
+        Vector3 direction = delta / totalDistance;
+        Vector3 castOrigin = start + Vector3.up * 0.5f;
+        float castRadius = CharacterRadius;
+        float wallPadding = GetWallPadding();
+
+        if (Physics.SphereCast(castOrigin, castRadius, direction, out RaycastHit hit, totalDistance + wallPadding, obstacleMask, QueryTriggerInteraction.Ignore))
+        {
+            float safeDistance = Mathf.Max(0f, hit.distance - wallPadding);
+            Vector3 clamped = start + direction * safeDistance;
+            wasClamped = true;
+            return ResolveBufferedDestination(clamped, start, startPosition.y);
+        }
+
+        if (!HasWallClearance(target))
+        {
+            wasClamped = true;
+            return FindLastClearPointOnLine(start, direction, totalDistance, startPosition.y);
+        }
+
+        return target;
+    }
+
+    private Vector3 FindLastClearPointOnLine(Vector3 start, Vector3 direction, float totalDistance, float yLevel)
+    {
+        Vector3 best = start;
+        float low = 0f;
+        float high = totalDistance;
+
+        for (int i = 0; i < 10; i++)
+        {
+            float mid = (low + high) * 0.5f;
+            Vector3 probe = start + direction * mid;
+            if (HasWallClearance(probe))
+            {
+                best = probe;
+                low = mid;
+            }
+            else
+            {
+                high = mid;
+            }
+        }
+
+        return ResolveBufferedDestination(best, start, yLevel);
+    }
+
+    private Vector3 ResolveBufferedDestination(Vector3 desiredTarget, Vector3 fallbackPosition, float yLevel)
+    {
+        Vector3 candidate = FlattenToGroundPlane(desiredTarget, yLevel);
+        if (HasWallClearance(candidate))
+        {
+            return candidate;
+        }
+
+        float step = Mathf.Max(0.1f, CharacterRadius * 0.25f);
+        float maxRadius = Mathf.Max(step, CharacterRadius + GetWallPadding() + 0.35f);
+
+        for (float radius = step; radius <= maxRadius; radius += step)
+        {
+            for (int i = 0; i < 24; i++)
+            {
+                float angle = i * 15f * Mathf.Deg2Rad;
+                Vector3 sample = candidate + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+                if (HasWallClearance(sample))
+                {
+                    return sample;
+                }
+            }
+        }
+
+        Vector3 fallback = FlattenToGroundPlane(fallbackPosition, yLevel);
+        if (HasWallClearance(fallback))
+        {
+            return fallback;
+        }
+
+        return candidate;
+    }
+
+    private bool HasWallClearance(Vector3 position)
+    {
+        float clearanceRadius = CharacterRadius + GetWallPadding();
+        Vector3 checkPos = position + Vector3.up * 0.5f;
+        return !Physics.CheckSphere(checkPos, clearanceRadius, obstacleMask, QueryTriggerInteraction.Ignore);
+    }
+
+    private float GetWallPadding()
+    {
+        return Mathf.Max(0f, wallBuffer);
+    }
+
+    private Vector3 FlattenToGroundPlane(Vector3 position, float yLevel)
+    {
+        position.y = yLevel;
+        return position;
     }
 
     public Vector3 GetNearestSafePosition(Vector3 target)

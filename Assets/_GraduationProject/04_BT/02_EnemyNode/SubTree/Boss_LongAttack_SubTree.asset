@@ -48,14 +48,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 540, y: 58}
   attackKey: Boss_R_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -67,6 +65,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3
@@ -88,14 +90,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushAttack
   position: {x: 657, y: 252}
   attackKey: Boss_R_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 50
-  maintainAtk: 0
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -107,6 +107,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 30
   lockDistance: 5
   maxChargeDuration: 3
@@ -178,20 +182,6 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
---- !u!114 &2304183980306281579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 222, y: 338}
-  waitTime: 0.7
 --- !u!114 &3431776804123636484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +200,6 @@ MonoBehaviour:
   - {fileID: 1932421519546911441}
   - {fileID: 6489115892790116431}
   - {fileID: -6991997620131266274}
-  - {fileID: 2304183980306281579}
   services: []
 --- !u!114 &3593469768659168057
 MonoBehaviour:

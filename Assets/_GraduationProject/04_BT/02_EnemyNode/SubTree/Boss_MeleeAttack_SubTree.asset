@@ -14,13 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 732, y: 60}
   attackKey: Boss_SB_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -32,6 +30,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   stepMovements:
   - distance: 5
     duration: 0.15
@@ -219,7 +221,6 @@ MonoBehaviour:
   - {fileID: -2629239601289140381}
   - {fileID: -2469216981671691413}
   - {fileID: -3108122194902616228}
-  - {fileID: 7471085992480400835}
   services: []
 --- !u!114 &-7396230137371092850
 MonoBehaviour:
@@ -235,13 +236,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1173, y: 263}
   attackKey: Boss_B_Attack_1
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
-  NextBT: 0
+  NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -253,6 +252,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 1.5
   stepMovements:
   - distance: 5
     duration: 0.15
@@ -407,20 +410,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   stopDistance: 1.5
---- !u!114 &-7351547790661332615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1180, y: 336}
-  waitTime: 1.5
 --- !u!114 &-6778704532307949681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,7 +427,6 @@ MonoBehaviour:
   - {fileID: -1391808345592509873}
   - {fileID: 7405671097637495851}
   - {fileID: -6334859203934773596}
-  - {fileID: -5973617006391663019}
   services: []
 --- !u!114 &-6334859203934773596
 MonoBehaviour:
@@ -454,13 +442,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1168, y: -145}
   attackKey: Boss_S_Attack_2
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -472,6 +458,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 1.5
   stepMovements:
   - distance: 5
     duration: 0.15
@@ -663,20 +653,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   stopDistance: 1.5
---- !u!114 &-5973617006391663019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1168, y: -70}
-  waitTime: 0.7
 --- !u!114 &-3768489937116087190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,13 +683,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1162, y: -460}
   attackKey: Boss_S_Attack_1
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -725,6 +699,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 1.5
   stepMovements:
   - distance: 5
     duration: 0.15
@@ -988,20 +966,6 @@ MonoBehaviour:
   - {fileID: 7733163158785523128}
   - {fileID: 7597473070703465172}
   services: []
---- !u!114 &1212557637255272468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 735, y: 135}
-  waitTime: 1.5
 --- !u!114 &1773193015763331027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,7 +1002,6 @@ MonoBehaviour:
   - {fileID: 689744389957806710}
   - {fileID: 7316081164005607354}
   - {fileID: -7396230137371092850}
-  - {fileID: -7351547790661332615}
   services: []
 --- !u!114 &2053139385156454654
 MonoBehaviour:
@@ -1095,7 +1058,6 @@ MonoBehaviour:
   - {fileID: 8641491558386981526}
   - {fileID: 2053139385156454654}
   - {fileID: -9059173665674169058}
-  - {fileID: 1212557637255272468}
   services: []
 --- !u!114 &4464368409381988131
 MonoBehaviour:
@@ -1114,7 +1076,6 @@ MonoBehaviour:
   - {fileID: 4130459720122390094}
   - {fileID: 1773193015763331027}
   - {fileID: 5660923310683099036}
-  - {fileID: 8004741317694334059}
   services: []
 --- !u!114 &5660923310683099036
 MonoBehaviour:
@@ -1130,13 +1091,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 1177, y: 571}
   attackKey: Boss_B_Attack_2
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 30
-  maintainAtk: 0
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
@@ -1148,6 +1107,10 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  ChangeSpeed: 1
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 1.5
   stepMovements:
   - distance: 5
     duration: 0.15
@@ -1340,20 +1303,6 @@ MonoBehaviour:
   cooldownDuration: 3
   EnemyAttackData: 0
   attackData: {fileID: 11400000, guid: 8e5f19b865793e6408058f49f9fb088e, type: 2}
---- !u!114 &7471085992480400835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1162, y: -383}
-  waitTime: 0.7
 --- !u!114 &7597473070703465172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1369,7 +1318,6 @@ MonoBehaviour:
   position: {x: 263, y: 21}
   nodes:
   - {fileID: -3768489937116087190}
-  - {fileID: 4137463322458218953}
   - {fileID: -8070725546458565278}
   services: []
   weights:
@@ -1392,20 +1340,6 @@ MonoBehaviour:
   exceptCondition:
     key: 
   targetZoneIds: 01000000020000000300000005000000
---- !u!114 &8004741317694334059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8deb48cd0d7b1a349b3a85a316127184, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: Assembly-CSharp::Wait
-  position: {x: 1181, y: 649}
-  waitTime: 1.5
 --- !u!114 &8641491558386981526
 MonoBehaviour:
   m_ObjectHideFlags: 0

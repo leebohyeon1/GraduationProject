@@ -37,8 +37,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     private Enemy _owner;
     private const int DefaultPlayerLayerMask = 1 << 9;
 
-    // public event Action KsanteAtk;
-
+    /// <summary>
+    /// 현재 피드백 재생 속도 배율입니다.
+    /// </summary>
+    public float SpeedMultiplier { get; set; } = 1.0f;
 
     /// <summary>
     /// Initializes owner reference and feedback dictionary.
@@ -53,50 +55,28 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         }
     }
 
-    // public void KsanteKnockback()
-    // {
-    //     KsanteAtk?.Invoke();
-    // }
-    /// <summary>
-    /// Marks action as active.
-    /// </summary>
     public void ActivateAction()
     {
         IsActive = true;
     }
-    /// <summary>
-    /// Marks action as inactive.
-    /// </summary>
     public void DeactivateAction()
     {
         IsActive = false;
     }
-    /// <summary>
-    /// Opens hit window if current phase allows it.
-    /// </summary>
     public void OpenHitWindow(int phase = 0)
     {
         if(phase <= _owner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase))
         {
             IsHitWindowOpen = true;
-            Debug.Log($"[HitWindow Open] {_owner.name} phase={phase}");
         }
     }
-    /// <summary>
-    /// Closes hit window.
-    /// </summary>
     public void CloseHitWindow()
     {
         IsHitWindowOpen = false;
-        Debug.Log($"[HitWindow Close] {_owner.name}");
     }
-    /// <summary>
-    /// Marks action as finished.
-    /// </summary>
     public void FinishAction()
     {
         IsActionFinished = true;
-        Debug.Log($"[Action Finished] {_owner.name}");
     }
     /// <summary>
     /// Marks ActionSO window as active.
@@ -190,6 +170,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         {
             if (f.name == feedbackName && f.Phase <= currentPhase && f.feedback != null)
             {
+                // MMFeedbacks(부모)의 필드를 사용하여 속도 조절
+                f.feedback.TimescaleMultiplier = SpeedMultiplier;
+                // 속도가 빨라지면 지속 시간은 그만큼 짧아져야 하므로 역수를 취합니다.
+                f.feedback.DurationMultiplier = 1f / SpeedMultiplier;
+                
                 f.feedback.PlayFeedbacks(transform.position + f.offset);
             }
         }
@@ -210,6 +195,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             if (f.name == feedbackName && f.Phase <= currentPhase && f.feedback != null)
             {
                 Vector3 spawnPos = position + f.offset;
+                
+                // MMFeedbacks(부모)의 필드를 사용하여 속도 조절
+                f.feedback.TimescaleMultiplier = SpeedMultiplier;
+                f.feedback.DurationMultiplier = 1f / SpeedMultiplier;
+                
                 f.feedback.PlayFeedbacks(spawnPos);
 
                 if (f.attackData != null && f.damageDelay >= 0f)
@@ -363,4 +353,106 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             }
         }
     }
+}
+[Serializable]
+public class FeedbackPlayManager
+{
+    [SerializeField] private List<FeedbackPlayer> _feedbacks = new List<FeedbackPlayer>();
+    GameObject _owner;
+
+    public FeedbackPlayManager(GameObject owner)
+    {
+        _owner = owner;
+    }
+    public FeedbackPlayManager(GameObject owner, string[] feedbackNames)
+    {
+        _owner = owner;
+        
+        // 기존 리스트 초기화 (중복 방지)
+        if (_feedbacks == null) _feedbacks = new List<FeedbackPlayer>();
+        _feedbacks.Clear(); 
+
+        foreach (var name in feedbackNames)
+        {
+            _feedbacks.Add(new FeedbackPlayer { 
+                name = name, 
+                feedback = null, 
+                offset = Vector3.zero 
+            });
+        }
+        foreach (var f in _feedbacks)
+        {
+            f.feedback.Events.OnPlay.AddListener(() => OnStateChanged(true));
+            f.feedback.Events.OnComplete.AddListener(() => OnStateChanged(false));
+        }
+    }
+    public bool IsPlaying { get; set; }
+    private void OnStateChanged(bool playing)
+    {
+        IsPlaying = playing;
+    }
+    /// <summary>
+    /// Plays feedbacks by name based on current phase.
+    /// </summary>
+    public void PlayFeedback(string feedbackName)
+    {
+        if (_owner == null) return;
+        
+        foreach (var f in _feedbacks)
+        {
+            if (f.name == feedbackName && f.feedback != null)
+            {
+                f.feedback.PlayFeedbacks(_owner.transform.position + f.offset);
+                IsPlaying = f.feedback.IsPlaying;
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// 지정 위치에서 피드백을 재생하고, damageDelay 후 범위 데미지를 적용합니다.
+    /// </summary>
+    internal void PlayFeedbackAtPosition(string feedbackName, Vector3 position)
+    {
+        if (_owner == null) return;
+
+        for (int i = 0; i < _feedbacks.Count; i++)
+        {
+            FeedbackPlayer f = _feedbacks[i];
+            if (f.name == feedbackName && f.feedback != null)
+            {
+                Vector3 spawnPos = position + f.offset;
+                
+                
+                f.feedback.PlayFeedbacks(spawnPos);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Stops feedbacks by name for all phases.
+    /// </summary>
+    public void StopFeedback(string feedbackName)
+    {
+        // 중지는 이름 기준으로만 처리 (모든 Phase의 해당 이름 피드백 중지)
+        foreach (var f in _feedbacks)
+        {
+            if (f.name == feedbackName && f.feedback != null)
+            {
+                f.feedback.StopFeedbacks();
+            }
+        }
+    }
+    [Serializable]
+    /// <summary>
+    /// Feedback configuration entry.
+    /// </summary>
+    public class FeedbackPlayer
+    {
+        public string name;
+        public MMF_Player feedback;
+        public Vector3 offset; 
+    }
+
 }

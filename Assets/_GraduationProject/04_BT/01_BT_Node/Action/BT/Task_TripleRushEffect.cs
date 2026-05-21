@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_TripleRushEffect", menuName = "BehaviorTree/Action/Task_TripleRushEffect")]
@@ -106,27 +106,38 @@ public class Task_TripleRushEffect : BaseAttackNode
         if (index == 1 || index == 2)
         {
             float moveDist = Mathf.Min(maxDashDist, distToPlayer);
-            _targetPos = currentPos + (dirToPlayer * moveDist);
+            Vector3 rawTarget = currentPos + (dirToPlayer * moveDist);
+            _targetPos = GetStraightSafeDestination(currentPos, rawTarget, out _);
             _duration = Mathf.Max(0.1f, moveDist / Mathf.Max(0.01f, dashSpeed));
         }
         else
         {
-            _targetPos = currentPos + (dirToPlayer * leapDistance);
+            Vector3 rawTarget = currentPos + (dirToPlayer * leapDistance);
+            _targetPos = GetStraightSafeDestination(currentPos, rawTarget, out _);
             _duration = Mathf.Max(0.1f, leapDuration);
         }
 
         _startPos = currentPos;
         _startTime = Time.time;
         _isMoving = true;
+        float moveDistance = GetHorizontalDistance(_startPos, _targetPos);
+        if (moveDistance <= minimumMovementDistance)
+        {
+            _isMoving = false;
+            return;
+        }
+
+        if (index == 1 || index == 2)
+        {
+            _duration = Mathf.Max(0.1f, moveDistance / Mathf.Max(0.01f, dashSpeed));
+        }
     }
 
     public override Node Clone()
     {
         var node = Instantiate(this);
         node.attackKey = attackKey;
-        node.animationStateName = animationStateName;
         node.transitionBuffer = transitionBuffer;
-        node.maxNodeDuration = maxNodeDuration;
         node.SO = SO;
         node.LoopAttack = LoopAttack;
         node.NextBT = NextBT;

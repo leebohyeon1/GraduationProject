@@ -49,8 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f1078cf888891459a9e448fec64e1f, type: 3}
   m_Name: Action_Clear Stun
   m_EditorClassIdentifier: Assembly-CSharp::Action_ClearStun
-  position: {x: 553, y: -325}
-  invertDelay: 0
+  position: {x: 551, y: -325}
 --- !u!114 &-8083445270588989208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,7 +66,7 @@ MonoBehaviour:
   exceptCondition:
     key: 
   checkName: WeakCounter
-  cooldownDuration: 2
+  cooldownDuration: 5
   successChance: 100
 --- !u!114 &-7778356412862204304
 MonoBehaviour:
@@ -83,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stunned
   position: {x: 554, y: -8}
   enableAttackBlock: 1
-  attackBlockDuration: 0.5
+  attackBlockDuration: 0.2
 --- !u!114 &-7610850223706687289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +131,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 7383990784071887038}
   services:
-  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  - {fileID: 0}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,6 +216,19 @@ MonoBehaviour:
   position: {x: 1384, y: 996}
   exceptCondition:
     key: 
+--- !u!114 &-1111203978955045821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf36873a83908324596879df8c982311, type: 3}
+  m_Name: Task_Boss Cutscene End
+  m_EditorClassIdentifier: Assembly-CSharp::Task_BossCutsceneEnd
+  position: {x: 368, y: 179}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,17 +272,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df80bc6edc72d3d4ca2020992ceebc48, type: 3}
   m_Name: Task_Boss Fake Attack Node
   m_EditorClassIdentifier: Assembly-CSharp::Task_BossFakeAttackNode
-  position: {x: 551, y: -248}
+  position: {x: 554, y: -248}
   attackKey: Boss_Fake_Attack
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
-  hitEscapeDelay: 0.5
+  hitEscapeDelay: 0.2
   checkRangeOnEnter: 0
   rangeThreshold: 1
   ignoreYDistance: 1
@@ -279,6 +290,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &-571219295577504573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
-  position: {x: 354, y: 92}
+  position: {x: 366, y: 256}
   child: {fileID: 2304345980655835924}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -318,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 179, y: 0}
+  position: {x: 179, y: -2}
   subTreeToRun: {fileID: 11400000, guid: 358d509f88ef3be4a88f1c7338090168, type: 2}
 --- !u!114 &1254360389698641468
 MonoBehaviour:
@@ -368,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 524, y: 92}
+  position: {x: 536, y: 256}
   exceptCondition:
     key: 
 --- !u!114 &3598595731350612588
@@ -383,9 +400,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: 356, y: 169}
+  position: {x: 368, y: 333}
   transitionBuffer: 2
   animationTagName: Discover_Player
+  upduration: 1
+  downduration: 1
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &3601247275774254937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,12 +467,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33e49b166bd8d6418eb7f82b099154f, type: 3}
   m_Name: Service_Update Boss Vars
   m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateBossVars
-  position: {x: 724, y: 46}
+  position: {x: 104, y: 444}
   UpdateInterval: 0.3
   BoundaryZoneID: 11
   ResetZoneIDs: 010000000200000003000000040000000500000006000000070000000800000009000000
   ThresholdTime: 5
   ResultKey: WalkingTime
+--- !u!114 &4324804164685838116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90e8b0eff70424bbd1de84c81c71dc, type: 3}
+  m_Name: Condition_cutscene
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
+  position: {x: 366, y: 92}
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +546,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 179, y: 92}
   nodes:
+  - {fileID: 4324804164685838116}
+  - {fileID: -1111203978955045821}
   - {fileID: -571219295577504573}
   - {fileID: 3598595731350612588}
   - {fileID: 6801911828257767253}
@@ -509,7 +593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
   m_Name: Task_Engage Combat
   m_EditorClassIdentifier: Assembly-CSharp::Task_EngageCombat
-  position: {x: 355, y: 256}
+  position: {x: 367, y: 420}
 --- !u!114 &7383990784071887038
 MonoBehaviour:
   m_ObjectHideFlags: 0

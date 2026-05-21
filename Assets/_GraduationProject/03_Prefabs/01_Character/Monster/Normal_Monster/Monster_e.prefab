@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.AIPath
   version: 1073741824
-  radius: 1.01
+  radius: 2
   height: 3.96
   canMove: 1
   maxSpeed: 1
@@ -464,6 +464,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  _enableJumpGuard: 1
+  _suspiciousJumpDistance: 100
+  _logJumpGuard: 0
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 35a299246cf998a408a91929905f3f6b, type: 2}
 --- !u!114 &5606583493844175338
 MonoBehaviour:
@@ -960,7 +963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b403632075382f4c97ce869a7da01b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSavePersistence
-  _monsterId: 
+  _monsterId: Monster_e_af6b77af
 --- !u!114 &7752555060834076131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5932,7 +5935,7 @@ MonoBehaviour:
         PlayEvents:
           m_PersistentCalls:
             m_Calls:
-            - m_Target: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
+            - m_Target: {fileID: 0}
               m_TargetAssemblyTypeName: RadialBlurFeedback, Assembly-CSharp
               m_MethodName: TriggerBlurPulse
               m_Mode: 1
@@ -23484,14 +23487,26 @@ MonoBehaviour:
                 m_StringArgument: Damage_e
                 m_BoolArgument: 0
               m_CallState: 2
-            - m_Target: {fileID: 7479858057332610152}
-              m_TargetAssemblyTypeName: UnityEngine.CharacterController, UnityEngine
-              m_MethodName: set_enabled
+            - m_Target: {fileID: 14443744711232423}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: set_layer
+              m_Mode: 3
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 11
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+            - m_Target: {fileID: 6382319987171019936}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
               m_Mode: 6
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
                 m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
+                m_IntArgument: 11
                 m_FloatArgument: 0
                 m_StringArgument: 
                 m_BoolArgument: 0
@@ -23797,6 +23812,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+--- !u!1 &6382319987171019936 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727386660387336624, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+  m_PrefabInstance: {fileID: 5722499755537792272}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6604807111780694011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1495927516114684651, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
@@ -32477,7 +32497,7 @@ PrefabInstance:
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 

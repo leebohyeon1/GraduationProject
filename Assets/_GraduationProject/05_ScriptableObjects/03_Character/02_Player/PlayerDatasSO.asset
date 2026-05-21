@@ -15,8 +15,9 @@ MonoBehaviour:
   MaxHealth: 120
   MaxPotion: 3
   PotionHealAmount: 100
-  MaxStamina: 10000
-  StaminaRegenPerSecond: 50
+  FallThresholdY: -100
+  MaxStamina: 200
+  StaminaRegenPerSecond: 200
   MoveSpeed: 8
   MoveAccelerationTime: 0.2
   MoveDecelerationnTime: 0.5
@@ -938,7 +939,7 @@ MonoBehaviour:
   DodgeConfig:
     AnimationStateName: Dash
     Type: 1
-    StaminaAmount: 15
+    StaminaAmount: 70
     IsInvincible: 1
     Cooldown: 0.1
     MoveConfig:
@@ -1918,8 +1919,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 10
     DeathKnockbackConfig:
-      StepDistance: 10
-      StepDuration: 0.1
+      StepDistance: 3
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
         m_Curve:
@@ -1953,7 +1954,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 100
+      StepRotateSpeed: 10
   - AttackType: 0
     AttackStamina: 10
     AttackRadius: {x: 5, y: 3, z: 5}
@@ -2467,8 +2468,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 10
     DeathKnockbackConfig:
-      StepDistance: 10
-      StepDuration: 0.1
+      StepDistance: 3
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
         m_Curve:
@@ -2502,7 +2503,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 100
+      StepRotateSpeed: 10
   - AttackType: 0
     AttackStamina: 12
     AttackRadius: {x: 5, y: 3, z: 5}
@@ -2510,8 +2511,8 @@ MonoBehaviour:
     Stiffness: 10
     RegainRate: 0
     AttackMoveConfig:
-      StepDistance: 3
-      StepDuration: 0.6
+      StepDistance: 2
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
         m_Curve:
@@ -3014,10 +3015,10 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 0
+      StepRotateSpeed: 10
     DeathKnockbackConfig:
-      StepDistance: 10
-      StepDuration: 0.1
+      StepDistance: 3
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
         m_Curve:
@@ -3051,7 +3052,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 100
+      StepRotateSpeed: 10
   - AttackType: 0
     AttackStamina: 15
     AttackRadius: {x: 5, y: 3, z: 5}
@@ -3059,7 +3060,7 @@ MonoBehaviour:
     Stiffness: 15
     RegainRate: 0
     AttackMoveConfig:
-      StepDistance: 3
+      StepDistance: 4
       StepDuration: 0.6
       StepCurve:
         serializedVersion: 2
@@ -3565,8 +3566,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 0
     DeathKnockbackConfig:
-      StepDistance: 10
-      StepDuration: 0.1
+      StepDistance: 5
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
         m_Curve:
@@ -3600,7 +3601,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 100
+      StepRotateSpeed: 30
   HeavyAttackConfigList:
   - AttackType: 4
     AttackStamina: 30
@@ -4115,15 +4116,42 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 0
     DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
+      StepDistance: 5
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.06534612
+          value: 0.6541768
+          inSlope: 1.2276411
+          outSlope: 1.2276411
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 0
+      StepRotateSpeed: 30
   - AttackType: 4
     AttackStamina: 30
     AttackRadius: {x: 6, y: 3, z: 6}
@@ -4637,15 +4665,42 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 0
     DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
+      StepDistance: 10
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.07486309
+          value: 0.6690863
+          inSlope: 1.1669405
+          outSlope: 1.1669405
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 0
+      StepRotateSpeed: 50
   ChargeMoveSpeed: 4.5
   ChargeRotateSpeed: 360
   ChargeStamina: 7
@@ -4657,8 +4712,8 @@ MonoBehaviour:
   - 1
   - 1
   CounterKnockbackConfig:
-    StepDistance: 20
-    StepDuration: 0.1
+    StepDistance: 10
+    StepDuration: 0.2
     StepCurve:
       serializedVersion: 2
       m_Curve:
@@ -4692,7 +4747,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    StepRotateSpeed: 20
+    StepRotateSpeed: 50
   NormalCounterAttackConfig:
     AttackType: 0
     AttackStamina: 10
@@ -5207,19 +5262,46 @@ MonoBehaviour:
         m_RotationOrder: 4
       StepRotateSpeed: 0
     DeathKnockbackConfig:
-      StepDistance: 0
-      StepDuration: 0
+      StepDistance: 5
+      StepDuration: 0.2
       StepCurve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.15240185
+          value: 0.6195144
+          inSlope: 1.2451963
+          outSlope: 1.2451963
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      StepRotateSpeed: 0
+      StepRotateSpeed: 20
   HeavyCounterAttackConfig:
     ChargeTime: 0.7
     AttackConfig:
-      AttackType: 4
+      AttackType: 0
       AttackStamina: 15
       AttackRadius: {x: 4, y: 1.4, z: 4}
       AttackDamage: 20
@@ -5732,15 +5814,42 @@ MonoBehaviour:
           m_RotationOrder: 4
         StepRotateSpeed: 0
       DeathKnockbackConfig:
-        StepDistance: 0
-        StepDuration: 0
+        StepDistance: 10
+        StepDuration: 0.2
         StepCurve:
           serializedVersion: 2
-          m_Curve: []
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.08584389
+            value: 0.5704313
+            inSlope: 1.2283123
+            outSlope: 1.2283123
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        StepRotateSpeed: 0
+        StepRotateSpeed: 50
   CounterDamageMultiply:
   - 1.5
   - 2

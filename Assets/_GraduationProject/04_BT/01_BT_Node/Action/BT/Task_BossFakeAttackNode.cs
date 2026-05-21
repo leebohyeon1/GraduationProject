@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 [CreateAssetMenu(fileName = "Task_BossFakeAttackNode", menuName = "BehaviorTree/Action/Task_BossFakeAttackNode")]
@@ -15,7 +15,7 @@ public class Task_BossFakeAttackNode : BaseAttackNode
         base.SpecificCleanup(); // BaseAttackNode??怨듯넻 ?⑤━ 李⑤떒 濡쒖쭅 ?ㅽ뻾
 
         _isActionFinishedInternally = true;
-
+        Debug.Log($"[Task_BossFakeAttackNode] Action finished internally. Setting _isActionFinishedInternally to true.");
         LogParryDebugInfo();
     }
 
@@ -28,7 +28,6 @@ public class Task_BossFakeAttackNode : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
         
         node.SO = this.SO;

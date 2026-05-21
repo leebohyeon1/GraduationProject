@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7876035546921331707
+--- !u!114 &-9218035141408982605
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,13 +9,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_Blackboard Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: -98, y: -299}
-  exceptCondition:
-    key: 
-  key: Engage
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: Sequence
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: -284, y: -274}
+  nodes:
+  - {fileID: 4796794527779880483}
+  - {fileID: 8253775282637424038}
+  - {fileID: -7068279958552863174}
+  services: []
+--- !u!114 &-7068279958552863174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f0b6abecaa2e8f46b47c359ffad619a, type: 3}
+  m_Name: Task_Engage Combat
+  m_EditorClassIdentifier: Assembly-CSharp::Task_EngageCombat
+  position: {x: -54, y: -54}
 --- !u!114 &-6212856105988776067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -233, y: 452}
+  position: {x: -267, y: 693}
   nodes:
   - {fileID: -2086197182714575690}
   services: []
@@ -58,9 +73,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84c03143aeb92a2449e6c99da4e76cf5, type: 3}
-  m_Name: Task_EngageCombat(Clone)
+  m_Name: Task_EngageCombatAll
   m_EditorClassIdentifier: Assembly-CSharp::Action_EngageCombat
-  position: {x: -50, y: 267}
+  position: {x: -85, y: 402}
 --- !u!114 &-3050961389098973839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,42 +88,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -46, y: 190}
+  position: {x: -85, y: 325}
   transitionBuffer: 0.5
   animationTagName: Discover_Player
---- !u!114 &-2436545328585954225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534b25f725490fb4b88f9cd33e65596e, type: 3}
-  m_Name: Condition_Can See Player_Angle(Clone)
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_CanSeePlayer
-  position: {x: -48, y: -116}
-  exceptCondition:
-    key: 
-  viewAngle: 240
---- !u!114 &-2364569869062935594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -284, y: -300}
-  nodes:
-  - {fileID: -7876035546921331707}
-  - {fileID: 8160394492237284882}
-  services: []
+  upduration: 0
+  downduration: 0
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.07936546
+      value: 0.6096896
+      inSlope: 1.1829357
+      outSlope: 1.1829357
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &-2358090069988742879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258651e3f54e00d45a4dfda52e2bfdb3, type: 3}
   m_Name: Task_RandomPatrol
   m_EditorClassIdentifier: Assembly-CSharp::RandomPatrol
-  position: {x: -55, y: 452}
+  position: {x: -89, y: 693}
   Radius: 10
   Delay: 1
   MoveSpeed: 3
@@ -197,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31af00b4011913a4fa389f2b5648906a, type: 3}
   m_Name: Stop Movement
   m_EditorClassIdentifier: Assembly-CSharp::StopMovement
-  position: {x: -50, y: 38}
+  position: {x: -85, y: 173}
   juststop: 1
 --- !u!114 &3249966189030680422
 MonoBehaviour:
@@ -211,27 +254,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
   m_Name: Condition_Can See Player_Value(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: -51, y: -37}
+  position: {x: -86, y: 98}
   exceptCondition:
     key: 
   floatCondition:
     key: DistanceToTarget
     Operator: 1
     value: 10
---- !u!114 &4195622132772779419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 420b1cd75f046dd48b6cd0a308ee7569, type: 3}
-  m_Name: Idle Node
-  m_EditorClassIdentifier: Assembly-CSharp::IdleNode
-  position: {x: -158, y: 574}
-  idleTime: 1
 --- !u!114 &4272942598619701867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence_Detect(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: -277, y: -112}
+  position: {x: -312, y: 23}
   nodes:
   - {fileID: 3249966189030680422}
   - {fileID: 1435062344627752039}
@@ -264,9 +293,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7711d57cc2cfc43a85d00412e8a954, type: 3}
   m_Name: Task_LookAtPlayer(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Action_LookAtPlayer
-  position: {x: -50, y: 114}
+  position: {x: -85, y: 249}
   IsSee: 0
   rotationSpeed: 5
+--- !u!114 &4796794527779880483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: -54, y: -236}
+  exceptCondition:
+    key: 
+  key: Engage
 --- !u!114 &5427365917279850068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: -465, y: -300}
   nodes:
+  - {fileID: -9218035141408982605}
   - {fileID: 4272942598619701867}
   - {fileID: -6212856105988776067}
   services: []
@@ -301,7 +347,7 @@ MonoBehaviour:
   - {fileID: 349469003420780475}
   - {fileID: 5427365917279850068}
   services: []
---- !u!114 &8160394492237284882
+--- !u!114 &8253775282637424038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,6 +359,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6de6a23ee11304e863acbc8e35f279, type: 3}
   m_Name: Task_Discover_Player
   m_EditorClassIdentifier: Assembly-CSharp::Task_Discover_Player
-  position: {x: -97, y: -219}
+  position: {x: -59, y: -159}
   transitionBuffer: 0.5
   animationTagName: Discover_Player
+  upduration: 1
+  downduration: 1
+  moveUpDistance: 0
+  moveDownDistance: 0
+  upCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  downCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

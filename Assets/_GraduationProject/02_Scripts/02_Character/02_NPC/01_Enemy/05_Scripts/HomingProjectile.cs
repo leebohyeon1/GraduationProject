@@ -38,6 +38,8 @@ public class HomingProjectile : MonoBehaviour
 
         _startTime = Time.time;
         _isInitialized = true;
+        _isStraightMode = false;
+        _targetCollider = null;
         _damage.AttackerTransform = this.transform;
         _enemy = enemy;
 
@@ -116,7 +118,7 @@ public class HomingProjectile : MonoBehaviour
         {
             // 벽에 부딪힘 -> 소멸
             _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
-            Destroy(gameObject);
+            ReleaseSelf();
             return;
         }
 
@@ -129,13 +131,32 @@ public class HomingProjectile : MonoBehaviour
             {
                 // 간단한 데미지 처리 (구조체 필요시 수정)
                 health.TakeDamage(_damage); 
-            _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
-            _enemy._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
+                AttackOutcomeRecorder.RecordSuccessfulHit(_enemy?._aiController?._aiBrain?.blackboard);
                 Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
             }
             _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
 
-            Destroy(gameObject);
+            ReleaseSelf();
         }
+    }
+
+    private void OnDisable()
+    {
+        _isInitialized = false;
+        _isStraightMode = false;
+        _target = null;
+        _targetCollider = null;
+        _enemy = null;
+    }
+
+    private void ReleaseSelf()
+    {
+        if (!_isInitialized)
+        {
+            return;
+        }
+
+        _isInitialized = false;
+        ProjectilePoolManager.ReleaseProjectile(gameObject);
     }
 }

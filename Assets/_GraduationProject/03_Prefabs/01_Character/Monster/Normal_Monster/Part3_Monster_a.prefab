@@ -1060,6 +1060,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  _enableJumpGuard: 1
+  _suspiciousJumpDistance: 100
+  _logJumpGuard: 0
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 6bf2ae95a6c56d447b26b20ea359832c, type: 2}
 --- !u!114 &5123924331001142085
 MonoBehaviour:
@@ -1305,7 +1308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b403632075382f4c97ce869a7da01b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSavePersistence
-  _monsterId: 
+  _monsterId: Part3_Monster_a_57e3fc90
 --- !u!114 &1323417312160136225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1520,8 +1523,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FIMSpace.FProceduralAnimation.RagdollAnimator2
   handler:
     _Editor_SelectedChain: 0
-    _Editor_ChainCategory: 1
-    _EditorCategory: 3
+    _Editor_ChainCategory: 0
+    _EditorCategory: 1
     _EditorMainCategory: 0
     _EditorMotionCategory: 0
     m_hemi: {fileID: -2508796484986968503, guid: 44d994eaad14fdf49a2dd378b4d62094, type: 3}
@@ -1532,11 +1535,26 @@ MonoBehaviour:
     AnchorUpdateMode: 0
     StoredReferenceTPose:
       BonePoses:
-      - SourceBone: {fileID: 0}
-        localPosition: {x: 0, y: 0, z: 0}
-        rootSpacePosition: {x: 0, y: 0, z: 0}
-        localRotation: {x: 0, y: 0, z: 0, w: 0}
-        rootSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+      - SourceBone: {fileID: 3316882265096039806}
+        localPosition: {x: -0, y: 0.1758376, z: 0.000000007686106}
+        rootSpacePosition: {x: 0, y: 0.1758376, z: 0}
+        localRotation: {x: 0.00000010538601, y: -0.000000105383876, z: -0.7071067, w: 0.7071069}
+        rootSpaceRotation: {x: 0.00000010538601, y: -0.000000105383876, z: -0.7071067, w: 0.7071069}
+      - SourceBone: {fileID: 1340120495779799821}
+        localPosition: {x: -0.23696196, y: -0.000000038549302, z: 0.000000010358371}
+        rootSpacePosition: {x: -0.00000015894572, y: 0.41279957, z: 0}
+        localRotation: {x: 0, y: -0, z: -0, w: 1}
+        rootSpaceRotation: {x: 0.00000010538601, y: -0.000000105383876, z: -0.7071067, w: 0.7071069}
+      - SourceBone: {fileID: 796522856946433974}
+        localPosition: {x: -0.26987338, y: -0.000000043973323, z: 0.0000000117967}
+        rootSpacePosition: {x: -0.00000015894572, y: 0.682673, z: 0}
+        localRotation: {x: 9.037415e-21, y: -2.3857932e-18, z: 0.0037879855, w: 0.99999285}
+        rootSpaceRotation: {x: 0.000000104986064, y: -0.00000010578232, z: -0.7044231, w: 0.70978034}
+      - SourceBone: {fileID: 2345972402584445456}
+        localPosition: {x: -0.28962842, y: 0.00000016039608, z: 0.00000001272395}
+        rootSpacePosition: {x: -0.0021942458, y: 0.9722931, z: 0}
+        localRotation: {x: 5.2580184e-16, y: -1.9916133e-18, z: -0.003787737, w: 0.99999285}
+        rootSpaceRotation: {x: 0.00000010538598, y: -0.000000105383904, z: -0.70710653, w: 0.70710707}
       LastBaseTransform: {fileID: 1864534636432622886}
     UseExtraFeatures: 1
     ExtraFeatures: []
@@ -1916,15 +1934,15 @@ MonoBehaviour:
         BoneID: 12
         colliders:
         - ColliderType: 0
-          ColliderCenter: {x: 0, y: 1.5, z: 0}
+          ColliderCenter: {x: 0, y: 0, z: 0}
           ColliderSizeMultiply: 1
           CapsuleDirection: 1
           ColliderRadius: 0.1
-          ColliderLength: 1
+          ColliderLength: 0.3
           ColliderBoxSize: {x: 1, y: 1, z: 1}
           ColliderMesh: {fileID: 0}
           OtherReference: {fileID: 0}
-          RotationCorrection: {x: 0, y: 0, z: 90}
+          RotationCorrection: {x: 0, y: 0, z: 0}
           ColliderExtraTransform: {fileID: 0}
         MassMultiplier: 0.1
         ForceMultiplier: 1
@@ -1962,6 +1980,270 @@ MonoBehaviour:
         LocalForward: {x: 0, y: 0, z: 1}
         ToBase: {x: 0, y: 0, z: 0}
         _EditorCollFoldout: 1
+        _EditorCollPosSliders: 0
+        _EditorBoxCollSliders: 0
+        _EditorMeshCollSliders: 0
+        _EditorRadiusSliders: 1
+        _EditorMaxSliderValue: 0.5
+        _EditorMainAxisPreview: 1
+        _EditorSecondAxisPreview: 0
+        _EditorThirdPreview: 0
+        StoredReferencePose:
+          LocalSpacePosition: {x: 0, y: 0, z: 0}
+          LocalSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+          RootSpacePosition: {x: 0, y: 0, z: 0}
+          RootSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+        MotionInfluenceMultiplier: 1
+      - SourceBone: {fileID: 8012442229282615204}
+        PhysicalDummyBone: {fileID: 0}
+        BoundedIgnoreScale: 1
+        BoneID: 16
+        colliders:
+        - ColliderType: 0
+          ColliderCenter: {x: 0, y: 0, z: 0}
+          ColliderSizeMultiply: 1
+          CapsuleDirection: 1
+          ColliderRadius: 0.1
+          ColliderLength: 0.3
+          ColliderBoxSize: {x: 1, y: 1, z: 1}
+          ColliderMesh: {fileID: 0}
+          OtherReference: {fileID: 0}
+          RotationCorrection: {x: 0, y: 0, z: 0}
+          ColliderExtraTransform: {fileID: 0}
+        MassMultiplier: 0.0168
+        ForceMultiplier: 1
+        MusclesBoost: 0
+        MainAxis: 0
+        TargetMainAxis: {x: 1, y: 0, z: 0}
+        InverseMainAxis: 0
+        MainAxisLowLimit: -60
+        MainAxisHighLimit: 60
+        SecondaryAxis: 1
+        TargetSecondaryAxis: {x: 0, y: 1, z: 0}
+        InverseSecondaryAxis: 0
+        SecondaryAxisAngleLimit: 30
+        ThirdAxisAngleLimit: 40
+        OverrideMaterial: {fileID: 0}
+        UseIndividualParameters: 0
+        OverrideInterpolation: 1
+        OverrideDetectionMode: 0
+        OverrideDragValue: 0
+        OverrideAngularDrag: 0.2
+        OverrideSpringPower: 0
+        OverrideSpringDamp: 0
+        HardMatchingMultiply: 1
+        HardMatchOverride: 0
+        ConnectionMassOverride: 0
+        DisableCollisionEvents: 0
+        ForceLimitsAllTheTime: 0
+        ForceKinematicOnStanding: 0
+        AllowConfigurablePosition: 0
+        LinearSpringLimit: 10000
+        LinearSpringDamping: 5
+        BoneBlendMultiplier: 1
+        LocalRight: {x: 1, y: 0, z: 0}
+        LocalUp: {x: 0, y: 1, z: 0}
+        LocalForward: {x: 0, y: 0, z: 1}
+        ToBase: {x: 0, y: 0, z: 0}
+        _EditorCollFoldout: 1
+        _EditorCollPosSliders: 0
+        _EditorBoxCollSliders: 0
+        _EditorMeshCollSliders: 0
+        _EditorRadiusSliders: 1
+        _EditorMaxSliderValue: 0.5
+        _EditorMainAxisPreview: 1
+        _EditorSecondAxisPreview: 0
+        _EditorThirdPreview: 0
+        StoredReferencePose:
+          LocalSpacePosition: {x: 0, y: 0, z: 0}
+          LocalSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+          RootSpacePosition: {x: 0, y: 0, z: 0}
+          RootSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+        MotionInfluenceMultiplier: 1
+      - SourceBone: {fileID: 6793617273118430473}
+        PhysicalDummyBone: {fileID: 0}
+        BoundedIgnoreScale: 1
+        BoneID: 18
+        colliders:
+        - ColliderType: 0
+          ColliderCenter: {x: 0, y: 0, z: 0}
+          ColliderSizeMultiply: 1
+          CapsuleDirection: 1
+          ColliderRadius: 0.1
+          ColliderLength: 0.3
+          ColliderBoxSize: {x: 1, y: 1, z: 1}
+          ColliderMesh: {fileID: 0}
+          OtherReference: {fileID: 0}
+          RotationCorrection: {x: 0, y: 0, z: 0}
+          ColliderExtraTransform: {fileID: 0}
+        MassMultiplier: 0.0084
+        ForceMultiplier: 1
+        MusclesBoost: 0
+        MainAxis: 0
+        TargetMainAxis: {x: 1, y: 0, z: 0}
+        InverseMainAxis: 0
+        MainAxisLowLimit: -60
+        MainAxisHighLimit: 60
+        SecondaryAxis: 1
+        TargetSecondaryAxis: {x: 0, y: 1, z: 0}
+        InverseSecondaryAxis: 0
+        SecondaryAxisAngleLimit: 30
+        ThirdAxisAngleLimit: 40
+        OverrideMaterial: {fileID: 0}
+        UseIndividualParameters: 0
+        OverrideInterpolation: 1
+        OverrideDetectionMode: 0
+        OverrideDragValue: 0
+        OverrideAngularDrag: 0.2
+        OverrideSpringPower: 0
+        OverrideSpringDamp: 0
+        HardMatchingMultiply: 1
+        HardMatchOverride: 0
+        ConnectionMassOverride: 0
+        DisableCollisionEvents: 0
+        ForceLimitsAllTheTime: 0
+        ForceKinematicOnStanding: 0
+        AllowConfigurablePosition: 0
+        LinearSpringLimit: 10000
+        LinearSpringDamping: 5
+        BoneBlendMultiplier: 1
+        LocalRight: {x: 1, y: 0, z: 0}
+        LocalUp: {x: 0, y: 1, z: 0}
+        LocalForward: {x: 0, y: 0, z: 1}
+        ToBase: {x: 0, y: 0, z: 0}
+        _EditorCollFoldout: 0
+        _EditorCollPosSliders: 0
+        _EditorBoxCollSliders: 0
+        _EditorMeshCollSliders: 0
+        _EditorRadiusSliders: 1
+        _EditorMaxSliderValue: 0.5
+        _EditorMainAxisPreview: 1
+        _EditorSecondAxisPreview: 0
+        _EditorThirdPreview: 0
+        StoredReferencePose:
+          LocalSpacePosition: {x: 0, y: 0, z: 0}
+          LocalSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+          RootSpacePosition: {x: 0, y: 0, z: 0}
+          RootSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+        MotionInfluenceMultiplier: 1
+      - SourceBone: {fileID: 7740923647991160754}
+        PhysicalDummyBone: {fileID: 0}
+        BoundedIgnoreScale: 1
+        BoneID: 18
+        colliders:
+        - ColliderType: 0
+          ColliderCenter: {x: 0, y: 0, z: 0}
+          ColliderSizeMultiply: 1
+          CapsuleDirection: 1
+          ColliderRadius: 0.1
+          ColliderLength: 0.3
+          ColliderBoxSize: {x: 1, y: 1, z: 1}
+          ColliderMesh: {fileID: 0}
+          OtherReference: {fileID: 0}
+          RotationCorrection: {x: 0, y: 0, z: 0}
+          ColliderExtraTransform: {fileID: 0}
+        MassMultiplier: 0.0084
+        ForceMultiplier: 1
+        MusclesBoost: 0
+        MainAxis: 0
+        TargetMainAxis: {x: 1, y: 0, z: 0}
+        InverseMainAxis: 0
+        MainAxisLowLimit: -60
+        MainAxisHighLimit: 60
+        SecondaryAxis: 1
+        TargetSecondaryAxis: {x: 0, y: 1, z: 0}
+        InverseSecondaryAxis: 0
+        SecondaryAxisAngleLimit: 30
+        ThirdAxisAngleLimit: 40
+        OverrideMaterial: {fileID: 0}
+        UseIndividualParameters: 0
+        OverrideInterpolation: 1
+        OverrideDetectionMode: 0
+        OverrideDragValue: 0
+        OverrideAngularDrag: 0.2
+        OverrideSpringPower: 0
+        OverrideSpringDamp: 0
+        HardMatchingMultiply: 1
+        HardMatchOverride: 0
+        ConnectionMassOverride: 0
+        DisableCollisionEvents: 0
+        ForceLimitsAllTheTime: 0
+        ForceKinematicOnStanding: 0
+        AllowConfigurablePosition: 0
+        LinearSpringLimit: 10000
+        LinearSpringDamping: 5
+        BoneBlendMultiplier: 1
+        LocalRight: {x: 1, y: 0, z: 0}
+        LocalUp: {x: 0, y: 1, z: 0}
+        LocalForward: {x: 0, y: 0, z: 1}
+        ToBase: {x: 0, y: 0, z: 0}
+        _EditorCollFoldout: 0
+        _EditorCollPosSliders: 0
+        _EditorBoxCollSliders: 0
+        _EditorMeshCollSliders: 0
+        _EditorRadiusSliders: 1
+        _EditorMaxSliderValue: 0.5
+        _EditorMainAxisPreview: 1
+        _EditorSecondAxisPreview: 0
+        _EditorThirdPreview: 0
+        StoredReferencePose:
+          LocalSpacePosition: {x: 0, y: 0, z: 0}
+          LocalSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+          RootSpacePosition: {x: 0, y: 0, z: 0}
+          RootSpaceRotation: {x: 0, y: 0, z: 0, w: 0}
+        MotionInfluenceMultiplier: 1
+      - SourceBone: {fileID: 8486424726476965334}
+        PhysicalDummyBone: {fileID: 0}
+        BoundedIgnoreScale: 1
+        BoneID: 18
+        colliders:
+        - ColliderType: 0
+          ColliderCenter: {x: 0, y: 0, z: 0}
+          ColliderSizeMultiply: 1
+          CapsuleDirection: 1
+          ColliderRadius: 0.1
+          ColliderLength: 0.3
+          ColliderBoxSize: {x: 1, y: 1, z: 1}
+          ColliderMesh: {fileID: 0}
+          OtherReference: {fileID: 0}
+          RotationCorrection: {x: 0, y: 0, z: 0}
+          ColliderExtraTransform: {fileID: 0}
+        MassMultiplier: 0.0084
+        ForceMultiplier: 1
+        MusclesBoost: 0
+        MainAxis: 0
+        TargetMainAxis: {x: 1, y: 0, z: 0}
+        InverseMainAxis: 0
+        MainAxisLowLimit: -60
+        MainAxisHighLimit: 60
+        SecondaryAxis: 1
+        TargetSecondaryAxis: {x: 0, y: 1, z: 0}
+        InverseSecondaryAxis: 0
+        SecondaryAxisAngleLimit: 30
+        ThirdAxisAngleLimit: 40
+        OverrideMaterial: {fileID: 0}
+        UseIndividualParameters: 0
+        OverrideInterpolation: 1
+        OverrideDetectionMode: 0
+        OverrideDragValue: 0
+        OverrideAngularDrag: 0.2
+        OverrideSpringPower: 0
+        OverrideSpringDamp: 0
+        HardMatchingMultiply: 1
+        HardMatchOverride: 0
+        ConnectionMassOverride: 0
+        DisableCollisionEvents: 0
+        ForceLimitsAllTheTime: 0
+        ForceKinematicOnStanding: 0
+        AllowConfigurablePosition: 0
+        LinearSpringLimit: 10000
+        LinearSpringDamping: 5
+        BoneBlendMultiplier: 1
+        LocalRight: {x: 1, y: 0, z: 0}
+        LocalUp: {x: 0, y: 1, z: 0}
+        LocalForward: {x: 0, y: 0, z: 1}
+        ToBase: {x: 0, y: 0, z: 0}
+        _EditorCollFoldout: 0
         _EditorCollPosSliders: 0
         _EditorBoxCollSliders: 0
         _EditorMeshCollSliders: 0
@@ -5768,7 +6050,7 @@ PrefabInstance:
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: TriggerBlurPulse
@@ -5867,6 +6149,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+--- !u!1 &3472700383138485692 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727386660387336624, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+  m_PrefabInstance: {fileID: 2866940949491590156}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3678299314624933607 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1495927516114684651, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
@@ -6980,7 +7267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].RangeFalloff.m_Curve.Array.data[0].weightedMode
@@ -7016,6 +7303,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
@@ -7041,7 +7332,11 @@ PrefabInstance:
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 7824219888508030345}
+      objectReference: {fileID: 1442114732914935687}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Target
+      value: 
+      objectReference: {fileID: 3472700383138485692}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -7059,6 +7354,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: RA2Event_SwitchToSleep
       objectReference: {fileID: 0}
@@ -7072,7 +7371,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: set_enabled
+      value: set_layer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -7088,7 +7391,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: UnityEngine.CharacterController, UnityEngine
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -7104,7 +7411,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_IntArgument
-      value: 0
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_IntArgument
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
@@ -7123,6 +7434,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_BoolArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
       value: 0
       objectReference: {fileID: 0}
@@ -7136,6 +7451,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_FloatArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_FloatArgument
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
@@ -7171,6 +7490,14 @@ PrefabInstance:
       value: Damage_a
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_StringArgument
+      value: Damage_a
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -7184,6 +7511,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
       propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1252389991763662173, guid: 498b2a424622fb04a8813b7180611eab, type: 3}
+      propertyPath: managedReferences[4506500528856111902].PlayEvents.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2376524586292017634, guid: 498b2a424622fb04a8813b7180611eab, type: 3}

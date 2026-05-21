@@ -1,33 +1,54 @@
 using DG.Tweening;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 플레이어 스테미나 UI
+/// 플레이어의 스태미나(Stamina)를 표시하는 Radial UI 클래스입니다.
+/// 플레이어 주변의 일정 오프셋 위치를 부드럽게 따라다닙니다.
 /// </summary>
 public class PlayerStaminaUI : PlayerUIBase
 {
     [Header("References")]
-    [SerializeField] private Image _plusStaminaBarImage;            // 양 스테미나바 이미지
-    [SerializeField] private Image _minusStaminaBarImage;           // 음 스테미나바 이미지
+    [SerializeField] private Image _positiveImage;    // + 이미지 (양수 Stamina)
+    [SerializeField] private Image _negativeImage;    // - 이미지 (음수 Stamina)
+    [SerializeField] private CanvasGroup _canvasGroup; // UI 노출 제어를 위한 CanvasGroup
+
+    [Header("Positioning Settings")]
+    [SerializeField] private Vector3 _worldOffset = new Vector3(1.5f, 1.0f, 0f); // 플레이어 기준 월드 오프셋 (옆쪽)
+    [SerializeField] private float _smoothTime = 0.1f;                         // 따라다니는 부드러움 정도
 
     [Header("Animation Setting")]
     [SerializeField] private float _animationSpeed = 0.3f;          // 애니메이션 속도
     [SerializeField] private AnimationCurve _animationCurve;        // 애니메이션 커브
+    [SerializeField] private float _fadeDuration = 0.2f;            // 나타나고 사라지는 시간
 
+    private RectTransform _rectTransform;
+    private Camera _mainCamera;
+    private Vector3 _currentVelocity; // SmoothDamp용
 
     /// <summary>
-    /// 초기화
+    /// 플레이어 스폰 이벤트 처리 및 초기화
     /// </summary>
-    /// <param name="player">플레이어</param>
     public override void Initialize(PlayerController player)
     {
         base.Initialize(player);
 
-        p_player.Stamina.OnStaminaChanged += OnStaminaChanged;
+        _rectTransform = GetComponent<RectTransform>();
+        _mainCamera = Camera.main;
 
-        OnStaminaChanged(p_player.Stamina.CurrentStamina,p_player.Stamina.CurrentStamina);
+        p_player.Stamina.OnStaminaChanged += OnStaminaChanged;
+        p_player.Combat.BattleStateChaged += OnBattleStateChanged;
+
+        // UI 초기 상태 설정 (전투 중이 아니면 숨김)
+        if (_canvasGroup != null)
+        {
+            _canvasGroup.alpha = 0f;
+        }
+
+        // 초기 위치 설정
+        UpdatePosition(true);
+        // UI 초기화 (현재 값 반영)
+        UpdateStaminaUI(p_player.Stamina.CurrentStamina);
     }
 
     /// <summary>
@@ -35,32 +56,135 @@ public class PlayerStaminaUI : PlayerUIBase
     /// </summary>
     public override void Dispose()
     {
-        p_player.Stamina.OnStaminaChanged -= OnStaminaChanged;
+        if (p_player != null)
+        {
+            if (p_player.Stamina != null)
+                p_player.Stamina.OnStaminaChanged -= OnStaminaChanged;
+
+            if (p_player.Combat != null)
+                p_player.Combat.BattleStateChaged -= OnBattleStateChanged;
+        }
+
+        _positiveImage?.DOKill();
+        _negativeImage?.DOKill();
     }
 
-    // 체력 변경 이벤트 처리
-    private void OnStaminaChanged(float previouseStamina, float currentStamina)
+    private void LateUpdate()
     {
-        float currentfillAmount = previouseStamina /    p_player.Stamina.MaxStamina;
-        DOTween.To(
-            () => currentfillAmount,
-            x =>
-            {
-                if(currentfillAmount > 0)
-                {
-                    _plusStaminaBarImage.fillAmount = currentfillAmount;
-                    _minusStaminaBarImage.fillAmount = 0f;
-                }
-                else
-                {
-                    _plusStaminaBarImage.fillAmount = 0f;
-                    _minusStaminaBarImage.fillAmount = Mathf.Abs(currentfillAmount);
-                }
+        if (p_player == null || _mainCamera == null) return;
 
-                currentfillAmount = x;
-            },
-            currentStamina /p_player.Stamina.MaxStamina,
-            _animationSpeed)
-            .SetEase(_animationCurve);
+        // 전투 중일 때만 위치를 업데이트하거나 투명도가 0보다 클 때만 업데이트하여 최적화 가능
+        if (_canvasGroup != null && _canvasGroup.alpha > 0.01f)
+        {
+            UpdatePosition(false);
+        }
+    }
+
+    /// <summary>
+    /// 플레이어의 위치를 추적하여 UI 위치를 갱신합니다.
+    /// </summary>
+    private void UpdatePosition(bool isInstant)
+    {
+        // 1. 플레이어 위치 + 오프셋 계산
+        Vector3 targetWorldPos = p_player.transform.position + _worldOffset;
+
+        // 2. 월드 좌표를 스크린 좌표로 변환
+        Vector3 targetScreenPos = _mainCamera.WorldToScreenPoint(targetWorldPos);
+
+        if (isInstant)
+        {
+            _rectTransform.position = targetScreenPos;
+            _currentVelocity = Vector3.zero;
+        }
+        else
+        {
+            // 3. SmoothDamp를 이용한 부드러운 추적
+            _rectTransform.position = Vector3.SmoothDamp(
+                _rectTransform.position,
+                targetScreenPos,
+                ref _currentVelocity,
+                _smoothTime
+            );
+        }
+    }
+
+    /// <summary>
+    /// 전투 상태 변경 이벤트 처리
+    /// </summary>
+    private void OnBattleStateChanged(bool isBattle)
+    {
+        if (_canvasGroup == null) return;
+
+        _canvasGroup.DOKill();
+        _canvasGroup.DOFade(isBattle ? 1f : 0f, _fadeDuration);
+
+        if (isBattle)
+        {
+            UpdatePosition(true); // 나타날 때 즉시 위치 맞춤
+        }
+    }
+
+    private float _lastBattleStateTriggerTime; // 마지막으로 전투 상태를 트리거한 시간
+
+    /// <summary>
+    /// Stamina 변경 이벤트 처리
+    /// </summary>
+    private void OnStaminaChanged(float previousStamina, float currentStamina)
+    {
+        UpdateStaminaUI(currentStamina);
+
+        // 스테미나가 최대치가 아닐 때 UI를 노출하도록 합니다.
+        if (currentStamina < p_player.Stamina.MaxStamina)
+        {
+            // 스테미나가 감소했거나(사용), 마지막 트리거 후 1초가 지났을 때(재생 중 유지)만 전투 상태를 갱신합니다.
+            if (currentStamina < previousStamina || Time.time - _lastBattleStateTriggerTime > 1f)
+            {
+                p_player.Combat.TriggerBattleStateChanged(true);
+                _lastBattleStateTriggerTime = Time.time;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Stamina 값에 따라 UI를 업데이트합니다.
+    /// </summary>
+    private void UpdateStaminaUI(float currentStamina)
+    {
+        float threshold = p_player.Stamina.MaxStamina;
+        if (threshold <= 0) threshold = 100f;
+
+        float positiveTarget = 0f;
+        float negativeTarget = 0f;
+
+        if (currentStamina >= 0)
+        {
+            positiveTarget = currentStamina / threshold;
+        }
+        else
+        {
+            negativeTarget = Mathf.Abs(currentStamina) / threshold;
+        }
+
+        // 두 이미지의 애니메이션을 동시에 실행하여 타이밍을 맞춤
+        AnimateImage(_positiveImage, positiveTarget);
+        AnimateImage(_negativeImage, negativeTarget);
+    }
+
+    private void AnimateImage(Image image, float targetFill)
+    {
+        if (image == null) return;
+
+        image.DOKill();
+        
+        // 타겟값이 현재와 다를 때만 트윈 실행 (최적화 및 떨림 방지)
+        if (Mathf.Abs(image.fillAmount - targetFill) > 0.001f)
+        {
+            image.DOFillAmount(targetFill, _animationSpeed)
+                 .SetEase(_animationCurve);
+        }
+        else
+        {
+            image.fillAmount = targetFill;
+        }
     }
 }

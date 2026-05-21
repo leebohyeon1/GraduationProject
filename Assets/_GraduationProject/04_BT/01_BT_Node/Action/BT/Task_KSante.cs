@@ -20,6 +20,8 @@ public class Task_KSante : BaseAttackNode
     private float _rushStartTime;
     private bool _isRushing;
 
+    
+
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()
@@ -41,7 +43,8 @@ public class Task_KSante : BaseAttackNode
         dir.Normalize();
 
         Vector3 offset = Quaternion.Euler(0, Random.Range(0, 360), 0) * new Vector3(0.5f, 0, 0);
-        _targetPos = playerPos + (dir * overshootDist) + offset;
+        Vector3 rawTarget = playerPos + (dir * overshootDist) + offset;
+        _targetPos = GetStraightSafeDestination(myPos, rawTarget, out _);
 
         _isRushing = false;
         _rushStartTime = Time.time;
@@ -78,11 +81,18 @@ public class Task_KSante : BaseAttackNode
 
         if (moveDist > 0.0001f)
         {
-            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
+            Vector3 safeNextPos = GetSafeStepDestination(currentPos, moveDir, moveDist, out bool blockedByWall);
+            float actualMoveDistance = GetHorizontalDistance(currentPos, safeNextPos);
+
+            if (actualMoveDistance <= minimumMovementDistance)
             {
-                runner.transform.position = nextPos;
+                StopRush();
+                return;
             }
-            else
+
+            runner.transform.position = safeNextPos;
+
+            if (blockedByWall)
             {
                 StopRush();
                 return;
@@ -113,13 +123,9 @@ public class Task_KSante : BaseAttackNode
                 brain.blackboard.SetValue(EnemyBlackboardKeys.DidLastAttackHit, true);
                 brain.blackboard.SetValue(EnemyBlackboardKeys.LastAttackSuccessTime, Time.time);
         
-        if (runner.player.TryGetComponent<IDragable>(out var dragable))
-        {
-            dragable.Drag();
-        }
+
         KsanteKnockback();
 
-        runner.player.transform.parent = runner.transform;
 
     }
     private void StopRush()
@@ -134,27 +140,20 @@ public class Task_KSante : BaseAttackNode
     private void KsanteKnockback()
     {
         StopRush();
-        runner.player.transform.parent = null;
-
-        AttackDataKnockback.AttackerTransform = runner.transform;
-            
         if (runner.player.TryGetComponent<IDamageable>(out var damageable))
         {
+            AttackDataKnockback.AttackerTransform = runner.transform;
             damageable.TakeDamage(AttackDataKnockback);
         }
 
-        if (runner.player.TryGetComponent<IDragable>(out var dragable))
-        {
-            dragable.Drop();
-        }
 
-        runner.player.Movement.Step(runner.transform.forward, new StepData()
-        {
-            StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
-            StepDuration = AttackDataKnockback.KnockbackDuration,
-            StepCurve = AttackDataKnockback.KnockbackCurve,
-            StepRotateSpeed = 0f
-        }, this, false, null);
+        // runner.player.Movement.Step(runner.transform.forward, new StepData()
+        // {
+        //     StepDistance = AttackDataKnockback.KnockbackForce * AttackDataKnockback.KnockbackDuration,
+        //     StepDuration = AttackDataKnockback.KnockbackDuration,
+        //     StepCurve = AttackDataKnockback.KnockbackCurve,
+        //     StepRotateSpeed = 0f
+        // }, this, false, null);
         
 
     }
@@ -162,18 +161,13 @@ public class Task_KSante : BaseAttackNode
     protected override void SpecificCleanup()
     {
         StopRush();
-
-        runner.player.transform.parent = null;
-
     }
 
     public override Node Clone()
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

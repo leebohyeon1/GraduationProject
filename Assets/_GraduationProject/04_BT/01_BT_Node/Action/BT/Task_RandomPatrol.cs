@@ -62,10 +62,12 @@ public class RandomPatrol : Node
                 return NodeState.RUNNING;
             }
 
-            Vector3 targetPos = FindValidRandomPoint(); if (targetPos != Vector3.zero) targetPos = runner.Movement.GetNearestSafePosition(targetPos);
+            Vector3 targetPos = FindValidRandomPoint(); 
+                if (targetPos == Vector3.zero) targetPos = runner.Movement.GetNearestSafePosition(runner.transform.position);
+            // Debug.Log("RandomPatrol: Found target position " + targetPos);
             if (targetPos != Vector3.zero)
             {
-                runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
+                // runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
                 _hasTarget = true;
                 _stuckTimer = 0f;
                 _lastPosition = runner.transform.position;
@@ -101,14 +103,20 @@ public class RandomPatrol : Node
             if (targetNode != null && targetNode.Walkable && !targetNode.Destroyed)
             {
                 // [Fix] 인접 노드 체크: Physics.OverlapSphere를 사용하여 더 확실하게 벽과의 거리 확보
-                if (Physics.CheckSphere(info.position + Vector3.up * 0.5f, agentRadius * 1.5f, LayerMask.GetMask("Wall", "Default")))
+                if (Physics.CheckSphere(info.position + Vector3.up * 0.5f, agentRadius * 1.5f, LayerMask.GetMask("Wall")))
                     continue;
 
                 if (PathUtilities.IsPathPossible(currentNode, targetNode))
                 {
+                    // Debug.Log($"RandomPatrol: Valid node found at {info.position}");
                     Vector3 nodePos = (Vector3)targetNode.position;
+                    Vector3 rayStart = nodePos + Vector3.up * 5f;
+                    Debug.DrawRay(rayStart, Vector3.down * 10f, Color.red, 2.0f); // 씬 뷰에서 빨간 선이 보임
                     if (Physics.Raycast(nodePos + Vector3.up * 5f, Vector3.down, out RaycastHit hitInfo, 10f, LayerMask.GetMask("Ground")))
+                    {
+                        // Debug.Log($"RandomPatrol: Valid point found at {hitInfo.point}");
                         return hitInfo.point;
+                    }
                     return nodePos;
                 }
             }

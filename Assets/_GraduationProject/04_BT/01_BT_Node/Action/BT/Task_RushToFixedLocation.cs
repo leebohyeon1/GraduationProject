@@ -41,7 +41,8 @@ public class Task_RushToFixedLocation : BaseAttackNode
         Vector3 rawTarget = playerPos + (dir * overshootDist) + offset;
         
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
-        _targetPos = info.node != null ? info.position : rawTarget;
+        Vector3 candidateTarget = info.node != null ? info.position : rawTarget;
+        _targetPos = GetStraightSafeDestination(myPos, candidateTarget, out _);
 
         
         _isRushing = true;
@@ -82,20 +83,29 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (moveDist > 0.0001f)
         {
-            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
+            Vector3 safeNextPos = GetSafeStepDestination(currentPos, moveDir, moveDist, out bool blockedByWall);
+            float actualMoveDistance = GetHorizontalDistance(currentPos, safeNextPos);
+
+            if (actualMoveDistance > minimumMovementDistance)
             {
                 CharacterController cc = runner.GetComponent<CharacterController>();
                 if (cc != null)
                 {
-                    cc.Move(nextPos - currentPos);
+                    cc.Move(safeNextPos - currentPos);
                 }
                 else
                 {
-                    runner.transform.position = nextPos;
+                    runner.transform.position = safeNextPos;
                 }
                 
                 IAstarAI ai = runner.GetComponent<IAstarAI>();
                 if (ai != null) ai.Teleport(runner.transform.position);
+
+                if (blockedByWall)
+                {
+                    _isRushing = false;
+                    return;
+                }
             }
             else
             {
@@ -124,10 +134,7 @@ public class Task_RushToFixedLocation : BaseAttackNode
     {
         var node = Instantiate(this);
         node.attackKey = this.attackKey;
-        node.animationStateName = this.animationStateName;
         node.transitionBuffer = this.transitionBuffer;
-        node.maxNodeDuration = this.maxNodeDuration;
-        
         node.SO = this.SO;
         node.LoopAttack = this.LoopAttack;
         node.NextBT = this.NextBT;

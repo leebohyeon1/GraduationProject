@@ -279,20 +279,29 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         // 스텝 방향 기본적으로 정면으로 설정
         Vector3 stepDirection = p_owner.Movement.transform.forward;
 
-        // 입력 기기에 따른 스텝 방향 계산
-        InputDeviceType currentDeviceType = p_owner.InputHandler.CurrentInputDevice;
-        if (currentDeviceType == InputDeviceType.KeyboardMouse)
+        // 1. 락온 상태라면 락온 타겟 방향으로 설정 (최우선)
+        if (p_owner.LockOn.IsLockOn && p_owner.LockOn.CurrentTarget != null)
         {
-            Vector3 mousePosition = p_owner.InputHandler.MousePosition;
-            stepDirection = p_owner.Movement.GetDirectionToMouse(mousePosition);
+            stepDirection = (p_owner.LockOn.CurrentTarget.position - p_owner.transform.position).normalized;
+            stepDirection.y = 0; // 높이 차이 무시
         }
-        else if (currentDeviceType == InputDeviceType.Gamepad)
+        else
         {
-            Vector3 moveInput = p_owner.InputHandler.MoveInput;
-            stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+            // 2. 락온 상태가 아닐 때 입력 기기에 따른 스텝 방향 계산
+            InputDeviceType currentDeviceType = p_owner.InputHandler.CurrentInputDevice;
+            if (currentDeviceType == InputDeviceType.KeyboardMouse)
+            {
+                Vector3 mousePosition = p_owner.InputHandler.MousePosition;
+                stepDirection = p_owner.Movement.GetDirectionToMouse(mousePosition);
+            }
+            else if (currentDeviceType == InputDeviceType.Gamepad)
+            {
+                Vector3 moveInput = p_owner.InputHandler.MoveInput;
+                stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+            }
         }
 
-        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this,true);
+        p_owner.Movement.Step(stepDirection, p_AttackConfig.AttackMoveConfig, this, true);
     }
 
     private void OnCounterStackChanged(int currentStack)

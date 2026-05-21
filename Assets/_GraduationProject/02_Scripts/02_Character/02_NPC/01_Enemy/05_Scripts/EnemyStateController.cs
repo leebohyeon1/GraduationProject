@@ -34,16 +34,16 @@ public class EnemyStateController : MonoBehaviour
     }
     void Start()
     {
-        
         SetState(EnemyState.Idle);
-        Blackboard.SetValue(EnemyBlackboardKeys.CurrentStatus, CurrentState);
     }
     public void SetState(EnemyState newState)
     {
-        if (IsStateLocked && newState != EnemyState.Die && newState != EnemyState.Stunned)
+        if (IsStateLocked )
         {
-            // Debug.Log(string.Format("[StateController : {0}] 상태 변경 거부 (Locked). 요청: {1}, 현재: {2}", _owner.name, newState, CurrentState));
-            return;
+            // 예외 조건: Die 이벤트이거나, (Discover 상태이면서 Hit 이벤트인 경우)
+            bool isDiscoverHit = (newState == EnemyState.Die || newState == EnemyState.Stunned);
+            if(!isDiscoverHit)
+                return;
         }
 
         if (CurrentState == newState)

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using BehaviorTree;
 
 public class Task_EngageCombat : Node
@@ -9,8 +9,7 @@ public class Task_EngageCombat : Node
         
         if (!brain._isCombat)
         {
-            runner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.Engage, true);
-            runner.groupAi.EngageCombatAll();
+            runner._aiController.CombatEnter();
         }
     }
 

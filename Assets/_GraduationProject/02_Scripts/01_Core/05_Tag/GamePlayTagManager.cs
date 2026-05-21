@@ -24,7 +24,7 @@ public class GamePlayTagManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
         // 데이터베이스에서 저장된 데이터 불러오기
         if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
@@ -50,7 +50,7 @@ public class GamePlayTagManager : MonoBehaviour
     {
         if (tag == null) return;
 
-        if (!_activeTagList.Contains(tag))
+        if (!HasTag(tag.ID))
         {
             // 1. 내부 리스트 업데이트
             _activeTagList.Add(tag);

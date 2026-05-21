@@ -1901,14 +1901,26 @@ MonoBehaviour:
                 m_StringArgument: 
                 m_BoolArgument: 0
               m_CallState: 2
-            - m_Target: {fileID: 6036119302705015107}
-              m_TargetAssemblyTypeName: UnityEngine.CharacterController, UnityEngine
-              m_MethodName: set_enabled
+            - m_Target: {fileID: 4510175402829302577}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: set_layer
+              m_Mode: 3
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 11
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+            - m_Target: {fileID: 5230395892045827871}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
               m_Mode: 6
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
                 m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
+                m_IntArgument: 11
                 m_FloatArgument: 0
                 m_StringArgument: 
                 m_BoolArgument: 0
@@ -2344,13 +2356,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 3.02
+  m_Height: 3
   m_Radius: 1
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.1, z: 0}
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &7387452871348146605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2392,8 +2404,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: AstarPathfindingProject::Pathfinding.AIPath
   version: 1073741824
-  radius: 0.5
-  height: 2.88
+  radius: 1
+  height: 3
   canMove: 1
   maxSpeed: 1
   gravity: {x: NaN, y: NaN, z: NaN}
@@ -2629,6 +2641,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  _enableJumpGuard: 1
+  _suspiciousJumpDistance: 100
   <enemyStat>k__BackingField: {fileID: 11400000, guid: 31c57648e0158b14aaf4c77374a605a1, type: 2}
 --- !u!114 &8986376928277212145
 MonoBehaviour:
@@ -2851,7 +2865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b403632075382f4c97ce869a7da01b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSavePersistence
-  _monsterId: 
+  _monsterId: Monster_c_0d90e38f
 --- !u!114 &6638532588425917981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12743,6 +12757,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+--- !u!1 &5230395892045827871 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727386660387336624, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
+  m_PrefabInstance: {fileID: 6876697949945953967}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5452850344840197188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1495927516114684651, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
@@ -12823,7 +12842,7 @@ PrefabInstance:
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1561561579076475081, guid: bc911b8cea9b5c245bb45865b4498cfa, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: TriggerBlurPulse
