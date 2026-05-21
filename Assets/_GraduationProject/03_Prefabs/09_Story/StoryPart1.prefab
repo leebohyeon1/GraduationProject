@@ -775,7 +775,7 @@ Transform:
   m_GameObject: {fileID: 1059534583558603137}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.707107, z: -0, w: 0.70710665}
-  m_LocalPosition: {x: 372.76895, y: 2.300006, z: 25.05632}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 16.666998, y: 19.147999, z: 9.6916}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -797,6 +797,55 @@ MonoBehaviour:
   _forbiddenTags: []
   _tagsToAdd:
   - {fileID: 11400000, guid: 2574234933f227a41a8e6a2747ba09d3, type: 2}
+  _oneTimeOnly: 1
+--- !u!1 &1063454645529454831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5956190642009141861}
+  - component: {fileID: 8690487233685806388}
+  m_Layer: 0
+  m_Name: Tag
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5956190642009141861
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063454645529454831}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4840359591100531711}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8690487233685806388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063454645529454831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
+  _requiredTags: []
+  _forbiddenTags: []
+  _tagsToAdd:
+  - {fileID: 11400000, guid: 8bf7dd825d2597d41b6f654750820c39, type: 2}
   _oneTimeOnly: 1
 --- !u!1 &1143363044726928828
 GameObject:
@@ -2063,7 +2112,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Challenger
+  m_text: KARANZA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a52ae10a6830494ea66961dd526e7b8, type: 2}
   m_sharedMaterial: {fileID: -4905882881262231391, guid: 2a52ae10a6830494ea66961dd526e7b8, type: 2}
@@ -4590,6 +4639,7 @@ GameObject:
   - component: {fileID: 2144985530432943094}
   - component: {fileID: 251091839457389827}
   - component: {fileID: 2414441420418631464}
+  - component: {fileID: 7767731869856944945}
   - component: {fileID: 1792519948431559183}
   m_Layer: 0
   m_Name: Dragon_TimeLIne
@@ -4682,6 +4732,66 @@ MonoBehaviour:
   OnRequirementFailed:
     m_PersistentCalls:
       m_Calls: []
+  OnStatusChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7767731869856944945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5475457996391733121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b790c373cba6046b065157780bc77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TagHandler
+  _queryType: 0
+  _targetTags:
+  - {fileID: 11400000, guid: 8bf7dd825d2597d41b6f654750820c39, type: 2}
+  OnRequirementMet:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 251091839457389827}
+        m_TargetAssemblyTypeName: InteractableObject, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4931848896624626647}
+        m_TargetAssemblyTypeName: CutSceneSkip, Assembly-CSharp
+        m_MethodName: PerformSkip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnRequirementFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 251091839457389827}
+        m_TargetAssemblyTypeName: InteractableObject, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   OnStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6711,6 +6821,7 @@ GameObject:
   - component: {fileID: 4840359591100531711}
   - component: {fileID: 8200682102252135307}
   - component: {fileID: 2513021498837180492}
+  - component: {fileID: 4931848896624626647}
   m_Layer: 0
   m_Name: Dragon_Door
   m_TagString: Untagged
@@ -6733,6 +6844,7 @@ Transform:
   m_Children:
   - {fileID: 7088876406561513588}
   - {fileID: 8225260888852088721}
+  - {fileID: 5956190642009141861}
   m_Father: {fileID: 2144985530432943094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!320 &8200682102252135307
@@ -6828,6 +6940,39 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 8690487233685806388}
+          m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
+          m_MethodName: AddTag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &4931848896624626647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373093830159601232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8eba5a4c328b4438d1bbe15825771d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutSceneSkip
+  _playableDirector: {fileID: 8200682102252135307}
+  _inputReaderSO: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
+  _holdTime: 1
+  _fadeOutSpeed: 2
+  _spareTime: 0.5
+  _uiCanvasGroup: {fileID: 0}
+  _progressBar: {fileID: 0}
+  _hintDuration: 2
+  _fadeTime: 0.5
 --- !u!1 &8383071766629859436
 GameObject:
   m_ObjectHideFlags: 0
