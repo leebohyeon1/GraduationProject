@@ -120,7 +120,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     {
         for (int i = 0; i < _learnAbilities.Count; i++)
         {
-            if (_playerController.Ability.HasAbility(_learnAbilities[i]))
+            if (_playerController.Ability.HasAbility(_learnAbilities[i].Id))
             {
                 return true;
             }
@@ -140,7 +140,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             // 선행 기술 체크
             for (int i = 0; i < _needAbilities.Count; i++)
             {
-                if (!_playerController.Ability.HasAbility(_needAbilities[i]))
+                if (!_playerController.Ability.HasAbility(_needAbilities[i].Id))
                 {
                     return false;
                 }
@@ -149,7 +149,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             // 선행 태그 체크
             for (int i = 0; i < _needTags.Count; i++)
             {
-                if (!GamePlayTagManager.Instance.HasTag(_needTags[i]))
+                if (!GamePlayTagManager.Instance.HasTag(_needTags[i].ID))
                 {
                     return false;
                 }

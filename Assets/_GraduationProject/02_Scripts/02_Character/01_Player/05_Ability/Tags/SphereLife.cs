@@ -41,6 +41,6 @@ public class SphereLife : PlayerAbilityTagSO
     {
         _player.Ability.AddTag(_invincibleTag); // 무적 태그 추가
         yield return new WaitForSeconds(_invincibleDuration); // 지속 시간 대기
-        _player.Ability.RemoveTag(_invincibleTag); // 무적 태그 제거
+        _player.Ability.RemoveTag(_invincibleTag.Id); // 무적 태그 제거
     }
 }

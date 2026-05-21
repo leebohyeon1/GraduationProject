@@ -21,7 +21,7 @@ public class SavePoint : MonoBehaviour, IInteractable
         gameData.ClearDeadMonsters();
 
         DataManager.Instance.SaveGame();
-        SceneLoadingManager.Instance.TeleportToSceneByName(gameData.LastMainScene);
+        SceneLoadingManager.Instance.TeleportToSceneByName(gameData.LastMainScene, SceneLoadingManager.SpawnMode.LastPosition);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -46,7 +46,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         {
             if (ability != null)
             {
-                RemoveAbility(ability);
+                RemoveAbility(ability.Id);
             }
         }
     }
@@ -107,12 +107,16 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// 기술 제거 함수
     /// </summary>
     /// <param name="ability">삭제할 기술</param>
-    public void RemoveAbility(PlayerAbilitySO ability)
+    public void RemoveAbility(string id)
     {
-        if (_abilitySet.Remove(ability))
+        foreach (var ability in _abilitySet)
         {
-            ability.UnregisterAbility(this);  // 기술 해제
-            Debug.Log($"기술 해제: {ability.Id}");
+            if (ability != null && ability.Id == id)
+            {
+                ability.UnregisterAbility(this);  // 기술 해제
+                Debug.Log($"기술 해제: {ability.Id}");
+                return;
+            }
         }
     }
 
@@ -139,15 +143,6 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         return false;
     }
 
-    /// <summary>
-    /// 기술을 가지고 있는지 확인하는 함수
-    /// </summary>
-    /// <param name="ability">확인할 기술</param>
-    /// <returns>가지고 있는지 여부</returns>
-    public bool HasAbility(PlayerAbilitySO ability)
-    {
-        return _abilitySet.Contains(ability);
-    }
 
     /// <summary>
     /// 아이디에 맞는 기술 반환
@@ -197,14 +192,22 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// 태그 제거 함수 (중첩 관리)
     /// </summary>
     /// <param name="tag">제거할 태그</param>
-    public void RemoveTag(PlayerAbilityTagSO tag)
+    public void RemoveTag(string id)
     {
-        if (tag == null)
+        if (id == null)
         {
             return;
         }
 
-        _abilityTags.Remove(tag); 
+        foreach (var tag in _abilityTags)
+        {
+            if(tag.Id == id)
+            {
+                _abilityTags.Remove(tag);
+                return;
+            }
+        }
+
     }
 
     /// <summary>
@@ -222,33 +225,6 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
             }
         }
         return false;
-    }
-
-    /// <summary>
-    /// 태그를 가지고 있는지 확인하는 함수
-    /// </summary>
-    /// <param name="validTag">확인할 태그</param>
-    /// <returns>가지고 있는지 여부</returns>
-    public bool HasTag(PlayerAbilityTagSO validTag)
-    {
-        return _abilityTags.Contains(validTag);
-    }
-
-    /// <summary>
-    /// 아이디에 맞는 태그 반환
-    /// </summary>
-    /// <param name="id">태그 아이디</param>
-    /// <returns>스킬 태그</returns>
-    public PlayerAbilityTagSO GetTag(string id)
-    {
-        foreach (var tag in _abilityTags)
-        {
-            if (tag != null && tag.Id == id)
-            {
-                return tag;
-            }
-        }
-        return null;
     }
     #endregion
 

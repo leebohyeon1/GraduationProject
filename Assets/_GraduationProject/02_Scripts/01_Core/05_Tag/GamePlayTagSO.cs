@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -5,7 +6,7 @@ using UnityEngine;
 /// 플래그 형태로 사용
 /// </summary>
 [CreateAssetMenu(fileName = "GamePlayTagSO", menuName = "Project/Tag/GamePlayTag")]
-public class GamePlayTagSO : ScriptableObject 
+public class GamePlayTagSO : ScriptableObject
 {
     public string ID;
 

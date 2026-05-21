@@ -171,7 +171,7 @@ public class PlayerDodgeState : PlayerBaseState
 
         if (p_owner.Movement.DodgeConfig.IsInvincible)
         {
-            p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO);
+            p_owner.Ability.RemoveTag(p_owner.Movement.InvincibleSO.Id);
         }
     }
     #endregion

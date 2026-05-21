@@ -35,6 +35,13 @@ public class SceneLoadingManager : MonoBehaviour
     public bool IsTeleporting { get; private set; } = false;
     public SceneDataSO CurrentActiveChunk;
 
+    public enum SpawnMode { Default, LastPosition, Custom }
+    private SpawnMode _currentSpawnMode = SpawnMode.Default;
+    private Vector3? _customSpawnPosition = null;
+
+    [Header("Fade Settings")]
+    [SerializeField] private float _fadeDuration;
+
     private void Awake()
     {
         if (Instance == null)
@@ -99,6 +106,20 @@ public class SceneLoadingManager : MonoBehaviour
         }
     }
 
+    public void TeleportToSceneByName(string targetSceneName, SpawnMode spawnMode)
+    {
+        // 사전에 해당 이름의 씬 데이터가 있는지 확인
+        if (_sceneDataLookup.TryGetValue(targetSceneName, out SceneDataSO dataToLoad))
+        {
+            // 찾았다면 기존의 텔레포트 함수 실행!
+            TeleportToScene(dataToLoad, spawnMode);
+        }
+        else
+        {
+            Debug.LogError($"[Scene Error] '{targetSceneName}' 씬 데이터를 찾을 수 없습니다! Database에 등록되었는지 확인하세요.");
+        }
+    }
+
     public void TeleportToScene(SceneDataSO targetScene)
     {
         if (IsTeleporting)
@@ -106,6 +127,32 @@ public class SceneLoadingManager : MonoBehaviour
             return;
         }
 
+        _currentSpawnMode = SpawnMode.Default;
+        _customSpawnPosition = null;
+        StartCoroutine(TeleportCoroutine(targetScene));
+    }
+
+    public void TeleportToScene(SceneDataSO targetScene, SpawnMode spawnMode)
+    {
+        if (IsTeleporting)
+        {
+            return;
+        }
+
+        _currentSpawnMode = spawnMode;
+        _customSpawnPosition = null;
+        StartCoroutine(TeleportCoroutine(targetScene));
+    }
+
+    public void TeleportToScene(SceneDataSO targetScene, Vector3 customPosition)
+    {
+        if (IsTeleporting)
+        {
+            return;
+        }
+
+        _currentSpawnMode = SpawnMode.Custom;
+        _customSpawnPosition = customPosition;
         StartCoroutine(TeleportCoroutine(targetScene));
     }
 
@@ -206,10 +253,10 @@ public class SceneLoadingManager : MonoBehaviour
 
         // 4. 페이드 아웃 (화면 밝게)
         fadeTimer = 0f;
-        while (fadeTimer < 0.5f)
+        while (fadeTimer < _fadeDuration)
         {
             fadeTimer += Time.deltaTime;
-            _loadingCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fadeTimer / 0.5f);
+            _loadingCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fadeTimer / _fadeDuration);
             yield return null;
         }
         _loadingCanvasGroup.alpha = 0f;
@@ -385,22 +432,38 @@ public class SceneLoadingManager : MonoBehaviour
         CharacterController cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 
+        switch (_currentSpawnMode)
+        {
+            case SpawnMode.Custom:
+                if (_customSpawnPosition.HasValue)
+                {
+                    player.transform.position = _customSpawnPosition.Value;
+                    Debug.Log($"[Spawn] 커스텀 지정 위치({_customSpawnPosition.Value})로 스폰합니다.");
+                }
+                break;
+
+            case SpawnMode.LastPosition:
+                player.transform.position = gameData.PlayerData.LastPosition;
+                Debug.Log($"[Spawn] 마지막 저장 위치({gameData.PlayerData.LastPosition})로 스폰합니다.");
+                break;
+
+            case SpawnMode.Default:
+            default:
+                player.transform.position = loadedSceneData.DefaultSpawnPosition;
+                player.transform.rotation = Quaternion.Euler(loadedSceneData.DefaultSpawnRotation);
+                Debug.Log($"[Spawn] 기본 위치({loadedSceneData.DefaultSpawnPosition})로 스폰합니다.");
+                break;
+        }
+
+        // 방문 기록 남기기
         if (gameData.IsFirstVisit(sceneName))
         {
-            // 처음 방문 시: SO에 설정된 좌표로 이동
-            player.transform.position = loadedSceneData.DefaultSpawnPosition;
-            player.transform.rotation = Quaternion.Euler(loadedSceneData.DefaultSpawnRotation);
-
-            // 방문 기록 남기기
             gameData.MarkSceneAsVisited(sceneName);
-            Debug.Log($"[Spawn] {sceneName} 첫 방문: 기본 위치({loadedSceneData.DefaultSpawnPosition})로 스폰합니다.");
         }
-        else
-        {
-            // 재방문 시: 기존 세이브 데이터의 위치로 이동 (사망 후 리스폰 등을 위해 필요)
-            player.transform.position = gameData.PlayerData.LastPosition;
-            Debug.Log($"[Spawn] {sceneName} 재방문: 기존 위치({gameData.PlayerData.LastPosition})를 유지 및 적용합니다.");
-        }
+
+        // 초기화
+        _customSpawnPosition = null;
+        _currentSpawnMode = SpawnMode.Default;
 
         // 4. 컨트롤러 다시 활성화 (이동이 끝난 후)
         if (cc != null) cc.enabled = true;

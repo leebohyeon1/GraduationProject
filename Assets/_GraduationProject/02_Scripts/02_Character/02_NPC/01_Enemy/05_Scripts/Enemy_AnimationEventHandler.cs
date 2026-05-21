@@ -360,18 +360,12 @@ public class FeedbackPlayManager
     [SerializeField] private List<FeedbackPlayer> _feedbacks = new List<FeedbackPlayer>();
     GameObject _owner;
 
-    public FeedbackPlayManager(GameObject owner)
+    public FeedbackPlayManager(string[] feedbackNames)
     {
-        _owner = owner;
-    }
-    public FeedbackPlayManager(GameObject owner, string[] feedbackNames)
-    {
-        _owner = owner;
         
         // 기존 리스트 초기화 (중복 방지)
         if (_feedbacks == null) _feedbacks = new List<FeedbackPlayer>();
         _feedbacks.Clear(); 
-
         foreach (var name in feedbackNames)
         {
             _feedbacks.Add(new FeedbackPlayer { 
@@ -380,11 +374,25 @@ public class FeedbackPlayManager
                 offset = Vector3.zero 
             });
         }
+    }
+    public void start(GameObject owner)
+    {
+        _owner = owner;
+        Debug.Log("owner : " + _owner);
         foreach (var f in _feedbacks)
+    {
+        // 안전 장치: f.feedback이 null이 아닐 때만 리스너를 등록하도록 변경
+        if (f.feedback != null && f.feedback.Events != null)
         {
             f.feedback.Events.OnPlay.AddListener(() => OnStateChanged(true));
             f.feedback.Events.OnComplete.AddListener(() => OnStateChanged(false));
         }
+        else
+        {
+            // 인스펙터나 다른 곳에서 나중에 할당해야 하므로, 에디터용 경고나 로그만 남겨둡니다.
+            Debug.LogWarning($"[FeedbackPlayManager] '{f.name}'의 MMF_Player(feedback)가 비어있습니다. 나중에 인스펙터 등에서 할당이 필요합니다.");
+        }
+    }
     }
     public bool IsPlaying { get; set; }
     private void OnStateChanged(bool playing)
@@ -402,6 +410,7 @@ public class FeedbackPlayManager
         {
             if (f.name == feedbackName && f.feedback != null)
             {
+                Debug.Log($"[FeedbackPlayManager] Playing feedback: {feedbackName} at position {_owner.transform.position + f.offset}");
                 f.feedback.PlayFeedbacks(_owner.transform.position + f.offset);
                 IsPlaying = f.feedback.IsPlaying;
             }

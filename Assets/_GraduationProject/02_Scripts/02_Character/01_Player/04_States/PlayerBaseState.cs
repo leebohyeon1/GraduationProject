@@ -93,9 +93,9 @@ public abstract class PlayerBaseState : IState, IDisposable
         p_owner.Combat.ClearCounterDamagedEnemy();
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
         {
-            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO.Id);
         }
 
     }
