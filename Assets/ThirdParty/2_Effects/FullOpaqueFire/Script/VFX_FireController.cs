@@ -5,14 +5,14 @@ namespace YourNamespace
     [ExecuteAlways]
     public class VFX_FireController : MonoBehaviour
     {
-        [Header("Réglages VFX Feu")]
+        [Header("R?lages VFX Feu")]
         [SerializeField] private Color fireColor = Color.red;
         [SerializeField, Range(0f, 2f)] private float fireIntensity = 1f;
         [SerializeField] private Vector3 fireWindDirection = Vector3.zero;
 
         private ParticleSystem[] fireParticleSystems;
-        private float[] defaultFireRateValues;        // Valeurs par défaut du spawn rate (Emission)
-        private float[] defaultFireStartSizeValues;     // Valeurs par défaut de la taille (Main > startSize)
+        private float[] defaultFireRateValues;        // Valeurs par d?aut du spawn rate (Emission)
+        private float[] defaultFireStartSizeValues;     // Valeurs par d?aut de la taille (Main > startSize)
         private Light fireLight; // Adding reference to Light component for intensity control
 
         private void Awake()
@@ -23,8 +23,8 @@ namespace YourNamespace
 
         private void OnValidate()
         {
-            // En mode éditeur, il se peut qu'Awake() ne soit pas appelé,
-            // donc on s'assure que les tableaux sont initialisés.
+            // En mode ?iteur, il se peut qu'Awake() ne soit pas appel?
+            // donc on s'assure que les tableaux sont initialis?.
             if (fireParticleSystems == null || fireParticleSystems.Length == 0 ||
                 defaultFireRateValues == null || defaultFireStartSizeValues == null ||
                 defaultFireRateValues.Length != fireParticleSystems.Length ||
@@ -36,7 +36,7 @@ namespace YourNamespace
         }
 
         /// <summary>
-        /// Recherche tous les ParticleSystem enfants et sauvegarde leurs valeurs par défaut.
+        /// Recherche tous les ParticleSystem enfants et sauvegarde leurs valeurs par d?aut.
         /// Le spawn rate est dans le module Emission et la taille dans le module Main (startSize).
         /// </summary>
         private void FindFireParticles()
@@ -62,12 +62,12 @@ namespace YourNamespace
         }
 
         /// <summary>
-        /// Applique les réglages sur chaque ParticleSystem enfant.
-        /// Les valeurs par défaut sont multipliées par fireIntensity, exactement comme pour le spawn rate.
+        /// Applique les r?lages sur chaque ParticleSystem enfant.
+        /// Les valeurs par d?aut sont multipli?s par fireIntensity, exactement comme pour le spawn rate.
         /// </summary>
         private void ApplyFireSettings()
         {
-            // S'assurer que tous les tableaux sont initialisés correctement.
+            // S'assurer que tous les tableaux sont initialis? correctement.
             if (fireParticleSystems == null || fireParticleSystems.Length == 0 ||
                 defaultFireRateValues == null || defaultFireStartSizeValues == null ||
                 defaultFireRateValues.Length != fireParticleSystems.Length ||
@@ -89,7 +89,7 @@ namespace YourNamespace
                 // Appliquer la couleur
                 mainModule.startColor = fireColor;
 
-                // Modifier le spawn rate en multipliant la valeur par défaut par fireIntensity
+                // Modifier le spawn rate en multipliant la valeur par d?aut par fireIntensity
                 float baseRate = defaultFireRateValues[i];
                 if (emissionModule.rateOverTime.mode == ParticleSystemCurveMode.Constant)
                 {
@@ -100,11 +100,11 @@ namespace YourNamespace
                     emissionModule.rateOverTime = new ParticleSystem.MinMaxCurve(baseRate * fireIntensity, baseRate * fireIntensity);
                 }
 
-                // Modifier la taille des particules de la même manière
+                // Modifier la taille des particules de la m?e mani?e
                 float baseSize = defaultFireStartSizeValues[i];
                 mainModule.startSize = new ParticleSystem.MinMaxCurve(baseSize * fireIntensity);
 
-                // Appliquer la direction du vent si le module Velocity over Lifetime est activé
+                // Appliquer la direction du vent si le module Velocity over Lifetime est activ?
                 if (velocityModule.enabled)
                 {
                     velocityModule.xMultiplier = fireWindDirection.x;
