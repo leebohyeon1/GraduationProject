@@ -47,11 +47,11 @@ public class DataSelectButtonTrigger : MonoBehaviour
     {
         if(!_isDataSet)
         {
-            SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneDataSO.SceneName);
+            SceneLoadingManager.Instance.TeleportToSceneByName(_defaultSceneDataSO.SceneName, SceneLoadingManager.SpawnMode.Default);
         }
         else
         {
-            SceneLoadingManager.Instance.TeleportToSceneByName(_loadSceneName);
+            SceneLoadingManager.Instance.TeleportToSceneByName(_loadSceneName, SceneLoadingManager.SpawnMode.LastPosition);
         }
     }
 }

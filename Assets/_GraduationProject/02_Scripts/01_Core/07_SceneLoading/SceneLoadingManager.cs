@@ -103,6 +103,20 @@ public class SceneLoadingManager : MonoBehaviour
         }
     }
 
+    public void TeleportToSceneByName(string targetSceneName, SpawnMode spawnMode)
+    {
+        // 사전에 해당 이름의 씬 데이터가 있는지 확인
+        if (_sceneDataLookup.TryGetValue(targetSceneName, out SceneDataSO dataToLoad))
+        {
+            // 찾았다면 기존의 텔레포트 함수 실행!
+            TeleportToScene(dataToLoad, spawnMode);
+        }
+        else
+        {
+            Debug.LogError($"[Scene Error] '{targetSceneName}' 씬 데이터를 찾을 수 없습니다! Database에 등록되었는지 확인하세요.");
+        }
+    }
+
     public void TeleportToScene(SceneDataSO targetScene)
     {
         if (IsTeleporting)
