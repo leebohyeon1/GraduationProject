@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 290183617291862773}
   serializedVersion: 2
   m_LocalRotation: {x: -0.06569869, y: -0.3817146, z: -0.0272133, w: 0.9215406}
-  m_LocalPosition: {x: -0.22, y: 0.04, z: 0.09}
+  m_LocalPosition: {x: 0.12, y: 0.04, z: 0.22}
   m_LocalScale: {x: 0.75252, y: 0.75252, z: 0.75252}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4777,11 +4777,47 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1821210181072557220}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1792519948431559183}
+        m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnRequirementFailed:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 251091839457389827}
         m_TargetAssemblyTypeName: InteractableObject, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1792519948431559183}
+        m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
         m_Arguments:

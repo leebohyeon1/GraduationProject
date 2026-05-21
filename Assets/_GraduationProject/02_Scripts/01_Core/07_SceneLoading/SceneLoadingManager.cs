@@ -39,6 +39,9 @@ public class SceneLoadingManager : MonoBehaviour
     private SpawnMode _currentSpawnMode = SpawnMode.Default;
     private Vector3? _customSpawnPosition = null;
 
+    [Header("Fade Settings")]
+    [SerializeField] private float _fadeDuration;
+
     private void Awake()
     {
         if (Instance == null)
@@ -250,10 +253,10 @@ public class SceneLoadingManager : MonoBehaviour
 
         // 4. 페이드 아웃 (화면 밝게)
         fadeTimer = 0f;
-        while (fadeTimer < 0.5f)
+        while (fadeTimer < _fadeDuration)
         {
             fadeTimer += Time.deltaTime;
-            _loadingCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fadeTimer / 0.5f);
+            _loadingCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fadeTimer / _fadeDuration);
             yield return null;
         }
         _loadingCanvasGroup.alpha = 0f;
