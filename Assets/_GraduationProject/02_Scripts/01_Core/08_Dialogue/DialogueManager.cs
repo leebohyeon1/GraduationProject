@@ -87,7 +87,7 @@ public class DialogueManager : MonoBehaviour
 
             foreach (var condition in dialogue.NeedConditionList)
             {
-                if (!GamePlayTagManager.Instance.HasTag(condition))
+                if (!GamePlayTagManager.Instance.HasTag(condition.ID))
                 {
                     allConditionsMet = false;
                     break;

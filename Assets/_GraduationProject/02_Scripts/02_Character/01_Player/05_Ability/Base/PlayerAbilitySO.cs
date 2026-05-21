@@ -99,7 +99,7 @@ public class PlayerAbilitySO : ScriptableObject, IEquatable<PlayerAbilitySO>
         foreach (var instance in p_tagInstances)
         {
             instance.Revert(p_owner);        // 태그 해제
-            p_ability.RemoveTag(instance);   // 어빌리티에 제거
+            p_ability.RemoveTag(instance.Id);   // 어빌리티에 제거
             Destroy(instance);              // 인스턴스 제거   
         }
 

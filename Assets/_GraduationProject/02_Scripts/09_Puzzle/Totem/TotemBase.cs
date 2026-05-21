@@ -52,7 +52,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         };
 
         // 여기서 초기화하면 gameObject 접근이 가능합니다.
-        feedback = new FeedbackPlayManager(gameObject, names);
+        feedback = new FeedbackPlayManager(names);
     }
 
     protected virtual void Start()
@@ -68,7 +68,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         }
         gameObject.layer = LayerMask.NameToLayer("HitObject");
         glowController = GetComponent<InnerGlowController>();
-
+        feedback.start(this.gameObject);
     }
     public void DestroyTotem()
     {
@@ -100,6 +100,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             return;
         }
         Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
+        Debug.Log($"totem feedback : {feedback}");
         feedback.PlayFeedback(hit);
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
         Vector3 localDir = PuzzleGridManager.Instance.transform.InverseTransformDirection(incomingDir);

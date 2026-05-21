@@ -58,9 +58,9 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         p_owner.Combat.ClearCounterDamagedEnemy();
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
-        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
         {
-            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO);
+            p_owner.Ability.RemoveTag(p_owner.Combat.CounterSuccessTagSO.Id);
         }
     }
 
@@ -99,7 +99,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
         // 상쇄 성공 시 슈퍼 아머
-        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO))
+        if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
         {
             p_owner.Ability.AddTag(p_owner.Combat.CounterSuccessTagSO);
         }

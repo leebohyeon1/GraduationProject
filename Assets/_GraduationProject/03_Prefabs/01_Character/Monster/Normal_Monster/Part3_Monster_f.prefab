@@ -2835,7 +2835,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   _enableJumpGuard: 1
   _suspiciousJumpDistance: 100
-  _logJumpGuard: 0
   <enemyStat>k__BackingField: {fileID: 11400000, guid: c839fca7333a0a14caf54c5bea69401b, type: 2}
 --- !u!114 &5123924331001142085
 MonoBehaviour:
@@ -17223,7 +17222,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8033218900827062272}
   - component: {fileID: 4671645271472469603}
-  - component: {fileID: 2570444126323997109}
   m_Layer: 8
   m_Name: Monster_a_Dissolve_FB
   m_TagString: Untagged
@@ -17938,7 +17936,7 @@ MonoBehaviour:
         PlayEvents:
           m_PersistentCalls:
             m_Calls:
-            - m_Target: {fileID: 2570444126323997109}
+            - m_Target: {fileID: 0}
               m_TargetAssemblyTypeName: GamePlayTagTrigger, Assembly-CSharp
               m_MethodName: AddTag
               m_Mode: 1
@@ -17959,23 +17957,6 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
---- !u!114 &2570444126323997109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8164878882408159964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad22f87c2cdcf7842965f249009ec825, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagTrigger
-  _requiredTags: []
-  _forbiddenTags: []
-  _tagsToAdd:
-  - {fileID: 11400000, guid: cbfbe6c1aac93f4479ae680085ab3044, type: 2}
-  _oneTimeOnly: 1
 --- !u!1 &8209951941349353895
 GameObject:
   m_ObjectHideFlags: 0
