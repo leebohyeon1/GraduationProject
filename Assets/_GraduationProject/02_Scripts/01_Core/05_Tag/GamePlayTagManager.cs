@@ -8,7 +8,7 @@ public class GamePlayTagManager : MonoBehaviour
 {
     public static GamePlayTagManager Instance { get; private set; }
 
-    [SerializeField] private HashSet<GamePlayTagSO> _activeTagList = new HashSet<GamePlayTagSO>();
+    [SerializeField] private HashSet<string> _activeTagList = new HashSet<string>();
     public event Action<GamePlayTagSO> UpdateTag;
 
     private void Awake()
@@ -32,7 +32,7 @@ public class GamePlayTagManager : MonoBehaviour
             foreach (var id in DataManager.Instance.GetGameData().GamePlayTagIdSet)
             {
                 var tag = DataManager.Instance.GetGamePlayTag(id);
-                if (tag != null) _activeTagList.Add(tag);
+                if (tag != null) _activeTagList.Add(tag.ID);
             }
         }
     }
@@ -53,7 +53,7 @@ public class GamePlayTagManager : MonoBehaviour
         if (!HasTag(tag.ID))
         {
             // 1. 내부 리스트 업데이트
-            _activeTagList.Add(tag);
+            _activeTagList.Add(tag.ID);
 
             // 2. 데이터 매니저를 통해 즉시 데이터 저장 (동기성 보장)
             if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
@@ -73,14 +73,9 @@ public class GamePlayTagManager : MonoBehaviour
     /// </summary>
     /// <param name="tag">확인할 태그</param>
     /// <returns>소유 여부</returns>
-    public bool HasTag(GamePlayTagSO tag)
-    {
-        return _activeTagList.Contains(tag);
-    }
-
     public bool HasTag(string id)
     {
-        return _activeTagList.Any(tag => tag.ID == id);
+        return _activeTagList.Contains(id);
     }
 
     /// <summary>
@@ -90,11 +85,11 @@ public class GamePlayTagManager : MonoBehaviour
     /// <returns></returns>
     public GamePlayTagSO GetTag(GamePlayTagSO tag)
     {
-        return HasTag(tag) ? tag : null;
+        return HasTag(tag.ID) ? tag : null;
     }
 
     public GamePlayTagSO GetTag(string id)
     {
-        return _activeTagList.FirstOrDefault((tag) => tag.ID == id);
+        return HasTag(id) ? DataManager.Instance.GetGamePlayTag(id) : null;
     }
 }

@@ -31,7 +31,7 @@ public class DialogueObject : MonoBehaviour, IInteractable
 
         for (int i = 0; i < initialDialogue.NeedConditionList.Count; i++)
         {
-            if (!GamePlayTagManager.Instance.HasTag(initialDialogue.NeedConditionList[i]))
+            if (!GamePlayTagManager.Instance.HasTag(initialDialogue.NeedConditionList[i].ID))
             {
                 return false;
             }

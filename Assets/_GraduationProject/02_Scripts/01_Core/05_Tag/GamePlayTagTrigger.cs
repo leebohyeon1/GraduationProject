@@ -46,7 +46,7 @@ public class GamePlayTagTrigger : MonoBehaviour
             if (tag == null) continue;
 
             // 현재 플레이어가 해당 태그를 가지고 있지 않을 때만 추가
-            if (!GamePlayTagManager.Instance.HasTag(tag))
+            if (!GamePlayTagManager.Instance.HasTag(tag.ID))
             {
                 GamePlayTagManager.Instance.AddTag(tag);
                 isNewTagAdded = true;
@@ -72,7 +72,7 @@ public class GamePlayTagTrigger : MonoBehaviour
         {
             foreach (var tag in _requiredTags)
             {
-                if (tag != null && !GamePlayTagManager.Instance.HasTag(tag))
+                if (tag != null && !GamePlayTagManager.Instance.HasTag(tag.ID))
                 {
                     return false;
                 }
@@ -84,7 +84,7 @@ public class GamePlayTagTrigger : MonoBehaviour
         {
             foreach (var tag in _forbiddenTags)
             {
-                if (tag != null && GamePlayTagManager.Instance.HasTag(tag))
+                if (tag != null && GamePlayTagManager.Instance.HasTag(tag.ID))
                 {
                     return false;
                 }

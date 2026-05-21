@@ -360,13 +360,8 @@ public class FeedbackPlayManager
     [SerializeField] private List<FeedbackPlayer> _feedbacks = new List<FeedbackPlayer>();
     GameObject _owner;
 
-    public FeedbackPlayManager(GameObject owner)
+    public FeedbackPlayManager(string[] feedbackNames)
     {
-        _owner = owner;
-    }
-    public FeedbackPlayManager(GameObject owner, string[] feedbackNames)
-    {
-        _owner = owner;
         
         // 기존 리스트 초기화 (중복 방지)
         if (_feedbacks == null) _feedbacks = new List<FeedbackPlayer>();
@@ -378,8 +373,12 @@ public class FeedbackPlayManager
                 feedback = null, 
                 offset = Vector3.zero 
             });
-                Debug.Log($"[FeedbackPlayManager] Added feedback entry: {name}");
         }
+    }
+    public void start(GameObject owner)
+    {
+        _owner = owner;
+        Debug.Log("owner : " + _owner);
         foreach (var f in _feedbacks)
     {
         // 안전 장치: f.feedback이 null이 아닐 때만 리스너를 등록하도록 변경
@@ -411,6 +410,7 @@ public class FeedbackPlayManager
         {
             if (f.name == feedbackName && f.feedback != null)
             {
+                Debug.Log($"[FeedbackPlayManager] Playing feedback: {feedbackName} at position {_owner.transform.position + f.offset}");
                 f.feedback.PlayFeedbacks(_owner.transform.position + f.offset);
                 IsPlaying = f.feedback.IsPlaying;
             }
