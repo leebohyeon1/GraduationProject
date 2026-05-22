@@ -1,15 +1,27 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisposable
 {
+    [Header("Input")]
+    [SerializeField] private InputReaderSO _inputReader;
+
     [Header("UI")]
     [SerializeField] private GameObject _panel;
+    [SerializeField] private Button _firstButton;
+
+    [Header("Animation Settings")]
+    [SerializeField] private float _clickScaleAmount = 0.95f;
+    [SerializeField] private float _clickDuration = 0.1f;
 
     [Header("Events")]
     [SerializeField] private OnPlayerSpawnedSO _playerSpawned;
     private PlayerController _player;
+    private bool _isActionProcessing = false;
 
     private void Awake()
     {
@@ -26,19 +38,50 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
 
     public void OnContinueButton()
     {
-        DataManager.Instance.ResetPlayer(); // 플레이어 데이터 초기화
-        DataManager.Instance.SaveGame(); // 게임 저장
-        SceneLoadingManager.Instance.TeleportToSceneByName(DataManager.Instance.GetGameData().LastMainScene, SceneLoadingManager.SpawnMode.LastPosition);
+        if (_isActionProcessing) return;
+        
+        PlayClickAnimation(EventSystem.current.currentSelectedGameObject, () => {
+            DataManager.Instance.ResetPlayer(); // 플레이어 데이터 초기화
+            DataManager.Instance.SaveGame(); // 게임 저장
+            SceneLoadingManager.Instance.TeleportToSceneByName(DataManager.Instance.GetGameData().LastMainScene, SceneLoadingManager.SpawnMode.LastPosition);
+        });
     }
 
     public void OnQuitButton()
     {
-        Application.Quit();
+        if (_isActionProcessing) return;
 
-        /*
-        DataManager.Instance.SaveGame(); // 게임 저장
-        SceneLoadingManager.Instance.TeleportToSceneByName("Title");
-        */
+        PlayClickAnimation(EventSystem.current.currentSelectedGameObject, () => 
+        {
+            DataManager.Instance.ResetPlayer(); // 플레이어 데이터 초기화
+            DataManager.Instance.SaveGame(); // 게임 저장
+            SceneLoadingManager.Instance.TeleportToSceneByName("Title");
+        });
+    }
+
+    private void PlayClickAnimation(GameObject target, Action onComplete)
+    {
+        if (target == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        _isActionProcessing = true;
+        
+        // 버튼을 살짝 눌렀다 떼는 느낌의 연출
+        target.transform.DOScale(_clickScaleAmount, _clickDuration)
+            .SetEase(Ease.OutQuad)
+            .SetUpdate(true) // 타임스케일 영향 받지 않도록
+            .OnComplete(() => {
+                target.transform.DOScale(1f, _clickDuration)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true)
+                    .OnComplete(() => {
+                        onComplete?.Invoke();
+                        _isActionProcessing = false;
+                    });
+            });
     }
 
     public void OnEventTrigger(PlayerController player)
@@ -52,6 +95,16 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
     private void OnDied()
     {
         _panel.SetActive(true);
+        
+        if (_inputReader != null)
+        {
+            _inputReader.SetInputMode(InputReaderSO.InputMode.UI);
+        }
+
+        if (_firstButton != null)
+        {
+            _firstButton.Select();
+        }
     }
 
 }
