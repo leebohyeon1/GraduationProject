@@ -13,6 +13,11 @@ public class MenuUIComponent : MonoBehaviour, IDisposable
 
     }
 
+    public virtual void OnOpen()
+    {
+
+    }
+
     public virtual void Dispose()
     {
       

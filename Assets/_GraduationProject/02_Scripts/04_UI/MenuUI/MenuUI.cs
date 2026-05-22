@@ -95,11 +95,12 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
             _currentComponentIndex = 0;
         }
 
-        for (int i =0; i < _mainUIComponents.Count; i++)
+        for (int i = 0; i < _mainUIComponents.Count; i++)
         {
             if (i == _currentComponentIndex)
             {
                 _mainUIComponents[i].gameObject.SetActive(true);
+                _mainUIComponents[i].OnOpen(); // 페이지가 열릴 때 초기화 로직(포커싱 등) 호출
             }
             else
             {

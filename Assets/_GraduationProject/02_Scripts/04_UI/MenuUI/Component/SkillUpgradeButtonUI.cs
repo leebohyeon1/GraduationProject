@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using DG.Tweening;
 
 /// <summary>
 /// 스킬 업그레이드 버튼 UI
 /// </summary>
-public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>
+public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, ISelectHandler, IDeselectHandler, IPointerEnterHandler
 {
     [SerializeField] private string _skillName; // 스킬 이름 
     public string SkillName => _skillName;
@@ -20,6 +22,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [SerializeField] private Color _unlockColor;
 
     private PlayerController _playerController;
+    private SkillUI _parentSkillUI;
 
     [Header("Conditions")]
     [SerializeField] private int _price;    // 가격
@@ -36,17 +39,28 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [Header("Events")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
 
+    [Header("Animations")]
+    [SerializeField] private float _scaleDuration = 0.2f;
+    [SerializeField] private float _selectedScale = 1.1f;
+    private Vector3 _originalScale;
+
     public void Initialize(PlayerController player)
     {
         _playerController = player;
+        _parentSkillUI = GetComponentInParent<SkillUI>();
         _abilitySelected.Subscribe(this);
+        _originalScale = transform.localScale;
 
         // 초기화 시 UI 상태 갱신
         UpdateUIState();
     }
 
-    private void OnEnable()
+    private void OnDisable()
     {
+        // 꺼질 때 트윈 제거 및 스케일 초기화
+        transform.DOKill();
+        transform.localScale = _originalScale;
+
         // 켜질 때 UI 상태 갱신
         UpdateUIState();
     }
@@ -54,6 +68,48 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     private void OnDestroy()
     {
         _abilitySelected.Unsubscribe(this);
+        transform.DOKill();
+    }
+
+    //==========================================================================================================================
+    // Animation & Selection Handler ===========================================================================================
+    //==========================================================================================================================
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        // 선택 시 스케일 업 애니메이션
+        transform.DOScale(_originalScale * _selectedScale, _scaleDuration)
+            .SetEase(Ease.OutBack)
+            .SetUpdate(true);
+
+        // 스킬 설명 UI 갱신
+        if (_parentSkillUI != null)
+        {
+            _parentSkillUI.UpdateDescription(this);
+        }
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        // 선택 해제 시 원래 크기로
+        transform.DOScale(_originalScale, _scaleDuration)
+            .SetEase(Ease.OutQuad)
+            .SetUpdate(true);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        // 마우스 오버 시 포커스 강제 (패드와 통일감)
+        EventSystem.current.SetSelectedGameObject(gameObject);
+    }
+
+    public void Select()
+    {
+        // 패드 조작 등에서 수동으로 선택할 때 사용
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObject);
+        }
     }
 
     /// <summary>
@@ -82,11 +138,13 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 2. 배울 수 있는 조건인지 확인
         bool canPurchase = CheckPurchaseCondition();
 
+        // [개선] 패드 조작을 위해 모든 상태에서 선택(Select)이 가능해야 하므로 interactable은 항상 true 유지
+        _skillToggleButton.interactable = true;
+
         // UI 상태 업데이트
         if (alreadyHasSkill)
         {
             _isLearned = true;
-            _skillToggleButton.interactable = false;
             _skillToggleButton.SetIsOnWithoutNotify(true);
             _skillToggleButton.image.color = _unlockColor; // 배운 상태 색상
             _skillIcon.color = _unlockColor; // 아이콘도 밝게
@@ -96,7 +154,6 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         else if (canPurchase)
         {
             _isLearned = false;
-            _skillToggleButton.interactable = true;
             _skillToggleButton.SetIsOnWithoutNotify(false);
             _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
             _skillIcon.color = Color.white; // 아이콘도 밝게
@@ -106,10 +163,9 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         else
         {
             _isLearned = false;
-            _skillToggleButton.interactable = false;
             _skillToggleButton.SetIsOnWithoutNotify(false);
-            _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
-            _skillIcon.color = _lockColor; // 아이콘도 어둡게
+            _skillToggleButton.image.color = Color.white; // 배울 수 없는 상태 기본 컬러
+            _skillIcon.color = _lockColor; // 아이콘은 어둡게
 
             if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(true);
         }

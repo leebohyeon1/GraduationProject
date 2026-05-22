@@ -24,6 +24,17 @@ public class SkillUI : MenuUIComponent
        
     }
 
+    public override void OnOpen()
+    {
+        base.OnOpen();
+
+        // 패드 조작을 위해 첫 번째 버튼에 포커스
+        if (_upgradeButtonList != null && _upgradeButtonList.Count > 0)
+        {
+            _upgradeButtonList[0].Select();
+        }
+    }
+
     public void UpdateDescription(SkillUpgradeButtonUI skillUpgradeButtonUI)
     {
         _skillDescription.SetDescription(
