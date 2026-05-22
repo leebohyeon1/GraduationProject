@@ -13,7 +13,7 @@ public class SavePoint : MonoBehaviour, IInteractable
     public void Interact()
     {
         GameData gameData = DataManager.Instance.GetGameData();
-        gameData.PlayerData.RespawnPostion = _playerController.transform.position;
+        gameData.PlayerData.RespawnPosition = _playerController.transform.position;
         _playerController.Health.Heal((int)gameData.PlayerData.Health.Value);
         _playerController.Potion.ReloadPotion();
 

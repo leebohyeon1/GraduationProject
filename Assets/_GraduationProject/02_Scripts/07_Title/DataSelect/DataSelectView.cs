@@ -210,13 +210,15 @@ public class DataSelectView : TitleView
 
     public void CreateNewGame()
     {
-        DataManager.Instance.CreateNewGame();
+        var startScene = _dataSelectButtonList[_selectedIndex].DefaultSceneDataSO;
+        DataManager.Instance.CreateNewGame(startScene);
         _dataSelectButtonList[_selectedIndex].LoadScene();
     }
     
     public void OverwriteData()
     {
-        DataManager.Instance.CreateNewGame(_selectedIndex);
+        var startScene = _dataSelectButtonList[_selectedIndex].DefaultSceneDataSO;
+        DataManager.Instance.CreateNewGame(_selectedIndex, startScene);
         _dataSelectButtonList[_selectedIndex].SetData(_selectedIndex, null);
         _dataSelectButtonList[_selectedIndex].LoadScene();
         CheckBoxOff();

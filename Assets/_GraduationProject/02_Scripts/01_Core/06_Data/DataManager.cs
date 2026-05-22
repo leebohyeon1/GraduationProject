@@ -53,12 +53,12 @@ public class DataManager : MonoBehaviour
     {
         if (_useDevelopment)
         {
-            CreateNewGame(_developementDataSlotIndex);
+            CreateNewGame(_developementDataSlotIndex, SceneLoadingManager.Instance.InitializeScene);
             GamePlayTagManager.Instance.Initialize();
             PlayerController player = FindFirstObjectByType<PlayerController>();
             if (player != null)
             {
-                _currentGameData.PlayerData.RespawnPostion = player.transform.position;
+                _currentGameData.PlayerData.RespawnPosition = player.transform.position;
                 _currentGameData.PlayerData.LastPosition = player.transform.position;
             }
         }
@@ -194,13 +194,28 @@ public class DataManager : MonoBehaviour
     /// <summary>
     /// 새 게임 생성 로직
     /// </summary>
-    public void CreateNewGame()
+    public void CreateNewGame(SceneDataSO startSceneData)
     {
         _currentGameData = new GameData();
-        _currentGameData.LastMainScene = SceneLoadingManager.Instance.InitializeScene.SceneName;  
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
-        _currentGameData.PlayerData.RespawnPostion = SceneLoadingManager.Instance.InitializeScene.DefaultSpawnPosition;
-        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
+        
+        // 시작 씬 설정 (인자가 있으면 우선 사용, 없으면 SceneLoadingManager의 기본값 사용)
+        SceneDataSO sceneToUse = (startSceneData != null) ? startSceneData : SceneLoadingManager.Instance.InitializeScene;
+        
+        if (sceneToUse != null)
+        {
+            _currentGameData.LastMainScene = sceneToUse.SceneName;
+            _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
+            _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
+        }
+        else
+        {
+            _currentGameData.LastMainScene = "";
+            _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
+            _currentGameData.PlayerData.RespawnPosition = Vector3.zero;
+            _currentGameData.PlayerData.LastPosition = Vector3.zero;
+            Debug.LogWarning("[DataManager] CreateNewGame: 시작 씬 데이터가 없습니다!");
+        }
 
         DataList.Add(_currentGameData);
         _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
@@ -222,17 +237,40 @@ public class DataManager : MonoBehaviour
 
 
     /// <summary>
-    /// 새 게임 생성 로직
+    /// 새 게임 생성 로직 (슬롯 지정)
     /// </summary>
-    public void CreateNewGame(int index)
+    public void CreateNewGame(int index, SceneDataSO startSceneData)
     {
         _currentGameData = new GameData();
-        _currentGameData.LastMainScene = SceneLoadingManager.Instance.InitializeScene.SceneName;
-        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
-        _currentGameData.PlayerData.RespawnPostion = SceneLoadingManager.Instance.InitializeScene.DefaultSpawnPosition;
-        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;
+        
+        SceneDataSO sceneToUse = (startSceneData != null) ? startSceneData : SceneLoadingManager.Instance.InitializeScene;
 
-        DataList[index] = _currentGameData;
+        if (sceneToUse != null)
+        {
+            _currentGameData.LastMainScene = sceneToUse.SceneName;
+            _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
+            _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
+        }
+        else
+        {
+            _currentGameData.LastMainScene = "";
+            _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
+            _currentGameData.PlayerData.RespawnPosition = Vector3.zero;
+            _currentGameData.PlayerData.LastPosition = Vector3.zero;
+            Debug.LogWarning("[DataManager] CreateNewGame: 시작 씬 데이터가 없습니다!");
+        }
+
+        if (index >= 0 && index < DataList.Count)
+        {
+            DataList[index] = _currentGameData;
+        }
+        else
+        {
+            DataList.Add(_currentGameData);
+            index = DataList.Count - 1;
+        }
+        
         _currentSlotIndex = index;
 
         // 매니저들의 상태를 완전히 초기화
@@ -247,7 +285,7 @@ public class DataManager : MonoBehaviour
             QuestManager.Instance.ResetQuest();
         }
 
-        Debug.Log("새로운 게임 데이터를 생성했습니다.");
+        Debug.Log($"{index}번 슬롯에 새로운 게임 데이터를 생성했습니다.");
     }
 
 
@@ -308,7 +346,7 @@ public class DataManager : MonoBehaviour
     public void ResetPlayer()
     {
         _currentGameData.PlayerData.CurrentHealth = (int)_currentGameData.PlayerData.Health.BaseValue;
-        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPostion;   
+        _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;   
         _currentGameData.PlayerData.CurrentPotion = (int)_currentGameData.PlayerData.Potion.BaseValue;
     }
 

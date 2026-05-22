@@ -22,7 +22,7 @@ public class PlayerData
     public int CurrentPotion;       // 현재 포션 수
 
     public Vector3 LastPosition;    // 마지막 위치
-    public Vector3 RespawnPostion;  // 리스폰 위치
+    public Vector3 RespawnPosition; // 리스폰 위치
 
     public List<string> AcquiredAbilityIds = new List<string>();    // 획득한 능력 ID 리스트
 

@@ -13,6 +13,7 @@ public class DataSelectButtonTrigger : MonoBehaviour
     [SerializeField] private TMP_Text _moneyText;
     [SerializeField] private TMP_Text _specialMoneyText;
     [SerializeField] private SceneDataSO _defaultSceneDataSO;
+    public SceneDataSO DefaultSceneDataSO => _defaultSceneDataSO;
 
     private bool _isDataSet = false;
     private string _loadSceneName = "";
