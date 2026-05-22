@@ -5,6 +5,10 @@ public class Mon_Stiffness : StiffnessSystem
     private Enemy _owner;
     public override void AddStiffness(int amount, AttackType attackType)
     {
+        if (_owner.Interact != null && !_owner.Interact._isInteracted)
+        {
+            return;
+        }
         if (_owner._stateController.CurrentState == EnemyStateController.EnemyState.Die)
             return;
 
