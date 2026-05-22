@@ -9,7 +9,6 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
     [SerializeField] private InputReaderSO _inputReader;
-    [SerializeField] private AudioSource _audioSource;
 
     private DialogueDataSO _currentDialogue; 
     private int _currentDialogueIndex = -1;
@@ -24,11 +23,6 @@ public class DialogueManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            if (_audioSource == null)
-            {
-                _audioSource = gameObject.AddComponent<AudioSource>();
-            }
         }
         else
         {
@@ -87,7 +81,7 @@ public class DialogueManager : MonoBehaviour
 
             foreach (var condition in dialogue.NeedConditionList)
             {
-                if (!GamePlayTagManager.Instance.HasTag(condition))
+                if (!GamePlayTagManager.Instance.HasTag(condition.ID))
                 {
                     allConditionsMet = false;
                     break;
@@ -194,25 +188,11 @@ public class DialogueManager : MonoBehaviour
             StopCoroutine(_autoNextCoroutine);
             _autoNextCoroutine = null;
         }
-        
-        if (_audioSource != null && _audioSource.isPlaying)
-        {
-            _audioSource.Stop();
-        }
     }
 
     private System.Collections.IEnumerator AutoNextProcess(DialogueDataSO.DialogueData data)
     {
-        if (data.Sound != null && _audioSource != null)
-        {
-            _audioSource.clip = data.Sound;
-            _audioSource.Play();
-            yield return new WaitWhile(() => _audioSource.isPlaying);
-        }
-        else
-        {
-            yield return new WaitForSeconds(3f);
-        }
+        yield return new WaitForSeconds(3f);
 
         NextDialogue();
     }

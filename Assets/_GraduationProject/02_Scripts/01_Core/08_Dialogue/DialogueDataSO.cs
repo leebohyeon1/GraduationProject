@@ -16,7 +16,6 @@ public class DialogueDataSO : ScriptableObject
         public string SpeakerName;
         [TextArea]
         public string DialogueText;
-        public AudioClip Sound;
     }
 
     public int DialogueGroupID;
