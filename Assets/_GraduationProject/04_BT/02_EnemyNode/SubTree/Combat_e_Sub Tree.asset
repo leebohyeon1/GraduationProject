@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_KSante
   position: {x: 718, y: -3}
   attackKey: Attack02_e
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 10
   SO:
   - {fileID: 11400000, guid: 4e38025895cdae547b85772c225eca99, type: 2}
   LoopAttack: 1
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 0
   hitEscapeDelay: 0.5
@@ -32,6 +31,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 15
   hitRadius: 3
   overshootDist: 3
@@ -108,12 +113,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1054, y: 571}
   attackKey: Attack03_e
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 1
@@ -125,6 +129,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &-7336249835083518026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,6 +409,20 @@ MonoBehaviour:
   MoveSpeed: 3
   StoppingDist: 0.5
   RotationSpeed: 5
+--- !u!114 &3271055723850234795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Campublish
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 458, y: -241}
+  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &3325441546977679017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,6 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 203, y: 35}
   nodes:
+  - {fileID: 3271055723850234795}
   - {fileID: 1681072726047148729}
   - {fileID: 6456977917551941683}
   - {fileID: 8237416307744218084}
@@ -487,12 +512,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackNode
   position: {x: 1057, y: 1106}
   attackKey: Attack01_e
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 1
   hitEscapeDelay: 1
@@ -504,6 +528,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
 --- !u!114 &5004546343135679304
 MonoBehaviour:
   m_ObjectHideFlags: 0

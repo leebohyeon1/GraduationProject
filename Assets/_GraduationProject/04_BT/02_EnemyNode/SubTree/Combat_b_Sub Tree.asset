@@ -363,6 +363,20 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &1821672493911129030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Campublish
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 490, y: -189}
+  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &1994035089493716298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,12 +391,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_RushToFixedLocation
   position: {x: 792, y: -112}
   attackKey: Attack02_b
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 1
+  ExitDelay: 0
   debugMode: 0
   escapeOnHitConfirm: 0
   hitEscapeDelay: 0.5
@@ -394,6 +407,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   rushSpeed: 15
   hitRadius: 2.5
   overshootDist: 3
@@ -506,6 +525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 203, y: 37}
   nodes:
+  - {fileID: 1821672493911129030}
   - {fileID: 1681072726047148729}
   - {fileID: -7154228387633228831}
   - {fileID: 3919280333966606404}
@@ -545,12 +565,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Task_AttackRange
   position: {x: 797, y: 490}
   attackKey: Attack01_b
-  animationStateName: 
   transitionBuffer: 1
-  maxNodeDuration: 6
   SO: []
   LoopAttack: 0
   NextBT: 0
+  ExitDelay: 0
   debugMode: 1
   escapeOnHitConfirm: 0
   hitEscapeDelay: 0.5
@@ -562,6 +581,12 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
+  ChangeSpeed: 0
+  _startHealthThreshold: 0.5
+  _maxSpeedThreshold: 0.1
+  _maxAnimationSpeed: 2
   projectilePrefab: {fileID: 2916484851320752740, guid: 5e3a8326a8c7f9b4da388e6719563c6f, type: 3}
   projectileSpeed: 15
   spawnOffset: {x: 0, y: 1, z: 0.5}
