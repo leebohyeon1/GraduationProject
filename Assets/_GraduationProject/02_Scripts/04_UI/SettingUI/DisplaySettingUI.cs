@@ -92,9 +92,24 @@ public class DisplaySettingUI : SettingPageUI
             int savedWidth = PlayerPrefs.GetInt("ResWidth", Screen.width);
             int savedHeight = PlayerPrefs.GetInt("ResHeight", Screen.height);
 
+            // 중복 제거 (주사율만 다르고 해상도가 같은 경우 방지)
+            HashSet<string> uniqueResStrings = new HashSet<string>();
+
             for (int i = 0; i < allRes.Length; i++) {
-                resolutions.Add(allRes[i]);
-                if (allRes[i].width == savedWidth && allRes[i].height == savedHeight) resIndex = i;
+                string resKey = $"{allRes[i].width}x{allRes[i].height}";
+                if (!uniqueResStrings.Contains(resKey)) {
+                    resolutions.Add(allRes[i]);
+                    uniqueResStrings.Add(resKey);
+                }
+            }
+
+            // 현재/저장된 해상도에 맞는 인덱스 찾기
+            resIndex = 0;
+            for (int i = 0; i < resolutions.Count; i++) {
+                if (resolutions[i].width == savedWidth && resolutions[i].height == savedHeight) {
+                    resIndex = i;
+                    break;
+                }
             }
             UpdateUI();
         }
