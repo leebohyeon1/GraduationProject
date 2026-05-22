@@ -140,8 +140,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.animator.SetBool("Die", true);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
-        _owner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
-            enemy = _owner, stateType = EnemyStateType.Dead});
+    
+        _owner.StateType = EnemyStateType.Dead;
         _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.groupAi.GroupRemove(_owner);
         _owner.tag = "DeadEnemy";

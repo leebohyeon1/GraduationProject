@@ -133,6 +133,23 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 초기 스폰 위치를 반환합니다.
     /// </summary>
+    
+    private EnemyStateType _stateType;
+    public EnemyStateType StateType
+    {
+        get{return _stateType;}
+        set
+        {
+            if(_stateType != value)
+            {
+                _stateType = value;
+                enemyStat.EStateEventSO?.Publish(new EnemyStateData{
+                    enemy = this, stateType = _stateType });
+            }
+        }
+    }
+
+
     public Vector3 StartPos => Data?.StartPosition ?? transform.position;
 
     BlackBoard blackboard => _aiController._aiBrain.blackboard;

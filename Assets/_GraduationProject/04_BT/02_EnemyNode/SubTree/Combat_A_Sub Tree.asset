@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9167822597152690408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250993a6a24764f4b9d5041f18cb491b, type: 3}
+  m_Name: Task_Camera Publish
+  m_EditorClassIdentifier: Assembly-CSharp::Task_CameraPublish
+  position: {x: 555, y: -842}
+  publish: 0
+--- !u!114 &-8578767157827234155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 570, y: -993}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 5
+    value: 10
 --- !u!114 &-8249379415562615602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16,6 +49,22 @@ MonoBehaviour:
   exceptCondition:
     key: 
   key: IsAttacking
+--- !u!114 &-8139406971107271711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3491424307f0a744087cab8347f6b458, type: 3}
+  m_Name: Condition_Camera Publish
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CameraPublish
+  position: {x: 557, y: -714}
+  exceptCondition:
+    key: 
+  stateType: 1
 --- !u!114 &-8088434715839450708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,6 +95,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -102,6 +153,23 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &-7252313063704696713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: cam
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 374, y: -765}
+  nodes:
+  - {fileID: 4193927907434802519}
+  - {fileID: -4910803189471976369}
+  services: []
 --- !u!114 &-7154228387633228831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +193,22 @@ MonoBehaviour:
   - {fileID: 3510316772557543878}
   - {fileID: 2818379902901682789}
   services: []
+--- !u!114 &-7143398195577718616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3491424307f0a744087cab8347f6b458, type: 3}
+  m_Name: Condition_Camera Publish
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CameraPublish
+  position: {x: 570, y: -916}
+  exceptCondition:
+    key: 
+  stateType: 0
 --- !u!114 &-5940353699662107700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,6 +239,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -220,6 +306,20 @@ MonoBehaviour:
   minRange: 9
   maxRange: 11
   checkType: 0
+--- !u!114 &-5508798785817459774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250993a6a24764f4b9d5041f18cb491b, type: 3}
+  m_Name: Task_Camera Publish
+  m_EditorClassIdentifier: Assembly-CSharp::Task_CameraPublish
+  position: {x: 557, y: -564}
+  publish: 1
 --- !u!114 &-5169928796796515572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,6 +339,24 @@ MonoBehaviour:
   cooldownDuration: 5
   EnemyAttackData: 0
   attackData: {fileID: 0}
+--- !u!114 &-4910803189471976369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: findP
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 406, y: -679}
+  nodes:
+  - {fileID: -8139406971107271711}
+  - {fileID: 2395120433021475656}
+  - {fileID: -5508798785817459774}
+  services: []
 --- !u!114 &-4747025815022784661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +524,20 @@ MonoBehaviour:
   m_Name: Combat_a_Sub Tree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: -700661456820620682}
+--- !u!114 &1395936574336387537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Run Sub Tree Node
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 431, y: -207}
+  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &1681072726047148729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +580,25 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
+--- !u!114 &2395120433021475656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 557, y: -641}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 0
+    value: 10
 --- !u!114 &2554010000721168745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +752,24 @@ MonoBehaviour:
   nodes:
   - {fileID: 8463926354739292389}
   - {fileID: 8237416307744218084}
+  services: []
+--- !u!114 &4193927907434802519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: lostP
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 374, y: -857}
+  nodes:
+  - {fileID: -8578767157827234155}
+  - {fileID: -7143398195577718616}
+  - {fileID: -9167822597152690408}
   services: []
 --- !u!114 &4441881582081485876
 MonoBehaviour:
@@ -793,6 +962,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 385, y: -4}
   nodes:
+  - {fileID: 1395936574336387537}
   - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
   services: []

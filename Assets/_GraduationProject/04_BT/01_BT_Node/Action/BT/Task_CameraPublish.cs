@@ -8,8 +8,7 @@ public class Task_CameraPublish : Node
 
     public override void OnEnter()
     {
-        runner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
-        enemy = runner, stateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost});
+        runner.StateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost;
     }
     protected override NodeState OnUpdate()
     {
