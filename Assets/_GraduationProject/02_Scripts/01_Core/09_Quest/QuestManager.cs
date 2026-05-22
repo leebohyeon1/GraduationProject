@@ -54,6 +54,15 @@ public class QuestManager : MonoBehaviour
         QuestAccepted?.Invoke(CurrentQuestData);
     }
 
+    /// <summary>
+    /// 퀘스트 상태를 초기화합니다. 새 게임 시작 시 호출됩니다.
+    /// </summary>
+    public void ResetQuest()
+    {
+        CurrentQuestData = null;
+        Debug.Log("<color=yellow>[QuestManager]</color> 퀘스트 상태가 초기화되었습니다.");
+    }
+
     public void CompleteQuest()
     {
         QuestCompleted?.Invoke(CurrentQuestData);

@@ -37,6 +37,15 @@ public class GamePlayTagManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 모든 태그를 비웁니다. 새 게임 시작 시 호출됩니다.
+    /// </summary>
+    public void ClearTags()
+    {
+        _activeTagList.Clear();
+        Debug.Log("<color=cyan>[TagManager]</color> 모든 태그가 초기화되었습니다.");
+    }
+
     private void OnApplicationQuit()
     {
         UpdateTag = null;

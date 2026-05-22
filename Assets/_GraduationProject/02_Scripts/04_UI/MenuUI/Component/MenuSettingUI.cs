@@ -6,7 +6,7 @@ using System.Linq;
 
 public enum SettingPageType
 {
-    Graphic = 0,
+    Display = 0,
     Audio = 1,
     Exit = 2
 }

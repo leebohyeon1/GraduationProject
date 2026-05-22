@@ -204,7 +204,19 @@ public class DataManager : MonoBehaviour
 
         DataList.Add(_currentGameData);
         _currentSlotIndex = DataList.Count - 1; // 방금 추가된 마지막 인덱스를 기억!
-        GamePlayTagManager.Instance.Initialize();
+        
+        // 매니저들의 상태를 완전히 초기화
+        if (GamePlayTagManager.Instance != null)
+        {
+            GamePlayTagManager.Instance.ClearTags();      // 1. 태그 리스트 비우기
+            GamePlayTagManager.Instance.Initialize();     // 2. 빈 데이터로 다시 초기화
+        }
+        
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.ResetQuest();           // 3. 퀘스트 초기화
+        }
+
         Debug.Log("새로운 게임 데이터를 생성했습니다.");
     }
 
@@ -222,7 +234,19 @@ public class DataManager : MonoBehaviour
 
         DataList[index] = _currentGameData;
         _currentSlotIndex = index;
-        GamePlayTagManager.Instance.Initialize();
+
+        // 매니저들의 상태를 완전히 초기화
+        if (GamePlayTagManager.Instance != null)
+        {
+            GamePlayTagManager.Instance.ClearTags();
+            GamePlayTagManager.Instance.Initialize();
+        }
+        
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.ResetQuest();
+        }
+
         Debug.Log("새로운 게임 데이터를 생성했습니다.");
     }
 
