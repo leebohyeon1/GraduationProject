@@ -37,6 +37,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         }
 
         _inputReaderSO.EscapeEvent += OnEscape;
+        _inputReaderSO.CancelEvent += OnEscape; // Cancel 입력 시에도 메뉴 닫기
         _inputReaderSO.NextEvent += OnNext;
         _inputReaderSO.PreviousEvent += OnPrevious;
     }
@@ -51,6 +52,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         }
 
         _inputReaderSO.EscapeEvent -= OnEscape;
+        _inputReaderSO.CancelEvent -= OnEscape;
         _inputReaderSO.NextEvent -= OnNext;
         _inputReaderSO.PreviousEvent -= OnPrevious;
         _playerSpawnedSO.Unsubscribe(this);
