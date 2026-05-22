@@ -74,10 +74,6 @@ public class Task_StepAttack : BaseAttackNode
                     runner.SetCurrentAttackData(_data);
                     // Log($"Step {_currentStep}: 데이터 교체 완료 -> <color=orange>{_data.AttackName}</color> (Phase {newData.Phase} <= {currentPhase})");
                 }
-                else
-                {
-                    // Log($"Step {_currentStep}: 데이터 교체 건너뜀. 요구 Phase: {newData.Phase}, 현재: {currentPhase}");
-                }
             }
         }
 
@@ -87,6 +83,18 @@ public class Task_StepAttack : BaseAttackNode
             _currentStepData = stepMovements[_currentStep];
             if (_currentStepData.distance > 0)
             {
+                //커브 1초 이상일 때 첫 키와 마지막 키의 시간값을 강제로 0과 1로 매핑하여 보정
+                if (_currentStepData.curve != null && _currentStepData.curve.keys.Length >= 2)
+                {
+                    Keyframe[] keys = _currentStepData.curve.keys;
+                    
+                    // 첫 키의 시간은 0, 마지막 키의 시간은 1로 강제 매핑 (값은 유지)
+                    float firstVal = keys[0].value;
+                    float lastVal = keys[keys.Length - 1].value;
+                    
+                    _currentStepData.curve.MoveKey(0, new Keyframe(0f, firstVal));
+                    _currentStepData.curve.MoveKey(keys.Length - 1, new Keyframe(1f, lastVal));
+                }
                 Vector3 desiredTarget = runner.transform.position + runner.transform.forward * _currentStepData.distance;
                 _targetPosition = GetStraightSafeDestination(runner.transform.position, desiredTarget, out _);
                 _isMoving = true;
@@ -142,16 +150,20 @@ public class Task_StepAttack : BaseAttackNode
 
         if (finalMoveDir != Vector3.zero)
         {
+            Debug.Log(1);
             Vector3 safeNextPos = GetSafeStepDestination(myPos, finalMoveDir, stepSize, out bool blockedByWall);
             if (GetHorizontalDistance(myPos, safeNextPos) <= minimumMovementDistance)
             {
+            Debug.Log(GetHorizontalDistance(myPos, safeNextPos));
                 _isMoving = false;
                 return;
             }
 
             CharacterController cc = runner.GetComponent<CharacterController>();
+            Debug.Log(3);
             if (cc != null)
             {
+            Debug.Log(4);
                 Vector3 moveVector = safeNextPos - myPos;
                 moveVector.y = -1.5f; // small downward force to avoid climbing surfaces
                 cc.Move(moveVector);
