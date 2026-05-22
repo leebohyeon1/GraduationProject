@@ -160,57 +160,24 @@ public class Enemy : MonoBehaviour
         Fire
     }
     bool _getPlayerCoin = false;
-    private Vector3 _lastObservedPosition;
-    private bool _hasObservedPosition;
-    private int _lastJumpGuardFrame = -1;
     protected void Awake()
     {
         _initializer = GetComponent<EnemyInitializer>();
         _initializer.Initialize();
         _getPlayerCoin = false;
-        ResetObservedPosition();
         if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
         {
             _getPlayerCoin = true;
             //이펙트 
         }
     }
-    private void Update()
-    {
-        ForceDie();
-    }
+
     /// <summary>
     /// 오브젝트 풀에서 꺼낼 때 상태를 재설정합니다.
     /// </summary>
-    private void OnEnable()
-    {
-        ResetObservedPosition();
-    }
-
-    private void LateUpdate()
-    {
-        GuardSuspiciousJump();
-    }
-    
-    void ForceDie()
-    {
-        Vector3 offset = transform.position - Data.StartPosition;
-        float sqrDistance = offset.sqrMagnitude; // 실제 거리의 제곱
-
-        float limit = 100f; // 허용할 최대 거리
-        float sqrLimit = limit * limit; // 비교 대상도 제곱
-        if(sqrDistance > sqrLimit)
-        {
-            Debug.LogWarning($"[Enemy] {gameObject.name}이(가) 시작 위치에서 너무 멀리 떨어졌습니다. 강제 사망 처리합니다. (거리: {Math.Sqrt(sqrDistance):F2})");
-            // EnemyHealth.Die(null);
-            Debug.Log($"enemy {blackboard.GetValue<Vector3>("HomePosition")}에서 너무 멀리 떨어짐. 강제 사망 처리.");
-        }
-    }
-
     public void Init()
     {
         _initializer?.Reinitialize();
-        ResetObservedPosition();
     }
 
     /// <summary>
@@ -333,63 +300,7 @@ public class Enemy : MonoBehaviour
         return enemyStat.MoneyReward;
     }
 
-    private void ResetObservedPosition()
-    {
-        _lastObservedPosition = transform.position;
-        _hasObservedPosition = true;
-    }
-
-    private void GuardSuspiciousJump()
-    {
-        if (!_enableJumpGuard || _suspiciousJumpDistance <= 0f)
-        {
-            return;
-        }
-
-        Vector3 currentPosition = transform.position;
-        if (!_hasObservedPosition)
-        {
-            _lastObservedPosition = currentPosition;
-            _hasObservedPosition = true;
-            return;
-        }
-
-        Vector3 delta = currentPosition - _lastObservedPosition;
-        if (delta.sqrMagnitude < _suspiciousJumpDistance * _suspiciousJumpDistance)
-        {
-            _lastObservedPosition = currentPosition;
-            return;
-        }
-
-        if (!ShouldRollbackSuspiciousJump())
-        {
-            _lastObservedPosition = currentPosition;
-            return;
-        }
-
-        if (_lastJumpGuardFrame == Time.frameCount)
-        {
-            return;
-        }
-
-        _lastJumpGuardFrame = Time.frameCount;
-        // RollbackSuspiciousJump(_lastObservedPosition, currentPosition, delta);
-        _lastObservedPosition = transform.position;
-    }
-
-    private bool ShouldRollbackSuspiciousJump()
-    {
-        switch (CurrentState)
-        {
-            case EnemyStateController.EnemyState.Idle:
-            case EnemyStateController.EnemyState.Patrol:
-            case EnemyStateController.EnemyState.Chase:
-            case EnemyStateController.EnemyState.Discover:
-                return true;
-            default:
-                return false;
-        }
-    }
+    
 
     
 

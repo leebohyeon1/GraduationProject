@@ -67,7 +67,7 @@ public class RandomPatrol : Node
             // Debug.Log("RandomPatrol: Found target position " + targetPos);
             if (targetPos != Vector3.zero)
             {
-                // runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
+                runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Patrol, MoveSpeed);
                 _hasTarget = true;
                 _stuckTimer = 0f;
                 _lastPosition = runner.transform.position;
