@@ -56,7 +56,7 @@ public class TitleSettingUI : TitleView
         int prevIndex = (_currentIndex - 1 + _settingComponentList.Count) % _settingComponentList.Count;
         int nextIndex = (_currentIndex + 1) % _settingComponentList.Count;
 
-        _currentSettingTitle.text = _settingComponentList[_currentIndex].gameObject.name;
+        _currentSettingTitle.text = _settingComponentList[_currentIndex].PageTitle;
         _nextSettingTitle.text = _settingComponentList[nextIndex].SettingName;
         _previousSettingTitle.text = _settingComponentList[prevIndex].SettingName;
 

@@ -736,6 +736,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 3024303247464990464}
   _skillLockImage: {fileID: 2166884022404269282}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -1562,6 +1563,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 7723808733092716338}
   _skillLockImage: {fileID: 5176963720757934808}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -2390,7 +2392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2302062176264793638
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2544,9 +2546,9 @@ RectTransform:
   - {fileID: 600062763770515180}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -261.5}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8759864780059839832
@@ -2941,6 +2943,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 3097412093441565772}
   _skillLockImage: {fileID: 2638044162635224869}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities: []
@@ -3215,11 +3218,11 @@ MonoBehaviour:
   _skillIcon: {fileID: 8603806695291251861}
   _skillLockImage: {fileID: 977082843006085365}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.7294118, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags:
-  - {fileID: 11400000, guid: 1c6f19d7a980aa447b6bb801fc4979e5, type: 2}
+  _needTags: []
   _learnAbilities:
   - {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
@@ -3488,9 +3491,9 @@ RectTransform:
   - {fileID: 643399436910816011}
   m_Father: {fileID: 6501426335569691641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 66.5, y: -21.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1221780155023196270
@@ -3660,9 +3663,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50.000004, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1211435179873550974
@@ -4203,7 +4206,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioSettingUI
   _pageTitle: Audio
-  _pageType: 1
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _rows:
   - Name: Master
@@ -5224,7 +5226,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExitSettingUI
   _pageTitle: Quit
-  _pageType: 2
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _quitToTitleButton: {fileID: 6610397828342829285}
   _quitToDesktopButton: {fileID: 5830686780027643659}
@@ -6491,7 +6492,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DisplaySettingUI
   _pageTitle: Display
-  _pageType: 0
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _resSetting:
     valueText: {fileID: 606733802970981576}
@@ -7066,9 +7066,9 @@ RectTransform:
   - {fileID: 2244369788930723146}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -30.5}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6125731244450931507
@@ -7542,9 +7542,9 @@ RectTransform:
   - {fileID: 1052372738064148997}
   m_Father: {fileID: 6501426335569691641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200.23999, y: -21.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3066681346563640999
@@ -8020,6 +8020,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 589266436129398377}
   _skillLockImage: {fileID: 3635198341405344442}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -9362,6 +9363,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 5042108363922498339}
   _skillLockImage: {fileID: 5514322633687584748}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -10044,11 +10046,11 @@ MonoBehaviour:
   _skillIcon: {fileID: 1621130854484851354}
   _skillLockImage: {fileID: 7968661888922978595}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags:
-  - {fileID: 11400000, guid: 37ee8240268e1e640b06bcef1c0e248d, type: 2}
+  _needTags: []
   _learnAbilities:
   - {fileID: 11400000, guid: a0f4c9bda92d0aa4cb3715686c1d2f4d, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
@@ -10454,6 +10456,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 1262593512120540403}
   _skillLockImage: {fileID: 68232660558005811}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -11262,6 +11265,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 1043373816785516871}
   _skillLockImage: {fileID: 2069277859211232517}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -12968,6 +12972,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 6890640416425480432}
   _skillLockImage: {fileID: 7518078961755984935}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -14533,9 +14538,9 @@ RectTransform:
   - {fileID: 339871313425061101}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -107.5}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5145717536352592372
@@ -14949,6 +14954,8 @@ MonoBehaviour:
   _pageComponents: []
   _inputReader: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _pageTitle: {fileID: 1327151493006008563}
+  _nextSettingTitle: {fileID: 9026824979898536335}
+  _previousSettingTitle: {fileID: 2532082685024701699}
   _activePagePoint: {fileID: 3975496909221249415}
   _pointList:
   - {fileID: 4664397141724055173}
@@ -14986,9 +14993,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 83.33334, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6559437281104370137
@@ -15699,6 +15706,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 127207109077387751}
   _skillLockImage: {fileID: 9141328727009128347}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -16317,9 +16325,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6880426950740528127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 16.666668, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3600263374027814956
@@ -17307,6 +17315,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 9041561381541696516}
   _skillLockImage: {fileID: 7064487824446839708}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
+  _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
   _price: 0
   _specialPrice: 0
   _needAbilities:
@@ -17741,9 +17750,9 @@ RectTransform:
   - {fileID: 1331809712322553991}
   m_Father: {fileID: 5662683137748906645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -184.5}
   m_SizeDelta: {x: 806, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4345159989358230947

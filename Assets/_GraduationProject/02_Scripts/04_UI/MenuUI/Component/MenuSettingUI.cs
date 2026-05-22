@@ -20,6 +20,8 @@ public class MenuSettingUI : MenuUIComponent
 
     [Header("Page")]
     [SerializeField] private TMP_Text _pageTitle;
+    [SerializeField] private TMP_Text _nextSettingTitle;
+    [SerializeField] private TMP_Text _previousSettingTitle;
     [SerializeField] private RectTransform _activePagePoint;
     [SerializeField] private List<RectTransform> _pointList;
 
@@ -103,7 +105,13 @@ public class MenuSettingUI : MenuUIComponent
                     // 현재 페이지의 타이틀 정보로 UI 업데이트
                     if (_pageTitle != null)
                     {
+                        int prevIndex = (i - 1 + _pageComponents.Count) % _pageComponents.Count;
+                        int nextIndex = (i + 1) % _pageComponents.Count;
+
                         _pageTitle.text = _pageComponents[i].PageTitle;
+                        _nextSettingTitle.text = _pageComponents[nextIndex].SettingName;
+                        _previousSettingTitle.text = _pageComponents[prevIndex].SettingName;
+
                     }
                 }
                 else

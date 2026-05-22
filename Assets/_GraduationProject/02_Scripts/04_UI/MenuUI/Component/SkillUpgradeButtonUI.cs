@@ -17,6 +17,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [SerializeField] private Image _skillIcon;
     [SerializeField] private Image _skillLockImage;
     [SerializeField] private Color _lockColor;
+    [SerializeField] private Color _unlockColor;
 
     private PlayerController _playerController;
 
@@ -87,7 +88,8 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             _isLearned = true;
             _skillToggleButton.interactable = false;
             _skillToggleButton.SetIsOnWithoutNotify(true);
-            _skillToggleButton.image.color = Color.yellow; // 배운 상태 색상
+            _skillToggleButton.image.color = _unlockColor; // 배운 상태 색상
+            _skillIcon.color = _unlockColor; // 아이콘도 밝게
 
             if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
         }
