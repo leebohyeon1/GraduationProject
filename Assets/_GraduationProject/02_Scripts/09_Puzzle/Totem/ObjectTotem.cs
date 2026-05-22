@@ -9,14 +9,12 @@ public class ObjectTotem : TotemBase
     [Header("Object Settings")]
     [SerializeField] private int _maxDurability = 3;
     [SerializeField] private Vector2Int _targetGridPos;
-    [SerializeField] private MeshRenderer _renderer;
 
     [Header("Gizmo")]
     [SerializeField] private bool _showTargetGizmo = true;
     [SerializeField] private Color _targetGizmoColor = Color.green;
     [SerializeField] private PuzzleGridManager _gizmoGridManager;
 
-    private Color _originalColor;
 
     public bool IsAtTarget { get; private set; }
     public Vector2Int TargetGridPos => _targetGridPos;
@@ -26,16 +24,6 @@ public class ObjectTotem : TotemBase
         base.Start();
         _type = TotemType.Object;
         _currentDurability = _maxDurability;
-
-        if (_renderer == null)
-        {
-            _renderer = GetComponentInChildren<MeshRenderer>();
-        }
-
-        if (_renderer != null)
-        {
-            _originalColor = _renderer.material.color;
-        }
     }
 
     protected override void OnMoveComplete()
@@ -59,11 +47,6 @@ public class ObjectTotem : TotemBase
         _currentDurability = _maxDurability;
         IsAtTarget = false;
 
-        if (_renderer != null)
-        {
-            _renderer.material.color = _originalColor;
-            _renderer.material.DOKill();
-        }
 
         Debug.Log("[ObjectTotem] Reset Complete.");
     }
@@ -84,10 +67,7 @@ public class ObjectTotem : TotemBase
         _state = TotemState.Destroyed;
         Debug.Log("[ObjectTotem] Broken! (Remains on field)");
 
-        if (_renderer != null)
-        {
-            _renderer.material.DOColor(Color.gray, 0.5f);
-        }
+
         _feedbackQueue.Enqueue(() => 
         {
             PuzzleGridManager.Instance.BreakAllTotems();
@@ -96,7 +76,6 @@ public class ObjectTotem : TotemBase
         {
             PuzzleGridManager.Instance.ResetPuzzle();
         });
-        transform.DOShakePosition(0.5f, 0.5f);
     }
     private void Update() {
         if (_feedbackQueue.Count > 0 && !feedback.IsPlaying)
