@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
@@ -26,6 +27,8 @@ public class CutSceneSkip : MonoBehaviour
     private Coroutine _fadeInCoroutine;
     private Coroutine _hintCoroutine;
     private float _currentProgress = 0f; // 0 ~ 1 사이의 진행도
+
+    public UnityEvent OnSkipPerformed; // 스킵이 완료되었을 때 호출되는 이벤트
 
     private void Awake()
     {
@@ -184,6 +187,9 @@ public class CutSceneSkip : MonoBehaviour
         {
             _playableDirector.time = _playableDirector.duration - _spareTime;
             _playableDirector.Evaluate();
+
+            // 스킵 완료 이벤트 호출
+            OnSkipPerformed?.Invoke();
         }
     }
 

@@ -30,6 +30,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
@@ -124,6 +126,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   stopDistance: 1.5
+--- !u!114 &-8159397109106606061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Campublish
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 518, y: -167}
+  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &-7983912587791365349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +294,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
@@ -508,6 +526,8 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.8
   _maxSpeedThreshold: 0.1
@@ -589,6 +609,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 411, y: 17}
   nodes:
+  - {fileID: -8159397109106606061}
   - {fileID: 70206920611748237}
   - {fileID: 858940598927237747}
   services: []
@@ -876,12 +897,14 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
+  additionalWallSpacing: 0.1
+  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.9
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
   jumpRange: 22
-  jumpDuration: 1
+  jumpDuration: 0.8
   jumpHeight: 8
   heightCurve:
     serializedVersion: 2
@@ -914,32 +937,14 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.8688737
-      value: 0.98667866
-      inSlope: -0.062317125
-      outSlope: -0.062317125
+      time: 0.91534424
+      value: 0.6319174
+      inSlope: -3.0356266
+      outSlope: -3.0356266
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 1
-    - serializedVersion: 3
-      time: 0.92488545
-      value: 0.8738419
-      inSlope: -0.91983974
-      outSlope: -0.91983974
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.8419941
-    - serializedVersion: 3
-      time: 0.9552481
-      value: 0.53632545
-      inSlope: -3.7480562
-      outSlope: -3.7480562
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.10691208
-      outWeight: 0.7206824
+      outWeight: 0.80465037
     - serializedVersion: 3
       time: 1
       value: 0

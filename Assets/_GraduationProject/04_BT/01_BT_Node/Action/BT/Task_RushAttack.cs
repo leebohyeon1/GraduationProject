@@ -12,30 +12,30 @@ public class Task_RushAttack : BaseAttackNode
 
     [Header("Rush Settings")]
     /// <summary>
-    /// ?뚯쭊 ?띾룄?낅땲??
+    /// 돌진 속도입니다. (즉, 이 속도로 돌진이 진행됩니다.)
     /// </summary>
     public float rushSpeed = 15f;
     /// <summary>
-    /// ?뚮젅?댁뼱 ?묒큺 ?먯젙 嫄곕━?낅땲??
+    /// 이건 돌진이 플레이어와 이 거리 이하로 가까워지면 자동으로 멈추는 설정입니다. (즉, 플레이어와 너무 가까워지는 것을 방지하여 돌진이 계속되는 상황을 방지)
     /// </summary>
-    public float lockDistance = 5.0f; // ??嫄곕━ ?덉뿉 ?ㅻ㈃ 諛⑺뼢 怨좎젙 ?뚯쭊
+    public float lockDistance = 5.0f;
     /// <summary>
-    /// 理쒕? ?뚯쭊 ?쒓컙?낅땲??
+    /// 이건 돌진 시작 후 최대 지속 시간으로, 이 시간이 지나면 돌진이 자동으로 종료됩니다. (즉, 이 시간 이상 돌진이 지속되지 않도록 하는 안전장치 역할)
     /// </summary>
-    public float maxChargeDuration = 3.0f; // 理쒕? ?뚯쭊 ?쒓컙
+    public float maxChargeDuration = 3.0f; 
     /// <summary>
-    /// ?몃━嫄??ш굅由ъ엯?덈떎.
+    /// 이건 ActionSO 트리거 시점에서 플레이어와의 최대 거리로, 이 범위를 벗어나면 트리거 자체가 안 됩니다. (즉, 이 범위 내에서만 돌진 공격이 시작될 수 있습니다.)
     /// </summary>
     public float maxTriggerRange = 15f;
     /// <summary>
-    /// 異붿쟻 諛⑺뼢 蹂댁젙 ?띾룄?낅땲??
+    /// 이건 돌진 중 플레이어를 추적할 때의 회전 속도로, 값이 높을수록 플레이어를 더 빠르게 추적합니다. (0이면 처음 설정된 방향으로만 돌진)
     /// </summary>
     public float trackingTurnSpeed = 2.0f;
 
     [Header("Phase 2 Trail Settings")]
     [SerializeField] private string trailFeedbackName = "RushTrail";
     /// <summary>
-    /// ?몃젅???앹꽦 媛꾧꺽?낅땲??
+    /// 이건 돌진 중 플레이어와의 거리가 이 값 이상일 때마다 돌진 궤적 이펙트를 생성하는 간격입니다. (즉, 플레이어와 멀어질수록 더 자주 궤적이 생성됩니다.)
     /// </summary>
     public float trailSpawnInterval = 1.5f;
 

@@ -37,6 +37,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         }
 
         _inputReaderSO.EscapeEvent += OnEscape;
+        _inputReaderSO.CancelEvent += OnEscape; // Cancel 입력 시에도 메뉴 닫기
         _inputReaderSO.NextEvent += OnNext;
         _inputReaderSO.PreviousEvent += OnPrevious;
     }
@@ -51,6 +52,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         }
 
         _inputReaderSO.EscapeEvent -= OnEscape;
+        _inputReaderSO.CancelEvent -= OnEscape;
         _inputReaderSO.NextEvent -= OnNext;
         _inputReaderSO.PreviousEvent -= OnPrevious;
         _playerSpawnedSO.Unsubscribe(this);
@@ -93,11 +95,12 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
             _currentComponentIndex = 0;
         }
 
-        for (int i =0; i < _mainUIComponents.Count; i++)
+        for (int i = 0; i < _mainUIComponents.Count; i++)
         {
             if (i == _currentComponentIndex)
             {
                 _mainUIComponents[i].gameObject.SetActive(true);
+                _mainUIComponents[i].OnOpen(); // 페이지가 열릴 때 초기화 로직(포커싱 등) 호출
             }
             else
             {

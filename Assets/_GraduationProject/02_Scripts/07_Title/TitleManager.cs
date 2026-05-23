@@ -23,6 +23,7 @@ public class TitleManager : MonoBehaviour
 
     [Header("State")]
     [SerializeField] private TitleState _currentState = TitleState.None;
+    private int _lastStateChangeFrame = -1; // 마지막으로 상태가 바뀐 프레임을 기록
     public event UnityAction<TitleState> TitleStateChanged;  // 타이틀 상태 변경 이벤트
 
     private void Start()
@@ -58,6 +59,7 @@ public class TitleManager : MonoBehaviour
         }
 
         _currentState = state;
+        _lastStateChangeFrame = Time.frameCount; // 상태가 변경된 시점의 프레임 기록
         UpdateCamera(); // 카메라 업데이트
 
         TitleStateChanged?.Invoke(_currentState);
@@ -113,6 +115,9 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnNewGameButton()
     {
+        // 동일 프레임 중복 입력 방지
+        if (Time.frameCount <= _lastStateChangeFrame) return;
+
         if (_currentState == TitleState.MainMenu)
         {
             SetState(TitleState.SelectData);
@@ -124,6 +129,8 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnContinueButton()
     {
+        if (Time.frameCount <= _lastStateChangeFrame) return;
+
         if (_currentState == TitleState.MainMenu)
         {
             SetState(TitleState.SelectData);
@@ -135,6 +142,8 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnQuitGameButton()
     {
+        if (Time.frameCount <= _lastStateChangeFrame) return;
+
         if (_currentState == TitleState.MainMenu)
         {
             Application.Quit();
@@ -143,6 +152,8 @@ public class TitleManager : MonoBehaviour
 
     public void OnSettingButton()
     {
+        if (Time.frameCount <= _lastStateChangeFrame) return;
+
         if (_currentState == TitleState.MainMenu)
         {
             SetState(TitleState.Setting);

@@ -14,6 +14,8 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     public event Action<IInteractable> InteractableChanged;
 
 
+    private bool _isBattleState = false;
+
     public void Initialize(PlayerController player)
     {
         _events = player.Events;
@@ -21,12 +23,14 @@ public class PlayerInteract : MonoBehaviour, IDisposable
         _inputReader = player.InputReader;
 
         _inputReader.InteractEvent += Interact;
+        _events.BattleStateChanged += OnBattleStateChanged;
         player.RegisterDisposable(this);
     }
 
     public void Dispose()
     {
         _inputReader.InteractEvent -= Interact;
+        _events.BattleStateChanged -= OnBattleStateChanged;
 
         Interacted = null;
         InteractableChanged = null;
@@ -35,6 +39,9 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     public void Interact()
     {
         if (_interactable == null) { return; }
+
+        // 비전투 상황에서만 상호작용 가능
+        if (_isBattleState) { return; }
 
         if (Interactable != null)
         {
@@ -45,6 +52,11 @@ public class PlayerInteract : MonoBehaviour, IDisposable
 
             SetInteractable(null);
         }
+    }
+
+    private void OnBattleStateChanged(bool isBattle)
+    {
+        _isBattleState = isBattle;
     }
 
     public void SetInteractable(IInteractable interactable)

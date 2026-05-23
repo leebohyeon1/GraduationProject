@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
 /// </summary>
-public class PlayerCombat : MonoBehaviour, IDisposable
+public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStateData>
 {
     [Header("References")]
     private PlayerEvents _events;   // 플레이어 이벤트
@@ -66,6 +66,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     public event Action CheckedProjectileCounter;
 
     [Header("BattleState")]
+    [SerializeField] private EnemyStateEventSO _onEnemyStateChanged; // 적 상태 변경 이벤트
+    private HashSet<Enemy> _detectedEnemies = new HashSet<Enemy>(); // 현재 인식 중인 적 목록
+
     [SerializeField] private float _lastBattleTime;  // 마지막 전투 시간
     public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
 
@@ -97,6 +100,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
         _events.CounterSucceeded += OnCounterSucceeded;
 
         _events.BeforeDamaged += OnBeforeDamaged;
+
+        if (_onEnemyStateChanged != null)
+        {
+            _onEnemyStateChanged.Subscribe(this);
+        }
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -140,6 +148,11 @@ public class PlayerCombat : MonoBehaviour, IDisposable
 
         _events.BeforeDamaged -= OnBeforeDamaged;
 
+        if (_onEnemyStateChanged != null)
+        {
+            _onEnemyStateChanged.Unsubscribe(this);
+        }
+
         if(_battleStateStopCoroutine != null)
         {
             StopCoroutine(_battleStateStopCoroutine);
@@ -170,11 +183,14 @@ public class PlayerCombat : MonoBehaviour, IDisposable
     /// <param name="isBattleState">새로운 전투 상태</param>
     public void SetBattleState(bool isBattleState)
     {
+        if (_isBattleState == isBattleState) return;
+
         _isBattleState = isBattleState;
+        _events.TriggerBattleStateChanged(_isBattleState);
     }
 
     /// <summary>
-    /// 전투 상태 변경 이벤트를 발생시킵니다.
+    /// 전투 상태 변경 이벤트를 발생시킵니다. (외부 요청용 - 이제 적 상태 기반으로 자동 관리되지만 수동 트리거는 유지)
     /// </summary>
     public void TriggerBattleStateChanged(bool isBattleState)
     {
@@ -183,30 +199,31 @@ public class PlayerCombat : MonoBehaviour, IDisposable
             return;
         }
 
-        if (isBattleState)
-        {
-            if(_battleStateStopCoroutine != null)
-            {
-                StopCoroutine(_battleStateStopCoroutine);
-            }
-            
-            _battleStateStopCoroutine = StartCoroutine(BattleStateStopCoroutine());
-        }
-
         SetBattleState(isBattleState);
-        BattleStateChaged?.Invoke(isBattleState);
     }
 
     /// <summary>
-    /// 전투 상태 종료 코루틴
+    /// 적의 상태 변화에 따라 인식 중인 적 목록을 갱신하고 전투 상태를 판별합니다.
     /// </summary>
-    /// <returns></returns>
-    private IEnumerator BattleStateStopCoroutine()
+    public void OnEventTrigger(EnemyStateData data)
     {
-        yield return new WaitForSeconds(8f);
-        
-        TriggerBattleStateChanged(false);
-        _battleStateStopCoroutine = null;
+        switch (data.stateType)
+        {
+            case EnemyStateType.Detected:
+            case EnemyStateType.SummonBoss:
+                if (data.enemy != null)
+                    _detectedEnemies.Add(data.enemy);
+                break;
+
+            case EnemyStateType.Lost:
+            case EnemyStateType.Dead:
+                if (data.enemy != null)
+                    _detectedEnemies.Remove(data.enemy);
+                break;
+        }
+
+        // 인식 중인 적이 한 마리라도 있으면 전투 상태로 판별
+        SetBattleState(_detectedEnemies.Count > 0);
     }
 
     #endregion

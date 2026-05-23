@@ -119,15 +119,17 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 #if UNITY_EDITOR
         _inputActions.Developer.Enable();
 #endif
-        _inputActions.Share.Enable();
+
         switch (newMode)
         {
             case InputMode.Gameplay:
+                _inputActions.Share.Enable();
                 _inputActions.Player.Enable();
                 break;
 
             case InputMode.UI:
                 _inputActions.UI.Enable();
+                _inputActions.Share.Enable();
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 break;

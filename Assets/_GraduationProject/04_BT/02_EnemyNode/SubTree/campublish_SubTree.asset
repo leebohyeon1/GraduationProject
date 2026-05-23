@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7007068429772297110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: "\uAC70\uB9AC\uCCB4\uD06C"
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 751, y: -619}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 4
+    value: 15
+--- !u!114 &-6760136662301184371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: lostP(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 555, y: -483}
+  nodes:
+  - {fileID: -7007068429772297110}
+  - {fileID: 6549698171419845507}
+  - {fileID: -2750809515511143027}
+  services: []
+--- !u!114 &-5564501409827605979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250993a6a24764f4b9d5041f18cb491b, type: 3}
+  m_Name: Task_Camera Publish
+  m_EditorClassIdentifier: Assembly-CSharp::Task_CameraPublish
+  position: {x: 687, y: -728}
+  publish: 0
+--- !u!114 &-4366044529996931014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: "\uAC70\uB9AC\uCCB4\uD06C"
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 738, y: -263}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: DistanceToTarget
+    Operator: 0
+    value: 15
+--- !u!114 &-2750809515511143027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250993a6a24764f4b9d5041f18cb491b, type: 3}
+  m_Name: Task_Camera Publish(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Task_CameraPublish
+  position: {x: 736, y: -468}
+  publish: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
+  m_Name: campublish_SubTree
+  m_EditorClassIdentifier: Assembly-CSharp::SubTree
+  rootNode: {fileID: 7582284022397784408}
+--- !u!114 &1676284116092532426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
+  m_Name: Condition_Blackboard Float Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
+  position: {x: 687, y: -805}
+  exceptCondition:
+    key: 
+  floatCondition:
+    key: 
+    Operator: 1
+    value: 30
+--- !u!114 &2008178909787335439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: findP(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 585, y: -228}
+  nodes:
+  - {fileID: 3093005628152479827}
+  - {fileID: -4366044529996931014}
+  - {fileID: 6493978541175376527}
+  services: []
+--- !u!114 &3093005628152479827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3491424307f0a744087cab8347f6b458, type: 3}
+  m_Name: Condition_Camera Publish(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CameraPublish
+  position: {x: 738, y: -340}
+  exceptCondition:
+    key: 
+  stateType: 1
+--- !u!114 &6493978541175376527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250993a6a24764f4b9d5041f18cb491b, type: 3}
+  m_Name: Task_Camera Publish(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Task_CameraPublish
+  position: {x: 738, y: -190}
+  publish: 1
+--- !u!114 &6549698171419845507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3491424307f0a744087cab8347f6b458, type: 3}
+  m_Name: Condition_Camera Publish(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_CameraPublish
+  position: {x: 751, y: -542}
+  exceptCondition:
+    key: 
+  stateType: 0
+--- !u!114 &7057705476003603023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90e8b0eff70424bbd1de84c81c71dc, type: 3}
+  m_Name: Condition_cutscene
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
+  position: {x: 687, y: -874}
+--- !u!114 &7582284022397784408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
+  m_Name: cam(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
+  position: {x: 288, y: -284}
+  nodes:
+  - {fileID: 7991801066834429390}
+  - {fileID: -6760136662301184371}
+  - {fileID: 2008178909787335439}
+  services: []
+--- !u!114 &7991801066834429390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
+  m_Name: "\uCEF7\uC52C \uC81C\uC678"
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
+  position: {x: 517, y: -782}
+  nodes:
+  - {fileID: 7057705476003603023}
+  - {fileID: 1676284116092532426}
+  - {fileID: -5564501409827605979}
+  services: []

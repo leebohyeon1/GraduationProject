@@ -170,6 +170,13 @@ public abstract class PlayerBaseState : IState, IDisposable
     /// </summary>
     protected virtual void OnDodge()
     {
+        // 상호작용 가능한 물체가 있고 비전투 상황이면 회피를 하지 않음 (상호작용 우선)
+        // 직접 참조 대신 Controller를 통해 노출된 프로퍼티를 사용합니다.
+        if (p_owner.Interact.Interactable != null && !p_owner.Combat.IsBattleState)
+        {
+            return;
+        }
+
         // "Dodge" 능력이 있고 스테미나가 충분하며 회피가 가능할 때만 전환
         if (p_owner.Stamina.CheckStamina() && p_owner.Movement.CanDodge)
         {

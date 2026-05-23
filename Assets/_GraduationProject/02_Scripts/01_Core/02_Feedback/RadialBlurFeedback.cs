@@ -51,13 +51,22 @@ public class RadialBlurFeedback : MonoBehaviour
     /// </summary>
     public void TriggerBlurPulse()
     {
-        TriggerBlurPulse(Intensity, DurationIn, DurationOut);
+        TriggerBlurPulse(Intensity, DurationIn, ActiveDuration, DurationOut);
     }
 
     /// <summary>
-    /// Unity Event에서 intensity와 duration을 지정하여 호출할 수 있는 함수입니다.
+    /// Unity Event에서 intensity, durationIn, durationOut을 지정하여 호출할 수 있는 함수입니다.
+    /// ActiveDuration은 인스펙터에 설정된 기본값을 사용합니다.
     /// </summary>
     public void TriggerBlurPulse(int intensity, float durationIn, float durationOut)
+    {
+        TriggerBlurPulse(intensity, durationIn, ActiveDuration, durationOut);
+    }
+
+    /// <summary>
+    /// Unity Event에서 모든 매개변수를 지정하여 호출할 수 있는 함수입니다.
+    /// </summary>
+    public void TriggerBlurPulse(int intensity, float durationIn, float activeDuration, float durationOut)
     {
         if (blurSettings == null) return;
 
@@ -83,7 +92,7 @@ public class RadialBlurFeedback : MonoBehaviour
             ).SetEase(Ease.OutQuad) // 부드럽게 설정
         );
 
-        blurSequence.AppendInterval(ActiveDuration); // 최대 강도에서 잠시 유지   
+        blurSequence.AppendInterval(activeDuration); // 최대 강도에서 잠시 유지   
 
         // 4. "페이드 Out" (강도를 intensity에서 0으로 감소)
         blurSequence.Append(
@@ -108,27 +117,45 @@ public class RadialBlurFeedback : MonoBehaviour
     /// </summary>
     public void TriggerBlurPulse(Vector3 settings)
     {
-        TriggerBlurPulse((int)settings.x, settings.y, settings.z);
+        TriggerBlurPulse((int)settings.x, settings.y, ActiveDuration, settings.z);
+    }
+
+    /// <summary>
+    /// Unity Event에서 Vector4를 매개변수로 받는 함수입니다.
+    /// 인스펙터의 Unity Event에서 X: Intensity, Y: DurationIn, Z: ActiveDuration, W: DurationOut으로 입력하세요.
+    /// </summary>
+    public void TriggerBlurPulse(Vector4 settings)
+    {
+        TriggerBlurPulse((int)settings.x, settings.y, settings.z, settings.w);
     }
 
     // --- MMF Player 및 외부 제어를 위한 개별 설정 메서드 ---
 
     public void SetIntensity(int intensity) => Intensity = intensity;
     public void SetDurationIn(float duration) => DurationIn = duration;
+    public void SetActiveDuration(float duration) => ActiveDuration = duration;
     public void SetDurationOut(float duration) => DurationOut = duration;
 
     /// <summary>
-    /// 문자열 형식을 통해 한 번에 호출하는 방식입니다 (예: "30, 0.5, 1.0")
+    /// 문자열 형식을 통해 한 번에 호출하는 방식입니다 (예: "30, 0.5, 0.5, 1.0")
     /// </summary>
     public void TriggerBlurPulseString(string settings)
     {
         string[] split = settings.Split(',');
-        if (split.Length >= 3)
+        if (split.Length >= 4)
+        {
+            int intensity = int.Parse(split[0]);
+            float inTime = float.Parse(split[1]);
+            float activeTime = float.Parse(split[2]);
+            float outTime = float.Parse(split[3]);
+            TriggerBlurPulse(intensity, inTime, activeTime, outTime);
+        }
+        else if (split.Length >= 3)
         {
             int intensity = int.Parse(split[0]);
             float inTime = float.Parse(split[1]);
             float outTime = float.Parse(split[2]);
-            TriggerBlurPulse(intensity, inTime, outTime);
+            TriggerBlurPulse(intensity, inTime, ActiveDuration, outTime);
         }
     }
 

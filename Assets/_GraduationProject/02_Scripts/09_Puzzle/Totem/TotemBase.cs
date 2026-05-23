@@ -76,7 +76,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
         _state = TotemState.Destroyed;
         
-        feedback.PlayFeedback(broken);
+        //feedback.PlayFeedback(broken);
     }
     public void TakeDamage(DamageData damageData)
     {
@@ -84,8 +84,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         // 보통 고정 벽은 때려도 꿈쩍 않는 게 자연스러움.
         if (!_isMovable) 
         {
-            // OnHitBlocked(); // 필요하면 흔들림 추가
-            feedback.PlayFeedback(blocked);
+            OnHitBlocked();
             return;
         }
 
@@ -96,7 +95,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         {
             OnHitBlocked();
             Debug.Log($"[TotemBase] Attack {damageData.AttackType} not effective. Blocked!");
-            feedback.PlayFeedback(blocked);
+            OnHitBlocked();
             return;
         }
         Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
@@ -180,7 +179,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
     protected virtual void OnHitBlocked()
     {
-        transform.DOShakePosition(0.3f, 0.2f);
+        feedback.PlayFeedback(blocked);
     }
 
     private Vector2Int GetCardinalDirection(Vector3 dir)

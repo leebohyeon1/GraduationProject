@@ -14,9 +14,7 @@ public class Task_BossCutsceneEnd : Node
 
     public override void OnExit()
     {
-
-        runner.enemyStat.EStateEventSO?.Publish(new EnemyStateData{
-            enemy = runner, stateType = EnemyStateType.SummonBoss});
+        runner.StateType = EnemyStateType.SummonBoss;
     }
     
     public override Node Clone()
