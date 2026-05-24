@@ -91,12 +91,6 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.ClearStats();
 
-        // 전투 상태일 때 구르기만 전투 상태 유지
-        if (p_owner.Combat.IsBattleState)
-        {
-            p_owner.Combat.TriggerBattleStateChanged(true);
-        }
-
         p_owner.Events.TriggerDodgeFinished();
     }
 
@@ -120,11 +114,6 @@ public class PlayerDodgeState : PlayerBaseState
     public void OnDodgeStarted()
     {
         // 전투 상태일 때 구르기만 전투 상태 유지
-        if (p_owner.Combat.IsBattleState)
-        {
-            p_owner.Combat.TriggerBattleStateChanged(true);
-        }
-
         if (p_owner.Movement.DodgeConfig.IsInvincible)
         {
             p_owner.Ability.AddTag(p_owner.Movement.InvincibleSO);

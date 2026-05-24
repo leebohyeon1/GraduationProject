@@ -64,9 +64,13 @@ public class DialogueManager : MonoBehaviour
         var database = DataManager.Instance.DialogueDatabase;
         if (database == null) return;
 
+        // 게임 데이터가 로드되지 않았을 경우(예: 로딩 중 혹은 특수 상황) 방어 코드 추가
+        var gameData = DataManager.Instance.GetGameData();
+        if (gameData == null) return;
+
         foreach (var dialogue in database.DialogueDataList)
         {
-            if (DataManager.Instance.GetGameData().CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
+            if (gameData.CompleteDialogueSet.Contains(dialogue.DialogueGroupID)) continue;
             
             // 현재 재생 중인 대화와 동일한 그룹이면 중복 실행 방지
             if (_currentDialogue != null && _currentDialogue.DialogueGroupID == dialogue.DialogueGroupID) continue;

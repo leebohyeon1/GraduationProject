@@ -146,7 +146,6 @@ public class PlayerChargeState : PlayerBaseState
             p_owner.Events.TriggerChargeCompleted(false);
         }
         p_owner.Combat.SetCharge(false);
-        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 On
        
         _chargeTimer = 0f;
         _shouldTransition = false;
@@ -175,7 +174,6 @@ public class PlayerChargeState : PlayerBaseState
         base.ClearStats();
 
         p_owner.Combat.TriggerBattleStateChanged(true);
-        p_owner.Events.TriggerRegenStamina(true);                      // 스테미나 재생성 가능
 
         _shouldTransition = false;
         _chargeTimer = 0f;

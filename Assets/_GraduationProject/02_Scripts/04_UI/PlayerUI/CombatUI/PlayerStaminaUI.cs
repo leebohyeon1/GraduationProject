@@ -139,7 +139,6 @@ public class PlayerStaminaUI : PlayerUIBase
             // 스테미나가 감소했거나(사용), 마지막 트리거 후 1초가 지났을 때(재생 중 유지)만 전투 상태를 갱신합니다.
             if (currentStamina < previousStamina || Time.time - _lastBattleStateTriggerTime > 1f)
             {
-                p_player.Combat.TriggerBattleStateChanged(true);
                 _lastBattleStateTriggerTime = Time.time;
             }
         }
