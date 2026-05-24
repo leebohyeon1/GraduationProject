@@ -9,7 +9,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     private PlayerData _runtimeData;
     public PlayerData RuntimeData => _runtimeData;
 
-    [SerializeField] private HashSet<PlayerAbilitySO> _abilitySet = new HashSet<PlayerAbilitySO>();
+    [SerializeField] private List<PlayerAbilitySO> _abilitySet = new List<PlayerAbilitySO>();
     [SerializeField] private List<PlayerAbilityTagSO> _abilityTags = new List<PlayerAbilityTagSO>(); // For Inspector visibility if needed
 
     [Header("Event")]
@@ -28,7 +28,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _events.BeforeDamaged += OnBeforeDamaged;
         _abilitySelected.Subscribe(this);
 
-        InitializeData(player.RuntimeData);
+        StartCoroutine(InitializeDataCoroutine(player.RuntimeData));
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
@@ -39,6 +39,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// </summary>
     public void Dispose()
     {
+        StopAllCoroutines(); // 진행 중인 초기화 중단
         _events.BeforeDamaged -= OnBeforeDamaged;
         _abilitySelected.Unsubscribe(this);
 
@@ -51,10 +52,13 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         }
     }
 
-    private void InitializeData(PlayerData data)
+    private System.Collections.IEnumerator InitializeDataCoroutine(PlayerData data)
     {
         _runtimeData = data;
-     
+        
+        // 1초 대기
+        yield return new WaitForSeconds(1.0f);
+
         // 저장된 능력이 있다면 불러오기
         if (data != null && data.AcquiredAbilityIds != null)
         {
@@ -83,6 +87,7 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     {
         Debug.Log("기술 로드: " + ability.Id);
         _abilitySet.Add(ability);
+        ability.RegisterAbility(this); // 기술 등록 추가
     }
 
     /// <summary>

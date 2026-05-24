@@ -72,11 +72,10 @@ public class PlayerAbilitySO : ScriptableObject, IEquatable<PlayerAbilitySO>
     /// <param name="ability">플레이어</param>
     public virtual void UnregisterAbility(PlayerAbility ability)
     {
-        p_ability = null;
-        p_owner = null;
-
         RemoveAllSkillTags();
 
+        p_ability = null;
+        p_owner = null;
         p_tagInstances = null;
     }
 
@@ -99,11 +98,16 @@ public class PlayerAbilitySO : ScriptableObject, IEquatable<PlayerAbilitySO>
     /// </summary>
     protected virtual void RemoveAllSkillTags()
     {
+        if (p_tagInstances == null) return;
+
         foreach (var instance in p_tagInstances)
         {
-            instance.Revert(p_owner);        // 태그 해제
-            p_ability.RemoveTag(instance.Id);   // 어빌리티에 제거
-            Destroy(instance);              // 인스턴스 제거   
+            if (instance != null)
+            {
+                instance.Revert(p_owner);        // 태그 해제
+                if (p_ability != null) p_ability.RemoveTag(instance.Id);   // 어빌리티에 제거
+                Destroy(instance);              // 인스턴스 제거   
+            }
         }
 
         p_tagInstances.Clear();
