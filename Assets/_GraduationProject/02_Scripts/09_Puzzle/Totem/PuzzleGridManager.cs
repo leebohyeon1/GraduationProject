@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class PuzzleGridManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PuzzleGridManager : MonoBehaviour
     [SerializeField] private int _gridSize = 5;
     [SerializeField] private float _cellSize = 2.0f;
     [SerializeField] private Transform _originPoint;
-    [SerializeField] private GameObject _doorObject; // 문 오브젝트 직접 참조
+    public UnityEvent ClearEvent;
 
     [Header("Debug")]
     [SerializeField] private bool _showGridGizmos = true;
@@ -20,6 +21,7 @@ public class PuzzleGridManager : MonoBehaviour
     // 전체 리스트 (리셋용)
     private List<TotemBase> _allTotems = new List<TotemBase>();
     private List<ObjectTotem> _objectTotems = new List<ObjectTotem>();
+
 
     private void Awake()
     {
@@ -101,17 +103,23 @@ public class PuzzleGridManager : MonoBehaviour
     
     public void CheckWinCondition()
     {
+        if (_objectTotems.Count == 0) return;
+
         foreach (var obj in _objectTotems)
         {
-            if (!obj.IsAtTarget) return;
+            if(obj.Type == TotemType.Obstacle)
+            {
+                continue;
+            }
+
+            if (!obj.IsAtTarget)
+            {
+                return;
+            }
         }
         
         Debug.Log("🎉 PUZZLE SOLVED! Door Opens.");
-        if (_doorObject != null)
-        {
-            _doorObject.SetActive(false); // 문 열기 (단순 비활성화)
-            // 나중에 애니메이션으로 교체 가능
-        }
+        ClearEvent.Invoke();
     }
     public void BreakAllTotems()
     {

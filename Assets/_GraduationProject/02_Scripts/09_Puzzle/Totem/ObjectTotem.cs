@@ -10,6 +10,8 @@ public class ObjectTotem : TotemBase
     [SerializeField] private int _maxDurability = 3;
     [SerializeField] private Vector2Int _targetGridPos;
 
+    public TotemType Type => _type;
+
     [Header("Gizmo")]
     [SerializeField] private bool _showTargetGizmo = true;
     [SerializeField] private Color _targetGizmoColor = Color.green;
@@ -22,7 +24,7 @@ public class ObjectTotem : TotemBase
     protected override void Start()
     {
         base.Start();
-        _type = TotemType.Object;
+        // _type = TotemType.Object;
         _currentDurability = _maxDurability;
     }
 
@@ -53,13 +55,8 @@ public class ObjectTotem : TotemBase
 
     private void CheckTargetReached()
     {
-        bool wasAtTarget = IsAtTarget;
         IsAtTarget = _currentGridPos == _targetGridPos;
-
-        if (IsAtTarget && !wasAtTarget)
-        {
-            PuzzleGridManager.Instance.CheckWinCondition();
-        }
+        PuzzleGridManager.Instance.CheckWinCondition();
     }
 
     private void DeactivateTotem()

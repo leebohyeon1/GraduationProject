@@ -30,10 +30,13 @@ public class TagHandler : MonoBehaviour
         if (GamePlayTagManager.Instance != null)
         {
             GamePlayTagManager.Instance.UpdateTag += HandleTagUpdate;
+            // 씬 로드 시점이나 활성화 시점에 즉시 체크
+            RefreshStatus(true);
         }
-        
-        // 씬 로드 시점이나 활성화 시점에 즉시 체크
-        RefreshStatus(true);
+        else
+        {
+            Debug.LogWarning($"<color=red>[TagHandler]</color> {gameObject.name}: GamePlayTagManager Instance를 찾을 수 없습니다.");
+        }
     }
 
     private void OnDestroy()
@@ -51,7 +54,7 @@ public class TagHandler : MonoBehaviour
     {
         // 최적화: 변경된 태그가 내가 감시하는 리스트에 없으면 계산하지 않음
         // (None 타입은 어떤 태그든 영향을 줄 수 있으므로 항상 체크)
-        if (_queryType != QueryType.None && !_targetTags.Any(t => t.ID == changedTag.ID))
+        if (_queryType != QueryType.None && _targetTags.Count > 0 && !_targetTags.Any(t => t.ID == changedTag.ID))
             return;
 
         RefreshStatus();
