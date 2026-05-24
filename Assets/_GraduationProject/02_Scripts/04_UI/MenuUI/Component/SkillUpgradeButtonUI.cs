@@ -7,7 +7,7 @@ using DG.Tweening;
 /// <summary>
 /// 스킬 업그레이드 버튼 UI
 /// </summary>
-public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, ISelectHandler, IDeselectHandler, IPointerEnterHandler
+public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, IPointerEnterHandler
 {
     public string SkillName => _learnAbility != null ? _learnAbility.AbilityName : "Unknown Skill";
     public string SkillDescription => _learnAbility != null ? _learnAbility.AbilityDescription : "No description available.";
@@ -49,6 +49,14 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         _abilitySelected.Subscribe(this);
         _originalScale = transform.localScale;
 
+        // 패드 조작을 위해 토글 오브젝트에 선택 이벤트 프록시 연결
+        if (_skillToggleButton != null)
+        {
+            var proxy = _skillToggleButton.gameObject.GetComponent<UISelectionProxy>() ?? _skillToggleButton.gameObject.AddComponent<UISelectionProxy>();
+            proxy.OnSelectAction = () => OnSelect(null);
+            proxy.OnDeselectAction = () => OnDeselect(null);
+        }
+
         // 초기화 시 UI 상태 갱신
         UpdateUIState();
     }
@@ -58,9 +66,6 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 꺼질 때 트윈 제거 및 스케일 초기화
         transform.DOKill();
         transform.localScale = _originalScale;
-
-        // 켜질 때 UI 상태 갱신
-        UpdateUIState();
     }
 
     private void OnDestroy()
@@ -76,6 +81,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     public void OnSelect(BaseEventData eventData)
     {
         // 선택 시 스케일 업 애니메이션
+        transform.DOKill();
         transform.DOScale(_originalScale * _selectedScale, _scaleDuration)
             .SetEase(Ease.OutBack)
             .SetUpdate(true);
@@ -90,6 +96,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     public void OnDeselect(BaseEventData eventData)
     {
         // 선택 해제 시 원래 크기로
+        transform.DOKill();
         transform.DOScale(_originalScale, _scaleDuration)
             .SetEase(Ease.OutQuad)
             .SetUpdate(true);
@@ -98,7 +105,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     public void OnPointerEnter(PointerEventData eventData)
     {
         // 마우스 오버 시 포커스 강제 (패드와 통일감)
-        EventSystem.current.SetSelectedGameObject(gameObject);
+        Select();
     }
 
     public void Select()
@@ -106,7 +113,9 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 패드 조작 등에서 수동으로 선택할 때 사용
         if (EventSystem.current != null)
         {
-            EventSystem.current.SetSelectedGameObject(gameObject);
+            // 토글 오브젝트를 직접 선택하여 네비게이션이 작동하게 함
+            GameObject target = (_skillToggleButton != null) ? _skillToggleButton.gameObject : gameObject;
+            EventSystem.current.SetSelectedGameObject(target);
         }
     }
 
