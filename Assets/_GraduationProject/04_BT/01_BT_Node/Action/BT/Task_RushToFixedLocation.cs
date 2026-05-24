@@ -41,8 +41,7 @@ public class Task_RushToFixedLocation : BaseAttackNode
         Vector3 rawTarget = playerPos + (dir * overshootDist) + offset;
         
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
-        Vector3 candidateTarget = info.node != null ? info.position : rawTarget;
-        _targetPos = GetStraightSafeDestination(myPos, candidateTarget, out _);
+        _targetPos = info.node != null ? info.position : rawTarget;
 
         
         _isRushing = true;
@@ -83,29 +82,20 @@ public class Task_RushToFixedLocation : BaseAttackNode
 
         if (moveDist > 0.0001f)
         {
-            Vector3 safeNextPos = GetSafeStepDestination(currentPos, moveDir, moveDist, out bool blockedByWall);
-            float actualMoveDistance = GetHorizontalDistance(currentPos, safeNextPos);
-
-            if (actualMoveDistance > minimumMovementDistance)
+            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
             {
                 CharacterController cc = runner.GetComponent<CharacterController>();
                 if (cc != null)
                 {
-                    cc.Move(safeNextPos - currentPos);
+                    cc.Move(nextPos - currentPos);
                 }
                 else
                 {
-                    runner.transform.position = safeNextPos;
+                    runner.transform.position = nextPos;
                 }
                 
                 IAstarAI ai = runner.GetComponent<IAstarAI>();
                 if (ai != null) ai.Teleport(runner.transform.position);
-
-                if (blockedByWall)
-                {
-                    _isRushing = false;
-                    return;
-                }
             }
             else
             {

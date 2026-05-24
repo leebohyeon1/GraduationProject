@@ -51,7 +51,6 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_owner.Stamina.UseStamina(p_AttackConfig.Stamina.Value);       // 스테미나 사용
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
-        p_owner.Combat.TriggerBattleStateChanged(true);                 // 전투 상태 On  
         p_canChangeCombatState = false;
     }
     #endregion
@@ -73,7 +72,6 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     {
         base.ClearStats();
 
-        p_owner.Combat.TriggerBattleStateChanged(true);     // 전투 상태 On
         p_owner.Events.TriggerBufferInputEnded();           // 선입력 종료
         p_owner.Events.TriggerRegenStamina(true);           // 스테미나 재생성
         p_canChangeCombatState = false;

@@ -35,6 +35,7 @@ public partial class PlayerController : MonoBehaviour
         if (playerSpawnedSO != null)
         {
             playerSpawnedSO.Publish(this);
+            _events.TriggerBattleStateChanged(false);
         }
     }
 

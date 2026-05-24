@@ -93,20 +93,6 @@ MonoBehaviour:
     Key: CurrentStatus
     Operator: 1
     TargetState: 3
---- !u!114 &-4737669642203781209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
-  m_Name: Campublish
-  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 442, y: -256}
-  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &-4427913439106785545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,8 +173,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -248,8 +232,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -505,8 +487,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 0
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -615,7 +595,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 430, y: -109}
   nodes:
-  - {fileID: -4737669642203781209}
   - {fileID: -4427913439106785545}
   - {fileID: 6221964156027925128}
   services: []
