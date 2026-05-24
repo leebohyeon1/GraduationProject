@@ -37,7 +37,6 @@ public class PlayerStaminaUI : PlayerUIBase
         _mainCamera = Camera.main;
 
         p_player.Stamina.OnStaminaChanged += OnStaminaChanged;
-        p_player.Combat.BattleStateChaged += OnBattleStateChanged;
 
         // UI 초기 상태 설정 (전투 중이 아니면 숨김)
         if (_canvasGroup != null)
@@ -60,9 +59,6 @@ public class PlayerStaminaUI : PlayerUIBase
         {
             if (p_player.Stamina != null)
                 p_player.Stamina.OnStaminaChanged -= OnStaminaChanged;
-
-            if (p_player.Combat != null)
-                p_player.Combat.BattleStateChaged -= OnBattleStateChanged;
         }
 
         _positiveImage?.DOKill();
@@ -109,38 +105,25 @@ public class PlayerStaminaUI : PlayerUIBase
     }
 
     /// <summary>
-    /// 전투 상태 변경 이벤트 처리
-    /// </summary>
-    private void OnBattleStateChanged(bool isBattle)
-    {
-        if (_canvasGroup == null) return;
-
-        _canvasGroup.DOKill();
-        _canvasGroup.DOFade(isBattle ? 1f : 0f, _fadeDuration);
-
-        if (isBattle)
-        {
-            UpdatePosition(true); // 나타날 때 즉시 위치 맞춤
-        }
-    }
-
-    private float _lastBattleStateTriggerTime; // 마지막으로 전투 상태를 트리거한 시간
-
-    /// <summary>
     /// Stamina 변경 이벤트 처리
     /// </summary>
     private void OnStaminaChanged(float previousStamina, float currentStamina)
     {
         UpdateStaminaUI(currentStamina);
 
-        // 스테미나가 최대치가 아닐 때 UI를 노출하도록 합니다.
+        if (_canvasGroup == null) return;
+
+        // 스테미나가 최대치가 아니면 항상 UI를 보여줌
         if (currentStamina < p_player.Stamina.MaxStamina)
         {
-            // 스테미나가 감소했거나(사용), 마지막 트리거 후 1초가 지났을 때(재생 중 유지)만 전투 상태를 갱신합니다.
-            if (currentStamina < previousStamina || Time.time - _lastBattleStateTriggerTime > 1f)
-            {
-                _lastBattleStateTriggerTime = Time.time;
-            }
+            _canvasGroup.DOKill();
+            _canvasGroup.DOFade(1f, _fadeDuration);
+        }
+        else if (!p_player.Combat.IsBattleState)
+        {
+            // 최대치이고 전투 상태가 아니라면 숨김
+            _canvasGroup.DOKill();
+            _canvasGroup.DOFade(0f, _fadeDuration);
         }
     }
 
