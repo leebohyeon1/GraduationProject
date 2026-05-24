@@ -99,6 +99,12 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
             Debug.Log("기술 로드: " + ability.Id);
             _abilitySet.Add(ability);
             ability.RegisterAbility(this);
+
+            // [추가] 로드된 기술이 UI에 반영되도록 이벤트 발생
+            if (_abilitySelected != null)
+            {
+                _abilitySelected.Publish(ability);
+            }
         }
     }
 
