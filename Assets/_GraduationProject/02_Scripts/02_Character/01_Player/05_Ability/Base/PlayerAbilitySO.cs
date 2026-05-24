@@ -10,6 +10,9 @@ using UnityEngine;
 public class PlayerAbilitySO : ScriptableObject, IEquatable<PlayerAbilitySO>
 {
     public string Id;            // 능력 ID
+    public string AbilityName;   // 능력 이름
+    [TextArea]
+    public string AbilityDescription; // 능력 설명
 
     public string GetId() => string.IsNullOrEmpty(Id) ? name : Id;
     

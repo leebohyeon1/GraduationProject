@@ -9,10 +9,8 @@ using DG.Tweening;
 /// </summary>
 public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, ISelectHandler, IDeselectHandler, IPointerEnterHandler
 {
-    [SerializeField] private string _skillName; // 스킬 이름 
-    public string SkillName => _skillName;
-    [SerializeField] private string _skillDescription;  // 스킬 설명
-    public string SkillDescription => _skillDescription;
+    public string SkillName => _learnAbility != null ? _learnAbility.AbilityName : "Unknown Skill";
+    public string SkillDescription => _learnAbility != null ? _learnAbility.AbilityDescription : "No description available.";
 
     [Header("References")]
     [SerializeField] private Toggle _skillToggleButton;
@@ -34,7 +32,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     private bool _isLearned = false;
 
     [Header("Ability")]
-    [SerializeField] private List<PlayerAbilitySO> _learnAbilities;
+    [SerializeField] private PlayerAbilitySO _learnAbility;
 
     [Header("Events")]
     [SerializeField] private OnAbilitySelectedSO _abilitySelected;
@@ -176,13 +174,11 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     /// </summary>
     private bool HasSkill()
     {
-        for (int i = 0; i < _learnAbilities.Count; i++)
+        if (_playerController.Ability.HasAbility(_learnAbility.Id))
         {
-            if (_playerController.Ability.HasAbility(_learnAbilities[i].Id))
-            {
-                return true;
-            }
+            return true;
         }
+
         return false;
     }
 
@@ -244,10 +240,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         _playerController.Money.UseSpecialMoney(_specialPrice); 
 
         // 배우는 스킬 이벤트 발생 및 등록
-        for (int i = 0; i < _learnAbilities.Count; i++)
-        {
-            _abilitySelected.Publish(_learnAbilities[i]);
-        }
+        _abilitySelected.Publish(_learnAbility);
 
         // 상태 갱신
         UpdateUIState();
