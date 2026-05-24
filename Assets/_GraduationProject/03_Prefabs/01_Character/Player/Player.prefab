@@ -2446,8 +2446,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _scanRadius: 20
-  _priorityScanAngle: 90
   _showGizmos: 1
+  _lockOnCooldown: 0.5
 --- !u!114 &2315732706956207162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2781,7 +2781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LayerRaycastJobDetector
   _rayOffset: {x: 0, y: 0, z: 0}
-  _rayDirection: {x: 0, y: -1, z: 0}
+  _rayDirection: {x: 0, y: -0.27, z: 0}
   _rayDistance: 1
   _hitMask:
     serializedVersion: 2
@@ -10763,6 +10763,10 @@ PrefabInstance:
     - target: {fileID: 4041264441604555125, guid: 54c1d2647de25644884fb3a23eeb7c59, type: 3}
       propertyPath: m_Name
       value: VFX_Ripple
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041264441604555125, guid: 54c1d2647de25644884fb3a23eeb7c59, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9039279902744671032, guid: 54c1d2647de25644884fb3a23eeb7c59, type: 3}
       propertyPath: m_LocalPosition.x
