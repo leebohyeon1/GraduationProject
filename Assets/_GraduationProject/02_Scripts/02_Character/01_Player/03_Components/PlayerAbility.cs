@@ -91,8 +91,9 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
     /// <param name="ability">추가할 기술</param>
     public void AddAbility(PlayerAbilitySO ability)
     {
-        if(_abilitySet.Add(ability))
+        if(!_abilitySet.Contains(ability))
         {
+            _abilitySet.Add(ability);
             ability.RegisterAbility(this);    // 기술 등록
             Debug.Log("기술 등록: " + ability.Id);
         }

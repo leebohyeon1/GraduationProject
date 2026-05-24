@@ -35,11 +35,7 @@ public class ChargingParryStiffnessAbilitySO : PlayerAbilitySO
         // 차징 패링(Strong_Counter)일 때만 발동
         if (type == AttackType.Strong_Counter)
         {
-            if (enemyTransform.TryGetComponent<IStiffness>(out var stiffness))
-            {
-                Debug.Log($"[Ability] 차징 패링 성공! {enemyTransform.name}에게 경직도 {_stiffnessAmount} 부여");
-                stiffness.AddStiffness(_stiffnessAmount, type);
-            }
+            p_owner.Health.AddStiffness(-_stiffnessAmount, type); // 플레이어 자신에게도 경직도 감소 효과 적용 (선택 사항)
         }
     }
 }

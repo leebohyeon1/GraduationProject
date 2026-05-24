@@ -66,6 +66,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
     public void Dispose()
     {
         _events.AttackRegained -= OnAttackRegained;
+        _events.Heal -= OnHeal;
 
         OnHealthChanged = null;
         OnDied = null; 
