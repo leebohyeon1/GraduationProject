@@ -134,7 +134,7 @@ public class Enemy : MonoBehaviour
     /// 초기 스폰 위치를 반환합니다.
     /// </summary>
     
-    private EnemyStateType _stateType;
+    private EnemyStateType _stateType = EnemyStateType.Lost;
     public EnemyStateType StateType
     {
         get{return _stateType;}
@@ -142,6 +142,7 @@ public class Enemy : MonoBehaviour
         {
             if(_stateType != value)
             {
+                Debug.Log($"[Enemy] StateType changed from {_stateType} to {value} for {gameObject.name}");
                 _stateType = value;
                 enemyStat.EStateEventSO?.Publish(new EnemyStateData{
                     enemy = this, stateType = _stateType });
