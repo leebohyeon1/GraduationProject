@@ -106,31 +106,18 @@ public class Task_TripleRushEffect : BaseAttackNode
         if (index == 1 || index == 2)
         {
             float moveDist = Mathf.Min(maxDashDist, distToPlayer);
-            Vector3 rawTarget = currentPos + (dirToPlayer * moveDist);
-            _targetPos = GetStraightSafeDestination(currentPos, rawTarget, out _);
+            _targetPos = currentPos + (dirToPlayer * moveDist);
             _duration = Mathf.Max(0.1f, moveDist / Mathf.Max(0.01f, dashSpeed));
         }
         else
         {
-            Vector3 rawTarget = currentPos + (dirToPlayer * leapDistance);
-            _targetPos = GetStraightSafeDestination(currentPos, rawTarget, out _);
+            _targetPos = currentPos + (dirToPlayer * leapDistance);
             _duration = Mathf.Max(0.1f, leapDuration);
         }
 
         _startPos = currentPos;
         _startTime = Time.time;
         _isMoving = true;
-        float moveDistance = GetHorizontalDistance(_startPos, _targetPos);
-        if (moveDistance <= minimumMovementDistance)
-        {
-            _isMoving = false;
-            return;
-        }
-
-        if (index == 1 || index == 2)
-        {
-            _duration = Mathf.Max(0.1f, moveDistance / Mathf.Max(0.01f, dashSpeed));
-        }
     }
 
     public override Node Clone()
