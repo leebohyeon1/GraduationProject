@@ -14,9 +14,6 @@ using System;
 #endif
 public class Enemy : MonoBehaviour
 {
-    [Header("Jump Guard")]
-    [SerializeField] private bool _enableJumpGuard = true;
-    [SerializeField] private float _suspiciousJumpDistance = 100f;
     /// <summary>
     /// 몬스터의 기본 스탯 데이터입니다.
     /// </summary>
@@ -134,14 +131,19 @@ public class Enemy : MonoBehaviour
     /// 초기 스폰 위치를 반환합니다.
     /// </summary>
     
-    private EnemyStateType _stateType;
+    private EnemyStateType _stateType = EnemyStateType.Lost;
     public EnemyStateType StateType
     {
         get{return _stateType;}
         set
         {
-            if(_stateType != value)
+            if(_stateType == EnemyStateType.SummonBoss || _stateType == EnemyStateType.Dead)
             {
+                return;
+            }
+            if(_stateType != value )
+            {
+                Debug.Log($"[Enemy] StateType changed from {_stateType} to {value} for {gameObject.name}");
                 _stateType = value;
                 enemyStat.EStateEventSO?.Publish(new EnemyStateData{
                     enemy = this, stateType = _stateType });

@@ -25,11 +25,7 @@ public class Service_UpdateBossVars : ServiceNode
     public string ResultKey = "TargetZoneCheck";
 
     private float _accumulatedTime = 0f;
-    public override void OnEnter()
-    {
-        base.OnEnter();
-        _accumulatedTime = 0f;
-    }
+
     public override void initNode()
     {
         _accumulatedTime = 0f;
@@ -56,6 +52,7 @@ public class Service_UpdateBossVars : ServiceNode
         // 珥덇린??議곌굔(寃쎄퀎 諛??뱀? 由ъ뀑 援ъ뿭 ?????대떦?섎㈃ ?쒓컙??0?쇰줈 留뚮뱾怨?醫낅즺
         if (isOutsideBoundary || isInResetZone)
         {
+            Debug.Log($"[Service_UpdateBossVars] Player is outside boundary or in reset zone. Resetting accumulated time. (OutsideBoundary: {isOutsideBoundary}, IsInResetZone: {isInResetZone})");
             if (_accumulatedTime > 0)
             {
                 initNode();
@@ -68,11 +65,13 @@ public class Service_UpdateBossVars : ServiceNode
         // ?뚮젅?댁뼱媛 Boundary 援ъ뿭 ?덉뿉 ?덇퀬 Reset 援ъ뿭???덉? ?딅떎硫?臾댁“嫄??쒓컙???볦엯?덈떎.
         _accumulatedTime += UpdateInterval;
 
+        Debug.Log(_accumulatedTime);
         // 3. ?꾧퀎移??꾨떖 ??釉붾옓蹂대뱶 ?뚮옒洹??쒖꽦??
         if (_accumulatedTime >= ThresholdTime)
         {
             if (!brain.blackboard.GetValueOrDefault<bool>(ResultKey, false))
             {
+                Debug.Log($"[Service_UpdateBossVars] Player has been in the target zone for {_accumulatedTime} seconds. Setting {ResultKey} to true.");
                 brain.blackboard.SetValue(ResultKey, true);
                 runner.Movement.StopMovement();
             }

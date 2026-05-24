@@ -74,6 +74,10 @@ public class Task_StepAttack : BaseAttackNode
                     runner.SetCurrentAttackData(_data);
                     // Log($"Step {_currentStep}: 데이터 교체 완료 -> <color=orange>{_data.AttackName}</color> (Phase {newData.Phase} <= {currentPhase})");
                 }
+                else
+                {
+                    // Log($"Step {_currentStep}: 데이터 교체 건너뜀. 요구 Phase: {newData.Phase}, 현재: {currentPhase}");
+                }
             }
         }
 
@@ -95,8 +99,8 @@ public class Task_StepAttack : BaseAttackNode
                     _currentStepData.curve.MoveKey(0, new Keyframe(0f, firstVal));
                     _currentStepData.curve.MoveKey(keys.Length - 1, new Keyframe(1f, lastVal));
                 }
-                Vector3 desiredTarget = runner.transform.position + runner.transform.forward * _currentStepData.distance;
-                _targetPosition = GetStraightSafeDestination(runner.transform.position, desiredTarget, out _);
+              
+                _targetPosition = runner.transform.position + runner.transform.forward * _currentStepData.distance;
                 _isMoving = true;
                 _stepStartTime = Time.time;
 
@@ -150,36 +154,34 @@ public class Task_StepAttack : BaseAttackNode
 
         if (finalMoveDir != Vector3.zero)
         {
-            Debug.Log(1);
-            Vector3 safeNextPos = GetSafeStepDestination(myPos, finalMoveDir, stepSize, out bool blockedByWall);
-            if (GetHorizontalDistance(myPos, safeNextPos) <= minimumMovementDistance)
+            // 벽 및 플레이어 충돌 체크
+            int playerLayer = 1 << LayerMask.NameToLayer("Player");
+            int combinedMask = obstacleMask | playerLayer;
+            
+            float castDistance = stepSize + 0.3f;
+            Vector3 castOrigin = myPos + Vector3.up * 0.5f;
+            float castRadius = (runner.Movement != null ? runner.Movement.CharacterRadius : 0.5f);
+
+            if (Physics.SphereCast(castOrigin, castRadius, finalMoveDir, out RaycastHit hit, castDistance, combinedMask))
             {
-            Debug.Log(GetHorizontalDistance(myPos, safeNextPos));
                 _isMoving = false;
+                // Log($"<color=orange>[StepAttack]</color> 물리 충돌 예측 정지: {hit.collider.name}");
                 return;
             }
 
             CharacterController cc = runner.GetComponent<CharacterController>();
-            Debug.Log(3);
             if (cc != null)
             {
-            Debug.Log(4);
-                Vector3 moveVector = safeNextPos - myPos;
-                moveVector.y = -1.5f; // small downward force to avoid climbing surfaces
+                Vector3 moveVector = nextPos - myPos;
+                moveVector.y = -1.5f; // 등반 방지 하향 압력
                 cc.Move(moveVector);
             }
             else
             {
-                runner.transform.position = safeNextPos;
+                runner.transform.position = nextPos;
             }
 
             if (runner.aIPath != null) runner.aIPath.Teleport(runner.transform.position);
-
-            if (blockedByWall)
-            {
-                _isMoving = false;
-                return;
-            }
         }
 
         if (Vector3.Distance(runner.transform.position, _targetPosition) < 0.1f)

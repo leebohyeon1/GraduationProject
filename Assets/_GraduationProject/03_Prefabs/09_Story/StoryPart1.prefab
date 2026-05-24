@@ -54,6 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a2bcc688a0c124186490ff6a6f2f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CusSceneController
+  _manager: {fileID: 0}
 --- !u!1 &193798829916301631
 GameObject:
   m_ObjectHideFlags: 0
@@ -7004,7 +7005,7 @@ MonoBehaviour:
   _inputReaderSO: {fileID: 11400000, guid: 27819a5a7c6e05f4e980addd047d8874, type: 2}
   _holdTime: 1
   _fadeOutSpeed: 2
-  _spareTime: 0
+  _spareTime: 0.1
   _uiCanvasGroup: {fileID: 0}
   _progressBar: {fileID: 0}
   _hintDuration: 2
@@ -7012,10 +7013,10 @@ MonoBehaviour:
   OnSkipPerformed:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7052264900759211786}
-        m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
-        m_MethodName: CutSceneEnd
-        m_Mode: 1
+      - m_Target: {fileID: 1821210181072557220}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7024,10 +7025,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1821210181072557220}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 1792519948431559183}
+        m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
+        m_MethodName: set_enabled
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7052264900759211786}
+        m_TargetAssemblyTypeName: CusSceneController, Assembly-CSharp
+        m_MethodName: CutSceneEnd
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
