@@ -43,13 +43,20 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
         _events.BeforeDamaged -= OnBeforeDamaged;
         _abilitySelected.Unsubscribe(this);
 
-        foreach(var ability in _abilitySet)
+        // 리스트를 순회하며 요소를 삭제할 때는 역순으로 진행하여
+        // "Collection was modified" 에러를 방지합니다.
+        for (int i = _abilitySet.Count - 1; i >= 0; i--)
         {
+            var ability = _abilitySet[i];
             if (ability != null)
             {
-                RemoveAbility(ability.Id);
+                // [수정] RemoveAbility를 호출하면 _runtimeData.AcquiredAbilityIds에서도
+                // 데이터가 삭제되어 버리므로, 씬 종료 시 세이브 데이터가 날아가는 원인이 됩니다.
+                // 여기서는 순수하게 인게임 능력만 해제합니다.
+                ability.UnregisterAbility(this);
             }
         }
+        _abilitySet.Clear();
     }
 
     private System.Collections.IEnumerator InitializeDataCoroutine(PlayerData data)
@@ -80,47 +87,69 @@ public class PlayerAbility : MonoBehaviour, IDisposable, IEventListener<PlayerAb
 
     #region Ability Management
     /// <summary>
-    /// 스킬 로드
+    /// 스킬 로드 (세이브 데이터로부터 로드할 때 사용)
     /// </summary>
     /// <param name="ability">로드할 스킬</param>
     private void LoadAbility(PlayerAbilitySO ability)
     {
-        Debug.Log("기술 로드: " + ability.Id);
-        _abilitySet.Add(ability);
-        ability.RegisterAbility(this); // 기술 등록 추가
+        if (ability == null) return;
+        
+        if (!_abilitySet.Contains(ability))
+        {
+            Debug.Log("기술 로드: " + ability.Id);
+            _abilitySet.Add(ability);
+            ability.RegisterAbility(this);
+        }
     }
 
     /// <summary>
-    /// 기술 추가 함수
+    /// 기술 추가 함수 (인게임에서 새로운 기술을 획득할 때 사용)
     /// </summary>
     /// <param name="ability">추가할 기술</param>
     public void AddAbility(PlayerAbilitySO ability)
     {
+        if (ability == null) return;
+
         if(!_abilitySet.Contains(ability))
         {
             _abilitySet.Add(ability);
             ability.RegisterAbility(this);    // 기술 등록
-            Debug.Log("기술 등록: " + ability.Id);
+            
+            // 저장용 데이터에도 ID 추가
+            if (_runtimeData != null && !_runtimeData.AcquiredAbilityIds.Contains(ability.Id))
+            {
+                _runtimeData.AcquiredAbilityIds.Add(ability.Id);
+            }
+            
+            Debug.Log("기술 획득 및 저장 등록: " + ability.Id);
         }
         else
         {
-            Debug.LogWarning($"기술 등록 해제: {ability.Id}");
+            Debug.LogWarning($"이미 보유 중인 기술입니다: {ability.Id}");
         }
-
     }
 
     /// <summary>
     /// 기술 제거 함수
     /// </summary>
-    /// <param name="ability">삭제할 기술</param>
+    /// <param name="id">삭제할 기술 ID</param>
     public void RemoveAbility(string id)
     {
-        foreach (var ability in _abilitySet)
+        for (int i = 0; i < _abilitySet.Count; i++)
         {
+            var ability = _abilitySet[i];
             if (ability != null && ability.Id == id)
             {
                 ability.UnregisterAbility(this);  // 기술 해제
-                Debug.Log($"기술 해제: {ability.Id}");
+                _abilitySet.RemoveAt(i);
+
+                // 저장용 데이터에서도 ID 제거
+                if (_runtimeData != null)
+                {
+                    _runtimeData.AcquiredAbilityIds.Remove(id);
+                }
+
+                Debug.Log($"기술 해제 및 저장 제거: {id}");
                 return;
             }
         }
