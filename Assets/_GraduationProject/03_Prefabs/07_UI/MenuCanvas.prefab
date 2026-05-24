@@ -2939,7 +2939,8 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
+  _needTags:
+  - {fileID: 11400000, guid: 325f4faa869cb1f4db209438d02c52f6, type: 2}
   _learnAbility: {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
@@ -3208,7 +3209,8 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
+  _needTags:
+  - {fileID: 11400000, guid: 1c6f19d7a980aa447b6bb801fc4979e5, type: 2}
   _learnAbility: {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
@@ -10094,7 +10096,8 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
+  _needTags:
+  - {fileID: 11400000, guid: 37ee8240268e1e640b06bcef1c0e248d, type: 2}
   _learnAbility: {fileID: 11400000, guid: a0f4c9bda92d0aa4cb3715686c1d2f4d, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
@@ -15285,6 +15288,7 @@ GameObject:
   - component: {fileID: 8002929145203944363}
   - component: {fileID: 8283515030614317497}
   - component: {fileID: 7751158242280042591}
+  - component: {fileID: 6223358913257306824}
   m_Layer: 0
   m_Name: MenuCanvas
   m_TagString: Untagged
@@ -15396,6 +15400,44 @@ MonoBehaviour:
   - {fileID: 8146454426506244609}
   - {fileID: 906802062477791206}
   - {fileID: 6823707884085170119}
+--- !u!114 &6223358913257306824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6777103626316536109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b790c373cba6046b065157780bc77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TagHandler
+  _queryType: 1
+  _targetTags:
+  - {fileID: 11400000, guid: 37ee8240268e1e640b06bcef1c0e248d, type: 2}
+  - {fileID: 11400000, guid: 1c6f19d7a980aa447b6bb801fc4979e5, type: 2}
+  - {fileID: 11400000, guid: 325f4faa869cb1f4db209438d02c52f6, type: 2}
+  OnRequirementMet:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRequirementFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStatusChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7751158242280042591}
+        m_TargetAssemblyTypeName: MenuUI, Assembly-CSharp
+        m_MethodName: OpenSkillPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6892476175838027760
 GameObject:
   m_ObjectHideFlags: 0
