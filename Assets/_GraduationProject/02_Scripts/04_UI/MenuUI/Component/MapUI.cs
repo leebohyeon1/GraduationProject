@@ -102,6 +102,11 @@ public class MapUI : MenuUIComponent
 
     public override void Initialize(MenuUI menu)
     {
+        if (_mapAreaTransform == null)
+        {
+            return;
+        }
+
         base.Initialize(menu);
         _player = menu.Player;
 
@@ -115,6 +120,11 @@ public class MapUI : MenuUIComponent
 
     private void LateUpdate()
     {
+        if (_mapAreaTransform == null)
+        {
+            return;
+        }
+
         if (_player == null || _mapRect == null || _playerIcon == null) return;
 
         // Job 데이터 준비 및 스케줄링
@@ -140,6 +150,11 @@ public class MapUI : MenuUIComponent
 
     private void Update()
     {
+        if(_mapAreaTransform == null)
+        {
+            return;
+        }
+
         // 이전 프레임의 LateUpdate에서 예약된 Job이 완료되었는지 확인하고 결과 적용
         _jobHandle.Complete();
 
