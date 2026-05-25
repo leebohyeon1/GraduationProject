@@ -1,4 +1,5 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ public class BossHpBar : MonoBehaviour, IEventListener<EnemyStateData>
 {
     [Header("UI Components")]
     [SerializeField] private CanvasGroup _canvasGroup;
+    [SerializeField] private TMP_Text _bossNameText;
     [SerializeField] private Image _hpBarFront;
     [SerializeField] private Image _hpBarBack;
     [SerializeField] private Image _stiffnessBar;
@@ -96,7 +98,8 @@ public class BossHpBar : MonoBehaviour, IEventListener<EnemyStateData>
         CleanupStiffness();
 
         _object = boss;
-        
+        _bossNameText.text = boss.name;
+
         // 1. 체력 관련 초기화
         _damageable = boss.GetComponent<IDamageable>();
         if (_damageable != null)
