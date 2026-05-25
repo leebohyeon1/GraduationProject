@@ -23,6 +23,7 @@ public class PlayerData
 
     public Vector3 LastPosition;    // 마지막 위치
     public Vector3 RespawnPosition; // 리스폰 위치
+    public string RespawnSceneName;  // 리스폰 씬 이름
 
     public List<string> AcquiredAbilityIds = new List<string>();    // 획득한 능력 ID 리스트
 

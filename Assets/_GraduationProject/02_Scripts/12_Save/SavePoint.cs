@@ -14,6 +14,10 @@ public class SavePoint : MonoBehaviour, IInteractable
     {
         GameData gameData = DataManager.Instance.GetGameData();
         gameData.PlayerData.RespawnPosition = _playerController.transform.position;
+        if (SceneLoadingManager.Instance.CurrentActiveChunk != null)
+        {
+            gameData.PlayerData.RespawnSceneName = SceneLoadingManager.Instance.CurrentActiveChunk.SceneName;
+        }
         _playerController.Health.Heal((int)gameData.PlayerData.Health.Value);
         _playerController.Potion.ReloadPotion();
 
