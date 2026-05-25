@@ -386,25 +386,6 @@ MonoBehaviour:
   position: {x: 566, y: 361}
   exceptCondition:
     key: 
---- !u!114 &2920098906447462926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1495925d5304bd848bd1722c1d5ebbf2, type: 3}
-  m_Name: Condition_Blackboard Float Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardFloatKeyCheck
-  position: {x: 391, y: 120}
-  exceptCondition:
-    key: 
-  floatCondition:
-    key: DistanceToTarget
-    Operator: 0
-    value: 30
 --- !u!114 &3598595731350612588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,19 +471,6 @@ MonoBehaviour:
   ResetZoneIDs: 010000000200000003000000040000000500000006000000070000000800000009000000
   ThresholdTime: 5
   ResultKey: WalkingTime
---- !u!114 &4324804164685838116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb90e8b0eff70424bbd1de84c81c71dc, type: 3}
-  m_Name: Condition_cutscene
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
-  position: {x: 396, y: 197}
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,8 +531,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 179, y: 92}
   nodes:
-  - {fileID: 2920098906447462926}
-  - {fileID: 4324804164685838116}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: -1111203978955045821}
   - {fileID: -571219295577504573}
   - {fileID: 3598595731350612588}
