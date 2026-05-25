@@ -41,7 +41,11 @@ public class PlayerParryStackUI : PlayerUIBase
         // 해당 오브젝트의 모든 트윈 정지
         foreach (var icon in _stackIcons)
         {
-            icon.transform.DOKill();
+            if(icon != null && DOTween.IsTweening(icon.transform))
+            {
+                icon.transform.DOKill();
+            }
+
         }
 
         base.Dispose();

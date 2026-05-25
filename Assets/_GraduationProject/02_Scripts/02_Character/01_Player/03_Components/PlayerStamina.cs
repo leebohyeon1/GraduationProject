@@ -32,6 +32,7 @@ public class PlayerStamina : MonoBehaviour, IDisposable
 
         // 이벤트 해제 구독
         player.RegisterDisposable(this);
+        StartCoroutine(RegenStamina());
     }
 
     public void Dispose()

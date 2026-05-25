@@ -14,8 +14,8 @@ public class PlayerChargingAbilitySO : PlayerAbilitySO
         p_owner = p_ability.GetComponent<PlayerController>();
         p_tagInstances = new List<PlayerAbilityTagSO>();
 
-        // 플레이어의 차징 이벤트 구독 (이벤트 이름은 프로젝트의 PlayerController 구조에 따라 다를 수 있습니다)
-        if (p_owner != null)
+        // 플레이어의 차징 이벤트 구독
+        if (p_owner != null && p_owner.Events != null)
         {
             p_owner.Events.ChargeStarted += HandleChargeStart;
             p_owner.Events.ChargeCompleted += HandleChargeEnd;
@@ -36,11 +36,15 @@ public class PlayerChargingAbilitySO : PlayerAbilitySO
 
     private void HandleChargeStart()
     {
+        Debug.Log("차징 시작 - 태그 부여");
         AddAllSkillTags();
     }
 
     private void HandleChargeEnd(bool obj)
     {
-        RemoveAllSkillTags();
+        if (obj == false)
+        {
+            RemoveAllSkillTags();
+        }
     }
 }

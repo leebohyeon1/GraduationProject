@@ -109,7 +109,7 @@ public class PlayerMoney : MonoBehaviour, IDisposable
     public Enemy FindClosestEnemy()
     {
         float closestDistance = float.MaxValue;
-        Enemy[] enemies = FindObjectsOfType<Enemy>(true);
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         Enemy closestEnemy = null;
         for(int i = 0; i < enemies.Count(); i++)
         {
