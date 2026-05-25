@@ -218,13 +218,13 @@ MonoBehaviour:
   m_Name: Task_Step Attack
   m_EditorClassIdentifier: Assembly-CSharp::Task_StepAttack
   position: {x: 671, y: 320}
-  attackKey: Boss
+  attackKey: Boss_SB_Attack
   transitionBuffer: 1
   SO: []
   LoopAttack: 0
-  NextBT: 0
+  NextBT: 1
   ExitDelay: 0
-  debugMode: 0
+  debugMode: 1
   escapeOnHitConfirm: 1
   hitEscapeDelay: 0.5
   checkRangeOnEnter: 0
@@ -235,15 +235,52 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  ChangeSpeed: 0
+  ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
   _maxAnimationSpeed: 2
-  stepMovements: []
-  phaseAttackDataKeys: []
+  stepMovements:
+  - distance: 100
+    duration: 2
+    speed: 0
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.076156974
+        value: 0.6007731
+        inSlope: 1.3651278
+        outSlope: 1.3651278
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  phaseAttackDataKeys:
+  - Boss_SB_Attack
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   stopDistance: 1.5
 --- !u!114 &11400000
 MonoBehaviour:
