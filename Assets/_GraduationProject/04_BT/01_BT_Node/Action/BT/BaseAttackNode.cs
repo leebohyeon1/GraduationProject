@@ -249,7 +249,12 @@ public abstract class BaseAttackNode : Node
         runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         SpeedRecovery();
 
-        if (_didSetLock && runner._stateController != null) { runner._stateController.SetLock(false); _didSetLock = false; }
+        if (_didSetLock && runner._stateController != null) 
+        { 
+            runner._stateController.SetLock(false);
+            _didSetLock = false;
+            Debug.Log($"[Attack Node] Released state lock for {runner.name} after attack.");
+        }
         if (runner._animationBridge != null) runner._animationBridge.ClearIsAttacking();
         runner.ParrySystem.StateNormal();
         brain.blackboard.SetValue(ExceptKey, false);
