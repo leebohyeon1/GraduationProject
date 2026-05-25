@@ -112,6 +112,16 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
         UIComponentUpdated?.Invoke(_currentComponentIndex);
     }
 
+
+    public void OpenSkillPanel()
+    {
+        _currentComponentIndex = 2; // 스킬 패널 인덱스
+        UpdateComponenet();
+
+        _menuPanel.SetActive(true);
+        _inputReaderSO.SetInputMode(InputReaderSO.InputMode.UI);
+    }
+
     //==========================================================================================================================
     // Event Handler ===========================================================================================================
     //==========================================================================================================================

@@ -74,10 +74,10 @@ public partial class PlayerController
         InitComponent(ref _combat);
         InitComponent(ref _animationTrigger);
         InitComponent(ref _lockOn);
-        InitComponent(ref _ability);
         InitComponent(ref _potion);
         InitComponent(ref _money);
         InitComponent(ref _interact);
+        InitComponent(ref _ability);
     }
 
     /// <summary>

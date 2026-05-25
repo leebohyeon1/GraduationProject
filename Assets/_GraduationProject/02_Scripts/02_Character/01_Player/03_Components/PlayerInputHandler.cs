@@ -19,6 +19,8 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     private InputDeviceType _currentInputDevice;    // 현재 입력 디바이스
     private bool _canBufferInput = false;           // 선입력 가능 여부
 
+    private PlayerController _player;
+
     #region Properties
     public Vector3 MoveInput => _moveInput;
     public Vector3 MousePosition => _mousePosition;
@@ -35,6 +37,7 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     /// <param name="player">플레이어</param>
     public void Initialize(PlayerController player)
     {
+        _player = player;
         _inputReader = player.InputReader;
         _events = player.Events;
 
@@ -44,6 +47,7 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         // 이벤트 구독
         _inputReader.MoveEvent += OnMove;
         _inputReader.MousePositionEvent += OnMousePosition;
+        _inputReader.LockOnTargetChangeForGamepadEvent += OnLockOnTargetChangeForGamepad;
 
         _events.BufferInputStarted += OnBufferInputStarted;
         _events.BufferInputEnded += OnBufferInputEnded;
@@ -64,6 +68,7 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
         // 이벤트 구독 해제
         _inputReader.MoveEvent -= OnMove;
         _inputReader.MousePositionEvent -= OnMousePosition;
+        _inputReader.LockOnTargetChangeForGamepadEvent -= OnLockOnTargetChangeForGamepad;
 
         _events.BufferInputStarted -= OnBufferInputStarted;
         _events.BufferInputEnded -= OnBufferInputEnded;
@@ -96,6 +101,16 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     private void OnMousePosition(Vector2 mousePosition)
     {
         _mousePosition = new Vector3(mousePosition.x, 0, mousePosition.y);
+    }
+
+    private void OnLockOnTargetChangeForGamepad(Vector2 input)
+    {
+        _lockOnTargetChangeVector2Input = input;
+        
+        if (input.sqrMagnitude > 0.25f) // 데드존 처리
+        {
+            _player.LockOn.ChangeLockOnTargetByGamePad(input);
+        }
     }
 
     /// <summary>

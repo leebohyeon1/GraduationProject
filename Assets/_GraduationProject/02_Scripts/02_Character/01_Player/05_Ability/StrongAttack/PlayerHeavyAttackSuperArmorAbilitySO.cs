@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,12 +9,9 @@ public class PlayerHeavyAttackSuperArmorAbilitySO : PlayerAbilitySO
 {
     public override void RegisterAbility(PlayerAbility ability)
     {
-        // 기본 초기화 (p_owner, p_ability 설정 등)
-        base.RegisterAbility(ability);
-        
-        // RegisterAbility 호출 시점에는 base.AddAllSkillTags()가 이미 실행되므로 초기 상태에서는 제거해 둠
-        // (상태 변경 이벤트에서만 관리하기 위함)
-        RemoveAllSkillTags();
+        p_ability = ability;
+        p_owner = p_ability.GetComponent<PlayerController>();
+        p_tagInstances = new List<PlayerAbilityTagSO>();
 
         // 상태 변경 이벤트 구독
         p_owner.FSM.OnStateChanged += HandleStateChanged;
