@@ -11197,6 +11197,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 356838646}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnRequirementFailed:
     m_PersistentCalls:
       m_Calls: []
@@ -14761,6 +14773,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9042631102677675906, guid: eb9949fad87bab2438299fbdc05ff7f2, type: 3}
   m_PrefabInstance: {fileID: 354722445}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &356838646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 356838647}
+  - component: {fileID: 356838648}
+  m_Layer: 0
+  m_Name: puzzle_collider (15)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &356838647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356838646}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.99, y: 6.720001, z: -5.79}
+  m_LocalScale: {x: 12.702454, y: 15.897, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1715107488}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &356838648
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356838646}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &357905179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22209,6 +22274,26 @@ PrefabInstance:
     - target: {fileID: 7287284908343072553, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527991369998183203, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
+      propertyPath: ClearEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527991369998183203, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
+      propertyPath: ClearEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527991369998183203, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
+      propertyPath: ClearEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 356838646}
+    - target: {fileID: 8527991369998183203, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
+      propertyPath: ClearEvent.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527991369998183203, guid: b35cb4a745cac024fb988739d8379ea4, type: 3}
+      propertyPath: ClearEvent.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GamePlayTagTrigger, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -58083,6 +58168,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1072222066}
+  - {fileID: 356838647}
   - {fileID: 1151256751}
   - {fileID: 329320246}
   - {fileID: 1294112055}
