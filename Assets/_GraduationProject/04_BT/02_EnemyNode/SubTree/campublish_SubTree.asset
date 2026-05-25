@@ -1,5 +1,24 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8362319642151759042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
+  m_Name: Condition_Blackboard Enum Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
+  position: {x: 286, y: -363}
+  exceptCondition:
+    key: 
+  stateCondition:
+    Key: CurrentStatus
+    Operator: 1
+    TargetState: 3
 --- !u!114 &-8151452629168329236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15,6 +34,7 @@ MonoBehaviour:
   position: {x: 114, y: -363}
   nodes:
   - {fileID: 6532364254942503654}
+  - {fileID: -8362319642151759042}
   - {fileID: 7582284022397784408}
   services: []
 --- !u!114 &-7007068429772297110
@@ -132,7 +152,7 @@ MonoBehaviour:
   floatCondition:
     key: DistanceToTarget
     Operator: 1
-    value: 30
+    value: 10
 --- !u!114 &2008178909787335439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +246,7 @@ MonoBehaviour:
   m_Name: Condition_cutscene
   m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
   position: {x: 687, y: -874}
+  inputMode: 3
 --- !u!114 &7582284022397784408
 MonoBehaviour:
   m_ObjectHideFlags: 0

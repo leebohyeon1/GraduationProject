@@ -8,14 +8,18 @@ public class Task_CameraPublish : Node
 
     public override void OnEnter()
     {
-        runner.StateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost;
     }
     protected override NodeState OnUpdate()
     {
         
         return NodeState.SUCCESS;
     }
+    public override void OnExit()
+    {
+        base.OnExit();
+        runner.StateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost;
 
+    }
     public override Node Clone()
     {
         Task_CameraPublish node = Instantiate(this);
