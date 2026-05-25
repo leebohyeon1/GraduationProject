@@ -30,8 +30,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -73,119 +71,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
-  - distance: 5
-    duration: 0.15
-    speed: 0
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.123462945
-        value: 0.49938887
-        inSlope: 1.3947408
-        outSlope: 1.3947408
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
-  - distance: 5
-    duration: 0.15
-    speed: 0
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.12147838
-        value: 0.4979145
-        inSlope: 1.4070432
-        outSlope: 1.4070432
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
-  - distance: 5
-    duration: 0.15
-    speed: 0
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.11704096
-        value: 0.50467634
-        inSlope: 1.4075847
-        outSlope: 1.4075847
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
   phaseAttackDataKeys:
   - Boss_SB_Attack
-  - Boss_SB_Attack1
-  - Boss_SB_Attack2
-  - Boss_SB_Attack3
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
@@ -254,8 +141,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -462,8 +347,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -705,8 +588,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -859,7 +740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5905f441ab3d5494993b7b161e179d5e, type: 3}
   m_Name: Condition_Check Cool Time(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::Condition_CheckCoolTime
-  position: {x: 1158, y: -535}
+  position: {x: 1160, y: -534}
   exceptCondition:
     key: 
   skillName: Boss_S_Attack_1
@@ -990,7 +871,7 @@ MonoBehaviour:
   exceptCondition:
     key: 
   skillName: Boss_B_Attack_2
-  cooldownDuration: 0
+  cooldownDuration: 6
   EnemyAttackData: 0
   attackData: {fileID: 0}
 --- !u!114 &1902265100981886172
@@ -1115,8 +996,6 @@ MonoBehaviour:
   _hitMasks:
     serializedVersion: 2
     m_Bits: 128
-  additionalWallSpacing: 0.1
-  minimumMovementDistance: 0.05
   ChangeSpeed: 1
   _startHealthThreshold: 0.5
   _maxSpeedThreshold: 0.1
@@ -1291,7 +1170,7 @@ MonoBehaviour:
   exceptCondition:
     key: 
   skillName: Boss_B_Attack_1
-  cooldownDuration: 0
+  cooldownDuration: 6
   EnemyAttackData: 0
   attackData: {fileID: 0}
 --- !u!114 &7405671097637495851
@@ -1328,13 +1207,11 @@ MonoBehaviour:
   position: {x: 263, y: 21}
   nodes:
   - {fileID: -3768489937116087190}
-  - {fileID: 4137463322458218953}
   - {fileID: -8070725546458565278}
   services: []
   weights:
-  - 40
-  - 30
-  - 30
+  - 60
+  - 20
 --- !u!114 &7733163158785523128
 MonoBehaviour:
   m_ObjectHideFlags: 0

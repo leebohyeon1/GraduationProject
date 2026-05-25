@@ -17,6 +17,7 @@ public class ObjectTotem : TotemBase
     [SerializeField] private Color _targetGizmoColor = Color.green;
     [SerializeField] private PuzzleGridManager _gizmoGridManager;
 
+    InnerGlowController glowController;
 
     public bool IsAtTarget { get; private set; }
     public Vector2Int TargetGridPos => _targetGridPos;
@@ -26,6 +27,9 @@ public class ObjectTotem : TotemBase
         base.Start();
         // _type = TotemType.Object;
         _currentDurability = _maxDurability;
+        glowController = GetComponent<InnerGlowController>();
+        glowController?.SetInnerGlowEffect(_currentDurability);
+
     }
 
     protected override void OnMoveComplete()
@@ -36,8 +40,9 @@ public class ObjectTotem : TotemBase
         Debug.Log($"[ObjectTotem] Moved! Durability: {_currentDurability}/{_maxDurability}");
 
 
+        glowController?.SetInnerGlowEffect(_currentDurability ); 
         CheckTargetReached();
-        if (_currentDurability <= 0 && !IsAtTarget )
+        if (_currentDurability <= 0 && !IsAtTarget)
         {
             DeactivateTotem();
         }
@@ -49,6 +54,7 @@ public class ObjectTotem : TotemBase
         _currentDurability = _maxDurability;
         IsAtTarget = false;
 
+        glowController?.SetInnerGlowEffect(_currentDurability );
 
         Debug.Log("[ObjectTotem] Reset Complete.");
     }

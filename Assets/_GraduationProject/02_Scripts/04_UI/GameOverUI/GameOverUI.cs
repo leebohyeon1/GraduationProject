@@ -41,9 +41,14 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
         if (_isActionProcessing) return;
         
         PlayClickAnimation(EventSystem.current.currentSelectedGameObject, () => {
+            GameData gameData = DataManager.Instance.GetGameData();
             DataManager.Instance.ResetPlayer(); // 플레이어 데이터 초기화
+            
+            // 죽은 몬스터 목록 초기화 (리스폰 시 모든 적 부활)
+            gameData.ClearDeadMonsters();
+            
             DataManager.Instance.SaveGame(); // 게임 저장
-            SceneLoadingManager.Instance.TeleportToSceneByName(DataManager.Instance.GetGameData().LastMainScene, SceneLoadingManager.SpawnMode.LastPosition);
+            SceneLoadingManager.Instance.TeleportToSceneByName(gameData.PlayerData.RespawnSceneName, SceneLoadingManager.SpawnMode.LastPosition);
         });
     }
 
