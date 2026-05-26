@@ -36,9 +36,10 @@ namespace GraduationProject
                 return;
             }
 
-            // 이미 재생 중인 소리가 있다면 정지 (선택 사항)
-            Stop();
+            // 1. 해당 트랙의 모든 기존 사운드 정지 (중복 재생 방지)
+            MMSoundManager.Instance.StopTrack(Track);
 
+            // 2. 새로운 사운드 재생
             _currentSource = MMSoundManager.Instance.PlaySound(
                 TargetAudioClip, 
                 Track, 
