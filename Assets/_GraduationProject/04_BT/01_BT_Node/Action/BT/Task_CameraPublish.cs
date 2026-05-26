@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Task_CameraPublish : Node
 {
-    [Tooltip("true¸é Detected, false¸é Lost ÀÌº¥Æ®¸¦ ¹ßÇàÇÕ´Ï´Ù.")]
+    [Tooltip("trueë©´ Detected, falseë©´ Lost ì´ë²¤íŠ¸ë¥¼ ë°œí–‰í•©ë‹ˆë‹¤.")]
     public bool publish = false;
 
     public override void OnEnter()
