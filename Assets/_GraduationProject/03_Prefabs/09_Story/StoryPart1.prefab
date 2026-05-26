@@ -2502,6 +2502,8 @@ GameObject:
   - component: {fileID: 2459708994241131246}
   - component: {fileID: 4342254498398749918}
   - component: {fileID: 5148180894259261344}
+  - component: {fileID: 1010542728805680610}
+  - component: {fileID: 5196290078015098768}
   m_Layer: 0
   m_Name: Whale_TimeLine (1)
   m_TagString: Untagged
@@ -2634,10 +2636,10 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: SceneLoadingManager, Assembly-CSharp
-          m_MethodName: TeleportToSceneByName
-          m_Mode: 5
+        - m_Target: {fileID: 5196290078015098768}
+          m_TargetAssemblyTypeName: SceneTransitionInteractor, Assembly-CSharp
+          m_MethodName: TransitionToScene
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2646,6 +2648,39 @@ MonoBehaviour:
             m_StringArgument: Title
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1010542728805680610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357915887662987124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d260b8b4f825f44fa4699df2fbea492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  _interactableUITransform: {fileID: 0}
+  _interactableType: 0
+  _onlyOne: 0
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5196290078015098768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357915887662987124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abea9f29800a0443b9832a00d3213d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneTransitionInteractor
+  _targetSceneData: {fileID: 11400000, guid: 31eb71677bcd2b842a10894eec386d8a, type: 2}
+  _spawnType: 0
+  _customPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &2469811939059154882
 GameObject:
   m_ObjectHideFlags: 0
