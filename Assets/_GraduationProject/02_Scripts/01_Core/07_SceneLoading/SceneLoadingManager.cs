@@ -7,6 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using MoreMountains.Tools;
 
 public class SceneLoadingManager : MonoBehaviour
 {
@@ -374,7 +375,23 @@ public class SceneLoadingManager : MonoBehaviour
                 DynamicGI.UpdateEnvironment();
             }
 
-            // 3. 타이틀 씬이 아닐 때만 게임 데이터 관련 갱신 수행
+            // 3. 배경음악(BGM) 자동 재생
+            if (chunkData.BackgroundMusic != null)
+            {
+                MMSoundManager.Instance.PlaySound(
+                    chunkData.BackgroundMusic, 
+                    MMSoundManager.MMSoundManagerTracks.Music, 
+                    Vector3.zero, 
+                    true
+                );
+            }
+            else
+            {
+                // 브금이 지정되지 않은 씬이라면 음악 정지 (필요에 따라 주석 처리)
+                MMSoundManager.Instance.StopTrack(MMSoundManager.MMSoundManagerTracks.Music);
+            }
+
+            // 4. 타이틀 씬이 아닐 때만 게임 데이터 관련 갱신 수행
             if (chunkName != "Title")
             {
                 if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
