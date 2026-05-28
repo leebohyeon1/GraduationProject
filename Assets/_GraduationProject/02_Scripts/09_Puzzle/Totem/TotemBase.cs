@@ -36,7 +36,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     public string arrival {get; private set;} = "_arrivalFeedbackName";
     public string broken {get; private set;} = "_brokenFeedbackName";
 
-    InnerGlowController glowController;
     protected int _currentDurability;
 
 
@@ -67,7 +66,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             PuzzleGridManager.Instance.RegisterTotem(this, _currentGridPos);
         }
         gameObject.layer = LayerMask.NameToLayer("HitObject");
-        glowController = GetComponent<InnerGlowController>();
         feedback.start(this.gameObject);
     }
     public void DestroyTotem()
@@ -115,8 +113,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
             return;
         }
 
-        glowController?.SetInnerGlowEffect(_currentDurability - 1); 
-
+        
         StartCoroutine(SlideToPosition(targetGridPos));
     }
 

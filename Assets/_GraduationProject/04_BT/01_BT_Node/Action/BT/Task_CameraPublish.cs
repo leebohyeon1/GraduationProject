@@ -3,19 +3,23 @@ using UnityEngine;
 
 public class Task_CameraPublish : Node
 {
-    [Tooltip("true¸é Detected, false¸é Lost ÀÌº¥Æ®¸¦ ¹ßÇàÇÕ´Ï´Ù.")]
+    [Tooltip("trueë©´ Detected, falseë©´ Lost ì´ë²¤íŠ¸ë¥¼ ë°œí–‰í•©ë‹ˆë‹¤.")]
     public bool publish = false;
 
     public override void OnEnter()
     {
-        runner.StateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost;
     }
     protected override NodeState OnUpdate()
     {
         
         return NodeState.SUCCESS;
     }
+    public override void OnExit()
+    {
+        base.OnExit();
+        runner.StateType = publish ? EnemyStateType.Detected : EnemyStateType.Lost;
 
+    }
     public override Node Clone()
     {
         Task_CameraPublish node = Instantiate(this);

@@ -113,13 +113,24 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
     }
 
 
-    public void OpenSkillPanel()
+    public void OpenSkillPanel(int skillIndex = -1)
     {
         _currentComponentIndex = 2; // 스킬 패널 인덱스
         UpdateComponenet();
 
         _menuPanel.SetActive(true);
         _inputReaderSO.SetInputMode(InputReaderSO.InputMode.UI);
+
+        // 특정 스킬 인덱스가 제공되지 않았다면 기본값으로 0번 선택
+        int targetIndex = (skillIndex == -1) ? 0 : skillIndex;
+
+        if (_mainUIComponents.Count > 2)
+        {
+            if (_mainUIComponents[2] is SkillUI skillUI)
+            {
+                skillUI.SelectSkillByIndex(targetIndex);
+            }
+        }
     }
 
     //==========================================================================================================================

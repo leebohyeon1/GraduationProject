@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf36873a83908324596879df8c982311, type: 3}
   m_Name: Task_Boss Cutscene End
   m_EditorClassIdentifier: Assembly-CSharp::Task_BossCutsceneEnd
-  position: {x: 398, y: 284}
+  position: {x: 398, y: 361}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f4991125d9278488b391f4350c5d14, type: 3}
   m_Name: Decorator_Inverter
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Decorator_Inverter
-  position: {x: 396, y: 361}
+  position: {x: 401, y: 169}
   child: {fileID: 2304345980655835924}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Selector
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 4, y: 0}
+  position: {x: 4, y: -2}
   nodes:
   - {fileID: -4275446944227042430}
   - {fileID: 671970732127053245}
@@ -371,6 +371,20 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
+--- !u!114 &2170323679740545076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90e8b0eff70424bbd1de84c81c71dc, type: 3}
+  m_Name: Condition_cutscene
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_cutscene
+  position: {x: 408, y: 265}
+  inputMode: 1
 --- !u!114 &2304345980655835924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
   m_Name: Condition_Is In Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 566, y: 361}
+  position: {x: 559, y: 169}
   exceptCondition:
     key: 
 --- !u!114 &3598595731350612588
@@ -531,10 +545,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 179, y: 92}
   nodes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: -1111203978955045821}
   - {fileID: -571219295577504573}
+  - {fileID: 2170323679740545076}
+  - {fileID: -1111203978955045821}
   - {fileID: 3598595731350612588}
   - {fileID: 6801911828257767253}
   services: []

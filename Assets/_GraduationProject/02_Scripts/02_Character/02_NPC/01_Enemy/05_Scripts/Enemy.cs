@@ -137,7 +137,8 @@ public class Enemy : MonoBehaviour
         get{return _stateType;}
         set
         {
-            if(_stateType == EnemyStateType.SummonBoss || _stateType == EnemyStateType.Dead)
+
+            if(_stateType == EnemyStateType.SummonBoss && value != EnemyStateType.Dead)
             {
                 return;
             }

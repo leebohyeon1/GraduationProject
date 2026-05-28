@@ -59,6 +59,10 @@ public class DataManager : MonoBehaviour
             if (player != null)
             {
                 _currentGameData.PlayerData.RespawnPosition = player.transform.position;
+                if (SceneLoadingManager.Instance.CurrentActiveChunk != null)
+                {
+                    _currentGameData.PlayerData.RespawnSceneName = SceneLoadingManager.Instance.CurrentActiveChunk.SceneName;
+                }
                 _currentGameData.PlayerData.LastPosition = player.transform.position;
             }
         }
@@ -223,6 +227,7 @@ public class DataManager : MonoBehaviour
             _currentGameData.LastMainScene = sceneToUse.SceneName;
             _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
             _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.RespawnSceneName = sceneToUse.SceneName;
             _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
         }
         else
@@ -267,6 +272,7 @@ public class DataManager : MonoBehaviour
             _currentGameData.LastMainScene = sceneToUse.SceneName;
             _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
             _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.RespawnSceneName = sceneToUse.SceneName;
             _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
         }
         else
