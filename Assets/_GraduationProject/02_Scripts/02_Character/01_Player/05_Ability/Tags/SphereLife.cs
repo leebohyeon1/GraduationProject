@@ -24,16 +24,23 @@ public class SphereLife : PlayerAbilityTagSO
 
     private void OnHealthChanged(int previousHealth, int currentHealth)
     {
+        // currentHealth가 0 이하가 되었을 때 발동
         if (currentHealth <= 0 && previousHealth > 0)
         {
-            // 플레이어가 사망하기 직전에 체력이 0 이하로 떨어지는 경우
-            // 사망을 막고 체력을 1로 설정
+            Debug.Log($"최후의 의지 작동! 현재 체력: {currentHealth}");
 
-            _player.Health.ChangeHealth(1 - currentHealth); // 현재 체력을 1로 만들기 위해 필요한 회복량 계산
-            Debug.Log("최후의 의지 작동");
+            // 1. 체력을 1로 복구 (현재 체력이 -5라면 +6을 해서 1로 만듦)
+            int recoverAmount = 1 - currentHealth;
+            _player.Health.ChangeHealth(recoverAmount);
 
-            _player.StartCoroutine(StartInvincibility());
-            _player.Combat.ResetCounterStack(); // 카운터 스택 초기화
+            // 2. 무적 코루틴 시작
+            if (_player.gameObject.activeInHierarchy)
+            {
+                _player.StartCoroutine(StartInvincibility());
+            }
+
+            // 3. 카운터 스택 초기화
+            _player.Combat.ResetCounterStack();
         }
     }
 

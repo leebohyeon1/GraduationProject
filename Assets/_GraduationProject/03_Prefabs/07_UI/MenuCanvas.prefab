@@ -31,13 +31,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7247800088801983477}
   - {fileID: 727762572082610133}
   m_Father: {fileID: 1334310531549218484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 27, y: 149}
+  m_AnchoredPosition: {x: 27, y: 75.6}
   m_SizeDelta: {x: 45, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &2975530780220723004
@@ -614,9 +613,9 @@ RectTransform:
   - {fileID: 5954691868655065707}
   m_Father: {fileID: 8819625264873986851}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 461, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4315637794872643870
@@ -729,21 +728,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: HeavyAttackKillRecover
-  _skillDescription: "\uAC15\uACF5\uACA9\uC73C\uB85C \uCC98\uCE58 \uC2DC 1\uC2A4\uD0DD
-    \uC989\uC2DC \uD68C\uBCF5"
   _skillToggleButton: {fileID: 8837090683282628801}
   _skillIcon: {fileID: 3024303247464990464}
   _skillLockImage: {fileID: 2166884022404269282}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: e3d3fc0597a12ed43b161795b6856bae, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: d621cb0a1dba2c142b3093ecd79344cc, type: 2}
+  _learnAbility: {fileID: 11400000, guid: d621cb0a1dba2c142b3093ecd79344cc, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -760,7 +755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -883,9 +878,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1944289784007403525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 37.5, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7067377372201053735
@@ -1290,9 +1285,9 @@ RectTransform:
   - {fileID: 2723600062641888936}
   m_Father: {fileID: 3299983457418027913}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 221.9, y: -50}
   m_SizeDelta: {x: 42, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4156396409891003196
@@ -1425,7 +1420,7 @@ GameObject:
   - component: {fileID: 497591550515265012}
   - component: {fileID: 1120919545493529547}
   m_Layer: 5
-  m_Name: StarveSword
+  m_Name: ChargingParryStiffnessAbility
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1447,9 +1442,9 @@ RectTransform:
   - {fileID: 2149669823533359618}
   m_Father: {fileID: 2379057658667577863}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 461, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4001887554922245042
@@ -1562,20 +1557,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: StarveSword
-  _skillDescription: "\uD328\uB9C1 \uC131\uACF5 \uC2DC \uACBD\uC9C1\uB3C4 50 \uAC10\uC18C"
   _skillToggleButton: {fileID: 337221063042435097}
   _skillIcon: {fileID: 7723808733092716338}
   _skillLockImage: {fileID: 5176963720757934808}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
-  - {fileID: 11400000, guid: 21040bf22dd65de48beb571c13233196, type: 2}
+  - {fileID: 11400000, guid: cad84ef379fb7364b9271fdb910a7151, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: a5e1ff515c865994192d4b448c08711a, type: 2}
+  _learnAbility: {fileID: 11400000, guid: 07306a8756ab5c3439ed56188032cafd, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -1592,7 +1584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -2340,9 +2332,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1944289784007403525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12.5, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7631078568478246000
@@ -2938,10 +2930,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: LastDetermination
-  _skillDescription: "3\uC2A4\uD0DD \uC720\uC9C0\uC911 \uC0AC\uB9DD\uC5D0 \uC774\uB974\uB294
-    \uB370\uBBF8\uC9C0\uB97C \uBC1B\uC744 \uACBD\uC6B0 \uC2A4\uD0DD\uC774 \uC804\uBD80
-    \uC0AC\uB77C\uC9C0\uBA70 \uCCB4\uB825 1\uB85C \uBC84\uD2F4\uB2E4"
   _skillToggleButton: {fileID: 4765052799533108326}
   _skillIcon: {fileID: 3097412093441565772}
   _skillLockImage: {fileID: 2638044162635224869}
@@ -2950,9 +2938,9 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
+  _needTags:
+  - {fileID: 11400000, guid: 325f4faa869cb1f4db209438d02c52f6, type: 2}
+  _learnAbility: {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.1
@@ -2969,7 +2957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -3212,8 +3200,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: HeavyAttack
-  _skillDescription: "\uAC15\uACF5\uACA9 1\uD0C0 \uD574\uAE08"
   _skillToggleButton: {fileID: 1169862400296455962}
   _skillIcon: {fileID: 8603806695291251861}
   _skillLockImage: {fileID: 977082843006085365}
@@ -3222,9 +3208,9 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
+  _needTags:
+  - {fileID: 11400000, guid: 1c6f19d7a980aa447b6bb801fc4979e5, type: 2}
+  _learnAbility: {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.1
@@ -3241,7 +3227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -3460,82 +3446,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1506607284953996949
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7247800088801983477}
-  - component: {fileID: 1221780155023196270}
-  - component: {fileID: 3117252295339469692}
-  m_Layer: 5
-  m_Name: Special_Money_Icon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7247800088801983477
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1506607284953996949}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 643399436910816011}
-  m_Father: {fileID: 6501426335569691641}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 43, y: 43}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1221780155023196270
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1506607284953996949}
-  m_CullTransparentMesh: 1
---- !u!114 &3117252295339469692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1506607284953996949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.96754205, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2949614641f82c74b9ddf9b325ccbd1c, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1506630626181078057
 GameObject:
   m_ObjectHideFlags: 0
@@ -3632,7 +3542,7 @@ MonoBehaviour:
   _skillName: {fileID: 4638518775543168987}
   _skillDescription: {fileID: 5657939564513627790}
   _moneyAmount: {fileID: 2434296013402587949}
-  _specialmoneyAmount: {fileID: 6030300461443603996}
+  _specialmoneyAmount: {fileID: 0}
 --- !u!1 &1537699024265911299
 GameObject:
   m_ObjectHideFlags: 0
@@ -4876,143 +4786,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2091226007100956282
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1845841552325796299}
-  - component: {fileID: 543681824850278776}
-  - component: {fileID: 5555265021991187147}
-  m_Layer: 5
-  m_Name: Money_Cost
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1845841552325796299
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091226007100956282}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 65770206181176230}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 23, y: 0}
-  m_SizeDelta: {x: 100, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
---- !u!222 &543681824850278776
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091226007100956282}
-  m_CullTransparentMesh: 1
---- !u!114 &5555265021991187147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091226007100956282}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: 9999
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9f3a59a2e2e94ca4ab7dd31357e13af3, type: 2}
-  m_sharedMaterial: {fileID: -7840494737179809039, guid: 9f3a59a2e2e94ca4ab7dd31357e13af3, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2101765941108771486
 GameObject:
   m_ObjectHideFlags: 0
@@ -6896,7 +6669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &926563769239059749
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7281,9 +7054,9 @@ RectTransform:
   - {fileID: 6542703311074282320}
   m_Father: {fileID: 3299983457418027913}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 21, y: -50}
   m_SizeDelta: {x: 42, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &438398707098008171
@@ -7353,9 +7126,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 9082261558910361445}
   - {fileID: 3668572340111380457}
   - {fileID: 7729080496274894908}
+  - {fileID: 9082261558910361445}
   m_Father: {fileID: 4269865601366188810}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -7609,9 +7382,9 @@ RectTransform:
   - {fileID: 1052372738064148997}
   m_Father: {fileID: 6501426335569691641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66.5, y: -21.5}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3066681346563640999
@@ -7966,9 +7739,9 @@ RectTransform:
   - {fileID: 5585389856754679933}
   m_Father: {fileID: 2379057658667577863}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 61, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2428358642509843659
@@ -8081,20 +7854,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: MobileCharge
-  _skillDescription: "\uCC28\uC9D5 \uC911 \uC774\uB3D9 \uBC0F \uB300\uC2DC \uAC00\uB2A5"
   _skillToggleButton: {fileID: 2608881895638632568}
   _skillIcon: {fileID: 589266436129398377}
   _skillLockImage: {fileID: 3635198341405344442}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: a0f4c9bda92d0aa4cb3715686c1d2f4d, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: 61583180547827c469f247c7b1c5e01b, type: 2}
+  _learnAbility: {fileID: 11400000, guid: 61583180547827c469f247c7b1c5e01b, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -8111,7 +7881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -9156,9 +8926,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1944289784007403525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62.5, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4130086456598259533
@@ -9311,9 +9081,9 @@ RectTransform:
   - {fileID: 5004416185647339202}
   m_Father: {fileID: 8819625264873986851}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 61, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2942216069962671549
@@ -9426,20 +9196,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: HeavyAttackSuperArmor
-  _skillDescription: "\uAC15\uACF5\uACA9 \uC911 \uACBD\uC9C1 \uBA74\uC5ED"
   _skillToggleButton: {fileID: 3345783644730851319}
   _skillIcon: {fileID: 5042108363922498339}
   _skillLockImage: {fileID: 5514322633687584748}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: b4cd408980d07234c9b016dc3690b1fd, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: ce0de9724476cdb46b1151f7f15e2973, type: 2}
+  _learnAbility: {fileID: 11400000, guid: ce0de9724476cdb46b1151f7f15e2973, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -9456,7 +9223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -10107,8 +9874,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Charge
-  _skillDescription: "\uCC28\uC9D5 \uD328\uB9C1 \uAC00\uB2A5"
   _skillToggleButton: {fileID: 4214666279579519736}
   _skillIcon: {fileID: 1621130854484851354}
   _skillLockImage: {fileID: 7968661888922978595}
@@ -10117,9 +9882,9 @@ MonoBehaviour:
   _price: 0
   _specialPrice: 0
   _needAbilities: []
-  _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: a0f4c9bda92d0aa4cb3715686c1d2f4d, type: 2}
+  _needTags:
+  - {fileID: 11400000, guid: 37ee8240268e1e640b06bcef1c0e248d, type: 2}
+  _learnAbility: {fileID: 11400000, guid: a0f4c9bda92d0aa4cb3715686c1d2f4d, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.1
@@ -10136,7 +9901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -10403,9 +10168,9 @@ RectTransform:
   - {fileID: 3664486216471343163}
   m_Father: {fileID: 1982487131344510278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 261, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3364544796808834939
@@ -10518,21 +10283,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: CounterPrelude
-  _skillDescription: "\uD328\uB9C1 \uC131\uACF5 \uD6C4 10\uCD08\uAC04 \uACF5\uACA9
-    \uC18D\uB3C4 \uC0C1\uC2B9"
   _skillToggleButton: {fileID: 8234366180012227264}
   _skillIcon: {fileID: 1262593512120540403}
   _skillLockImage: {fileID: 68232660558005811}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: a58ee5a1550181945b5528e23e26edc9, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: 9a64152f62bca3047ba24d1a8fe00a5d, type: 2}
+  _learnAbility: {fileID: 11400000, guid: 9a64152f62bca3047ba24d1a8fe00a5d, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -10549,7 +10310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -11323,7 +11084,7 @@ GameObject:
   - component: {fileID: 827310583339483065}
   - component: {fileID: 1260198484889427949}
   m_Layer: 5
-  m_Name: SeamlessFlow
+  m_Name: SuperArmorCharge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11345,9 +11106,9 @@ RectTransform:
   - {fileID: 5283820330930644698}
   m_Father: {fileID: 2379057658667577863}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 261, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1996998654017025393
@@ -11460,20 +11221,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: SeamlessFlow
-  _skillDescription: "\uCC28\uC9D5 \uD328\uB9C1 \uC911 \uC288\uD37C\uC544"
   _skillToggleButton: {fileID: 3501539249485674939}
   _skillIcon: {fileID: 1043373816785516871}
   _skillLockImage: {fileID: 2069277859211232517}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: 61583180547827c469f247c7b1c5e01b, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: 21040bf22dd65de48beb571c13233196, type: 2}
+  _learnAbility: {fileID: 11400000, guid: cad84ef379fb7364b9271fdb910a7151, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -11490,7 +11248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -12437,7 +12195,7 @@ MonoBehaviour:
   - {fileID: 2067628851598024368}
   - {fileID: 4349814628369380258}
   - {fileID: 3679489997184464236}
-  _specialMoneyText: {fileID: 5555265021991187147}
+  _specialMoneyText: {fileID: 0}
   _moneyText: {fileID: 2701741805315299928}
 --- !u!1 &5461500421999243961
 GameObject:
@@ -12979,9 +12737,9 @@ RectTransform:
   - {fileID: 5093625649911345567}
   m_Father: {fileID: 8819625264873986851}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 261, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4693713526171965080
@@ -13094,20 +12852,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: HeavyAttackCombo
-  _skillDescription: "\uAC15\uACF5\uACA9 2\uD0C0(Atk_Strong_02) \uD574\uAE08"
   _skillToggleButton: {fileID: 5961965108480998346}
   _skillIcon: {fileID: 6890640416425480432}
   _skillLockImage: {fileID: 7518078961755984935}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
   - {fileID: 11400000, guid: ce0de9724476cdb46b1151f7f15e2973, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: e3d3fc0597a12ed43b161795b6856bae, type: 2}
+  _learnAbility: {fileID: 11400000, guid: e3d3fc0597a12ed43b161795b6856bae, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -13124,7 +12879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -13535,9 +13290,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1944289784007403525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 87.5, y: -50}
   m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8117847003735138292
@@ -13748,9 +13503,9 @@ RectTransform:
   - {fileID: 4995102840198639086}
   m_Father: {fileID: 3299983457418027913}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 422.8, y: -50}
   m_SizeDelta: {x: 42, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2688132404753055091
@@ -15534,7 +15289,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 65770206181176230}
   - {fileID: 1902077677152459196}
   m_Father: {fileID: 3852865476835016927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15717,9 +15471,9 @@ RectTransform:
   - {fileID: 846453391744105264}
   m_Father: {fileID: 1982487131344510278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 61, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6805031370973507965
@@ -15832,21 +15586,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: BreathControl
-  _skillDescription: "\uAE30\uBCF8 \uACF5\uACA9 \uC2A4\uD14C\uBBF8\uB098 \uC18C\uBAA8\uB7C9
-    50% \uAC10\uC18C"
   _skillToggleButton: {fileID: 3360323453758912730}
   _skillIcon: {fileID: 127207109077387751}
   _skillLockImage: {fileID: 9141328727009128347}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
-  - {fileID: 11400000, guid: bb8e9d8eb51eb634583f6a013fb448f4, type: 2}
+  - {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: a58ee5a1550181945b5528e23e26edc9, type: 2}
+  _learnAbility: {fileID: 11400000, guid: a58ee5a1550181945b5528e23e26edc9, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -15863,7 +15613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -16827,8 +16577,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -144, y: -77.4}
-  m_SizeDelta: {x: 26.1915, y: 26.192}
+  m_AnchoredPosition: {x: -153.1, y: -56.9}
+  m_SizeDelta: {x: 49, y: 49}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &3228153078836871484
 CanvasRenderer:
@@ -17194,82 +16944,6 @@ RectTransform:
   m_AnchoredPosition: {x: 190, y: 0}
   m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &7612874473592143358
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 65770206181176230}
-  - component: {fileID: 3143891849339500221}
-  - component: {fileID: 1281652391430745875}
-  m_Layer: 5
-  m_Name: SpecialMoney
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &65770206181176230
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7612874473592143358}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1845841552325796299}
-  m_Father: {fileID: 2153975539594401956}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -144, y: -30}
-  m_SizeDelta: {x: 43, y: 43}
-  m_Pivot: {x: 1, y: 1}
---- !u!222 &3143891849339500221
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7612874473592143358}
-  m_CullTransparentMesh: 1
---- !u!114 &1281652391430745875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7612874473592143358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.96754205, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2949614641f82c74b9ddf9b325ccbd1c, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7711387952595782819
 GameObject:
   m_ObjectHideFlags: 0
@@ -17478,9 +17152,9 @@ RectTransform:
   - {fileID: 665257577708534958}
   m_Father: {fileID: 1982487131344510278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 461, y: -61}
   m_SizeDelta: {x: 122, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &495979779134075197
@@ -17593,21 +17267,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b51d495aa95fb74ba4340ed3dc6ba1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeButtonUI
-  _skillName: Realignment
-  _skillDescription: "\uD328\uB9C1 \uC131\uACF5 \uC2DC \uC2A4\uD14C\uBBF8\uB098 20
-    \uC989\uC2DC \uD68C\uBCF5"
   _skillToggleButton: {fileID: 6814570694001392838}
   _skillIcon: {fileID: 9041561381541696516}
   _skillLockImage: {fileID: 7064487824446839708}
   _lockColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   _unlockColor: {r: 1, g: 0.94509804, b: 0.73333335, a: 1}
-  _price: 0
+  _price: 200
   _specialPrice: 0
   _needAbilities:
-  - {fileID: 11400000, guid: 3bf106ddf731b52408b486a7c9cc1342, type: 2}
+  - {fileID: 11400000, guid: 9a64152f62bca3047ba24d1a8fe00a5d, type: 2}
   _needTags: []
-  _learnAbilities:
-  - {fileID: 11400000, guid: bb8e9d8eb51eb634583f6a013fb448f4, type: 2}
+  _learnAbility: {fileID: 11400000, guid: bb8e9d8eb51eb634583f6a013fb448f4, type: 2}
   _abilitySelected: {fileID: 11400000, guid: 298994eff0b57f143be685662c497a1f, type: 2}
   _scaleDuration: 0.2
   _selectedScale: 1.25
@@ -17624,7 +17294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
-  - eventID: 0
+  - eventID: 9
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -17866,143 +17536,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &8011686629552030705
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 643399436910816011}
-  - component: {fileID: 1381754420976901708}
-  - component: {fileID: 6030300461443603996}
-  m_Layer: 5
-  m_Name: Money_Cost
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &643399436910816011
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8011686629552030705}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7247800088801983477}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 0}
-  m_SizeDelta: {x: 70, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
---- !u!222 &1381754420976901708
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8011686629552030705}
-  m_CullTransparentMesh: 1
---- !u!114 &6030300461443603996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8011686629552030705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: 1
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9f3a59a2e2e94ca4ab7dd31357e13af3, type: 2}
-  m_sharedMaterial: {fileID: -7840494737179809039, guid: 9f3a59a2e2e94ca4ab7dd31357e13af3, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &8064928302524198577
 GameObject:
   m_ObjectHideFlags: 0
@@ -18468,8 +18001,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

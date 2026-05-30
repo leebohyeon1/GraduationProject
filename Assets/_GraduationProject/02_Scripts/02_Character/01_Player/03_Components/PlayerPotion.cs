@@ -69,6 +69,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
         }
 
         _data.CurrentPotion = (int)_data.Potion.Value;
+        Debug.Log("포션 재장전: " + _data.CurrentPotion);
         OnPotionChange?.Invoke(_data.CurrentPotion);
     }
 

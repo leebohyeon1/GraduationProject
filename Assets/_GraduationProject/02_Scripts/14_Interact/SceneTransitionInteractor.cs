@@ -42,7 +42,7 @@ public class SceneTransitionInteractor : MonoBehaviour
         }
     }
 
-    private void TransitionToScene()
+    public void TransitionToScene()
     {
         if (_targetSceneData == null)
         {

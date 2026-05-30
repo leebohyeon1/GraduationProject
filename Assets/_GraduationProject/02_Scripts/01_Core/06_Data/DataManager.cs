@@ -59,6 +59,10 @@ public class DataManager : MonoBehaviour
             if (player != null)
             {
                 _currentGameData.PlayerData.RespawnPosition = player.transform.position;
+                if (SceneLoadingManager.Instance.CurrentActiveChunk != null)
+                {
+                    _currentGameData.PlayerData.RespawnSceneName = SceneLoadingManager.Instance.CurrentActiveChunk.SceneName;
+                }
                 _currentGameData.PlayerData.LastPosition = player.transform.position;
             }
         }
@@ -102,92 +106,109 @@ public class DataManager : MonoBehaviour
     //==========================================================================================================================
     // Save Logic ==============================================================================================================
     //==========================================================================================================================
+    
+    /// <summary>
+    /// 현재 게임 상태를 파일로 저장합니다.
+    /// </summary>
     public void SaveGame()
     {
-        // 2. 현재 플레이 중인 데이터가 없다면 새로 생성 (예외 처리)
         if (_currentGameData == null)
         {
+            Debug.LogWarning("[DataManager] 저장할 현재 게임 데이터가 없습니다.");
             return;
         }
+
+        // 1. 게임 내 실시간 상태를 데이터 구조에 반영 (위치 등)
         UpdatePlayerDataFromGame();
 
-        // _currentGameData.LastMainScene = SceneLoadingManager.Instance.CurrentActiveChunkName;
-        // 3. CurrentPlayer 데이터를 CurrentGameData에 덮어씌움 (동기화)
-        _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // 저장 시간 갱신
+        // 2. 저장 시간 갱신
+        _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-        // 수정된 핵심 로직: Contains 대신 인덱스를 통한 직접 덮어쓰기
+        // 3. 리스트 내 해당 슬롯 데이터 갱신
         if (_currentSlotIndex != -1 && _currentSlotIndex < DataList.Count)
         {
-            // 기존 슬롯에 확실하게 덮어씌움
             DataList[_currentSlotIndex] = _currentGameData;
         }
         else
         {
-            // 예외 처리: 인덱스가 -1이거나 범위를 벗어난 경우 (안전망)
             DataList.Add(_currentGameData);
             _currentSlotIndex = DataList.Count - 1;
         }
 
-        SaveDataContainer container = new SaveDataContainer(DataList);
-
-        // 5. JSON 변환 및 저장
-        string json = JsonUtility.ToJson(container, true);
-        string filePath = Path.Combine(Application.persistentDataPath, _saveFileName);
-        File.WriteAllText(filePath, json);
-
-        Debug.Log($"[DataManager] 전체 리스트 저장 완료 ({DataList.Count}개 슬롯). 경로: {filePath}");
+        // 4. JSON 파일 저장
+        try
+        {
+            SaveDataContainer container = new SaveDataContainer(DataList);
+            string json = JsonUtility.ToJson(container, true);
+            string filePath = Path.Combine(Application.persistentDataPath, _saveFileName);
+            File.WriteAllText(filePath, json);
+            Debug.Log($"[DataManager] 게임 저장 완료 (슬롯: {_currentSlotIndex}, 경로: {filePath})");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataManager] 저장 중 오류 발생: {e.Message}");
+        }
     }
 
     //==========================================================================================================================
     // Load Logic ==============================================================================================================
     //==========================================================================================================================
+    
+    /// <summary>
+    /// 저장 파일로부터 모든 세이브 데이터를 불러옵니다. (기기 로컬 로드)
+    /// </summary>
     public void LoadGame()
     {
         string filePath = Path.Combine(Application.persistentDataPath, _saveFileName);
 
         if (File.Exists(filePath))
         {
-            // 1. 파일 읽기
-            string json = File.ReadAllText(filePath);
-
-            // 2. 래퍼 클래스로 역직렬화
-            SaveDataContainer container = JsonUtility.FromJson<SaveDataContainer>(json);
-
-            // 3. 리스트 복원
-            if (container != null && container.DataList != null)
-
+            try
             {
-                DataList = container.DataList;
+                string json = File.ReadAllText(filePath);
+                SaveDataContainer container = JsonUtility.FromJson<SaveDataContainer>(json);
+
+                if (container != null && container.DataList != null)
+                {
+                    DataList = container.DataList;
+                }
+                else
+                {
+                    DataList = new List<GameData>();
+                }
+                Debug.Log($"[DataManager] 로컬 데이터 로드 완료 ({DataList.Count}개 슬롯)");
             }
-            else
+            catch (Exception e)
             {
+                Debug.LogError($"[DataManager] 로드 중 오류 발생: {e.Message}");
                 DataList = new List<GameData>();
             }
-
-            Debug.Log($"[DataManager] 로드 완료. 총 {DataList.Count}개의 세이브 데이터가 있습니다.");
         }
         else
         {
-            Debug.Log("저장된 파일이 없습니다. 리스트를 초기화합니다.");
+            Debug.Log("[DataManager] 저장된 파일이 없습니다. 새 리스트로 시작합니다.");
             DataList = new List<GameData>();
         }
     }
 
     /// <summary>
-    /// 리스트의 특정 인덱스 데이터를 로드하여 게임을 시작
+    /// 특정 슬롯의 데이터를 선택하여 현재 세션으로 로드합니다.
     /// </summary>
     public void SelectSaveData(int index)
     {
         if (index >= 0 && index < DataList.Count)
         {
             _currentGameData = DataList[index];
-            _currentSlotIndex = index; // 선택한 슬롯 번호 기억!
+            _currentSlotIndex = index;
 
-            // JSON 로드 시 끊겼던 ScriptableObject 참조 및 Stat 람다 식 복구
+            // JSON 로드 시 끊겼던 ScriptableObject 참조 및 Stat 수치 복구
             _currentGameData.PlayerData.ReloadBaseData(_defaultPlayerData);
 
-            GamePlayTagManager.Instance.Initialize();
-            Debug.Log($"{index}번 세이브 데이터를 불러왔습니다.");
+            // 다른 매니저들에게 로드 알림
+            if (GamePlayTagManager.Instance != null)
+                GamePlayTagManager.Instance.Initialize();
+            
+            Debug.Log($"[DataManager] {index}번 슬롯 데이터 선택 완료");
         }
     }
 
@@ -206,6 +227,7 @@ public class DataManager : MonoBehaviour
             _currentGameData.LastMainScene = sceneToUse.SceneName;
             _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
             _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.RespawnSceneName = sceneToUse.SceneName;
             _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
         }
         else
@@ -250,6 +272,7 @@ public class DataManager : MonoBehaviour
             _currentGameData.LastMainScene = sceneToUse.SceneName;
             _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
             _currentGameData.PlayerData.RespawnPosition = sceneToUse.DefaultSpawnPosition;
+            _currentGameData.PlayerData.RespawnSceneName = sceneToUse.SceneName;
             _currentGameData.PlayerData.LastPosition = _currentGameData.PlayerData.RespawnPosition;
         }
         else
@@ -293,31 +316,41 @@ public class DataManager : MonoBehaviour
     // Player Data =============================================================================================================
     //==========================================================================================================================
 
-    // 게임상의 최신 데이터를 PlayerData 클래스로 복사
+    /// <summary>
+    /// 현재 씬의 플레이어 상태를 데이터 객체에 동기화합니다.
+    /// </summary>
     private void UpdatePlayerDataFromGame()
     {
         PlayerController player = FindFirstObjectByType<PlayerController>();
-        if (player == null)
-        {
-            return;
-        }
+        if (player == null || _currentGameData == null) return;
 
-        // 위치 저장 (직접 연동되지 않으므로 복사 필요)
+        // 1. 위치 정보 저장
         _currentGameData.PlayerData.LastPosition = player.transform.position;
 
-        // 보유한 능력(Ability) 저장
+        // 2. 능력(Ability) 데이터 동기화
+        // PlayerAbility.cs에서 실시간으로 AcquiredAbilityIds를 업데이트하고 있지만,
+        // 세이브 파일 쓰기 직전에 최종적으로 리스트를 정합성 있게 맞춥니다.
         var abilityComp = player.Ability;
-        if (abilityComp)
+        if (abilityComp != null)
         {
-            _currentGameData.PlayerData.AcquiredAbilityIds.Clear();
-
-            foreach (var ability in abilityComp.ActiveAbilities)
+            // 현재 플레이어가 실제로 들고 있는 스킬들로 세이브 데이터를 갱신합니다.
+            // (단, 1초 로딩 지연 시간 중에 저장이 불리는 특수한 상황을 고려하여 
+            // 실시간 리스트가 비어있지 않을 때만 갱신하는 안전 장치를 둘 수 있습니다.)
+            var activeAbilities = new List<PlayerAbilitySO>(abilityComp.ActiveAbilities);
+            
+            if (activeAbilities.Count > 0)
             {
-                if (!string.IsNullOrEmpty(ability.Id))
+                _currentGameData.PlayerData.AcquiredAbilityIds.Clear();
+                foreach (var ability in activeAbilities)
                 {
-                    _currentGameData.PlayerData.AcquiredAbilityIds.Add(ability.Id);
+                    if (ability != null && !string.IsNullOrEmpty(ability.Id))
+                    {
+                        if (!_currentGameData.PlayerData.AcquiredAbilityIds.Contains(ability.Id))
+                        {
+                            _currentGameData.PlayerData.AcquiredAbilityIds.Add(ability.Id);
+                        }
+                    }
                 }
-
             }
         }
     }

@@ -30,40 +30,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Idle
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 260, y: 315}
+  position: {x: 398, y: 432}
   subTreeToRun: {fileID: 11400000, guid: 923bbd894d0ecf247954cf6b3380c9a8, type: 2}
---- !u!114 &-7778356412862204304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d60281849ff9644a90d7d29f00f30a6, type: 3}
-  m_Name: Stunned
-  m_EditorClassIdentifier: Assembly-CSharp::Stunned
-  position: {x: 464, y: -170}
-  enableAttackBlock: 1
-  attackBlockDuration: 1
---- !u!114 &-7610850223706687289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Stun
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 261, y: -163}
-  nodes:
-  - {fileID: 8701554609853382117}
-  - {fileID: -7778356412862204304}
-  services: []
 --- !u!114 &-6744645030134086082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,25 +59,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Reset
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 256, y: 162}
+  position: {x: 256, y: 65}
   subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
---- !u!114 &-5667558639043742383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_PressureMove
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1616, y: 1686}
-  nodes:
-  - {fileID: 7383990784071887038}
-  services:
-  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +75,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsPlayerBehind
   position: {x: 1026, y: 428}
   angleThreshold: 360
---- !u!114 &-2169847181082004984
+--- !u!114 &-3201454619936590250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,12 +84,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dcef7808e285c24a96ea171ee6c1b4f, type: 3}
-  m_Name: Condition_Is In Combat
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsInCombat
-  position: {x: 1384, y: 996}
-  exceptCondition:
-    key: 
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Interactable_Idle
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 256, y: 217}
+  subTreeToRun: {fileID: 11400000, guid: f982b5bce427cde43b1ac1729578f3c3, type: 2}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Condition_RunnerState
   position: {x: 1025, y: 1655}
   requiredState: 10
---- !u!114 &-760453713604586534
+--- !u!114 &-271646732981050272
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,14 +112,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence_Combat
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 1169, y: 996}
-  nodes:
-  - {fileID: -2169847181082004984}
-  - {fileID: 6055799875146286108}
-  services: []
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Damage
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 257, y: -111}
+  subTreeToRun: {fileID: 11400000, guid: 6c305fddeac7edd4eba6d0c75d914b7e, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,25 +127,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0359c5c0559b6eb4e910332a3a437276, type: 3}
-  m_Name: a_TEST
+  m_Name: Spawn_Monster_f_Test
   m_EditorClassIdentifier: 
   rootNode: {fileID: 1254360389698641468}
---- !u!114 &193999242879699279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: KeyCh
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 256, y: -67}
-  nodes:
-  - {fileID: 2225612242746855301}
-  services: []
 --- !u!114 &671970732127053245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,8 +142,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
   m_Name: Combat
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
-  position: {x: 261, y: 238}
-  subTreeToRun: {fileID: 11400000, guid: dc9dc86e0b36c5c4dadd11e4b089b135, type: 2}
+  position: {x: 257, y: 140}
+  subTreeToRun: {fileID: 11400000, guid: 622a2ff77b860504c87f464b8e616837, type: 2}
+--- !u!114 &1070229426899460596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6355361d175b4e4fa3628d1d194d171, type: 3}
+  m_Name: Service_Battle Awareness
+  m_EditorClassIdentifier: Assembly-CSharp::Service_BattleAwareness
+  position: {x: 106, y: 432}
+  UpdateInterval: 0.3
+  Threat_Angle: 25
+  Vuln_Key: IsPlayerVulnerable
+  Aim_Key: IsPlayerAimingMe
 --- !u!114 &1254360389698641468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,16 +175,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 48, y: -13}
   nodes:
-  - {fileID: -7610850223706687289}
-  - {fileID: 193999242879699279}
-  - {fileID: 8785229548203781924}
+  - {fileID: -271646732981050272}
+  - {fileID: 8652868687025397463}
   - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
-  - {fileID: -8025809362345536030}
+  - {fileID: -3201454619936590250}
   services:
-  - {fileID: 8279960542052063534, guid: 351a1477e6f96d14eab33c37f0a5d7a3, type: 2}
-  - {fileID: 4599626038524749311, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
-  - {fileID: -5141413489336803078, guid: 4aa69d4d48c462f4b8086c010409698c, type: 2}
+  - {fileID: 1589942208052671434}
+  - {fileID: 1070229426899460596}
+  - {fileID: 1767625995727415184}
 --- !u!114 &1302873751428950995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,7 +199,7 @@ MonoBehaviour:
   position: {x: 1023, y: -121}
   heatRange: 0
   _attackRange: 3
---- !u!114 &2225612242746855301
+--- !u!114 &1589942208052671434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,17 +208,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: KeyCheck
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 459, y: -54}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 0
-    TargetState: 9
---- !u!114 &2435342744915929416
+  m_Script: {fileID: 11500000, guid: 8631102df6fdb6542b49b532b0f24c97, type: 3}
+  m_Name: Service_Update Combat Vars
+  m_EditorClassIdentifier: Assembly-CSharp::Service_UpdateCombatVars
+  position: {x: 106, y: 319}
+  UpdateInterval: 0.3
+  CurrentTarget: {fileID: 0}
+  DistanceToTarget: DistanceToTarget
+  LocationKey: TargetLocation
+--- !u!114 &1767625995727415184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -280,25 +225,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f87976d46fb30743a042f1116875632, type: 3}
-  m_Name: Condition_Is Hit
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Condition_IsHit
-  position: {x: 428, y: 47}
-  exceptCondition:
-    key: 
---- !u!114 &3392107042784191172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b4a1b3701220224ca30655ca70e7f7e, type: 3}
-  m_Name: Task_Hit Action
-  m_EditorClassIdentifier: Assembly-CSharp::Task_HitAction
-  position: {x: 428, y: 124}
+  m_Script: {fileID: 11500000, guid: 70eef9386fc76684bba7ac81275df55b, type: 3}
+  m_Name: Service_Pressure Move
+  m_EditorClassIdentifier: Assembly-CSharp::Service_PressureMove
+  position: {x: 106, y: 526}
+  UpdateInterval: 0.3
+  MinDistance: 9
+  MaxDistance: 10
+  Change_Dir_MinTime: 2
+  Change_Dir_MaxTime: 3
+  BlockedWaitTime: 0.5
+  FrontAngle: 45
+  Pos_Key: PressurePos
+  Dir_Key: StrafeDir
 --- !u!114 &4748238847309724425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,21 +267,6 @@ MonoBehaviour:
   position: {x: 1023, y: 1148}
   heatRange: 0
   _attackRange: 3
---- !u!114 &6055799875146286108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
-  m_Name: Selector_CombatTactics
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 1383, y: 1078}
-  nodes: []
-  services: []
 --- !u!114 &6545543868557049618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,23 +281,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 457, y: 93}
   viewAngle: 180
---- !u!114 &7383990784071887038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d746ea9e12469249b9a46cc9883990a, type: 3}
-  m_Name: Task_Pressure
-  m_EditorClassIdentifier: Assembly-CSharp::Task_Pressure
-  position: {x: 1829, y: 1686}
-  Pos_Key: PressurePos
-  MoveSpeed: 4
-  StoppingDist: 0.5
-  RotationSpeed: 2
 --- !u!114 &7438793480988635909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TakeDamage
   position: {x: 436, y: -535}
   animationName: Hit
---- !u!114 &8701554609853382117
+--- !u!114 &8652868687025397463
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -410,30 +317,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc029dd1d090cda42b2423fad6cf601d, type: 3}
-  m_Name: Condition_Is Stunned
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_IsStunned
-  position: {x: 464, y: -259}
-  exceptCondition:
-    key: 
-  targetStunType: 3
---- !u!114 &8785229548203781924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
-  m_Name: Sequence
-  m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 229, y: 26}
-  nodes:
-  - {fileID: 2435342744915929416}
-  - {fileID: 3392107042784191172}
-  services: []
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: cam
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 257, y: -25}
+  subTreeToRun: {fileID: 11400000, guid: 2f441d9737c2a2d4489f0e33c4b2a16b, type: 2}
 --- !u!114 &8925219040377206200
 MonoBehaviour:
   m_ObjectHideFlags: 0

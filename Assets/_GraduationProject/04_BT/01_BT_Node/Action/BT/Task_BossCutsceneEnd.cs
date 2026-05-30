@@ -9,7 +9,7 @@ public class Task_BossCutsceneEnd : Node
     }
     protected override NodeState OnUpdate()
     {
-        return NodeState.FAILURE;
+        return NodeState.SUCCESS;
     }
 
     public override void OnExit()

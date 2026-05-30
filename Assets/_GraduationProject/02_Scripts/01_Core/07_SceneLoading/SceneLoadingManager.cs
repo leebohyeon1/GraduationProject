@@ -7,6 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using MoreMountains.Tools;
 
 public class SceneLoadingManager : MonoBehaviour
 {
@@ -302,20 +303,8 @@ public class SceneLoadingManager : MonoBehaviour
         {
             yield return null;
         }
-        SceneManager.SetActiveScene(newSceneInstance.Scene);
 
-        // ==========================================================
-        // 스카이박스 및 환경광(Ambient Light) 즉시 교체
-        // ==========================================================
-        if (targetScene.skyboxMaterial != null)
-        {
-            // 1. 스카이박스 머티리얼 교체
-            RenderSettings.skybox = targetScene.skyboxMaterial;
-
-            // 2. 바뀐 스카이박스에 맞춰서 환경광(주변 빛) 다시 계산
-            DynamicGI.UpdateEnvironment();
-        }
-        // ==========================================================
+        SetActiveChunk(targetScene);
 
         // 플레이어 스폰 위치 처리
         HandlePlayerSpawn(targetScene);
@@ -368,33 +357,50 @@ public class SceneLoadingManager : MonoBehaviour
 
     public void SetActiveChunk(SceneDataSO chunkData)
     {
+        if (chunkData == null) return;
         string chunkName = chunkData.SceneName;
-
-        // 이미 거기가 활성 씬이면 무시
-        if (DataManager.Instance.GetGameData().LastMainScene == chunkName || chunkName == "Title")
-        {
-            return;
-        }
 
         // 명부(로드된 씬 목록)에 해당 씬이 있는지 확인
         if (_loadedChunks.TryGetValue(chunkName, out var sceneInstance))
         {
             CurrentActiveChunk = chunkData;
-            // 1. 세이브용 이름표 갱신
-            DataManager.Instance.GetGameData().LastMainScene = chunkName;
 
-            // 2. 유니티 시스템상의 메인 씬(Active Scene) 교체! 
-            // (이제 새로 생성되는 오브젝트나 조명 기준이 이 씬으로 바뀝니다)
+            // 1. 유니티 시스템상의 메인 씬(Active Scene) 교체! 
             SceneManager.SetActiveScene(sceneInstance.Scene);
 
-            // 3. (선택) 스카이박스나 조명도 이 구역의 것으로 부드럽게 교체
+            // 2. 스카이박스나 조명 교체 (Title 씬이어도 시각적 요소는 갱신)
             if (chunkData.skyboxMaterial != null)
             {
                 RenderSettings.skybox = chunkData.skyboxMaterial;
                 DynamicGI.UpdateEnvironment();
             }
 
-            Debug.Log($"[Level Streaming] 메인 씬이 '{chunkName}'(으)로 변경되었습니다!");
+            // 3. 배경음악(BGM) 자동 재생
+            if (chunkData.BackgroundMusic != null)
+            {
+                MMSoundManager.Instance.PlaySound(
+                    chunkData.BackgroundMusic, 
+                    MMSoundManager.MMSoundManagerTracks.Music, 
+                    Vector3.zero, 
+                    true
+                );
+            }
+            else
+            {
+                // 브금이 지정되지 않은 씬이라면 음악 정지 (필요에 따라 주석 처리)
+                MMSoundManager.Instance.StopTrack(MMSoundManager.MMSoundManagerTracks.Music);
+            }
+
+            // 4. 타이틀 씬이 아닐 때만 게임 데이터 관련 갱신 수행
+            if (chunkName != "Title")
+            {
+                if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+                {
+                    DataManager.Instance.GetGameData().LastMainScene = chunkName;
+                }
+            }
+
+            Debug.Log($"[Level Streaming] 메인 씬이 '{chunkName}'(으)로 변경되었습니다 (시각 요소 갱신 포함).");
         }
     }
 

@@ -97,11 +97,13 @@ public class LayerRaycastJobDetector : MonoBehaviour
     {
         if (detected)
         {
+            Debug.Log($"Target layer '{_targetLayerName}' detected.");
             OnTargetLayerDetected?.Invoke();
             if (_targetObject != null) _targetObject.SetActive(!_invertLogic);
         }
         else
         {
+            Debug.Log($"Target layer '{_targetLayerName}' lost.");
             OnTargetLayerLost?.Invoke();
             if (_targetObject != null) _targetObject.SetActive(_invertLogic);
         }

@@ -275,7 +275,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     protected virtual void AttackStep()
     {
         // 스텝 방향 기본적으로 정면으로 설정
-        Vector3 stepDirection = p_owner.Movement.transform.forward;
+        Vector3 stepDirection = p_owner.transform.forward;
 
         // 1. 락온 상태라면 락온 타겟 방향으로 설정 (최우선)
         if (p_owner.LockOn.IsLockOn && p_owner.LockOn.CurrentTarget != null)
@@ -295,7 +295,16 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
             else if (currentDeviceType == InputDeviceType.Gamepad)
             {
                 Vector3 moveInput = p_owner.InputHandler.MoveInput;
-                stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                
+                // 입력이 일정 수치 이상일 때만 해당 방향으로 스텝, 아니면 정면(transform.forward) 유지
+                if (moveInput.sqrMagnitude > 0.1f)
+                {
+                    stepDirection = p_owner.Movement.GetRelativeVectorToCamera(moveInput);
+                }
+                else
+                {
+                    stepDirection = p_owner.transform.forward;
+                }
             }
         }
 
