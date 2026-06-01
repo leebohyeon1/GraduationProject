@@ -272,6 +272,35 @@ public class EnemyMovement : MonoBehaviour
         }
         return target;
     }
+
+    /// <summary>
+    /// 직선 대시 후보 지점을 A* 워커블 좌표로 붙여 높이 오차를 줄이되, 보정 폭이 너무 크면 현재 위치를 유지합니다.
+    /// </summary>
+    public Vector3 GetNearestWalkableDashPosition(Vector3 rawTarget, Vector3 fallbackPosition, float maxHorizontalSnapDistance)
+    {
+        if (AstarPath.active == null)
+        {
+            return rawTarget;
+        }
+
+        NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
+        if (info.node == null || !info.node.Walkable)
+        {
+            return fallbackPosition;
+        }
+
+        Vector3 walkablePoint = (Vector3)info.position;
+        Vector3 horizontalOffset = walkablePoint - rawTarget;
+        horizontalOffset.y = 0f;
+
+        if (horizontalOffset.magnitude > Mathf.Max(0.01f, maxHorizontalSnapDistance))
+        {
+            return fallbackPosition;
+        }
+
+        return walkablePoint;
+    }
+
     public void UpdateStrafeAnim()
     {
         if(!AnimationBasedMovement) return;
