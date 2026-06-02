@@ -61,22 +61,40 @@ public class PlayerParryStackUI : PlayerUIBase
         {
             bool isActive = i < currentStacks;
             
-            // 이전에 비활성화였다가 새로 활성화된 스택인지 확인
+            // 상태 변화 체크
             bool isNewlyActivated = isActive && (i >= _lastStackCount);
-            
-            _stackIcons[i].gameObject.SetActive(isActive);
+            bool isNewlyDeactivated = !isActive && (i < _lastStackCount);
             
             if (isNewlyActivated)
             {
-                // DOTween Punch Scale 애니메이션
+                _stackIcons[i].gameObject.SetActive(true);
                 _stackIcons[i].transform.DOKill();
-                _stackIcons[i].transform.localScale = Vector3.one;
-                _stackIcons[i].transform.DOPunchScale(_punchVector, _animationDuration, _vibrato);
+                
+                // 팝업 애니메이션 후 펀치
+                _stackIcons[i].transform.localScale = Vector3.zero;
+                _stackIcons[i].transform.DOScale(Vector3.one, _animationDuration).OnComplete(() =>
+                {
+                    _stackIcons[i].transform.DOPunchScale(_punchVector, _animationDuration, _vibrato);
+                });
             }
-            else if (!isActive)
+            else if (isNewlyDeactivated)
             {
+                // 줄어들 때 (비활성화 될 때) 쪼그라드는 애니메이션 재생 후 SetActive(false)
                 _stackIcons[i].transform.DOKill();
-                _stackIcons[i].transform.localScale = Vector3.one;
+                _stackIcons[i].transform.DOScale(Vector3.zero, _animationDuration).OnComplete(() =>
+                {
+                    _stackIcons[i].gameObject.SetActive(false);
+                });
+            }
+            else
+            {
+                // 상태 변화가 없는 경우
+                _stackIcons[i].gameObject.SetActive(isActive);
+                if (isActive)
+                {
+                    _stackIcons[i].transform.DOKill();
+                    _stackIcons[i].transform.localScale = Vector3.one;
+                }
             }
         }
 

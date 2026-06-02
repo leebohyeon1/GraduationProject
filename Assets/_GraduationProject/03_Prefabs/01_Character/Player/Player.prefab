@@ -731,309 +731,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &581681312665912928
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1446795409434471241}
-  - component: {fileID: 8534189384174673132}
-  m_Layer: 7
-  m_Name: Player_Postprocessing_Clear_FB
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1446795409434471241
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 581681312665912928}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5571388687056563757}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8534189384174673132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 581681312665912928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
-  Feedbacks: []
-  InitializationMode: 2
-  AutoInitialization: 1
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  ForceTimescaleMode: 0
-  ForcedTimescaleMode: 1
-  DurationMultiplier: 1
-  TimescaleMultiplier: 1
-  RandomizeDuration: 0
-  RandomDurationMultiplier: {x: 0.5, y: 1.5}
-  DisplayFullDurationDetails: 0
-  PlayerTimescaleMode: 0
-  OnlyPlayIfWithinRange: 0
-  RangeCenter: {fileID: 0}
-  RangeDistance: 5
-  UseRangeFalloff: 0
-  RangeFalloff:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  RemapRangeFalloff: {x: 0, y: 1}
-  IgnoreRangeEvents: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlay: 1
-  CanPlayWhileAlreadyPlaying: 1
-  ChanceToPlay: 100
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnStop:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnChangeDirection:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRestoreInitialValues:
-      m_PersistentCalls:
-        m_Calls: []
-    OnSkipToTheEnd:
-      m_PersistentCalls:
-        m_Calls: []
-    OnInitializationComplete:
-      m_PersistentCalls:
-        m_Calls: []
-    OnEnable:
-      m_PersistentCalls:
-        m_Calls: []
-    OnDisable:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
-  InScriptDrivenPause: 0
-  FeedbacksList:
-  - rid: 6735772208168960018
-  KeepPlayModeChanges: 0
-  PerformanceMode: 0
-  RestoreInitialValuesOnDisable: 0
-  StopFeedbacksOnDisable: 0
-  PlayCount: 0
-  references:
-    version: 2
-    RefIds:
-    - rid: 6735772208168960018
-      type: {class: MMF_Vignette_URP, ns: MoreMountains.FeedbacksForThirdParty, asm: MoreMountains.Tools}
-      data:
-        Active: 0
-        UniqueID: 600882855
-        Label: Vignette URP
-        OriginalLabel: Vignette URP
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          PlayCount: 58
-          LimitPlayCount: 0
-          MaxPlayCount: 3
-          SetPlayCountToZeroOnReset: 0
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        AutomaticShakerSetupButton:
-          ButtonText: Automatic Shaker Setup
-        Owner: {fileID: 8534189384174673132}
-        DebugActive: 0
-        Duration: 0.1
-        ResetShakerValuesAfterShake: 1
-        ResetTargetValuesAfterShake: 1
-        Intensity:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 2
-            outSlope: 2
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.50365824
-            value: 1.004659
-            inSlope: 0.00046479088
-            outSlope: 0.00046479088
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.43858263
-          - serializedVersion: 3
-            time: 1
-            value: 0.0071411133
-            inSlope: -2.065966
-            outSlope: -2.065966
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.054166675
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapIntensityZero: 0
-        RemapIntensityOne: 0
-        RelativeIntensity: 0
-        InterpolateColor: 0
-        ColorCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.05
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.95
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapColorZero: 0
-        RemapColorOne: 1
-        TargetColor: {r: 0.20369065, g: 1, b: 0, a: 1}
 --- !u!1 &826802041420966996
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,8 +1948,6 @@ MonoBehaviour:
     Feedback: {fileID: 4264550087278333901}
   - type: Atk_Strong_02_FB
     Feedback: {fileID: 9092900479427618579}
-  - type: ChargeAttackStartLevel3_FB
-    Feedback: {fileID: 0}
   - type: Counter_Sucess_FB
     Feedback: {fileID: 765581180075180319}
   - type: Clash_Dodge_FB
@@ -3611,7 +3306,19 @@ MonoBehaviour:
         m_Calls: []
     OnComplete:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 3878014352118523430}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnRestoreInitialValues:
       m_PersistentCalls:
         m_Calls: []
@@ -4317,7 +4024,6 @@ Transform:
   - {fileID: 5917590852928607927}
   - {fileID: 6720471352250440966}
   - {fileID: 3856167816751569843}
-  - {fileID: 1446795409434471241}
   - {fileID: 1071515855208257980}
   - {fileID: 8877920446717933666}
   - {fileID: 1887608160210571934}
@@ -7864,7 +7570,19 @@ MonoBehaviour:
         m_Calls: []
     OnComplete:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 3878014352118523430}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnRestoreInitialValues:
       m_PersistentCalls:
         m_Calls: []
@@ -13264,6 +12982,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[3]'
+      value: 1882149088984040339
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[4]'
+      value: 975093126903103670
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[5]'
+      value: 975093328309387959
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: managedReferences[975093328309387959].ParentTransform
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052304366867115172, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
+      propertyPath: managedReferences[975093328309387959].PoolParentTransform
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6326125723573964495, guid: 82cdc713f3b5f784fa69778b5f147d99, type: 3}
       propertyPath: m_Name
       value: Charge_Parrying_Sucess_FB
@@ -13584,6 +13326,22 @@ PrefabInstance:
     - target: {fileID: 7299846805657810398, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[3]'
+      value: 6735772471570471873
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[4]'
+      value: 6735772471570471874
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202009943572250298, guid: 6008a69946c7e8f40a33893afd19d3a3, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[5]'
+      value: 6735772471570471875
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
