@@ -39,7 +39,6 @@ public class PlayerChargeState : PlayerBaseState
         {
             p_animator.SetTrigger("ChargeReady");
             p_owner.Combat.SetCharge(true);
-            p_owner.Events.TriggerChargeCompleted(true);
         }
 
         if (_chargeTimer > p_owner.Combat.MaxChargeTime)
@@ -141,10 +140,6 @@ public class PlayerChargeState : PlayerBaseState
         p_owner.Combat.ResetHeavyAttackComboIndex();       // 강공격 콤보 순서 초기화
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         
-        if (p_owner.Combat.IsCharge)
-        {
-            p_owner.Events.TriggerChargeCompleted(false);
-        }
         p_owner.Combat.SetCharge(false);
        
         _chargeTimer = 0f;
@@ -167,6 +162,8 @@ public class PlayerChargeState : PlayerBaseState
 
         p_owner.Events.DodgeStarted -= OnDodgeStarted;
         p_owner.Events.DodgeFinished -= OnDodgeFinished;
+        
+        DG.Tweening.DOTween.Kill(this);
     }
 
     protected override void ClearStats()
