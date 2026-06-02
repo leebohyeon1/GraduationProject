@@ -76,7 +76,6 @@ public class Task_RushAttack : BaseAttackNode
         _isRushing = true;
         _rushState = RushState.Charging;
         _chargeStartTime = Time.time;
-        runner.AnimationBool("IsRushing", true);
         Debug.Log($"[Task_RushAttack] {runner.name} rush started.");
 
         Vector3 myPos = runner.transform.position;
@@ -196,6 +195,8 @@ public class Task_RushAttack : BaseAttackNode
         _rushState = RushState.Decelerating;
         _decelerationStartTime = Time.time;
         _decelerationStartSpeed = Mathf.Max(0f, startSpeed);
+        brain.blackboard.SetValue(LoopAction.EndKey, true);
+        runner.AnimationBool("IsRushing", true);
         Debug.Log($"[Task_RushAttack] {runner.name} entered deceleration for {Mathf.Max(0.01f, decelerationDuration):0.00}s.");
     }
 
@@ -212,8 +213,6 @@ public class Task_RushAttack : BaseAttackNode
         runner.Movement.StopMovement();
         _rushState = RushState.Tracking;
         _endStrategy = true;
-        brain.blackboard.SetValue(LoopAction.EndKey, true);
-        runner.AnimationBool("IsRushing", true);
         Debug.Log($"[Task_RushAttack] {runner.name} rush completed.");
 
         var service = brain.getService<Service_UpdateBossVars>();
@@ -246,6 +245,14 @@ public class Task_RushAttack : BaseAttackNode
     }
 
     protected override bool IsMovementFinished => _endStrategy;
+
+    /// <summary>
+    /// RushAttack은 감속 중에는 EndKey가 이미 켜져 있어도 관성 이동을 끝까지 유지합니다.
+    /// </summary>
+    protected override bool ShouldContinueMovementAfterLoopEnd()
+    {
+        return _rushState == RushState.Decelerating;
+    }
 
     protected override void SpecificCleanup()
     {
