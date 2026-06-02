@@ -4882,6 +4882,7 @@ GameObject:
   - component: {fileID: 251091839457389827}
   - component: {fileID: 2414441420418631464}
   - component: {fileID: 7767731869856944945}
+  - component: {fileID: 5547962627281196946}
   - component: {fileID: 1792519948431559183}
   m_Layer: 0
   m_Name: Dragon_TimeLIne
@@ -5045,6 +5046,29 @@ MonoBehaviour:
         m_CallState: 2
   OnRequirementFailed:
     m_PersistentCalls:
+      m_Calls: []
+  OnStatusChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5547962627281196946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5475457996391733121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b790c373cba6046b065157780bc77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TagHandler
+  _queryType: 0
+  _targetTags:
+  - {fileID: 11400000, guid: 37ee8240268e1e640b06bcef1c0e248d, type: 2}
+  - {fileID: 11400000, guid: 1c6f19d7a980aa447b6bb801fc4979e5, type: 2}
+  - {fileID: 11400000, guid: 325f4faa869cb1f4db209438d02c52f6, type: 2}
+  OnRequirementMet:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 251091839457389827}
         m_TargetAssemblyTypeName: InteractableObject, Assembly-CSharp
@@ -5057,6 +5081,33 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1792519948431559183}
+        m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnRequirementFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 251091839457389827}
+        m_TargetAssemblyTypeName: InteractableObject, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1792519948431559183}
         m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
