@@ -59,6 +59,7 @@ public class PlayerDodgeState : PlayerBaseState
 
         // 스테미나 소모 (필요 시 데이터에서 가져오도록 수정 가능)
         p_owner.Stamina.UseStamina(p_owner.Movement.DodgeConfig.StaminaConsumption.Value);
+        p_owner.Events.TriggerRegenStamina(false);
 
         // [강화] 모든 전투 상태 리셋
         p_owner.Combat.CancelAttack();
@@ -91,6 +92,7 @@ public class PlayerDodgeState : PlayerBaseState
     {
         base.ClearStats();
 
+        p_owner.Events.TriggerRegenStamina(true);
         p_owner.Events.TriggerDodgeFinished();
     }
 

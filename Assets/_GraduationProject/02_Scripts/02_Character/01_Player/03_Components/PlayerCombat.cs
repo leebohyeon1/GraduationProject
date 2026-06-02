@@ -486,6 +486,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
         if(isCharge != _isCharge)
         {
             _isCharge = isCharge;
+            _events.TriggerChargeCompleted(isCharge);
         }
     }
     #endregion

@@ -55,7 +55,6 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         p_owner.Combat.ClearCounterEnemySet();
         p_owner.Combat.ClearCounterDamagedEnemy();
         p_owner.Combat.SetCharge(false);
-        p_owner.Events.TriggerChargeCompleted(false);
 
         // 상쇄로 인한 수퍼아머 태그가 있으면
         if (p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
@@ -175,7 +174,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
                     DamageData damageData = projectile.Data;
                     damageData.DamageAmount += (int)_ChargeAttackConfig.Damage.Value;
 
-                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[p_owner.Combat.IsCharge ? 1 : 0];
+                    float speed = projectile.MoveSpeed + p_owner.Combat.ProjectileCounterAddedVelocity[1];
 
                     projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
