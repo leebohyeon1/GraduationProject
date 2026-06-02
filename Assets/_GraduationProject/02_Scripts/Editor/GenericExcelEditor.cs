@@ -30,11 +30,6 @@ public class GenericExcelEditor : EditorWindow
         window.minSize = new Vector2(600, 400);
     }
 
-    private void OnEnable()
-    {
-        InitStyles();
-    }
-
     private void InitStyles()
     {
         headerStyle = new GUIStyle(EditorStyles.toolbarButton);
@@ -96,10 +91,26 @@ public class GenericExcelEditor : EditorWindow
         // 💡 1단: 데이터 선택 및 추가 버튼
         EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
-        EditorGUI.BeginChangeCheck();
-        targetSO = (ScriptableObject)EditorGUILayout.ObjectField(GUIContent.none, targetSO, typeof(ScriptableObject), false, GUILayout.Width(300));
-        if (EditorGUI.EndChangeCheck())
+        ScriptableObject newTargetSO = (ScriptableObject)EditorGUILayout.ObjectField(GUIContent.none, targetSO, typeof(ScriptableObject), false, GUILayout.Width(300));
+        bool targetSOChanged = (newTargetSO != targetSO);
+
+        GUILayout.FlexibleSpace();
+
+        bool addRowClicked = false;
+        if (targetListProperty != null)
         {
+            if (GUILayout.Button(new GUIContent(" Add Row", EditorGUIUtility.IconContent("Toolbar Plus").image), EditorStyles.toolbarButton, GUILayout.Width(90)))
+            {
+                addRowClicked = true;
+            }
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        // 💡 1단 상태 변경 적용 (Layout 꼬임 방지를 위해 그룹 밖에서 처리)
+        if (targetSOChanged)
+        {
+            targetSO = newTargetSO;
             if (targetSO != null)
             {
                 serializedObject = new SerializedObject(targetSO);
@@ -111,19 +122,14 @@ public class GenericExcelEditor : EditorWindow
                 serializedObject = null;
                 targetListProperty = null;
             }
+            GUIUtility.ExitGUI();
         }
 
-        GUILayout.FlexibleSpace();
-
-        if (targetListProperty != null)
+        if (addRowClicked)
         {
-            if (GUILayout.Button(new GUIContent(" Add Row", EditorGUIUtility.IconContent("Toolbar Plus").image), EditorStyles.toolbarButton, GUILayout.Width(90)))
-            {
-                AddNewRow();
-            }
+            AddNewRow();
+            GUIUtility.ExitGUI();
         }
-
-        EditorGUILayout.EndHorizontal();
 
         // 💡 2단: 전용 검색바 (더 잘 보이게 별도 행으로 분리)
         if (targetListProperty != null)
@@ -132,7 +138,7 @@ public class GenericExcelEditor : EditorWindow
             GUILayout.Space(5);
             
             // 돋보기 아이콘과 레이블
-            GUILayout.Label(EditorGUIUtility.IconContent("d_SearchIcon"), GUILayout.Width(20));
+            GUILayout.Label(EditorGUIUtility.IconContent("Search Icon"), GUILayout.Width(20));
             GUILayout.Label("Search Filter:", EditorStyles.miniLabel, GUILayout.Width(75));
             
             // 전용 검색 텍스트 필드

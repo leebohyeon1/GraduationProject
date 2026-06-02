@@ -29,7 +29,7 @@ public class MenuUITopBar : MenuUIComponent
 
     private void OnEnable()
     {
-        _specialMoneyText.text = _menu.Player.Money.CurrentSpecialMoney.ToString();
+        // _specialMoneyText.text = _menu.Player.Money.CurrentSpecialMoney.ToString();
         _moneyText.text = _menu.Player.Money.CurrentMoney.ToString();
     }
 

@@ -3,42 +3,42 @@ using BehaviorTree;
 using Pathfinding;
 
 /// <summary>
-/// ActionSO ?몃━嫄??쒖젏???꾩튂濡??뚯쭊?섎뒗 怨듦꺽 ?몃뱶?낅땲??
+/// 돌진 공격을 수행하고 종료 직전 짧은 관성 감속을 적용하는 공격 노드입니다.
 /// </summary>
 [CreateAssetMenu(fileName = "Task_RushAttack", menuName = "BehaviorTree/Action/Task_RushAttack")]
 public class Task_RushAttack : BaseAttackNode
 {
-    private enum RushState { Tracking, Charging }
+    private enum RushState
+    {
+        Tracking,
+        Charging,
+        Decelerating
+    }
 
     [Header("Rush Settings")]
-    /// <summary>
-    /// 돌진 속도입니다. (즉, 이 속도로 돌진이 진행됩니다.)
-    /// </summary>
+    [Tooltip("돌진 중 초당 이동 속도입니다. RushAttack 본체 이동량 계산에 사용합니다.")]
     public float rushSpeed = 15f;
-    /// <summary>
-    /// 이건 돌진이 플레이어와 이 거리 이하로 가까워지면 자동으로 멈추는 설정입니다. (즉, 플레이어와 너무 가까워지는 것을 방지하여 돌진이 계속되는 상황을 방지)
-    /// </summary>
+
+    [Tooltip("목표 지점에 얼마나 가까워지면 감속을 시작할지 설정합니다. 플레이어 근처 도착 판정에 사용합니다.")]
     public float lockDistance = 5.0f;
-    /// <summary>
-    /// 이건 돌진 시작 후 최대 지속 시간으로, 이 시간이 지나면 돌진이 자동으로 종료됩니다. (즉, 이 시간 이상 돌진이 지속되지 않도록 하는 안전장치 역할)
-    /// </summary>
-    public float maxChargeDuration = 3.0f; 
-    /// <summary>
-    /// 이건 ActionSO 트리거 시점에서 플레이어와의 최대 거리로, 이 범위를 벗어나면 트리거 자체가 안 됩니다. (즉, 이 범위 내에서만 돌진 공격이 시작될 수 있습니다.)
-    /// </summary>
+
+    [Tooltip("돌진 상태를 최대 몇 초까지 유지할지 설정합니다. 시간이 지나면 관성 감속으로 전환됩니다.")]
+    public float maxChargeDuration = 3.0f;
+
+    [Tooltip("이 공격을 시작할 수 있는 최대 거리입니다. BT 진입 가능 범위 판정에 사용합니다.")]
     public float maxTriggerRange = 15f;
-    /// <summary>
-    /// 이건 돌진 중 플레이어를 추적할 때의 회전 속도로, 값이 높을수록 플레이어를 더 빠르게 추적합니다. (0이면 처음 설정된 방향으로만 돌진)
-    /// </summary>
+
+    [Tooltip("돌진 중 목표 방향을 얼마나 빠르게 따라갈지 설정합니다. 0이면 처음 방향을 유지합니다.")]
     public float trackingTurnSpeed = 2.0f;
+
+    [Tooltip("목표 지점 도착 후 몇 초 동안 감속해 0 속도로 멈출지 설정합니다. 기본값은 0.2초이며 RushAttack 관성 정지에 사용합니다.")]
+    public float decelerationDuration = 0.2f;
 
     [Header("Phase 2 Trail Settings")]
     [SerializeField] private string trailFeedbackName = "RushTrail";
-    /// <summary>
-    /// 이건 돌진 중 플레이어와의 거리가 이 값 이상일 때마다 돌진 궤적 이펙트를 생성하는 간격입니다. (즉, 플레이어와 멀어질수록 더 자주 궤적이 생성됩니다.)
-    /// </summary>
-    public float trailSpawnInterval = 1.5f;
 
+    [Tooltip("2페이즈에서 잔상 폭발을 얼마나 자주 생성할지 설정합니다. 이동 중 피드백 간격으로 사용합니다.")]
+    public float trailSpawnInterval = 1.5f;
 
     private RushState _rushState;
     private bool _endStrategy;
@@ -48,6 +48,9 @@ public class Task_RushAttack : BaseAttackNode
     private Vector3 _lastTrailPos;
     private int _currentPhase;
     private Vector3 _rushTargetPos;
+    private float _decelerationStartTime;
+    private float _decelerationStartSpeed;
+    private float _trackingTurnSpeed;
 
     protected override float GetRequiredRange() => maxTriggerRange;
 
@@ -56,8 +59,11 @@ public class Task_RushAttack : BaseAttackNode
         _endStrategy = false;
         _isRushing = false;
         _rushState = RushState.Tracking;
+        _decelerationStartTime = 0f;
+        _decelerationStartSpeed = 0f;
         runner.AnimationBool("IsRushing", false);
         _currentPhase = brain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 1);
+        _trackingTurnSpeed = trackingTurnSpeed;
     }
 
     protected override void OnActionSOTriggered()
@@ -66,18 +72,27 @@ public class Task_RushAttack : BaseAttackNode
         {
             return;
         }
+
         _isRushing = true;
         _rushState = RushState.Charging;
         _chargeStartTime = Time.time;
         runner.AnimationBool("IsRushing", true);
+        Debug.Log($"[Task_RushAttack] {runner.name} rush started.");
 
         Vector3 myPos = runner.transform.position;
         _rushTargetPos = runner.player != null ? runner.player.transform.position : myPos + runner.transform.forward;
         _chargeDirection = (_rushTargetPos - myPos).normalized;
-        _chargeDirection.y = 0;
+        _chargeDirection.y = 0f;
+
+        if (_chargeDirection.sqrMagnitude <= 0.0001f)
+        {
+            _chargeDirection = runner.transform.forward;
+            _chargeDirection.y = 0f;
+            _chargeDirection.Normalize();
+        }
 
         _lastTrailPos = myPos;
-        
+
         if (runner.aIPath != null)
         {
             runner.aIPath.isStopped = true;
@@ -88,58 +103,137 @@ public class Task_RushAttack : BaseAttackNode
 
     protected override void UpdateMovement()
     {
-        if (!_isRushing || runner.player == null) return;
+        if (!_isRushing || runner.player == null)
+        {
+            return;
+        }
 
-        Vector3 playerPos = runner.player.transform.position;
         Vector3 myPos = runner.transform.position;
-        float distToPlayer = Vector3.Distance(myPos, playerPos);
+        Vector3 playerPos = runner.player.transform.position;
 
         if (_rushState == RushState.Charging)
         {
-            // 吏곸꽑 ?뚯쭊 ?섑뻾
-            float moveStep = rushSpeed * Time.deltaTime;
+            _rushTargetPos = playerPos;
+            UpdateChargeDirection(myPos, playerPos);
 
-            Vector3 desiredDir = playerPos - myPos;
-            desiredDir.y = 0;
-            if (desiredDir.sqrMagnitude > 0.001f)
-            {
-                float turnFactor = Mathf.Clamp01(trackingTurnSpeed * Time.deltaTime);
-                _chargeDirection = Vector3.Slerp(_chargeDirection, desiredDir.normalized, turnFactor);
-            }
-            
-            // 踰?異⑸룎 泥댄겕
             if (runner.Movement.IsPathBlocked(_chargeDirection, 0.5f, out RaycastHit hit))
             {
-                StopRush();
+                BeginDeceleration(rushSpeed);
                 return;
             }
 
-            // ?쒓컙 珥덇낵 泥댄겕
             if (Time.time - _chargeStartTime >= maxChargeDuration)
             {
-                StopRush();
+                BeginDeceleration(rushSpeed);
                 return;
             }
 
-            if (distToPlayer <= lockDistance)
+            if (Vector3.Distance(myPos, _rushTargetPos) <= lockDistance)
             {
-                StopRush();
+                BeginDeceleration(rushSpeed);
                 return;
             }
 
-            // ?대룞 ?곸슜
+            float moveStep = rushSpeed * Time.deltaTime;
             runner.transform.position += _chargeDirection * moveStep;
             runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
+            TrySpawnRushTrail();
+            return;
+        }
 
-            // Phase 2: 吏?섏삩 ?먮━????컻 ?앹꽦
-            if (_currentPhase >= 2)
+        if (_rushState == RushState.Decelerating)
+        {
+            _trackingTurnSpeed = 0;
+            float duration = Mathf.Max(0.01f, decelerationDuration);
+            float elapsed = Time.time - _decelerationStartTime;
+            float normalizedTime = Mathf.Clamp01(elapsed / duration);
+            float currentSpeed = Mathf.Lerp(_decelerationStartSpeed, 0f, normalizedTime);
+
+            if (currentSpeed > 0.001f)
             {
-                if (Vector3.Distance(_lastTrailPos, runner.transform.position) >= trailSpawnInterval)
+                runner.transform.position += _chargeDirection * currentSpeed * Time.deltaTime;
+                if (_chargeDirection.sqrMagnitude > 0.001f)
                 {
-                    SpawnTrailExplosion(_lastTrailPos);
-                    _lastTrailPos = runner.transform.position;
+                    runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
                 }
+
+                TrySpawnRushTrail();
+                return;
             }
+
+            CompleteRush();
+        }
+    }
+
+    /// <summary>
+    /// 돌진 중 플레이어의 최신 위치를 반영해 돌진 방향을 부드럽게 갱신합니다.
+    /// </summary>
+    private void UpdateChargeDirection(Vector3 myPos, Vector3 playerPos)
+    {
+        Vector3 desiredDir = playerPos - myPos;
+        desiredDir.y = 0f;
+        if (desiredDir.sqrMagnitude <= 0.001f)
+        {
+            return;
+        }
+
+        float turnFactor = Mathf.Clamp01(_trackingTurnSpeed * Time.deltaTime);
+        _chargeDirection = Vector3.Slerp(_chargeDirection, desiredDir.normalized, turnFactor);
+        _chargeDirection.y = 0f;
+        _chargeDirection.Normalize();
+    }
+
+    /// <summary>
+    /// 돌진 종료 직전에 관성 감속 단계로 전환합니다.
+    /// </summary>
+    private void BeginDeceleration(float startSpeed)
+    {
+        if (_rushState == RushState.Decelerating || _endStrategy)
+        {
+            return;
+        }
+
+        _rushState = RushState.Decelerating;
+        _decelerationStartTime = Time.time;
+        _decelerationStartSpeed = Mathf.Max(0f, startSpeed);
+        Debug.Log($"[Task_RushAttack] {runner.name} entered deceleration for {Mathf.Max(0.01f, decelerationDuration):0.00}s.");
+    }
+
+    /// <summary>
+    /// 감속이 끝난 뒤 러시 종료 플래그와 후속 서비스 갱신을 수행합니다.
+    /// </summary>
+    private void CompleteRush()
+    {
+        if (_endStrategy)
+        {
+            return;
+        }
+
+        runner.Movement.StopMovement();
+        _rushState = RushState.Tracking;
+        _endStrategy = true;
+        brain.blackboard.SetValue(LoopAction.EndKey, true);
+        runner.AnimationBool("IsRushing", true);
+        Debug.Log($"[Task_RushAttack] {runner.name} rush completed.");
+
+        var service = brain.getService<Service_UpdateBossVars>();
+        if (service != null)
+        {
+            service.initNode();
+        }
+    }
+
+    private void TrySpawnRushTrail()
+    {
+        if (_currentPhase < 2)
+        {
+            return;
+        }
+
+        if (Vector3.Distance(_lastTrailPos, runner.transform.position) >= trailSpawnInterval)
+        {
+            SpawnTrailExplosion(_lastTrailPos);
+            _lastTrailPos = runner.transform.position;
         }
     }
 
@@ -148,19 +242,6 @@ public class Task_RushAttack : BaseAttackNode
         if (runner.animHandler != null && !string.IsNullOrWhiteSpace(trailFeedbackName))
         {
             runner.animHandler.PlayFeedbackAtPosition(trailFeedbackName, pos);
-        }
-    }
-
-    private void StopRush()
-    {
-        runner.Movement.StopMovement();
-        _endStrategy = true;
-        brain.blackboard.SetValue(LoopAction.EndKey, true);
-        runner.AnimationBool("IsRushing", true);
-        var service = brain.getService<Service_UpdateBossVars>();
-        if (service != null)
-        {
-            service.initNode();
         }
     }
 
@@ -177,34 +258,31 @@ public class Task_RushAttack : BaseAttackNode
     }
 
     /// <summary>
-    /// ?몃뱶 蹂듭젣蹂몄쓣 ?앹꽦?⑸땲??
+    /// 런타임 인스턴스에서도 동일한 Rush 설정을 유지하도록 복제합니다.
     /// </summary>
     public override Node Clone()
     {
         var node = Instantiate(this);
-        node.attackKey = this.attackKey;
-        node.transitionBuffer = this.transitionBuffer;
-        node.SO = this.SO;
-        node.LoopAttack = this.LoopAttack;
-        node.NextBT = this.NextBT;
-        node.debugMode = this.debugMode;
-        node.checkRangeOnEnter = this.checkRangeOnEnter;
-        node.rangeThreshold = this.rangeThreshold;
-        node.ignoreYDistance = this.ignoreYDistance;
-        node.allowOutOfCombat = this.allowOutOfCombat;
-        
-        node.rushSpeed = this.rushSpeed;
-        node.lockDistance = this.lockDistance;
-        node.maxChargeDuration = this.maxChargeDuration;
-        node.maxTriggerRange = this.maxTriggerRange;
-        node.trackingTurnSpeed = this.trackingTurnSpeed;
-        
-        node.trailSpawnInterval = this.trailSpawnInterval;
-
-
-        node.ExceptKey = this.ExceptKey;
-        node.escapeOnHitConfirm = this.escapeOnHitConfirm;
-        node.hitEscapeDelay = this.hitEscapeDelay;
+        node.attackKey = attackKey;
+        node.transitionBuffer = transitionBuffer;
+        node.SO = SO;
+        node.LoopAttack = LoopAttack;
+        node.NextBT = NextBT;
+        node.debugMode = debugMode;
+        node.checkRangeOnEnter = checkRangeOnEnter;
+        node.rangeThreshold = rangeThreshold;
+        node.ignoreYDistance = ignoreYDistance;
+        node.allowOutOfCombat = allowOutOfCombat;
+        node.rushSpeed = rushSpeed;
+        node.lockDistance = lockDistance;
+        node.maxChargeDuration = maxChargeDuration;
+        node.maxTriggerRange = maxTriggerRange;
+        node.trackingTurnSpeed = trackingTurnSpeed;
+        node.decelerationDuration = decelerationDuration;
+        node.trailSpawnInterval = trailSpawnInterval;
+        node.ExceptKey = ExceptKey;
+        node.escapeOnHitConfirm = escapeOnHitConfirm;
+        node.hitEscapeDelay = hitEscapeDelay;
         return node;
     }
 }
