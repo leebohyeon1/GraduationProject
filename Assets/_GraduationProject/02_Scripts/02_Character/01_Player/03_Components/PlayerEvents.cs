@@ -21,7 +21,6 @@ public class PlayerEvents
     public void TriggerDodgeStarted()
     {
         DodgeStarted?.Invoke();
-        TriggerRegenStamina(false);
     }
 
     /// <summary>
@@ -30,7 +29,6 @@ public class PlayerEvents
     public void TriggerDodgeFinished()
     {
         DodgeFinished?.Invoke();
-        TriggerRegenStamina(true);
     }
     #endregion
 
@@ -81,7 +79,6 @@ public class PlayerEvents
     public void TriggerAttackStarted()
     {
         AttackStarted?.Invoke();
-        TriggerRegenStamina(false);
     }
 
     /// <summary>

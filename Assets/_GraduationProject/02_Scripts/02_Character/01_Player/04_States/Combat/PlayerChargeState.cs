@@ -174,6 +174,7 @@ public class PlayerChargeState : PlayerBaseState
         base.ClearStats();
 
         p_owner.Combat.TriggerBattleStateChanged(true);
+        p_owner.Events.TriggerRegenStamina(true);
 
         _shouldTransition = false;
         _chargeTimer = 0f;
