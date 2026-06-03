@@ -93,6 +93,15 @@ public class SceneLoadingManager : MonoBehaviour
     // 기능 1: 전체 텔레포트 (로딩 화면 띄우고 기존 맵 싹 지운 뒤 새 맵 로드)
     // =================================================================
 
+    public SceneDataSO GetSceneDataByName(string targetSceneName)
+    {
+        if (_sceneDataLookup.TryGetValue(targetSceneName, out SceneDataSO dataToLoad))
+        {
+            return dataToLoad;
+        }
+        return null;
+    }
+
     public void TeleportToSceneByName(string targetSceneName)
     {
         // 사전에 해당 이름의 씬 데이터가 있는지 확인
