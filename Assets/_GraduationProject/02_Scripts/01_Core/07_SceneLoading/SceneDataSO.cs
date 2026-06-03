@@ -6,9 +6,12 @@ public class SceneDataSO : ScriptableObject
 {
     [Header("Scene Information")]
     public string SceneName;        // 예: "얼음 동굴"
+    public string StageName;        // UI에 표시될 실제 스테이지 이름
     [TextArea]
     public string LoadingTip;       // 로딩창에 띄울 팁 텍스트
     public Sprite LoadingBackground;// 로딩창 배경 이미지
+    public Sprite StageImage;   // 맵 선택창에 띄울 썸네일 이미지
+
     
     [Header("Environment Settings")]
     // ★ 추가된 부분: 이 씬에서 사용할 스카이박스 머티리얼

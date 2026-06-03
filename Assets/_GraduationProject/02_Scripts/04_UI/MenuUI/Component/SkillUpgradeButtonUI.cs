@@ -11,6 +11,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 {
     public string SkillName => _learnAbility != null ? _learnAbility.AbilityName : "Unknown Skill";
     public string SkillDescription => _learnAbility != null ? _learnAbility.AbilityDescription : "No description available.";
+    public UnityEngine.Video.VideoClip SkillVideo => _learnAbility != null ? _learnAbility.AbilityVideo : null;
 
     [Header("References")]
     [SerializeField] private Toggle _skillToggleButton;
