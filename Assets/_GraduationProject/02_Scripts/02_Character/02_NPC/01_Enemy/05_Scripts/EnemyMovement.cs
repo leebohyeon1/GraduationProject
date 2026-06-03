@@ -140,6 +140,77 @@ public class EnemyMovement : MonoBehaviour
         return GetHorizontalDistance(from, to) > MinimumSafeMoveDistance;
     }
 
+    /// <summary>
+    /// Rush 계열 직선 이동이 이번 프레임에 A* 기준으로 계속 진행 가능한지 확인하고, 가능하면 다음 안전 좌표를 반환합니다.
+    /// </summary>
+    public bool TryGetRushStepPosition(Vector3 startPosition, Vector3 moveDirection, float moveDistance, out Vector3 nextPosition)
+    {
+        nextPosition = startPosition;
+
+        Vector3 flatDirection = moveDirection;
+        flatDirection.y = 0f;
+        if (flatDirection.sqrMagnitude <= 0.0001f || moveDistance <= 0f)
+        {
+            return false;
+        }
+
+        flatDirection.Normalize();
+        Vector3 desiredTarget = startPosition + flatDirection * moveDistance;
+        desiredTarget.y = startPosition.y;
+
+        if (AstarPath.active == null)
+        {
+            if (!HasWallClearance(desiredTarget))
+            {
+                return false;
+            }
+
+            if (!IsMeaningfulSafeMove(startPosition, desiredTarget))
+            {
+                return false;
+            }
+
+            nextPosition = desiredTarget;
+            return true;
+        }
+
+        NNInfo info = AstarPath.active.GetNearest(desiredTarget, NNConstraint.Walkable);
+        if (info.node == null || !info.node.Walkable)
+        {
+            return false;
+        }
+
+        Vector3 walkableTarget = (Vector3)info.position;
+        walkableTarget.y = startPosition.y;
+        Vector3 snapOffset = walkableTarget - desiredTarget;
+        snapOffset.y = 0f;
+        float maxSideSnapDistance = Mathf.Max(0.05f, CharacterRadius * 0.25f);
+        if (snapOffset.magnitude > maxSideSnapDistance)
+        {
+            return false;
+        }
+
+        if (!HasWallClearance(walkableTarget))
+        {
+            return false;
+        }
+
+        Vector3 forwardOffset = walkableTarget - startPosition;
+        forwardOffset.y = 0f;
+        if (Vector3.Dot(flatDirection, forwardOffset.normalized) <= 0.9f && forwardOffset.sqrMagnitude > 0.0001f)
+        {
+            return false;
+        }
+
+        if (!IsMeaningfulSafeMove(startPosition, walkableTarget))
+        {
+            return false;
+        }
+
+        nextPosition = walkableTarget;
+        return true;
+    }
+
     private Vector3 GetStraightSafeDestination(Vector3 startPosition, Vector3 desiredTarget, out bool wasClamped)
     {
         wasClamped = false;
