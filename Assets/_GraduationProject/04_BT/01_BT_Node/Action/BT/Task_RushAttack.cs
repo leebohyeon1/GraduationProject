@@ -76,7 +76,6 @@ public class Task_RushAttack : BaseAttackNode
         _isRushing = true;
         _rushState = RushState.Charging;
         _chargeStartTime = Time.time;
-        runner.AnimationBool("IsRushing", true);
         Debug.Log($"[Task_RushAttack] {runner.name} rush started.");
 
         Vector3 myPos = runner.transform.position;
@@ -116,12 +115,6 @@ public class Task_RushAttack : BaseAttackNode
             _rushTargetPos = playerPos;
             UpdateChargeDirection(myPos, playerPos);
 
-            if (runner.Movement.IsPathBlocked(_chargeDirection, 0.5f, out RaycastHit hit))
-            {
-                BeginDeceleration(rushSpeed);
-                return;
-            }
-
             if (Time.time - _chargeStartTime >= maxChargeDuration)
             {
                 BeginDeceleration(rushSpeed);
@@ -135,7 +128,10 @@ public class Task_RushAttack : BaseAttackNode
             }
 
             float moveStep = rushSpeed * Time.deltaTime;
-            runner.transform.position += _chargeDirection * moveStep;
+            if (!TryMoveRushStep(myPos, moveStep, "[Task_RushAttack] charge path blocked by A*."))
+            {
+                return;
+            }
             runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
             TrySpawnRushTrail();
             return;
@@ -151,7 +147,11 @@ public class Task_RushAttack : BaseAttackNode
 
             if (currentSpeed > 0.001f)
             {
-                runner.transform.position += _chargeDirection * currentSpeed * Time.deltaTime;
+                float moveStep = currentSpeed * Time.deltaTime;
+                if (!TryMoveRushStep(myPos, moveStep, "[Task_RushAttack] deceleration path blocked by A*."))
+                {
+                    return;
+                }
                 if (_chargeDirection.sqrMagnitude > 0.001f)
                 {
                     runner.transform.rotation = Quaternion.LookRotation(_chargeDirection);
@@ -184,6 +184,28 @@ public class Task_RushAttack : BaseAttackNode
     }
 
     /// <summary>
+    /// RushAttack이 이번 프레임에도 A* 기준으로 계속 전진 가능한지 확인하고, 불가능하면 즉시 종료합니다.
+    /// </summary>
+    private bool TryMoveRushStep(Vector3 currentPosition, float moveStep, string blockedLog)
+    {
+        if (runner.Movement == null)
+        {
+            runner.transform.position += _chargeDirection * moveStep;
+            return true;
+        }
+
+        if (!runner.Movement.TryGetRushStepPosition(currentPosition, _chargeDirection, moveStep, out Vector3 nextPosition))
+        {
+            Debug.Log($"{blockedLog} {runner.name}");
+            CompleteRush();
+            return false;
+        }
+
+        runner.transform.position = nextPosition;
+        return true;
+    }
+
+    /// <summary>
     /// 돌진 종료 직전에 관성 감속 단계로 전환합니다.
     /// </summary>
     private void BeginDeceleration(float startSpeed)
@@ -196,6 +218,8 @@ public class Task_RushAttack : BaseAttackNode
         _rushState = RushState.Decelerating;
         _decelerationStartTime = Time.time;
         _decelerationStartSpeed = Mathf.Max(0f, startSpeed);
+        brain.blackboard.SetValue(LoopAction.EndKey, true);
+        runner.AnimationBool("IsRushing", true);
         Debug.Log($"[Task_RushAttack] {runner.name} entered deceleration for {Mathf.Max(0.01f, decelerationDuration):0.00}s.");
     }
 
@@ -210,10 +234,11 @@ public class Task_RushAttack : BaseAttackNode
         }
 
         runner.Movement.StopMovement();
-        _rushState = RushState.Tracking;
-        _endStrategy = true;
+        
         brain.blackboard.SetValue(LoopAction.EndKey, true);
         runner.AnimationBool("IsRushing", true);
+        _rushState = RushState.Tracking;
+        _endStrategy = true;
         Debug.Log($"[Task_RushAttack] {runner.name} rush completed.");
 
         var service = brain.getService<Service_UpdateBossVars>();
@@ -246,6 +271,14 @@ public class Task_RushAttack : BaseAttackNode
     }
 
     protected override bool IsMovementFinished => _endStrategy;
+
+    /// <summary>
+    /// RushAttack은 감속 중에는 EndKey가 이미 켜져 있어도 관성 이동을 끝까지 유지합니다.
+    /// </summary>
+    protected override bool ShouldContinueMovementAfterLoopEnd()
+    {
+        return _rushState == RushState.Decelerating;
+    }
 
     protected override void SpecificCleanup()
     {

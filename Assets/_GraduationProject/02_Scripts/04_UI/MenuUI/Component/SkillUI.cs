@@ -28,9 +28,10 @@ public class SkillUI : MenuUIComponent
     {
         base.OnOpen();
 
-        // [수정] 여기서 항상 0번을 선택하면 MenuUI에서 호출한 특정 인덱스 선택이 덮어씌워질 수 있음
-        // 기본 선택이 필요한 상황(예: 메뉴를 그냥 열었을 때)은 MenuUI에서 처리하도록 위임하거나
-        // 아무것도 선택되지 않았을 때만 기본 선택을 수행하도록 변경할 수 있습니다.
+        if (_upgradeButtonList != null && _upgradeButtonList.Count > 0)
+        {
+            SelectSkillByIndex(0);
+        }
     }
 
     /// <summary>
@@ -51,7 +52,8 @@ public class SkillUI : MenuUIComponent
             skillUpgradeButtonUI.SkillName,
             skillUpgradeButtonUI.SkillDescription,
             skillUpgradeButtonUI.Price.ToString(),
-            skillUpgradeButtonUI.SpecialPrice.ToString()
+            skillUpgradeButtonUI.SpecialPrice.ToString(),
+            skillUpgradeButtonUI.SkillVideo
         );
     }
 }

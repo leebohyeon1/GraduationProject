@@ -203,7 +203,8 @@ public abstract class BaseAttackNode : Node
         HandleCommonSystems(stateInfo, nextStateInfo);
 
         bool isLoopEnded = (LoopAttack && _hasTriggeredLoop && brain.blackboard.GetValueOrDefault<bool>(LoopAction.EndKey, false));
-        if (!IsMovementFinished && !isLoopEnded) { _hasHaltedMovement = false; UpdateMovement(); }
+        bool shouldContinueMovementAfterLoopEnd = isLoopEnded && ShouldContinueMovementAfterLoopEnd();
+        if (!IsMovementFinished && (!isLoopEnded || shouldContinueMovementAfterLoopEnd)) { _hasHaltedMovement = false; UpdateMovement(); }
         else if (!_hasHaltedMovement) { _hasHaltedMovement = true; HaltMovement(); }
 
         return NodeState.RUNNING;
@@ -283,6 +284,7 @@ public abstract class BaseAttackNode : Node
 
     protected virtual float GetRequiredRange() => _data != null ? _data.damageRadius : 2.0f;
     protected virtual bool CheckCustomPreconditions() => true;
+    protected virtual bool ShouldContinueMovementAfterLoopEnd() => false;
     protected abstract void InitialMovementSetup();
     protected abstract void UpdateMovement();
     protected abstract bool IsMovementFinished { get; }

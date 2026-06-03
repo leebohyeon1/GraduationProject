@@ -384,22 +384,8 @@ public class ParabolicMineProjectile : MonoBehaviour
             IgnoreCollisionsWithGameObject(_owner);
         }
 
-        if (_enemyLayer < 0)
-        {
-            return;
-        }
-
-        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        for (int i = 0; i < enemies.Length; i++)
-        {
-            Enemy foundEnemy = enemies[i];
-            if (foundEnemy == null)
-            {
-                continue;
-            }
-
-            IgnoreCollisionsWithGameObject(foundEnemy.gameObject);
-        }
+        // 이미 HandleContact에서 적(Enemy) 레이어와 충돌 시 무시하는 로직이 있으므로,
+        // 매번 발사될 때마다 씬에 있는 모든 Enemy를 찾는 FindObjectsByType 호출은 불필요하며 성능 저하(프레임 드랍)의 원인이 됩니다.
     }
 
     private void IgnoreCollisionsWithGameObject(GameObject targetObject)

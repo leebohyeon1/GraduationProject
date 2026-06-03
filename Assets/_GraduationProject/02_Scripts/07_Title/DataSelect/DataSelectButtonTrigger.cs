@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 데이터 선택 버튼
@@ -11,7 +12,7 @@ public class DataSelectButtonTrigger : MonoBehaviour
     [SerializeField] private TMP_Text _saveTimeText;
     [SerializeField] private TMP_Text _stageText;
     [SerializeField] private TMP_Text _moneyText;
-    [SerializeField] private TMP_Text _specialMoneyText;
+    [SerializeField] private Image _sceneImage;
     [SerializeField] private SceneDataSO _defaultSceneDataSO;
     public SceneDataSO DefaultSceneDataSO => _defaultSceneDataSO;
 
@@ -36,9 +37,29 @@ public class DataSelectButtonTrigger : MonoBehaviour
         GameData = data; 
 
         _saveTimeText.text = GameData.LastSaveTime;
-        _stageText.text = GameData.StageName;
         _moneyText.text = GameData.PlayerData.Money.ToString();
-        _specialMoneyText.text = GameData.PlayerData.SpecialMoney.ToString();
+
+        SceneDataSO sceneData = null;
+        if (SceneLoadingManager.Instance != null)
+        {
+            sceneData = SceneLoadingManager.Instance.GetSceneDataByName(GameData.LastMainScene);
+        }
+
+        if (sceneData != null)
+        {
+            _stageText.text = sceneData.StageName;
+            _sceneImage.sprite = sceneData.StageImage;
+        }
+        else if (_defaultSceneDataSO != null)
+        {
+            _stageText.text = _defaultSceneDataSO.StageName;
+            _sceneImage.sprite = _defaultSceneDataSO.StageImage;
+        }
+        else
+        {
+            _stageText.text = "Unknown";
+        }
+
         _loadSceneName = GameData.LastMainScene;
 
         _isDataSet = true;

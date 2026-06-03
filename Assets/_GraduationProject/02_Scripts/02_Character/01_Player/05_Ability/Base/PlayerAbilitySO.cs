@@ -13,6 +13,7 @@ public class PlayerAbilitySO : ScriptableObject, IEquatable<PlayerAbilitySO>
     public string AbilityName;   // 능력 이름
     [TextArea]
     public string AbilityDescription; // 능력 설명
+    public UnityEngine.Video.VideoClip AbilityVideo; // 능력 영상
 
     public string GetId() => string.IsNullOrEmpty(Id) ? name : Id;
     

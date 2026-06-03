@@ -186,7 +186,10 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     /// <param name="obj">스택</param>
     private void OnCounterStackChanged(int obj)
     {
-        ParryStackChangeFeedbacks[obj]?.Invoke();
+        if (ParryStackChangeFeedbacks != null && obj >= 0 && obj < ParryStackChangeFeedbacks.Count)
+        {
+            ParryStackChangeFeedbacks[obj]?.Invoke();
+        }
     }
 
     /// <summary>
