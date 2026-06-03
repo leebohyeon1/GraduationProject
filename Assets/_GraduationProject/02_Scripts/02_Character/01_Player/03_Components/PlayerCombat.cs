@@ -114,6 +114,9 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
         // 패링 스택 초기화
         _counterStacks = 0;
         _parryStackTimer = 0f;
+
+        // 씬 전환 시 전투 상태 초기화를 위한 이벤트 구독
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
     }
 
 
@@ -142,6 +145,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     /// </summary>
     public void Dispose()
     {
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
         _events.CounterWindowStarted -= OnCounterWindowStarted;
         _events.CounterWindowFinished -= OnCounterWindowFinished;
         _events.CounterSucceeded -= OnCounterSucceeded;
@@ -176,6 +181,20 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     //==========================================================================================================================
 
     #region BattleState
+
+    private void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene current, UnityEngine.SceneManagement.Scene next)
+    {
+        ClearBattleState();
+    }
+
+    /// <summary>
+    /// 강제로 전투 상태를 해제하고 적 인식 리스트를 초기화합니다.
+    /// </summary>
+    public void ClearBattleState()
+    {
+        _detectedEnemies.Clear();
+        SetBattleState(false);
+    }
 
     /// <summary>
     /// 전투 상태를 변경합니다.
