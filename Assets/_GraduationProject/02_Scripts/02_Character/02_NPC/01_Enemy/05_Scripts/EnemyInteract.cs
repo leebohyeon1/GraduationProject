@@ -24,7 +24,7 @@ public class EnemyInteract : MonoBehaviour,IInteractable
         _isInteracted = false;
         _interactableType = InteractableType.NPC;
         _hpBar?.gameObject.SetActive(false); // 체력바 비활성화
-        if(spear == null) spear = GameObject.Find("a_Spear");
+        if(spear == null) spear = transform.Find("a_Spear")?.gameObject;//자식 오브젝트에서 찾기
         if (spear != null) spear.SetActive(false);
     }
     public void Interact()
