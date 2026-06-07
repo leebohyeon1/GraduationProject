@@ -7,7 +7,7 @@ using DG.Tweening;
 /// <summary>
 /// 스킬 업그레이드 버튼 UI
 /// </summary>
-public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, IPointerEnterHandler
+public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilitySO>, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     public string SkillName => _learnAbility != null ? _learnAbility.AbilityName : "Unknown Skill";
     public string SkillDescription => _learnAbility != null ? _learnAbility.AbilityDescription : "No description available.";
@@ -43,6 +43,13 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [SerializeField] private float _selectedScale = 1.1f;
     private Vector3 _originalScale;
 
+    [Header("Hold Purchase")]
+    [SerializeField] private float _holdDuration = 1.0f; // 홀드 필요 시간
+    [SerializeField] private Image _holdProgressImage;   // 홀드 진행도를 보여줄 이미지 (Radial Fill 추천)
+    private float _holdTimer = 0f;
+    private bool _isHolding = false;
+    private bool _isSelected = false;
+
     public void Initialize(PlayerController player)
     {
         _playerController = player;
@@ -56,10 +63,47 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             var proxy = _skillToggleButton.gameObject.GetComponent<UISelectionProxy>() ?? _skillToggleButton.gameObject.AddComponent<UISelectionProxy>();
             proxy.OnSelectAction = () => OnSelect(null);
             proxy.OnDeselectAction = () => OnDeselect(null);
+            proxy.OnPointerDownAction = (data) => OnPointerDown(data);
+            proxy.OnPointerUpAction = (data) => OnPointerUp(data);
         }
 
         // 초기화 시 UI 상태 갱신
         UpdateUIState();
+
+        if (_holdProgressImage != null)
+        {
+            _holdProgressImage.fillAmount = 0f;
+            _holdProgressImage.gameObject.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+        // 마우스 홀드 중이거나, 패드로 선택된 상태에서 Submit 버튼(A/Cross)을 누르고 있을 때
+        bool shouldHold = _isHolding || (_isSelected && _playerController.InputReader.IsSubmitPressed);
+
+        if (shouldHold)
+        {
+            if (_holdTimer == 0f && (_isLearned || !CheckPurchaseCondition())) return;
+
+            _holdTimer += Time.unscaledDeltaTime;
+            
+            if (_holdProgressImage != null)
+            {
+                if (!_holdProgressImage.gameObject.activeSelf) _holdProgressImage.gameObject.SetActive(true);
+                _holdProgressImage.fillAmount = _holdTimer / _holdDuration;
+            }
+
+            if (_holdTimer >= _holdDuration)
+            {
+                AcquireSkill();
+                ResetHold();
+            }
+        }
+        else if (_holdTimer > 0)
+        {
+            ResetHold();
+        }
     }
 
     private void OnDisable()
@@ -67,6 +111,8 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 꺼질 때 트윈 제거 및 스케일 초기화
         transform.DOKill();
         transform.localScale = _originalScale;
+        ResetHold();
+        _isSelected = false;
     }
 
     private void OnDestroy()
@@ -81,6 +127,8 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     public void OnSelect(BaseEventData eventData)
     {
+        _isSelected = true;
+
         // 선택 시 스케일 업 애니메이션
         transform.DOKill();
         transform.DOScale(_originalScale * _selectedScale, _scaleDuration)
@@ -96,17 +144,56 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     public void OnDeselect(BaseEventData eventData)
     {
+        _isSelected = false;
+
         // 선택 해제 시 원래 크기로
         transform.DOKill();
         transform.DOScale(_originalScale, _scaleDuration)
             .SetEase(Ease.OutQuad)
             .SetUpdate(true);
+
+        ResetHold();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         // 마우스 오버 시 포커스 강제 (패드와 통일감)
         Select();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (_isLearned || !CheckPurchaseCondition()) return;
+
+        _isHolding = true;
+        _holdTimer = 0f;
+        
+        if (_holdProgressImage != null)
+        {
+            _holdProgressImage.gameObject.SetActive(true);
+            _holdProgressImage.fillAmount = 0f;
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        ResetHold();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ResetHold();
+    }
+
+    private void ResetHold()
+    {
+        _isHolding = false;
+        _holdTimer = 0f;
+        if (_holdProgressImage != null)
+        {
+            _holdProgressImage.fillAmount = 0f;
+            _holdProgressImage.gameObject.SetActive(false);
+        }
     }
 
     public void Select()

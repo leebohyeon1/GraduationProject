@@ -53,6 +53,9 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
     public event Action CancelEvent;
     public event Action<Vector2> NavigateEvent;
     public event Action SubmitEvent;
+    public event Action SubmitStartedEvent;
+    public event Action SubmitCancelledEvent;
+    public bool IsSubmitPressed { get; private set; }
     public event Action ClickEvent;
     public event Action<Vector2> PointEvent;
     public event Action RightClickEvent;
@@ -359,9 +362,19 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     public void OnSubmit(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        switch (context.phase)
         {
-            SubmitEvent?.Invoke();
+            case InputActionPhase.Started:
+                IsSubmitPressed = true;
+                SubmitStartedEvent?.Invoke();
+                break;
+            case InputActionPhase.Canceled:
+                IsSubmitPressed = false;
+                SubmitCancelledEvent?.Invoke();
+                break;
+            case InputActionPhase.Performed:
+                SubmitEvent?.Invoke();
+                break;
         }
     }
 
