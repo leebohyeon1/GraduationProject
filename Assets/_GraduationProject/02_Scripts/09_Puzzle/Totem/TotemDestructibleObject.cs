@@ -84,7 +84,8 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
     {
         return attackType == AttackType.Strong_1
                || attackType == AttackType.Strong_2
-               || attackType == AttackType.Strong_3;
+               || attackType == AttackType.Strong_3
+               || attackType == AttackType.Strong_Counter;
     }
 
     private void HandleDestroyed()
