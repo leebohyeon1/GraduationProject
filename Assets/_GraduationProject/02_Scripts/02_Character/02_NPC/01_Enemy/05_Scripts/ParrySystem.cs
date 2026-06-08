@@ -47,7 +47,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         // _owner.TakeDamage(30); // 카운터 공격 시 데미지 적용 
     }
     
-    public bool Parry(AttackType attackType)
+    public bool Parry(AttackType attackType, int stiffnessAmount = 0)
     {
         if(_owner.EnemyHealth.CheckStunImmunity!= null)
         {
@@ -57,22 +57,22 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
                 return false;
             }
         }   
-        if(attackType == AttackType.Normal_Counter)
-        {
-            Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
             DeactivateImmunity();
-            
-        }
-        else
-        {
-            Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
-            DeactivateImmunity();
-        }
+            _owner.StiffnessSystem.AddStiffness(stiffnessAmount, attackType);
+        // if(attackType == AttackType.Normal_Counter)
+        // {
+        //     Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
+        // }
+        // else
+        // {
+        //     Debug.Log("[ParrySystem] 경직이 적용되었습니다!");
+        //     DeactivateImmunity();
+        // }
         return true;
     }
 
 
-    public void ApplyStun(float stunDuration, bool isCounterAttack = false)
+    public void ApplyStun(float stunDuration , bool isCounterAttack = false)
     {
         if(!isCounterAttack)
         {
