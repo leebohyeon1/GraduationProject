@@ -78,6 +78,32 @@ public class GamePlayTagManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 태그 제거 함수
+    /// </summary>
+    /// <param name="tag">제거할 태그</param>
+    public void RemoveTag(GamePlayTagSO tag)
+    {
+        if (tag == null) return;
+
+        if (HasTag(tag.ID))
+        {
+            // 1. 내부 리스트 업데이트
+            _activeTagList.Remove(tag.ID);
+
+            // 2. 데이터 매니저를 통해 즉시 데이터 저장 (동기성 보장)
+            if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+            {
+                DataManager.Instance.GetGameData().RemoveGamePlayTag(tag.ID);
+            }
+
+            Debug.Log($"<color=cyan>[TagManager]</color> 태그 제거됨: {tag.ID}");
+
+            // 3. 이벤트 발생
+            UpdateTag?.Invoke(tag);
+        }
+    }
+
+    /// <summary>
     /// 태그 가지고 있는지 여부 확인 함수
     /// </summary>
     /// <param name="tag">확인할 태그</param>
