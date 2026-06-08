@@ -87,7 +87,9 @@ public class Task_RushToFixedLocation : BaseAttackNode
                 CharacterController cc = runner.GetComponent<CharacterController>();
                 if (cc != null)
                 {
-                    cc.Move(nextPos - currentPos);
+                    Vector3 moveVector = (nextPos - currentPos);
+                    moveVector.y = -1.5f; // 등반 방지 하향 압
+                    cc.Move(moveVector);
                 }
                 else
                 {

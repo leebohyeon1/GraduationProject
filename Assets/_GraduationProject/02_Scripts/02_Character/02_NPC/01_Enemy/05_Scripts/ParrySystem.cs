@@ -35,9 +35,6 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         CurrentState = EnemyState.Normal;
     }
 
-    private void OnDisable()
-    {
-    }
 
     public void SetCounterAttack(bool value)
     {
@@ -52,7 +49,6 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     
     public bool Parry(AttackType attackType)
     {
-
         if(_owner.EnemyHealth.CheckStunImmunity!= null)
         {
             if(_owner.EnemyHealth.CheckStunImmunity(attackType))
@@ -65,6 +61,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         {
             Debug.Log("[ParrySystem] 카운터 공격이 성공했습니다!");
             DeactivateImmunity();
+            
         }
         else
         {

@@ -27,7 +27,12 @@ public class Condition_CheckCoolTime : ConditionNode
             // // Debug.LogWarning("鍮꾩뼱?덉쓬: skillName???ㅼ젙?섏? ?딆븯?듬땲??");
             return false;
         }
-    
+        if(skillName == "Pressure")
+        {
+            bool isReady = brain.IsSkillReady(skillName, cooldownDuration);
+            Debug.Log($"[Condition_CheckCoolTime] {isReady} - Checking cooldown for skill '{skillName}' with duration {cooldownDuration}s.");
+
+        }
         return brain.IsSkillReady(skillName, cooldownDuration);
     }
 
