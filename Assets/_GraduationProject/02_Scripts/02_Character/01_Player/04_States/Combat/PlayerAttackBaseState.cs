@@ -49,6 +49,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
         p_nextState = null; // 다음 상태 초기화
         p_isAttackPerformed = false; // 상태 진입 시 플래그 초기화
         p_owner.Stamina.UseStamina(p_AttackConfig.Stamina.Value);       // 스테미나 사용
+        
         p_owner.Events.TriggerRegenStamina(false);                      // 스테미나 재생성 불가
         p_owner.Events.TriggerBufferInputEnded();                       // 선입력 종료
         p_canChangeCombatState = false;
@@ -225,12 +226,13 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
     /// </summary>
     protected virtual void OnAttackFinished()
     {
-        // 이벤트 수신 여부와 상관없이 다음 상태가 예약되어 있다면 전이 허용 (Failsafe 대응)
-        if (!p_isAttackPerformed)
+        // 트랜지션 블렌딩 중에 들어오는 이벤트는 이전 애니메이션의 이벤트이므로 무시합니다.
+        // 이를 통해 콤보가 끊기는 버그를 막으면서도, p_isAttackPerformed 체크를 없애 멈춤 버그를 해결합니다.
+        if (p_animator.IsInTransition(0))
         {
             return;
         }
-        
+
         p_isAttackPerformed = false;
 
         if (p_nextState != null)
@@ -245,7 +247,7 @@ public abstract class PlayerAttackBaseState : PlayerBaseState
 
     protected virtual void OnChangeNextCombatState()
     {
-        if (!p_isAttackPerformed)
+        if (p_animator.IsInTransition(0))
         {
             return;
         }
