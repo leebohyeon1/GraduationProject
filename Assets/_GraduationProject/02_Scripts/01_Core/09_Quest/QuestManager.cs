@@ -51,6 +51,10 @@ public class QuestManager : MonoBehaviour
     public void AccpetedQuest(QuestData quest)
     {
         CurrentQuestData = quest;
+        if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+        {
+            DataManager.Instance.GetGameData().CurrentQuestId = quest.ID;
+        }
         QuestAccepted?.Invoke(CurrentQuestData);
     }
 
@@ -60,6 +64,10 @@ public class QuestManager : MonoBehaviour
     public void ResetQuest()
     {
         CurrentQuestData = null;
+        if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+        {
+            DataManager.Instance.GetGameData().CurrentQuestId = -1;
+        }
         Debug.Log("<color=yellow>[QuestManager]</color> 퀘스트 상태가 초기화되었습니다.");
     }
 
@@ -72,6 +80,11 @@ public class QuestManager : MonoBehaviour
         if (nextQuest == null)
         {
             Debug.Log("다음 퀘스트가 존재하지 않습니다.");
+            CurrentQuestData = null;
+            if (DataManager.Instance != null && DataManager.Instance.GetGameData() != null)
+            {
+                DataManager.Instance.GetGameData().CurrentQuestId = -1;
+            }
         }
         else
         {

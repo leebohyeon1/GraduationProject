@@ -24,6 +24,12 @@ public class PlayerQuestUI : PlayerUIBase
         if(QuestManager.Instance != null)
         {
             QuestManager.Instance.QuestAccepted += OnQuestAccepted;
+
+            // 게임 로드 후 초기화 시 현재 진행 중인 퀘스트가 있다면 즉시 표시
+            if (QuestManager.Instance.CurrentQuestData != null)
+            {
+                OnQuestAccepted(QuestManager.Instance.CurrentQuestData);
+            }
         }
     }
 
