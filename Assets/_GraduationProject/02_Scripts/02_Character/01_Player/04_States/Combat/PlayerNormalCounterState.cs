@@ -199,7 +199,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
                     projectile.Setup(projectile._enemy,direction, speed, p_owner.gameObject, damageData);
 
                     // 카운터 성공 이벤트 발행
-                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, p_AttackConfig.AttackType);
+                    p_owner.Events.TriggerCounterSucceeded(damageData.AttackerTransform, AttackType.Normal_Counter);
                 }
             }
         }

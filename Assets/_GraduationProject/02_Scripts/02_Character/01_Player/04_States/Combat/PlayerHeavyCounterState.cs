@@ -180,7 +180,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
 
                     // 투사체를 튕겨낼 시 
                     // 상쇄 이벤트 발생
-                    p_owner.Events.TriggerCounterSucceeded(projectile.transform, p_AttackConfig.AttackType); 
+                    p_owner.Events.TriggerCounterSucceeded(projectile.transform, AttackType.Strong_Counter); 
                     p_owner.Events.TriggerOnlyChargeAttackSucceded();
                 }
             }
