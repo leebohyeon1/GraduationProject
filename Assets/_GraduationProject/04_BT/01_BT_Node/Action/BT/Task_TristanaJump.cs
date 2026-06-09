@@ -89,7 +89,25 @@ public class Task_TristanaJump : BaseAttackNode
 
     protected override void UpdateMovement()
     {
-        if (!_isJumping) return;
+        if (!_isJumping && runner.CurrentState == EnemyStateController.EnemyState.Stunned)
+        {
+            Vector3 landPos = _targetPos;
+            Vector3 rayOrigin = landPos + Vector3.up * groundCheckHeight;
+            float rayDistance = groundCheckHeight + groundCheckDistance;
+            LayerMask rayMask = groundLayer;
+            if (rayMask.value == 0)
+            {
+                rayMask = LayerMask.GetMask("Ground");
+            }
+
+            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, rayMask, QueryTriggerInteraction.Ignore))
+            {
+                landPos.y = hit.point.y;
+            }
+            runner.transform.position = landPos;
+            return;
+        }
+        if(!_isJumping) return;
 
         float jumpTime = Time.time - _nodeEntryTime;
         float normalizedTime = jumpTime / jumpDuration;

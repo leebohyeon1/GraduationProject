@@ -97,7 +97,9 @@ public class BlackBoardUtils
                 break;
                 
             case ValueType.Boolean:
+                Debug.Log($"[BlackBoardUtils] Setting boolean value for key '{actualKey}': {utils.boolValue}");
                 blackboard.SetValue(actualKey, utils.boolValue);
+                Debug.Log($"[BlackBoardUtils] Retrieved boolean value for key '{actualKey}': {blackboard.GetValue<bool>(actualKey)}");
                 break;
                 
             case ValueType.Vector3:

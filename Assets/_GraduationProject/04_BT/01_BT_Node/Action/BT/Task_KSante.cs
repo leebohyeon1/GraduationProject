@@ -55,8 +55,6 @@ public class Task_KSante : BaseAttackNode
             ai.isStopped = true;
             ai.canMove = false;
         }
-         runner.Movement.StartOrUpdateChase(_targetPos, EnemyStateController.EnemyState.Attack, rushSpeed);
-
     }
 
     protected override void UpdateMovement()
@@ -72,7 +70,26 @@ public class Task_KSante : BaseAttackNode
             return;
         }
 
+        float step = rushSpeed * Time.deltaTime;
+        Vector3 currentPos = runner.transform.position;
+        Vector3 nextPos = Vector3.MoveTowards(currentPos, _targetPos, step);
+        Vector3 moveDir = (nextPos - currentPos).normalized;
+        moveDir.y = 0;
 
+        float moveDist = Vector3.Distance(currentPos, nextPos);
+
+        if (moveDist > 0.0001f)
+        {
+            if (!Physics.Raycast(currentPos + Vector3.up * 0.5f, moveDir, moveDist + 1f, obstacleMask))
+            {
+                runner.transform.position = nextPos;
+            }
+            else
+            {
+                StopRush();
+                return;
+            }
+        }
 
         if (!_hasHitPlayer)
         {
@@ -105,7 +122,6 @@ public class Task_KSante : BaseAttackNode
     }
     private void StopRush()
     {
-        runner.Movement.StopMovement();
         _isRushing = true;
         runner.AnimationBool("IsRushing", _isRushing);
         brain.blackboard.SetValue(LoopAction.EndKey, true);
