@@ -108,22 +108,22 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         // 적이 상쇄되지 않았다면 상쇄
         if (transform.TryGetComponent<IParryable>(out var parryable) && !p_owner.Combat.IsEnemyCountered(parryable))
         {
-            parryable.Parry(AttackType.Normal_Counter);
-            p_owner.Combat.AddCounterEnemy(parryable);
 
             baseStiffness = Mathf.RoundToInt(p_AttackConfig.Stiffness.Value);
             float stiffnessMultiplier = (p_owner.Data.CounterStiffnessMultiply != null && p_owner.Data.CounterStiffnessMultiply.Count > 0) 
                 ? p_owner.Data.CounterStiffnessMultiply[0] 
                 : 0f;
             p_AttackConfig.Stiffness.AddModifier(new StatModifier(stiffnessMultiplier, StatModifierType.PercentAdd, "NormalCounterStiffness"));
+
+            if (transform.TryGetComponent<IStiffness>(out var stiffness))
+            {
+                int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
+                p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("NormalCounterStiffness");
+                parryable.Parry(AttackType.Normal_Counter,counterStiffness);
+                p_owner.Combat.AddCounterEnemy(parryable);
+            }
         }
         
-        if (transform.TryGetComponent<IStiffness>(out var stiffness))
-        {
-            int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
-            stiffness.AddStiffness(counterStiffness, AttackType.Normal_Counter);
-            p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("NormalCounterStiffness");
-        }
 
         // 적이 아직 죽지 않았다면 타격
         if (transform.TryGetComponent<IDamageable>(out var damageable))

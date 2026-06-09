@@ -1006,7 +1006,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2.78
   m_Radius: 0.7
-  m_SlopeLimit: 30
+  m_SlopeLimit: 80
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
@@ -1243,6 +1243,17 @@ MonoBehaviour:
     targetMask:
       serializedVersion: 2
       m_Bits: 0
+  - name: Damage_FB
+    feedback: {fileID: 377233956506552301}
+    offset: {x: 0, y: 0, z: 0}
+    Phase: 0
+    HitType: 5
+    damageRadius: 0
+    attackData: {fileID: 0}
+    damageDelay: 0
+    targetMask:
+      serializedVersion: 2
+      m_Bits: 0
 --- !u!114 &2590381139122276330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1300,8 +1311,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca9d77cd03f00d47ae5cea8da6769de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  _enableJumpGuard: 1
-  _suspiciousJumpDistance: 100
   <enemyStat>k__BackingField: {fileID: 11400000, guid: a547cf6fe13d12c4587298f1855fbb9b, type: 2}
 --- !u!114 &5060830232353991742
 MonoBehaviour:
@@ -5935,6 +5944,7 @@ Transform:
   - {fileID: 5815893998958933166}
   - {fileID: 4474923769237942563}
   - {fileID: 4895698907851837259}
+  - {fileID: 4247529463232753978}
   - {fileID: 2556053989083714620}
   - {fileID: 5675964169451710567}
   - {fileID: 36783142899617425}
@@ -27110,6 +27120,131 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1495927516114684651, guid: 49cd0919ffe86374788f1973f7cd537b, type: 3}
   m_PrefabInstance: {fileID: 222658290701782374}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4428060074336386013
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6809394656526181256}
+    m_Modifications:
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943185789029358775, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: m_Name
+      value: Monster_Atk_Strong_02_Damage_FB
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564037].Sfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 99c392cb86e302b4eba815e3e891f2c7, type: 3}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564034].TimeScale
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564035].ParticlesPrefab
+      value: 
+      objectReference: {fileID: 1521653833230474390, guid: 999451f4594ccb148ad000f1c6971b0d, type: 3}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564034].TimeScaleDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564033].AnimateScaleTarget
+      value: 
+      objectReference: {fileID: 629783981564199794}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7623909969689089502}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+      propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TriggerBlurPulse
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+--- !u!114 &377233956506552301 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+  m_PrefabInstance: {fileID: 4428060074336386013}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
+--- !u!4 &4247529463232753978 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 540960441918458599, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
+  m_PrefabInstance: {fileID: 4428060074336386013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4931692900100621740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27181,7 +27316,7 @@ PrefabInstance:
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7623909969689089502}
+      objectReference: {fileID: 0}
     - target: {fileID: 4057626053934398512, guid: f17c450ad071d9f4b9471a31cf25a694, type: 3}
       propertyPath: managedReferences[6735772444859564039].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
