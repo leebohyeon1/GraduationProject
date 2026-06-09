@@ -30,6 +30,7 @@ public class Task_Pressure : Node
     }
     protected override NodeState OnUpdate()
     {
+
         if(runner._animationBridge.IsAttacking)
         {
             return NodeState.RUNNING; 
@@ -45,11 +46,11 @@ public class Task_Pressure : Node
         {
             return NodeState.FAILURE;
         }
-
         Vector3 targetPos = (Vector3)val;
         currentTargetDebug = targetPos; 
-        
 
+        
+        Debug.Log($"[Task_Pressure] {runner.name} is moving towards {targetPos}.");
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);

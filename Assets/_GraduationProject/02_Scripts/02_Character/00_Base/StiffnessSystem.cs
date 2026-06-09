@@ -19,6 +19,8 @@ public class  StiffnessSystem : MonoBehaviour, IStiffness
     public int StiffnessThreshold => _stiffnessThreshold;
 
     public float StiffnessDuration => _stiffnessDuration;
+
+    public float WeakStiffnessDuration => _weakStiffnessDuration;
     #endregion
 
     /// <summary>
