@@ -188,7 +188,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(delay);
         if (!_owner.EnemyHealth.IsDead) _owner.ParrySystem.ActivateMinorImmunity();
-        Debug.Log($"[EnemyHealth] Activated minor immunity for {_owner.name} after taking damage.");
+        // Debug.Log($"[EnemyHealth] Activated minor immunity for {_owner.name} after taking damage.");
     }
 
     public float MinorTime = 5;
@@ -196,9 +196,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(DamageData damageData)
     {
-        if (_owner.Interact != null && !_owner.Interact._isInteracted)
+        if (_owner.Interact != null )
         {
-            return;
+            if( !_owner._aiController._aiBrain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.InteractNoneHIt, false))
+            {
+                
+                return;
+            }
+            
         }
         if (CurrentHealth <= 0) return;
         bool isBlocked = false;

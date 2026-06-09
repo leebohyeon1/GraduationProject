@@ -50,7 +50,7 @@ public class Task_Pressure : Node
         currentTargetDebug = targetPos; 
 
         
-        Debug.Log($"[Task_Pressure] {runner.name} is moving towards {targetPos}.");
+        // Debug.Log($"[Task_Pressure] {runner.name} is moving towards {targetPos}.");
         RotateTowardsPlayer();
         runner.Movement.UpdateStrafeAnim();
         runner.Movement.StartOrUpdateChase(targetPos, EnemyStateController.EnemyState.Chase, MoveSpeed);

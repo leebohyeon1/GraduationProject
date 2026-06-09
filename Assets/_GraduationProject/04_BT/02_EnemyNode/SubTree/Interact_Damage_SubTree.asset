@@ -15,22 +15,6 @@ MonoBehaviour:
   position: {x: 609, y: -59}
   enableAttackBlock: 1
   attackBlockDuration: 1
---- !u!114 &-8813712887646084962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
-  m_Name: Condition_Blackboard Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
-  position: {x: 608, y: -557}
-  exceptCondition:
-    key: 
-  key: 
 --- !u!114 &-8157817943079032596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,8 +70,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: Sequence(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 426, y: 80}
+  position: {x: 426, y: 76}
   nodes:
+  - {fileID: 3316371704065045323}
   - {fileID: -2957594486774758430}
   - {fileID: -8157817943079032596}
   services: []
@@ -129,7 +114,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eac5419a31a0844492917aac3a7eedb, type: 3}
-  m_Name: Damage_SubTree
+  m_Name: Interact_Damage_SubTree
   m_EditorClassIdentifier: Assembly-CSharp::SubTree
   rootNode: {fileID: 5044749467504456421}
 --- !u!114 &1331982596687671171
@@ -162,12 +147,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 406, y: -371}
   nodes:
-  - {fileID: -8813712887646084962}
   - {fileID: 1331982596687671171}
   - {fileID: 6070978155942079284}
   - {fileID: -7864576010380514528}
   - {fileID: -3982206498254555874}
   services: []
+--- !u!114 &3316371704065045323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fba8cb904081494c8b23a3f05d0c0d5, type: 3}
+  m_Name: Condition_Blackboard Key Check
+  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardKeyCheck
+  position: {x: 609, y: -11}
+  exceptCondition:
+    key: 
+  key: InteractNoneHIt
 --- !u!114 &4026387723518099330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6943a9c416c75de43879c377d56ba910, type: 3}
   m_Name: Damage(Clone)
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
-  position: {x: 253, y: 18}
+  position: {x: 96, y: 18}
   nodes:
   - {fileID: 3105808730276394279}
   - {fileID: -6519674020135450153}
