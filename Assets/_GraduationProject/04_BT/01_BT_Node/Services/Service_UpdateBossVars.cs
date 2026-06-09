@@ -52,7 +52,7 @@ public class Service_UpdateBossVars : ServiceNode
         // 珥덇린??議곌굔(寃쎄퀎 諛??뱀? 由ъ뀑 援ъ뿭 ?????대떦?섎㈃ ?쒓컙??0?쇰줈 留뚮뱾怨?醫낅즺
         if (isOutsideBoundary || isInResetZone)
         {
-            Debug.Log($"[Service_UpdateBossVars] Player is outside boundary or in reset zone. Resetting accumulated time. (OutsideBoundary: {isOutsideBoundary}, IsInResetZone: {isInResetZone})");
+            // Debug.Log($"[Service_UpdateBossVars] Player is outside boundary or in reset zone. Resetting accumulated time. (OutsideBoundary: {isOutsideBoundary}, IsInResetZone: {isInResetZone})");
             if (_accumulatedTime > 0)
             {
                 initNode();

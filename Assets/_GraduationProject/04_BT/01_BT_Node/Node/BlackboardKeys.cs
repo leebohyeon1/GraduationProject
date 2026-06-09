@@ -70,6 +70,11 @@ public enum EnemyBlackboardKeys
     /// <summary>현재 공격 페이즈 (int)</summary>
     Phase,
     #endregion
+
+    #region Interaction
+    /// <summary>상호작용 대상 (GameObject)</summary>
+    InteractNoneHIt,
+    #endregion
 }
 
 /// <summary>
