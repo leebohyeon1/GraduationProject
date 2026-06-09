@@ -112,6 +112,8 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         CurrentState = EnemyState.StunnedExit;
         _owner._stateController.SetLock(false);
         _owner.SetState(EnemyStateController.EnemyState.Idle);
+        _owner._animationBridge.ResetAllAnimationStates();
+        _owner._animationBridge.ClearIsAttacking();
     }
     public void StateNormal()
     {

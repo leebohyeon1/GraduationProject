@@ -96,6 +96,8 @@ public abstract class BaseAttackNode : Node
         bool isAlreadyInAttackState = runner.CurrentState == EnemyStateController.EnemyState.Attack || runner._animationBridge.IsAttacking;
         if (runner._stateController.IsStateLocked || isAlreadyInAttackState || runner.CurrentState == EnemyStateController.EnemyState.Stunned)
         {
+            Debug.Log($"attack중이거나 상태가 잠겨있어서 공격을 시작할 수 없습니다.{runner._animationBridge.IsAttacking}");
+
             _isActionFinishedInternally = true;
             return;
         }
