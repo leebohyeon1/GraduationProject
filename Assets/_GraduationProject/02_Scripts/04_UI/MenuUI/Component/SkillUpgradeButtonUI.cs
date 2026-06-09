@@ -50,12 +50,21 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     private bool _isHolding = false;
     private bool _isSelected = false;
 
+    [Header("Unlock Animation")]
+    [SerializeField] private Animator _animator;
+    [SerializeField] private string _unlockAnimationName = "Unlock";
+    private bool _wasUnlocked = false;
+    private bool _isUnlockAnimationPlaying = false;
+    private float _unlockAnimationTimer = 0f;
+    private const float UNLOCK_ANIMATION_DURATION = 1.0f; // Unlock.anim 길이
+
     public void Initialize(PlayerController player)
     {
         _playerController = player;
         _parentSkillUI = GetComponentInParent<SkillUI>();
         _abilitySelected.Subscribe(this);
         _originalScale = transform.localScale;
+        _wasUnlocked = CheckUnlockCondition(); // 초기 상태 캐싱
 
         // 패드 조작을 위해 토글 오브젝트에 선택 이벤트 프록시 연결
         if (_skillToggleButton != null)
@@ -79,8 +88,22 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     private void Update()
     {
+        if (_isUnlockAnimationPlaying)
+        {
+            _unlockAnimationTimer -= Time.unscaledDeltaTime;
+            if (_unlockAnimationTimer <= 0f)
+            {
+                _isUnlockAnimationPlaying = false;
+                
+                // 애니메이션 종료 후 락 이미지 해제 및 색상 갱신
+                if (_skillToggleButton != null) _skillToggleButton.image.color = Color.white;
+                if (_skillIcon != null) _skillIcon.color = Color.white;
+                if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
+            }
+        }
+
         // 마우스 홀드 중이거나, 패드로 선택된 상태에서 Submit 버튼(A/Cross)을 누르고 있을 때
-        bool shouldHold = _isHolding || (_isSelected && _playerController.InputReader.IsSubmitPressed);
+        bool shouldHold = !_isUnlockAnimationPlaying && (_isHolding || (_isSelected && _playerController.InputReader.IsSubmitPressed));
 
         if (shouldHold)
         {
@@ -163,7 +186,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_isLearned || !CheckPurchaseCondition()) return;
+        if (_isLearned || !CheckPurchaseCondition() || _isUnlockAnimationPlaying) return;
 
         _isHolding = true;
         _holdTimer = 0f;
@@ -230,8 +253,23 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 1. 이미 배웠는지 확인
         bool alreadyHasSkill = HasSkill();
         
-        // 2. 배울 수 있는 조건인지 확인
+        // 2. 해금 조건과 구매 조건 분리
+        bool isUnlocked = CheckUnlockCondition();
         bool canPurchase = CheckPurchaseCondition();
+
+        // 방금 새롭게 해금된 상태라면 Unlock 애니메이션 대기 및 재생
+        if (!_isLearned && !_wasUnlocked && isUnlocked)
+        {
+            _isUnlockAnimationPlaying = true;
+            _unlockAnimationTimer = UNLOCK_ANIMATION_DURATION;
+
+            // 코드에서 명시적으로 애니메이션 재생
+            if (_animator != null && !string.IsNullOrEmpty(_unlockAnimationName))
+            {
+                _animator.Play(_unlockAnimationName, 0, 0f);
+            }
+        }
+        _wasUnlocked = isUnlocked;
 
         // [개선] 패드 조작을 위해 모든 상태에서 선택(Select)이 가능해야 하므로 interactable은 항상 true 유지
         _skillToggleButton.interactable = true;
@@ -246,14 +284,18 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
             if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
         }
-        else if (canPurchase)
+        else if (isUnlocked)
         {
             _isLearned = false;
             _skillToggleButton.SetIsOnWithoutNotify(false);
-            _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
-            _skillIcon.color = Color.white; // 아이콘도 밝게
-
-            if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
+            
+            // 언락 애니메이션이 재생 중이 아닐 때만 즉시 UI 갱신 (재생 중이면 Update에서 갱신)
+            if (!_isUnlockAnimationPlaying)
+            {
+                _skillToggleButton.image.color = Color.white; // 배울 수 있는 상태 색상
+                _skillIcon.color = Color.white; // 아이콘도 밝게
+                if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(false);
+            }
         }
         else
         {
@@ -280,36 +322,72 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     }
 
     /// <summary>
-    /// 구매 가능 조건 체크 (보유 여부 제외, 돈과 선행 스킬만 체크)
+    /// 해금 조건 체크 (선행 스킬 및 태그만 체크)
     /// </summary>
-    private bool CheckPurchaseCondition()
+    public bool CheckUnlockCondition()
     {
-        // 플레이어 현재 돈 체크
-        if (_playerController.Money.CurrentMoney >= _price 
-            && _playerController.Money.CurrentSpecialMoney >= _specialPrice)
+        // 선행 기술 체크
+        for (int i = 0; i < _needAbilities.Count; i++)
         {
-            // 선행 기술 체크
-            for (int i = 0; i < _needAbilities.Count; i++)
+            if (!_playerController.Ability.HasAbility(_needAbilities[i].Id))
             {
-                if (!_playerController.Ability.HasAbility(_needAbilities[i].Id))
-                {
-                    return false;
-                }
+                return false;
             }
-
-            // 선행 태그 체크
-            for (int i = 0; i < _needTags.Count; i++)
-            {
-                if (!GamePlayTagManager.Instance.HasTag(_needTags[i].ID))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
-        return false;
+        // 선행 태그 체크
+        for (int i = 0; i < _needTags.Count; i++)
+        {
+            if (!GamePlayTagManager.Instance.HasTag(_needTags[i].ID))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 돈 조건 체크
+    /// </summary>
+    public bool HasEnoughMoney()
+    {
+        return _playerController.Money.CurrentMoney >= _price 
+            && _playerController.Money.CurrentSpecialMoney >= _specialPrice;
+    }
+
+    /// <summary>
+    /// 최종 구매 가능 조건 체크
+    /// </summary>
+    public bool CheckPurchaseCondition()
+    {
+        return CheckUnlockCondition() && HasEnoughMoney();
+    }
+
+    /// <summary>
+    /// 가격 텍스트 반환 (돈이 부족하면 빨간색)
+    /// </summary>
+    public string GetPriceString()
+    {
+        if (_playerController == null) return _price.ToString();
+        if (_playerController.Money.CurrentMoney < _price)
+        {
+            return $"<color=red>{_price}</color>";
+        }
+        return _price.ToString();
+    }
+
+    /// <summary>
+    /// 특수 가격 텍스트 반환 (돈이 부족하면 빨간색)
+    /// </summary>
+    public string GetSpecialPriceString()
+    {
+        if (_playerController == null) return _specialPrice.ToString();
+        if (_playerController.Money.CurrentSpecialMoney < _specialPrice)
+        {
+            return $"<color=red>{_specialPrice}</color>";
+        }
+        return _specialPrice.ToString();
     }
 
     /// <summary>

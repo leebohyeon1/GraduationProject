@@ -51,8 +51,8 @@ public class SkillUI : MenuUIComponent
         _skillDescription.SetDescription(
             skillUpgradeButtonUI.SkillName,
             skillUpgradeButtonUI.SkillDescription,
-            skillUpgradeButtonUI.Price.ToString(),
-            skillUpgradeButtonUI.SpecialPrice.ToString(),
+            skillUpgradeButtonUI.GetPriceString(),
+            skillUpgradeButtonUI.GetSpecialPriceString(),
             skillUpgradeButtonUI.SkillVideo
         );
     }
