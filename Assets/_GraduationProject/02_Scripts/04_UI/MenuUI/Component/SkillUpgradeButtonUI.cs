@@ -230,6 +230,14 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         }
     }
 
+    private void OnEnable()
+    {
+        if (_playerController != null)
+        {
+            UpdateUIState();
+        }
+    }
+
     /// <summary>
     /// 스킬 배웠을 때 이벤트 처리
     /// </summary>
@@ -260,13 +268,16 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         // 방금 새롭게 해금된 상태라면 Unlock 애니메이션 대기 및 재생
         if (!_isLearned && !_wasUnlocked && isUnlocked)
         {
-            _isUnlockAnimationPlaying = true;
-            _unlockAnimationTimer = UNLOCK_ANIMATION_DURATION;
-
-            // 코드에서 명시적으로 애니메이션 재생
-            if (_animator != null && !string.IsNullOrEmpty(_unlockAnimationName))
+            if (gameObject.activeInHierarchy)
             {
-                _animator.Play(_unlockAnimationName, 0, 0f);
+                _isUnlockAnimationPlaying = true;
+                _unlockAnimationTimer = UNLOCK_ANIMATION_DURATION;
+
+                // 코드에서 명시적으로 애니메이션 재생
+                if (_animator != null && !string.IsNullOrEmpty(_unlockAnimationName))
+                {
+                    _animator.Play(_unlockAnimationName, 0, 0f);
+                }
             }
         }
         _wasUnlocked = isUnlocked;
@@ -305,6 +316,12 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
             _skillIcon.color = _lockColor; // 아이콘은 어둡게
 
             if (_skillLockImage != null) _skillLockImage.gameObject.SetActive(true);
+        }
+
+        // 선택된 상태라면 Description도 함께 갱신해준다 (가격 색상 등이 변경될 수 있으므로)
+        if (_isSelected && _parentSkillUI != null)
+        {
+            _parentSkillUI.UpdateDescription(this);
         }
     }
 
