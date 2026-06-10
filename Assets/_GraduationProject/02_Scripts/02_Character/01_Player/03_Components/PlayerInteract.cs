@@ -40,9 +40,6 @@ public class PlayerInteract : MonoBehaviour, IDisposable
     {
         if (_interactable == null) { return; }
 
-        // 비전투 상황에서만 상호작용 가능
-        if (_isBattleState) { return; }
-
         if (Interactable != null)
         {
             Debug.Log("상호작용");
