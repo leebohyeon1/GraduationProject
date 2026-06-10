@@ -155,6 +155,7 @@ Transform:
   - {fileID: 1846238034434870876}
   - {fileID: 4575395663767895192}
   - {fileID: 6259767060974311726}
+  - {fileID: 5141397769631371758}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7052264900759211786
@@ -2794,6 +2795,122 @@ Transform:
   - {fileID: 6145640480014937384}
   m_Father: {fileID: 4450071830681666605}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1636972148382651216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1178688451859766262}
+  - component: {fileID: 4783873902016623672}
+  - component: {fileID: 1132332164769287025}
+  - component: {fileID: 2247626754457263349}
+  m_Layer: 0
+  m_Name: Main_Field_Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1178688451859766262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636972148382651216}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.14538655, y: 0.37791538, z: -0.060221076, w: 0.9123685}
+  m_LocalPosition: {x: -18.4, y: 28.339523, z: -16.398102}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5141397769631371758}
+  m_LocalEulerAnglesHint: {x: 18.108, y: 4005, z: 360}
+--- !u!114 &4783873902016623672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636972148382651216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
+  Priority:
+    Enabled: 1
+    m_Value: 0
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 0}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 90
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
+--- !u!95 &1132332164769287025
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636972148382651216}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2247626754457263349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636972148382651216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449ef5ebbe24720439ec31d15f7b6f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineVolumeSettings
+  Weight: 1
+  FocusTracking: 0
+  FocusTarget: {fileID: 0}
+  FocusOffset: 0
+  Profile: {fileID: 11400000, guid: 454eacfe3d6137c4d8fd9d71b8002203, type: 2}
 --- !u!1 &1716246865840329672
 GameObject:
   m_ObjectHideFlags: 0
@@ -3543,7 +3660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 2100000, guid: 1f72c67b0e2431042b100baf259dee7a, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3560,7 +3677,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278201855
+    rgba: 11775
   m_fontColor: {r: 1, g: 0.1764706, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4542,6 +4659,7 @@ GameObject:
   - component: {fileID: 8862403331802180472}
   - component: {fileID: 1319075067806930742}
   - component: {fileID: 466152612833031560}
+  - component: {fileID: 1751255233965938204}
   m_Layer: 0
   m_Name: Side_2
   m_TagString: Untagged
@@ -4598,6 +4716,18 @@ MonoBehaviour:
           m_StringArgument: Freak_Out
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1751255233965938204}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   TriggerExit:
     m_PersistentCalls:
       m_Calls: []
@@ -4622,6 +4752,299 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 15, y: 10, z: 15}
   m_Center: {x: -22.6, y: 0, z: 14.6}
+--- !u!114 &1751255233965938204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847577717565224512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
+  Feedbacks: []
+  InitializationMode: 2
+  AutoInitialization: 1
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  TimescaleMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 0
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnStop:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnChangeDirection:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRestoreInitialValues:
+      m_PersistentCalls:
+        m_Calls: []
+    OnSkipToTheEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    OnInitializationComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnEnable:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDisable:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  InScriptDrivenPause: 0
+  FeedbacksList:
+  - rid: 8309650556181544976
+  - rid: 8309650556181544975
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  RestoreInitialValuesOnDisable: 0
+  StopFeedbacksOnDisable: 0
+  PlayCount: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 8309650556181544975
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+      data:
+        Active: 1
+        UniqueID: 1097400508
+        Label: Unity Events
+        OriginalLabel: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          PlayCount: 0
+          LimitPlayCount: 0
+          MaxPlayCount: 3
+          SetPlayCountToZeroOnReset: 0
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        AutomaticShakerSetupButton:
+          ButtonText: 
+        Owner: {fileID: 1751255233965938204}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 2847577717565224512}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
+    - rid: 8309650556181544976
+      type: {class: MMF_Pause, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+      data:
+        Active: 1
+        UniqueID: -874768255
+        Label: Pause
+        OriginalLabel: Pause
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          PlayCount: 0
+          LimitPlayCount: 0
+          MaxPlayCount: 3
+          SetPlayCountToZeroOnReset: 0
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        AutomaticShakerSetupButton:
+          ButtonText: 
+        Owner: {fileID: 1751255233965938204}
+        DebugActive: 0
+        PauseDuration: 4
+        RandomizePauseDuration: 0
+        MinPauseDuration: 1
+        MaxPauseDuration: 3
+        RandomizeOnEachPlay: 1
+        ScriptDriven: 0
+        AutoResume: 0
+        AutoResumeAfter: 0.25
 --- !u!1 &3180785459754438017
 GameObject:
   m_ObjectHideFlags: 0
@@ -5372,7 +5795,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6596,6 +7019,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8996301006142448222}
+  - component: {fileID: 630975923550173610}
+  - component: {fileID: 5658943269215399086}
+  - component: {fileID: 8986692301983588800}
+  - component: {fileID: 642524193098184430}
+  - component: {fileID: 3777608203666621385}
   m_Layer: 0
   m_Name: Side_3
   m_TagString: Untagged
@@ -6612,13 +7040,444 @@ Transform:
   m_GameObject: {fileID: 5094506742448524456}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 38.75, y: 11.59, z: 85.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6305859396488914030}
   m_Father: {fileID: 6259767060974311726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &630975923550173610
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094506742448524456}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 5, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5658943269215399086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094506742448524456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd1fbe685fc01b4a88eed643607d7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerEvent
+  ColliderEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  ColliderExit:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1592532305491384591}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Freak_Out
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  TriggerExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &8986692301983588800
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094506742448524456}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 5, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &642524193098184430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094506742448524456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd1fbe685fc01b4a88eed643607d7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerEvent
+  ColliderEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  ColliderExit:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2944791824501339554}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Freak_Out
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3777608203666621385}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  TriggerExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3777608203666621385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094506742448524456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MoreMountains.Tools::MoreMountains.Feedbacks.MMF_Player
+  Feedbacks: []
+  InitializationMode: 2
+  AutoInitialization: 1
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  TimescaleMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 0
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnStop:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnChangeDirection:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRestoreInitialValues:
+      m_PersistentCalls:
+        m_Calls: []
+    OnSkipToTheEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    OnInitializationComplete:
+      m_PersistentCalls:
+        m_Calls: []
+    OnEnable:
+      m_PersistentCalls:
+        m_Calls: []
+    OnDisable:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  InScriptDrivenPause: 0
+  FeedbacksList:
+  - rid: 8309650556181544976
+  - rid: 8309650556181544975
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  RestoreInitialValuesOnDisable: 0
+  StopFeedbacksOnDisable: 0
+  PlayCount: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 8309650556181544975
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+      data:
+        Active: 1
+        UniqueID: 1097400508
+        Label: Unity Events
+        OriginalLabel: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          PlayCount: 0
+          LimitPlayCount: 0
+          MaxPlayCount: 3
+          SetPlayCountToZeroOnReset: 0
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        AutomaticShakerSetupButton:
+          ButtonText: 
+        Owner: {fileID: 3777608203666621385}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 5094506742448524456}
+              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_MethodName: SetActive
+              m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
+    - rid: 8309650556181544976
+      type: {class: MMF_Pause, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
+      data:
+        Active: 1
+        UniqueID: -874768255
+        Label: Pause
+        OriginalLabel: Pause
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          PlayCount: 0
+          LimitPlayCount: 0
+          MaxPlayCount: 3
+          SetPlayCountToZeroOnReset: 0
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        AutomaticShakerSetupButton:
+          ButtonText: 
+        Owner: {fileID: 3777608203666621385}
+        DebugActive: 0
+        PauseDuration: 4
+        RandomizePauseDuration: 0
+        MinPauseDuration: 1
+        MaxPauseDuration: 3
+        RandomizeOnEachPlay: 1
+        ScriptDriven: 0
+        AutoResume: 0
+        AutoResumeAfter: 0.25
 --- !u!1 &5146459073515632101
 GameObject:
   m_ObjectHideFlags: 0
@@ -7120,6 +7979,7 @@ GameObject:
   - component: {fileID: 7767731869856944945}
   - component: {fileID: 5547962627281196946}
   - component: {fileID: 1792519948431559183}
+  - component: {fileID: 4882514724561877447}
   m_Layer: 0
   m_Name: Dragon_TimeLIne
   m_TagString: Untagged
@@ -7177,25 +8037,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GamePlayTagManager, Assembly-CSharp
-        m_MethodName: RemoveTag
-        m_Mode: 2
+      - m_Target: {fileID: 4882514724561877447}
+        m_TargetAssemblyTypeName: GamePlayTagRemover, Assembly-CSharp
+        m_MethodName: Remove
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: c225b0bdf12ef2d448663c33e8624b12, type: 2}
-          m_ObjectArgumentAssemblyTypeName: GamePlayTagSO, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GamePlayTagManager, Assembly-CSharp
-        m_MethodName: RemoveTag
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: cbfbe6c1aac93f4479ae680085ab3044, type: 2}
-          m_ObjectArgumentAssemblyTypeName: GamePlayTagSO, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7405,6 +8253,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10.28
   m_Center: {x: -3.87, y: 0, z: 11.31}
+--- !u!114 &4882514724561877447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5475457996391733121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2594697fade6de24ebafdc22d62c6104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlayTagRemover
+  _removeTags:
+  - {fileID: 11400000, guid: c225b0bdf12ef2d448663c33e8624b12, type: 2}
+  - {fileID: 11400000, guid: cbfbe6c1aac93f4479ae680085ab3044, type: 2}
 --- !u!1 &5561671647984127521
 GameObject:
   m_ObjectHideFlags: 0
@@ -8258,6 +9121,255 @@ Transform:
   - {fileID: 8996301006142448222}
   m_Father: {fileID: 5585473778015514653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6175463031933398006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5141397769631371758}
+  - component: {fileID: 3715870581426101444}
+  - component: {fileID: 4448362047322383758}
+  m_Layer: 0
+  m_Name: Boss_Field_CutScene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5141397769631371758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6175463031933398006}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 873.1503, y: 57.576477, z: -143.21191}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1178688451859766262}
+  - {fileID: 1501858828868598718}
+  m_Father: {fileID: 5585473778015514653}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!320 &3715870581426101444
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6175463031933398006}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 79161639fb932314390e0dab6c2a4e44, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 6028058033306719300, guid: 79161639fb932314390e0dab6c2a4e44, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 0}
+    value: {fileID: 0}
+  - key: {fileID: 1455192761302478248, guid: 79161639fb932314390e0dab6c2a4e44, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -103129930100399223, guid: 79161639fb932314390e0dab6c2a4e44, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References:
+    - dd4a4b67eb6dbab42ba10e698aa123d4: {fileID: 0}
+    - df68451fbde452243aab76f835a5c631: {fileID: 4783873902016623672}
+    - 36117b4a99abacc4fa9a644bf0173d18: {fileID: 0}
+    - 36e83ee008e88324d98847ca47fd5703: {fileID: 0}
+    - 2233e4bfaec903242b827caeb55070e1: {fileID: 0}
+    - 38fd0445d2b83574cbb11ee906da707f: {fileID: 4783873902016623672}
+    - 9281dcd77a804dc45994edbf1203ae71: {fileID: 4783873902016623672}
+    - 43615ec8e1c49364c98e8022493d31e9: {fileID: 0}
+--- !u!114 &4448362047322383758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6175463031933398006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalReceiver
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: bae645b2cd588c44c96cd23bfde69ffd, type: 2}
+    - {fileID: 11400000, guid: 4d60a8147d1921e4388becb2553f16c9, type: 2}
+    - {fileID: 11400000, guid: fdca163a2edfc6948bbcd3834635a3a8, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6175463031933398006}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6175463031933398006}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!1 &6217691008328809916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1501858828868598718}
+  - component: {fileID: 6252569149032052794}
+  - component: {fileID: 6630425274705142365}
+  - component: {fileID: 1340260979917399235}
+  m_Layer: 0
+  m_Name: Boss_Field_Entrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1501858828868598718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217691008328809916}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: -24.74, y: 10, z: -21.52}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5141397769631371758}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!65 &6252569149032052794
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217691008328809916}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 20, y: 10, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6630425274705142365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217691008328809916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd1fbe685fc01b4a88eed643607d7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerEvent
+  ColliderEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  ColliderExit:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3715870581426101444}
+        m_TargetAssemblyTypeName: UnityEngine.Playables.PlayableDirector, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  TriggerExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1340260979917399235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217691008328809916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalReceiver
+  m_Events:
+    m_Signals:
+    - {fileID: 0}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &6409756735013169669
 GameObject:
   m_ObjectHideFlags: 0
@@ -11781,75 +12893,75 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 362480149472072717, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -3.989836
+      value: 0.5118006
       objectReference: {fileID: 0}
     - target: {fileID: 362480149472072717, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 32.160156
+      value: 5.1060157
       objectReference: {fileID: 0}
     - target: {fileID: 362480149472072717, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -164.10391
+      value: 173.94289
       objectReference: {fileID: 0}
     - target: {fileID: 741848743125189143, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.0000001067217
+      value: -16.13679
       objectReference: {fileID: 0}
     - target: {fileID: 741848743125189143, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -3.0001204
+      value: -0.15451743
       objectReference: {fileID: 0}
     - target: {fileID: 741848743125189143, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -89.18927
+      value: -89.177956
       objectReference: {fileID: 0}
     - target: {fileID: 852045472466429468, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 46.62012
+      value: 0.98356116
       objectReference: {fileID: 0}
     - target: {fileID: 852045472466429468, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -18.766306
+      value: 1.1480813
       objectReference: {fileID: 0}
     - target: {fileID: 852045472466429468, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -103.69986
+      value: -89.672325
       objectReference: {fileID: 0}
     - target: {fileID: 1657673188372078465, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.18915
+      value: -84.81593
       objectReference: {fileID: 0}
     - target: {fileID: 1657673188372078465, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90.00868
+      value: 170.40656
       objectReference: {fileID: 0}
     - target: {fileID: 1657673188372078465, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 161.6522
+      value: 93.60147
       objectReference: {fileID: 0}
     - target: {fileID: 1699894983504437087, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.00013657784
+      value: -0.11239877
       objectReference: {fileID: 0}
     - target: {fileID: 1699894983504437087, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0.0000019648799
+      value: -7.959057
       objectReference: {fileID: 0}
     - target: {fileID: 1699894983504437087, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -0.81070656
+      value: -0.80289656
       objectReference: {fileID: 0}
     - target: {fileID: 2062685887023378382, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -25.320915
+      value: -10.028218
       objectReference: {fileID: 0}
     - target: {fileID: 2062685887023378382, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -33.00041
+      value: -18.770948
       objectReference: {fileID: 0}
     - target: {fileID: 2062685887023378382, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -45.270554
+      value: -34.76128
       objectReference: {fileID: 0}
     - target: {fileID: 2685909893398915278, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11893,15 +13005,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4015313742116872905, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0.589857
+      value: -2.654141
       objectReference: {fileID: 0}
     - target: {fileID: 4015313742116872905, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 46.68741
+      value: 0.936362
       objectReference: {fileID: 0}
     - target: {fileID: 4015313742116872905, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 131.6547
+      value: 78.72707
       objectReference: {fileID: 0}
     - target: {fileID: 4268842115628676965, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_Name
@@ -11909,51 +13021,51 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4459276054199127196, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 5.475513
+      value: 6.0226994
       objectReference: {fileID: 0}
     - target: {fileID: 4459276054199127196, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -5.0889935
+      value: -10.189915
       objectReference: {fileID: 0}
     - target: {fileID: 4459276054199127196, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 3.9287174
+      value: 3.9516468
       objectReference: {fileID: 0}
     - target: {fileID: 4813491551377966329, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 19.92012
+      value: 17.696045
       objectReference: {fileID: 0}
     - target: {fileID: 4813491551377966329, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -42.163494
+      value: -3.5847738
       objectReference: {fileID: 0}
     - target: {fileID: 4813491551377966329, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 44.22822
+      value: 40.856464
       objectReference: {fileID: 0}
     - target: {fileID: 6752914869697381790, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -1.6634505
+      value: -0.13785768
       objectReference: {fileID: 0}
     - target: {fileID: 6752914869697381790, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -43.347855
+      value: 5.13066
       objectReference: {fileID: 0}
     - target: {fileID: 6752914869697381790, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 154.93507
+      value: -178.46361
       objectReference: {fileID: 0}
     - target: {fileID: 7773569849700112542, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -5.5835752
+      value: -6.185791
       objectReference: {fileID: 0}
     - target: {fileID: 7773569849700112542, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -4.970145
+      value: -10.036959
       objectReference: {fileID: 0}
     - target: {fileID: 7773569849700112542, guid: 081e4cb2e6bf44946b2d52934894ced1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -3.209899
+      value: -3.4503436
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16026,19 +17138,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.289978
+      value: -11.84
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.639999
+      value: -2.66
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 87.01001
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7198505
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalRotation.x
@@ -16046,7 +17158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.69412917
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalRotation.z
@@ -16058,11 +17170,83 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 87.916
       objectReference: {fileID: 0}
     - target: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2284190279434992114, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -15.300123
+      objectReference: {fileID: 0}
+    - target: {fileID: 2284190279434992114, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -3.565067
+      objectReference: {fileID: 0}
+    - target: {fileID: 2284190279434992114, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90.1073
+      objectReference: {fileID: 0}
+    - target: {fileID: 4718375014932441116, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.35628876
+      objectReference: {fileID: 0}
+    - target: {fileID: 4718375014932441116, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -12.205964
+      objectReference: {fileID: 0}
+    - target: {fileID: 4718375014932441116, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -1.2515681
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336923277308699851, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -13.631687
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336923277308699851, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 98.555855
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336923277308699851, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -119.20372
+      objectReference: {fileID: 0}
+    - target: {fileID: 7861867371939463657, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 5.3191423
+      objectReference: {fileID: 0}
+    - target: {fileID: 7861867371939463657, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -57.687386
+      objectReference: {fileID: 0}
+    - target: {fileID: 7861867371939463657, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 152.92247
+      objectReference: {fileID: 0}
+    - target: {fileID: 7983557178023575094, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -25.17984
+      objectReference: {fileID: 0}
+    - target: {fileID: 7983557178023575094, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -76.75096
+      objectReference: {fileID: 0}
+    - target: {fileID: 7983557178023575094, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 63.428383
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275423876938566983, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 15.604507
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275423876938566983, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 52.877663
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275423876938566983, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -159.60661
       objectReference: {fileID: 0}
     - target: {fileID: 8843409776323888670, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
       propertyPath: m_Name
@@ -16073,6 +17257,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+--- !u!95 &2944791824501339554 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8331059858408773334, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
+  m_PrefabInstance: {fileID: 6576344259330892660}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6305859396488914030 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 919077323718723354, guid: ef04cbe1f25446c49a05c10cd84f53f3, type: 3}
