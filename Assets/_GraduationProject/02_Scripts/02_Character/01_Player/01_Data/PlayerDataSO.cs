@@ -1,0 +1,91 @@
+
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 플레이어의 기본 데이터를 정의하는 ScriptableObject입니다.
+/// </summary>
+[CreateAssetMenu(fileName = "PlayerDatasSO", menuName = "Project/Player/PlayerDatasSO")]
+public class PlayerDataSO : ScriptableObject
+{
+    [Header("Health")]
+    public int MaxHealth = 100; // 최대 체력
+    public int MaxPotion = 3;
+    public int PotionHealAmount = 40;
+    public float FallThresholdY = -10.0f; // 추락 사망 Y축 임계값
+
+    [Header("Stamina")]
+    public float MaxStamina = 100;
+    public float StaminaRegenPerSecond = 5;
+
+    [Header("Movement")]
+    public float MoveSpeed = 5f; // 이동 속도
+    public float MoveAccelerationTime = 0.2f;   // 이동 가속 시간
+    public float MoveDecelerationnTime = 0.5f;  // 이동 감속 시간
+    public AnimationCurve MoveCurve;            // 이동 속도 곡선
+
+    [Space(10f)]
+    public float RotateSpeed = 5f; // 회전 속도
+    public float RotateAccelerationTime = 0.2f; // 회전 가속 시간
+    public float RotateDecelerationTime = 0.5f; // 회전 감속 시간
+    public AnimationCurve RotateCurve;        // 회전 속도 곡선
+
+    [Header("Dodge")]
+    public DodgeData DodgeConfig;   // 회피 설정
+
+    [Header("Combat")]
+    public LayerMask AttackLayerMask; // 공격 시 타겟 레이어 마스크
+
+    [Header("NormalAttack Setting")]
+    public List<PlayerAttackConfig> NormalAttackConfigList;         // 일반 공격 데이터 배열
+
+    [Header("HeavyAttack Setting")]
+    public List<PlayerAttackConfig> HeavyAttackConfigList;          // 강공격 데이터 배열 (스택 소모 시 사용)
+
+    [Header("Charge Setting")]
+    public float ChargeMoveSpeed;
+    public float ChargeRotateSpeed;
+    public float ChargeStamina;
+    public float MaxChargeTime = 5f;
+
+    [Header("Counter")]
+    public float CounterAngle;
+    public List<float> CounterStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
+    public StepData CounterKnockbackConfig; // 카운터 성공 시 넉백 설정
+    public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
+    public PlayerChargeConfig HeavyCounterAttackConfig;   // 차징 카운터 공격 설정
+    public List<float> CounterDamageMultiply;
+    public List<float> CounterStiffnessMultiply;
+    public List<float> ProjectileCounterAddedVelocity;  // 투사체 카운터 시 투사체에 적용하는 추가 이동속도
+    public int MaxCounterStack = 3;             // 최대 카운터 스택 수 
+    public float CounterStackDuration = 30f;    // 카운터 스택 지속 시간
+
+
+    [Header("KnockDown")]
+    public float KnockDownDuration = 10;    // 기절 지속시간
+    public float KnockdownStepDistance = 1.5f; // 기절 시 밀려나는 거리
+    public float KnockdownStepDuration = 0.2f; // 기절 시 밀려나는 시간
+    public AnimationCurve KnockdownStepCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 기절 시 밀려나는 곡선
+}
+
+/// <summary>
+/// 회피 데이터
+/// </summary>
+[Serializable]
+public class DodgeData
+{
+    public enum DodgeType
+    {
+        Roll = 0,
+        Step = 1
+    }
+
+    public string  AnimationStateName;  // 애니메이션 이름
+
+    public DodgeType Type;      // 회피 타입
+    public float StaminaAmount; // 스테미나 사용량
+    public bool IsInvincible;   // 무적 여부
+    public float Cooldown;      // 회피 쿨타임
+    public StepData MoveConfig; // 회피 움직임 설정
+}

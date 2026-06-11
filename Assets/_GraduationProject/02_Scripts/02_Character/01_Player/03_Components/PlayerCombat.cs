@@ -1,0 +1,698 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
+
+// Todo: 차지 레벨 사라짐에 따른 리펙토링 필요
+
+
+/// <summary>
+/// 플레이어의 전투 관련 로직을 담당하는 컴포넌트입니다.
+/// </summary>
+public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStateData>
+{
+    [Header("References")]
+    private PlayerEvents _events;   // 플레이어 이벤트
+    private PlayerData _data = null;
+    [SerializeField] private Transform _attackPoint;
+
+    [SerializeField] private OnSwingMissSO _onSwingMiss;  // 공격 미스 이벤트
+
+    [Header("Attack")]
+    [SerializeField] private LayerMask _attackLayerMask;
+    public event Action<IDamageable, DamageData> AttackEvent; // 공격 이벤트 (데미지 입힐 때마다 발생)
+
+    [Header("NormalAttack")]
+    [SerializeField] private int _normalAttackComboIndex = -1;    // 일반 공격 콤보 순서
+    public int NormalAttackComboIndex => _normalAttackComboIndex;
+
+    // 일반 공격 리스트
+    public List<RuntimeAttackConfig> NormalAttackConfigList => _data != null ? _data.NormalAttacks : new List<RuntimeAttackConfig>();
+
+    public float PlusNormalAttackSpeedMultiplier => 0f; // TODO: 스탯 시스템에 통합 필요시 Stat으로 변경
+
+    [Header("HeavyAttack")]
+    [SerializeField] private int _heavyAttackComboIndex = -1;
+    public int HeavyAttackComboIndex => _heavyAttackComboIndex;
+    public List<RuntimeAttackConfig> HeavyAttackConfigList => _data != null ? _data.HeavyAttacks : new List<RuntimeAttackConfig>();
+    
+    [SerializeField] private int _heavyAttackConsumedStacks = 0; // 이번 연속 강공격에서 소모한 총 스택 수
+
+    [Header("Charge")]
+    // 차지 스테미나
+    public float ChargeStamina => _data != null ? _data.ChargeStamina.Value : 5f;
+    // 최대 차지 시간
+    public float MaxChargeTime => _data != null ? _data.MaxChargeTime.Value : 5f;
+
+    [SerializeField] private bool _isCharge = false;      // 차지 여부
+    public bool IsCharge => _isCharge;
+
+    [Header("Counter")]
+    public RuntimeAttackConfig NormalCounterAttackConfig => _data.NormalCounterAttack;
+    public RuntimeChargeAttackConfig HeavyCounterAttackConfig => _data.HeavyCounterAttack;
+    public List<float> ProjectileCounterAddedVelocity => _data.BaseData.ProjectileCounterAddedVelocity;
+
+    public float CounterAngle => _data != null ? _data.BaseData.CounterAngle : 120;   // 상쇄 가능 각도
+
+    [SerializeField] private bool _isCounterable = false;          // 상쇄 가능 여부
+    [SerializeField] private HashSet<IParryable> _counterEnemySet = new HashSet<IParryable>();
+    [SerializeField] private HashSet<IDamageable> _damagedEnemySet = new HashSet<IDamageable>();
+
+    [SerializeField] private PlayerAbilityTagSO _counterSuccessTagSO; // 카운터 성공 시 슈퍼아머
+    public PlayerAbilityTagSO CounterSuccessTagSO => _counterSuccessTagSO;
+
+    public event Action CheckedProjectileCounter;
+
+    [Header("BattleState")]
+    [SerializeField] private EnemyStateEventSO _onEnemyStateChanged; // 적 상태 변경 이벤트
+    private HashSet<Enemy> _detectedEnemies = new HashSet<Enemy>(); // 현재 인식 중인 적 목록
+
+    [SerializeField] private float _lastBattleTime;  // 마지막 전투 시간
+    public float LastBattleTime => _lastBattleTime; // 마지막 전투 시간
+
+    [SerializeField] private bool _isBattleState;    // 전투 중인지 여부
+    public bool IsBattleState => _isBattleState; // 전투 상태 여부
+
+    private Coroutine _battleStateStopCoroutine; // 전투 상태 종료 코루틴
+    public event Action<bool> BattleStateChaged; // 전투 상태 변경 이벤트
+
+    [Header("Parry Stack")]
+    [SerializeField] private int _counterStacks = 0;
+    public int CounterStacks => _counterStacks;
+    public event Action<int> CounterStackChanged;
+
+    [SerializeField] private float _parryStackTimer = 0f;
+    public float ParryStackTimer => _parryStackTimer;
+
+
+    /// <summary>
+    /// 초기화 함수
+    /// </summary>
+    public void Initialize(PlayerController player)
+    {
+        _data = player.RuntimeData;
+        _events = player.Events;
+
+        _events.CounterWindowStarted += OnCounterWindowStarted;
+        _events.CounterWindowFinished += OnCounterWindowFinished;
+        _events.CounterSucceeded += OnCounterSucceeded;
+
+        _events.BeforeDamaged += OnBeforeDamaged;
+
+        if (_onEnemyStateChanged != null)
+        {
+            _onEnemyStateChanged.Subscribe(this);
+        }
+
+        // 이벤트 해제 구독
+        player.RegisterDisposable(this);
+
+        InitializeData(player.Data);
+
+        // 패링 스택 초기화
+        _counterStacks = 0;
+        _parryStackTimer = 0f;
+
+        // 씬 전환 시 전투 상태 초기화를 위한 이벤트 구독
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
+    }
+
+
+
+    private void Update()
+    {
+        // 패링 스택 타이머 관리
+        if (_counterStacks > 0)
+        {
+            _parryStackTimer -= Time.deltaTime;
+            if (_parryStackTimer <= 0)
+            {
+                // 스택 1개 감소 및 타이머 재설정
+                _counterStacks--;
+                CounterStackChanged?.Invoke(_counterStacks);
+                if (_counterStacks > 0)
+                {
+                    _parryStackTimer = _data.CounterStackDuration.Value;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 리소스 해제 함수
+    /// </summary>
+    public void Dispose()
+    {
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
+        _events.CounterWindowStarted -= OnCounterWindowStarted;
+        _events.CounterWindowFinished -= OnCounterWindowFinished;
+        _events.CounterSucceeded -= OnCounterSucceeded;
+
+        _events.BeforeDamaged -= OnBeforeDamaged;
+
+        if (_onEnemyStateChanged != null)
+        {
+            _onEnemyStateChanged.Unsubscribe(this);
+        }
+
+        if(_battleStateStopCoroutine != null)
+        {
+            StopCoroutine(_battleStateStopCoroutine);
+            _battleStateStopCoroutine = null;
+        }
+
+        BattleStateChaged = null;
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    /// <param name="data">플레이어 데이터</param>
+    private void InitializeData(PlayerDataSO data)
+    {
+        _attackLayerMask = data.AttackLayerMask;
+    }
+
+    //==========================================================================================================================
+    // BattleState =============================================================================================================
+    //==========================================================================================================================
+
+    #region BattleState
+
+    private void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene current, UnityEngine.SceneManagement.Scene next)
+    {
+        ClearBattleState();
+    }
+
+    /// <summary>
+    /// 강제로 전투 상태를 해제하고 적 인식 리스트를 초기화합니다.
+    /// </summary>
+    public void ClearBattleState()
+    {
+        _detectedEnemies.Clear();
+        SetBattleState(false);
+    }
+
+    /// <summary>
+    /// 전투 상태를 변경합니다.
+    /// </summary>
+    /// <param name="isBattleState">새로운 전투 상태</param>
+    public void SetBattleState(bool isBattleState)
+    {
+        if (_isBattleState == isBattleState) return;
+
+        _isBattleState = isBattleState;
+        _events.TriggerBattleStateChanged(_isBattleState);
+    }
+
+    /// <summary>
+    /// 전투 상태 변경 이벤트를 발생시킵니다. (외부 요청용 - 이제 적 상태 기반으로 자동 관리되지만 수동 트리거는 유지)
+    /// </summary>
+    public void TriggerBattleStateChanged(bool isBattleState)
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        SetBattleState(isBattleState);
+    }
+
+    /// <summary>
+    /// 적의 상태 변화에 따라 인식 중인 적 목록을 갱신하고 전투 상태를 판별합니다.
+    /// </summary>
+    public void OnEventTrigger(EnemyStateData data)
+    {
+        switch (data.stateType)
+        {
+            case EnemyStateType.Detected:
+            case EnemyStateType.SummonBoss:
+                if (data.enemy != null)
+                    _detectedEnemies.Add(data.enemy);
+                break;
+
+            case EnemyStateType.Lost:
+            case EnemyStateType.Dead:
+                if (data.enemy != null)
+                    _detectedEnemies.Remove(data.enemy);
+                break;
+        }
+
+        // 인식 중인 적이 한 마리라도 있으면 전투 상태로 판별
+        SetBattleState(_detectedEnemies.Count > 0);
+    }
+
+    #endregion
+
+
+    //==========================================================================================================================
+    // Attack ==================================================================================================================
+    //==========================================================================================================================
+
+    #region Attack
+    /// <summary>
+    /// 공격의 중심 위치를 계산합니다.
+    /// </summary>
+    /// <returns>공격 박스의 중심 위치</returns>
+    public Vector3 GetAttackCenter(PlayerAttackConfig attackData)
+    {
+        return _attackPoint.position + _attackPoint.forward * (attackData.AttackRadius.z / 2);
+    }
+
+    /// <summary>
+    /// 공격의 중심 위치를 계산합니다. (IRuntimeAttackConfig 인터페이스 사용)
+    /// </summary>
+    /// <returns>공격 박스의 중심 위치</returns>
+    public Vector3 GetAttackCenter(IRuntimeAttackConfig attackData)
+    {
+        return _attackPoint.position + _attackPoint.forward * (attackData.AttackRadius.z / 2);
+    }
+
+    /// <summary>
+    /// 공격을 실행합니다. (IRuntimeAttackConfig 인터페이스 사용)
+    /// </summary>
+    public Collider[] ExecuteAttack(IRuntimeAttackConfig attackData)
+    {
+        return ExecuteAttackInternal(attackData);
+    }
+
+    /// <summary>
+    /// 공격을 실행합니다. (커스텀 데미지 계산 지원)
+    /// </summary>
+    public Collider[] ExecuteAttackWithCustomDamage(IRuntimeAttackConfig attackData, Func<int, int> damageCalculator)
+    {
+        return ExecuteAttackInternal(attackData, damageCalculator);
+    }
+
+    /// <summary>
+    /// 내부 공격 실행 로직
+    /// </summary>
+    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, Func<int, int> damageCalculator = null)
+    {
+        Vector3 attackCenter = GetAttackCenter(data);
+        Vector3 halfExtents = data.AttackRadius / 2f;
+
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+
+        if (hitEnemies.Length > 0)
+        {
+            ProcessHitEnemiesInternal(data, hitEnemies, damageCalculator);
+        }
+        else
+        {
+            _onSwingMiss.Publish("OnSwingMiss");
+        }
+
+        return hitEnemies;
+    }
+
+    /// <summary>
+    /// 공격에 맞은 적들에게 데미지를 입힙니다. (내부용)
+    /// </summary>
+    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, Collider[] hitObjects, Func<int, int> damageCalculator = null)
+    {
+        // 범위 내의 ObjectTotem 중 가장 가까운 것 하나만 선택하기 위한 변수
+        ObjectTotem closestTotem = null;
+        float minDistance = float.MaxValue;
+
+        // 먼저 토템들을 전수 조사하여 가장 가까운 녀석을 찾습니다.
+        foreach (Collider obj in hitObjects)
+        {
+            if (obj.TryGetComponent<ObjectTotem>(out var totem))
+            {
+                float dist = Vector3.Distance(transform.position, obj.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closestTotem = totem;
+                }
+            }
+        }
+
+        foreach (Collider obj in hitObjects)
+        {
+            // 패링된 적일 경우 넘긴다.
+            if (obj.TryGetComponent<IParryable>(out var parryable) && IsEnemyCountered(parryable))
+            {
+                continue;
+            }
+
+            if(obj.TryGetComponent<IStiffness>(out  var stiffness))
+            {
+                stiffness.AddStiffness((int)data.Stiffness.Value, data.AttackType);
+            }
+
+            if (obj.TryGetComponent<IDamageable>(out var damageable))
+            {
+                // ObjectTotem인 경우, 가장 가까운 하나가 아니면 공격 대상에서 제외합니다.
+                if (obj.TryGetComponent<ObjectTotem>(out var currentTotem))
+                {
+                    if (currentTotem != closestTotem)
+                        continue;
+                }
+
+                // 계산 전 이벤트 발생 (Stat 객체 포함하여 데미지 변조 가능하게 함)
+                _events.TriggerBeforeDamageCalculate(obj.transform, data.Damage);
+
+                int runtimeDamage = (int)data.Damage.Value;
+                int finalDamage = (damageCalculator != null) ? damageCalculator(runtimeDamage) : runtimeDamage;
+
+                DamageData damage = new DamageData
+                {
+                    AttackerTransform = transform,
+                    AttackType = data.AttackType,
+                    DamageAmount = finalDamage,
+                    StiffnessAmount = 0,
+                    KnockbackCurve = data.KnockbackConfig.StepCurve,
+                    KnockbackDuration = data.KnockbackConfig.StepDuration,
+                    KnockbackForce = data.KnockbackConfig.StepDistance,
+                    DeathKnockbackDuration = data.DeathKnockbackConfig.StepDuration,
+                    DeathKnockbackForce = data.DeathKnockbackConfig.StepDistance,
+                    IsMagic = false
+                };
+
+                int regainAmount = Mathf.RoundToInt(finalDamage * data.Regain.Value);
+                _events.TriggerAttackRegained(regainAmount);
+
+                Attack(damageable, damage);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 데미지를 입을 수 있는 객체에 타격
+    /// </summary>
+    /// <param name="damageable">타격 받을 객체</param>
+    /// <param name="damageData">데미지 데이터</param>
+    public void Attack(IDamageable damageable, DamageData damageData)
+    {
+        if (!damageable.IsDead)
+        {
+            Debug.Log("공격 데미지: " + damageData.DamageAmount);
+            damageable.TakeDamage(damageData);
+            AttackEvent?.Invoke(damageable, damageData);
+        }
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // NormalAttack ============================================================================================================
+    //==========================================================================================================================
+
+    #region NormalAttack
+    /// <summary>
+    /// 모든 공격 상태를 강제로 취소하고 초기화합니다.
+    /// </summary>
+    public void CancelAttack()
+    {
+        ResetNormalAttackComboIndex();
+        ResetHeavyAttackComboIndex();
+        SetCharge(false);
+        ClearCounterEnemySet();
+        ClearCounterDamagedEnemy();
+        
+        if (_battleStateStopCoroutine != null)
+        {
+            // 전투 종료 타이머는 유지하되, 즉시 비전투로 가지는 않음
+        }
+    }
+
+    /// <summary>
+    /// 일반 공격 콤보 번호 증가
+    /// </summary>
+    public void IncreaseNormalAttackComboIndex()
+    {
+        _normalAttackComboIndex++;
+    }
+
+    /// <summary>
+    /// 일반 공격 콤보 리셋
+    /// </summary>
+    public void ResetNormalAttackComboIndex()
+    {
+        _normalAttackComboIndex = -1;
+    }
+
+    /// <summary>
+    /// 일반 공격 콤보 번호와 일반 공격 데이터 크기 비교 후
+    /// 일반 공격이 가능한지 여부 반환
+    /// </summary>
+    /// <returns>일반 공격 가능 여부</returns>
+    public bool CanNormalAttack()
+    {
+        return _normalAttackComboIndex < (NormalAttackConfigList.Count - 1);
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 증가
+    /// </summary>
+    public void IncreaseHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex++;
+    }
+
+    /// <summary>
+    /// 강공격 콤보 인덱스 리셋 (연속 공격 종료 시 호출)
+    /// </summary>
+    public void ResetHeavyAttackComboIndex()
+    {
+        _heavyAttackComboIndex = -1;
+        _heavyAttackConsumedStacks = 0;
+    }
+
+    /// <summary>
+    /// 강공격 가능 여부 확인 (패리 스택이 있고 최대 3콤보까지만 가능하도록 제한)
+    /// </summary>
+    public bool CanHeavyAttack()
+    {
+        // 패리 스택이 1개 이상 있어야 함
+        return _counterStacks > 0;
+    }
+
+
+    /// <summary>
+    /// 강공격 전용 최종 데미지 계산 (소모 스택 배율 적용)
+    /// </summary>
+    public int CalculateHeavyAttackDamage(int baseDamage)
+    {
+        // 1타: base * stackMultiplier
+        // 2타 이상: base * stackMultiplier * consumedStacks
+        int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage);
+        float damage = modifiedBase;
+        
+        if (_heavyAttackComboIndex > 0)
+        {
+            damage *= _heavyAttackConsumedStacks;
+        }
+
+        return Mathf.RoundToInt(damage);
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // Charge ==================================================================================================================
+    //==========================================================================================================================
+    
+    #region Charge
+    /// <summary>
+    /// 차지 레벨 증가
+    /// </summary>
+    public void SetCharge(bool isCharge)
+    {
+        if(isCharge != _isCharge)
+        {
+            _isCharge = isCharge;
+            _events.TriggerChargeCompleted(isCharge);
+        }
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // Counter =================================================================================================================
+    //==========================================================================================================================
+
+    #region Counter
+    /// <summary>
+    /// 상쇄 가능 여부 설정
+    /// </summary>
+    /// <param name="value">설정값</param>
+    public void SetCounterable(bool value)
+    {
+        _isCounterable = value;
+    }
+
+    /// <summary>
+    /// 카운터된 적 추가
+    /// </summary>
+    /// <param name="enemy">카운터된 적</param>
+    public void AddCounterEnemy(IParryable enemy)
+    {
+        _counterEnemySet.Add(enemy);
+    }
+
+    /// <summary>
+    /// 카운터된 적들 초기화
+    /// </summary>
+    public void ClearCounterEnemySet()
+    {
+        _counterEnemySet.Clear();   
+    }
+
+    /// <summary>
+    /// 패리 스택 소모 (강공격 시 호출)
+    /// </summary>
+    public void ConsumeCounterStack()
+    {
+        if (_counterStacks > 0)
+        {
+            _counterStacks--;
+            _heavyAttackConsumedStacks++;
+            _parryStackTimer = _counterStacks > 0 ? _data.CounterStackDuration.Value : 0f;
+            CounterStackChanged?.Invoke(_counterStacks);
+        }
+    }
+
+    /// <summary>
+    /// 카운터 스택을 1개 회복하고 타이머를 갱신합니다.
+    /// </summary>
+    public void AddCounterStack()
+    {
+        _counterStacks = Mathf.Min(_counterStacks + 1, (int)_data.MaxCounterStack.Value);
+        _parryStackTimer = _data.CounterStackDuration.Value;
+        CounterStackChanged?.Invoke(_counterStacks);
+    }
+
+    public void ResetCounterStack()
+    {
+        _counterStacks = 0;
+        _heavyAttackConsumedStacks = 0;
+        _parryStackTimer = 0f;
+        CounterStackChanged?.Invoke(_counterStacks);
+    }
+
+    /// <summary>
+    /// 이미 적이 상쇄되었는지 체크
+    /// </summary>
+    /// <returns>있는지 여부</returns>
+    public bool IsEnemyCountered(IParryable enemy)
+    {
+        if(_counterEnemySet.Contains(enemy))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 투사체 체크 이벤트 발행
+    /// </summary>
+    public void TriggerCheckedProjectileCounter()
+    {
+        CheckedProjectileCounter?.Invoke();
+    }
+
+    public void AddCounterDamagedEnemy(IDamageable enemy)
+    {
+        _damagedEnemySet.Add(enemy);
+    }
+
+    public void ClearCounterDamagedEnemy()
+    {
+        _damagedEnemySet.Clear();
+    }
+
+    public bool IsEnemyCounterDamaged(IDamageable enemy)
+    {
+        if(_damagedEnemySet.Contains(enemy))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    #endregion
+
+    //==========================================================================================================================
+    // Event Handler ===========================================================================================================
+    //==========================================================================================================================
+
+    /// <summary>
+    /// 카운터 검사 시작
+    /// </summary>
+    private void OnCounterWindowStarted()
+    {
+        SetCounterable(true);
+    }
+
+    /// <summary>
+    /// 카운터 검사 종료
+    /// </summary>
+    private void OnCounterWindowFinished()
+    {
+        SetCounterable(false);
+    }
+
+    private void OnCounterSucceeded(Transform transform, AttackType type)
+    {
+        AddCounterStack();
+    }
+
+    /// <summary>
+    /// 데미지 받기 전 이벤트 발행
+    /// </summary>
+    /// <param name="damageContext">받은 데미지 데이터</param>
+    private void OnBeforeDamaged(ref PlayerDamageContext damageContext)
+    {
+        DamageData damageData = damageContext.Data;
+
+        Vector3 toEnemy = damageData.AttackerTransform.transform.position - transform.position; // 적으로 가는 벡터 구하기
+        // 적을 마주보고 있는가
+        bool isFacingEnemy = Vector3.Angle(transform.forward, toEnemy) <= (CounterAngle / 2f);
+
+
+        // 공격 타입이 Heavy일 때 차징했거나, 공격 타입이 Normal인가
+        bool validateAttackType = (damageData.AttackType >= AttackType.Strong_1 && _isCharge) || damageData.AttackType <= AttackType.Normal_3;
+
+
+        // 카운터에 성공하면 데미지 데이터 전부 0으로 처리
+        if (_isCounterable && isFacingEnemy && validateAttackType && !damageData.IsMagic
+            && damageData.AttackerTransform.TryGetComponent<IParryable>(out IParryable parryable))
+        {
+            damageData.DamageAmount = 0;
+            damageData.StiffnessAmount = 0;
+            damageData.KnockbackDuration = 0;
+            damageData.KnockbackForce = 0;
+
+            AttackType counterType = AttackType.Normal_Counter;
+            if(_isCharge)
+            {
+                counterType = AttackType.Strong_Counter; 
+            }
+
+            // 카운터 성공 이벤트 발행
+            _events.TriggerCounterSucceeded(damageData.AttackerTransform, counterType);
+        }
+
+        damageContext.Data = damageData;
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_data != null)
+        {
+            foreach (var attackData in _data.NormalAttacks)
+            {
+                Gizmos.DrawWireCube(GetAttackCenter(attackData), attackData.AttackRadius);
+            }
+        }
+    }
+}
