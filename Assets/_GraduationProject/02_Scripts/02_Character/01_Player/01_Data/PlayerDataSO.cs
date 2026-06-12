@@ -52,7 +52,8 @@ public class PlayerDataSO : ScriptableObject
     [Header("Counter")]
     public float CounterAngle;
     public List<float> CounterStackDamageMultipliers = new List<float> { 1.0f, 1.1f, 1.2f, 1.3f }; // 스택별 데미지 배율 (0, 1, 2, 3스택)
-    public StepData CounterKnockbackConfig; // 카운터 성공 시 넉백 설정
+    public List<StepData> CounterKnockbackConfigs; // 카운터 성공 시 일반 넉백 설정
+    public List<StepData> StunDeathKnockbackConfigs; // 카운터/스턴 시 사망 넉백 설정
     public PlayerAttackConfig NormalCounterAttackConfig;            // 일반 카운터 공격 설정
     public PlayerChargeConfig HeavyCounterAttackConfig;   // 차징 카운터 공격 설정
     public List<float> CounterDamageMultiply;

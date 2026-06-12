@@ -133,15 +133,25 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             finalDamage = Mathf.Max(0, finalDamage);
             Debug.Log("최종 데미지: " + finalDamage);
 
+            StepData knockbackConfig = (p_owner.Data.CounterKnockbackConfigs != null && p_owner.Data.CounterKnockbackConfigs.Count > 1)
+                ? p_owner.Data.CounterKnockbackConfigs[1]
+                : p_AttackConfig.KnockbackConfig;
+
+            StepData deathKnockbackConfig = (p_owner.Data.StunDeathKnockbackConfigs != null && p_owner.Data.StunDeathKnockbackConfigs.Count > 1)
+                ? p_owner.Data.StunDeathKnockbackConfigs[1]
+                : p_AttackConfig.DeathKnockbackConfig;
+
             DamageData damage = new DamageData
             {
-                AttackerTransform = transform,
-                AttackType = AttackType.Normal_Counter,
+                AttackerTransform = p_owner.transform,
+                AttackType = AttackType.Strong_Counter,
                 DamageAmount = finalDamage,
                 StiffnessAmount = 0,
-                KnockbackCurve = p_AttackConfig.KnockbackConfig.StepCurve,
-                KnockbackDuration = p_AttackConfig.KnockbackConfig.StepDuration,
-                KnockbackForce = p_AttackConfig.KnockbackConfig.StepDistance,
+                KnockbackCurve = knockbackConfig.StepCurve,
+                KnockbackDuration = knockbackConfig.StepDuration,
+                KnockbackForce = knockbackConfig.StepDistance,
+                DeathKnockbackDuration = deathKnockbackConfig.StepDuration,
+                DeathKnockbackForce = deathKnockbackConfig.StepDistance,
             };
 
             int regainAmount = Mathf.RoundToInt(finalDamage * p_AttackConfig.Regain.Value);
