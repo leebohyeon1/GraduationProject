@@ -157,10 +157,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             _ragdollAnimator.User_SwitchFallState();
             if (damageData != null && damageData.Value.AttackerTransform != null)
             {
-                // 기존 넉백 코루틴과 동일하게 수평 방향을 기본으로 하되, 
-                // 렉돌이 바닥에 걸리지 않도록 아주 살짝만 위(0.15)로 띄웁니다.
-                Vector3 impactDir = (transform.position - damageData.Value.AttackerTransform.position).normalized;
-                impactDir.y = 0.15f; 
+                Vector3 impactDir = damageData.Value.AttackerTransform != null
+                    ? (transform.position - damageData.Value.AttackerTransform.position).normalized
+                    : -transform.forward;
+                impactDir.y = 0f;
                 impactDir.Normalize();
                 
                 float force = damageData.Value.DeathKnockbackForce;
