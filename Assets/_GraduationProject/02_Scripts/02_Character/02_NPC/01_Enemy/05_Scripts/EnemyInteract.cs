@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyInteract : MonoBehaviour,IInteractable
 {
@@ -15,6 +16,8 @@ public class EnemyInteract : MonoBehaviour,IInteractable
     [SerializeField] private GameObject spear;
     HpBar _hpBar;
 
+    [SerializeField] private UnityEvent _onInteract;
+
     private void Awake() {
         
         _hpBar = GetComponentInChildren<HpBar>(true);
@@ -23,8 +26,8 @@ public class EnemyInteract : MonoBehaviour,IInteractable
     {
         _isInteracted = false;
         _interactableType = InteractableType.NPC;
-        _hpBar?.gameObject.SetActive(false); // Ã¼·Â¹Ù ºñÈ°¼ºÈ­
-        if(spear == null) spear = transform.Find("a_Spear")?.gameObject;//ÀÚ½Ä ¿ÀºêÁ§Æ®¿¡¼­ Ã£±â
+        _hpBar?.gameObject.SetActive(false); // ì²´ë ¥ë°” ë¹„í™œì„±í™”
+        if(spear == null) spear = transform.Find("a_Spear")?.gameObject;//ìì‹ ì˜¤ë¸Œì íŠ¸ì—ì„œ ì°¾ê¸°
         if (spear != null) spear.SetActive(false);
     }
     public void Interact()
@@ -35,9 +38,10 @@ public class EnemyInteract : MonoBehaviour,IInteractable
         }
         Debug.Log($"[EnemyInteract] Interacted with {name}");
         _isInteracted = true;
-        GetComponent<BoxCollider>().enabled = false; // »óÈ£ÀÛ¿ë ÈÄ Æ®¸®°Å ºñÈ°¼ºÈ­
-        _hpBar?.gameObject.SetActive(true); // Ã¼·Â¹Ù È°¼ºÈ­
+        GetComponent<BoxCollider>().enabled = false; // ìƒí˜¸ì‘ìš© í›„ íŠ¸ë¦¬ê±° ë¹„í™œì„±í™”
+        _hpBar?.gameObject.SetActive(true); // ì²´ë ¥ë°” í™œì„±í™”
         if(spear != null) spear.SetActive(true);
+        _onInteract?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)
