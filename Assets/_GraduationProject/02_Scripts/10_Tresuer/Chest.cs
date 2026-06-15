@@ -22,15 +22,6 @@ public class Chest : MonoBehaviour, IInteractable
 
     public InteractableType InteractableType => _interactableType;
 
-    private void OnValidate()
-    {
-        if (string.IsNullOrEmpty(_chestID))
-        {
-            SetRandomID();
-            Debug.Log($"{gameObject.name}에 새로운 고유 ID가 부여되었습니다!");
-        }
-    }
-
     private void Start()
     {
         if (DataManager.Instance != null)
