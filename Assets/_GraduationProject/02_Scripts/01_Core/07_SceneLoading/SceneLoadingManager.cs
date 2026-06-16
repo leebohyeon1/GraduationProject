@@ -169,6 +169,7 @@ public class SceneLoadingManager : MonoBehaviour
     private IEnumerator TeleportCoroutine(SceneDataSO targetScene)
     {
         IsTeleporting = true;
+        Application.backgroundLoadingPriority = ThreadPriority.High;
 
         // 1. UI 세팅 및 페이드 인 (화면 까맣게)
         if (_tipText != null)
@@ -273,6 +274,7 @@ public class SceneLoadingManager : MonoBehaviour
         _loadingCanvasGroup.blocksRaycasts = false;
 
         IsTeleporting = false;
+        Application.backgroundLoadingPriority = ThreadPriority.Normal;
     }
 
     private IEnumerator InitialTeleport(SceneDataSO targetScene)
