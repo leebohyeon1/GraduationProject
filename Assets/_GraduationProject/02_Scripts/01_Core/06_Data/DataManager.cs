@@ -91,8 +91,8 @@ public class DataManager : MonoBehaviour
     /// <param name="pause">멈춘 여부</param>
     private void OnApplicationPause(bool pause)
     {
-        // 멈춘 상태면 저장
-        if (pause  && SceneLoadingManager.Instance.IsTeleporting)
+        // 멈춘 상태면 저장 (텔레포트 중이 아닐 때만)
+        if (pause && !SceneLoadingManager.Instance.IsTeleporting)
         {
             SaveGame();
         }

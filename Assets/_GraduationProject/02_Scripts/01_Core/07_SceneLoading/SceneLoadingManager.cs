@@ -262,6 +262,12 @@ public class SceneLoadingManager : MonoBehaviour
         // 플레이어 스폰 위치 처리
         HandlePlayerSpawn(targetScene);
 
+        // 오토 세이브: 씬 이동을 완료하고 플레이어가 배치된 시점의 데이터를 확실하게 저장합니다.
+        if (DataManager.Instance != null && targetScene.SceneName != "Title")
+        {
+            DataManager.Instance.SaveGame();
+        }
+
         // 4. 페이드 아웃 (화면 밝게)
         fadeTimer = 0f;
         while (fadeTimer < _fadeDuration)
@@ -319,6 +325,12 @@ public class SceneLoadingManager : MonoBehaviour
 
         // 플레이어 스폰 위치 처리
         HandlePlayerSpawn(targetScene);
+
+        // 오토 세이브: 씬 이동을 완료하고 플레이어가 배치된 시점의 데이터를 확실하게 저장합니다.
+        if (DataManager.Instance != null && targetScene.SceneName != "Title")
+        {
+            DataManager.Instance.SaveGame();
+        }
 
         IsTeleporting = false;
     }
