@@ -49,6 +49,8 @@ public class PlayerQuestUI : PlayerUIBase
 
     private void OnQuestAccepted(QuestData data)
     {
+        if (this == null || _questCanvas == null) return;
+
         _questCanvas.alpha = 0.0f;
         _questName.text = data.Title;
         _questDiscriptionSummary.text = data.GoalText;
