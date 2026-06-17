@@ -131,6 +131,8 @@ public abstract class BaseAttackNode : Node
 
         InitialMovementSetup();
         SpeedUp();
+
+        Debug.Log($"[Attack Node Enter] {runner.name} entered attack node for {_data.AttackName}");
     }
     private void SpeedRecovery()
     {

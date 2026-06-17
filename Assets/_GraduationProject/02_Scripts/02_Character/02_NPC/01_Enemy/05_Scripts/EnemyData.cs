@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class EnemyData
 {
-    public Enemy.Enemy_Type EnemyType { get; set; }
-    public Enemy.MonsterName MonsterName { get; set; }
     public Vector3 StartPosition { get; set; }
     public Transform LaunchPoint { get; set; }  
     private int _currentStiffness = 4;
@@ -30,7 +28,6 @@ public class EnemyData
         
         return new EnemyData
         {
-            EnemyType = enemy.EnemyType,
             StartPosition = enemy.transform.position,
             Player = GameObject.FindFirstObjectByType<PlayerController>(),
             LaunchPoint = enemy.transform.Find("LaunchPoint"), // 또는 Inspector에서 설정
@@ -49,8 +46,6 @@ public class EnemyData
     {
         return new EnemyData
         {
-            EnemyType = this.EnemyType,
-            MonsterName = this.MonsterName,
             StartPosition = this.StartPosition,
             LaunchPoint = this.LaunchPoint,
             CurrentStiffness = this.CurrentStiffness,
