@@ -47,6 +47,20 @@ MonoBehaviour:
   position: {x: 1022, y: 505}
   heatRange: 1
   _attackRange: 3
+--- !u!114 &-6392910978480185069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39db677a9cd5bf4e885db69ff350e3b, type: 3}
+  m_Name: Reset
+  m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
+  position: {x: 256, y: 65}
+  subTreeToRun: {fileID: 11400000, guid: 0a030f0107013494da08fead4ff3f566, type: 2}
 --- !u!114 &-5383055750570203492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +88,7 @@ MonoBehaviour:
   m_Name: Interactable_Idle
   m_EditorClassIdentifier: Assembly-CSharp::RunSubTreeNode
   position: {x: 256, y: 217}
-  subTreeToRun: {fileID: 11400000, guid: a70390220ab2fa1419930a413f5a0035, type: 2}
+  subTreeToRun: {fileID: 11400000, guid: f982b5bce427cde43b1ac1729578f3c3, type: 2}
 --- !u!114 &-863582271964667917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +177,7 @@ MonoBehaviour:
   nodes:
   - {fileID: -271646732981050272}
   - {fileID: 8652868687025397463}
+  - {fileID: -6392910978480185069}
   - {fileID: 671970732127053245}
   - {fileID: -3201454619936590250}
   services:

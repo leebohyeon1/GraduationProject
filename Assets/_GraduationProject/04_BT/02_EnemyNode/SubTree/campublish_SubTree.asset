@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
   position: {x: 83, y: -360}
   nodes:
-  - {fileID: -6600442185464543193}
   - {fileID: 2592110606629364691}
-  - {fileID: 0}
   - {fileID: 7582284022397784408}
   services: []
 --- !u!114 &-7007068429772297110
@@ -56,25 +54,6 @@ MonoBehaviour:
   - {fileID: 6549698171419845507}
   - {fileID: -2750809515511143027}
   services: []
---- !u!114 &-6600442185464543193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0057f790137aab04da13b622bd3be46c, type: 3}
-  m_Name: Condition_Blackboard Enum Key Check
-  m_EditorClassIdentifier: Assembly-CSharp::Condition_BlackboardEnumKeyCheck
-  position: {x: 257, y: -790}
-  exceptCondition:
-    key: 
-  stateCondition:
-    Key: CurrentStatus
-    Operator: 1
-    TargetState: 3
 --- !u!114 &-5564501409827605979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d004e4bd0316c1e45aa6e7894bbe3a0b, type: 3}
   m_Name: Condition_Is Combat
   m_EditorClassIdentifier: Assembly-CSharp::Condition_IsCombat
-  position: {x: 257, y: -713}
+  position: {x: 257, y: -465}
   exceptCondition:
     key: 
   noCombatDuration: 3
@@ -262,6 +241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Selector
   position: {x: 257, y: -360}
   nodes:
+  - {fileID: 7991801066834429390}
   - {fileID: -6760136662301184371}
   - {fileID: 2008178909787335439}
   services: []
@@ -277,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045c35b038d1e924a804a222e87a1513, type: 3}
   m_Name: "\uCEF7\uC52C \uC81C\uC678"
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorTree.Sequence
-  position: {x: 517, y: -860}
+  position: {x: 517, y: -859}
   nodes:
   - {fileID: 7057705476003603023}
   - {fileID: 1676284116092532426}
