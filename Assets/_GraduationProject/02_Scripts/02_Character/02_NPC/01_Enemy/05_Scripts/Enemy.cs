@@ -122,10 +122,6 @@ public class Enemy : MonoBehaviour
         set => Data.GroupAi = value;
     }
 
-    /// <summary>
-    /// 몬스터의 행동 타입입니다.
-    /// </summary>
-    public Enemy_Type EnemyType { get; private set; }    
 
     /// <summary>
     /// 초기 스폰 위치를 반환합니다.
@@ -159,26 +155,6 @@ public class Enemy : MonoBehaviour
     private string monsterId => GetComponent<MonsterSavePersistence>().MonsterId;
     public string MonsterId => monsterId;
 
-    /// <summary>
-    /// 몬스터 행동 성향 정의
-    /// </summary>
-    public enum Enemy_Type
-    {
-        Brave,
-        Cowardly,
-        Cunning
-    }
-
-    /// <summary>
-    /// 몬스터 종류 정의
-    /// </summary>
-    public enum MonsterName
-    {
-        Brave,
-        Coward,
-        Cunning,
-        Fire
-    }
     bool _getPlayerCoin = false;
     protected void Awake()
     {
