@@ -75,26 +75,6 @@ namespace INab.Dissolve
         [Tooltip("Materials the effect will be performed on in inverted manner.")]
         public List<Material> materialsInverted = new List<Material>();
 
-        private const string VfxRendererTypeName = "UnityEngine.VFX.VFXRenderer";
-        private static readonly int DissolveAmountId = Shader.PropertyToID("_DissolveAmount");
-
-        private readonly Dictionary<Material, List<RendererMaterialBinding>> rendererBindings = new Dictionary<Material, List<RendererMaterialBinding>>();
-        private readonly List<RuntimeMaterialSet> runtimeMaterialSets = new List<RuntimeMaterialSet>();
-        private MaterialPropertyBlock propertyBlock;
-
-        private sealed class RendererMaterialBinding
-        {
-            public Renderer Renderer;
-            public int MaterialIndex;
-        }
-
-        private sealed class RuntimeMaterialSet
-        {
-            public Renderer Renderer;
-            public Material[] OriginalMaterials;
-            public Material[] RuntimeMaterials;
-        }
-
 
         #region VFXGraph
         // Delegates used with visual effect graph
@@ -110,16 +90,6 @@ namespace INab.Dissolve
         private void OnEnable()
         {
             currentState = initialState;
-        }
-
-        private void Awake()
-        {
-            propertyBlock = new MaterialPropertyBlock();
-        }
-
-        private void OnDestroy()
-        {
-            ReleaseRuntimeMaterials();
         }
 
         public void Start()
@@ -179,7 +149,18 @@ namespace INab.Dissolve
         /// </summary>
         public void FindMaterialsInChildren()
         {
-            FindMaterials(GetComponentsInChildren<Renderer>());
+            materials.Clear();
+            foreach(var item in GetComponentsInChildren<Renderer>())
+            {
+                if (Application.isPlaying)
+                {
+                    materials.AddRange(item.materials);
+                }
+                else
+                {
+                    materials.AddRange(item.sharedMaterials);
+                }
+            }
         }
 
         /// <summary>
@@ -187,7 +168,19 @@ namespace INab.Dissolve
         /// </summary>
         public void FindMaterials()
         {
-            FindMaterials(GetComponents<Renderer>());
+            materials.Clear();
+            foreach (var item in GetComponents<Renderer>())
+            {
+                if (Application.isPlaying)
+                {
+                    materials.AddRange(item.materials);
+                }
+                else
+                {
+                    materials.AddRange(item.sharedMaterials);
+                }
+
+            }
         }
 
         /// <summary>
@@ -241,14 +234,18 @@ namespace INab.Dissolve
         {
             foreach (var material in materials)
             {
-                ChangeDissolveAmount(material, MaterialsDissolveValue);
+                // Change material value
+                material.SetFloat("_DissolveAmount", MaterialsDissolveValue);
+
+                // Call event for visual effect
+                if (OnPropertyUpdate != null) OnPropertyUpdate(MaterialsDissolveValue);
             }
 
             foreach (var material in materialsInverted)
             {
                 // Change material value
                 // Do not call Dissolver VFX update event
-                SetDissolveAmount(material, MaterialsInvertedDissolveValue);
+                material.SetFloat("_DissolveAmount", MaterialsInvertedDissolveValue);
             }
         }
 
@@ -268,117 +265,11 @@ namespace INab.Dissolve
                 return;
             }
 
-            SetDissolveAmount(material, dissolveAmount);
+            // Change material value
+            material.SetFloat("_DissolveAmount", dissolveAmount);
 
             // Call event for visual effect
             if (OnPropertyUpdate != null) OnPropertyUpdate(dissolveAmount);
-        }
-
-        private void FindMaterials(Renderer[] renderers)
-        {
-            ReleaseRuntimeMaterials();
-            rendererBindings.Clear();
-            materials.Clear();
-
-            foreach (Renderer renderer in renderers)
-            {
-                if (renderer == null || renderer.GetType().FullName == VfxRendererTypeName) continue;
-
-                Material[] sharedMaterials = renderer.sharedMaterials;
-                if (Application.isPlaying && useAutomaticKeywords)
-                {
-                    Material[] runtimeMaterials = CreateRuntimeMaterials(sharedMaterials);
-                    renderer.sharedMaterials = runtimeMaterials;
-                    runtimeMaterialSets.Add(new RuntimeMaterialSet
-                    {
-                        Renderer = renderer,
-                        OriginalMaterials = sharedMaterials,
-                        RuntimeMaterials = runtimeMaterials
-                    });
-                    materials.AddRange(runtimeMaterials);
-                    continue;
-                }
-
-                for (int materialIndex = 0; materialIndex < sharedMaterials.Length; materialIndex++)
-                {
-                    Material material = sharedMaterials[materialIndex];
-                    if (material == null) continue;
-
-                    materials.Add(material);
-                    if (!Application.isPlaying) continue;
-
-                    if (!rendererBindings.TryGetValue(material, out List<RendererMaterialBinding> bindings))
-                    {
-                        bindings = new List<RendererMaterialBinding>();
-                        rendererBindings.Add(material, bindings);
-                    }
-
-                    bindings.Add(new RendererMaterialBinding
-                    {
-                        Renderer = renderer,
-                        MaterialIndex = materialIndex
-                    });
-                }
-            }
-        }
-
-        private static Material[] CreateRuntimeMaterials(Material[] sourceMaterials)
-        {
-            Material[] runtimeMaterials = new Material[sourceMaterials.Length];
-            for (int i = 0; i < sourceMaterials.Length; i++)
-            {
-                Material source = sourceMaterials[i];
-                runtimeMaterials[i] = source == null ? null : new Material(source);
-            }
-
-            return runtimeMaterials;
-        }
-
-        private void SetDissolveAmount(Material material, float dissolveAmount)
-        {
-            if (material == null) return;
-
-            if (!rendererBindings.TryGetValue(material, out List<RendererMaterialBinding> bindings))
-            {
-                material.SetFloat(DissolveAmountId, dissolveAmount);
-                return;
-            }
-
-            foreach (RendererMaterialBinding binding in bindings)
-            {
-                if (binding.Renderer == null) continue;
-
-                binding.Renderer.GetPropertyBlock(propertyBlock, binding.MaterialIndex);
-                propertyBlock.SetFloat(DissolveAmountId, dissolveAmount);
-                binding.Renderer.SetPropertyBlock(propertyBlock, binding.MaterialIndex);
-            }
-        }
-
-        private void ReleaseRuntimeMaterials()
-        {
-            foreach (RuntimeMaterialSet materialSet in runtimeMaterialSets)
-            {
-                if (materialSet.Renderer != null)
-                {
-                    materialSet.Renderer.sharedMaterials = materialSet.OriginalMaterials;
-                }
-
-                foreach (Material material in materialSet.RuntimeMaterials)
-                {
-                    if (material == null) continue;
-
-                    if (Application.isPlaying)
-                    {
-                        Destroy(material);
-                    }
-                    else
-                    {
-                        DestroyImmediate(material);
-                    }
-                }
-            }
-
-            runtimeMaterialSets.Clear();
         }
 
 
