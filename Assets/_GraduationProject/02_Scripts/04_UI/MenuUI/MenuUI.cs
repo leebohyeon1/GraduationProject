@@ -140,6 +140,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
     public void OnEventTrigger(PlayerController player)
     {
         _playerController = player;
+        _menuUITopBar.BindPlayer(player);
     }
 
     private void OnEscape()
