@@ -85,6 +85,7 @@ public class Task_TristanaJump : BaseAttackNode
             ai.canMove = false;
             ai.isStopped = true;
         }
+        Debug.Log($"Starting jump attack towards {_targetPos}. Distance: {distance}, Jump Distance: {jumpDist} , EnemyName : {runner.name}");
     }
 
     protected override void UpdateMovement()
