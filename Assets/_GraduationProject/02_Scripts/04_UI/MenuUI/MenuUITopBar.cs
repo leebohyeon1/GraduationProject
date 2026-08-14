@@ -5,6 +5,7 @@ using UnityEngine;
 public class MenuUITopBar : MenuUIComponent 
 {
     private MenuUI _menu;
+    private PlayerMoney _playerMoney;
 
     [Header("Name")]
     [SerializeField] private TMP_Text _menuNameText;
@@ -16,7 +17,6 @@ public class MenuUITopBar : MenuUIComponent
     [SerializeField] private List<RectTransform> _pageList;
 
     [Header("Money")]
-    [SerializeField] private TMP_Text _specialMoneyText;
     [SerializeField] private TMP_Text _moneyText;
 
     public override void Initialize(MenuUI menu)
@@ -29,8 +29,28 @@ public class MenuUITopBar : MenuUIComponent
 
     private void OnEnable()
     {
-        // _specialMoneyText.text = _menu.Player.Money.CurrentSpecialMoney.ToString();
-        _moneyText.text = _menu.Player.Money.CurrentMoney.ToString();
+        if (_playerMoney != null)
+        {
+            UpdateMoneyText(_playerMoney.CurrentMoney);
+        }
+    }
+
+    public void BindPlayer(PlayerController player)
+    {
+        if (_playerMoney != null)
+        {
+            _playerMoney.MoneyChanged -= UpdateMoneyText;
+        }
+
+        _playerMoney = player != null ? player.Money : null;
+
+        if (_playerMoney == null)
+        {
+            return;
+        }
+
+        _playerMoney.MoneyChanged += UpdateMoneyText;
+        UpdateMoneyText(_playerMoney.CurrentMoney);
     }
 
     public override void Dispose()
@@ -38,6 +58,17 @@ public class MenuUITopBar : MenuUIComponent
         base.Dispose();
 
         _menu.UIComponentUpdated -= OnUIComponentUpdated;
+
+        if (_playerMoney != null)
+        {
+            _playerMoney.MoneyChanged -= UpdateMoneyText;
+            _playerMoney = null;
+        }
+    }
+
+    private void UpdateMoneyText(int currentMoney)
+    {
+        _moneyText.text = currentMoney.ToString();
     }
 
     public void OnUIComponentUpdated(int currentIndex)
