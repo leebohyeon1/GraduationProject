@@ -40,10 +40,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void InitializeHealth(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
+        int previousHealth = curHealth;
         _owner = owner;
         _maxHealth = enemyStat.Maxhealth;
         _maxHealth = (int)(_maxHealth * (statMultiplier?.HealthMultiply ?? 1f));
         curHealth = _maxHealth;
+
+        if (previousHealth != curHealth)
+        {
+            OnHealthChanged?.Invoke(previousHealth, curHealth);
+        }
         
         if (_owner.animator != null)
         {
