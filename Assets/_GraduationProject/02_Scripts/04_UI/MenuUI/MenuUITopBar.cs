@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
 public class MenuUITopBar : MenuUIComponent 
 {
     private MenuUI _menu;
+    private PlayerMoney _playerMoney;
 
     [Header("Name")]
     [SerializeField] private TMP_Text _menuNameText;
@@ -19,18 +21,53 @@ public class MenuUITopBar : MenuUIComponent
     [SerializeField] private TMP_Text _specialMoneyText;
     [SerializeField] private TMP_Text _moneyText;
 
+    [Header("Money Animation")]
+    [SerializeField] private float _moneyCountDuration = 0.5f;
+    [SerializeField] private float _moneyPunchDuration = 0.3f;
+    [SerializeField] private Vector3 _moneyPunchScale = new Vector3(0.15f, 0.15f, 0.15f);
+
+    private int _displayedMoney;
+    private Vector3 _moneyTextOriginScale;
+    private bool _isInitialized;
+
     public override void Initialize(MenuUI menu)
     {
         base.Initialize(menu);
         _menu = menu;
+        _moneyTextOriginScale = _moneyText.rectTransform.localScale;
+        _isInitialized = true;
 
         _menu.UIComponentUpdated += OnUIComponentUpdated;
+
+        if (_menu.Player != null)
+        {
+            BindPlayer(_menu.Player);
+        }
     }
 
-    private void OnEnable()
+    public void BindPlayer(PlayerController player)
     {
-        // _specialMoneyText.text = _menu.Player.Money.CurrentSpecialMoney.ToString();
-        _moneyText.text = _menu.Player.Money.CurrentMoney.ToString();
+        DOTween.Kill(this);
+
+        if (_isInitialized)
+        {
+            _moneyText.rectTransform.localScale = _moneyTextOriginScale;
+        }
+
+        if (_playerMoney != null)
+        {
+            _playerMoney.MoneyChanged -= AnimateMoneyText;
+        }
+
+        _playerMoney = player != null ? player.Money : null;
+
+        if (_playerMoney == null)
+        {
+            return;
+        }
+
+        _playerMoney.MoneyChanged += AnimateMoneyText;
+        SetMoneyText(_playerMoney.CurrentMoney);
     }
 
     public override void Dispose()
@@ -38,6 +75,42 @@ public class MenuUITopBar : MenuUIComponent
         base.Dispose();
 
         _menu.UIComponentUpdated -= OnUIComponentUpdated;
+
+        if (_playerMoney != null)
+        {
+            _playerMoney.MoneyChanged -= AnimateMoneyText;
+            _playerMoney = null;
+        }
+
+        DOTween.Kill(this);
+        _moneyText.rectTransform.localScale = _moneyTextOriginScale;
+    }
+
+    private void AnimateMoneyText(int money)
+    {
+        DOTween.Kill(this);
+        _moneyText.rectTransform.localScale = _moneyTextOriginScale;
+
+        int startMoney = _displayedMoney;
+        DOTween.To(
+                () => startMoney,
+                value => SetMoneyText(value),
+                money,
+                _moneyCountDuration)
+            .SetEase(Ease.OutQuad)
+            .SetUpdate(true)
+            .SetId(this);
+
+        _moneyText.rectTransform
+            .DOPunchScale(_moneyPunchScale, _moneyPunchDuration)
+            .SetUpdate(true)
+            .SetId(this);
+    }
+
+    private void SetMoneyText(int money)
+    {
+        _displayedMoney = money;
+        _moneyText.text = money.ToString();
     }
 
     public void OnUIComponentUpdated(int currentIndex)
