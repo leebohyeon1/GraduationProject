@@ -43,6 +43,8 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
 
         // 이벤트 등록
         InputDeviceDetector.Instance.InputDeviceChanged.AddListener(OnInputDeviceChanged);
+        // 감지기의 Awake에서 이미 결정된 초기 장치 상태도 즉시 동기화합니다.
+        OnInputDeviceChanged(InputDeviceDetector.Instance.CurrentInputDevice);
 
         // 이벤트 구독
         _inputReader.MoveEvent += OnMove;
