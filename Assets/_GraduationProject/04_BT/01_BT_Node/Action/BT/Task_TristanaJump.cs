@@ -68,14 +68,26 @@ public class Task_TristanaJump : BaseAttackNode
         Vector3 playerPos = runner.player.transform.position;
         Vector3 direction = (playerPos - _startPos);
         direction.y = 0;
-        float distance = direction.magnitude - TargetOffset;
+        float distance = Mathf.Max(0f, direction.magnitude - Mathf.Max(0f, TargetOffset));
         direction.Normalize();
 
         float jumpDist = Mathf.Min(distance, jumpRange);
         Vector3 rawTarget = _startPos + (direction * jumpDist);
 
         NNInfo info = AstarPath.active.GetNearest(rawTarget, NNConstraint.Walkable);
-        _targetPos = info.node != null ? info.position : rawTarget;
+        // A distant or elevated navigation node must not redirect a jump away
+        // from its player-facing landing point (the gate arena has both).
+        Vector3 nodeOffset = info.position - rawTarget;
+        nodeOffset.y = 0;
+        _targetPos = info.node != null && nodeOffset.sqrMagnitude <= 4f
+            && Mathf.Abs(info.position.y - _startPos.y) <= groundCheckHeight
+            ? info.position : rawTarget;
+        LayerMask landingMask = groundLayer.value != 0 ? groundLayer : LayerMask.GetMask("Ground");
+        landingMask &= ~LayerMask.GetMask("Player");
+        if (Physics.Raycast(_targetPos + Vector3.up * groundCheckHeight, Vector3.down,
+            out RaycastHit landingHit, groundCheckHeight + groundCheckDistance,
+            landingMask, QueryTriggerInteraction.Ignore))
+            _targetPos.y = landingHit.point.y;
         _isJumping = true;
         _nodeEntryTime = Time.time; // ?먰봽 ?쒖옉 ?쒖젏 由ъ뀑
         

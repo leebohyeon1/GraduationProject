@@ -28,6 +28,7 @@ public class MaterialOpacityChanger : MonoBehaviour
     /// <param name="opacity">변경할 투명도 값 (일반적으로 0.0 ~ 1.0)</param>
     public void SetOpacity(float opacity)
     {
+        if (!_renderer) _renderer = GetComponent<Renderer>();
         if (_renderer != null)
         {
             if (_targetSpecificMaterial)

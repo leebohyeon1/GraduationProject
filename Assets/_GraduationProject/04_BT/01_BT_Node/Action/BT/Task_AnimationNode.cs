@@ -17,12 +17,14 @@ public class Task_AnimationNode : Node
 
     private bool _isAnimFinished;
     private float _endTime;
+    private float _startedAt;
 
     private bool _didSetLock = false;
     public override void OnEnter()
     {
         base.OnEnter();
         _isAnimFinished = false;
+        _startedAt = Time.time;
 
         // 1. ?좊땲硫붿씠???좏샇 珥덇린??(?댁쟾 ?됰룞 ?붿긽 ?쒓굅)
         if (Handler != null) Handler.ResetAllFlags();
@@ -37,7 +39,9 @@ public class Task_AnimationNode : Node
         // 蹂댁뒪?꾩쓽 寃쎌슦 ?뱀젙 ?곹깭?먯꽌 ?꾩씠?섍굅??猷⑦봽瑜??덉텧?????몃━嫄곌? ??愿由ы븯湲??쎌뒿?덈떎.
         if (runner != null && !string.IsNullOrEmpty(triggerName))
         {
-            runner.AnimationEvent(triggerName);
+            if (triggerName == "Phase_2" && runner.animator.HasState(0, Animator.StringToHash("Base Layer.Phase_2")))
+                runner.animator.Play("Base Layer.Phase_2", 0, 0);
+            else runner.AnimationEvent(triggerName);
             runner._stateController.SetLock(true); // ?됰룞 ?꾩쨷 ?ㅻⅨ ?됰룞???쇱뼱?ㅼ? 紐삵븯?꾨줉 ?좉툑
             _didSetLock = true;
         }
@@ -51,7 +55,9 @@ public class Task_AnimationNode : Node
         // ?곹깭 1: ?좊땲硫붿씠??醫낅즺(FinishAction ?대깽?? ?湲?
         if (!_isAnimFinished)
         {
-            if (Handler != null && Handler.IsActionFinished)
+            var state = runner.animator.GetCurrentAnimatorStateInfo(0);
+            bool phaseFinished = triggerName == "Phase_2" && Time.time > _startedAt + 0.1f && state.IsName("Phase_2") && state.normalizedTime >= 1f;
+            if (triggerName == "Phase_2" ? phaseFinished : Handler != null && Handler.IsActionFinished)
             {
                 _isAnimFinished = true;
                 _endTime = Time.time;

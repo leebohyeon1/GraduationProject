@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +22,7 @@ public class HpBar : MonoBehaviour
 
     // DOTween을 위한 현재 잔상 값 저장용 변수
     private float _currentBackFill = 1f;
+    private int _displayedHealth = -1;
     private float _currentStiffnessBackFill = 0f;
 
     private void Start()
@@ -30,6 +31,8 @@ public class HpBar : MonoBehaviour
 
         _propBlock = new MaterialPropertyBlock();
 
+        var owner = GetComponentInParent<EnemyHealth>();
+        if (owner != null) _object = owner.gameObject;
         if (_object != null)
         {
             _damageable = _object.GetComponent<IDamageable>();
@@ -43,10 +46,10 @@ public class HpBar : MonoBehaviour
                 float initialRatio = (float)_damageable.CurrentHealth / _damageable.MaxHealth;
                 _currentBackFill = initialRatio;
 
-                _hpRenderer.GetPropertyBlock(_propBlock);
+                _hpRenderer.GetPropertyBlock(_propBlock, 0);
                 _propBlock.SetFloat(_frontFillId, initialRatio);
                 _propBlock.SetFloat(_backFillId, initialRatio);
-                _hpRenderer.SetPropertyBlock(_propBlock);
+                _hpRenderer.SetPropertyBlock(_propBlock, 0);
             }
 
             if (_monStiffness != null)
@@ -59,10 +62,10 @@ public class HpBar : MonoBehaviour
                     float stiffnessRatio = (float)_monStiffness.CurrentStiffness / _monStiffness.StiffnessThreshold;
                     _currentStiffnessBackFill = stiffnessRatio;
 
-                    _stiffnessRenderer.GetPropertyBlock(_propBlock);
+                    _stiffnessRenderer.GetPropertyBlock(_propBlock, 0);
                     _propBlock.SetFloat(_frontFillId, stiffnessRatio);
                     _propBlock.SetFloat(_backFillId, stiffnessRatio);
-                    _stiffnessRenderer.SetPropertyBlock(_propBlock);
+                    _stiffnessRenderer.SetPropertyBlock(_propBlock, 0);
                 }
             }
         }
@@ -78,6 +81,22 @@ public class HpBar : MonoBehaviour
             return;
         }
 
+        if (_damageable != null && _damageable.CurrentHealth != _displayedHealth)
+            ChangeHpBar(_displayedHealth, _damageable.CurrentHealth);
+        // Hit/dissolve effects also use indexed material blocks. Preserve their properties
+        // while keeping the gauges authoritative after those effects have updated.
+        if (_propBlock != null && _damageable != null && _hpRenderer) {
+            _hpRenderer.GetPropertyBlock(_propBlock,0);
+            _propBlock.SetFloat(_frontFillId,Mathf.Clamp01((float)_damageable.CurrentHealth/Mathf.Max(1,_damageable.MaxHealth)));
+            _propBlock.SetFloat(_backFillId,_currentBackFill);
+            _hpRenderer.SetPropertyBlock(_propBlock,0);
+        }
+        if (_propBlock != null && _monStiffness != null && _stiffnessRenderer) {
+            _stiffnessRenderer.GetPropertyBlock(_propBlock,0);
+            _propBlock.SetFloat(_frontFillId,Mathf.Clamp01((float)_monStiffness.CurrentStiffness/Mathf.Max(1,_monStiffness.StiffnessThreshold)));
+            _propBlock.SetFloat(_backFillId,_currentStiffnessBackFill);
+            _stiffnessRenderer.SetPropertyBlock(_propBlock,0);
+        }
         FollowObject();
     }
 
@@ -100,22 +119,24 @@ public class HpBar : MonoBehaviour
 
     private void ChangeHpBar(int previousHp, int currentHp)
     {
-        float targetFill = (float)currentHp / _damageable.MaxHealth;
+        if (!_hpRenderer || _damageable == null) return;
+        _displayedHealth = currentHp;
+        float targetFill = Mathf.Clamp01((float)currentHp / Mathf.Max(1, _damageable.MaxHealth));
 
-        _hpRenderer.GetPropertyBlock(_propBlock);
+        _hpRenderer.GetPropertyBlock(_propBlock, 0);
 
         // 1. 앞쪽 게이지 (즉시 반영)
         _propBlock.SetFloat(_frontFillId, targetFill);
-        _hpRenderer.SetPropertyBlock(_propBlock);
+        _hpRenderer.SetPropertyBlock(_propBlock, 0);
 
         // 2. 뒤쪽 게이지 (잔상 효과 - MaterialPropertyBlock 값을 Tween)
         DOTween.Kill(_hpRenderer);
         DOTween.To(() => _currentBackFill, x =>
         {
             _currentBackFill = x;
-            _hpRenderer.GetPropertyBlock(_propBlock);
+            _hpRenderer.GetPropertyBlock(_propBlock, 0);
             _propBlock.SetFloat(_backFillId, _currentBackFill);
-            _hpRenderer.SetPropertyBlock(_propBlock);
+            _hpRenderer.SetPropertyBlock(_propBlock, 0);
         }, targetFill, 0.5f)
         .SetDelay(0.1f)
         .SetEase(Ease.OutCubic)
@@ -134,20 +155,20 @@ public class HpBar : MonoBehaviour
 
         float targetFill = (float)currentStiffness / _monStiffness.StiffnessThreshold;
 
-        _stiffnessRenderer.GetPropertyBlock(_propBlock);
+        _stiffnessRenderer.GetPropertyBlock(_propBlock, 0);
 
         // 1. 앞쪽 게이지 (즉시 반영)
         _propBlock.SetFloat(_frontFillId, targetFill);
-        _stiffnessRenderer.SetPropertyBlock(_propBlock);
+        _stiffnessRenderer.SetPropertyBlock(_propBlock, 0);
 
         // 2. 뒤쪽 게이지 (잔상 효과)
         DOTween.Kill(_stiffnessRenderer);
         DOTween.To(() => _currentStiffnessBackFill, x =>
         {
             _currentStiffnessBackFill = x;
-            _stiffnessRenderer.GetPropertyBlock(_propBlock);
+            _stiffnessRenderer.GetPropertyBlock(_propBlock, 0);
             _propBlock.SetFloat(_backFillId, _currentStiffnessBackFill);
-            _stiffnessRenderer.SetPropertyBlock(_propBlock);
+            _stiffnessRenderer.SetPropertyBlock(_propBlock, 0);
         }, targetFill, 0.5f)
         .SetDelay(0.1f)
         .SetEase(Ease.OutCubic)

@@ -91,7 +91,6 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
 
         if (!IsChargedAttack(damageData.AttackType))
         {
-            OnHitBlocked();
             Debug.Log($"[TotemBase] Attack {damageData.AttackType} not effective. Blocked!");
             OnHitBlocked();
             return;
@@ -99,6 +98,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
         Debug.Log($"[TotemBase] Received {damageData.AttackType} attack. Processing damage and potential movement.");
         Debug.Log($"totem feedback : {feedback}");
         feedback.PlayFeedback(hit);
+        UIAudioFeedback.Play(5);
         Vector3 incomingDir = (transform.position - damageData.AttackerTransform.position).normalized;
         Vector3 localDir = PuzzleGridManager.Instance.transform.InverseTransformDirection(incomingDir);
         Vector2Int moveDir = GetCardinalDirection(localDir);
@@ -177,6 +177,7 @@ public abstract class TotemBase : MonoBehaviour, IDamageable
     protected virtual void OnHitBlocked()
     {
         feedback.PlayFeedback(blocked);
+        UIAudioFeedback.Play(5);
     }
 
     private Vector2Int GetCardinalDirection(Vector3 dir)

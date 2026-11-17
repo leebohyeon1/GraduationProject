@@ -57,6 +57,7 @@ public class TowerHitPuzzle : MonoBehaviour
             _puzzleCoroutine = null;
             _isPuzzleCompleted = true;
 
+            UIAudioFeedback.Play(4);
             OnPuzzleCompleted?.Invoke();
 
             return;

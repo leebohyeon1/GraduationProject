@@ -48,6 +48,7 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
     [SerializeField] private Image _holdProgressImage;   // 홀드 진행도를 보여줄 이미지 (Radial Fill 추천)
     private float _holdTimer = 0f;
     private bool _isHolding = false;
+    private bool _rejectedHold;
     private bool _isSelected = false;
 
     [Header("Unlock Animation")]
@@ -103,11 +104,17 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         }
 
         // 마우스 홀드 중이거나, 패드로 선택된 상태에서 Submit 버튼(A/Cross)을 누르고 있을 때
-        bool shouldHold = !_isUnlockAnimationPlaying && (_isHolding || (_isSelected && _playerController.InputReader.IsSubmitPressed));
+        bool shouldHold = !_isUnlockAnimationPlaying && (_isHolding || (_isSelected && _playerController != null && IsInteractionHeld()));
 
         if (shouldHold)
         {
-            if (_holdTimer == 0f && (_isLearned || !CheckPurchaseCondition())) return;
+            if (_holdTimer == 0f && (_isLearned || !CheckPurchaseCondition()))
+            {
+                if (!_rejectedHold && !_isLearned && CheckUnlockCondition() && !HasEnoughMoney())
+                { GameNotice.Show("돈이 부족합니다."); UIAudioFeedback.Play(7); }
+                _rejectedHold = true;
+                return;
+            }
 
             _holdTimer += Time.unscaledDeltaTime;
             
@@ -123,10 +130,18 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
                 ResetHold();
             }
         }
-        else if (_holdTimer > 0)
+        else if (_holdTimer > 0 || _rejectedHold)
         {
             ResetHold();
         }
+    }
+
+    public bool IsLearned => _isLearned;
+    public bool IsSelected => _isSelected;
+    private void LateUpdate()
+    {
+        if (SkillUI.TutorialTarget == this && !_isLearned)
+            transform.localScale = _originalScale * (1.12f + .08f * Mathf.Sin(Time.unscaledTime * 6f));
     }
 
     private void OnDisable()
@@ -186,7 +201,12 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_isLearned || !CheckPurchaseCondition() || _isUnlockAnimationPlaying) return;
+        if (_isLearned || _isUnlockAnimationPlaying) return;
+        if (!CheckPurchaseCondition())
+        {
+            if (CheckUnlockCondition()) { GameNotice.Show("돈이 부족합니다."); UIAudioFeedback.Play(7); }
+            return;
+        }
 
         _isHolding = true;
         _holdTimer = 0f;
@@ -208,8 +228,16 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
         ResetHold();
     }
 
+    private static bool IsInteractionHeld()
+    {
+        if (InputReaderSO.ActiveInputMode != InputReaderSO.InputMode.UI) return false;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        var gamepad = UnityEngine.InputSystem.Gamepad.current;
+        return (keyboard != null && keyboard.fKey.isPressed) || (gamepad != null && gamepad.buttonNorth.isPressed);
+    }
     private void ResetHold()
     {
+        _rejectedHold = false;
         _isHolding = false;
         _holdTimer = 0f;
         if (_holdProgressImage != null)
@@ -441,6 +469,8 @@ public class SkillUpgradeButtonUI : MonoBehaviour, IEventListener<PlayerAbilityS
 
         // 배우는 스킬 이벤트 발생 및 등록
         _abilitySelected.Publish(_learnAbility);
+        UIAudioFeedback.Play(6);
+        if (SkillUI.TutorialTarget == this) SkillUI.CompleteTutorial();
 
         // 상태 갱신
         UpdateUIState();

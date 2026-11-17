@@ -17,6 +17,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// True while hit window is open.
     /// </summary>
     public bool IsHitWindowOpen { get; private set; }
+    public event Action HitWindowOpened;
     /// <summary>
     /// True when the action is finished.
     /// </summary>
@@ -68,6 +69,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         if(phase <= _owner._aiController._aiBrain.blackboard.GetValue<int>(EnemyBlackboardKeys.Phase))
         {
             IsHitWindowOpen = true;
+            HitWindowOpened?.Invoke();
         }
     }
     public void CloseHitWindow()
@@ -154,6 +156,11 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     [Header("Feedbacks")]
     [SerializeField] private List<FeedbackPlayer> _feedbacks;
     Dictionary<string, MMF_Player> _feedbackDictionary = new Dictionary<string, MMF_Player>();
+    public bool IsFeedbackPlaying(string feedbackName)
+    {
+        foreach(var f in _feedbacks)if((f.name==feedbackName || (feedbackName=="Die" && f.name.EndsWith("_Die_FB"))) && f.feedback && f.feedback.IsPlaying)return true;
+        return false;
+    }
 
     /// <summary>
     /// Plays feedbacks by name based on current phase.
@@ -183,7 +190,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// <summary>
     /// 지정 위치에서 피드백을 재생하고, damageDelay 후 범위 데미지를 적용합니다.
     /// </summary>
-    internal void PlayFeedbackAtPosition(string feedbackName, Vector3 position)
+    internal void PlayFeedbackAtPosition(string feedbackName, Vector3 position, bool applyDamage = true)
     {
         if (_owner == null) return;
 
@@ -202,7 +209,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
                 
                 f.feedback.PlayFeedbacks(spawnPos);
 
-                if (f.attackData != null && f.damageDelay >= 0f)
+                if (applyDamage && f.attackData != null && f.damageDelay >= 0f)
                 {
                     StartCoroutine(DealDamageAfterDelay(spawnPos, f));
                 }
@@ -327,6 +334,21 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         if (_owner == null) return;
 
         int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
+
+        // Older prefab variants may not have a row for every combo/counter hit.
+        // Use that monster's matching impact family when the exact row is absent.
+        if (!_feedbacks.Exists(f => f.name == feedbackName && f.HitType == attackType && f.Phase <= currentPhase && f.feedback))
+        {
+            AttackType fallback = attackType <= AttackType.Normal_3 ? AttackType.Normal_0 :
+                (attackType == AttackType.Strong_1 || attackType == AttackType.Normal_Counter ? AttackType.Strong_1 : AttackType.Strong_2);
+            if (_feedbacks.Exists(f => f.name == feedbackName && f.HitType == fallback && f.Phase <= currentPhase && f.feedback))
+                attackType = fallback;
+            else
+            {
+                var first = _feedbacks.Find(f => f.name == feedbackName && f.Phase <= currentPhase && f.feedback);
+                if (first.feedback) attackType = first.HitType;
+            }
+        }
 
         // 이름, 타입이 일치하고 ID가 현재 페이즈 이하인 모든 피드백을 재생합니다.
         foreach (var f in _feedbacks)

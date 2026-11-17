@@ -20,6 +20,11 @@ public class HomingProjectile : MonoBehaviour
     private bool _isInitialized = false;
     private bool _isStraightMode = false;
     private Enemy _enemy;
+    private bool _reflected;
+    [SerializeField, Min(.1f)] private float _reflectedExplosionRadius=3.5f;
+    private bool _exploded;
+    private Collider _pendingPlayer;
+    private float _contactDeadline;
     // 초기화 함수 (전략 스크립트에서 호출)
 
     [SerializeField] private string feedbackname = "null"; // 피격 효과 프리팹
@@ -41,7 +46,12 @@ public class HomingProjectile : MonoBehaviour
         _isStraightMode = false;
         _targetCollider = null;
         _damage.AttackerTransform = this.transform;
+        _damage.SourceEnemy = enemy;
         _enemy = enemy;
+        _reflected = false;
+        _exploded = false;
+        _pendingPlayer=null;
+        gameObject.layer = LayerMask.NameToLayer("Enemy");
 
         if (_target != null)
         {
@@ -57,6 +67,16 @@ public class HomingProjectile : MonoBehaviour
     void Update()
     {
         if (!_isInitialized) return;
+
+        if (_pendingPlayer && !_reflected) {
+            if(Time.time>=_contactDeadline) {
+                var health=_pendingPlayer.GetComponentInParent<PlayerHealth>();
+                if(health)health.TakeDamage(_damage);
+                if(_enemy) _enemy.animHandler.PlayFeedbackAtPosition(feedbackname,transform.position,false);
+                ReleaseSelf();
+            }
+            return;
+        }
 
         float elapsedTime = Time.time - _startTime;
 
@@ -109,9 +129,49 @@ public class HomingProjectile : MonoBehaviour
         transform.position += transform.forward * currentSpeed * Time.deltaTime;
     }
 
+    public void DetonateOnNormalParry(PlayerController player)
+    {
+        if (!_isInitialized || _reflected || _exploded) return;
+        _exploded = true;
+        _damage.IsMagic = true;
+        player.GetComponent<PlayerHealth>().TakeDamage(_damage);
+        if (_enemy && _enemy.animHandler) _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position, false);
+        ReleaseSelf();
+    }
+
+    public bool ReflectCharged(PlayerController player, int bonusDamage, float addedSpeed)
+    {
+        if (!_isInitialized || _reflected || !_enemy) return false;
+        _reflected = true;
+        _pendingPlayer=null;
+        _target = _enemy.transform;
+        _targetCollider = _enemy.GetComponent<Collider>();
+        _isStraightMode = false;
+        _startTime=Time.time;
+        _damage.SourceEnemy = null;
+        _damage.IsReflectedProjectile = true;
+        _damage.DeathKnockbackForce = Mathf.Max(_damage.DeathKnockbackForce, 16f);
+        _damage.DeathKnockbackDuration = .2f;
+        _damage.AttackerTransform = player.transform;
+        _damage.AttackType = AttackType.Strong_Counter;
+        _damage.DamageAmount += bonusDamage;
+        _startSpeed = (_startSpeed + addedSpeed) * 2f;
+        _maxSpeed = (_maxSpeed + addedSpeed) * 2f;
+        _acceleration *= 2f;
+        _straightSpeed *= 2f;
+        transform.forward = (_target.position + Vector3.up - transform.position).normalized;
+        return true;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!_isInitialized) return;
+
+        if (_reflected)
+        {
+            if (other.GetComponentInParent<EnemyHealth>() || ((1 << other.gameObject.layer) & _obstacleMask) != 0)
+                ExplodeReflected();
+            return;
+        }
 
         // 벽 충돌 (LayerMask 연산)
         if (((1 << other.gameObject.layer) & _obstacleMask) != 0)
@@ -125,18 +185,8 @@ public class HomingProjectile : MonoBehaviour
         // 플레이어 충돌
         if (other.CompareTag("Player")) // 혹은 Component 체크
         {
-            // 데미지 주기 (구현된 PlayerHealth 스크립트 사용)
-            var health = other.GetComponent<PlayerHealth>(); 
-            if (health != null)
-            {
-                // 간단한 데미지 처리 (구조체 필요시 수정)
-                health.TakeDamage(_damage); 
-                AttackOutcomeRecorder.RecordSuccessfulHit(_enemy?._aiController?._aiBrain?.blackboard);
-                Debug.Log($"[Projectile] Player Hit! Damage: {_damage}");
-            }
-            _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
-
-            ReleaseSelf();
+            if(!_pendingPlayer){_pendingPlayer=other;_contactDeadline=Time.time+.14f;}
+            return;
         }
     }
 
@@ -147,6 +197,20 @@ public class HomingProjectile : MonoBehaviour
         _target = null;
         _targetCollider = null;
         _enemy = null;
+    }
+
+    private void ExplodeReflected()
+    {
+        if (_exploded) return;
+        _exploded=true;
+        if (_enemy && _enemy.animHandler) _enemy.animHandler.PlayFeedbackAtPosition(feedbackname,transform.position,false);
+        var damaged=new System.Collections.Generic.HashSet<EnemyHealth>();
+        foreach(var hit in Physics.OverlapSphere(transform.position,_reflectedExplosionRadius,~0,QueryTriggerInteraction.Collide))
+        {
+            var health=hit.GetComponentInParent<EnemyHealth>();
+            if(health && !health.IsDead && damaged.Add(health))health.TakeDamage(_damage);
+        }
+        ReleaseSelf();
     }
 
     private void ReleaseSelf()

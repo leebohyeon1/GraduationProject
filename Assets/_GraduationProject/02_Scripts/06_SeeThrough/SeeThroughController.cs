@@ -25,7 +25,7 @@ public class SeeThroughController : MonoBehaviour, IEventListener<SeeThroughTarg
     // Job System 관련 변수
     private NativeArray<RaycastCommand> _commands;
     private NativeArray<RaycastHit> _results;
-    private const int MAX_HITS_PER_RAY = 5; // 한 레이당 최대 감지할 장애물 수
+    private const int MAX_HITS_PER_RAY = 16; // 한 레이당 최대 감지할 장애물 수
 
     private void Awake()
     {
@@ -111,7 +111,7 @@ public class SeeThroughController : MonoBehaviour, IEventListener<SeeThroughTarg
                 RaycastHit hit = _results[i * MAX_HITS_PER_RAY + j];
                 if (hit.collider == null) break;
 
-                SeeThroughObject cutOutObject = hit.collider.GetComponent<SeeThroughObject>();
+                SeeThroughObject cutOutObject = hit.collider.GetComponentInParent<SeeThroughObject>();
                 if (cutOutObject != null)
                 {
                     newHits.Add(cutOutObject);

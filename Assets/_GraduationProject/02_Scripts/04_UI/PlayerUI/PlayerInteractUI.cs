@@ -45,6 +45,11 @@ public class PlayerInteractUI : PlayerUIBase
 
             this.interactable = interactable;
 
+            if (interactable is ResetTotem) { _interactText.text = "초기화"; return; }
+            if (interactable is SavePoint) { _interactText.text = "저장"; return; }
+            var component = interactable as Component;
+            if (component && (component.GetComponent<TeleportInteractor>() || component.GetComponent<SceneTransitionInteractor>() || component.GetComponent<EnemyInteract>() || component.GetComponent<Chest>()))
+            { _interactText.text = "상호작용"; return; }
             switch(interactable.InteractableType)
             {
                 case InteractableType.NPC:

@@ -12,6 +12,7 @@ public class ParabolicMineProjectile : MonoBehaviour
     {
         None,
         Flying,
+        Reflected,
         DroppingAfterWallHit,
         ArmedMine,
         Exploding,
@@ -64,6 +65,10 @@ public class ParabolicMineProjectile : MonoBehaviour
     private bool _hasAppliedDamage;
     private bool _hasRegisteredHit;
     private MineState _state;
+    private bool _reflected;
+    private float _contactDeadline=-1f;
+    private float _reflectedUntil;
+    private Vector3 _reflectedDirection;
 
     /// <summary>
     /// 투사체 비행/지뢰 상태를 초기화합니다.
@@ -105,6 +110,8 @@ public class ParabolicMineProjectile : MonoBehaviour
         _targetPosition = targetPos;
         _currentPosition = startPos;
         _state = MineState.Flying;
+        _reflected=false;
+        _contactDeadline=-1f;
         _hasArmedTrigger = false;
         _hasAppliedDamage = false;
         _hasRegisteredHit = false;
@@ -137,8 +144,15 @@ public class ParabolicMineProjectile : MonoBehaviour
 
     private void Update()
     {
+        if (_contactDeadline>=0f && !_reflected) {
+            if(Time.time>=_contactDeadline) { ExplodeNow(_playerHealth); }
+            return;
+        }
         switch (_state)
         {
+            case MineState.Reflected:
+                UpdateReflected();
+                break;
             case MineState.Flying:
                 UpdateFlying();
                 break;
@@ -476,6 +490,12 @@ public class ParabolicMineProjectile : MonoBehaviour
             return;
         }
 
+        // Keep the projectile alive briefly while touching the player so an active parry can win.
+        if(directHitTarget != null && !_reflected && _contactDeadline<0f) {
+            _contactDeadline=Time.time+.14f;
+            return;
+        }
+
         Debug.Log($"[ParabolicMineProjectile] Explode at {_cachedTransform.position}");
         _state = MineState.Exploding;
         PlayFeedback(_cachedTransform.position);
@@ -537,6 +557,7 @@ public class ParabolicMineProjectile : MonoBehaviour
         }
 
         DamageData appliedDamage = _damageData;
+        appliedDamage.SourceEnemy = _enemy;
         appliedDamage.AttackerTransform = _cachedTransform;
         if (_explosionDamage > 0)
         {
@@ -567,7 +588,7 @@ public class ParabolicMineProjectile : MonoBehaviour
             return;
         }
 
-        _enemy.animHandler.PlayFeedbackAtPosition(_feedbackName, position);
+        _enemy.animHandler.PlayFeedbackAtPosition(_feedbackName, position, false);
     }
 
     private void OnDisable()
@@ -582,6 +603,62 @@ public class ParabolicMineProjectile : MonoBehaviour
         _playerHealth = null;
         _blackboard = null;
         _owner = null;
+        _contactDeadline=-1f;
+    }
+
+    public void DetonateOnNormalParry(PlayerController player)
+    {
+        if (_reflected || _state == MineState.None || _state == MineState.Finished || _state == MineState.Exploding) return;
+        _contactDeadline = Time.time;
+        _damageData.IsMagic = true;
+        ExplodeNow(player.GetComponent<PlayerHealth>());
+    }
+
+    public bool Reflect(PlayerController player,int bonusDamage,AttackType attackType)
+    {
+        if(_reflected || !_enemy || _state==MineState.None || _state==MineState.Finished || _state==MineState.Exploding)return false;
+        _reflected=true;_contactDeadline=-1f;_state=MineState.Reflected;
+        _damageData.SourceEnemy=null;_damageData.AttackerTransform=player.transform;
+        _damageData.IsReflectedProjectile=true;
+        _damageData.DeathKnockbackForce=22f;
+        _damageData.DeathKnockbackDuration=.2f;
+        _damageData.AttackType=attackType;_damageData.DamageAmount=(Mathf.Max(_damageData.DamageAmount,_explosionDamage)+bonusDamage)*2;
+        var target=_enemy.GetComponent<Collider>();
+        _reflectedDirection=((target?target.bounds.center:_enemy.transform.position+Vector3.up)-transform.position).normalized;
+        _reflectedUntil=Time.time+5f;
+        return true;
+    }
+
+    private void UpdateReflected()
+    {
+        float distance=48f*Time.deltaTime;
+        foreach(var hit in Physics.SphereCastAll(transform.position,.35f,_reflectedDirection,distance,~0,QueryTriggerInteraction.Collide)) {
+            if(hit.collider.transform.IsChildOf(transform) || hit.collider.GetComponentInParent<PlayerController>())continue;
+            if(hit.collider.GetComponentInParent<EnemyHealth>() || (!hit.collider.isTrigger && ((_wallLayerMask.value|_groundLayerMask.value) & (1<<hit.collider.gameObject.layer))!=0)) {
+                transform.position=hit.point;ExplodeReflected();return;
+            }
+        }
+        transform.position+=_reflectedDirection*distance;
+        if(Time.time>=_reflectedUntil)ExplodeReflected();
+    }
+
+    private void ExplodeReflected()
+    {
+        if(_state!=MineState.Reflected)return;
+        _state=MineState.Exploding;
+        var settings=Resources.Load<GameUIIntegrationSettings>("GameUIIntegrationSettings");
+        if(settings && settings.reflectedExplosionEffect) {
+            var effect=Instantiate(settings.reflectedExplosionEffect,transform.position,Quaternion.identity);
+            effect.transform.localScale*=3f;Destroy(effect,6f);
+        }
+        if(settings && settings.reflectedExplosion && MoreMountains.Tools.MMSoundManager.HasInstance)
+            MoreMountains.Tools.MMSoundManager.Instance.PlaySound(settings.reflectedExplosion,MoreMountains.Tools.MMSoundManager.MMSoundManagerTracks.Sfx,transform.position,volume:.7f);
+        var damaged=new System.Collections.Generic.HashSet<EnemyHealth>();
+        foreach(var hit in Physics.OverlapSphere(transform.position,(Mathf.Max(4.5f,_explosionRadius)*1.5f),~0,QueryTriggerInteraction.Collide)) {
+            var health=hit.GetComponentInParent<EnemyHealth>();
+            if(health && !health.IsDead && damaged.Add(health))health.TakeDamage(_damageData);
+        }
+        _state=MineState.Finished;ProjectilePoolManager.ReleaseProjectile(gameObject);
     }
 
     private void UpdateRotation(Vector3 previousPosition, Vector3 nextPosition)

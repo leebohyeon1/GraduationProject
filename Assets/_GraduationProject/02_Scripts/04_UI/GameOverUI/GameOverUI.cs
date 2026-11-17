@@ -22,6 +22,14 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
     [SerializeField] private OnPlayerSpawnedSO _playerSpawned;
     private PlayerController _player;
     private bool _isActionProcessing = false;
+    private Sequence _reveal;
+    private CanvasGroup Group(GameObject target)
+    {
+        var group=target.GetComponent<CanvasGroup>();
+        if (!group) group=target.AddComponent<CanvasGroup>();
+        return group;
+    }
+    private void OnDestroy() { _reveal?.Kill(); }
 
     private void Awake()
     {
@@ -48,7 +56,7 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
             gameData.ClearDeadMonsters();
             
             DataManager.Instance.SaveGame(); // 게임 저장
-            SceneLoadingManager.Instance.TeleportToSceneByName(gameData.PlayerData.RespawnSceneName, SceneLoadingManager.SpawnMode.LastPosition);
+            SceneLoadingManager.Instance.TeleportToScene(SceneLoadingManager.Instance.GetSceneDataByName(gameData.PlayerData.RespawnSceneName), gameData.PlayerData.RespawnPosition);
         });
     }
 
@@ -99,17 +107,34 @@ public class GameOverUI : MonoBehaviour, IEventListener<PlayerController>, IDisp
 
     private void OnDied()
     {
+        var settings=Resources.Load<GameUIIntegrationSettings>("GameUIIntegrationSettings");
+        if(settings && settings.gameOver && MoreMountains.Tools.MMSoundManager.HasInstance)
+            MoreMountains.Tools.MMSoundManager.Instance.PlaySound(settings.gameOver,MoreMountains.Tools.MMSoundManager.MMSoundManagerTracks.UI,Vector3.zero,volume:.6f);
+        _reveal?.Kill();
         _panel.SetActive(true);
+        _isActionProcessing=true;
+        var panelGroup=Group(_panel);panelGroup.alpha=0;panelGroup.interactable=false;panelGroup.blocksRaycasts=true;
+        if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
+        var title=_panel.transform.Find("Tiphography");
+        var description=_panel.transform.Find("DescriptionText");
+        CanvasGroup titleGroup=title?Group(title.gameObject):null;
+        CanvasGroup descriptionGroup=description?Group(description.gameObject):null;
+        if(titleGroup)titleGroup.alpha=0;
+        if(descriptionGroup)descriptionGroup.alpha=0;
+        var buttons=_panel.GetComponentsInChildren<Button>(true);
+        foreach(var button in buttons) Group(button.gameObject).alpha=0;
         
         if (_inputReader != null)
         {
             _inputReader.SetInputMode(InputReaderSO.InputMode.UI);
         }
 
-        if (_firstButton != null)
-        {
-            _firstButton.Select();
-        }
+        _reveal=DOTween.Sequence().SetUpdate(true);
+        _reveal.Append(panelGroup.DOFade(1,.8f));
+        if(titleGroup)_reveal.Insert(.8f,titleGroup.DOFade(1,.6f));
+        if(descriptionGroup)_reveal.Insert(.8f,descriptionGroup.DOFade(1,.6f));
+        foreach(var button in buttons)_reveal.Insert(1.4f,Group(button.gameObject).DOFade(1,.6f));
+        _reveal.OnComplete(()=>{panelGroup.interactable=true;_isActionProcessing=false;if(_firstButton)_firstButton.Select();});
     }
 
 }

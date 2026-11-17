@@ -8,6 +8,20 @@ public class TitleUI : MonoBehaviour
     // GameObject가 아니라 우리가 만든 TitleView 리스트를 가짐
     [SerializeField] private List<TitleView> _views;
 
+    private void Update()
+    {
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard == null || UnityEngine.EventSystems.EventSystem.current == null) return;
+        if (!keyboard.eKey.wasPressedThisFrame && !keyboard.fKey.wasPressedThisFrame) return;
+        var selected = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        if (selected == null || !selected.transform.IsChildOf(transform)) return;
+        var button = selected.GetComponent<UnityEngine.UI.Button>();
+        if (button != null && button.IsInteractable())
+        {
+            UIAudioFeedback.Play(1);
+            button.onClick.Invoke();
+        }
+    }
     private void Start()
     {
         _titleManager.TitleStateChanged += OnTitleStateChanged;

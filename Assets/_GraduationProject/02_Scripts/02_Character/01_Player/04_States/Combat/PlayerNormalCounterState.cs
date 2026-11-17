@@ -98,6 +98,9 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
     /// <param name="transform">상쇄한 적</param>
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
+        if (transform == null) return;
+        if (transform.TryGetComponent<IParryable>(out var existingParry) && p_owner.Combat.IsEnemyCountered(existingParry)) return;
+        bool motionAlreadyHit = transform.TryGetComponent<IDamageable>(out var previousTarget) && p_owner.Combat.IsEnemyCounterDamaged(previousTarget);
         // 상쇄 성공 시 슈퍼 아머
         if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
         {
@@ -117,7 +120,7 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
 
             if (transform.TryGetComponent<IStiffness>(out var stiffness))
             {
-                int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
+                int counterStiffness = Mathf.Max(0, Mathf.RoundToInt(p_AttackConfig.Stiffness.Value) - (motionAlreadyHit ? baseStiffness : 0)); // 카운터로 인한 추가 경직량 계산
                 p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("NormalCounterStiffness");
                 parryable.Parry(AttackType.Normal_Counter,counterStiffness);
                 p_owner.Combat.AddCounterEnemy(parryable);
@@ -186,15 +189,18 @@ public class PlayerNormalCounterState : PlayerAttackBaseState
         Vector3 attackCenter = p_owner.Combat.GetAttackCenter(p_AttackConfig);
         Vector3 halfExtents = p_AttackConfig.AttackRadius / 2f;
 
-        Collider[] hitObjects = Physics.OverlapBox(attackCenter, halfExtents, p_owner.transform.rotation, p_owner.Data.AttackLayerMask);
+        Collider[] hitObjects = ProjectileParryOverlap.Find(p_owner, attackCenter, halfExtents);
 
         if (hitObjects.Length > 0)
         {
             foreach(Collider collider in hitObjects)
             {
+                if (collider.GetComponentInParent<ParabolicMineProjectile>() is ParabolicMineProjectile mine) { mine.DetonateOnNormalParry(p_owner); continue; }
+                if (collider.GetComponentInParent<HomingProjectile>() is HomingProjectile homing) { homing.DetonateOnNormalParry(p_owner); continue; }
                 // 투사체인 경우
                 if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
                 {
+                    if(!projectile.Owner || projectile.Owner==p_owner.gameObject) continue;
                     Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
                     direction.Normalize();
 

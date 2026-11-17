@@ -83,6 +83,7 @@ public class Task_ParabolicMine : BaseAttackNode
     private string _shotPreparedKey;
     private string _hasFiredKey;
 
+    protected override bool UsesMeleeHitDetection => false;
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()
@@ -90,11 +91,14 @@ public class Task_ParabolicMine : BaseAttackNode
         InitializeBlackboardKeys();
         brain.blackboard.SetValue(_shotPreparedKey, false);
         brain.blackboard.SetValue(_hasFiredKey, false);
+        Handler.HitWindowOpened -= OnFireWindow;
+        Handler.HitWindowOpened += OnFireWindow;
     }
 
     protected override void OnActionSOTriggered()
     {
         InitializeBlackboardKeys();
+        if (brain.blackboard.GetValueOrDefault(_hasFiredKey,false)) return;
 
         if (runner.player == null)
         {
@@ -151,6 +155,13 @@ public class Task_ParabolicMine : BaseAttackNode
     }
 
     protected override bool IsMovementFinished => brain.blackboard.GetValueOrDefault(_hasFiredKey, false);
+
+    private void OnFireWindow()
+    {
+        if (!runner || runner.EnemyHealth.IsDead || runner.CurrentState != EnemyStateController.EnemyState.Attack || brain.blackboard.GetValueOrDefault(_hasFiredKey,false)) return;
+        if (!brain.blackboard.GetValueOrDefault(_shotPreparedKey,false)) OnActionSOTriggered();
+        if (brain.blackboard.GetValueOrDefault(_shotPreparedKey,false)) Fire();
+    }
 
     private void Fire()
     {
@@ -210,6 +221,7 @@ public class Task_ParabolicMine : BaseAttackNode
 
     protected override void SpecificCleanup()
     {
+        if (Handler != null) Handler.HitWindowOpened -= OnFireWindow;
         base.SpecificCleanup();
         InitializeBlackboardKeys();
         brain.blackboard.RemoveKey(_targetPositionKey);

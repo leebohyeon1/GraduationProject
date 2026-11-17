@@ -92,7 +92,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IStiffness, I
         damageData = damageContext.Data;
 
         TakeDamged?.Invoke(damageData.DamageAmount);
+        int healthBeforeHit = CurrentHealth;
         ChangeHealth(-damageData.DamageAmount);
+        if (damageData.DamageAmount > 0 && CurrentHealth < healthBeforeHit)
+        {
+            var source = damageData.SourceEnemy;
+            if (source == null && damageData.AttackerTransform != null)
+                source = damageData.AttackerTransform.GetComponentInParent<Enemy>();
+            if (source != null) source.GetComponent<EnemyHealth>()?.RecoverFromSuccessfulAttack(damageData.AttackType);
+        }
 
         // [중요] ChangeHealth 호출 시 OnHealthChanged 이벤트가 발생합니다.
         // SphereLife 등에서 체력을 1로 복구했다면 여기서 IsDead는 false가 됩니다.

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
 
@@ -10,6 +10,9 @@ public class SeeThroughObject : MonoBehaviour
     [Header("Target Settings")]
     [SerializeField] private Transform _targetObject;
     [SerializeField] private float _heightOffset = 2.0f;
+
+    [Header("Linked Decorations")]
+    [SerializeField] private Renderer[] _linkedRenderers = new Renderer[0];
 
     [Header("Transition Settings")]
     [Range(0.1f, 5.0f)]
@@ -125,7 +128,14 @@ public class SeeThroughObject : MonoBehaviour
     {
         _materialBindings.Clear();
 
-        foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
+        var renderers = new HashSet<Renderer>(GetComponentsInChildren<Renderer>(true));
+        if (_linkedRenderers != null)
+        {
+            foreach (Renderer linked in _linkedRenderers)
+                if (linked != null) renderers.Add(linked);
+        }
+
+        foreach (Renderer renderer in renderers)
         {
             if (renderer == null || IsVfxRenderer(renderer)) continue;
 
@@ -137,7 +147,8 @@ public class SeeThroughObject : MonoBehaviour
 
                 bool hasCutHeight = material.HasProperty(_cutHeightID);
                 bool hasDither = material.HasProperty(_ditherPropertyID);
-                bool hasBaseGlancing = material.HasProperty(_baseGlancingID);
+                bool hasBaseGlancing = material.HasProperty(_baseGlancingID)
+                    && !material.HasProperty("_OcclusionPreserveGlancing");
                 if (!hasCutHeight && !hasDither && !hasBaseGlancing) continue;
 
                 _materialBindings.Add(new MaterialBinding

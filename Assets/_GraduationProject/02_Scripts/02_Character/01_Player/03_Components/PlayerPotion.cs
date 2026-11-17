@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerPotion : MonoBehaviour, IDisposable
 {
+    private PlayerHealth _health;
     private PlayerEvents _events;
     private PlayerData _data;
     private InputReaderSO _inputReader;
@@ -16,6 +17,7 @@ public class PlayerPotion : MonoBehaviour, IDisposable
 
     public void Initialize(PlayerController player)
     {
+        _health = player.GetComponent<PlayerHealth>();
         _events = player.Events;
         _data = player.RuntimeData;
         _inputReader = player.InputReader;
@@ -51,6 +53,12 @@ public class PlayerPotion : MonoBehaviour, IDisposable
             return;
         }
 
+        if (_health != null && (_health.IsDead || _health.CurrentHealth >= _health.MaxHealth))
+        {
+            GameNotice.Show("체력이 이미 가득 찼습니다.");
+            UIAudioFeedback.Play(3);
+            return;
+        }
         Debug.Log("포션 사용");
 
         _data.CurrentPotion--;

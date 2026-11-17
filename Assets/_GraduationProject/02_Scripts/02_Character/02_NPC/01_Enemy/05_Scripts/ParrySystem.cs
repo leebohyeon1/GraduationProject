@@ -78,7 +78,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
         {
             return;
         }
-        if (_isStunned || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
+        if (CurrentStun == StunType.Full || _owner.EnemyHealth.IsDead) return; // 이미 스턴 상태라면 무시
         Debug.Log($"[ParrySystem] ApplyStun {_owner.name} duration={stunDuration}");
         CurrentStun = StunType.Full;
         _stunExitTime = Time.time + stunDuration; // 스턴 지속 시간 설정  
@@ -105,6 +105,7 @@ public class ParrySystem : MonoBehaviour, IParryable, ICounterable
     }
     public void ClearStun()
     {
+        if (_owner && _owner.EnemyHealth != null && _owner.EnemyHealth.IsDead) { CurrentStun=StunType.None; return; }
         Debug.Log($"[ParrySystem] ClearStun {_owner.name}");
         _owner.AnimationBool("Stun", false);
         _owner.AnimationBool("WeakStun", false);

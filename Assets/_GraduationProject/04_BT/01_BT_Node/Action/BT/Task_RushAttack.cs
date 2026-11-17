@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using BehaviorTree;
 using Pathfinding;
 
@@ -56,6 +56,7 @@ public class Task_RushAttack : BaseAttackNode
 
     protected override void InitialMovementSetup()
     {
+
         _endStrategy = false;
         _isRushing = false;
         _rushState = RushState.Tracking;
@@ -282,6 +283,7 @@ public class Task_RushAttack : BaseAttackNode
 
     protected override void SpecificCleanup()
     {
+
         _isRushing = false;
         runner.AnimationBool("IsRushing", false);
         if (runner.aIPath != null)

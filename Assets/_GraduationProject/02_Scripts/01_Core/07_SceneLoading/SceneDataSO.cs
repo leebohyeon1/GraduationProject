@@ -17,6 +17,8 @@ public class SceneDataSO : ScriptableObject
     // ★ 추가된 부분: 이 씬에서 사용할 스카이박스 머티리얼
     public Material skyboxMaterial;
     public AudioClip BackgroundMusic; // 이 씬에서 재생할 배경음악
+    public AudioClip CombatMusic;
+    [Range(0f, 1f)] public float CombatMusicVolume = 1f;
     
     [Header("Addressable Reference")]
     // Build Settings 대신 Addressables의 에셋 레퍼런스를 사용합니다!

@@ -21,6 +21,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
 
     // 현재 상태를 외부에서 읽을 수 있게 프로퍼티 제공
     public InputMode CurrentInputMode { get; private set; } = InputMode.None;
+    public static InputMode ActiveInputMode { get; private set; } = InputMode.None;
     // 상태가 바뀔 때 알림을 받고 싶다면 이벤트 추가
     public event Action<InputMode> InputModeChanged;
 
@@ -147,6 +148,7 @@ public class InputReaderSO : ScriptableObject, InputSystem_Actions.IPlayerAction
         }
 
         CurrentInputMode = newMode;
+        ActiveInputMode = newMode;
         InputModeChanged?.Invoke(newMode);
 
         Debug.Log($"입력 모드 변경: {newMode}");

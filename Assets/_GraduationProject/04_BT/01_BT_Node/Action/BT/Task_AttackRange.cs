@@ -15,10 +15,14 @@ public class Task_AttackRange : BaseAttackNode
     private Vector3 _attackDir;
     private bool _hasFired;
 
+    protected override bool UsesMeleeHitDetection => false;
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()
     {
+        _hasFired=false;
+        Handler.HitWindowOpened -= Fire;
+        Handler.HitWindowOpened += Fire;
     }
 
     protected override void OnActionSOTriggered()
@@ -27,8 +31,6 @@ public class Task_AttackRange : BaseAttackNode
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
         Vector3 targetPos = runner.player.transform.position + Vector3.up * 0.5f;
         _attackDir = (targetPos - spawnPos).normalized;
-        _hasFired = false;
-
         runner.transform.rotation = Quaternion.LookRotation(_attackDir);
     }
 
@@ -44,6 +46,8 @@ public class Task_AttackRange : BaseAttackNode
 
     private void Fire()
     {
+        if (_hasFired || !runner || runner.EnemyHealth.IsDead || runner.CurrentState != EnemyStateController.EnemyState.Attack || !runner.player) return;
+        OnActionSOTriggered();
         _hasFired = true;
         Vector3 spawnPos = runner.transform.position + (runner.transform.rotation * spawnOffset);
 
@@ -63,6 +67,7 @@ public class Task_AttackRange : BaseAttackNode
     }
     protected override void SpecificCleanup()
     {
+        if (Handler != null) Handler.HitWindowOpened -= Fire;
         base.SpecificCleanup();
         _hasFired = false;
     }

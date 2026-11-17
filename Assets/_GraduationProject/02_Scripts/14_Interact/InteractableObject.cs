@@ -27,6 +27,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (TryGetComponent<SceneTransitionInteractor>(out var transition) && transition.IsCompletedEntrance) return;
+        if(TryGetComponent<DragonGateSequence>(out var gate)) { gate.Interact(); return; }
         // 1. 이미 상호작용했다면 리턴
         if (_onlyOne && _hasInteracted) return;
 
@@ -51,6 +53,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // 이미 상호작용이 끝난 일회성 오브젝트라면 무시
         if (_onlyOne && _hasInteracted) return;
 
+        if (TryGetComponent<SceneTransitionInteractor>(out var transition) && transition.IsCompletedEntrance) return;
         if (other.TryGetComponent<PlayerController>(out _playerController))
         {
             if (_playerController.Interact != null)

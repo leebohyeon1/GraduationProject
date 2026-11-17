@@ -70,6 +70,23 @@ public class CameraController : MonoBehaviour, IEventListener<EnemyStateData>
         InitializeTargetGroups();
     }
 
+    [SerializeField] private float _releaseDistance = 25f;
+    private readonly List<Enemy> _expiredTargets = new List<Enemy>();
+    private void LateUpdate()
+    {
+        if (!_playerTransform) return;
+        _expiredTargets.Clear();
+        foreach (var enemy in _detectedEnemies)
+            if (!enemy || !enemy.gameObject.activeInHierarchy || enemy.EnemyHealth.IsDead || (!_bossEnemies.Contains(enemy) && Vector3.Distance(enemy.transform.position, _playerTransform.position) > _releaseDistance)) _expiredTargets.Add(enemy);
+        foreach (var enemy in _bossEnemies)
+            if ((!enemy || !enemy.gameObject.activeInHierarchy || enemy.EnemyHealth.IsDead || (!_bossEnemies.Contains(enemy) && Vector3.Distance(enemy.transform.position, _playerTransform.position) > _releaseDistance)) && !_expiredTargets.Contains(enemy)) _expiredTargets.Add(enemy);
+        foreach (var enemy in _expiredTargets)
+        {
+            _detectedEnemies.Remove(enemy); _bossEnemies.Remove(enemy);
+            if (enemy) { _combatTargetGroup?.RemoveMember(enemy.transform); _bossTargetGroup?.RemoveMember(enemy.transform); }
+        }
+        if (_expiredTargets.Count > 0) UpdateCameraPriorities();
+    }
     private void OnEnable()
     {
         if (_onEnemyStateChanged != null)
@@ -123,6 +140,7 @@ public class CameraController : MonoBehaviour, IEventListener<EnemyStateData>
     /// </summary>
     public void OnEventTrigger(EnemyStateData data)
     {
+        if (data.stateType == EnemyStateType.Lost && _bossEnemies.Contains(data.enemy) && data.enemy && !data.enemy.EnemyHealth.IsDead) return;
         switch (data.stateType)
         {
             case EnemyStateType.Detected:

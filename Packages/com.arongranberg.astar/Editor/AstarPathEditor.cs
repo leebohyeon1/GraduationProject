@@ -227,7 +227,7 @@ namespace Pathfinding {
 		/// Returns: True if all styles were found, false if there was an error somewhere
 		/// </summary>
 		public static bool LoadStyles () {
-			if (stylesLoaded) return true;
+			if (stylesLoaded && astarSkin != null) return true;
 
 			// Dummy styles in case the loading fails
 			var inspectorSkin = EditorGUIUtility.GetBuiltinSkin(EditorSkin.Inspector);
@@ -564,6 +564,9 @@ namespace Pathfinding {
 
 		public void OnSceneGUI () {
 			script = target as AstarPath;
+			// Scene GUI can run before the inspector after a domain reload.
+			// Load its skin before opening any GUI layout groups.
+			if (script == null || Camera.current == null || !LoadStyles()) return;
 
 			DrawSceneGUISettings();
 

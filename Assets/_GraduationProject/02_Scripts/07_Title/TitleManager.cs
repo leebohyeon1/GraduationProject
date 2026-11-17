@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,11 +23,13 @@ public class TitleManager : MonoBehaviour
 
     [Header("State")]
     [SerializeField] private TitleState _currentState = TitleState.None;
+    public bool CanUseBossShortcut => _currentState == TitleState.TitlePrompt || _currentState == TitleState.MainMenu;
     private int _lastStateChangeFrame = -1; // 마지막으로 상태가 바뀐 프레임을 기록
     public event UnityAction<TitleState> TitleStateChanged;  // 타이틀 상태 변경 이벤트
 
     private void Start()
     {
+        if (DataManager.Instance && DataManager.Instance.IsTemporaryGame) DataManager.Instance.EndTemporaryGame();
         Initialize();
         SetState(TitleState.TitlePrompt);
     }
@@ -115,6 +117,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnNewGameButton()
     {
+        if (TitleBossShortcut.IsChordHeld()) return;
         // 동일 프레임 중복 입력 방지
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
@@ -129,6 +132,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnContinueButton()
     {
+        if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
         if (_currentState == TitleState.MainMenu)
@@ -142,6 +146,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnQuitGameButton()
     {
+        if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
         if (_currentState == TitleState.MainMenu)
@@ -152,6 +157,7 @@ public class TitleManager : MonoBehaviour
 
     public void OnSettingButton()
     {
+        if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
         if (_currentState == TitleState.MainMenu)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Pathfinding;
 using UnityEngine;
@@ -13,7 +13,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public ImmunityLevel _currentImmunityLevel = ImmunityLevel.None;
 
     public int CurrentHealth => curHealth;
-    public int MaxHealth => enemyStat.Maxhealth;
+    public int MaxHealth => _maxHealth;
+    [SerializeField] private bool _healOnHitInSecondPhase;
+    [SerializeField, Range(0f,1f)] private float _secondPhaseHealFraction = 0.05f;
 
     private int _maxHealth = 100;
     private int curHealth = 100;
@@ -32,6 +34,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public Func<AttackType, bool> CheckStunImmunity;
   
     private Enemy _owner;
+    private bool _deathHandled;
     public bool ImmunityStart = false;
 
     private RagdollAnimator2 _ragdollAnimator;
@@ -42,6 +45,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         int previousHealth = curHealth;
         _owner = owner;
+        _deathHandled=false;
         _maxHealth = enemyStat.Maxhealth;
         _maxHealth = (int)(_maxHealth * (statMultiplier?.HealthMultiply ?? 1f));
         curHealth = _maxHealth;
@@ -136,14 +140,27 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
 
 
+    [SerializeField] private string _deathAnimationState;
     public void Die(DamageData? damageData)
     {
+        if(_deathHandled)return;
+        _deathHandled=true;
+        _owner.StateType = EnemyStateType.Dead;
+        _owner.SetState(EnemyStateController.EnemyState.Die);
+        _owner.animator.SetBool("Stun",false);
+        _owner.animator.SetBool("WeakStun",false);
+        _owner.animHandler.StopFeedback("Stun_FB");
+        _owner.animHandler.SpeedMultiplier=1f;
         OnDied?.Invoke();
-        _owner.animHandler.PlayFeedback("Die");
+        var defeatCinematic = GetComponent<BossDefeatCinematic>();
+        if (defeatCinematic && defeatCinematic.isActiveAndEnabled)
+            StartCoroutine(PlayDeathFeedbackAfterFocus(defeatCinematic.duration));
+        else _owner.animHandler.PlayFeedback("Die");
         if (_owner.player != null && _owner.player.Money != null)
             _owner.player.Money.GiveMoney(_owner.GetMyCurrentReward());
         _owner.enemyStat.RewardSO?.RemoveMoneyFromEnemies(_owner.MonsterId);
-        _owner.animator.SetBool("Die", true);
+        if (string.IsNullOrEmpty(_deathAnimationState)) _owner.animator.SetBool("Die", true);
+        else _owner.animator.Play(_deathAnimationState, 0, 0f);
         _owner.animator.speed = 1;
         _owner.Movement.StopMovement();
     
@@ -158,7 +175,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (_characterController != null)
             _characterController.enabled = false;
 
-        if (_ragdollAnimator != null)
+        if (_ragdollAnimator != null && string.IsNullOrEmpty(_deathAnimationState))
         {
             _ragdollAnimator.User_SwitchFallState();
             if (damageData != null && damageData.Value.AttackerTransform != null)
@@ -171,6 +188,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
                 
                 float force = damageData.Value.DeathKnockbackForce;
                 Vector3 velocity = impactDir * force;
+                if(damageData.Value.IsReflectedProjectile) velocity += Vector3.up * force * .55f;
 
                 // 즉시 속도를 부여하고, 기존 넉백 지속시간(Duration)만큼 힘을 유지하여 동일한 느낌을 줍니다.
                 _ragdollAnimator.User_SetAllBonesVelocity(velocity);
@@ -178,12 +196,41 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             }
         }
 
+        if (damageData.HasValue && damageData.Value.IsReflectedProjectile &&
+            (_ragdollAnimator == null || !string.IsNullOrEmpty(_deathAnimationState)))
+            StartCoroutine(LaunchReflectedCorpse(damageData.Value));
         StartCoroutine(ReturnToPoolRoutine(3f));
+    }
+
+    private IEnumerator LaunchReflectedCorpse(DamageData damage)
+    {
+        Vector3 direction = damage.AttackerTransform ? transform.position - damage.AttackerTransform.position : -transform.forward;
+        direction.y = 0f;
+        Vector3 velocity = direction.normalized * damage.DeathKnockbackForce + Vector3.up * damage.DeathKnockbackForce * .55f;
+        for (float elapsed = 0; elapsed < 3f; elapsed += Time.deltaTime) {
+            Vector3 step = velocity * Time.deltaTime;
+            if (Physics.Raycast(transform.position + Vector3.up * .3f, step.normalized, step.magnitude,
+                LayerMask.GetMask("Ground", "Wall", "Default"), QueryTriggerInteraction.Ignore)) yield break;
+            transform.position += step;
+            velocity += Physics.gravity * Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator PlayDeathFeedbackAfterFocus(float duration)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+        if (_owner) _owner.animHandler.PlayFeedback("Die");
     }
 
     private IEnumerator ReturnToPoolRoutine(float delay)
     {
+        var cinematic = GetComponent<BossDefeatCinematic>();
+        if (cinematic && cinematic.isActiveAndEnabled) yield return new WaitForSecondsRealtime(cinematic.duration);
         yield return new WaitForSeconds(delay);
+        // Death feedback includes delayed quest tags and arena-wall release.
+        // Returning the actor at the same 3-second boundary used to cancel those events.
+        while(_owner && _owner.animHandler.IsFeedbackPlaying("Die"))yield return null;
         if (!string.IsNullOrEmpty(_owner.MonsterPrefabName))
             MonsterPoolManager.Instance.ReleaseMonster(_owner.MonsterPrefabName, _owner);
         else
@@ -200,8 +247,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public float MinorTime = 5;
     private Coroutine _delayCoroutine;
 
+    public void RecoverFromSuccessfulAttack(AttackType attackType)
+    {
+        if (!_healOnHitInSecondPhase || curHealth <= 0 || _owner == null ||
+            _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0) < 2) return;
+        int previous = curHealth;
+        bool strong = attackType == AttackType.Strong_1 || attackType == AttackType.Strong_2 ||
+            attackType == AttackType.Strong_3 || attackType == AttackType.Strong_Counter;
+        float fraction = strong ? _secondPhaseHealFraction : 0.02f;
+        curHealth = Mathf.Min(_maxHealth, curHealth + Mathf.RoundToInt(_maxHealth * fraction));
+        _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
+        if (previous != curHealth) OnHealthChanged?.Invoke(previous, curHealth);
+    }
+
     public void TakeDamage(DamageData damageData)
     {
+        var intro = GetComponent<EnemySpawnIntro>();
+        if (intro && !intro.Completed) return;
         if (_owner.Interact != null )
         {
             if( !_owner._aiController._aiBrain.blackboard.GetValueOrDefault<bool>(EnemyBlackboardKeys.InteractNoneHIt, false))
@@ -260,6 +322,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         _owner.animHandler.PlayFeedback(isBlocked ? "Block_FB" : "Damage_FB", damageData.AttackType);
 
         curHealth -= finalDamage;
+        if (finalDamage > 0 && damageData.IsReflectedProjectile) ReflectedImpactFeedback.Play();
         OnHealthChanged?.Invoke(previousHealth, curHealth);
         _owner._aiController._aiBrain.blackboard.SetValue(EnemyBlackboardKeys.SelfHealth, curHealth);
         OnRecoveryHealth?.Invoke(false);

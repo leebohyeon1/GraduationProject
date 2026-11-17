@@ -15,7 +15,7 @@ public class MainMenuView : TitleView
     {
         SelectButton();
 
-        if(DataManager.Instance.DataList.Count > 0 )
+        if(DataManager.Instance != null && DataManager.Instance.DataList != null && DataManager.Instance.DataList.Count > 0 )
         {
             _continueButton.SetActive(true);
         }
@@ -33,7 +33,6 @@ public class MainMenuView : TitleView
         }
     }
 
-    // Update 문 삭제! (이제 감시할 필요 없음)
     private void SelectButton()
     {
         // EventSystem이 없으면 중단

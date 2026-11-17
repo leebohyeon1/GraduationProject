@@ -36,6 +36,12 @@ namespace GraduationProject
                 return;
             }
 
+            if (Track == MMSoundManager.MMSoundManagerTracks.Music && CombatMusicController.Ensure())
+            {
+                CombatMusicController.Ensure().SetBackground(TargetAudioClip, Volume, Loop);
+                return;
+            }
+
             // 1. 해당 트랙의 모든 기존 사운드 정지 (중복 재생 방지)
             MMSoundManager.Instance.StopTrack(Track);
 
@@ -54,6 +60,8 @@ namespace GraduationProject
         /// </summary>
         public void Stop()
         {
+            if (Track == MMSoundManager.MMSoundManagerTracks.Music && CombatMusicController.Ensure())
+            { CombatMusicController.Ensure().StopMusic(); return; }
             if (_currentSource != null)
             {
                 MMSoundManager.Instance.StopSound(_currentSource);
@@ -66,6 +74,8 @@ namespace GraduationProject
         /// </summary>
         public void StopTrack()
         {
+            if (Track == MMSoundManager.MMSoundManagerTracks.Music && CombatMusicController.Ensure())
+            { CombatMusicController.Ensure().StopMusic(); return; }
             MMSoundManager.Instance.StopTrack(Track);
         }
 
@@ -74,6 +84,8 @@ namespace GraduationProject
         /// </summary>
         public void Pause()
         {
+            if (Track == MMSoundManager.MMSoundManagerTracks.Music && CombatMusicController.Ensure())
+            { CombatMusicController.Ensure().SetPaused(true); return; }
             if (_currentSource != null)
             {
                 MMSoundManager.Instance.PauseSound(_currentSource);
@@ -85,6 +97,8 @@ namespace GraduationProject
         /// </summary>
         public void Resume()
         {
+            if (Track == MMSoundManager.MMSoundManagerTracks.Music && CombatMusicController.Ensure())
+            { CombatMusicController.Ensure().SetPaused(false); return; }
             if (_currentSource != null)
             {
                 MMSoundManager.Instance.ResumeSound(_currentSource);

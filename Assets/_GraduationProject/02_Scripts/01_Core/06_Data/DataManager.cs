@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -15,6 +15,9 @@ public class DataManager : MonoBehaviour
     public List<GameData> DataList = new List<GameData>();
 
     private GameData _currentGameData = null;
+    public bool IsTemporaryGame { get; private set; }
+    private GameData _previousGameData;
+    private int _previousSlotIndex;
     private int _currentSlotIndex = -1; // 핵심: 현재 플레이 중인 데이터의 리스트 인덱스를 기억
 
     [Header("Development")]
@@ -98,6 +101,46 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public void BeginTemporaryGame(SceneDataSO scene, Vector3 spawn)
+    {
+        if (IsTemporaryGame) EndTemporaryGame();
+        _previousGameData = _currentGameData;
+        _previousSlotIndex = _currentSlotIndex;
+        IsTemporaryGame = true;
+        _currentSlotIndex = -1;
+        _currentGameData = new GameData();
+        _currentGameData.LastMainScene = scene.SceneName;
+        _currentGameData.PlayerData.InitializeFromSO(_defaultPlayerData);
+        // Temporary boss runs use the complete playable skill tree, never the saved slot.
+        if (_abilityDatabase != null)
+            foreach (var ability in _abilityDatabase.GetAllAbilities())
+                if (ability != null && !string.IsNullOrEmpty(ability.Id) &&
+                    !_currentGameData.PlayerData.AcquiredAbilityIds.Contains(ability.Id))
+                    _currentGameData.PlayerData.AcquiredAbilityIds.Add(ability.Id);
+
+        _currentGameData.PlayerData.RespawnSceneName = scene.SceneName;
+        _currentGameData.PlayerData.RespawnPosition = spawn;
+        _currentGameData.PlayerData.LastPosition = spawn;
+        GamePlayTagManager.Instance.ClearTags();
+        GamePlayTagManager.Instance.Initialize();
+        if (QuestManager.Instance) QuestManager.Instance.ResetQuest();
+        GamePlayTagManager.Instance.AddTag(GetGamePlayTag("GameStart_TimeLiine_End"));
+        GamePlayTagManager.Instance.AddTag(GetGamePlayTag("SwordTouch"));
+    }
+
+    public void EndTemporaryGame()
+    {
+        if (!IsTemporaryGame) return;
+        IsTemporaryGame = false;
+        _currentGameData = _previousGameData;
+        _currentSlotIndex = _previousSlotIndex;
+        _previousGameData = null;
+        if (GamePlayTagManager.Instance) {
+            GamePlayTagManager.Instance.ClearTags();
+            GamePlayTagManager.Instance.Initialize();
+        }
+    }
+
     public GameData GetGameData()
     {
         return _currentGameData;
@@ -120,6 +163,8 @@ public class DataManager : MonoBehaviour
 
         // 1. 게임 내 실시간 상태를 데이터 구조에 반영 (위치 등)
         UpdatePlayerDataFromGame();
+
+        if (IsTemporaryGame) return; // Quick boss sessions never modify slots or save files.
 
         // 2. 저장 시간 갱신
         _currentGameData.LastSaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

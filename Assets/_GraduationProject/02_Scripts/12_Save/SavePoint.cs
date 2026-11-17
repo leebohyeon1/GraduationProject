@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SavePoint : MonoBehaviour, IInteractable
 {
@@ -17,6 +17,11 @@ public class SavePoint : MonoBehaviour, IInteractable
         if (SceneLoadingManager.Instance.CurrentActiveChunk != null)
         {
             gameData.PlayerData.RespawnSceneName = SceneLoadingManager.Instance.CurrentActiveChunk.SceneName;
+            if (SceneLoadingManager.Instance.CurrentActiveChunk.name == "Part1")
+            {
+                gameData.PlayerData.MainRespawnSceneName = gameData.PlayerData.RespawnSceneName;
+                gameData.PlayerData.MainRespawnPosition = gameData.PlayerData.RespawnPosition;
+            }
         }
         _playerController.Health.Heal((int)gameData.PlayerData.Health.Value);
         _playerController.Potion.ReloadPotion();

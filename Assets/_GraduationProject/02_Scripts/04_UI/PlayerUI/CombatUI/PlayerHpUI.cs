@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +8,13 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerHpUI : PlayerUIBase
 {
+    private CanvasGroup _cutsceneVisibility;
+    private void LateUpdate()
+    {
+        if (!_cutsceneVisibility) _cutsceneVisibility = GetComponent<CanvasGroup>();
+        if (!_cutsceneVisibility) _cutsceneVisibility = gameObject.AddComponent<CanvasGroup>();
+        _cutsceneVisibility.alpha = InputReaderSO.ActiveInputMode == InputReaderSO.InputMode.CutScene && !KeepPlayerHUDDuringTimeline.IsActive ? 0f : 1f;
+    }
     [Header("References")]
     [SerializeField] private Image _hpBarImage;           // 앞쪽 체력바 (즉시 변경됨, 빨강/초록 등)
     [SerializeField] private Image _backHpBarImage;       // 뒤쪽 체력바 (천천히 줄어듦, 흰색/노랑 등)

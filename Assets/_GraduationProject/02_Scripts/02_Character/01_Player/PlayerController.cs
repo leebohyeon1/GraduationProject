@@ -59,7 +59,7 @@ public partial class PlayerController : MonoBehaviour
     /// </summary>
     private void ScheduleFallCheckJob()
     {
-        if (RuntimeData == null || Health == null || Health.IsDead)
+        if (!_isFallDeadResult.IsCreated || RuntimeData == null || Health == null || Health.IsDead)
         {
             return;
         }
@@ -79,15 +79,18 @@ public partial class PlayerController : MonoBehaviour
     /// </summary>
     private void CompleteFallCheckJob()
     {
-        if (Health == null || Health.IsDead) return;
+        if (!_isFallDeadResult.IsCreated) return;
 
         // Job 완료 대기
         _fallCheckJobHandle.Complete();
 
+        if (Health == null || Health.IsDead) return;
+
         if (_isFallDeadResult[0])
         {
+            // Die의 이벤트에서 Dispose가 호출될 수 있으므로 먼저 결과를 소비한다.
+            _isFallDeadResult[0] = false;
             Health.Die();
-            _isFallDeadResult[0] = false; // 결과 초기화
         }
     }
 

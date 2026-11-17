@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +29,8 @@ public class CounterStackAbility : PlayerAbilitySO
             _checkCounterStack = true;
         }
 
-        p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
+        if (_requiredCounterStacks > 0)
+            p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
     }
 
     public override void UnregisterAbility(PlayerAbility ability)

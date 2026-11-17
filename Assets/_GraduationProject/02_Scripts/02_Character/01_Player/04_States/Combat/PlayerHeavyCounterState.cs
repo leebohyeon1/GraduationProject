@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// 플레이어의 차지 공격 상태입니다.
@@ -86,6 +86,9 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     /// <param name="transform">상쇄한 적</param>
     private void OnCounterSucceeded(Transform transform, AttackType type)
     {
+        if (transform == null) return;
+        if (transform.TryGetComponent<IParryable>(out var existingParry) && p_owner.Combat.IsEnemyCountered(existingParry)) return;
+        bool motionAlreadyHit = transform.TryGetComponent<IDamageable>(out var previousTarget) && p_owner.Combat.IsEnemyCounterDamaged(previousTarget);
         // 상쇄 성공 시 슈퍼 아머
         if (!p_owner.Ability.HasTag(p_owner.Combat.CounterSuccessTagSO.Id))
         {
@@ -101,7 +104,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             p_AttackConfig.Stiffness.AddModifier(new StatModifier(p_owner.Data.CounterStiffnessMultiply[1], StatModifierType.PercentAdd, "HeavyCounterStiffness"));
             if (transform.TryGetComponent<IStiffness>(out var stiffness))
             {
-                int counterStiffness = (int)p_AttackConfig.Stiffness.Value - baseStiffness; // 카운터로 인한 추가 경직량 계산
+                int counterStiffness = Mathf.Max(0, Mathf.RoundToInt(p_AttackConfig.Stiffness.Value) - (motionAlreadyHit ? baseStiffness : 0)); // 카운터로 인한 추가 경직량 계산
                 p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("HeavyCounterStiffness");
                 parryable.Parry(AttackType.Strong_Counter,counterStiffness);
                 p_owner.Combat.AddCounterEnemy(parryable);
@@ -168,15 +171,24 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         Vector3 attackCenter = p_owner.Combat.GetAttackCenter(_ChargeAttackConfig.BaseAttackConfig);
         Vector3 halfExtents = _ChargeAttackConfig.AttackRadius / 2f;
 
-        Collider[] hitObjects = Physics.OverlapBox(attackCenter, halfExtents, p_owner.transform.rotation, p_owner.Data.AttackLayerMask);
+        Collider[] hitObjects = ProjectileParryOverlap.Find(p_owner, attackCenter, halfExtents);
 
         if (hitObjects.Length > 0)
         {
             foreach (Collider collider in hitObjects)
             {
+                if (collider.TryGetComponent<HomingProjectile>(out var homing) &&
+                    homing.ReflectCharged(p_owner, (int)_ChargeAttackConfig.Damage.Value, p_owner.Combat.ProjectileCounterAddedVelocity[1]))
+                {
+                    p_owner.Events.TriggerCounterSucceeded(homing.transform, AttackType.Strong_Counter);
+                    p_owner.Events.TriggerOnlyChargeAttackSucceded();
+                    continue;
+                }
+                if (collider.GetComponentInParent<ParabolicMineProjectile>() is ParabolicMineProjectile mine && mine.Reflect(p_owner, (int)_ChargeAttackConfig.Damage.Value, AttackType.Strong_Counter)) { p_owner.Events.TriggerCounterSucceeded(mine.transform, AttackType.Strong_Counter); continue; }
                 // 투사체인 경우
                 if (collider.TryGetComponent<EnemyProjectile>(out var projectile))
                 {
+                    if(!projectile.Owner || projectile.Owner==p_owner.gameObject) continue;
                     Vector3 direction = projectile.Owner.transform.position - p_owner.transform.position;
                     direction.Normalize();
 

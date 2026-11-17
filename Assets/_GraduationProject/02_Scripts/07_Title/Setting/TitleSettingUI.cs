@@ -29,15 +29,15 @@ public class TitleSettingUI : TitleView
         _currentIndex = 0;
         UpdateUI();
 
-        _inputReader.NextEvent += OnNext;
-        _inputReader.PreviousEvent += OnPrevious;
+        _inputReader.SubNextEvent += OnNext;
+        _inputReader.SubPreviousEvent += OnPrevious;
         _inputReader.CancelEvent += OnCancel;
     }
 
     private void OnDisable()
     {
-        _inputReader.NextEvent -= OnNext;
-        _inputReader.PreviousEvent -= OnPrevious;
+        _inputReader.SubNextEvent -= OnNext;
+        _inputReader.SubPreviousEvent -= OnPrevious;
         _inputReader.CancelEvent -= OnCancel;
     }
 

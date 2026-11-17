@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public interface IDamageable
@@ -41,6 +41,7 @@ public interface IDamageable
 public struct DamageData
 {
     public Transform AttackerTransform;
+    public Enemy SourceEnemy;
     public AttackType AttackType;
     public int DamageAmount;
     public int StiffnessAmount;
@@ -53,11 +54,13 @@ public struct DamageData
     public float DeathKnockbackForce;
 
     public bool IsMagic;
+    public bool IsReflectedProjectile;
 
     public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount,
         AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, float deathKnockbackDuration = 0f, float deathKnockbackForce = 0f, bool isMagic = false)
     {
         AttackerTransform = attackerTransform;
+        SourceEnemy = attackerTransform ? attackerTransform.GetComponentInParent<Enemy>() : null;
         AttackType = attackType;
         DamageAmount = damageAmount;
         StiffnessAmount = stiffnessAmount;
@@ -67,6 +70,7 @@ public struct DamageData
         DeathKnockbackDuration = deathKnockbackDuration;
         DeathKnockbackForce = deathKnockbackForce;
         IsMagic = isMagic;
+        IsReflectedProjectile = false;
     }
 }
 

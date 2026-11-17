@@ -25,6 +25,7 @@ public class Task_HomingMissile : BaseAttackNode
 
     private GameObject _projectileInstance;
 
+    protected override bool UsesMeleeHitDetection => false;
     protected override float GetRequiredRange() => maxTriggerRange;
 
     protected override void InitialMovementSetup()

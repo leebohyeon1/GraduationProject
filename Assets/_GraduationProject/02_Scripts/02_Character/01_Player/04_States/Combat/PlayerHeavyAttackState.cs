@@ -23,7 +23,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
         // 강공격 무시 태그가 없으면 
         if(!p_owner.Ability.HasTag("IgnoreStrongAttackStack"))
         {
-            p_owner.Combat.ConsumeCounterStack();
+            p_owner.Combat.ConsumeCounterStack(consumeAll: p_owner.Combat.HeavyAttackComboIndex == 1);
         }
 
         base.SetupStats();
@@ -73,7 +73,7 @@ public class PlayerHeavyAttackState : PlayerAttackBaseState
         // 강공격 능력이 있고 패리 스택이 남아있고 다음 콤보가 가능하면 강공격 지속 여부 판단
         bool canHeavy = p_owner.Ability.HasAbility("HeavyAttack") && p_owner.Combat.CounterStacks > 0 && p_owner.Combat.CanHeavyAttack();
 
-        // 2타 이상(연속 공격)으로 넘어가려는 경우 'HeavyAttackCombo' 능력이 있는지 추가로 체크
+        // 2타(마지막 타격)로 넘어가려는 경우 'HeavyAttackCombo' 능력이 있는지 추가로 체크
         if (canHeavy && p_owner.Combat.HeavyAttackComboIndex >= 0)
         {
             if (!p_owner.Ability.HasAbility("HeavyAttackCombo"))

@@ -63,7 +63,8 @@ public class PlayerInputHandler : MonoBehaviour, IDisposable
     /// </summary>
     public void Dispose()
     {
-        InputDeviceDetector.Instance.InputDeviceChanged.RemoveListener(OnInputDeviceChanged);
+        if (InputDeviceDetector.Instance != null)
+            InputDeviceDetector.Instance.InputDeviceChanged.RemoveListener(OnInputDeviceChanged);
 
         // 이벤트 구독 해제
         _inputReader.MoveEvent -= OnMove;

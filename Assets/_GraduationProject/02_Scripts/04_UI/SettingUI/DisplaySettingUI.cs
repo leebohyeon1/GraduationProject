@@ -235,6 +235,83 @@ public class DisplaySettingUI : SettingPageUI
         }
     }
 
+    [System.Serializable]
+    public class LanguageSetting : SettingItem
+    {
+        public static readonly string[] Codes = { "ko", "en", "ja", "zh-Hans" };
+        public override void Initialize(MonoBehaviour owner)
+        {
+            base.Initialize(owner);
+            owner.StartCoroutine(InitializeLocale());
+        }
+        private IEnumerator InitializeLocale()
+        {
+            yield return UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation;
+            UpdateUI();
+        }
+        public override bool ChangeValue(int direction)
+        {
+            var settings = UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation;
+            if (!settings.IsDone) return true;
+            var current = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale;
+            int index = current == null ? 0 : System.Array.IndexOf(Codes, current.Identifier.Code);
+            int next = Mathf.Clamp(Mathf.Max(0, index) + direction, 0, Codes.Length - 1);
+            if (next == index) return true;
+            var locale = UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales.GetLocale(Codes[next]);
+            if (locale == null) return true;
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale = locale;
+            PlayerPrefs.SetString("selected-locale", Codes[next]);
+            PlayerPrefs.Save();
+            UpdateUI();
+            return false;
+        }
+        public override void UpdateUI()
+        {
+            var locale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale;
+            if (valueText && locale != null) valueText.text = locale.LocaleName;
+        }
+    }
+
+    [SerializeField] private LanguageSetting _languageSetting = new LanguageSetting();
+
+    private static string UnityRelativePath(Transform target, Transform root)
+    {
+        string path = "";
+        while (target && target != root) { path = target.name + (path.Length > 0 ? "/" + path : ""); target = target.parent; }
+        return path;
+    }
+    private void EnsureLanguageRow()
+    {
+        if (_languageSetting.valueText) return;
+        var template = transform.Find("Screen_Shake");
+        if (!template) return;
+        var row = Instantiate(template.gameObject, template.parent);
+        row.name = "Language";
+        var rect = row.GetComponent<RectTransform>();
+        rect.anchoredPosition = template.GetComponent<RectTransform>().anchoredPosition + new Vector2(0, -77);
+        var label = row.transform.Find("Setting_Name").GetComponent<TextMeshProUGUI>();
+        label.text = "Language";
+        var list = row.transform.Find("Setting_List");
+        _languageSetting.valueText = list.GetComponentInChildren<TextMeshProUGUI>(true);
+        _languageSetting.valueText.text = "한국어";
+        string focusPath = _shakeSetting.focusTarget ? UnityRelativePath(_shakeSetting.focusTarget, template) : "Setting_List";
+        _languageSetting.focusTarget = string.IsNullOrEmpty(focusPath) ? rect : row.transform.Find(focusPath)?.GetComponent<RectTransform>();
+        var arrows = list.GetComponentsInChildren<RectTransform>(true);
+        foreach (var arrow in arrows)
+        {
+            if (arrow.name == "Button") _languageSetting.rightArrow = arrow;
+            if (arrow.name == "Button (1)") _languageSetting.leftArrow = arrow;
+        }
+        // Existing settings use navigation actions; add mouse click support to the new row.
+        foreach (var button in list.GetComponentsInChildren<UnityEngine.UI.Button>(true))
+        {
+            button.onClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            int direction = button.name == "Button" ? 1 : -1;
+            button.onClick.AddListener(() => _languageSetting.ChangeValue(direction));
+        }
+        _items = null;
+    }
+
     // --- 메인 DisplaySettingUI 클래스 로직 ---
 
     [Header("Input")]
@@ -257,7 +334,7 @@ public class DisplaySettingUI : SettingPageUI
         {
             if (_items == null)
             {
-                _items = new SettingItem[] { _resSetting, _modeSetting, _frameSetting, _shakeSetting };
+                _items = _languageSetting.valueText ? new SettingItem[] { _resSetting, _modeSetting, _frameSetting, _shakeSetting, _languageSetting } : new SettingItem[] { _resSetting, _modeSetting, _frameSetting, _shakeSetting };
             }
             return _items;
         }
@@ -265,7 +342,7 @@ public class DisplaySettingUI : SettingPageUI
 
     private int _currentIndex = 0;
 
-    private void Awake() { }
+    private void Awake() { EnsureLanguageRow(); }
 
     private void Start()
     {

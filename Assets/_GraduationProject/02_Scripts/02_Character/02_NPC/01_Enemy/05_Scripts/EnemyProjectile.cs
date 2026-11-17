@@ -9,6 +9,8 @@ public class EnemyProjectile : MonoBehaviour
     private float _lifeRemaining;
     private DamageData _data;
     private bool _isActive;
+    private Collider _pendingPlayer;
+    private float _contactDeadline;
 
     public GameObject Owner { get; private set; }
     public float MoveSpeed => _moveSpeed;
@@ -23,10 +25,17 @@ public class EnemyProjectile : MonoBehaviour
         _moveDirection = dir;
         _moveSpeed = speed;
         _data = data;
+        _data.SourceEnemy = owner != null && owner.GetComponent<PlayerController>() ? null : enemy;
         Owner = owner;
+        if (owner && owner.GetComponent<PlayerController>()) {
+            _data.IsReflectedProjectile = true;
+            _data.DeathKnockbackForce = Mathf.Max(_data.DeathKnockbackForce,16f);
+            _data.DeathKnockbackDuration = .2f;
+        }
         _data.AttackerTransform = transform;
         _lifeRemaining = 5f;
         _isActive = true;
+        _pendingPlayer=null;
     }
 
     private void Update()
@@ -37,6 +46,15 @@ public class EnemyProjectile : MonoBehaviour
         }
 
         _lifeRemaining -= Time.deltaTime;
+        if(_pendingPlayer) {
+            if(Time.time>=_contactDeadline) {
+                var health=_pendingPlayer.GetComponentInParent<PlayerHealth>();
+                if(health)health.TakeDamage(_data);
+                if(_enemy)_enemy.animHandler.PlayFeedbackAtPosition(feedbackname,transform.position,false);
+                ReleaseSelf();
+            }
+            return;
+        }
         if (_lifeRemaining <= 0f)
         {
             ReleaseSelf();
@@ -53,13 +71,17 @@ public class EnemyProjectile : MonoBehaviour
             return;
         }
 
-        if (Owner != null && other.gameObject == Owner.gameObject)
+        if (Owner != null && (other.gameObject == Owner || other.transform.IsChildOf(Owner.transform)))
         {
             return;
         }
 
         if (other.TryGetComponent<IDamageable>(out var health))
         {
+            if(other.GetComponentInParent<PlayerController>()) {
+                if(!_pendingPlayer){_pendingPlayer=other;_contactDeadline=Time.time+.14f;}
+                return;
+            }
             _enemy.animHandler.PlayFeedbackAtPosition(feedbackname, transform.position);
             health.TakeDamage(_data);
             AttackOutcomeRecorder.RecordSuccessfulHit(_enemy?._aiController?._aiBrain?.blackboard);
@@ -116,6 +138,9 @@ public static class ProjectilePoolManager
         }
 
         GameObject instance = pool.Get();
+        // Scene unload can destroy inactive pooled objects; discard stale entries.
+        while (!instance) instance = pool.Get();
+        ResetPhysics(instance);
         instance.transform.SetPositionAndRotation(position, rotation);
         return instance;
     }

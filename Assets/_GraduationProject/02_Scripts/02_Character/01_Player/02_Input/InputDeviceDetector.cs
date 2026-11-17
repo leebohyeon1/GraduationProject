@@ -11,6 +11,44 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 
     private InputDeviceType _currentInputDevice = InputDeviceType.KeyboardMouse;
     private bool _isDetectionActive = false;
+    public enum GuideDevice { KeyboardMouse, Xbox, PlayStation }
+    public GuideDevice CurrentGuideDevice { get; private set; } = GuideDevice.KeyboardMouse;
+    public UnityEvent<GuideDevice> GuideDeviceChanged { get; } = new UnityEvent<GuideDevice>();
+    private InputDevice _lastDevice;
+
+    public static GuideDevice ClassifyGuideDevice(InputDevice device)
+    {
+        if (!(device is Gamepad)) return GuideDevice.KeyboardMouse;
+        if (device is UnityEngine.InputSystem.DualShock.DualShockGamepad)
+            return GuideDevice.PlayStation;
+        string identity = (device.layout + " " + device.description.manufacturer + " " + device.description.product).ToLowerInvariant();
+        return identity.Contains("dualsense") || identity.Contains("dualshock") || identity.Contains("playstation")
+            ? GuideDevice.PlayStation : GuideDevice.Xbox;
+    }
+
+    private void UpdateGuideDevice(InputDevice device)
+    {
+        _lastDevice = device;
+        var next = ClassifyGuideDevice(device);
+        if (next == CurrentGuideDevice) return;
+        CurrentGuideDevice = next;
+        GuideDeviceChanged.Invoke(next);
+    }
+
+    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (device != _lastDevice) return;
+        if (change != InputDeviceChange.Disconnected && change != InputDeviceChange.Removed &&
+            change != InputDeviceChange.Disabled) return;
+        UpdateGuideDevice(Keyboard.current);
+        SetCurrentInputDevice(InputDeviceType.KeyboardMouse);
+    }
+
+    private void OnDestroy()
+    {
+        StopDetection();
+        if (Instance == this) Instance = null;
+    }
 
     /// <summary>
     /// 현재 활성화된 입력 기기 타입
@@ -33,6 +71,7 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         // 초기 입력 기기 설정
@@ -61,6 +100,7 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 
         // Input System 이벤트 등록
         InputSystem.onActionChange += OnActionChange;
+        InputSystem.onDeviceChange += OnDeviceChange;
 
     }
 
@@ -75,6 +115,7 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
 
         // Input System 이벤트 해제
         InputSystem.onActionChange -= OnActionChange;
+        InputSystem.onDeviceChange -= OnDeviceChange;
     }
 
     /// <summary>
@@ -103,6 +144,7 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
         // 연결된 게임패드가 있는지 확인
         if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
         {
+            UpdateGuideDevice(Gamepad.current);
             SetCurrentInputDevice(InputDeviceType.Gamepad);
         }
         else
@@ -122,6 +164,11 @@ public class InputDeviceDetector : MonoBehaviour, IInputDeviceDetector
         {
             if (obj is InputAction action && action.activeControl != null)
             {
+                var device = action.activeControl.device;
+                if (!(device is Gamepad) && !(device is Keyboard) && !(device is Mouse)) return;
+                // Ignore analog noise/release events when selecting the visible guide family.
+                if (device is Gamepad && action.activeControl.EvaluateMagnitude() < 0.2f) return;
+                UpdateGuideDevice(device);
                 InputDeviceType detectedDevice = DetectInputDeviceFromControl(action.activeControl);
 
                 if (detectedDevice != _currentInputDevice)

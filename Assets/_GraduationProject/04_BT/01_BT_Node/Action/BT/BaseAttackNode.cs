@@ -129,6 +129,7 @@ public abstract class BaseAttackNode : Node
         CharacterController cc = runner.GetComponent<CharacterController>();
         if (cc != null) { _originalStepOffset = cc.stepOffset; cc.stepOffset = 0f; }
 
+        runner.GetComponent<BossRushWeaponTrail>()?.BeginAttack();
         InitialMovementSetup();
         SpeedUp();
 
@@ -250,6 +251,7 @@ public abstract class BaseAttackNode : Node
 
     private void CleanupAllStates()
     {
+        runner.GetComponent<BossRushWeaponTrail>()?.EndAttack();
         SpecificCleanup();
         runner._aiController._aiBrain.StartSkillCooldown(attackKey);
         SpeedRecovery();
@@ -321,8 +323,10 @@ public abstract class BaseAttackNode : Node
             if (dir.sqrMagnitude > 0.001f) runner.transform.rotation = Quaternion.LookRotation(dir);
         }
     }
+    protected virtual bool UsesMeleeHitDetection => true;
     private void HandleHitDetection()
     {
+        if (!UsesMeleeHitDetection) return;
         if (Handler == null || !Handler.IsHitWindowOpen) return;
         var hitResult = AttackHitResolver.ResolveFirstPlayerHit(runner, _data, _hitMasks, _hitBuffer);
         if (!hitResult.DidHit || hitResult.Target == null)

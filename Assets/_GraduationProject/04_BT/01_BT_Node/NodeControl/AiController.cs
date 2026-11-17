@@ -15,6 +15,7 @@ public class AiController : MonoBehaviour, IEventListener<string>
     private bool _runtimeAssetsInitialized;
     public AiBrain _aiBrain { get; private set; }
     private Enemy _enemy;
+    private EnemySpawnIntro _spawnIntro;
     private AIPath _aiPath;
     private Camera _mainCam;
     
@@ -45,6 +46,7 @@ public class AiController : MonoBehaviour, IEventListener<string>
     public void Initialize(Enemy owner, EnemyStatMultiplier statMultiplier = default)
     {
         _enemy = owner;
+        _spawnIntro = GetComponent<EnemySpawnIntro>();
         _aiPath = owner.GetComponent<AIPath>();
         _mainCam = Camera.main;
         _staggerOffset = Random.Range(0, _tickInterval);
@@ -203,6 +205,7 @@ public class AiController : MonoBehaviour, IEventListener<string>
     private void Update()
     {
         if (_enemy == null || _enemy.EnemyHealth.IsDead) return;
+        if (_spawnIntro && !_spawnIntro.Completed) return;
 
         bool isCombat = _aiBrain != null && _aiBrain._isCombat;
         bool isReturningHome = _aiBrain != null && _aiBrain.blackboard.GetValue<bool>("GoHome");
@@ -263,7 +266,7 @@ public class AiController : MonoBehaviour, IEventListener<string>
     }
 
     public bool IsActionable() => _aiBrain?.IsActionable() ?? false;
-    public void CombatEnter(bool combat = true) { if (_aiBrain != null) _aiBrain.CombatEnter(combat); }
+    public void CombatEnter(bool combat = true) { if (combat && _spawnIntro && !_spawnIntro.Completed) return; if (_aiBrain != null) _aiBrain.CombatEnter(combat); }
 
     public void OnEventTrigger(string eventName)
     {

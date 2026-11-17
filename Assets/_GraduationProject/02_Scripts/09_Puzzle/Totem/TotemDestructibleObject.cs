@@ -47,6 +47,7 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
             return;
         }
 
+        UIAudioFeedback.Play(5);
         if (!CanApplyDamage(damageData.AttackType))
         {
             Debug.Log($"[TotemDestructibleObject] Blocked attack. type={damageData.AttackType}, object={name}");

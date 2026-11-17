@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Pathfinding;
 using System;
 
@@ -14,6 +14,13 @@ using System;
 #endif
 public class Enemy : MonoBehaviour
 {
+    private static readonly System.Collections.Generic.HashSet<Enemy> _activeEnemies = new();
+    public static System.Collections.Generic.IEnumerable<Enemy> ActiveEnemies => _activeEnemies;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetActiveEnemies() => _activeEnemies.Clear();
+    private void OnEnable() => _activeEnemies.Add(this);
+    private void OnDisable() => _activeEnemies.Remove(this);
+
     /// <summary>
     /// 몬스터의 기본 스탯 데이터입니다.
     /// </summary>
@@ -287,13 +294,16 @@ public class Enemy : MonoBehaviour
         Debug.Log(sb.ToString());
     }
 
+    [SerializeField] private int _moneyRewardOverride = -1;
+
     public int GetMyCurrentReward()
     {
-        if(enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
+        int baseReward = _moneyRewardOverride >= 0 ? _moneyRewardOverride : enemyStat.MoneyReward;
+        if (enemyStat.RewardSO != null && enemyStat.RewardSO.enemyExtraMoney.TryGetValue(monsterId, out int value))
         {
-            return enemyStat.MoneyReward + value;
+            return baseReward + value;
         }
-        return enemyStat.MoneyReward;
+        return baseReward;
     }
 
     

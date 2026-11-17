@@ -8,7 +8,8 @@ namespace Pathfinding.Util {
 			var result = new List<System.Type>();
 			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies()) {
 				// Skip some assemblies which are known to not contain any graph types, for performance
-				var name = assembly.GetName().Name;
+				// Avoid Mono resolving CodeBase for dynamically loaded editor assemblies.
+				var name = assembly.FullName.Split(',')[0];
 				if (name.StartsWith("Unity.") || name.StartsWith("UnityEngine.") || name == "UnityEngine" || name.StartsWith("UnityEditor.") || name == "UnityEditor" || name.StartsWith("Mono.") || name.StartsWith("System.") || name == "System" || name.StartsWith("mscorlib") || name.StartsWith("I18N") || name == "netstandard" || name == "nunit.framework") continue;
 
 				System.Type[] types = null;

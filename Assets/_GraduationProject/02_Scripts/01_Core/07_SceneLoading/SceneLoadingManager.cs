@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -166,173 +166,174 @@ public class SceneLoadingManager : MonoBehaviour
         StartCoroutine(TeleportCoroutine(targetScene));
     }
 
+    public string LastLoadError { get; private set; }
+    private SceneDataSO _failedTarget;
+    private bool _showLoadFailure;
+    private SpawnMode _failedSpawnMode;
+    private Vector3? _failedSpawnPosition;
+
+    private IEnumerator InitialTeleport(SceneDataSO targetScene) => TeleportCoroutine(targetScene);
+
+    // Drive the iterator here so exceptions cannot strand the loading overlay or lock.
     private IEnumerator TeleportCoroutine(SceneDataSO targetScene)
     {
         IsTeleporting = true;
+        LastLoadError = null;
+        _showLoadFailure = false;
+        var priority = Application.backgroundLoadingPriority;
         Application.backgroundLoadingPriority = ThreadPriority.High;
-
-        // 1. UI 세팅 및 페이드 인 (화면 까맣게)
-        if (_tipText != null)
+        var routine = LoadSceneRoutine(targetScene);
+        try
         {
-            _tipText.text = targetScene.LoadingTip;
-        }
-
-        if (_backgroundImage != null && targetScene.LoadingBackground != null)
-        {
-            _backgroundImage.sprite = targetScene.LoadingBackground;
-        }
-
-        _loadingCanvasGroup.blocksRaycasts = true;
-
-        _loadingCanvasGroup.alpha = 1f;
-        if (_progressImage != null)
-        {
-            _progressImage.fillAmount = 0f;
-        }
-
-        float fadeTimer = 0f;
-        while (fadeTimer < 0.5f)
-        {
-            fadeTimer += Time.deltaTime;
-            _loadingCanvasGroup.alpha = Mathf.Lerp(0f, 1f, fadeTimer / 0.5f);
-            yield return null;
-        }
-
-
-        yield return new WaitForSeconds(0.2f);
-
-        // 2. 기존에 로드된 모든 씬 언로드 (메모리 비우기)
-        List<AsyncOperationHandle> unloadOps = new List<AsyncOperationHandle>();
-        foreach (var chunk in _loadedChunks.Values)
-        {
-            unloadOps.Add(Addressables.UnloadSceneAsync(chunk));
-        }
-
-        foreach (var op in unloadOps)
-        {
-            while (!op.IsDone) yield return null;
-        }
-        _loadedChunks.Clear(); // 명부 초기화
-
-        // 3. 새로운 타겟 씬 로드 (Additive)
-        AsyncOperationHandle<SceneInstance> loadOp = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, false);
-
-        while (!loadOp.IsDone)
-        {
-            if (_progressImage != null)
+            while (true)
             {
-                _progressImage.fillAmount = loadOp.PercentComplete;
+                bool next;
+                object wait = null;
+                try { next = routine.MoveNext(); if (next) wait = routine.Current; }
+                catch (System.Exception error)
+                {
+                    LastLoadError = error.Message;
+                    _failedTarget = targetScene;
+                    _failedSpawnMode = _currentSpawnMode;
+                    _failedSpawnPosition = _customSpawnPosition;
+                    _showLoadFailure = true;
+                    Debug.LogError($"[SceneLoading] Failed to load '{(targetScene ? targetScene.SceneName : "<null>")}': {error}");
+                    break;
+                }
+                if (!next) break;
+                yield return wait;
             }
-
-            yield return null;
         }
-
-        // 로드 완료 처리
-        if (_progressImage != null)
+        finally
         {
-            _progressImage.fillAmount = 1f;
+            (routine as System.IDisposable)?.Dispose();
+            IsTeleporting = false;
+            Application.backgroundLoadingPriority = priority;
+            if (_loadingCanvasGroup)
+            {
+                _loadingCanvasGroup.alpha = 0f;
+                _loadingCanvasGroup.blocksRaycasts = false;
+            }
+            _currentSpawnMode = SpawnMode.Default;
+            _customSpawnPosition = null;
         }
-
-        SceneInstance newSceneInstance = loadOp.Result;
-        _loadedChunks.Add(targetScene.SceneName, newSceneInstance); // 새 씬 명부에 추가
-
-        // 씬 활성화 및 메인 씬으로 세팅
-        AsyncOperation activateOp = newSceneInstance.ActivateAsync();
-        while (!activateOp.isDone)
-        {
-            yield return null;
-        }
-
-        SetActiveChunk(targetScene);
-        SceneManager.SetActiveScene(newSceneInstance.Scene);
-
-        // ==========================================================
-        // 스카이박스 및 환경광(Ambient Light) 즉시 교체
-        // ==========================================================
-        if (targetScene.skyboxMaterial != null)
-        {
-            // 1. 스카이박스 머티리얼 교체
-            RenderSettings.skybox = targetScene.skyboxMaterial;
-
-            // 2. 바뀐 스카이박스에 맞춰서 환경광(주변 빛) 다시 계산
-            DynamicGI.UpdateEnvironment();
-        }
-        // ==========================================================
-
-        // 플레이어 스폰 위치 처리
-        HandlePlayerSpawn(targetScene);
-
-        // 오토 세이브: 씬 이동을 완료하고 플레이어가 배치된 시점의 데이터를 확실하게 저장합니다.
-        if (DataManager.Instance != null && targetScene.SceneName != "Title")
-        {
-            DataManager.Instance.SaveGame();
-        }
-
-        // 4. 페이드 아웃 (화면 밝게)
-        fadeTimer = 0f;
-        while (fadeTimer < _fadeDuration)
-        {
-            fadeTimer += Time.deltaTime;
-            _loadingCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fadeTimer / _fadeDuration);
-            yield return null;
-        }
-        _loadingCanvasGroup.alpha = 0f;
-        _loadingCanvasGroup.blocksRaycasts = false;
-
-        IsTeleporting = false;
-        Application.backgroundLoadingPriority = ThreadPriority.Normal;
     }
 
-    private IEnumerator InitialTeleport(SceneDataSO targetScene)
+    private IEnumerator LoadSceneRoutine(SceneDataSO targetScene)
     {
-        IsTeleporting = true;
+        if (!targetScene || targetScene.SceneReference == null || !targetScene.SceneReference.RuntimeKeyIsValid())
+            throw new System.InvalidOperationException("Missing scene reference.");
 
-        // 2. 기존에 로드된 모든 씬 언로드 (메모리 비우기)
-        List<AsyncOperationHandle> unloadOps = new List<AsyncOperationHandle>();
-        foreach (var chunk in _loadedChunks.Values)
+        // Resolve the key before destroying the current playable scene.
+        var locations = Addressables.LoadResourceLocationsAsync(targetScene.SceneReference.RuntimeKey, typeof(SceneInstance));
+        try
         {
-            unloadOps.Add(Addressables.UnloadSceneAsync(chunk));
+            while (!locations.IsDone) yield return null;
+            if (locations.Status != AsyncOperationStatus.Succeeded || locations.Result == null || locations.Result.Count == 0)
+                throw new System.InvalidOperationException("Scene is absent from the Addressables catalog.", locations.OperationException);
+        }
+        finally { if (locations.IsValid()) Addressables.Release(locations); }
+
+        if (_tipText) _tipText.text = targetScene.LoadingTip;
+        if (_backgroundImage) _backgroundImage.sprite = targetScene.LoadingBackground;
+        if (_progressImage) _progressImage.fillAmount = 0f;
+        if (_loadingCanvasGroup) _loadingCanvasGroup.blocksRaycasts = true;
+        float timer = 0f;
+        while (timer < .5f)
+        {
+            timer += Time.unscaledDeltaTime;
+            if (_loadingCanvasGroup) _loadingCanvasGroup.alpha = Mathf.Clamp01(timer / .5f);
+            yield return null;
         }
 
-        foreach (var op in unloadOps)
+        // Retain handles until checked. autoRelease=true can invalidate an earlier
+        // operation while a later unload is still being polled.
+        var chunks = new List<KeyValuePair<string, SceneInstance>>(_loadedChunks);
+        foreach (var chunk in chunks)
         {
-            while (!op.IsDone)
+            var unload = Addressables.UnloadSceneAsync(chunk.Value, false);
+            try
             {
+                while (!unload.IsDone) yield return null;
+                if (unload.Status != AsyncOperationStatus.Succeeded)
+                    throw new System.InvalidOperationException("Scene unload failed.", unload.OperationException);
+                _loadedChunks.Remove(chunk.Key);
+            }
+            finally { if (unload.IsValid()) Addressables.Release(unload); }
+        }
+        CurrentActiveChunk = null;
+
+        var load = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, true);
+        bool retained = false;
+        try
+        {
+            while (!load.IsDone)
+            {
+                if (_progressImage) _progressImage.fillAmount = load.PercentComplete;
                 yield return null;
             }
+            if (load.Status != AsyncOperationStatus.Succeeded || !load.Result.Scene.IsValid() || !load.Result.Scene.isLoaded)
+                throw new System.InvalidOperationException("Scene load failed.", load.OperationException);
+            _loadedChunks[targetScene.SceneName] = load.Result;
+            retained = true;
+            SetActiveChunk(targetScene);
+            HandlePlayerSpawn(targetScene);
+            if (DataManager.Instance && targetScene.SceneName != "Title") DataManager.Instance.SaveGame();
+            if (_progressImage) _progressImage.fillAmount = 1f;
         }
-        _loadedChunks.Clear(); // 명부 초기화
+        finally { if (!retained && load.IsValid()) Addressables.Release(load); }
 
-        // 3. 새로운 타겟 씬 로드 (Additive)
-        AsyncOperationHandle<SceneInstance> loadOp = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, false);
-
-        while (!loadOp.IsDone)
+        timer = 0f;
+        while (timer < _fadeDuration)
         {
+            timer += Time.unscaledDeltaTime;
+            if (_loadingCanvasGroup) _loadingCanvasGroup.alpha = 1f - Mathf.Clamp01(timer / _fadeDuration);
             yield return null;
         }
+    }
 
-        SceneInstance newSceneInstance = loadOp.Result;
-        _loadedChunks.Add(targetScene.SceneName, newSceneInstance); // 새 씬 명부에 추가
+    public void RetryFailedLoad()
+    {
+        if (!_showLoadFailure || IsTeleporting || !_failedTarget) return;
+        if (_failedSpawnMode == SpawnMode.Custom && _failedSpawnPosition.HasValue)
+            TeleportToScene(_failedTarget, _failedSpawnPosition.Value);
+        else TeleportToScene(_failedTarget, _failedSpawnMode);
+    }
 
-        // 씬 활성화 및 메인 씬으로 세팅
-        AsyncOperation activateOp = newSceneInstance.ActivateAsync();
-        while (!activateOp.isDone)
+    private void Update()
+    {
+        if (!_showLoadFailure || IsTeleporting) return;
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        var pad = UnityEngine.InputSystem.Gamepad.current;
+        if ((keyboard != null && (keyboard.enterKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame || keyboard.fKey.wasPressedThisFrame)) ||
+            (pad != null && pad.buttonSouth.wasPressedThisFrame)) RetryFailedLoad();
+        else if ((keyboard != null && keyboard.escapeKey.wasPressedThisFrame) ||
+            (pad != null && pad.buttonEast.wasPressedThisFrame))
         {
-            yield return null;
+            var title = GetSceneDataByName("Title");
+            if (title) TeleportToScene(title);
         }
+    }
 
-        SetActiveChunk(targetScene);
-
-        // 플레이어 스폰 위치 처리
-        HandlePlayerSpawn(targetScene);
-
-        // 오토 세이브: 씬 이동을 완료하고 플레이어가 배치된 시점의 데이터를 확실하게 저장합니다.
-        if (DataManager.Instance != null && targetScene.SceneName != "Title")
-        {
-            DataManager.Instance.SaveGame();
-        }
-
-        IsTeleporting = false;
+    private void OnGUI()
+    {
+        if (!_showLoadFailure || IsTeleporting) return;
+        // Recovery remains available even if the failed unload left no scene UI.
+        var area = new Rect((Screen.width - 420) * .5f, (Screen.height - 160) * .5f, 420, 160);
+        GUILayout.BeginArea(area, GUI.skin.box);
+        string locale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale?.Identifier.Code ?? "en";
+        string message = locale == "ko" ? "씬을 불러오지 못했습니다. 다시 시도해 주세요." :
+            locale == "ja" ? "シーンを読み込めませんでした。再試行してください。" :
+            locale.StartsWith("zh") ? "无法加载场景，请重试。" : "Unable to load the scene. Please retry.";
+        string retry = locale == "ko" ? "재시도" : locale == "ja" ? "再試行" : locale.StartsWith("zh") ? "重试" : "Retry";
+        string back = locale == "ko" ? "타이틀로 돌아가기" : locale == "ja" ? "タイトルに戻る" : locale.StartsWith("zh") ? "返回标题" : "Return to Title";
+        GUILayout.Label(message);
+        if (_failedTarget && GUILayout.Button(retry, GUILayout.Height(36)))
+            RetryFailedLoad();
+        var title = GetSceneDataByName("Title");
+        if (title && GUILayout.Button(back, GUILayout.Height(36)))
+            TeleportToScene(title);
+        GUILayout.EndArea();
     }
 
     // =================================================================
@@ -398,21 +399,7 @@ public class SceneLoadingManager : MonoBehaviour
                 DynamicGI.UpdateEnvironment();
             }
 
-            // 3. 배경음악(BGM) 자동 재생
-            if (chunkData.BackgroundMusic != null)
-            {
-                MMSoundManager.Instance.PlaySound(
-                    chunkData.BackgroundMusic, 
-                    MMSoundManager.MMSoundManagerTracks.Music, 
-                    Vector3.zero, 
-                    true
-                );
-            }
-            else
-            {
-                // 브금이 지정되지 않은 씬이라면 음악 정지 (필요에 따라 주석 처리)
-                MMSoundManager.Instance.StopTrack(MMSoundManager.MMSoundManagerTracks.Music);
-            }
+            CombatMusicController.Ensure().SetScene(chunkData);
 
             // 4. 타이틀 씬이 아닐 때만 게임 데이터 관련 갱신 수행
             if (chunkName != "Title")
@@ -484,6 +471,27 @@ public class SceneLoadingManager : MonoBehaviour
                 break;
         }
 
+        var checkpointScene = string.IsNullOrEmpty(gameData.PlayerData.RespawnSceneName) ? null : GetSceneDataByName(gameData.PlayerData.RespawnSceneName);
+        if (loadedSceneData.name.StartsWith("Part2-") && checkpointScene && checkpointScene.name == "Part1")
+        {
+            gameData.PlayerData.MainRespawnSceneName = gameData.PlayerData.RespawnSceneName;
+            gameData.PlayerData.MainRespawnPosition = gameData.PlayerData.RespawnPosition;
+        }
+        else if (loadedSceneData.name == "Part1" && checkpointScene && checkpointScene.name.StartsWith("Part2-") &&
+                 !string.IsNullOrEmpty(gameData.PlayerData.MainRespawnSceneName))
+        {
+            gameData.PlayerData.RespawnSceneName = gameData.PlayerData.MainRespawnSceneName;
+            gameData.PlayerData.RespawnPosition = gameData.PlayerData.MainRespawnPosition;
+        }
+
+        // The three side dungeons share one scene, so track the third entrance independently.
+        const string thirdCheckpoint = "checkpoint:Part2-C";
+        if (_currentSpawnMode == SpawnMode.Default && loadedSceneData.name == "Part2-C" && gameData.IsFirstVisit(thirdCheckpoint))
+        {
+            gameData.PlayerData.RespawnPosition = player.transform.position;
+            gameData.PlayerData.RespawnSceneName = loadedSceneData.SceneName;
+            gameData.MarkSceneAsVisited(thirdCheckpoint);
+        }
         // 방문 기록 남기기
         if (gameData.IsFirstVisit(sceneName))
         {

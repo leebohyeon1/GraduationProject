@@ -38,6 +38,7 @@ public class EnemyStateController : MonoBehaviour
     }
     public void SetState(EnemyState newState)
     {
+        if (_owner && _owner.EnemyHealth != null && _owner.EnemyHealth.IsDead && newState != EnemyState.Die) return;
         if (IsStateLocked )
         {
             // 예외 조건: Die 이벤트이거나, (Discover 상태이면서 Hit 이벤트인 경우)
@@ -48,6 +49,8 @@ public class EnemyStateController : MonoBehaviour
 
         if (CurrentState == newState)
         {
+            if (_owner != null && _owner._aiController != null && _owner._aiController._aiBrain != null)
+                Blackboard.SetValue(EnemyBlackboardKeys.CurrentStatus, CurrentState);
             // Debug.Log(string.Format("[StateController : {0}] 상태 변경 시도 (이미 동일 상태): {1}", _owner.name, newState));
             return;
         }

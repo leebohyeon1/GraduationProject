@@ -23,7 +23,7 @@ public class EnemyAnimationBridge : MonoBehaviour
     }
     public void TriggerEvent(string eventNamm,float delay)
     {
-        delayAnimationTrigger(eventNamm, delay);
+        StartCoroutine(delayAnimationTrigger(eventNamm, delay));
     }
     IEnumerator delayAnimationTrigger(string triggerName, float delay)
     {
@@ -53,6 +53,7 @@ public class EnemyAnimationBridge : MonoBehaviour
         
         foreach (var parameter in _animator.parameters)
         {
+            if(parameter.name == "Die" && _owner && _owner.EnemyHealth != null && _owner.EnemyHealth.IsDead) continue;
             if(parameter.name == "IsCombat" || parameter.name == "Stun" || parameter.name == "WeakStun" ) continue; // IsCombat 파라미터는 초기화에서 제외
             if (parameter.name == exceptParameter) continue; // exceptParameter는 초기화에서 제외
             // Debug.Log($"[EnemyAnimationBridge] Resetting parameter '{parameter.name}' of type '{parameter.type}'");

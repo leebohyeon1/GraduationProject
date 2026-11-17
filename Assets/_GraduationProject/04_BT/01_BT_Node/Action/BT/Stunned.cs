@@ -100,6 +100,7 @@ public class Stunned : Node
 
     public override void OnExit()
     {
+        if (runner.EnemyHealth.IsDead) return;
         
         runner.ParrySystem.ClearStun();
         if (Handler != null) Handler.ResetAllFlags();

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
@@ -52,6 +52,7 @@ public class AiBrain
 
     private void CheckPlayerVisibility()
     {
+        blackboard.SetValue(EnemyBlackboardKeys.DistanceBetween, Vector3.Distance(_owner.transform.position, _player.transform.position));
         if (_isCombat || blackboard.GetValue<bool>(EnemyBlackboardKeys.Engage))
         {
             blackboard.SetValue(EnemyBlackboardKeys.IsHasLOS, true);

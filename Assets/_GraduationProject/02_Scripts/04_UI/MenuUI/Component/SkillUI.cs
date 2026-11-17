@@ -4,6 +4,26 @@ using UnityEngine;
 public class SkillUI : MenuUIComponent
 {
     private MenuUI _menuUI;
+    public static SkillUpgradeButtonUI TutorialTarget { get; private set; }
+    public static bool TutorialLocked => TutorialTarget && !TutorialTarget.IsLearned;
+    public static void CompleteTutorial() { TutorialTarget = null; GameNotice.Dismiss(); }
+    private void OnDestroy() { if (TutorialTarget && TutorialTarget.transform.IsChildOf(transform)) CompleteTutorial(); }
+    public void BeginSelectedTutorial()
+    {
+        int index = _upgradeButtonList.FindIndex(b => b.IsSelected);
+        BeginTutorial(index >= 0 ? index : 0);
+    }
+    public void BeginTutorial(int index)
+    {
+        if (index < 0 || index >= _upgradeButtonList.Count) return;
+        var button = _upgradeButtonList[index];
+        if (button.IsLearned || !button.CheckUnlockCondition()) return;
+        // Do not trap a saved character that cannot afford the tutorial purchase.
+        if (!button.HasEnoughMoney()) { GameNotice.Show("돈이 부족합니다."); UIAudioFeedback.Play(7); return; }
+        TutorialTarget = button;
+        GameNotice.Show("스킬을 해금할 수 있습니다. 스킬을 선택하고 상호작용 키를 꾹 눌러 해금하세요.", float.PositiveInfinity, .82f);
+        button.Select();
+    }
 
     [SerializeField] private List<SkillUpgradeButtonUI> _upgradeButtonList;
     [SerializeField] private SkillDescription _skillDescription;
@@ -27,6 +47,11 @@ public class SkillUI : MenuUIComponent
     public override void OnOpen()
     {
         base.OnOpen();
+        if (DragonTotemReward.TutorialPending)
+        {
+            // OpenSkillPanel consumes the pending flag after selecting the reward skill.
+            GameNotice.Show("스킬을 해금할 수 있습니다. 스킬을 선택하고 상호작용 키를 꾹 눌러 해금하세요.", 8f);
+        }
 
         if (_upgradeButtonList != null && _upgradeButtonList.Count > 0)
         {

@@ -19,6 +19,9 @@ public class SceneTransitionInteractor : MonoBehaviour
     [Header("커스텀 좌표 (Custom 선택 시에만 사용)")]
     [SerializeField] private Vector3 _customPosition;
     
+    public GamePlayTagSO completedDungeonTag;
+    public bool completesDungeonOnExit;
+    public bool IsCompletedEntrance => !completesDungeonOnExit && completedDungeonTag && GamePlayTagManager.Instance && GamePlayTagManager.Instance.HasTag(completedDungeonTag.ID);
     private InteractableObject _interactable;
 
     private void Awake()
@@ -44,6 +47,7 @@ public class SceneTransitionInteractor : MonoBehaviour
 
     public void TransitionToScene()
     {
+        if (IsCompletedEntrance) return;
         if (_targetSceneData == null)
         {
             Debug.LogWarning($"[{gameObject.name}] 이동할 SceneDataSO가 할당되지 않았습니다!");
@@ -52,6 +56,7 @@ public class SceneTransitionInteractor : MonoBehaviour
 
         if (SceneLoadingManager.Instance != null)
         {
+            if (completesDungeonOnExit && completedDungeonTag) GamePlayTagManager.Instance.AddTag(completedDungeonTag);
             switch (_spawnType)
             {
                 case SpawnType.Custom:

@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -28,6 +28,8 @@ public class PlayerMoneyUI : PlayerUIBase
 
     public override void Initialize(PlayerController player)
     {
+        if (p_player != null) p_player.Money.MoneyChanged -= OnMoneyChanged;
+        StopAnimations();
         base.Initialize(player);
         p_player = player;
 
@@ -53,8 +55,23 @@ public class PlayerMoneyUI : PlayerUIBase
         _doneCoroutine = null;
     }
 
+    private void StopAnimations()
+    {
+        DOTween.Kill(this);
+        if (_changeText != null) DOTween.Kill(_changeText);
+        if (_doneCoroutine != null) StopCoroutine(_doneCoroutine);
+        _doneCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        StopAnimations();
+        if (_moneyText != null) SetMoneyText(_cachedMoney);
+    }
+
     public override void Dispose()
     {
+        StopAnimations();
         DOTween.Kill(this);
         // 증감 텍스트에 걸린 트윈도 확실히 제거하기 위해 ID로 킬 할수도 있지만, 
         // Kill(this)는 타겟이 'this'인 스크립트가 아니라 이 컴포넌트가 붙은 GameObject 관련 트윈을 끄는 경우가 많으므로
@@ -89,6 +106,12 @@ public class PlayerMoneyUI : PlayerUIBase
         int difference = amount - _cachedMoney; // 변화량 계산
         _cachedMoney = amount; // 현재 금액 갱신
 
+        if (difference == 0 || (transform.parent && !transform.parent.gameObject.activeInHierarchy))
+        {
+            SetMoneyText(amount);
+            return;
+        }
+
         ShowChangeText(difference);
 
         // 3. 메인 UI 활성화 및 페이드 인
@@ -107,7 +130,7 @@ public class PlayerMoneyUI : PlayerUIBase
                     .SetId(this)
                     .OnComplete(() =>
                     {
-                        _doneCoroutine = StartCoroutine(MoneyChangeDone());
+                        if (isActiveAndEnabled) _doneCoroutine = StartCoroutine(MoneyChangeDone());
                     });
             });
     }

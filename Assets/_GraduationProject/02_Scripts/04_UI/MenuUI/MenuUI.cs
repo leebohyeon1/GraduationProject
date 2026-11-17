@@ -62,6 +62,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
     {
         if (_menuPanel.activeSelf)
         {
+            if (SkillUI.TutorialLocked) return;
             _menuPanel.SetActive(false);
             _inputReaderSO.SetInputMode(InputReaderSO.InputMode.Gameplay);
         }
@@ -76,6 +77,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
 
     public void NextComponent()
     {
+        if (SkillUI.TutorialLocked) return;
         _currentComponentIndex = (_currentComponentIndex + 1) % _mainUIComponents.Count;
 
         UpdateComponenet();
@@ -83,6 +85,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
 
     public void PreviousComponent()
     {
+        if (SkillUI.TutorialLocked) return;
         _currentComponentIndex = (_currentComponentIndex - 1 + _mainUIComponents.Count) % _mainUIComponents.Count;
 
         UpdateComponenet();
@@ -129,6 +132,7 @@ public class MenuUI : MonoBehaviour, IEventListener<PlayerController>
             if (_mainUIComponents[2] is SkillUI skillUI)
             {
                 skillUI.SelectSkillByIndex(targetIndex);
+                if (DragonTotemReward.TutorialPending) { DragonTotemReward.TutorialPending=false; skillUI.BeginTutorial(targetIndex); }
             }
         }
     }

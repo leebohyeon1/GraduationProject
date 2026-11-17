@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
@@ -12,6 +12,15 @@ public class PuzzleGridManager : MonoBehaviour
     [SerializeField] private float _cellSize = 2.0f;
     [SerializeField] private Transform _originPoint;
     public UnityEvent ClearEvent;
+    private bool _clearAnnounced;
+    public bool IsSolved => _clearAnnounced;
+    public int CompletedTargetCount => _objectTotems.FindAll(t => t && t.Type != TotemType.Obstacle && t.IsAtTarget).Count;
+    public bool IsPlayerInPuzzle(Vector3 position) {
+        if (!_originPoint) return false;
+        var p = _originPoint.InverseTransformPoint(position);
+        return Mathf.Abs(p.y) < 8f && p.x >= -_cellSize && p.z >= -_cellSize &&
+            p.x <= _gridSize * _cellSize && p.z <= _gridSize * _cellSize;
+    }
 
     [Header("Debug")]
     [SerializeField] private bool _showGridGizmos = true;
@@ -103,7 +112,7 @@ public class PuzzleGridManager : MonoBehaviour
     
     public void CheckWinCondition()
     {
-        if (_objectTotems.Count == 0) return;
+        if (_clearAnnounced || _objectTotems.Count == 0) return;
 
         foreach (var obj in _objectTotems)
         {
@@ -119,6 +128,8 @@ public class PuzzleGridManager : MonoBehaviour
         }
         
         Debug.Log("🎉 PUZZLE SOLVED! Door Opens.");
+        _clearAnnounced = true;
+        UIAudioFeedback.Play(4);
         ClearEvent.Invoke();
     }
     public void BreakAllTotems()
@@ -134,6 +145,7 @@ public class PuzzleGridManager : MonoBehaviour
     /// </summary>
     public void ResetPuzzle()
     {
+        _clearAnnounced = false;
         Debug.Log("[PuzzleGridManager] Resetting Puzzle...");
         
         // 1. 그리드 맵 초기화

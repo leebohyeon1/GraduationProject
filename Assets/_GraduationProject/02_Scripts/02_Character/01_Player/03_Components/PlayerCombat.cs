@@ -295,7 +295,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
         Vector3 attackCenter = GetAttackCenter(data);
         Vector3 halfExtents = data.AttackRadius / 2f;
 
-        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask);
+        Collider[] hitEnemies = Physics.OverlapBox(attackCenter, halfExtents, transform.rotation, _attackLayerMask, QueryTriggerInteraction.Collide);
 
         if (hitEnemies.Length > 0)
         {
@@ -332,8 +332,10 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
             }
         }
 
+        var processedTargets = new HashSet<IDamageable>();
         foreach (Collider obj in hitObjects)
         {
+            if (obj.TryGetComponent<IDamageable>(out var hitTarget) && !processedTargets.Add(hitTarget)) continue;
             // 패링된 적일 경우 넘긴다.
             if (obj.TryGetComponent<IParryable>(out var parryable) && IsEnemyCountered(parryable))
             {
@@ -452,6 +454,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     public void IncreaseHeavyAttackComboIndex()
     {
         _heavyAttackComboIndex++;
+        _heavyAttackConsumedStacks = 0; // Count only stacks spent on this hit.
     }
 
     /// <summary>
@@ -464,12 +467,12 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     }
 
     /// <summary>
-    /// 강공격 가능 여부 확인 (패리 스택이 있고 최대 3콤보까지만 가능하도록 제한)
+    /// 강공격 가능 여부 확인 (스택이 남아 있고 2타를 아직 사용하지 않은 경우)
     /// </summary>
     public bool CanHeavyAttack()
     {
         // 패리 스택이 1개 이상 있어야 함
-        return _counterStacks > 0;
+        return _counterStacks > 0 && _heavyAttackComboIndex < 1;
     }
 
 
@@ -479,7 +482,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     public int CalculateHeavyAttackDamage(int baseDamage)
     {
         // 1타: base * stackMultiplier
-        // 2타 이상: base * stackMultiplier * consumedStacks
+        // 2타: 기본 강공격 피해 * 이번 타격에서 실제 소모한 스택 수
         int modifiedBase = baseDamage + Mathf.RoundToInt(baseDamage);
         float damage = modifiedBase;
         
@@ -544,15 +547,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     /// <summary>
     /// 패리 스택 소모 (강공격 시 호출)
     /// </summary>
-    public void ConsumeCounterStack()
+    public void ConsumeCounterStack(bool consumeAll = false)
     {
-        if (_counterStacks > 0)
-        {
-            _counterStacks--;
-            _heavyAttackConsumedStacks++;
-            _parryStackTimer = _counterStacks > 0 ? _data.CounterStackDuration.Value : 0f;
-            CounterStackChanged?.Invoke(_counterStacks);
-        }
+        int consumed = consumeAll ? _counterStacks : Mathf.Min(1, _counterStacks);
+        _heavyAttackConsumedStacks = consumed;
+        if (consumed <= 0) return;
+
+        _counterStacks -= consumed;
+        _parryStackTimer = _counterStacks > 0 ? _data.CounterStackDuration.Value : 0f;
+        CounterStackChanged?.Invoke(_counterStacks);
     }
 
     /// <summary>
