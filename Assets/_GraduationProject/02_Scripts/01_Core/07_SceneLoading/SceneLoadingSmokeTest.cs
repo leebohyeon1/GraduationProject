@@ -195,10 +195,12 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
         bool inputAudit = args.Contains("--soom-combat-input-audit");
         bool fProjectileAudit = args.Contains("--soom-f-projectile-audit");
         bool fParryAudit = args.Contains("--soom-f-parry-audit");
-        bool compactAudit = soakAudit || feedbackAudit || inputAudit || combatSoakAudit || fProjectileAudit || fParryAudit;
+        bool destructibleAudit = args.Contains("--soom-destructible-audit");
+        bool compactAudit = soakAudit || feedbackAudit || inputAudit || combatSoakAudit || fProjectileAudit || fParryAudit || destructibleAudit;
         // Do not save or unload between the dwell and C entry: that would clear
         // accumulated objects and hide the long-play loading regression.
-        string[] sequence = (fProjectileAudit || fParryAudit) ? new[] { "Part1", "Part2-B", "Part1", "Title" } :
+        string[] sequence = destructibleAudit ? new[] { "Part1", "Title" } :
+            (fProjectileAudit || fParryAudit) ? new[] { "Part1", "Part2-B", "Part1", "Title" } :
             compactAudit ? new[] { "Part1", "Part2-C", "Part1", "Title" } :
             new[] { "Part1", "Save", "Part2-A", "Part1", "Save", "Part2-B", "Part1", "Part2-C", "Part1", "Title" };
         for (int index = 0; index < sequence.Length; index++)
@@ -266,6 +268,12 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
             {
                 var combat = CombatInputRuntimeAudit.Run(player, row => { _steps.Add(row); WriteReport(); });
                 while (combat.MoveNext()) yield return combat.Current;
+            }
+
+            if (destructibleAudit && index == 0)
+            {
+                var blockers = DestructibleBlockerRuntimeAudit.Run(player, row => { _steps.Add(row); WriteReport(); });
+                while (blockers.MoveNext()) yield return blockers.Current;
             }
 
             if (fProjectileAudit && target == "Part2-B")

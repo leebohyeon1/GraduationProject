@@ -15,6 +15,7 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
 
     private int _currentHealth;
     private TotemGimmickState _state = TotemGimmickState.Alive;
+    private BoxCollider[] _passageBlockers;
 
     public int CurrentHealth => _currentHealth;
     public int MaxHealth => _maxHealth;
@@ -27,6 +28,20 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
     {
         _maxHealth = Mathf.Max(1, _maxHealth);
         _currentHealth = _maxHealth;
+
+        // Invisible passage blockers are separate, direct children of the totem.
+        // The authored collider list can contain only a null slot; cache these
+        // boxes explicitly without collecting Rayfire fragment physics.
+        var blockers = new System.Collections.Generic.List<BoxCollider>();
+        foreach (var box in GetComponentsInChildren<BoxCollider>(true))
+        {
+            if (box.transform.parent == transform && !box.isTrigger &&
+                !box.GetComponent<Renderer>() && !box.GetComponent<Rigidbody>() &&
+                !box.GetComponent<RayFire.RayfireRigid>() &&
+                !box.GetComponent<RayFire.RayfireRigidRoot>())
+                blockers.Add(box);
+        }
+        _passageBlockers = blockers.ToArray();
 
         if (_colliders == null || _colliders.Length == 0)
         {
@@ -136,5 +151,10 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
                 blocker.enabled = false;
             }
         }
+
+        // Run before DestroyedStart activates and launches the pre-cut pieces.
+        if (_passageBlockers != null)
+            foreach (var blocker in _passageBlockers)
+                if (blocker) blocker.enabled = false;
     }
 }

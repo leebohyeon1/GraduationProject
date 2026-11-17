@@ -74,8 +74,25 @@ public class InputGuideUI : MonoBehaviour
                 selectedSprite = System.Array.Find(config.keyboardSprites, s => s && s.name == key);
         }
         bool useSprite = selectedSprite != null;
-        if (_image) { _image.preserveAspect = true; _image.enabled = useSprite; if (useSprite) _image.sprite = selectedSprite; }
-        if (_label) { _label.text = label; _label.enabled = !useSprite; }
+        if (_image)
+        {
+            _image.preserveAspect = true;
+            _image.enabled = useSprite;
+            if (useSprite)
+            {
+                _image.sprite = selectedSprite;
+                if (selectedSprite.name == "rmb" && !_image.GetComponent<RmbSingleLineGuideEffect>())
+                    _image.gameObject.AddComponent<RmbSingleLineGuideEffect>();
+            }
+        }
+        if (_label)
+        {
+            // Binding names are single keycaps; keep text fallback on one baseline.
+            _label.textWrappingMode = TextWrappingModes.NoWrap;
+            _label.alignment = TextAlignmentOptions.Center;
+            _label.text = label;
+            _label.enabled = !useSprite;
+        }
         _shown = true;
     }
 
