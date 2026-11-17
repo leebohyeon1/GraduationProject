@@ -38,6 +38,11 @@ public class Task_ChasePlayerNode : Node
         float distance = Vector3.Distance(runner.transform.position, runner.player.transform.position);
         if(distance <= Distance)
         {
+            // Reaching the chase destination ends chasing. Keeping Chase here
+            // excludes follow-up attacks whose existing condition requires Idle.
+            if (runner.CurrentState == EnemyStateController.EnemyState.Chase &&
+                runner._stateController != null && !runner._stateController.IsStateLocked)
+                runner.SetState(EnemyStateController.EnemyState.Idle);
             return NodeState.SUCCESS;
         }
         return NodeState.RUNNING;

@@ -126,5 +126,15 @@ public class TotemDestructibleObject : MonoBehaviour, IDamageable
 
             _colliders[i].enabled = false;
         }
+
+        // Root blockers can be added after the serialized collider list was assigned.
+        // Leave unlisted child debris colliders to their destruction feedback/physics.
+        foreach (Collider blocker in GetComponents<Collider>())
+        {
+            if (blocker != null && !blocker.isTrigger)
+            {
+                blocker.enabled = false;
+            }
+        }
     }
 }

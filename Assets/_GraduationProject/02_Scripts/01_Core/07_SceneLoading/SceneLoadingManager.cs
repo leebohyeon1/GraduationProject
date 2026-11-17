@@ -30,7 +30,12 @@ public class SceneLoadingManager : MonoBehaviour
 
     // 2. 이름을 검색하면 씬 데이터를 즉시 찾아주는 사전(Dictionary)
     private Dictionary<string, SceneDataSO> _sceneDataLookup = new Dictionary<string, SceneDataSO>();
+    private readonly Dictionary<string, SceneDataSO> _persistentSceneData = new Dictionary<string, SceneDataSO>();
     private Dictionary<string, SceneInstance> _loadedChunks = new Dictionary<string, SceneInstance>();
+    // Non-owning copies: the loaded scene owns these until a transition takes a
+    // temporary reference. Never acquire/release the scene load handle itself.
+    private readonly Dictionary<string, List<AsyncOperationHandle>> _chunkDependencies = new Dictionary<string, List<AsyncOperationHandle>>();
+    private bool _retainTransitionDependencies = true;
 
     // 중복 로딩 방지용 플래그
     public bool IsTeleporting { get; private set; } = false;
@@ -49,12 +54,16 @@ public class SceneLoadingManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            _retainTransitionDependencies = System.Array.IndexOf(System.Environment.GetCommandLineArgs(),
+                "--soom-disable-transition-retention") < 0;
 
             // 게임이 켜질 때, 데이터베이스의 리스트를 Dictionary로 변환
             if (SceneDatabase != null)
             {
                 foreach (var sceneData in SceneDatabase.AllScenes)
                 {
+                    if (!sceneData) continue;
+                    _persistentSceneData[sceneData.name] = sceneData;
                     if (!_sceneDataLookup.ContainsKey(sceneData.SceneName))
                     {
                         _sceneDataLookup.Add(sceneData.SceneName, sceneData);
@@ -177,11 +186,17 @@ public class SceneLoadingManager : MonoBehaviour
     // Drive the iterator here so exceptions cannot strand the loading overlay or lock.
     private IEnumerator TeleportCoroutine(SceneDataSO targetScene)
     {
+        // A portal's bundled copy is destroyed when its source scene unloads.
+        // Keep the CoreScene database instance instead. Asset names distinguish
+        // Part2-A/B/C, which deliberately share the same displayed SceneName.
+        string targetAssetName = targetScene ? targetScene.name : "<null>";
+        targetScene = _persistentSceneData.TryGetValue(targetAssetName, out var persistentData) ? persistentData : null;
         IsTeleporting = true;
         LastLoadError = null;
         _showLoadFailure = false;
         var priority = Application.backgroundLoadingPriority;
         Application.backgroundLoadingPriority = ThreadPriority.High;
+        var elapsed = System.Diagnostics.Stopwatch.StartNew();
         var routine = LoadSceneRoutine(targetScene);
         try
         {
@@ -197,7 +212,7 @@ public class SceneLoadingManager : MonoBehaviour
                     _failedSpawnMode = _currentSpawnMode;
                     _failedSpawnPosition = _customSpawnPosition;
                     _showLoadFailure = true;
-                    Debug.LogError($"[SceneLoading] Failed to load '{(targetScene ? targetScene.SceneName : "<null>")}': {error}");
+                    Debug.LogError($"[SceneLoading] Failed to load '{targetAssetName}' after {elapsed.Elapsed.TotalSeconds:F2}s: {error}");
                     break;
                 }
                 if (!next) break;
@@ -216,13 +231,21 @@ public class SceneLoadingManager : MonoBehaviour
             }
             _currentSpawnMode = SpawnMode.Default;
             _customSpawnPosition = null;
+            Debug.Log($"[SceneLoading] '{targetAssetName}' finished in {elapsed.Elapsed.TotalSeconds:F2}s; success={LastLoadError == null}.");
         }
     }
 
     private IEnumerator LoadSceneRoutine(SceneDataSO targetScene)
     {
+        var phase = System.Diagnostics.Stopwatch.StartNew();
         if (!targetScene || targetScene.SceneReference == null || !targetScene.SceneReference.RuntimeKeyIsValid())
             throw new System.InvalidOperationException("Missing scene reference.");
+
+        // Aliases A/B/C use one physical scene. Collect unused assets when changing
+        // physical scenes (and on return to Title), while keeping save/retry fast.
+        bool collectPreviousSceneAssets = _retainTransitionDependencies && CurrentActiveChunk &&
+            (targetScene.name == "Title" || CurrentActiveChunk.SceneReference == null ||
+             CurrentActiveChunk.SceneReference.AssetGUID != targetScene.SceneReference.AssetGUID);
 
         // Resolve the key before destroying the current playable scene.
         var locations = Addressables.LoadResourceLocationsAsync(targetScene.SceneReference.RuntimeKey, typeof(SceneInstance));
@@ -233,6 +256,7 @@ public class SceneLoadingManager : MonoBehaviour
                 throw new System.InvalidOperationException("Scene is absent from the Addressables catalog.", locations.OperationException);
         }
         finally { if (locations.IsValid()) Addressables.Release(locations); }
+        Debug.Log($"[SceneLoading] '{targetScene.name}' resolve: {phase.Elapsed.TotalSeconds:F2}s");
 
         if (_tipText) _tipText.text = targetScene.LoadingTip;
         if (_backgroundImage) _backgroundImage.sprite = targetScene.LoadingBackground;
@@ -249,39 +273,71 @@ public class SceneLoadingManager : MonoBehaviour
         // Retain handles until checked. autoRelease=true can invalidate an earlier
         // operation while a later unload is still being polled.
         var chunks = new List<KeyValuePair<string, SceneInstance>>(_loadedChunks);
-        foreach (var chunk in chunks)
-        {
-            var unload = Addressables.UnloadSceneAsync(chunk.Value, false);
-            try
-            {
-                while (!unload.IsDone) yield return null;
-                if (unload.Status != AsyncOperationStatus.Succeeded)
-                    throw new System.InvalidOperationException("Scene unload failed.", unload.OperationException);
-                _loadedChunks.Remove(chunk.Key);
-            }
-            finally { if (unload.IsValid()) Addressables.Release(unload); }
-        }
-        CurrentActiveChunk = null;
-
-        var load = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, true);
-        bool retained = false;
+        var transitionDependencies = new List<AsyncOperationHandle>();
         try
         {
-            while (!load.IsDone)
+            if (_retainTransitionDependencies)
+                AcquireTransitionDependencies(chunks, transitionDependencies);
+            Debug.Log($"[SceneLoading] '{targetScene.name}' transition retention={_retainTransitionDependencies}; dependencyGroups={transitionDependencies.Count}");
+
+            phase.Restart();
+            foreach (var chunk in chunks)
             {
-                if (_progressImage) _progressImage.fillAmount = load.PercentComplete;
-                yield return null;
+                var unload = Addressables.UnloadSceneAsync(chunk.Value, false);
+                try
+                {
+                    while (!unload.IsDone) yield return null;
+                    if (unload.Status != AsyncOperationStatus.Succeeded)
+                        throw new System.InvalidOperationException("Scene unload failed.", unload.OperationException);
+                    _loadedChunks.Remove(chunk.Key);
+                    _chunkDependencies.Remove(chunk.Key);
+                }
+                finally { if (unload.IsValid()) Addressables.Release(unload); }
             }
-            if (load.Status != AsyncOperationStatus.Succeeded || !load.Result.Scene.IsValid() || !load.Result.Scene.isLoaded)
-                throw new System.InvalidOperationException("Scene load failed.", load.OperationException);
-            _loadedChunks[targetScene.SceneName] = load.Result;
-            retained = true;
-            SetActiveChunk(targetScene);
-            HandlePlayerSpawn(targetScene);
-            if (DataManager.Instance && targetScene.SceneName != "Title") DataManager.Instance.SaveGame();
-            if (_progressImage) _progressImage.fillAmount = 1f;
+            CurrentActiveChunk = null;
+            Debug.Log($"[SceneLoading] '{targetScene.name}' unload: {phase.Elapsed.TotalSeconds:F2}s");
+
+            phase.Restart();
+            var load = Addressables.LoadSceneAsync(targetScene.SceneReference, LoadSceneMode.Additive, true);
+            bool retained = false;
+            try
+            {
+                while (!load.IsDone)
+                {
+                    if (_progressImage) _progressImage.fillAmount = load.PercentComplete;
+                    yield return null;
+                }
+                if (load.Status != AsyncOperationStatus.Succeeded || !load.Result.Scene.IsValid() || !load.Result.Scene.isLoaded)
+                    throw new System.InvalidOperationException("Scene load failed.", load.OperationException);
+                TrackChunkDependencies(targetScene.SceneName, load);
+                _loadedChunks[targetScene.SceneName] = load.Result;
+                retained = true;
+                Debug.Log($"[SceneLoading] '{targetScene.name}' load: {phase.Elapsed.TotalSeconds:F2}s");
+                phase.Restart();
+                SetActiveChunk(targetScene);
+                HandlePlayerSpawn(targetScene);
+                if (DataManager.Instance && targetScene.SceneName != "Title") DataManager.Instance.SaveGame();
+                if (_progressImage) _progressImage.fillAmount = 1f;
+                Debug.Log($"[SceneLoading] '{targetScene.name}' setup: {phase.Elapsed.TotalSeconds:F2}s");
+            }
+            finally { if (!retained && load.IsValid()) Addressables.Release(load); }
         }
-        finally { if (!retained && load.IsValid()) Addressables.Release(load); }
+        finally
+        {
+            // The new scene now owns shared dependencies. Release our temporary
+            // references also on failure/cancellation, before fading back to play.
+            foreach (var dependency in transitionDependencies)
+                if (dependency.IsValid()) Addressables.Release(dependency);
+        }
+
+        if (collectPreviousSceneAssets)
+        {
+            phase.Restart();
+            long before = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();
+            yield return Resources.UnloadUnusedAssets();
+            long after = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();
+            Debug.Log($"[SceneLoading] '{targetScene.name}' unused assets: {phase.Elapsed.TotalSeconds:F2}s; allocatedMB={before / 1048576}->{after / 1048576}");
+        }
 
         timer = 0f;
         while (timer < _fadeDuration)
@@ -289,6 +345,29 @@ public class SceneLoadingManager : MonoBehaviour
             timer += Time.unscaledDeltaTime;
             if (_loadingCanvasGroup) _loadingCanvasGroup.alpha = 1f - Mathf.Clamp01(timer / _fadeDuration);
             yield return null;
+        }
+    }
+
+    private void TrackChunkDependencies(string chunkName, AsyncOperationHandle<SceneInstance> load)
+    {
+        var dependencies = new List<AsyncOperationHandle>();
+        load.GetDependencies(dependencies);
+        _chunkDependencies[chunkName] = dependencies;
+    }
+
+    private void AcquireTransitionDependencies(List<KeyValuePair<string, SceneInstance>> chunks, List<AsyncOperationHandle> retained)
+    {
+        var seen = new HashSet<AsyncOperationHandle>();
+        foreach (var chunk in chunks)
+        {
+            if (!_chunkDependencies.TryGetValue(chunk.Key, out var dependencies)) continue;
+            foreach (var dependency in dependencies)
+            {
+                if (!dependency.IsValid() || !dependency.IsDone || dependency.Status != AsyncOperationStatus.Succeeded ||
+                    dependency.Result is SceneInstance || !seen.Add(dependency)) continue;
+                Addressables.ResourceManager.Acquire(dependency);
+                retained.Add(dependency);
+            }
         }
     }
 
@@ -353,6 +432,7 @@ public class SceneLoadingManager : MonoBehaviour
                 // 로드되는 사이 다른 곳에서 로드했을 수도 있으니 더블 체크
                 if (!_loadedChunks.ContainsKey(chunkName))
                 {
+                    TrackChunkDependencies(chunkName, handle);
                     _loadedChunks.Add(chunkName, handle.Result);
                     Debug.Log($"[Level Streaming] {chunkName} 로드 완료!");
                 }
@@ -371,6 +451,7 @@ public class SceneLoadingManager : MonoBehaviour
         if (_loadedChunks.TryGetValue(chunkName, out SceneInstance sceneToUnload))
         {
             _loadedChunks.Remove(chunkName); // 중복 삭제 방지를 위해 명부에서 먼저 제거
+            _chunkDependencies.Remove(chunkName);
 
             Addressables.UnloadSceneAsync(sceneToUnload).Completed += (handle) =>
             {
@@ -391,6 +472,11 @@ public class SceneLoadingManager : MonoBehaviour
 
             // 1. 유니티 시스템상의 메인 씬(Active Scene) 교체! 
             SceneManager.SetActiveScene(sceneInstance.Scene);
+
+            // Successful path requests can produce thousands of lines per session.
+            // Keep failures visible in release builds without per-path disk traffic.
+            if (!Debug.isDebugBuild && AstarPath.active != null)
+                AstarPath.active.logPathResults = Pathfinding.PathLog.OnlyErrors;
 
             // 2. 스카이박스나 조명 교체 (Title 씬이어도 시각적 요소는 갱신)
             if (chunkData.skyboxMaterial != null)
@@ -448,6 +534,8 @@ public class SceneLoadingManager : MonoBehaviour
         CharacterController cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 
+        try
+        {
         switch (_currentSpawnMode)
         {
             case SpawnMode.Custom:
@@ -497,12 +585,13 @@ public class SceneLoadingManager : MonoBehaviour
         {
             gameData.MarkSceneAsVisited(sceneName);
         }
-
-        // 초기화
-        _customSpawnPosition = null;
-        _currentSpawnMode = SpawnMode.Default;
-
-        // 4. 컨트롤러 다시 활성화 (이동이 끝난 후)
-        if (cc != null) cc.enabled = true;
+        }
+        finally
+        {
+            _customSpawnPosition = null;
+            _currentSpawnMode = SpawnMode.Default;
+            // Never leave movement disabled if checkpoint/spawn bookkeeping fails.
+            if (cc != null) cc.enabled = true;
+        }
     }
 }

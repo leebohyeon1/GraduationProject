@@ -171,7 +171,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
         Vector3 attackCenter = p_owner.Combat.GetAttackCenter(_ChargeAttackConfig.BaseAttackConfig);
         Vector3 halfExtents = _ChargeAttackConfig.AttackRadius / 2f;
 
-        Collider[] hitObjects = ProjectileParryOverlap.Find(p_owner, attackCenter, halfExtents);
+        Collider[] hitObjects = ProjectileParryOverlap.Find(p_owner, attackCenter, halfExtents, includeArcingProjectiles: true);
 
         if (hitObjects.Length > 0)
         {

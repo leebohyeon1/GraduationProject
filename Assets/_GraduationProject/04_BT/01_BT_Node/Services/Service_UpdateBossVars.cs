@@ -30,6 +30,9 @@ public class Service_UpdateBossVars : ServiceNode
     {
         _accumulatedTime = 0f;
         brain.blackboard.SetValue(ResultKey, false);
+        // Blackboard keeps bool and float values in separate typed stores.
+        // Existing long-range logic reads the flag; mid-range logic reads seconds.
+        brain.blackboard.SetValue(ResultKey, 0f);
 
     }
     protected override void OnServiceLogic()
@@ -64,6 +67,7 @@ public class Service_UpdateBossVars : ServiceNode
         // 2. ?쒓컙 ?꾩쟻 (珥덇린??援ш컙???꾨땲?쇰㈃ 臾댁“嫄??꾩쟻)
         // ?뚮젅?댁뼱媛 Boundary 援ъ뿭 ?덉뿉 ?덇퀬 Reset 援ъ뿭???덉? ?딅떎硫?臾댁“嫄??쒓컙???볦엯?덈떎.
         _accumulatedTime += UpdateInterval;
+        brain.blackboard.SetValue(ResultKey, _accumulatedTime);
 
         Debug.Log(_accumulatedTime);
         // 3. ?꾧퀎移??꾨떖 ??釉붾옓蹂대뱶 ?뚮옒洹??쒖꽦??

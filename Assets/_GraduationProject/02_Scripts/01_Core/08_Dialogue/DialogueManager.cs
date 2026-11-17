@@ -47,6 +47,11 @@ public class DialogueManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_inputReader != null)
+        {
+            _inputReader.SubmitEvent -= OnSubmit;
+        }
+
         if (GamePlayTagManager.Instance != null)
         {
             GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;

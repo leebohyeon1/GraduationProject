@@ -1,5 +1,5 @@
 using DanielIlett.SnapshotShaders2.URP;
-using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -18,21 +18,27 @@ public class RadialBlurFeedback : MonoBehaviour
     public float DurationOut = 1.0f;
 
     private BlurSettings blurSettings;
-    private Sequence blurSequence; // DOTween 시퀀스 관리를 위한 변수
+    private Coroutine _pulseRoutine;
 
     void Start()
     {
+        InitializeBlur();
+    }
+
+    private bool InitializeBlur()
+    {
+        if (blurSettings != null) return true;
         if (postProcessVolume == null)
         {
             Debug.LogError("Post Process Volume이 할당되지 않았습니다!");
-            return;
+            return false;
         }
 
         // 볼륨 프로필에서 BlurSettings를 찾아옵니다.
         if (!postProcessVolume.profile.TryGet<BlurSettings>(out blurSettings))
         {
             Debug.LogError("할당된 Volume Profile에서 BlurSettings를 찾을 수 없습니다.");
-            return;
+            return false;
         }
 
         // --- 초기 설정 ---
@@ -43,6 +49,7 @@ public class RadialBlurFeedback : MonoBehaviour
         // 초기에는 효과 비활성화
         blurSettings.active = false;
         blurSettings.strength.value = 0;
+        return true;
     }
 
     /// <summary>
@@ -68,47 +75,38 @@ public class RadialBlurFeedback : MonoBehaviour
     /// </summary>
     public void TriggerBlurPulse(int intensity, float durationIn, float activeDuration, float durationOut)
     {
-        if (blurSettings == null) return;
+        if (!InitializeBlur()) return;
 
-        // 실행 중인 시퀀스가 있다면 중복 실행을 막기 위해 종료
-        if (blurSequence != null && blurSequence.IsActive())
-        {
-            blurSequence.Kill();
-        }
+        if (_pulseRoutine != null) StopCoroutine(_pulseRoutine);
+        _pulseRoutine = StartCoroutine(Pulse(Mathf.Max(2, intensity), Mathf.Max(0, durationIn),
+            Mathf.Max(0, activeDuration), Mathf.Max(0, durationOut)));
+    }
 
-        // 1. 블러 효과를 활성화합니다.
+    private IEnumerator Pulse(int intensity, float durationIn, float activeDuration, float durationOut)
+    {
         blurSettings.active = true;
-
-        // 2. DOTween 시퀀스를 생성합니다.
-        blurSequence = DOTween.Sequence();
-
-        // 3. "페이드 In" (강도를 0에서 intensity까지 증가)
-        blurSequence.Append(
-            DOTween.To(
-                () => blurSettings.strength.value,      // getter: 현재 값
-                x => blurSettings.strength.value = x, // setter: 값 설정
-                intensity,                        // targetValue: 목표 값
-                durationIn // duration: 소요 시간
-            ).SetEase(Ease.OutQuad) // 부드럽게 설정
-        );
-
-        blurSequence.AppendInterval(activeDuration); // 최대 강도에서 잠시 유지   
-
-        // 4. "페이드 Out" (강도를 intensity에서 0으로 감소)
-        blurSequence.Append(
-            DOTween.To(
-                () => blurSettings.strength.value,
-                x => blurSettings.strength.value = x,
-                0,                                      // 0으로 되돌림
-                durationOut
-            ).SetEase(Ease.InQuad) // 부드럽게 설정
-        );
-
-        // 5. 시퀀스가 완료되면 효과를 비활성화합니다.
-        blurSequence.OnComplete(() =>
+        float startStrength = blurSettings.strength.value;
+        for (float elapsed = 0f; elapsed < durationIn; elapsed += Time.unscaledDeltaTime)
         {
-            blurSettings.active = false;
-        });
+            float progress = elapsed / durationIn;
+            blurSettings.strength.value = Mathf.RoundToInt(Mathf.Lerp(startStrength, intensity, 1f - (1f - progress) * (1f - progress)));
+            yield return null;
+        }
+        // A shader/VFX loading hitch used to consume an entire short tween before
+        // it rendered once. Always present the peak for at least one frame.
+        blurSettings.strength.value = intensity;
+        yield return null;
+        for (float elapsed = 0f; elapsed < activeDuration; elapsed += Time.unscaledDeltaTime)
+            yield return null;
+        for (float elapsed = 0f; elapsed < durationOut; elapsed += Time.unscaledDeltaTime)
+        {
+            float progress = elapsed / durationOut;
+            blurSettings.strength.value = Mathf.RoundToInt(Mathf.Lerp(intensity, 1f, progress * progress));
+            yield return null;
+        }
+        blurSettings.strength.value = 1;
+        blurSettings.active = false;
+        _pulseRoutine = null;
     }
 
     /// <summary>
@@ -161,10 +159,19 @@ public class RadialBlurFeedback : MonoBehaviour
 
     void OnDestroy()
     {
-        // 오브젝트가 파괴될 때 실행 중인 트윈을 중단
-        if (blurSequence != null)
+        StopPulse();
+    }
+
+    void OnDisable() => StopPulse();
+
+    private void StopPulse()
+    {
+        if (_pulseRoutine != null) StopCoroutine(_pulseRoutine);
+        _pulseRoutine = null;
+        if (blurSettings != null)
         {
-            blurSequence.Kill();
+            blurSettings.strength.value = 0;
+            blurSettings.active = false;
         }
     }
 }

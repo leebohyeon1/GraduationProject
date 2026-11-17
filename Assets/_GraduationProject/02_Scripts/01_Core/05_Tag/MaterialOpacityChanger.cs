@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,11 @@ public class MaterialOpacityChanger : MonoBehaviour
     [SerializeField] private int _materialIndex = 0;
 
     private Renderer _renderer;
+    private MaterialPropertyBlock _propertyBlock;
+    private readonly List<Material> _sharedMaterials = new List<Material>();
+    private static readonly int OpacityId = Shader.PropertyToID("_Opacity");
+    private static readonly int LegacyOpacityId = Shader.PropertyToID("Opacity");
+    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
 
     private void Awake()
     {
@@ -31,12 +37,16 @@ public class MaterialOpacityChanger : MonoBehaviour
         if (!_renderer) _renderer = GetComponent<Renderer>();
         if (_renderer != null)
         {
+            // Reading Renderer.materials implicitly creates native material copies.
+            // Keep the shared assets and override only this renderer's properties.
+            _renderer.GetSharedMaterials(_sharedMaterials);
+            if (_propertyBlock == null) _propertyBlock = new MaterialPropertyBlock();
             if (_targetSpecificMaterial)
             {
                 // 특정 인덱스의 메테리얼만 변경
-                if (_materialIndex >= 0 && _materialIndex < _renderer.materials.Length)
+                if (_materialIndex >= 0 && _materialIndex < _sharedMaterials.Count)
                 {
-                    ChangeOpacity(_renderer.materials[_materialIndex], opacity);
+                    ChangeOpacity(_materialIndex, _sharedMaterials[_materialIndex], opacity);
                 }
                 else
                 {
@@ -46,9 +56,9 @@ public class MaterialOpacityChanger : MonoBehaviour
             else
             {
                 // 모든 메테리얼 변경
-                foreach (Material mat in _renderer.materials)
+                for (int i = 0; i < _sharedMaterials.Count; i++)
                 {
-                    ChangeOpacity(mat, opacity);
+                    ChangeOpacity(i, _sharedMaterials[i], opacity);
                 }
             }
         }
@@ -58,22 +68,29 @@ public class MaterialOpacityChanger : MonoBehaviour
         }
     }
 
-    private void ChangeOpacity(Material mat, float opacity)
+    private void ChangeOpacity(int materialIndex, Material mat, float opacity)
     {
+        if (!mat) return;
+        _renderer.GetPropertyBlock(_propertyBlock, materialIndex);
+        // Preserve renderer-wide properties when adding its first indexed block.
+        if (_propertyBlock.isEmpty) _renderer.GetPropertyBlock(_propertyBlock);
         // 쉐이더의 프로퍼티 이름이 _Opacity 또는 Opacity인 경우 처리
-        if (mat.HasProperty("_Opacity"))
+        if (mat.HasProperty(OpacityId))
         {
-            mat.SetFloat("_Opacity", opacity);
+            _propertyBlock.SetFloat(OpacityId, opacity);
         }
-        else if (mat.HasProperty("Opacity"))
+        else if (mat.HasProperty(LegacyOpacityId))
         {
-            mat.SetFloat("Opacity", opacity);
+            _propertyBlock.SetFloat(LegacyOpacityId, opacity);
         }
-        else if (mat.HasProperty("_BaseColor")) // URP 기본 쉐이더 대응용 백업
+        else if (mat.HasProperty(BaseColorId)) // URP 기본 쉐이더 대응용 백업
         {
-            Color color = mat.GetColor("_BaseColor");
+            Color color = _propertyBlock.HasColor(BaseColorId)
+                ? _propertyBlock.GetColor(BaseColorId) : mat.GetColor(BaseColorId);
             color.a = opacity;
-            mat.SetColor("_BaseColor", color);
+            _propertyBlock.SetColor(BaseColorId, color);
         }
+        else return;
+        _renderer.SetPropertyBlock(_propertyBlock, materialIndex);
     }
 }

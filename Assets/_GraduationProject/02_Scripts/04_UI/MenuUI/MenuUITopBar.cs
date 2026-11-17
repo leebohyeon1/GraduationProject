@@ -32,9 +32,11 @@ public class MenuUITopBar : MenuUIComponent
 
     public override void Initialize(MenuUI menu)
     {
+        if (_isInitialized) Dispose();
         base.Initialize(menu);
         _menu = menu;
-        _moneyTextOriginScale = _moneyText.rectTransform.localScale;
+        if (_menu == null) return;
+        if (_moneyText != null) _moneyTextOriginScale = _moneyText.rectTransform.localScale;
         _isInitialized = true;
 
         _menu.UIComponentUpdated += OnUIComponentUpdated;
@@ -49,7 +51,7 @@ public class MenuUITopBar : MenuUIComponent
     {
         DOTween.Kill(this);
 
-        if (_isInitialized)
+        if (_isInitialized && _moneyText != null)
         {
             _moneyText.rectTransform.localScale = _moneyTextOriginScale;
         }
@@ -74,7 +76,9 @@ public class MenuUITopBar : MenuUIComponent
     {
         base.Dispose();
 
-        _menu.UIComponentUpdated -= OnUIComponentUpdated;
+        // A scene may be unloaded before MenuUI.Start initializes this component.
+        if (_menu != null) _menu.UIComponentUpdated -= OnUIComponentUpdated;
+        _menu = null;
 
         if (_playerMoney != null)
         {
@@ -83,11 +87,16 @@ public class MenuUITopBar : MenuUIComponent
         }
 
         DOTween.Kill(this);
-        _moneyText.rectTransform.localScale = _moneyTextOriginScale;
+        if (_isInitialized && _moneyText != null)
+            _moneyText.rectTransform.localScale = _moneyTextOriginScale;
+        _isInitialized = false;
     }
+
+    private void OnDestroy() => Dispose();
 
     private void AnimateMoneyText(int money)
     {
+        if (!_isInitialized || _moneyText == null) return;
         DOTween.Kill(this);
         _moneyText.rectTransform.localScale = _moneyTextOriginScale;
 
@@ -110,7 +119,7 @@ public class MenuUITopBar : MenuUIComponent
     private void SetMoneyText(int money)
     {
         _displayedMoney = money;
-        _moneyText.text = money.ToString();
+        if (_moneyText != null) _moneyText.text = money.ToString();
     }
 
     public void OnUIComponentUpdated(int currentIndex)

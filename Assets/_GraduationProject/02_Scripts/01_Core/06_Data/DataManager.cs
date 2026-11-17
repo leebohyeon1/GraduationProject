@@ -45,6 +45,7 @@ public class DataManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return; // A scene-local duplicate must not reload the save file.
         }
 
         LoadGame();

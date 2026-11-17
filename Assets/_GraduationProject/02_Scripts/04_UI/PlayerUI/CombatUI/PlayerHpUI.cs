@@ -30,10 +30,12 @@ public class PlayerHpUI : PlayerUIBase
     /// <param name="player"></param>
     public override void Initialize(PlayerController player)
     {
+        Dispose();
+        if (player == null || player.Health == null) return;
         base.Initialize(player);
 
         float initialRatio = (float)p_player.Health.CurrentHealth / p_player.Health.MaxHealth;
-        _hpBarImage.fillAmount = initialRatio;
+        if (_hpBarImage != null) _hpBarImage.fillAmount = initialRatio;
 
         if (_backHpBarImage != null)
         {
@@ -54,25 +56,44 @@ public class PlayerHpUI : PlayerUIBase
         }
 
         // 트윈이 돌고 있는 상태에서 오브젝트가 해제되면 에러가 날 수 있으므로 Kill
-        DOTween.Kill(_backHpBarImage);
+        KillBackBarTween();
+        p_player = null;
+        base.Dispose();
+    }
+
+    private void OnDisable() => KillBackBarTween();
+    private void OnDestroy() => Dispose();
+
+    private void OnEnable()
+    {
+        if (p_player == null || p_player.Health == null) return;
+        float ratio = (float)p_player.Health.CurrentHealth / p_player.Health.MaxHealth;
+        if (_hpBarImage != null) _hpBarImage.fillAmount = ratio;
+        if (_backHpBarImage != null) _backHpBarImage.fillAmount = ratio;
+    }
+
+    private void KillBackBarTween()
+    {
+        if (_backHpBarImage != null) DOTween.Kill(_backHpBarImage);
     }
 
     // 체력 변경 이벤트 처리
     private void OnHealthChanged(int previousHealth, int currentHealth)
     {
+        if (p_player == null || p_player.Health == null) return;
         float targetFill = (float)currentHealth / p_player.Health.MaxHealth;
 
         // 1. 메인 체력바: 즉시 반영 (타격감)
-        _hpBarImage.fillAmount = targetFill;
+        if (_hpBarImage != null) _hpBarImage.fillAmount = targetFill;
 
         // 2. 배경 체력바: 서서히 따라옴 (연출)
         if (_backHpBarImage != null)
         {
             // 기존 트윈 취소 (연속 피격 시 겹침 방지)
-            DOTween.Kill(_backHpBarImage);
+            KillBackBarTween();
 
             // 체력이 회복된 경우(현재 > 이전)에는 잔상도 즉시 채워줌
-            if (currentHealth > previousHealth)
+            if (!isActiveAndEnabled || currentHealth > previousHealth)
             {
                 _backHpBarImage.fillAmount = targetFill;
             }
@@ -84,6 +105,7 @@ public class PlayerHpUI : PlayerUIBase
                     x => _backHpBarImage.fillAmount = x,
                     targetFill,
                     _animationSpeed)
+                    .SetTarget(_backHpBarImage)
                     .SetDelay(_animationDelay)
                     .SetEase(_animationCurve)
                     .SetLink(gameObject); // 게임오브젝트 파괴 시 트윈 자동 정리 안전장치

@@ -63,7 +63,10 @@ public class PlayerStaminaUI : PlayerUIBase
 
         _positiveImage?.DOKill();
         _negativeImage?.DOKill();
+        if (_canvasGroup != null) _canvasGroup.DOKill();
     }
+
+    private void OnDestroy() => Dispose();
 
     private void LateUpdate()
     {
@@ -117,13 +120,13 @@ public class PlayerStaminaUI : PlayerUIBase
         if (currentStamina < p_player.Stamina.MaxStamina)
         {
             _canvasGroup.DOKill();
-            _canvasGroup.DOFade(1f, _fadeDuration);
+            _canvasGroup.DOFade(1f, _fadeDuration).SetLink(_canvasGroup.gameObject);
         }
         else if (!p_player.Combat.IsBattleState)
         {
             // 최대치이고 전투 상태가 아니라면 숨김
             _canvasGroup.DOKill();
-            _canvasGroup.DOFade(0f, _fadeDuration);
+            _canvasGroup.DOFade(0f, _fadeDuration).SetLink(_canvasGroup.gameObject);
         }
     }
 

@@ -7,7 +7,7 @@ public class Task_SetBlackBoard : Node
     
     public override Node Clone()
     {
-        var node = new Task_SetBlackBoard();
+        var node = Instantiate(this);
         node.Utils = Utils;
         return node;
     }

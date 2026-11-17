@@ -70,6 +70,7 @@ public abstract class BaseAttackNode : Node
     private bool _hasSeenTag;
     private float _hitConfirmTime = -1f;
     private bool _didSetLock = false; 
+    private bool _attackStarted;
      private bool _hasHaltedMovement = false;
     protected bool _wasParriedDuringAttack = false; 
     protected bool _wasStunnedDuringAttack = false;
@@ -85,6 +86,7 @@ public abstract class BaseAttackNode : Node
         _hasSeenTag = false;
         _hitConfirmTime = -1f;
         _didSetLock = false;
+        _attackStarted = false;
         _hasHaltedMovement = false;
 
         if (!brain.blackboard.GetValue<EnemyAttackData>(attackKey, out _data))
@@ -120,6 +122,7 @@ public abstract class BaseAttackNode : Node
         runner.SetCurrentAttackData(_data);
         runner._stateController.SetLock(true);
         _didSetLock = true;
+        _attackStarted = true;
 
         IAstarAI ai = runner.GetComponent<IAstarAI>();
         if (ai != null) { ai.canMove = false; ai.isStopped = true; }
@@ -225,6 +228,7 @@ public abstract class BaseAttackNode : Node
 
     public sealed override void OnExit()
     {
+        if (!_attackStarted) return;
         if(ExitDelay > 0f)
         {
             runner.StartCoroutine(WaitAndExit(ExitDelay));
@@ -251,6 +255,11 @@ public abstract class BaseAttackNode : Node
 
     private void CleanupAllStates()
     {
+        // A rejected attempt never owned the attack state. Do not restart its
+        // cooldown or clear another active attack/stun while trying alternatives.
+        // Consume ownership before cleanup so repeated exit/abort calls are safe.
+        if (!_attackStarted) return;
+        _attackStarted = false;
         runner.GetComponent<BossRushWeaponTrail>()?.EndAttack();
         SpecificCleanup();
         runner._aiController._aiBrain.StartSkillCooldown(attackKey);

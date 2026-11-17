@@ -21,6 +21,9 @@ public class PlayerParryStackUI : PlayerUIBase
 
     public override void Initialize(PlayerController player)
     {
+        if (p_player != null && p_player.Combat != null)
+            p_player.Combat.CounterStackChanged -= UpdateStackDisplay;
+        StopIconTweens();
         base.Initialize(player);
 
         // 이벤트 구독
@@ -38,17 +41,20 @@ public class PlayerParryStackUI : PlayerUIBase
             p_player.Combat.CounterStackChanged -= UpdateStackDisplay;
         }
 
-        // 해당 오브젝트의 모든 트윈 정지
+        StopIconTweens();
+        p_player = null;
+        base.Dispose();
+    }
+
+    private void OnDestroy() => Dispose();
+
+    private void StopIconTweens()
+    {
+        if (_stackIcons == null) return;
         foreach (var icon in _stackIcons)
         {
-            if(icon != null && DOTween.IsTweening(icon.transform))
-            {
-                icon.transform.DOKill();
-            }
-
+            if (icon != null) icon.transform.DOKill();
         }
-
-        base.Dispose();
     }
 
     /// <summary>
@@ -57,8 +63,14 @@ public class PlayerParryStackUI : PlayerUIBase
     /// <param name="currentStacks">현재 스택 수</param>
     private void UpdateStackDisplay(int currentStacks)
     {
+        if (_stackIcons == null) return;
+        currentStacks = Mathf.Clamp(currentStacks, 0, _stackIcons.Count);
         for (int i = 0; i < _stackIcons.Count; i++)
         {
+            // Completion happens after the loop: capture the target, never the loop index.
+            var icon = _stackIcons[i];
+            if (icon == null) continue;
+            var iconTransform = icon.transform;
             bool isActive = i < currentStacks;
             
             // 상태 변화 체크
@@ -67,33 +79,34 @@ public class PlayerParryStackUI : PlayerUIBase
             
             if (isNewlyActivated)
             {
-                _stackIcons[i].gameObject.SetActive(true);
-                _stackIcons[i].transform.DOKill();
+                icon.gameObject.SetActive(true);
+                iconTransform.DOKill();
                 
                 // 팝업 애니메이션 후 펀치
-                _stackIcons[i].transform.localScale = Vector3.zero;
-                _stackIcons[i].transform.DOScale(Vector3.one, _animationDuration).OnComplete(() =>
+                iconTransform.localScale = Vector3.zero;
+                iconTransform.DOScale(Vector3.one, _animationDuration).OnComplete(() =>
                 {
-                    _stackIcons[i].transform.DOPunchScale(_punchVector, _animationDuration, _vibrato);
+                    if (icon != null && icon.gameObject.activeInHierarchy)
+                        iconTransform.DOPunchScale(_punchVector, _animationDuration, _vibrato);
                 });
             }
             else if (isNewlyDeactivated)
             {
                 // 줄어들 때 (비활성화 될 때) 쪼그라드는 애니메이션 재생 후 SetActive(false)
-                _stackIcons[i].transform.DOKill();
-                _stackIcons[i].transform.DOScale(Vector3.zero, _animationDuration).OnComplete(() =>
+                iconTransform.DOKill();
+                iconTransform.DOScale(Vector3.zero, _animationDuration).OnComplete(() =>
                 {
-                    _stackIcons[i].gameObject.SetActive(false);
+                    if (icon != null) icon.gameObject.SetActive(false);
                 });
             }
             else
             {
                 // 상태 변화가 없는 경우
-                _stackIcons[i].gameObject.SetActive(isActive);
+                iconTransform.DOKill();
+                icon.gameObject.SetActive(isActive);
                 if (isActive)
                 {
-                    _stackIcons[i].transform.DOKill();
-                    _stackIcons[i].transform.localScale = Vector3.one;
+                    iconTransform.localScale = Vector3.one;
                 }
             }
         }

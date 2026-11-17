@@ -29,6 +29,7 @@ namespace MoreMountains.Feedbacks
 		public bool TimeScaleLerp;
 		public float LerpSpeed;
 		public bool Infinite;
+		public bool HasBeenApplied;
 		public MMTimeScaleLerpModes TimeScaleLerpMode;
 		public MMTweenType TimeScaleLerpCurve;
 		public float TimeScaleLerpDuration;
@@ -191,7 +192,12 @@ namespace MoreMountains.Feedbacks
 			{
 				_currentProperty = _timeScaleProperties.Peek();
 				TargetTimeScale = _currentProperty.TimeScale;
-				_currentProperty.Duration -= Time.unscaledDeltaTime;
+				// The previous frame may have taken longer than this new request.
+				// Count elapsed time only after the request has reached the output once.
+				if (_currentProperty.HasBeenApplied)
+				{
+					_currentProperty.Duration -= Time.unscaledDeltaTime;
+				}
 
 				_timeScaleProperties.Pop();
 				_timeScaleProperties.Push(_currentProperty);
@@ -212,12 +218,13 @@ namespace MoreMountains.Feedbacks
 			}
 
 			// we apply our time scale
-			if (_currentProperty.TimeScaleLerp)
+			if (_currentProperty.TimeScaleLerp && _currentProperty.TimeScaleLerpMode != MMTimeScaleLerpModes.NoInterpolation)
 			{
 				if (_currentProperty.TimeScaleLerpMode == MMTimeScaleLerpModes.Speed)
 				{
 					if (_currentProperty.LerpSpeed <= 0) { _currentProperty.LerpSpeed = 1; }
-					ApplyTimeScale(Mathf.Lerp(Time.timeScale, TargetTimeScale, Time.unscaledDeltaTime * _currentProperty.LerpSpeed));	
+					ApplyTimeScale(Mathf.Lerp(Time.timeScale, TargetTimeScale, Time.unscaledDeltaTime * _currentProperty.LerpSpeed));
+					MarkCurrentRequestApplied();
 				}
 				else if (_currentProperty.TimeScaleLerpMode == MMTimeScaleLerpModes.Duration)
 				{
@@ -226,6 +233,7 @@ namespace MoreMountains.Feedbacks
 					float delta = _currentProperty.TimeScaleLerpCurve.Evaluate(progress);
 					float newValue = MMMaths.Remap(delta, 0f, 1f, _initialTimeScale, TargetTimeScale);
 					ApplyTimeScale(newValue);
+					MarkCurrentRequestApplied();
 					if (timeSinceStart > _currentProperty.TimeScaleLerpDuration)
 					{
 						ApplyTimeScale(TargetTimeScale);
@@ -240,7 +248,16 @@ namespace MoreMountains.Feedbacks
 			else
 			{
 				ApplyTimeScale(TargetTimeScale);
+				MarkCurrentRequestApplied();
 			}
+		}
+
+		private void MarkCurrentRequestApplied()
+		{
+			if (_timeScaleProperties.Count == 0 || _timeScaleProperties.Peek().HasBeenApplied) return;
+			TimeScaleProperties applied = _timeScaleProperties.Pop();
+			applied.HasBeenApplied = true;
+			_timeScaleProperties.Push(applied);
 		}
 
 		/// <summary>
@@ -290,6 +307,7 @@ namespace MoreMountains.Feedbacks
 		/// <param name="timeScaleProperties">Time scale properties.</param>
 		protected virtual void SetTimeScale(TimeScaleProperties timeScaleProperties)
 		{
+			timeScaleProperties.HasBeenApplied = false;
 			if (timeScaleProperties.TimeScaleLerp &&
 			    timeScaleProperties.TimeScaleLerpMode == MMTimeScaleLerpModes.Duration)
 			{

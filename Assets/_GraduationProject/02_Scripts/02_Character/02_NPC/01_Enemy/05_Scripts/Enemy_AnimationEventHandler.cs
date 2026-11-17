@@ -167,7 +167,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// </summary>
     public void PlayFeedback(string feedbackName)
     {
-        if (_owner == null) return;
+        if (!CanPlayFeedback(feedbackName)) return;
 
         // 블랙보드에서 현재 Phase를 가져옵니다.
         int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
@@ -192,7 +192,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// </summary>
     internal void PlayFeedbackAtPosition(string feedbackName, Vector3 position, bool applyDamage = true)
     {
-        if (_owner == null) return;
+        if (!CanPlayFeedback(feedbackName)) return;
 
         int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
 
@@ -331,7 +331,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// </summary>
     public void PlayFeedback(string feedbackName, AttackType attackType)
     {
-        if (_owner == null) return;
+        if (!CanPlayFeedback(feedbackName)) return;
 
         int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
 
@@ -357,6 +357,44 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
             {
                 // Debug.Log($"[피드백 재생 성공] 이름: {feedbackName}, 타입: {attackType}, Phase: {f.id}");
                 f.feedback.PlayFeedbacks(transform.position + f.offset);
+            }
+        }
+    }
+
+    private const string AttackEffectOnSuffix = "_On_FB";
+    private const string AttackEffectOffSuffix = "_Off_FB";
+
+    private bool CanPlayFeedback(string feedbackName)
+    {
+        if (_owner == null) return false;
+        // An outgoing attack clip may send a final event during the death transition.
+        return _owner.StateType != EnemyStateType.Dead ||
+               string.IsNullOrEmpty(feedbackName) ||
+               !feedbackName.EndsWith(AttackEffectOnSuffix, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Ends paired, persistent attack effects when death skips their animation off event.
+    /// Stopping an MMF_Events player alone does not undo its SetActive(true) event.
+    /// </summary>
+    public void StopPersistentAttackEffects()
+    {
+        if (_feedbacks == null) return;
+
+        foreach (var start in _feedbacks)
+        {
+            if (string.IsNullOrEmpty(start.name) ||
+                !start.name.EndsWith(AttackEffectOnSuffix, StringComparison.Ordinal)) continue;
+
+            string stopName = start.name.Substring(0, start.name.Length - AttackEffectOnSuffix.Length) + AttackEffectOffSuffix;
+            foreach (var stop in _feedbacks)
+            {
+                if (stop.name != stopName || !stop.feedback) continue;
+
+                if (start.feedback) start.feedback.StopFeedbacks();
+                // Run the configured cleanup even if the AI/animation has already stopped.
+                // Only paired attack effects are affected; Die and Stun feedback stay intact.
+                stop.feedback.PlayFeedbacks(transform.position + stop.offset);
             }
         }
     }

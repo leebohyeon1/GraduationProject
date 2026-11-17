@@ -1,12 +1,14 @@
 
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System;
 
-#if UNITY_EDITOR
 [RequireComponent(typeof(Enemy))]
 public class EnemyGizmoDrawer : MonoBehaviour
 {
+#if UNITY_EDITOR
     [Header("Debug Preview")]
     [Tooltip("런타임 아닐 때,SO넣어서 미리보기")]
     [SerializeField] private EnemyAttackData _editorPreviewData;
@@ -93,5 +95,5 @@ public class EnemyGizmoDrawer : MonoBehaviour
     }
 
 
-}
 #endif
+}

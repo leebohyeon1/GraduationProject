@@ -146,6 +146,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if(_deathHandled)return;
         _deathHandled=true;
         _owner.StateType = EnemyStateType.Dead;
+        // Death can interrupt the animation before its matching effect-off event.
+        // End attached attack loops before the ragdoll starts deforming their source mesh.
+        _owner.animHandler.StopPersistentAttackEffects();
         _owner.SetState(EnemyStateController.EnemyState.Die);
         _owner.animator.SetBool("Stun",false);
         _owner.animator.SetBool("WeakStun",false);

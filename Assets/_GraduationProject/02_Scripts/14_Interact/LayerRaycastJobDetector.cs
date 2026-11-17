@@ -112,10 +112,24 @@ public class LayerRaycastJobDetector : MonoBehaviour
     private void OnDestroy()
     {
         // Job 완료 보장 및 메모리 해제
-        if (_isJobScheduled) _jobHandle.Complete();
+        CompletePendingJob();
         
         if (_commands.IsCreated) _commands.Dispose();
         if (_results.IsCreated) _results.Dispose();
+    }
+
+    private void OnDisable()
+    {
+        // A component disabled after Update will not receive LateUpdate. Drain
+        // the scheduled job now instead of retaining it until scene destruction.
+        CompletePendingJob();
+    }
+
+    private void CompletePendingJob()
+    {
+        if (!_isJobScheduled) return;
+        _jobHandle.Complete();
+        _isJobScheduled = false;
     }
 
     private void OnDrawGizmosSelected()

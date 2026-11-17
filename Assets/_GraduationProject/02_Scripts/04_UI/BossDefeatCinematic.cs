@@ -33,6 +33,9 @@ public sealed class BossDefeatCinematic : MonoBehaviour
     {
         var main = Camera.main;
         if (!main) yield break;
+        // Combat has ended. Discard queued hit/stun slowdowns so they cannot
+        // resume underneath the defeat shot after its three seconds expire.
+        MMTimeScaleEvent.Reset();
         MMTimeScaleEvent.Trigger(MMTimeScaleMethods.For, slowScale, duration, false, 0f, false);
         var cameraObject = new GameObject("BossDefeatCamera");
         _camera = cameraObject.AddComponent<CinemachineCamera>();

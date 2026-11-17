@@ -77,22 +77,40 @@ public class DragonGateSequence : MonoBehaviour
     }
     private IEnumerator FlashMissing(params MaterialOpacityChanger[] indicators)
     {
-        var originals=new System.Collections.Generic.List<(Material material,string property,Color color)>();
+        var originals=new System.Collections.Generic.List<(Renderer renderer,int index,MaterialPropertyBlock block)>();
+        int[] colorProperties={Shader.PropertyToID("_Color"),Shader.PropertyToID("_BaseColor"),Shader.PropertyToID("_EmissionColor")};
         foreach(var indicator in indicators) if(indicator) {
-            foreach(var material in indicator.GetComponent<Renderer>().materials)
-                foreach(var property in new[]{"_Color","_BaseColor","_EmissionColor"})
-                    if(material.HasProperty(property)) {
-                        originals.Add((material,property,material.GetColor(property)));
-                        material.SetColor(property,Color.red);
-                    }
+            var renderer=indicator.GetComponent<Renderer>();
+            if(!renderer)continue;
+            var materials=renderer.sharedMaterials;
+            for(int i=0;i<materials.Length;i++) {
+                var material=materials[i];
+                if(!material)continue;
+                var original=new MaterialPropertyBlock();
+                renderer.GetPropertyBlock(original,i);
+                var flashing=new MaterialPropertyBlock();
+                renderer.GetPropertyBlock(flashing,i);
+                if(flashing.isEmpty)renderer.GetPropertyBlock(flashing);
+                bool changed=false;
+                foreach(int property in colorProperties)if(material.HasProperty(property)) {
+                    flashing.SetColor(property,Color.red);changed=true;
+                }
+                if(!changed)continue;
+                originals.Add((renderer,i,original));
+                renderer.SetPropertyBlock(flashing,i);
+            }
         }
-        for(int blink=0;blink<2;blink++) {
-            foreach(var indicator in indicators)if(indicator)indicator.SetOpacity(1);
-            yield return new WaitForSeconds(.18f);
+        try {
+            for(int blink=0;blink<2;blink++) {
+                foreach(var indicator in indicators)if(indicator)indicator.SetOpacity(1);
+                yield return new WaitForSeconds(.18f);
+                foreach(var indicator in indicators)if(indicator)indicator.SetOpacity(0);
+                yield return new WaitForSeconds(.18f);
+            }
+        } finally {
+            foreach(var entry in originals)if(entry.renderer)
+                entry.renderer.SetPropertyBlock(entry.block.isEmpty?null:entry.block,entry.index);
             foreach(var indicator in indicators)if(indicator)indicator.SetOpacity(0);
-            yield return new WaitForSeconds(.18f);
         }
-        foreach(var entry in originals)entry.material.SetColor(entry.property,entry.color);
-        foreach(var indicator in indicators)if(indicator)indicator.SetOpacity(0);
     }
 }

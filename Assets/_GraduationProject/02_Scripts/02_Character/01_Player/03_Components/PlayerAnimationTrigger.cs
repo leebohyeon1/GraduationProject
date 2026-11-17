@@ -10,6 +10,7 @@ using UnityEngine.Events;
 public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 {
     private PlayerController p_owner;
+    private CombatImpactFeedback _impactFeedback;
 
     /// <summary>
     /// 컴포넌트 초기화 함수
@@ -18,6 +19,8 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
     public void Initialize(PlayerController player)
     {
         p_owner = player;
+        _impactFeedback = GetComponent<CombatImpactFeedback>();
+        if (_impactFeedback == null) _impactFeedback = gameObject.AddComponent<CombatImpactFeedback>();
 
         if (p_owner.Events != null)
         {
@@ -36,6 +39,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if(p_owner.Combat != null)
         {
             p_owner.Combat.CounterStackChanged += OnCounterStackChanged;
+            p_owner.Combat.AttackEvent += OnAttackHit;
         }
 
         // 이벤트 해제 구독 등록
@@ -64,6 +68,7 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         if (p_owner.Combat != null)
         {
             p_owner.Combat.CounterStackChanged -= OnCounterStackChanged;
+            p_owner.Combat.AttackEvent -= OnAttackHit;
         }
 
         // 재생 중인 모든 피드백(DOTween) 중단
@@ -206,6 +211,19 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
         {
             PlayFeedback("Charging_Counter_Sucess_FB");
         }
+        if (type == AttackType.Normal_Counter || type == AttackType.Strong_Counter)
+            _impactFeedback?.PlayParry();
+    }
+
+    private void OnAttackHit(IDamageable target, DamageData damage)
+    {
+        if (!(target is EnemyHealth health) || damage.AttackType < AttackType.Strong_1 || damage.AttackType > AttackType.Strong_3)
+            return;
+        // TakeDamage has already started the boss defeat camera. Its clear,
+        // three-second focus takes priority over the final hit's short pulse.
+        var defeat = health.IsDead ? health.GetComponent<BossDefeatCinematic>() : null;
+        if (defeat && defeat.isActiveAndEnabled) return;
+        _impactFeedback?.PlayHeavyHit();
     }
 
     #endregion

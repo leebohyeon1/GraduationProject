@@ -39,6 +39,17 @@ public class QuestManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        ReleaseSubscriptions();
+    }
+
+    private void OnDestroy()
+    {
+        ReleaseSubscriptions();
+        if (Instance == this) Instance = null;
+    }
+
+    private void ReleaseSubscriptions()
+    {
         if (GamePlayTagManager.Instance != null)
         {
             GamePlayTagManager.Instance.UpdateTag -= OnUpdateTag;

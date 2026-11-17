@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.SceneManagement;
 
 public class EnemyProjectile : MonoBehaviour
 {
@@ -118,9 +119,44 @@ public class EnemyProjectile : MonoBehaviour
 
 public static class ProjectilePoolManager
 {
-    private static readonly Dictionary<int, ObjectPool<GameObject>> Pools = new();
-    private static readonly Dictionary<int, GameObject> Prefabs = new();
-    private static readonly Dictionary<GameObject, int> InstanceKeys = new();
+    // The same prefab may be used by multiple additive scenes. Each scene owns
+    // its pool so unloading one scene cannot leave stale objects or clear another.
+    private static readonly Dictionary<long, ObjectPool<GameObject>> Pools = new();
+    private static readonly Dictionary<long, GameObject> Prefabs = new();
+    private static readonly Dictionary<GameObject, long> InstanceKeys = new();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetPools()
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        foreach (var pool in Pools.Values) pool.Clear();
+        Pools.Clear();
+        Prefabs.Clear();
+        InstanceKeys.Clear();
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    private static void OnSceneUnloaded(Scene scene)
+    {
+        var keys = new List<long>();
+        foreach (var key in Pools.Keys)
+            if ((int)(key >> 32) == scene.handle) keys.Add(key);
+
+        foreach (var key in keys)
+        {
+            Pools[key].Clear();
+            Pools.Remove(key);
+            Prefabs.Remove(key);
+        }
+
+        // Unity destroys active instances as well as inactive pool contents when
+        // unloading their scene; remove their managed wrappers from the map too.
+        var staleInstances = new List<GameObject>();
+        foreach (var pair in InstanceKeys)
+            if ((int)(pair.Value >> 32) == scene.handle || !pair.Key)
+                staleInstances.Add(pair.Key);
+        foreach (var instance in staleInstances) InstanceKeys.Remove(instance);
+    }
 
     public static GameObject GetProjectile(GameObject prefab, Vector3 position, Quaternion rotation)
     {
@@ -129,7 +165,7 @@ public static class ProjectilePoolManager
             return null;
         }
 
-        int key = prefab.GetInstanceID();
+        long key = ((long)(int)SceneManager.GetActiveScene().handle << 32) | (uint)prefab.GetInstanceID();
         if (!Pools.TryGetValue(key, out ObjectPool<GameObject> pool))
         {
             Prefabs[key] = prefab;
@@ -139,7 +175,11 @@ public static class ProjectilePoolManager
 
         GameObject instance = pool.Get();
         // Scene unload can destroy inactive pooled objects; discard stale entries.
-        while (!instance) instance = pool.Get();
+        while (!instance)
+        {
+            if (!ReferenceEquals(instance, null)) InstanceKeys.Remove(instance);
+            instance = pool.Get();
+        }
         ResetPhysics(instance);
         instance.transform.SetPositionAndRotation(position, rotation);
         return instance;
@@ -152,7 +192,7 @@ public static class ProjectilePoolManager
             return;
         }
 
-        if (InstanceKeys.TryGetValue(instance, out int key) && Pools.TryGetValue(key, out ObjectPool<GameObject> pool))
+        if (InstanceKeys.TryGetValue(instance, out long key) && Pools.TryGetValue(key, out ObjectPool<GameObject> pool))
         {
             pool.Release(instance);
             return;
@@ -161,7 +201,7 @@ public static class ProjectilePoolManager
         Object.Destroy(instance);
     }
 
-    private static ObjectPool<GameObject> CreatePool(int key)
+    private static ObjectPool<GameObject> CreatePool(long key)
     {
         return new ObjectPool<GameObject>(
             createFunc: () =>
@@ -193,12 +233,12 @@ public static class ProjectilePoolManager
             },
             actionOnDestroy: obj =>
             {
+                if (!ReferenceEquals(obj, null)) InstanceKeys.Remove(obj);
                 if (obj == null)
                 {
                     return;
                 }
 
-                InstanceKeys.Remove(obj);
                 Object.Destroy(obj);
             },
             collectionCheck: true,
@@ -209,7 +249,7 @@ public static class ProjectilePoolManager
     private static void ResetPhysics(GameObject obj)
     {
         Rigidbody rb = obj.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (rb != null && !rb.isKinematic)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;

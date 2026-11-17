@@ -24,6 +24,7 @@ public class ParabolicMineProjectile : MonoBehaviour
     private const float DefaultMineHoverOffset = 0.05f;
     private const float DefaultDropDuration = 0.2f;
     private const float DefaultHitProbeRadius = 0.2f;
+    private const float PlayerContactParryGraceSeconds = 0.24f;
 
     private Enemy _enemy;
     private Transform _cachedTransform;
@@ -69,6 +70,9 @@ public class ParabolicMineProjectile : MonoBehaviour
     private float _contactDeadline=-1f;
     private float _reflectedUntil;
     private Vector3 _reflectedDirection;
+
+    public bool IsAirborneParryTarget => !_reflected &&
+        (_state == MineState.Flying || _state == MineState.DroppingAfterWallHit);
 
     /// <summary>
     /// 투사체 비행/지뢰 상태를 초기화합니다.
@@ -492,7 +496,7 @@ public class ParabolicMineProjectile : MonoBehaviour
 
         // Keep the projectile alive briefly while touching the player so an active parry can win.
         if(directHitTarget != null && !_reflected && _contactDeadline<0f) {
-            _contactDeadline=Time.time+.14f;
+            _contactDeadline=Time.time+PlayerContactParryGraceSeconds;
             return;
         }
 

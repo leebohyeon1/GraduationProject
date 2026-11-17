@@ -38,7 +38,9 @@ namespace Bitgem.VFX.StylisedWater
 
         protected bool isDirty = true;
 
+        // Only meshes created by this component are owned and may be destroyed.
         private UnityEngine.Mesh mesh = null;
+        private UnityEngine.Mesh originalSharedMesh = null;
         private MeshFilter meshFilter = null;
 
         private bool[,,] tiles = null;
@@ -68,23 +70,21 @@ namespace Bitgem.VFX.StylisedWater
             // ensure a mesh filter
             if (meshFilter == null)
             {
-                mesh = null;
                 meshFilter = gameObject.GetComponent<MeshFilter>();
                 if (meshFilter == null)
                 {
                     meshFilter = gameObject.AddComponent<MeshFilter>();
                 }
+                originalSharedMesh = meshFilter.sharedMesh;
             }
 
             // ensure a mesh
             if (mesh == null)
             {
-                mesh = meshFilter.sharedMesh;
-                if (mesh == null || mesh.name != "WaterVolume-" + gameObject.GetInstanceID())
-                {
-                    mesh = new UnityEngine.Mesh();
-                    mesh.name = "WaterVolume-" + gameObject.GetInstanceID();
-                }
+                // A name match is not proof of ownership: this may be a shared
+                // imported or scene mesh. Never Clear or destroy that mesh.
+                mesh = new UnityEngine.Mesh();
+                mesh.name = "WaterVolume-" + gameObject.GetInstanceID();
             }
 
             // apply the mesh to the filter
@@ -370,6 +370,22 @@ namespace Bitgem.VFX.StylisedWater
         #endregion
 
         #region MonoBehaviour events
+
+        protected virtual void OnDestroy()
+        {
+            if (mesh == null) return;
+
+            // Removing only this component should leave its original asset intact.
+            if (meshFilter != null && meshFilter.sharedMesh == mesh)
+            {
+                meshFilter.sharedMesh = originalSharedMesh;
+            }
+
+            if (Application.isPlaying) Destroy(mesh);
+            else DestroyImmediate(mesh);
+            mesh = null;
+            originalSharedMesh = null;
+        }
 
         void OnValidate()
         {
