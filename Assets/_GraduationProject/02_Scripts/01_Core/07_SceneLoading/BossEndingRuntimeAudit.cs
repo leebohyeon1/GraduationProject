@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using MoreMountains.Feedbacks;
@@ -23,7 +24,16 @@ public static class BossEndingRuntimeAudit
     private static double Now => Time.realtimeSinceStartupAsDouble;
     private static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
 
-    public static IEnumerator Run(Action<object> record)
+    private sealed class CapturedFrame
+    {
+        public string path;
+        public Texture2D texture;
+        public double capturedAt, secondsAfterDefeat, timelineTime;
+        public float timeScale, frameDelta;
+        public int frame;
+    }
+
+    public static IEnumerator Run(string reportPath, Action<object> record)
     {
         var loader = SceneLoadingManager.Instance;
         Require(loader && loader.CurrentActiveChunk && loader.CurrentActiveChunk.name == "Title", "Boss ending audit requires loaded Title.");
@@ -82,9 +92,16 @@ public static class BossEndingRuntimeAudit
         yield return null; // BossQuickStartArena calls CombatEnter after the entrance completes.
         var player = UnityEngine.Object.FindFirstObjectByType<PlayerController>();
         Require(player && player.Combat != null && boss.EnemyHealth != null, "Boss/player combat components are unavailable.");
+        if (SceneLoadingSmokeTest.GetArguments().Contains("--soom-boss-weak-stun-audit"))
+        {
+            var stunAudit = BossStunRecoveryRuntimeAudit.Run(boss, player, record);
+            try { while (stunAudit.MoveNext()) yield return stunAudit.Current; }
+            finally { (stunAudit as IDisposable)?.Dispose(); }
+            if (!SceneLoadingSmokeTest.GetArguments().Contains("--soom-boss-pattern-audit")) yield break;
+        }
         var health = boss.EnemyHealth;
         var cinematic = boss.GetComponent<BossDefeatCinematic>();
-        Require(cinematic && Mathf.Abs(cinematic.duration - 3f) < .01f, "Bound boss defeat duration is not three seconds.");
+        Require(cinematic && Mathf.Abs(cinematic.duration - 5f) < .01f, "Bound boss defeat duration is not five seconds.");
         Require(Mathf.Abs(cinematic.slowScale - .25f) < .01f, "Bound boss defeat slow scale differs from authored .25.");
         Require(health.MaxHealth == 1500 && !health.IsDead, "Boss HP does not match approved 1500 baseline or boss is already dead.");
 
@@ -106,6 +123,7 @@ public static class BossEndingRuntimeAudit
         Action<PlayableDirector> onEndingStopped = director => endingStopped = true;
         ending.played += onEndingPlayed;
         ending.stopped += onEndingStopped;
+        var captures = new List<CapturedFrame>(3);
         try
         {
             record?.Invoke(new { stage = "boss-ready", boss = boss.name, health = health.CurrentHealth,
@@ -142,13 +160,14 @@ public static class BossEndingRuntimeAudit
             float minScale = float.PositiveInfinity, maxScale = float.NegativeInfinity;
             int slowSamples = 0, badSlowSamples = 0;
             double nextRecord = 0;
-            while (Now - defeatStart < 3.6)
+            bool focusCaptured = false;
+            while (Now - defeatStart < 5.6)
             {
                 double elapsed = Now - defeatStart;
                 var focus = UnityEngine.Object.FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None)
                     .FirstOrDefault(camera => camera.name == "BossDefeatCamera");
                 if (focus) { cameraSeen = true; cameraLastSeen = elapsed; }
-                if (elapsed >= .1 && elapsed <= 2.8)
+                if (elapsed >= .1 && elapsed <= 4.8)
                 {
                     slowSamples++;
                     minScale = Mathf.Min(minScale, Time.timeScale);
@@ -161,9 +180,15 @@ public static class BossEndingRuntimeAudit
                         focusCamera = focus != null, cameraPosition = focus ? focus.transform.position.ToString("F3") : null });
                     nextRecord += .5;
                 }
+                if (!focusCaptured && focus && elapsed >= 1)
+                {
+                    yield return new WaitForEndOfFrame();
+                    CaptureFrame(captures, reportPath, "defeat-focus", defeatStart, -1);
+                    focusCaptured = true;
+                }
                 yield return null;
             }
-            Require(cameraSeen && cameraLastSeen >= 2.75 && cameraLastSeen <= 3.5, "Boss focus camera did not last about three real seconds.");
+            Require(cameraSeen && cameraLastSeen >= 4.75 && cameraLastSeen <= 5.5, "Boss focus camera did not last about five real seconds.");
             Require(slowSamples > 0 && badSlowSamples == 0, "Strong-hit feedback overwrote the boss defeat slow motion.");
             Require(Mathf.Abs(Time.timeScale - 1f) < .035f, "Time scale did not recover after boss defeat.");
             record?.Invoke(new { stage = "boss-defeat-timing", cameraLastSeen, slowSamples, badSlowSamples, minScale, maxScale,
@@ -184,6 +209,7 @@ public static class BossEndingRuntimeAudit
                 .Where(text => IsCreditLabel(text.text)).ToArray();
             var visibleLabels = new HashSet<string>();
             double maxEndingTime = 0;
+            bool creditsCaptured = false;
             endingDeadline = Now + Math.Max(endingDuration + 30, 90);
             while (!returnSignalReceived && !endingStopped && ending)
             {
@@ -192,6 +218,12 @@ public static class BossEndingRuntimeAudit
                 foreach (var text in creditTexts)
                     if (text && IsVisible(text) && visibleLabels.Add(text.text))
                         record?.Invoke(new { stage = "credit-visible", label = text.text, timelineTime = ending.time });
+                if (!creditsCaptured && creditTexts.Any(IsReadableRoleCredit))
+                {
+                    yield return new WaitForEndOfFrame();
+                    CaptureFrame(captures, reportPath, "ending-credits", defeatStart, ending ? ending.time : maxEndingTime);
+                    creditsCaptured = true;
+                }
                 yield return null;
             }
             if (ending) maxEndingTime = Math.Max(maxEndingTime, ending.time);
@@ -209,10 +241,51 @@ public static class BossEndingRuntimeAudit
                 Require(loader.LastLoadError == null, "Ending Title return failed: " + loader.LastLoadError);
                 var returnedTitle = UnityEngine.Object.FindFirstObjectByType<TitleManager>();
                 if (!loader.IsTeleporting && loader.CurrentActiveChunk && loader.CurrentActiveChunk.name == "Title" &&
-                    !DataManager.Instance.IsTemporaryGame && returnedTitle && returnedTitle.CanUseBossShortcut) break;
+                    !DataManager.Instance.IsTemporaryGame && returnedTitle) break;
                 Require(Now < titleDeadline, "Ending did not return to a ready Title and close its temporary session.");
                 yield return null;
             }
+            var readyTitle = UnityEngine.Object.FindFirstObjectByType<TitleManager>();
+            var thanks = UnityEngine.Object.FindFirstObjectByType<EndingThanksPopup>();
+            Require(thanks && EndingThanksPopup.IsOpen, "Authored ending returned without its one-time thanks popup.");
+            Require(!readyTitle.CanUseBossShortcut && EndingThanksPopup.BlocksTitleInput, "Thanks popup did not block the title shortcut/input.");
+            var titleState = typeof(TitleManager).GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic);
+            Require(titleState != null, "Title state observation field changed.");
+            object stateBefore = titleState.GetValue(readyTitle);
+            var anyKey = typeof(TitleManager).GetMethod("OnAnyKeyEvent", BindingFlags.Instance | BindingFlags.NonPublic);
+            Require(anyKey != null, "Title any-key callback changed.");
+            anyKey.Invoke(readyTitle, null);
+            readyTitle.OnNewGameButton();
+            readyTitle.OnContinueButton();
+            readyTitle.OnSettingButton();
+            Require(Equals(stateBefore, titleState.GetValue(readyTitle)), "Title actions passed through the thanks modal.");
+            var qrImages = thanks.GetComponentsInChildren<UnityEngine.UI.Image>(true)
+                .Where(image => image.sprite && (image.sprite.name == "steam" || image.sprite.name == "x")).ToArray();
+            Require(qrImages.Length == 2 && qrImages.Select(image => image.sprite.name).Distinct().Count() == 2,
+                "Thanks popup must show the Steam and X QR sprites.");
+            Require(qrImages.All(image => image.enabled && image.gameObject.activeInHierarchy &&
+                image.sprite.texture.filterMode == FilterMode.Point && image.rectTransform.rect.width >= 320f),
+                "Thanks QR sizing/visibility/filter mode is incorrect.");
+            Require(thanks.GetComponentsInChildren<TMP_Text>(true).Any(text => text.text == "Thank you for Playing"), "Thanks heading is missing.");
+            double popupReadyAt = Now + .6;
+            while (Now < popupReadyAt) yield return null;
+            Require(thanks.GetComponent<CanvasGroup>().alpha >= .99f, "Thanks popup did not fade in.");
+            yield return new WaitForEndOfFrame();
+            CaptureFrame(captures, reportPath, "ending-thanks", defeatStart, maxEndingTime);
+            Require(focusCaptured && creditsCaptured && captures.Count == 3, "Boss ending audit did not capture all three rendered stages.");
+            // Encode/write only after the defeat timing and ending progression checks.
+            // During those checks we retain pixels without PNG compression or file I/O.
+            SaveCaptures(captures, record);
+            thanks.Close();
+            yield return null;
+            Require(!EndingThanksPopup.IsOpen && !EndingThanksPopup.BlocksTitleInput && readyTitle.CanUseBossShortcut,
+                "Closing thanks did not restore title input.");
+            EndingThanksPopup.ShowIfPending(readyTitle, null);
+            Require(!EndingThanksPopup.IsOpen, "An already-consumed ending popup appeared again on an ordinary Title initialization.");
+            record?.Invoke(new { stage = "boss-ending-thanks-popup", passed = true, qrCount = qrImages.Length,
+                steamUrl = EndingThanksPopup.SteamUrl, socialUrl = EndingThanksPopup.SocialUrl,
+                titleActionsBlocked = true, titleInputRestored = true,
+                testKind = "Title any-key callback via reflection, public title callbacks and EndingThanksPopup.Close(); not keyboard/gamepad input validation." });
             record?.Invoke(new { stage = "boss-ending-complete", passed = true, maxEndingTime, endingDuration,
                 returnSignalTime = returnSignal.time, returnSignalReceived,
                 returnedScene = loader.CurrentActiveChunk.name, temporaryGame = DataManager.Instance.IsTemporaryGame,
@@ -221,9 +294,50 @@ public static class BossEndingRuntimeAudit
         }
         finally
         {
+            foreach (var capture in captures)
+                if (capture.texture) UnityEngine.Object.Destroy(capture.texture);
             returnSignal.reaction.RemoveListener(onReturnSignal);
             if (ending) { ending.played -= onEndingPlayed; ending.stopped -= onEndingStopped; }
         }
+    }
+
+    private static void CaptureFrame(List<CapturedFrame> captures, string reportPath, string suffix,
+        double defeatStart, double timelineTime)
+    {
+        var frame = new CapturedFrame
+        {
+            path = Path.Combine(Path.GetDirectoryName(reportPath), Path.GetFileNameWithoutExtension(reportPath) + "-" + suffix + ".png"),
+            capturedAt = Now,
+            secondsAfterDefeat = Now - defeatStart,
+            timelineTime = timelineTime,
+            timeScale = Time.timeScale,
+            frameDelta = Time.unscaledDeltaTime,
+            frame = Time.frameCount
+        };
+        captures.Add(frame);
+        frame.texture = ScreenCapture.CaptureScreenshotAsTexture();
+        Require(frame.texture && frame.texture.width > 0 && frame.texture.height > 0,
+            "Rendered boss screenshot has no pixels: " + suffix);
+    }
+
+    private static void SaveCaptures(List<CapturedFrame> captures, Action<object> record)
+    {
+        foreach (var capture in captures)
+        {
+            byte[] png = capture.texture.EncodeToPNG();
+            Require(png != null && png.Length > 0, "Boss screenshot PNG encoding failed.");
+            File.WriteAllBytes(capture.path, png);
+            record?.Invoke(new { stage = "boss-render-capture", screenshot = capture.path,
+                capture.capturedAt, capture.secondsAfterDefeat, capture.timelineTime, capture.timeScale,
+                capture.frame, capture.frameDelta, width = capture.texture.width, height = capture.texture.height,
+                bytes = png.Length, method = "Actual screen pixels after WaitForEndOfFrame; encoding deferred until Title popup." });
+        }
+    }
+
+    private static bool IsReadableRoleCredit(TMP_Text text)
+    {
+        if (!text || !IsVisible(text) || text.color.a * text.canvasRenderer.GetInheritedAlpha() < .85f) return false;
+        return !text.text.Replace(" ", "").ToLowerInvariant().Contains("team.smallboots");
     }
 
     private static (double time, UnityEvent reaction) FindTitleReturnSignal(PlayableDirector director)

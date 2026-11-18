@@ -279,6 +279,13 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
         return ExecuteAttackInternal(attackData);
     }
 
+    // The released motion is not a successful parry. Enemy damage and gauge
+    // accumulation remain, while the success handler owns the heavy response.
+    public Collider[] ExecuteCounterMotionAttack(IRuntimeAttackConfig attackData)
+    {
+        return ExecuteAttackInternal(attackData, suppressEnemyHeavyResponse: true);
+    }
+
     /// <summary>
     /// 공격을 실행합니다. (커스텀 데미지 계산 지원)
     /// </summary>
@@ -290,7 +297,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     /// <summary>
     /// 내부 공격 실행 로직
     /// </summary>
-    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, Func<int, int> damageCalculator = null)
+    private Collider[] ExecuteAttackInternal(IRuntimeAttackConfig data, Func<int, int> damageCalculator = null, bool suppressEnemyHeavyResponse = false)
     {
         Vector3 attackCenter = GetAttackCenter(data);
         Vector3 halfExtents = data.AttackRadius / 2f;
@@ -299,7 +306,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
 
         if (hitEnemies.Length > 0)
         {
-            ProcessHitEnemiesInternal(data, hitEnemies, damageCalculator);
+            ProcessHitEnemiesInternal(data, hitEnemies, damageCalculator, suppressEnemyHeavyResponse);
         }
         else
         {
@@ -312,7 +319,7 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
     /// <summary>
     /// 공격에 맞은 적들에게 데미지를 입힙니다. (내부용)
     /// </summary>
-    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, Collider[] hitObjects, Func<int, int> damageCalculator = null)
+    private void ProcessHitEnemiesInternal(IRuntimeAttackConfig data, Collider[] hitObjects, Func<int, int> damageCalculator = null, bool suppressEnemyHeavyResponse = false)
     {
         // 범위 내의 ObjectTotem 중 가장 가까운 것 하나만 선택하기 위한 변수
         ObjectTotem closestTotem = null;
@@ -342,9 +349,15 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
                 continue;
             }
 
+            bool suppressHeavyResponse = suppressEnemyHeavyResponse && obj.TryGetComponent<EnemyHealth>(out _);
             if(obj.TryGetComponent<IStiffness>(out  var stiffness))
             {
-                stiffness.AddStiffness((int)data.Stiffness.Value, data.AttackType);
+                int hitStiffness = (int)data.Stiffness.Value;
+                if (obj.TryGetComponent<EnemyShield>(out var shield))
+                    hitStiffness = shield.ScaleHitAmount(hitStiffness, transform);
+                // Keep Mon_Stiffness immunity and the confirmed-counter gate.
+                stiffness.AddStiffness(hitStiffness,
+                    suppressHeavyResponse ? AttackType.Normal_0 : data.AttackType);
             }
 
             if (obj.TryGetComponent<IDamageable>(out var damageable))
@@ -373,7 +386,8 @@ public class PlayerCombat : MonoBehaviour, IDisposable, IEventListener<EnemyStat
                     KnockbackForce = data.KnockbackConfig.StepDistance,
                     DeathKnockbackDuration = data.DeathKnockbackConfig.StepDuration,
                     DeathKnockbackForce = data.DeathKnockbackConfig.StepDistance,
-                    IsMagic = false
+                    IsMagic = false,
+                    SuppressHeavyHitFeedback = suppressHeavyResponse
                 };
 
                 int regainAmount = Mathf.RoundToInt(finalDamage * data.Regain.Value);

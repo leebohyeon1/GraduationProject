@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>Opt-in check of authored Part1 blockers and pre-cut Rayfire physics.</summary>
 public static class DestructibleBlockerRuntimeAudit
 {
-    private const string Scope = "Isolated QA session: one scripted Strong_Counter TakeDamage per authored totem, exactly its remaining HP. No input/combat-balance validation, asset edits or save operations.";
+    private const string Scope = "Isolated QA: one scripted Strong_Counter hit, base charged-parry damage 10 for the hard wall, remaining HP for fragile totem. No keyboard input, asset edits or save operations.";
 
     public static IEnumerator Run(PlayerController player, Action<object> record)
     {
@@ -68,8 +68,9 @@ public static class DestructibleBlockerRuntimeAudit
                     triggers = triggers.Length, fragmentColliders = fragmentColliders.Length,
                     staticRenderers = staticRenderers.Length, beforeFrame = Time.frameCount });
                 int hitFrame = Time.frameCount;
+                int hitDamage = name == "Hard_Destroyed_Totem" ? 10 : healthBefore;
                 totem.TakeDamage(new DamageData { AttackerTransform = player.transform,
-                    AttackType = AttackType.Strong_Counter, DamageAmount = healthBefore, StiffnessAmount = 0 });
+                    AttackType = AttackType.Strong_Counter, DamageAmount = hitDamage, StiffnessAmount = 0 });
 
                 bool rootsOff = rootBoxes.All(c => c && !c.enabled);
                 bool childOff = childBoxes.All(c => c && !c.enabled);

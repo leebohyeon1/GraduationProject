@@ -8,7 +8,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(EnemyHealth))]
 public sealed class BossDefeatCinematic : MonoBehaviour
 {
-    public float duration = 3f;
+    public float duration = 5f;
     public float slowScale = .25f;
     private EnemyHealth _health;
     private CinemachineCamera _camera;
@@ -34,7 +34,7 @@ public sealed class BossDefeatCinematic : MonoBehaviour
         var main = Camera.main;
         if (!main) yield break;
         // Combat has ended. Discard queued hit/stun slowdowns so they cannot
-        // resume underneath the defeat shot after its three seconds expire.
+        // resume underneath the defeat shot after its five seconds expire.
         MMTimeScaleEvent.Reset();
         MMTimeScaleEvent.Trigger(MMTimeScaleMethods.For, slowScale, duration, false, 0f, false);
         var cameraObject = new GameObject("BossDefeatCamera");

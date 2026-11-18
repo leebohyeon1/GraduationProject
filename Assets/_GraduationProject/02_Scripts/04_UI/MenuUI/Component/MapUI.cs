@@ -9,6 +9,7 @@ public class MapUI : MenuUIComponent
         public GamePlayTagSO clearTag;
     }
     [SerializeField] private DungeonMarker[] _dungeonMarkers = System.Array.Empty<DungeonMarker>();
+    public System.Collections.Generic.IReadOnlyList<DungeonMarker> DungeonMarkers => _dungeonMarkers;
 
     public void RefreshDungeonMarkers()
     {

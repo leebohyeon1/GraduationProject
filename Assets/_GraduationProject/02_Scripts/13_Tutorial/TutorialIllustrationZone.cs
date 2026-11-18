@@ -6,6 +6,7 @@ using UnityEngine;
 public class TutorialIllustrationZone : MonoBehaviour
 {
     public UIDissolveEffect[] illustrations = System.Array.Empty<UIDissolveEffect>();
+    // Kept for existing serialized scene references; visibility only follows occupancy.
     public TotemDestructibleObject obstacle;
     public float dissolveSpeed = 1.5f;
     private readonly HashSet<Collider> _players = new HashSet<Collider>();
@@ -22,7 +23,7 @@ public class TutorialIllustrationZone : MonoBehaviour
     {
         _players.RemoveWhere(c => !c || !c.enabled || !c.gameObject.activeInHierarchy ||
             (_zone && !_zone.bounds.Intersects(c.bounds)));
-        bool visible = _players.Count > 0 && (!obstacle || obstacle.IsDead);
+        bool visible = _players.Count > 0;
         foreach (var effect in illustrations)
             if (effect) effect.location = Mathf.MoveTowards(effect.location, visible ? 0f : 1f,
                 dissolveSpeed * Time.deltaTime);

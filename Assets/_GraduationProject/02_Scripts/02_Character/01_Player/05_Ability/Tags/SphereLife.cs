@@ -6,9 +6,10 @@ public class SphereLife : PlayerAbilityTagSO
 {
     private PlayerController _player;
     private bool _used;
-    public float _invincibleDuration = 2f;
+    public float _invincibleDuration = 5f;
     public PlayerAbilityTagSO _invincibleTag;
     public MMF_Player reviveFeedbackPrefab;
+    public GameObject protectionEffectPrefab;
 
     public override void Apply(PlayerController player)
     {
@@ -30,7 +31,7 @@ public class SphereLife : PlayerAbilityTagSO
         _used = true;
         var protection = _player.GetComponent<RevivalProtection>();
         if (!protection) protection = _player.gameObject.AddComponent<RevivalProtection>();
-        protection.Activate(_player, _invincibleDuration, reviveFeedbackPrefab);
+        protection.Activate(_player, _invincibleDuration, reviveFeedbackPrefab, protectionEffectPrefab);
         _player.Health.ChangeHealth(1 - currentHealth);
     }
 }

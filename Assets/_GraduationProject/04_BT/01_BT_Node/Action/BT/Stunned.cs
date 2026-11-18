@@ -70,7 +70,13 @@ public class Stunned : Node
         {
             return NodeState.FAILURE;
         }
-        if (Handler.IsActionFinished && runner.ParrySystem._isStunned)
+        // Some boss states (Idle/Move) have no transition to the weak-stun
+        // clip, so its FinishAction event may never arrive. Keep the normal
+        // animation exit, but bound weak stun by its already-authored deadline.
+        // Full stun still waits for its complete down/recovery animation.
+        bool weakStunExpired = runner.ParrySystem.CurrentStun == StunType.Weak &&
+            Time.time >= runner.ParrySystem.StunExitTime;
+        if ((Handler.IsActionFinished || weakStunExpired) && runner.ParrySystem._isStunned)
         {
             runner.ParrySystem.ClearStun();
             return NodeState.SUCCESS;
@@ -89,12 +95,12 @@ public class Stunned : Node
     private void BlockAllAttacks()
     {
         // WeakCounter Random Chance ?몃뱶 李⑤떒
-        brain.StartSkillCooldown("WeakCounter", attackBlockDuration);
+        brain.BlockSkillFor("WeakCounter", attackBlockDuration);
         
         for(int i = 0; i < attackSkills.Length; i++)
         {
             string attackSkill = attackSkills[i];
-            brain.StartSkillCooldown(attackSkill, attackBlockDuration);
+            brain.BlockSkillFor(attackSkill, attackBlockDuration);
         }
     }
 

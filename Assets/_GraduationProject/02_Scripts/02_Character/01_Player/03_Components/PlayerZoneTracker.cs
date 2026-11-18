@@ -33,6 +33,28 @@ public class PlayerZoneTracker : MonoBehaviour
         return _activeZones.Any(z => z.zoneId == zoneId);
     }
 
+    /// <summary>
+    /// All overlapping zones at the highest priority can select an action.
+    /// A front/side boundary must not depend on which trigger entered first.
+    /// Lower-priority distance zones remain excluded from melee positions.
+    /// </summary>
+    public bool IsInPrimaryZone(IEnumerable<int> zoneIds)
+    {
+        if (zoneIds == null) return false;
+        int highestPriority = int.MinValue;
+        foreach (var zone in _activeZones)
+            if (zone && zone.isActiveAndEnabled)
+                highestPriority = Mathf.Max(highestPriority, zone.priority);
+
+        foreach (var zone in _activeZones)
+        {
+            if (!zone || !zone.isActiveAndEnabled || zone.priority != highestPriority) continue;
+            foreach (int id in zoneIds)
+                if (zone.zoneId == id) return true;
+        }
+        return false;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<ZoneArea>(out var zone))

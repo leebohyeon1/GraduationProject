@@ -113,6 +113,7 @@ public static class FProjectileParryRuntimeAudit
             if (health) health.TakeDamged -= ObserveDamage;
             Release(ref mine);
         }
+        yield return FReflectedImpactRuntimeAudit.Run(player, record);
     }
 
     private static IEnumerator Settle(PlayerController player)
@@ -129,7 +130,7 @@ public static class FProjectileParryRuntimeAudit
         throw new InvalidOperationException("F parry damage audit blocked by existing invulnerability or non-unit time scale; no protection was removed.");
     }
 
-    private static ParabolicMineProjectile Spawn(Task_ParabolicMine t, Enemy owner, PlayerController player)
+    internal static ParabolicMineProjectile Spawn(Task_ParabolicMine t, Enemy owner, PlayerController player)
     {
         var body = player.GetComponent<Collider>();
         Vector3 position = body ? body.bounds.center : player.transform.position + Vector3.up;
@@ -154,7 +155,7 @@ public static class FProjectileParryRuntimeAudit
         field.SetValue(mine, value);
     }
 
-    private static void Release(ref ParabolicMineProjectile mine)
+    internal static void Release(ref ParabolicMineProjectile mine)
     {
         if (mine && mine.gameObject.activeInHierarchy) ProjectilePoolManager.ReleaseProjectile(mine.gameObject);
         mine = null;

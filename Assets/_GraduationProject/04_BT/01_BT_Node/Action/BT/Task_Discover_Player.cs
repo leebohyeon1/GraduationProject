@@ -131,7 +131,7 @@ public class Task_Discover_Player : Node
         if (!_isMovingDown)
         {
             float normalizedTime = GetNormalizedTime(upduration);
-            SetYPosition(Mathf.LerpUnclamped(_baseY, _peakY, upCurve.Evaluate(normalizedTime)));
+            SetYPosition(_baseY + EvaluateRiseOffset(Time.time - _movePhaseStartTime));
 
             if (normalizedTime >= 1f)
             {
@@ -162,6 +162,13 @@ public class Task_Discover_Player : Node
             _isMoving = false;
             Debug.Log("Completed move up and down sequence.");
         }
+    }
+
+    /// <summary>Shares the authored rise timing with presentation-only introductions without moving the navigation root.</summary>
+    public float EvaluateRiseOffset(float elapsed)
+    {
+        float normalizedTime = upduration <= 0f ? 1f : Mathf.Clamp01(elapsed / upduration);
+        return Mathf.LerpUnclamped(0f, moveUpDistance, upCurve.Evaluate(normalizedTime));
     }
 
     private float GetNormalizedTime(float duration)

@@ -624,6 +624,12 @@ public class ParabolicMineProjectile : MonoBehaviour
         _reflected=true;_contactDeadline=-1f;_state=MineState.Reflected;
         _damageData.SourceEnemy=null;_damageData.AttackerTransform=player.transform;
         _damageData.IsReflectedProjectile=true;
+        // A returned mine is a heavy counter hit. Accumulate stagger through the
+        // target's normal threshold so it can promote weak stun to full stun.
+        _damageData.StiffnessAmount = 30;
+        _damageData.KnockbackForce = 18f;
+        _damageData.KnockbackDuration = .3f;
+        _damageData.KnockbackCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
         _damageData.DeathKnockbackForce=22f;
         _damageData.DeathKnockbackDuration=.2f;
         _damageData.AttackType=attackType;_damageData.DamageAmount=(Mathf.Max(_damageData.DamageAmount,_explosionDamage)+bonusDamage)*2;
@@ -660,7 +666,20 @@ public class ParabolicMineProjectile : MonoBehaviour
         var damaged=new System.Collections.Generic.HashSet<EnemyHealth>();
         foreach(var hit in Physics.OverlapSphere(transform.position,(Mathf.Max(4.5f,_explosionRadius)*1.5f),~0,QueryTriggerInteraction.Collide)) {
             var health=hit.GetComponentInParent<EnemyHealth>();
-            if(health && !health.IsDead && damaged.Add(health))health.TakeDamage(_damageData);
+            if (health && !health.IsDead && damaged.Add(health))
+            {
+                // Match EnemyHealth's intro immunity for both damage and stagger.
+                var intro = health.GetComponent<EnemySpawnIntro>();
+                if (intro && !intro.Completed) continue;
+                int hitStiffness = _damageData.StiffnessAmount;
+                if (health.TryGetComponent<EnemyShield>(out var shield))
+                    hitStiffness = shield.ScaleHitAmount(hitStiffness, _damageData.AttackerTransform);
+                health.TakeDamage(_damageData);
+                // EnemyHealth handles health/knockback only. Add stagger once
+                // per living target, after damage so Hit cannot replace Stun.
+                if (!health.IsDead && health.TryGetComponent<ParrySystem>(out var parry))
+                    parry.Parry(_damageData.AttackType, hitStiffness);
+            }
         }
         _state=MineState.Finished;ProjectilePoolManager.ReleaseProjectile(gameObject);
     }

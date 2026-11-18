@@ -9,9 +9,18 @@ public class EnemyShield : MonoBehaviour
     [Range(0f, 360f)] 
     public float BlockAngle = 120f;         // 방어 각도 (Degree)
 
-    [Tooltip("데미지 감소율 (예: 0.2 = 20% 데미지만 받음 / 0 = 완전 방어)")]
+    [Tooltip("가드 시 피해와 경직도 감소율 (예: 0.8 = 80% 감소, 20%만 받음 / 0 = 감소 없음)")]
     [Range(0f, 1f)] 
     public float DamageReduction = 0.2f;
+
+    // Resolve before applying this hit: taking damage can enter combat and enable
+    // the shield, while the following BT tick can disable it after a stun.
+    public int ScaleHitAmount(int amount, Transform attacker)
+    {
+        return attacker != null && CheckBlock(attacker.position)
+            ? Mathf.RoundToInt(amount * (1f - DamageReduction))
+            : amount;
+    }
 
     public bool CheckBlock(Vector3 attackerPos)
     {

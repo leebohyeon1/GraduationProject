@@ -285,8 +285,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             if (_owner.Shield.CheckBlock(damageData.AttackerTransform.position))
             {
                 isBlocked = true;
-                float damageMultiplier = 1.0f - _owner.Shield.DamageReduction;
-                finalDamage = Mathf.RoundToInt(damageData.DamageAmount * damageMultiplier);
+                finalDamage = _owner.Shield.ScaleHitAmount(damageData.DamageAmount, damageData.AttackerTransform);
             }
         }
         if (!_owner._aiController._aiBrain._isCombat)
@@ -322,7 +321,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
 
         int previousHealth = curHealth;
-        _owner.animHandler.PlayFeedback(isBlocked ? "Block_FB" : "Damage_FB", damageData.AttackType);
+        _owner.animHandler.PlayFeedback(isBlocked ? "Block_FB" : "Damage_FB",
+            damageData.SuppressHeavyHitFeedback ? AttackType.Normal_0 : damageData.AttackType,
+            allowHeavyFallback: !damageData.SuppressHeavyHitFeedback);
 
         curHealth -= finalDamage;
         if (finalDamage > 0 && damageData.IsReflectedProjectile) ReflectedImpactFeedback.Play();

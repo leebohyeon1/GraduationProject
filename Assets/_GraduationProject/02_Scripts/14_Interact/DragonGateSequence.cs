@@ -69,6 +69,7 @@ public class DragonGateSequence : MonoBehaviour
             UIAudioFeedback.Play(3);
             SetIndicators(0);
             if(_quest)_quest.ShowReminder();
+            DungeonDirectionGuide.ShowRemainingDungeons();
             yield return RevealMessage(true);
             yield return new WaitForSeconds(6);
             yield return RevealMessage(false);

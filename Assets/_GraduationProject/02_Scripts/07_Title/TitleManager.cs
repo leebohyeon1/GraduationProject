@@ -23,7 +23,7 @@ public class TitleManager : MonoBehaviour
 
     [Header("State")]
     [SerializeField] private TitleState _currentState = TitleState.None;
-    public bool CanUseBossShortcut => _currentState == TitleState.TitlePrompt || _currentState == TitleState.MainMenu;
+    public bool CanUseBossShortcut => !EndingThanksPopup.BlocksTitleInput && (_currentState == TitleState.TitlePrompt || _currentState == TitleState.MainMenu);
     private int _lastStateChangeFrame = -1; // 마지막으로 상태가 바뀐 프레임을 기록
     public event UnityAction<TitleState> TitleStateChanged;  // 타이틀 상태 변경 이벤트
 
@@ -32,6 +32,7 @@ public class TitleManager : MonoBehaviour
         if (DataManager.Instance && DataManager.Instance.IsTemporaryGame) DataManager.Instance.EndTemporaryGame();
         Initialize();
         SetState(TitleState.TitlePrompt);
+        EndingThanksPopup.ShowIfPending(this, _inputReader);
     }
 
     private void OnDestroy()
@@ -90,6 +91,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     private void OnAnyKeyEvent()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if(_currentState == TitleState.TitlePrompt)
         {
             SetState(TitleState.MainMenu);
@@ -102,6 +104,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void GotoManiMenu()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if (_currentState == TitleState.SelectData || _currentState == TitleState.Setting)
         {
             SetState(TitleState.MainMenu);
@@ -117,6 +120,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnNewGameButton()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if (TitleBossShortcut.IsChordHeld()) return;
         // 동일 프레임 중복 입력 방지
         if (Time.frameCount <= _lastStateChangeFrame) return;
@@ -132,6 +136,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnContinueButton()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
@@ -146,6 +151,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     public void OnQuitGameButton()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 
@@ -157,6 +163,7 @@ public class TitleManager : MonoBehaviour
 
     public void OnSettingButton()
     {
+        if (EndingThanksPopup.BlocksTitleInput) return;
         if (TitleBossShortcut.IsChordHeld()) return;
         if (Time.frameCount <= _lastStateChangeFrame) return;
 

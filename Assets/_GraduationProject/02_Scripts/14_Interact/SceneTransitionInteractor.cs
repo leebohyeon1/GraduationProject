@@ -12,6 +12,7 @@ public class SceneTransitionInteractor : MonoBehaviour
 
     [Header("이동할 씬 정보")]
     [SerializeField] private SceneDataSO _targetSceneData; 
+    public SceneDataSO TargetSceneData => _targetSceneData;
 
     [Header("스폰 설정")]
     [SerializeField] private SpawnType _spawnType = SpawnType.Default;
@@ -56,6 +57,7 @@ public class SceneTransitionInteractor : MonoBehaviour
 
         if (SceneLoadingManager.Instance != null)
         {
+            EndingThanksPopup.NotifyTitleTransition(this);
             if (completesDungeonOnExit && completedDungeonTag) GamePlayTagManager.Instance.AddTag(completedDungeonTag);
             switch (_spawnType)
             {

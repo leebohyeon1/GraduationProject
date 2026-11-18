@@ -38,6 +38,17 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     private Enemy _owner;
     private const int DefaultPlayerLayerMask = 1 << 9;
 
+    // Timeline animation events can arrive before deferred AI initialization.
+    // Presentation needs only the local owner and serialized feedback bindings.
+    private void Awake() => _owner = GetComponent<Enemy>();
+
+    private int GetFeedbackPhase()
+    {
+        var ai = _owner ? _owner._aiController : null;
+        if (ai == null || ai._aiBrain == null || ai._aiBrain.blackboard == null) return 0;
+        return ai._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
+    }
+
     /// <summary>
     /// 현재 피드백 재생 속도 배율입니다.
     /// </summary>
@@ -170,7 +181,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
         if (!CanPlayFeedback(feedbackName)) return;
 
         // 블랙보드에서 현재 Phase를 가져옵니다.
-        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
+        int currentPhase = GetFeedbackPhase();
 
         // 이름이 일치하고, ID(Phase)가 현재 페이즈보다 작거나 같은 모든 피드백을 재생합니다.
         foreach (var f in _feedbacks)
@@ -194,7 +205,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     {
         if (!CanPlayFeedback(feedbackName)) return;
 
-        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>(EnemyBlackboardKeys.Phase, 0);
+        int currentPhase = GetFeedbackPhase();
 
         for (int i = 0; i < _feedbacks.Count; i++)
         {
@@ -331,9 +342,14 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
     /// </summary>
     public void PlayFeedback(string feedbackName, AttackType attackType)
     {
+        PlayFeedback(feedbackName, attackType, true);
+    }
+
+    public void PlayFeedback(string feedbackName, AttackType attackType, bool allowHeavyFallback)
+    {
         if (!CanPlayFeedback(feedbackName)) return;
 
-        int currentPhase = _owner._aiController._aiBrain.blackboard.GetValueOrDefault<int>("Phase", 0);
+        int currentPhase = GetFeedbackPhase();
 
         // Older prefab variants may not have a row for every combo/counter hit.
         // Use that monster's matching impact family when the exact row is absent.
@@ -345,8 +361,10 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
                 attackType = fallback;
             else
             {
-                var first = _feedbacks.Find(f => f.name == feedbackName && f.Phase <= currentPhase && f.feedback);
+                var first = _feedbacks.Find(f => f.name == feedbackName && f.Phase <= currentPhase && f.feedback &&
+                    (allowHeavyFallback || f.HitType <= AttackType.Normal_3));
                 if (first.feedback) attackType = first.HitType;
+                else return;
             }
         }
 
@@ -366,6 +384,7 @@ public class Enemy_AnimationEventHandler : MonoBehaviour
 
     private bool CanPlayFeedback(string feedbackName)
     {
+        if (_owner == null) _owner = GetComponent<Enemy>();
         if (_owner == null) return false;
         // An outgoing attack clip may send a final event during the death transition.
         return _owner.StateType != EnemyStateType.Dead ||

@@ -296,7 +296,10 @@ public class EnemyInitializer : MonoBehaviour
         if (_deferredAnimator != null)
         {
             _restoreAnimatorEnabled = _deferredAnimator.enabled;
-            _deferredAnimator.enabled = false;
+            // A bound entrance Timeline starts before phased AI initialization finishes.
+            // Its Spawn_f pose must keep evaluating while combat/state/path remain suspended.
+            var intro = GetComponent<EnemySpawnIntro>();
+            if (!intro || !intro.timelineDirector) _deferredAnimator.enabled = false;
         }
 
         _deferredAiController = GetComponent<AiController>();

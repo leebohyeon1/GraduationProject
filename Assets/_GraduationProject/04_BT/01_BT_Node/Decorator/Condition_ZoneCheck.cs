@@ -28,7 +28,7 @@ namespace BehaviorTree
             // Debug.Log($"Current Zone ID: {tracker.CurrentZoneId}, Target Zone IDs: {string.Join(", ", targetZoneIds)}");
             // ?꾩옱 援ъ뿭???寃?援ъ뿭 由ъ뒪?몄뿉 ?ы븿?섏뼱 ?덈뒗吏 ?뺤씤?⑸땲??
             // ?뚮젅?댁뼱媛 諛잕퀬 ?덈뒗 援ъ뿭??以??寃?ID媛 ?섎굹?쇰룄 ?ы븿?섏뼱 ?덈뒗吏 ?뺤씤?⑸땲??
-            return targetZoneIds.Any(id => tracker.CurrentZoneId == id);
+            return tracker.IsInPrimaryZone(targetZoneIds);
         }
 
         public override Node Clone()

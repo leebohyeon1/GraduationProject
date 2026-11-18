@@ -69,7 +69,7 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
     protected override void OnAttackPerformed()
     {
         p_isAttackPerformed = true; // 현재 애니메이션의 시작 이벤트 확인
-        Collider[] colldiers = p_owner.Combat.ExecuteAttack(p_AttackConfig);
+        Collider[] colldiers = p_owner.Combat.ExecuteCounterMotionAttack(p_AttackConfig);
 
         foreach (var collider in colldiers)
         {
@@ -106,6 +106,8 @@ public class PlayerHeavyCounterState : PlayerAttackBaseState
             {
                 int counterStiffness = Mathf.Max(0, Mathf.RoundToInt(p_AttackConfig.Stiffness.Value) - (motionAlreadyHit ? baseStiffness : 0)); // 카운터로 인한 추가 경직량 계산
                 p_AttackConfig.Stiffness.RemoveAllModifiersFromSource("HeavyCounterStiffness");
+                if (transform.TryGetComponent<EnemyShield>(out var shield))
+                    counterStiffness = shield.ScaleHitAmount(counterStiffness, p_owner.transform);
                 parryable.Parry(AttackType.Strong_Counter,counterStiffness);
                 p_owner.Combat.AddCounterEnemy(parryable);
                 p_owner.Events.TriggerOnlyChargeAttackSucceded();

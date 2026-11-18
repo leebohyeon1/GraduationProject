@@ -217,10 +217,10 @@ public class PlayerAnimationTrigger : FeedbackPlayer<string>, IDisposable
 
     private void OnAttackHit(IDamageable target, DamageData damage)
     {
-        if (!(target is EnemyHealth health) || damage.AttackType < AttackType.Strong_1 || damage.AttackType > AttackType.Strong_3)
+        if (damage.SuppressHeavyHitFeedback || !(target is EnemyHealth health) || damage.AttackType < AttackType.Strong_1 || damage.AttackType > AttackType.Strong_3)
             return;
         // TakeDamage has already started the boss defeat camera. Its clear,
-        // three-second focus takes priority over the final hit's short pulse.
+        // five-second focus takes priority over the final hit's short pulse.
         var defeat = health.IsDead ? health.GetComponent<BossDefeatCinematic>() : null;
         if (defeat && defeat.isActiveAndEnabled) return;
         _impactFeedback?.PlayHeavyHit();

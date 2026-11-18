@@ -281,6 +281,10 @@ public class SceneLoadingManager : MonoBehaviour
             Debug.Log($"[SceneLoading] '{targetScene.name}' transition retention={_retainTransitionDependencies}; dependencyGroups={transitionDependencies.Count}");
 
             phase.Restart();
+            // Restore the outgoing FEEL manager's original physics intervals
+            // before its scene is removed. A new manager must not capture a
+            // hit-stop interval as the next scene's normal fixed timestep.
+            MoreMountains.Feedbacks.MMTimeScaleEvent.Reset();
             foreach (var chunk in chunks)
             {
                 var unload = Addressables.UnloadSceneAsync(chunk.Value, false);

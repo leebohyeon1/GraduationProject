@@ -55,6 +55,8 @@ public struct DamageData
 
     public bool IsMagic;
     public bool IsReflectedProjectile;
+    // Runtime hit presentation only; keep authored attack type and damage rules.
+    [NonSerialized] public bool SuppressHeavyHitFeedback;
 
     public DamageData(Transform attackerTransform, AttackType attackType, int damageAmount, int stiffnessAmount,
         AnimationCurve knockbackCurve = null, float knockbackDuration = 0f, float knockbackForce = 0f, float deathKnockbackDuration = 0f, float deathKnockbackForce = 0f, bool isMagic = false)
@@ -71,6 +73,7 @@ public struct DamageData
         DeathKnockbackForce = deathKnockbackForce;
         IsMagic = isMagic;
         IsReflectedProjectile = false;
+        SuppressHeavyHitFeedback = false;
     }
 }
 

@@ -11,6 +11,7 @@ public class AiBrain
     private PlayerController _player;
     private Dictionary<string, float> _lastUsedSkillTimes = new Dictionary<string, float>();
     private Dictionary<string, float> _customCooldownDurations = new Dictionary<string, float>();
+    private readonly Dictionary<string, float> _skillBlockedUntil = new Dictionary<string, float>();
     public EnemyStateController.EnemyState CurrentState => _owner.CurrentState;
     private Coroutine _lateUpdateCoroutine;
 
@@ -28,6 +29,7 @@ public class AiBrain
         blackboard.SetValue(EnemyBlackboardKeys.Self, _owner.gameObject);
         _lastUsedSkillTimes.Clear();
         _customCooldownDurations.Clear();
+        _skillBlockedUntil.Clear();
         if (_lateUpdateCoroutine != null) _owner.StopCoroutine(_lateUpdateCoroutine);
         _lateUpdateCoroutine = _owner.StartCoroutine(StaggeredStart());
     }
@@ -135,6 +137,11 @@ public class AiBrain
 
     public bool IsSkillReady(string skillName, float cooldownDuration)
     {
+        if (_skillBlockedUntil.TryGetValue(skillName, out float blockedUntil))
+        {
+            if (Time.time < blockedUntil) return false;
+            _skillBlockedUntil.Remove(skillName);
+        }
         if (_lastUsedSkillTimes.TryGetValue(skillName, out float lastUsedTime))
         {
             // 而ㅼ뒪? 荑⑤떎?댁씠 ?덈뒗吏 ?뺤씤
@@ -153,6 +160,16 @@ public class AiBrain
         switch (CurrentState) { case EnemyStateController.EnemyState.Attack: case EnemyStateController.EnemyState.Rush: case EnemyStateController.EnemyState.Die: return true; default: return false; }
     }
     public bool IsInAttackRange(float atkRange) => _player != null && (_player.transform.position - _owner.transform.position).sqrMagnitude <= atkRange * atkRange;
+    // A short stun recovery gate must not restart every attack's real cooldown.
+    public void BlockSkillFor(string skillName, float seconds)
+    {
+        if (seconds <= 0f) return;
+        float until = Time.time + seconds;
+        if (_skillBlockedUntil.TryGetValue(skillName, out float existingUntil))
+            until = Mathf.Max(until, existingUntil);
+        _skillBlockedUntil[skillName] = until;
+    }
+
     public void StartSkillCooldown(string skillName) => _lastUsedSkillTimes[skillName] = Time.time;
     public void StartSkillCooldown(string skillName, float customCooldownDuration) 
     {
@@ -164,6 +181,7 @@ public class AiBrain
     {
         _lastUsedSkillTimes.Remove(skillName);
         _customCooldownDurations.Remove(skillName);
+        _skillBlockedUntil.Remove(skillName);
     }
     public float GetLastSkillUseTime(string skillName) => _lastUsedSkillTimes.TryGetValue(skillName, out float time) ? time : -1f;
     public void AddEnemyAttackData(EnemyAttackData data) { blackboard.SetValue(data.AttackName, data); _lastUsedSkillTimes[data.AttackName] = -9999f; }

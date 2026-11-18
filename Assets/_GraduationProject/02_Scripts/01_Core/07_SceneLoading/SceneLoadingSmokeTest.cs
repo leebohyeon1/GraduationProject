@@ -163,7 +163,7 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
         var args = GetArguments();
         if (args.Contains("--soom-boss-ending-audit"))
         {
-            var endingAudit = BossEndingRuntimeAudit.Run(row => { _steps.Add(row); WriteReport(); });
+            var endingAudit = BossEndingRuntimeAudit.Run(_reportPath, row => { _steps.Add(row); WriteReport(); });
             while (endingAudit.MoveNext()) yield return endingAudit.Current;
             yield break;
         }
@@ -196,13 +196,21 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
         bool fProjectileAudit = args.Contains("--soom-f-projectile-audit");
         bool fParryAudit = args.Contains("--soom-f-parry-audit");
         bool destructibleAudit = args.Contains("--soom-destructible-audit");
-        bool compactAudit = soakAudit || feedbackAudit || inputAudit || combatSoakAudit || fProjectileAudit || fParryAudit || destructibleAudit;
+        bool playerVfxAudit = args.Contains("--soom-player-vfx-audit");
+        bool worldPresentationAudit = args.Contains("--soom-world-presentation-audit");
+        bool dungeonGuideAudit = args.Contains("--soom-dungeon-guide-audit");
+        bool guardStiffnessAudit = args.Contains("--soom-guard-stiffness-audit");
+        bool loadingTimingOnly = args.Contains("--soom-loading-timing-only");
+        bool compactAudit = soakAudit || feedbackAudit || inputAudit || combatSoakAudit || fProjectileAudit || fParryAudit || destructibleAudit || guardStiffnessAudit;
         // Do not save or unload between the dwell and C entry: that would clear
         // accumulated objects and hide the long-play loading regression.
-        string[] sequence = destructibleAudit ? new[] { "Part1", "Title" } :
+        string[] sequence = dungeonGuideAudit ? new[] { "Part1", "Part2-A", "Part1", "Title" } :
+            worldPresentationAudit ? new[] { "Part1", "Save", "Part2-B", "Part1", "Title" } :
+            (destructibleAudit || playerVfxAudit) ? new[] { "Part1", "Title" } :
             (fProjectileAudit || fParryAudit) ? new[] { "Part1", "Part2-B", "Part1", "Title" } :
             compactAudit ? new[] { "Part1", "Part2-C", "Part1", "Title" } :
             new[] { "Part1", "Save", "Part2-A", "Part1", "Save", "Part2-B", "Part1", "Part2-C", "Part1", "Title" };
+        float referencePhysicsStep=Time.fixedDeltaTime/Mathf.Max(.0001f,Time.timeScale);
         for (int index = 0; index < sequence.Length; index++)
         {
             string target = sequence[index];
@@ -211,7 +219,7 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
             int startFrame = Time.frameCount;
             var timer = Stopwatch.StartNew();
             _status = "running";
-            _steps.Add(new { stage = "loading", index, target, from = loader.CurrentActiveChunk.name, memory = MemorySnapshot() });
+            _steps.Add(new { stage = "loading", index, target, from = loader.CurrentActiveChunk.name, timeScale=Time.timeScale, fixedDeltaTime=Time.fixedDeltaTime, memory = MemorySnapshot() });
             WriteReport();
 
             if (target == "Save")
@@ -254,9 +262,11 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
                          (target == "Title" || (movement && alive));
             _steps.Add(new { stage = "loaded", index, target, seconds = timer.Elapsed.TotalSeconds, frames = Time.frameCount - startFrame,
                 valid, alive, healthReady, movement, error = loader.LastLoadError, position = player != null ? player.transform.position.ToString("F3") : null,
-                memory = MemorySnapshot() });
+                timeScale=Time.timeScale, fixedDeltaTime=Time.fixedDeltaTime, referencePhysicsStep, memory = MemorySnapshot() });
             WriteReport();
             if (!valid) throw new InvalidOperationException("Transition/spawn/health assertion failed: " + target);
+            if(Time.timeScale>0f && Mathf.Abs(Time.fixedDeltaTime/Time.timeScale-referencePhysicsStep)>.00001f)
+                throw new InvalidOperationException("Scene transition inherited a scaled physics timestep: " + target);
 
             if (target != "Title" && args.Contains("--soom-balance-audit"))
             {
@@ -268,6 +278,43 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
             {
                 var combat = CombatInputRuntimeAudit.Run(player, row => { _steps.Add(row); WriteReport(); });
                 while (combat.MoveNext()) yield return combat.Current;
+            }
+
+            if (guardStiffnessAudit && (index == 0 || target == "Part2-C"))
+            {
+                var guard = GuardStiffnessRuntimeAudit.Run(player, row => { _steps.Add(row); WriteReport(); });
+                while (guard.MoveNext()) yield return guard.Current;
+            }
+
+            if (playerVfxAudit && index == 0)
+            {
+                var effects = PlayerVfxRuntimeAudit.Run(player, _reportPath, row => { _steps.Add(row); WriteReport(); });
+                while (effects.MoveNext()) yield return effects.Current;
+            }
+
+            if (worldPresentationAudit && index == 0)
+            {
+                var tutorials = TutorialIllustrationRuntimeAudit.Run(player, _reportPath, row => { _steps.Add(row); WriteReport(); });
+                while (tutorials.MoveNext()) yield return tutorials.Current;
+                var world = WorldPresentationRuntimeAudit.Run(player, _reportPath, row => { _steps.Add(row); WriteReport(); });
+                while (world.MoveNext()) yield return world.Current;
+            }
+
+            if (worldPresentationAudit && (target == "Save" || (target == "Part1" && index > 0)))
+                WorldPresentationRuntimeAudit.VerifySavedReload(row => { _steps.Add(row); WriteReport(); });
+
+            if (worldPresentationAudit && target == "Part2-B")
+            {
+                var dungeonF = WorldPresentationRuntimeAudit.RunDungeonF(player, _reportPath, row => { _steps.Add(row); WriteReport(); });
+                while (dungeonF.MoveNext()) yield return dungeonF.Current;
+            }
+
+            if (dungeonGuideAudit)
+            {
+                var guide = index == 0
+                    ? DungeonDirectionGuideRuntimeAudit.Run(player, row => { _steps.Add(row); WriteReport(); })
+                    : DungeonDirectionGuideRuntimeAudit.VerifyScene(target, row => { _steps.Add(row); WriteReport(); });
+                while (guide.MoveNext()) yield return guide.Current;
             }
 
             if (destructibleAudit && index == 0)
@@ -336,7 +383,7 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
                 previousMainCheckpoint = savedPlayer.RespawnPosition;
                 previousMainCheckpointScene = savedPlayer.RespawnSceneName;
             }
-            if (target == "Part2-C" && !compactAudit)
+            if (target == "Part2-C" && !compactAudit && !loadingTimingOnly)
             {
                 if (!previousMainCheckpoint.HasValue) throw new InvalidOperationException("No previous Part1 save point was exercised.");
                 var data = DataManager.Instance.GetGameData();
@@ -463,9 +510,11 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
             managedUsedBytes = managed, nativeEstimateBytes = Math.Max(0, allocated - managed) };
     }
 
-    private static IEnumerator CaptureWorld(string path)
+    internal static IEnumerator CaptureWorld(string path)
     {
-        yield return null;
+        // Capture the displayed pose after Animator and presentation LateUpdate,
+        // including the E entrance offset. A plain yield-null resumes too early.
+        yield return new WaitForEndOfFrame();
         var camera = Camera.main;
         if (camera == null) throw new InvalidOperationException("Main camera missing for world capture.");
         if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
@@ -507,7 +556,8 @@ public sealed class SceneLoadingSmokeTest : MonoBehaviour
         if (type != LogType.Error && type != LogType.Exception && type != LogType.Assert && !tweenError) return;
         _errorCount++;
         if (_errors.Count < MaxCapturedErrors)
-            _errors.Add(new { seconds = Time.realtimeSinceStartupAsDouble, type = type.ToString(), message, stack });
+            _errors.Add(new { seconds = Time.realtimeSinceStartupAsDouble, type = type.ToString(), message, stack,
+                timeScale=Time.timeScale, fixedDeltaTime=Time.fixedDeltaTime, deltaTime=Time.deltaTime, unscaledDeltaTime=Time.unscaledDeltaTime });
     }
 
     private void Finish(Exception error)
